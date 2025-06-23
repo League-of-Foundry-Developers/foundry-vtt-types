@@ -3,6 +3,9 @@ import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
 import type { CompendiumOwnershipField } from "../../../../src/foundry/common/packages/base-package.d.mts";
 import type BaseFolder from "../../../../src/foundry/common/documents/folder.d.mts";
 
+import Module = foundry.packages.Module;
+import System = foundry.packages.System;
+
 const basePackage = new foundry.packages.BasePackage({
   id: "foobar",
 });

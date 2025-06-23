@@ -15,7 +15,6 @@ import type {
   RemoveIndexSignatures,
   FixedInstanceType,
   NullishProps,
-  AllKeysOf,
   DiscriminatedUnion,
   PickValue,
   Identity,
@@ -48,6 +47,12 @@ import type DocumentSocketResponse from "./socket.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
 
 export default Document;
+
+type InexactPartialExcept<T extends object, RequiredKey> = {
+  [K in keyof T as Extract<K, RequiredKey>]: T[K];
+} & {
+  [K in keyof T as Exclude<K, RequiredKey>]?: T[K] | undefined;
+};
 
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
 type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
@@ -121,7 +126,7 @@ declare abstract class Document<
    */
   readonly singletons: Record<string, Document.AnyChild<this>>;
 
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   /**
    * Default metadata which applies to each instance of this Document type.
@@ -599,7 +604,7 @@ declare abstract class Document<
    * @param _parentPath - A parent field path already traversed
    * @remarks Not called within Foundry's client-side code, likely exists for server documents
    */
-  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   /**
    * Get the value of a "flag" for this document
@@ -984,9 +989,9 @@ declare namespace Document {
     :
         | Document.CoreTypesForName<Name>
         | ConfiguredSubTypesOf<Name>
-        | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubtype : never);
+        | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubType : never);
 
-  type ModuleSubtype = Brand<`${string}.${string}`, "Document.ModuleSubtype">;
+  type ModuleSubType = Brand<`${string}.${string}`, "Document.ModuleSubtype">;
 
   type OfType<Name extends WithSubTypes, SubType extends SubTypesOf<Name>> =
     | (Name extends "ActiveEffect" ? ActiveEffect.OfType<SubType & ActiveEffect.SubType> : never)
@@ -1013,7 +1018,7 @@ declare namespace Document {
    * See {@linkcode UnknownSystem} for other possibilities.
    */
   interface UnknownSourceData extends AnyObject {
-    type: ModuleSubtype;
+    type: ModuleSubType;
   }
 
   /**
@@ -1150,7 +1155,7 @@ declare namespace Document {
               [K in SubType]: infer Source;
             }
           ? Source
-          : SubType extends Document.ModuleSubtype
+          : SubType extends Document.ModuleSubType
             ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
               {}
             : UnknownSystem;
@@ -1158,7 +1163,7 @@ declare namespace Document {
 
     type SystemOfType<SystemMap extends Record<SubType, object>, SubType extends string> =
       | DiscriminatedUnion<SystemMap[SubType]>
-      | (SubType extends ModuleSubtype ? UnknownSystem : never);
+      | (SubType extends ModuleSubType | "base" ? UnknownSystem : never);
 
     type Stored<D extends Document.Any> = Override<
       D,
@@ -1698,9 +1703,9 @@ declare namespace Document {
     type DeleteOperation<Op extends DatabaseDeleteOperation> = InexactPartial<Omit<Op, "ids">>;
 
     /** Used for {@linkcode Document._preCreateOperation} */
-    type PreCreateOperationStatic<Op extends DatabaseCreateOperation> = InexactPartial<
+    type PreCreateOperationStatic<Op extends DatabaseCreateOperation> = InexactPartialExcept<
       Op,
-      Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "renderSheet" | "data" | "noHook" | "pack" | "parent">
+      "modifiedTime" | "render" | "renderSheet" | "data" | "noHook" | "pack" | "parent"
     >;
 
     /** Used for {@link Document._preCreate | `Document#_preCreate`} */
@@ -1726,12 +1731,9 @@ declare namespace Document {
     >;
 
     /** Used for {@linkcode Document._preUpdateOperation} */
-    type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartial<
+    type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartialExcept<
       Op,
-      Exclude<
-        AllKeysOf<Op>,
-        "modifiedTime" | "diff" | "recursive" | "render" | "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
-      >
+      "modifiedTime" | "diff" | "recursive" | "render" | "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
     >;
 
     /** Used for {@link Document._preUpdate | `Document#_preUpdate`} */
@@ -1755,14 +1757,14 @@ declare namespace Document {
     >;
 
     /** Used for {@linkcode Document._preDeleteOperation} */
-    type PreDeleteOperationStatic<Op extends DatabaseDeleteOperation> = InexactPartial<
+    type PreDeleteOperationStatic<Op extends DatabaseDeleteOperation> = InexactPartialExcept<
       Op,
-      Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "ids" | "deleteAll" | "noHook" | "pack" | "parent">
+      "modifiedTime" | "render" | "ids" | "deleteAll" | "noHook" | "pack" | "parent"
     >;
 
     /** Used for {@link Document._preDelete | `Document#_preDelete`} */
     type PreDeleteOperationInstance<Op extends DatabaseDeleteOperation> = Omit<
-      InexactPartial<Op, Exclude<AllKeysOf<Op>, "modifiedTime" | "render">>,
+      InexactPartialExcept<Op, "modifiedTime" | "render">,
       "ids" | "deleteAll" | "noHook" | "pack" | "parent"
     >;
 
@@ -2070,10 +2072,11 @@ declare namespace Document {
   }> &
     _PossibleSubtypeContext<DocumentName>;
 
-  type CreateDialogData<CreateData extends object> = InexactPartial<
-    CreateData,
-    Extract<AllKeysOf<CreateData>, "name" | "type" | "folder">
-  >;
+  // TODO(LukeAbby): Inline into each document.
+  type CreateDialogData<CreateData extends object> = InexactPartial<{
+    [K in keyof CreateData as Extract<K, "name" | "type" | "folder">]: CreateData[K];
+  }> &
+    Omit<CreateData, "name" | "type" | "folder">;
 
   /** @internal */
   type _PossibleSubtypesContext<DocumentName extends Document.Type> =
@@ -2391,4 +2394,9 @@ declare namespace Document {
       uuid: string;
     }
   }
+
+  /**
+   * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use {@linkcode Document.ModuleSubType} instead.
+   */
+  type ModuleSubtype = ModuleSubType;
 }

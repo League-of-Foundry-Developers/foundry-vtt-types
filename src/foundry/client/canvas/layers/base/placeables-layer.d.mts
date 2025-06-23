@@ -126,7 +126,7 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
    * Iterates over placeable objects that are eligible for control/select.
    * @yields A placeable object
    */
-  controllableObjects(): Generator<PlaceableObject.Any>;
+  controllableObjects(): Generator<PlaceableObject.Any, void, undefined>;
 
   /**
    * Track the set of PlaceableObjects on this layer which are currently controlled.
@@ -373,25 +373,25 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
     options?: PlaceablesLayer.CreatePreviewOptions, // not:null (destructured)
   ): Promise<Document.ObjectFor<DocumentName>>;
 
-  protected override _onClickLeft(event: PIXI.FederatedEvent): void;
+  protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 
-  protected override _canDragLeftStart(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canDragLeftStart(user: User.Implementation, event: Canvas.Event.Pointer): boolean;
 
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftDrop(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftCancel(event: PointerEvent): void;
+  protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
-  protected override _onClickRight(event: PIXI.FederatedEvent): void;
+  protected override _onClickRight(event: Canvas.Event.Pointer): void;
 
   /** @privateRemarks `void` added to return union for TokenLayer reasons */
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  protected override _onMouseWheel(event: WheelEvent): Promise<Document.ObjectFor<DocumentName>[] | void>;
+  protected override _onMouseWheel(event: Canvas.Event.Wheel): Promise<Document.ObjectFor<DocumentName>[] | void>;
 
-  protected override _onDeleteKey(event: KeyboardEvent): Promise<void>;
+  protected override _onDeleteKey(event: Canvas.Event.DeleteKey): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -602,24 +602,46 @@ declare namespace PlaceablesLayer {
 
   /**
    * @internal
-   * @privateRemarks Only marking `x` and `y` from `Canvas.Rectangle` optional, as the `PIXI.Rectangle` defaults of `0` make no sense for `width` or `height` in this context
    */
-  type _SelectObjectsOptions = NullishProps<Canvas.Rectangle, "x" | "y"> &
-    InexactPartial<{
-      /**
-       * Optional arguments provided to any called release() method
-       * @defaultValue `{}`
-       * @remarks Can't be null as it only has a parameter default
-       */
-      releaseOptions: PlaceableObject.ReleaseOptions;
+  type _SelectObjectsOptions = {
+    /**
+     * The top-left x-coordinate of the selection rectangle.
+     * @remarks Foundry marked optional. Ignored as the default of 0 is questionable.
+     */
+    x: number;
 
-      /**
-       * Optional arguments provided to any called control() method
-       * @defaultValue `{}`
-       * @remarks Can't be null as it only has a parameter default
-       */
-      controlOptions: PlaceableObject.ControlOptions;
-    }>;
+    /**
+     * The top-left y-coordinate of the selection rectangle.
+     * @remarks Foundry marked optional. Ignored as the default of 0 is questionable.
+     */
+    y: number;
+
+    /**
+     * The width of the selection rectangle.
+     * @remarks Foundry marked optional. Ignored as the default of 0 is questionable.
+     */
+    width: number;
+
+    /**
+     * The height of the selection rectangle.
+     * @remarks Foundry marked optional. Ignored as the default of 0 is questionable.
+     */
+    height: number;
+  } & InexactPartial<{
+    /**
+     * Optional arguments provided to any called release() method
+     * @defaultValue `{}`
+     * @remarks Can't be null as it only has a parameter default
+     */
+    releaseOptions: PlaceableObject.ReleaseOptions;
+
+    /**
+     * Optional arguments provided to any called control() method
+     * @defaultValue `{}`
+     * @remarks Can't be null as it only has a parameter default
+     */
+    controlOptions: PlaceableObject.ControlOptions;
+  }>;
 
   interface SelectObjectsOptions extends _SelectObjectsOptions {}
 

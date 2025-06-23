@@ -1,6 +1,10 @@
 import { expectTypeOf } from "vitest";
 import { FogManager } from "#client/canvas/perception/_module.mjs";
 
+import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
+import SpriteMesh = foundry.canvas.containers.SpriteMesh;
+import TextureExtractor = foundry.canvas.TextureExtractor;
+
 expectTypeOf(FogManager.COMMIT_THRESHOLD).toBeNumber();
 
 declare const someTex: PIXI.Texture;
@@ -26,7 +30,11 @@ expectTypeOf(
 ).toEqualTypeOf<FogExploration.UpdateData>();
 
 // deprecated since v11 until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myFogManager.pending).toEqualTypeOf<PIXI.Container | undefined>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myFogManager.revealed).toEqualTypeOf<PIXI.Container | undefined>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myFogManager.update("garbage", true)).toEqualTypeOf<true>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myFogManager.resolution).toEqualTypeOf<CanvasVisibility.TextureConfiguration | undefined>();

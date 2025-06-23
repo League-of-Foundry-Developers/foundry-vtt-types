@@ -122,7 +122,7 @@ declare namespace NoteDocument {
   /**
    * An instance of `NoteDocument` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<NoteDocument.Implementation> {}
+  type Stored = Document.Internal.Stored<NoteDocument.Implementation>;
 
   /**
    * The data put in {@link NoteDocument._source | `NoteDocument#_source`}. This data is what was

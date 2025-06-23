@@ -1,7 +1,13 @@
-import type { AnyArray, AnyConstructor, AnyFunction, InexactPartial, NonNullish } from "#utils";
+import type {
+  AnyArray,
+  AnyConstructor,
+  AnyFunction,
+  AnyObject,
+  DeepReadonly,
+  InexactPartial,
+  NonNullish,
+} from "#utils";
 import type Document from "../abstract/document.d.mts";
-
-export {};
 
 /**
  * Benchmark the performance of a function, calling it a requested number of iterations.
@@ -14,7 +20,7 @@ export function benchmark<F extends AnyFunction>(func: F, iterations: number, ..
 /**
  * A debugging function to test latency or timeouts by forcibly locking the thread for an amount of time.
  * @param ms    - A number of milliseconds to lock
- * @param debug - (default: `false`)
+ * @param debug - Log debugging information? (default: `false`)
  */
 export function threadLock(ms: number, debug?: boolean): Promise<void>;
 
@@ -30,71 +36,130 @@ export function debounce<T extends AnyFunction>(callback: T, delay: number): (..
 /**
  * Wrap a callback in a throttled timeout.
  * Delay execution of the callback function when the last time the function was called was delay milliseconds ago
- * @param callback     - A function to execute once the throttled threshold has been passed
- * @param delay        - A maximum amount of time in milliseconds between to execution
- * @returns            - A wrapped function which can be called to throttle execution
+ * @param callback - A function to execute once the throttled threshold has been passed
+ * @param delay    - A maximum amount of time in milliseconds between to execution
+ * @returns A wrapped function which can be called to throttle execution
  */
 export function throttle<T extends (...args: any[]) => any>(callback: T, delay: number): T;
 
 /**
  * A utility function to reload the page with a debounce.
  */
-export const debouncedReload: VoidFunction;
+export const debouncedReload: () => void;
 
-export interface DeepCloneOptions {
+/**
+ * Recursively freezes ({@linkcode Object.freeze}) the object (or value).
+ * This method DOES NOT support cyclical data structures.
+ * This method DOES NOT support advanced object types like Set, Map, or other specialized classes.
+ * @param obj     - The object (or value)
+ * @param options - Options to configure the behaviour of deepFreeze
+ * @returns The same object (or value) that was passed in
+ * @remarks
+ * @throws If passed an object with a depth over 100, or if it encounters anything but a plain object, array, or primitive
+ */
+export function deepFreeze<const T extends AnyObject>(obj: T, options?: DeepFreezeOptions): DeepReadonly<T>;
+
+/** @internal */
+type _DeepFreezeOptions = InexactPartial<{
   /**
-   * Throw an Error if deepClone is unable to clone something instead of returning the original
+   * Throw an Error if deepFreeze is unable to freeze something instead of returning the original
    * @defaultValue `false`
    */
-  strict?: boolean;
+  strict: boolean;
+}>;
 
+export interface DeepFreezeOptions extends _DeepFreezeOptions {}
+
+/**
+ * Recursively seals ({@linkcode Object.seal}) the object (or value).
+ * This method DOES NOT support cyclical data structures.
+ * This method DOES NOT support advanced object types like Set, Map, or other specialized classes.
+ * @param obj     - The object (or value)
+ * @param options - Options to configure the behaviour of deepSeal
+ * @returns The same object (or value) that was passed in
+ * @remarks
+ * @throws If passed an object with a depth over 100, or if it encounters anything but a plain object, array, or primitive
+ */
+export function deepSeal<T extends AnyObject>(obj: T, options?: DeepSealOptions): T;
+
+/** @internal */
+type _DeepSealOptions = InexactPartial<{
   /**
-   * An internal depth tracker
-   * @defaultValue `0`
+   * Throw an Error if deepSeal is unable to seal something
+   * @defaultValue `false`
    */
-  _d?: number;
-}
+  strict: boolean;
+}>;
+
+export interface DeepSealOptions extends _DeepSealOptions {}
 
 /**
  * Quickly clone a simple piece of data, returning a copy which can be mutated safely.
  * This method DOES support recursive data structures containing inner objects or arrays.
+ * This method DOES NOT support cyclical data structures.
  * This method DOES NOT support advanced object types like Set, Map, or other specialized classes.
- * @param original        - Some sort of data
- * @param options         - Options to configure the behaviour of deepClone
- * @returns               - The clone of that data
- * @throws                - An Error if deepClone is unable to clone something and strict mode is enabled
+ * @param original - Some sort of data
+ * @param options  - Options to configure the behaviour of deepClone
+ * @returns The clone of that data
+ * @remarks
+ * @throws If passed an object with a depth over 100, or if it encounters anything but a plain object, array, `Date`, or primitive
  */
 export function deepClone<T>(original: T, options?: DeepCloneOptions): T;
 
-export type DiffObjectOptions = InexactPartial<{
+/** @internal */
+type _DeepCloneOptions = InexactPartial<{
+  /**
+   * Throw an Error if deepClone is unable to clone something instead of returning the original
+   * @defaultValue `false`
+   */
+  strict: boolean;
+}>;
+
+export interface DeepCloneOptions extends _DeepCloneOptions {}
+
+/**
+ * Deeply difference an object against some other, returning the update keys and values.
+ * @param original - An object comparing data against which to compare
+ * @param other    - An object containing potentially different data
+ * @param options  - Additional options which configure the diff operation
+ * @returns An object of the data in other which differs from that in original
+ */
+export function diffObject(original: object, other: object, options?: DiffObjectOptions): object;
+
+/** @internal */
+type _DiffObjectOptions = InexactPartial<{
   /**
    * Only recognize differences in other for keys which also exist in original
    * @defaultValue `false`
    */
-  inner?: boolean;
+  inner: boolean;
 
   /**
    * Apply special logic to deletion keys. They will only be kept if the original object has a
    * corresponding key that could be deleted.
    * @defaultValue `false`
    */
-  deletionKeys?: boolean;
+  deletionKeys: boolean;
 
   /**
    * An internal depth tracker
    * @defaultValue `0`
+   * @remarks Not intended to be passed externally. v13 converted the outer signature of `deepClone` to hide this param,
+   * and that pattern was copied for `deepFreeze` and `deepSeal`; Not sure why they didn't use it here.
    */
-  _d?: number;
+  _d: number;
 }>;
 
+export interface DiffObjectOptions extends _DiffObjectOptions {}
+
 /**
- * Deeply difference an object against some other, returning the update keys and values.
- * @param original       - An object comparing data against which to compare
- * @param other          - An object containing potentially different data
- * @param options        - Additional options which configure the diff operation
- * @returns               - An object of the data in other which differs from that in original
+ * Recurse through an object, applying all special keys.
+ * Deletion keys ("-=") are removed.
+ * Forced replacement keys ("==") are assigned.
+ * @remarks Returns the passed `obj` for anything but plain objects and arrays.
  */
-export function diffObject(original: object, other: object, options?: DiffObjectOptions): object;
+// TODO: bespoke return type accounting for deletion keys recursively
+export function applySpecialKeys<T>(obj: T): T;
 
 /**
  * Test if two objects contain the same enumerable keys and values.
@@ -123,6 +188,14 @@ export function duplicate<T>(original: T): Duplicated<T>;
 export type Duplicated<T> = T extends NonStringifiable ? never : InnerDuplicated<T>;
 
 /**
+ * Is a string key of an object used for certain deletion or forced replacement operations.
+ * @remarks Foundry seems to refer to both `-=...` and `==...` as "deletion keys" in this context
+ */
+export function isDeletionKey(key: string): key is DeletionKey;
+
+export type DeletionKey = `-=${string}` | `==${string}`;
+
+/**
  * Test whether some class is a subclass of a parent.
  * Returns true if the classes are identical.
  * @param cls    - The class to test
@@ -133,16 +206,18 @@ export function isSubclass<Parent extends AnyConstructor>(cls: AnyConstructor, p
 
 /**
  * Search up the prototype chain and return the class that defines the given property.
- * @param obj                - A class instance or class definition which contains a property.
- *                             If a class instance is passed the property is treated as an instance attribute.
- *                             If a class constructor is passed the property is treated as a static attribute.
- * @param property           - The property name
- * @returns     - The class that defines the property
+ * @param obj      - A class instance or class definition which contains a property.
+ *
+ * If a class instance is passed the property is treated as an instance attribute.
+ *
+ * If a class constructor is passed the property is treated as a static attribute.
+ * @param property - The property name
+ * @returns The class that defines the property
  */
 export function getDefiningClass(obj: AnyConstructor, property: string): AnyConstructor;
 
 /**
- * Encode a url-like string by replacing any characters which need encoding
+ * Encode an url-like string by replacing any characters which need encoding
  * @param path - A fully-qualified URL or url component (like a relative path)
  * @returns An encoded URL string
  */
@@ -164,8 +239,8 @@ export function expandObject(obj: object): object;
  *
  * @param source   - An object which contains the data you wish to filter
  * @param template - An object which contains the structure you wish to preserve
- * @param options  - Additional options which customize the filtration
- *                   (default: `{}`)
+ * @param options  - Additional options which customize the filtration (default: `{}`)
+ * @returns The filtered object
  *
  * @example Filter an object
  * ```typescript
@@ -177,22 +252,25 @@ export function expandObject(obj: object): object;
  */
 export function filterObject(source: object, template: object, options?: FilterObjectOptions): object;
 
-export interface FilterObjectOptions {
+/** @internal */
+type _FilterObjectOptions = InexactPartial<{
   /**
    * Whether to keep deletion keys
    * @defaultValue `false`
    */
-  deletionKeys?: boolean | undefined;
+  deletionKeys: boolean;
 
   /**
    * Instead of keeping values from the source, instead draw values from the template
    * @defaultValue `false`
    */
-  templateValues?: boolean | undefined;
-}
+  templateValues: boolean;
+}>;
+
+export interface FilterObjectOptions extends _FilterObjectOptions {}
 
 /**
- * Flatten a possibly multi-dimensional object to a one-dimensional one by converting all nested keys to dot notation
+ * Flatten a possibly multidimensional object to a one-dimensional one by converting all nested keys to dot notation
  * @param obj - The object to flatten
  * @param _d  - Track the recursion depth to prevent overflow. (default: `0`)
  * @returns A flattened object
@@ -206,31 +284,35 @@ export function flattenObject(obj: object, _d?: number): object;
  */
 export function getParentClasses(cls: AnyConstructor): Array<AnyConstructor>;
 
-export interface GetRouteOptions {
-  /**
-   * A path prefix to apply
-   * (default: `null`)
-   */
-  prefix?: string | null | undefined;
-}
-
 /**
  * Get the URL route for a certain path which includes a path prefix, if one is set
- * @param path   - The Foundry URL path
+ * @param path - The Foundry URL path
  * @returns The absolute URL path
  */
 export function getRoute(path: string, { prefix }?: GetRouteOptions): string;
 
+/** @internal */
+type _GetRouteOptions = InexactPartial<{
+  /**
+   * A path prefix to apply
+   * @defaultValue {@linkcode globalThis.ROUTE_PREFIX}
+   */
+  prefix: string | null;
+}>;
+
+export interface GetRouteOptions extends _GetRouteOptions {}
+
 /**
  * Learn the underlying data type of some variable. Supported identifiable types include:
  * undefined, null, number, string, boolean, function, Array, Set, Map, Promise, Error,
- * HTMLElement (client side only), Object (catchall for other object types)
+ * HTMLElement (client side only), Object (plain objects).
+ * If the type isn't identifiable, Unknown is returned.
  * @param variable - A provided variable
  * @returns The named type of the token
  */
-export function getType(
-  variable: unknown,
-):
+export function getType(variable: unknown): DataType;
+
+export type DataType =
   | "Array"
   | "Error"
   | "HTMLElement"
@@ -245,7 +327,8 @@ export function getType(
   | "number"
   | "string"
   | "symbol"
-  | "undefined";
+  | "undefined"
+  | "Unknown";
 
 /**
  * A helper function which tests whether an object has a property or nested property given a string key.
@@ -263,7 +346,7 @@ export function hasProperty(object: object, key: string): boolean;
  * @param key    - An object property with notation a.b.c
  * @returns The value of the found property
  */
-export function getProperty(object: object, key: string): any;
+export function getProperty(object: object, key: string): unknown;
 
 /**
  * A helper function which searches through an object to assign a value using a string key
@@ -273,7 +356,23 @@ export function getProperty(object: object, key: string): any;
  * @param value  - The value to be assigned
  * @returns Whether the value was changed from its previous value
  */
-export function setProperty(object: object, key: string, value: any): boolean;
+export function setProperty(object: object, key: string, value: unknown): boolean;
+
+/**
+ * A helper function which searches through an object to delete a value by a string key.
+ * The string key supports the notation a.b.c which would delete object[a][b][c]
+ * @param object - The object to traverse
+ * @param key    - An object property with notation a.b.c
+ * @returns Was the property deleted?
+ */
+export function deleteProperty(object: object, key: string): boolean;
+
+/**
+ * Invert an object by assigning its values as keys and its keys as values.
+ * @param obj - The original object to invert
+ * @returns The inverted object with keys and values swapped
+ */
+export function invertObject<T extends InvertableObject>(obj: T): InvertObject<T>;
 
 // Merging into this would be antithetical to its purpose.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -282,15 +381,8 @@ export type InvertableObject = {
 };
 
 export type InvertObject<in out T extends InvertableObject> = {
-  [K in keyof T as T[K]]: K;
+  -readonly [K in keyof T as T[K]]: K;
 };
-
-/**
- * Invert an object by assigning its values as keys and its keys as values.
- * @param obj - The original object to invert
- * @returns The inverted object with keys and values swapped
- */
-export function invertObject<T extends InvertableObject>(obj: T): InvertObject<T>;
 
 /**
  * Return whether a target version (v1) is more advanced than some other reference version (v0).
@@ -306,27 +398,17 @@ export function isNewerVersion(v1: number | string, v0: number | string): boolea
  * @param value - The value to test
  * @returns Is the value empty-like?
  */
-
 export function isEmpty(
   value: undefined | null | unknown[] | object | Set<unknown> | Map<unknown, unknown> | NonNullish,
 ): boolean;
-
-export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
-  DeleteByObjectKeys<T, U, M>,
-  RemoveDeletingObjectKeys<U, M>,
-  M
->;
 
 /**
  * Update a source object by replacing its keys and values with those from a target object.
  *
  * @param original - The initial object which should be updated with values from the target
- * @param other    - A new object whose values should replace those in the source
- *                   (default: `{}`)
- * @param options  - Additional options which configure the merge
- *                   (default: `{}`)
- * @param _d       - A privately used parameter to track recursion depth.
- *                   (default: `0`)
+ * @param other    - A new object whose values should replace those in the source (default: `{}`)
+ * @param options  - Additional options which configure the merge (default: `{}`)
+ * @param _d       - A privately used parameter to track recursion depth. (default: `0`)
  * @returns The original source object including updated, inserted, or overwritten records.
  *
  * @example Control how new keys and values are added
@@ -353,6 +435,11 @@ export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
  * ```typescript
  * mergeObject({k1: "v1", k2: "v2"}, {"-=k1": null}, {performDeletions: true});   // {k2: "v2"}
  * ```
+ *
+ * @example Explicitly replacing an inner object key
+ * ```js
+ * mergeObject({k1: {i1: "v1"}}, {"==k1": {i2: "v2"}}, {performDeletions: true}); // {k1: {i2: "v2"}}
+ * ```
  */
 export function mergeObject<const T extends object, const U extends object, const M extends MergeObjectOptions>(
   original: T,
@@ -361,88 +448,77 @@ export function mergeObject<const T extends object, const U extends object, cons
   _d?: number,
 ): MergeObject<T, U, M>;
 
-export interface MergeObjectOptions {
+export type MergeObject<T, U, M extends MergeObjectOptions> = UpdateInsert<
+  DeleteByObjectKeys<T, U, M>,
+  RemoveDeletingObjectKeys<U, M>,
+  M
+>;
+
+/** @internal */
+type _MergeObjectOptions = InexactPartial<{
   /**
    * Control whether to insert new top-level objects into the resulting structure which do not previously exist in the original object.
    * @defaultValue `true`
    */
-  insertKeys?: boolean | undefined;
+  insertKeys: boolean;
 
   /**
    * Control whether to insert new nested values into child objects in the resulting structure which did not previously exist in the original object.
    * @defaultValue `true`
    */
-  insertValues?: boolean | undefined;
+  insertValues: boolean;
 
   /**
    * Control whether to replace existing values in the source, or only merge values which do not already exist in the original object.
    * @defaultValue `true`
    */
-  overwrite?: boolean | undefined;
+  overwrite: boolean;
 
   /**
    * Control whether to merge inner-objects recursively (if true), or whether to simply replace inner objects with a provided new value.
    * @defaultValue `true`
    */
-  recursive?: boolean | undefined;
+  recursive: boolean;
 
   /**
    * Control whether to apply updates to the original object in-place (if true), otherwise the original object is duplicated and the copy is merged.
    * @defaultValue `true`
    */
-  inplace?: boolean | undefined;
+  inplace: boolean;
 
   /**
    * Control whether strict type checking requires that the value of a key in the other object must match the data type in the original data to be merged.
    * @defaultValue `false`
    */
-  enforceTypes?: boolean | undefined;
+  enforceTypes: boolean;
 
   /**
    * Control whether to perform deletions on the original object if deletion keys are present in the other object.
    * @defaultValue `false`
    */
-  performDeletions?: boolean | undefined; // TODO: implement this in the mergeObject return type
-}
+  performDeletions: boolean; // TODO: implement this in the mergeObject return type
+}>;
 
-/**
- * A helper function for merging objects when the target key does not exist in the original
- * @internal
- */
-declare function _mergeInsert(
-  original: object,
-  k: PropertyKey,
-  v: any,
-  options?: Pick<MergeObjectOptions, "insertKeys" | "insertValues" | "performDeletions">,
-  _d?: number,
-): void;
-
-/**
- * A helper function for merging objects when the target key exists in the original
- * @internal
- */
-declare function _mergeUpdate<T extends object, K extends keyof T>(
-  original: T,
-  k: K,
-  v: any,
-  options?: Pick<
-    MergeObjectOptions,
-    "insertKeys" | "insertValues" | "enforceTypes" | "overwrite" | "recursive" | "performDeletions"
-  >,
-  _d?: number,
-): void;
+export interface MergeObjectOptions extends _MergeObjectOptions {}
 
 /**
  * Parse an S3 key to learn the bucket and the key prefix used for the request.
  * @param key - A fully qualified key name or prefix path.
  */
-export function parseS3URL(key: string): { bucket: string | null; keyPrefix: string };
+export function parseS3URL(key: string): ParseS3URLReturn;
+
+export interface ParseS3URLReturn {
+  /** @remarks `null` only if the passed URL fails {@linkcode URL.parseSafe} */
+  bucket: string | null;
+
+  /** @remarks `""` if the passed URL fails {@linkcode URL.parseSafe} */
+  keyPrefix: string;
+}
 
 /**
  * Generate a random alphanumeric string ID of a given requested length using `crypto.getRandomValues()`.
- * @param length    - The length of the random string to generate, which must be at most 16384.
- *                    (default: `16`)
- * @returns          - A string containing random letters (A-Z, a-z) and numbers (0-9).
+ * @param length - The length of the random string to generate, which must be at most 16384. (default: `16`)
+ * @returns A string containing random letters (A-Z, a-z) and numbers (0-9).
  */
 export function randomID(length?: number): string;
 
@@ -453,19 +529,23 @@ export function randomID(length?: number): string;
  */
 export function formatFileSize(size: number, options?: FormatFileSizeOptions): string;
 
-export interface FormatFileSizeOptions {
+/** @internal */
+type _FormatFileSizeOptions = InexactPartial<{
   /**
    * The number of decimal places to round to.
    * @defaultValue `2`
    */
-  decimalPlaces?: number | undefined;
+  decimalPlaces: number;
 
   /**
    * The base to use. In base 10 a kilobyte is 1000 bytes. In base 2 it is 1024 bytes.
    * @defaultValue `10`
+   * @remarks Foundry only actually checks if the base is `2` or not; all other values are treated as `10`
    */
-  base?: 2 | 10 | undefined;
-}
+  base: 2 | 10;
+}>;
+
+export interface FormatFileSizeOptions extends _FormatFileSizeOptions {}
 
 export interface ResolvedUUID {
   /**
@@ -475,8 +555,9 @@ export interface ResolvedUUID {
 
   /**
    * The type of Document referenced. Legacy compendium UUIDs will not populate this field if the compendium is not active in the World.
+   * @remarks This property is always present, the above caveat simply means it might be `undefined`
    */
-  type?: Document.Type | undefined;
+  type: Document.Type | undefined;
 
   /**
    * The ID of the Document referenced.
@@ -485,18 +566,20 @@ export interface ResolvedUUID {
 
   /**
    * The primary Document type of this UUID. Only present if the Document is embedded.
+   * @remarks This property is always present, the above caveat simply means it might be `undefined`
    */
-  primaryType?: foundry.CONST.PRIMARY_DOCUMENT_TYPES | undefined;
+  primaryType: CONST.PRIMARY_DOCUMENT_TYPES | undefined;
 
   /**
    * The primary Document ID of this UUID. Only present if the Document is embedded.
+   * @remarks This property is always present, the above caveat simply means it might be `undefined`
    */
-  primaryId?: string | undefined;
+  primaryId: string | undefined;
 
   /**
    * The collection that the primary Document belongs to.
    */
-  collection?: foundry.documents.abstract.DocumentCollection.Any | undefined;
+  collection: foundry.documents.abstract.DocumentCollection.Any | undefined;
 
   /**
    * Additional Embedded Document parts.
@@ -504,107 +587,94 @@ export interface ResolvedUUID {
   embedded: string[];
 
   /**
-   * An already-resolved parent Document.
-   */
-  doc?: Document.Any | undefined;
-
-  /**
    * Either the document type or the parent type. Retained for backwards compatibility.
    */
-  documentType?: Document.Type | undefined;
+  documentType: Document.Type | undefined;
 
   /**
    * Either the document id or the parent id. Retained for backwards compatibility.
    */
-  documentId?: string | undefined;
-}
-
-export interface ParseUUIDOptions {
-  /**
-   * A document to resolve relative UUIDs against.
-   */
-  relative?: Document.Any;
+  documentId: string | undefined;
 }
 
 /**
  * Parse a UUID into its constituent parts, identifying the type and ID of the referenced document.
  * The ResolvedUUID result also identifies a "primary" document which is a root-level document either in the game
  * World or in a Compendium pack which is a parent of the referenced document.
- * @param uuid           - The UUID to parse.
- * @param options        - Options to configure parsing behavior.
- * @returns              - Returns the Collection, Document Type, and Document ID to resolve the parent
- *                         document, as well as the remaining Embedded Document parts, if any.
- * @throws               - An error if the provided uuid string is incorrectly structured
+ * @param uuid     - The UUID to parse.
+ * @param options  - Options to configure parsing behavior.
+ * @returns Returns, if possible, the Collection, Document Type, and Document ID to resolve the parent document, as well as the remaining Embedded Document parts, if any.
  */
 export function parseUuid(uuid: string, options?: ParseUUIDOptions): ResolvedUUID;
 
-/**
- * Resolve a UUID relative to another document.
- * The general-purpose algorithm for resolving relative UUIDs is as follows:
- * 1. If the number of parts is odd, remove the first part and resolve it against the current document and update the
- *    current document.
- * 2. If the number of parts is even, resolve embedded documents against the current document.
- * @param uuid     - The UUID to resolve.
- * @param relative - The document to resolve against.
- * @internal
- */
-declare function _resolveRelativeUuid(uuid: string, relative: Document.Any): ResolvedUUID;
+/** @internal */
+type _ParseUUIDOptions = InexactPartial<{
+  /**
+   * A document to resolve relative UUIDs against.
+   */
+  relative: Document.Any;
+}>;
+
+export interface ParseUUIDOptions extends _ParseUUIDOptions {}
 
 /**
- * Converts an RGB color value to HSV. Conversion formula adapted from http://en.wikipedia.org/wiki/HSV_color_space.
- * Assumes r, g, and b are contained in the set [0, 1] and returns h, s, and v in the set [0, 1].
- * @param r - The red color value
- * @param g - The green color value
- * @param b - The blue color value
- * @returns The HSV representation
- * @deprecated since v10 until v12, rgbToHsv is deprecated in favor of {@link foundry.utils.Color.hsv | `foundry.utils.Color#hsv`}
+ * Escape the given unescaped string.
+ *
+ * Escaped strings are safe to use inside inner HTML of most tags and in most quoted HTML attributes.
+ * They are not NOT safe to use in `<script>` tags, unquoted attributes, `href`, `onmouseover`, and similar.
+ * They must be unescaped first if they are used inside a context that would escape them.
+ *
+ * Handles only `&`, `<`, `>`, `"`, and `'`.
+ * @see {@linkcode foundry.utils.unescapeHTML}
+ * @param value - An unescaped string
+ * @returns The escaped string
+ * @privateRemarks Foundry types `value` as `string|any`, as the method passes it through `String()`, but accounting for that seems counterproductive
  */
-export function rgbToHsv(r: number, g: number, b: number): [h: number, s: number, v: number];
+export function escapeHTML(value: string): string;
 
 /**
- * Converts an HSV color value to RGB. Conversion formula adapted from http://en.wikipedia.org/wiki/HSV_color_space.
- * Assumes h, s, and v are contained in the set [0, 1] and returns r, g, and b in the set [0, 1].
- * @param h - The hue
- * @param s - The saturation
- * @param v - The value
- * @returns The RGB representation
- * @deprecated since v10 until v12, hsvToRgb is deprecated in favor of {@linkcode foundry.utils.Color.fromHSV}
+ * Unescape the given escaped string.
+ *
+ * Handles only `&amp;`, `&lt;`, `&gt;`, `&quot;`, and `&#x27;`.
+ * @see {@linkcode foundry.utils.escapeHTML}
+ * @param value - An escaped string
+ * @returns The escaped string
  */
-export function hsvToRgb(h: number, s: number, v: number): [r: number, g: number, b: number];
+export function unescapeHTML(value: string): string;
 
 /**
- * Converts a color as an [R, G, B] array of normalized floats to a hexadecimal number.
- * @param rgb - Array of numbers where all values are normalized floats from 0.0 to 1.0.
- * @returns The numeric color as hexadecimal
- * @deprecated since v10 until v12, rgbToHex is deprecated in favor of {@linkcode foundry.utils.Color.fromRGB}
+ * Build a Universally Unique Identifier (uuid) from possibly limited data. An attempt will be made to resolve omitted
+ * components, but an identifier and at least one of documentName, parent, and pack are required.
+ * @param context - Data for building the uuid
+ * @returns A well-formed Document uuid unless one is unable to be created
  */
-export function rgbToHex(rgb: [r: number, g: number, b: number]): number;
+export function buildUuid(context?: BuildUUIDContext): string | null;
 
-/**
- * Convert a hex color code to an RGB array
- * @param hex - A hex color number
- * @returns An array of [r,g,b] colors normalized on the range of [0,1]
- * @deprecated since v10 until v12, hexToRGB is deprecated in favor of {@link foundry.utils.Color.rgb | `foundry.utils.Color#rgb`}
- */
-export function hexToRGB(hex: number): [r: number, g: number, b: number];
+/** @internal */
+type _BuildUUIDContext = InexactPartial<{
+  /**
+   * The document name (or type)
+   * @remarks At least one of `documentName`, `parent`, or `pack` *must* be provided or `buildUuid` will return `null`
+   */
+  documentName: Document.Type;
 
-/**
- * Convert a hex color code to an RGBA color string which can be used for CSS styling
- * @param hex   - A hex color number
- * @param alpha - An optional level of transparency
- *                (default: `1.0`)
- * @returns An rgba style string
- * @deprecated since v10 until v12, hexToRGBAString is deprecated in favor of {@link foundry.utils.Color.toRGBA | `foundry.utils.Color#toRGBA`}
- */
-export function hexToRGBAString(hex: number, alpha?: number): `rgba(${number}, ${number}, ${number})`;
+  /**
+   * The document's parent, if any
+   * @remarks At least one of `documentName`, `parent`, or `pack` *must* be provided or `buildUuid` will return `null`
+   */
+  parent: Document.Any | null;
 
-/**
- * Convert a string color to a hex integer
- * @param color - The string color
- * @returns The hexadecimal color code
- * @deprecated since v10 until v12, colorStringToHex is deprecated in favor of {@linkcode foundry.utils.Color.from}
- */
-export function colorStringToHex(color: string): number | null;
+  /**
+   * The document's compendium pack, if applicable
+   * @remarks At least one of `documentName`, `parent`, or `pack` *must* be provided or `buildUuid` will return `null`
+   */
+  pack: string | null;
+}>;
+
+export interface BuildUUIDContext extends _BuildUUIDContext {
+  /** The identifier of the document */
+  id: string;
+}
 
 /**
  * Internal Helper for {@linkcode Duplicated}. A union type of all types that do not have a JSON representation.

@@ -1,6 +1,10 @@
 import { expectTypeOf } from "vitest";
 import { MeasuredTemplate, PlaceableObject } from "#client/canvas/placeables/_module.mjs";
 
+import Canvas = foundry.canvas.Canvas;
+import ControlIcon = foundry.canvas.containers.ControlIcon;
+import PreciseText = foundry.canvas.containers.PreciseText;
+
 expectTypeOf(MeasuredTemplate.embeddedName).toEqualTypeOf<"MeasuredTemplate">();
 expectTypeOf(MeasuredTemplate.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
@@ -97,21 +101,27 @@ expectTypeOf(
 expectTypeOf(template["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
 
 declare const someUser: User.Implementation;
-declare const someEvent: PIXI.FederatedEvent;
-expectTypeOf(template["_canControl"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(template["_canHUD"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(template["_canConfigure"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(template["_canView"](someUser, someEvent)).toBeBoolean();
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(template["_canControl"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(template["_canHUD"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(template["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(template["_canView"](someUser, pointerEvent)).toBeBoolean();
 
-expectTypeOf(template["_onHoverIn"](someEvent)).toBeVoid();
-expectTypeOf(template["_onHoverIn"](someEvent, {})).toBeVoid();
-expectTypeOf(template["_onHoverIn"](someEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(template["_onHoverIn"](someEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(template["_onHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(template["_onHoverIn"](pointerEvent, {})).toBeVoid();
+expectTypeOf(template["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
+expectTypeOf(template["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
 
-expectTypeOf(template["_onClickRight"](someEvent)).toBeVoid();
-expectTypeOf(template["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
+expectTypeOf(template["_onClickRight"](pointerEvent)).toBeVoid();
+expectTypeOf(template["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<
+  PlaceableObject.DragLeftDropUpdate[]
+>();
 
 // deprecated since v12, until v14
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(template.borderColor).toBeNumber();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(template.fillColor).toBeNumber();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(template.owner).toBeBoolean();

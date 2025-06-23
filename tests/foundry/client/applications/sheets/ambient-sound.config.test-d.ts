@@ -2,6 +2,7 @@ import { expectTypeOf } from "vitest";
 
 import AmbientSoundConfig = foundry.applications.sheets.AmbientSoundConfig;
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
+import DocumentSheet = foundry.appv1.api.DocumentSheet;
 
 declare const doc: AmbientSoundDocument.Implementation;
 const soundSheet = new AmbientSoundConfig({ document: doc });

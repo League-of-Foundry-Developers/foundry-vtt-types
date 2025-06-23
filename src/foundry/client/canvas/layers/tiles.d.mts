@@ -50,19 +50,19 @@ declare class TilesLayer extends PlaceablesLayer<"Tile"> {
    * @remarks Only produces foreground or non-forground tiles, depending on the state
    * of the foregound layer toggle control
    */
-  override controllableObjects(): Generator<Tile.Implementation>;
+  override controllableObjects(): Generator<Tile.Implementation, void, undefined>;
 
   override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
   protected override _tearDown(options: HandleEmptyObject<TilesLayer.TearDownOptions>): Promise<void>;
 
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftDrop(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftCancel(event: PointerEvent): void;
+  protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle drop events for Tile data on the Tiles Layer

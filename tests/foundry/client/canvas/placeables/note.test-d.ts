@@ -1,5 +1,9 @@
 import { expectTypeOf } from "vitest";
-import { Note, PlaceableObject } from "#client/canvas/placeables/_module.mjs";
+
+import ControlIcon = foundry.canvas.containers.ControlIcon;
+import Note = foundry.canvas.placeables.Note;
+import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
+import PreciseText = foundry.canvas.containers.PreciseText;
 
 expectTypeOf(Note.embeddedName).toEqualTypeOf<"Note">();
 expectTypeOf(Note.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
@@ -75,14 +79,16 @@ expectTypeOf(
 expectTypeOf(note["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
 
 declare const someUser: User.Implementation;
-declare const someEvent: PIXI.FederatedEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 expectTypeOf(note["_canHover"](someUser)).toBeBoolean();
 expectTypeOf(note["_canView"](someUser)).toBeBoolean();
 expectTypeOf(note["_canConfigure"](someUser)).toBeBoolean();
-expectTypeOf(note["_onHoverIn"](someEvent)).toBeVoid();
-expectTypeOf(note["_onClickLeft2"](someEvent)).toBeVoid();
-expectTypeOf(note["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
+expectTypeOf(note["_onHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(note["_onClickLeft2"](pointerEvent)).toBeVoid();
+expectTypeOf(note["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(note.text).toEqualTypeOf<string>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(note.size).toEqualTypeOf<number>();

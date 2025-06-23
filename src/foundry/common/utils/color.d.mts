@@ -73,7 +73,7 @@ declare class InternalColor extends PatchedNumber {
   /**
    * The color represented as a linear RGB array.
    * Assumes r, g, and b are contained in the set [0, 1] and returns linear r, g, and b in the set [0, 1].
-   * {@link https://en.wikipedia.org/wiki/SRGB#Transformation}
+   * @see {@link https://en.wikipedia.org/wiki/SRGB#Transformation}
    */
   get linear(): Color.RGBColorVector;
 
@@ -110,6 +110,7 @@ declare class InternalColor extends PatchedNumber {
    * @param other  - Some other Color to mix with
    * @param weight - The mixing weight placed on this color where weight is placed on the other color
    * @returns The resulting mixed Color
+   * @remarks `weight` should be in the range [0, 1]
    */
   mix(other: Color, weight: number): Color;
 
@@ -151,7 +152,7 @@ declare class InternalColor extends PatchedNumber {
   /**
    * Iterating over a Color is equivalent to iterating over its [r,g,b] color channels.
    */
-  [Symbol.iterator](): Generator<number>;
+  [Symbol.iterator](): Generator<number, void, undefined>;
 
   /**
    * Set an rgb array with the rgb values contained in this Color class.
@@ -165,6 +166,7 @@ declare class InternalColor extends PatchedNumber {
    * @param color2 - The second color to mix.
    * @param weight - Weight of the linear interpolation.
    * @returns The resulting mixed color
+   * @remarks `weight` should be in the range [0, 1]
    */
   static mix(color1: number, color2: number, weight: number): number;
 

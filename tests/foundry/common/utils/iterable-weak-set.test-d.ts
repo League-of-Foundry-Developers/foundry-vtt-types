@@ -1,11 +1,24 @@
 import { expectTypeOf } from "vitest";
+import IterableWeakSet = foundry.utils.IterableWeakSet;
 
-const m = new foundry.utils.IterableWeakSet<{ x: number }>();
+type ElementType = { x: number };
+const element = { x: 20, y: 5 };
 
-expectTypeOf(m.add({ x: 1 })).toEqualTypeOf<IterableWeakSet<{ x: number }>>();
-expectTypeOf(m.delete({ x: 1 })).toEqualTypeOf<boolean>();
-expectTypeOf(m.has({ x: 1 })).toEqualTypeOf<boolean>();
+const myIWS = new IterableWeakSet<ElementType>([{ x: 4 }, { x: 17 }, { x: 15 }, element]);
+const inferredIWS = new IterableWeakSet([{ x: 2 }, { x: 5 }]);
 
-expectTypeOf(m.values()).toEqualTypeOf<Generator<{ x: number }, void, never>>();
+expectTypeOf(inferredIWS).toEqualTypeOf<typeof myIWS>();
 
-expectTypeOf(m.clear()).toBeVoid();
+expectTypeOf(myIWS.add({ x: 1 })).toEqualTypeOf<IterableWeakSet<ElementType>>();
+expectTypeOf(myIWS.add(element)).toEqualTypeOf<IterableWeakSet<ElementType>>();
+
+expectTypeOf(myIWS.delete({ x: 1 })).toEqualTypeOf<boolean>();
+expectTypeOf(myIWS.has({ x: 1 })).toEqualTypeOf<boolean>();
+
+expectTypeOf(myIWS.values()).toEqualTypeOf<Generator<ElementType, void, undefined>>();
+
+expectTypeOf(myIWS.clear()).toBeVoid();
+
+for (const el of myIWS) {
+  expectTypeOf(el).toEqualTypeOf<ElementType>();
+}

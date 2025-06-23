@@ -2,6 +2,8 @@ import type { DeepPartial, Identity } from "#utils";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
+import ApplicationV2 = foundry.applications.api.ApplicationV2;
+
 declare module "#configuration" {
   namespace Hooks {
     interface ApplicationV2Config {
@@ -37,9 +39,9 @@ declare class RegionConfig<
 
   protected override _preparePartContext(
     partId: string,
-    context: HandlebarsApplicationMixin.HandlebarsApplication.RenderContextFor<this>,
+    context: ApplicationV2.RenderContextOf<this>,
     options: DeepPartial<RenderOptions>,
-  ): Promise<HandlebarsApplicationMixin.HandlebarsApplication.RenderContextFor<this>>;
+  ): Promise<ApplicationV2.RenderContextOf<this>>;
 
   protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 

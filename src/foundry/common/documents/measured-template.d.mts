@@ -16,7 +16,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    * @param data    - Initial data from which to construct the `BaseMeasuredTemplate`
    * @param context - Construction context options
    *
-   * @deprecated Constructing `BaseMeasuredTemplate` directly is not advised. The base document classes exist in
+   * @remarks Constructing `BaseMeasuredTemplate` directly is not advised. The base document classes exist in
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
@@ -91,7 +91,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   /* Document overrides */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: MeasuredTemplateDocument.ParentCollectionName | null;
 
@@ -148,7 +148,9 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<
     Scope extends MeasuredTemplateDocument.Flags.Scope,

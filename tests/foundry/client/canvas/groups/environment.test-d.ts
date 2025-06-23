@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import { EnvironmentCanvasGroup } from "#client/canvas/groups/_module.mjs";
 
+import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
+
 expectTypeOf(EnvironmentCanvasGroup.groupName).toEqualTypeOf<"environment">();
 expectTypeOf(EnvironmentCanvasGroup.tearDownChildren).toEqualTypeOf<boolean>();
 
@@ -27,4 +29,5 @@ expectTypeOf(myEnvironmentGroup.colors.ambientBrightest).toEqualTypeOf<Color | u
 expectTypeOf(myEnvironmentGroup.weights.bright).toEqualTypeOf<number | undefined>();
 
 // deprecated since v12 until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myEnvironmentGroup.darknessPenalty).toEqualTypeOf<0>();

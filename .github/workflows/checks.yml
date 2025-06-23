@@ -54,6 +54,9 @@ jobs:
       - name: Type Check (exactOptionalPropertyTypes = false)
         run: npx tsc --exactOptionalPropertyTypes false
 
+      - name: Type Check (TS Go)
+        run: npx tsgo
+
   lint:
     # Can run untrusted code so disable all permissions.
     permissions: {}
@@ -167,138 +170,6 @@ jobs:
       - name: Execute Tests
         run: npm run betterer
 
-  checkCanMergeToMaintenance:
-    # Can run untrusted code so disable all permissions.
-    permissions: {}
-    name: Check Merge to Maintenance
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event.pull_request != null && !contains(github.event.pull_request.labels.*.name, 'breaking'))
-    outputs:
-      should_skip: ${{ steps.should_skip.outputs.should_skip }}
-      pr_number: ${{ steps.PR.outputs.PR.number }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: 8BitJonny/gh-get-current-pr@3.0.0
-        if: github.event.pull_request == null
-        id: PR
-
-      # Sets should_skip if this change wasn't made through a PR or if the PR is labeled as breaking.
-      - name: Check if should skip
-        id: should_skip
-        if: github.event.pull_request == null && (steps.PR.outputs.pr_found == 'false' || contains(steps.PR.outputs.pr_labels.*.name, 'breaking'))
-        run: |
-          echo "Skipping the rest of the job because this change wasn't made through a PR or the PR is labeled as breaking."
-          echo "should_skip=true" >> "$GITHUB_OUTPUT"
-
-      - uses: actions/checkout@v4
-        if: steps.should_skip.outputs.should_skip != 'true'
-        with:
-          ref: ${{ github.head_ref || github.ref }}
-          fetch-depth: 0
-          fetch-tags: false
-
-      - name: Check for conflicts with maintenance
-        if: steps.should_skip.outputs.should_skip != 'true'
-        run: |
-          git remote add upstream https://github.com/${{ github.repository }}
-          git fetch --no-tags upstream main maintenance
-
-          baseRef="${{github.head_ref}}"
-          before=""
-
-          if [[ $baseRef != "" ]]; then
-            before=$(git merge-base upstream/main "$baseRef")
-          else
-            before="${{ github.event.before }}"
-          fi
-
-          range="$before..${{ github.event.pull_request.head.sha || github.event.after }}"
-
-          echo "Checking if $range can be applied onto the maintenance branch."
-
-          git fetch --no-tags origin maintenance main
-
-          branchName=$(git branch --show-current)
-          branchBase=$(git merge-base upstream/main "$branchName")
-          branchTip=$(git rev-parse "$branchName")
-
-          # Commit using the GitHub Actions bot user.
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          echo "Checking if can merge $branchName ($range) into maintenance"
-
-          git checkout -B maintenance upstream/maintenance
-
-          git cherry-pick --empty=drop --allow-empty-message --allow-empty -m 1 "$range" || (
-            echo "Merge conflicts detected with the maintenance branch!" && exit 1
-          )
-
-      - name: Install Node
-        if: steps.should_skip.outputs.should_skip != 'true'
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.node_version }}
-
-      - name: Cache Node.js modules
-        if: steps.should_skip.outputs.should_skip != 'true'
-        uses: actions/cache@v4
-        with:
-          path: .npm
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-            ${{ runner.OS }}-
-
-      - if: steps.should_skip.outputs.should_skip != 'true'
-        run: npm ci --cache .npm --prefer-offline
-
-      - name: Run Lints on maintenance
-        if: steps.should_skip.outputs.should_skip != 'true'
-        run: npm run lint:ci
-
-      - name: Type Check maintenance
-        if: steps.should_skip.outputs.should_skip != 'true'
-        run: npm run typecheck
-
-  mergeToMaintenance:
-    name: Merge To Maintenance
-    needs: [checkCanMergeToMaintenance]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.checkCanMergeToMaintenance.outputs.should_skip != 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          fetch-tags: false
-
-      - name: Pick commits onto maintenance
-        run: |
-          git fetch --no-tags origin maintenance main
-
-          range="${{ github.event.before }}..${{ github.event.after }}"
-
-          # Commit using the GitHub Actions bot user.
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git checkout -B maintenance upstream/maintenance
-
-          echo "Merging PR #${{needs.checkCanMergeToMaintenance.outputs.pr_number }} ($range) into maintenance"
-
-          # Commit using the GitHub Actions bot user.
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git cherry-pick --empty=drop --allow-empty-message --allow-empty -m 1 "$range" || (
-            echo "Merge conflicts detected with maintenance branch! This can only happen if there is a bug in checkCanMergeToMaintenance or mergeToMaintenance or someone pushed in between!" && exit 1
-          )
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          branch: maintenance
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
   reportTestResults:
     name: Report Test Results
     needs: [test]
@@ -313,7 +184,7 @@ jobs:
           fetch-depth: 1
 
       - name: Download Main Test Results
-        uses: dawidd6/action-download-artifact@v10
+        uses: dawidd6/action-download-artifact@v11
         with:
           branch: main
           name: main-test-results

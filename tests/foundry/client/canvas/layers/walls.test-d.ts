@@ -3,6 +3,10 @@ import type { Document } from "#common/abstract/_module.d.mts";
 import { WallsLayer } from "#client/canvas/layers/_module.mjs";
 import type { Wall } from "#client/canvas/placeables/_module.d.mts";
 
+import Canvas = foundry.canvas.Canvas;
+import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
+import Ray = foundry.canvas.geometry.Ray;
+
 expectTypeOf(WallsLayer.documentName).toEqualTypeOf<"Wall">();
 expectTypeOf(WallsLayer.instance).toEqualTypeOf<WallsLayer | undefined>();
 expectTypeOf(WallsLayer.layerOptions).toEqualTypeOf<WallsLayer.LayerOptions>();
@@ -49,31 +53,38 @@ expectTypeOf(layer["_getWallDataFromActiveTool"]("foobar")).toEqualTypeOf<Docume
 
 expectTypeOf(layer.identifyInteriorArea([someWall, someWall])).toEqualTypeOf<PIXI.Polygon[]>();
 
-declare const someEvent: PIXI.FederatedEvent;
-declare const somePointerEvent: PointerEvent;
-expectTypeOf(layer["_onDragLeftStart"](someEvent)).toEqualTypeOf<Promise<Wall.Implementation>>();
-expectTypeOf(layer["_onDragLeftMove"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftDrop"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftCancel"](somePointerEvent)).toBeVoid();
-expectTypeOf(layer["_onClickRight"](someEvent)).toBeVoid();
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toEqualTypeOf<Promise<Wall.Implementation>>();
+expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftDrop"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onClickRight"](pointerEvent)).toBeVoid();
 
 declare const someRay: Ray;
 
 // deprecated since v11 until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.checkCollision(someRay, { type: "move" })).toEqualTypeOf<PointSourcePolygon.TestCollision<"all">>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.checkCollision(someRay, { type: "sight", mode: "any" })).toEqualTypeOf<
   PointSourcePolygon.TestCollision<"any">
 >();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.checkCollision(someRay, { type: "light", mode: "closest" })).toEqualTypeOf<
   PointSourcePolygon.TestCollision<"closest">
 >();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.checkCollision(someRay, { type: "sound", mode: "all" })).toEqualTypeOf<
   PointSourcePolygon.TestCollision<"all">
 >();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.highlightControlledSegments()).toBeVoid();
 
 // deprecated since v12 until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.initialize()).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.identifyInteriorWalls()).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.identifyWallIntersections()).toBeVoid();

@@ -1,5 +1,8 @@
 import { expectTypeOf } from "vitest";
 
+import Canvas = foundry.canvas.Canvas;
+import WeilerAthertonClipper = foundry.canvas.geometry.WeilerAthertonClipper;
+
 const rect = new PIXI.Rectangle(64, 64, 100, 100);
 const clipperPoints = [
   { X: 50, Y: 50 },

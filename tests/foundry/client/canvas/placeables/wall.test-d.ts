@@ -2,6 +2,9 @@ import { expectTypeOf } from "vitest";
 import { Wall } from "#client/canvas/placeables/_module.mjs";
 import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
 
+import Canvas = foundry.canvas.Canvas;
+import Ray = foundry.canvas.geometry.Ray;
+
 expectTypeOf(Wall.embeddedName).toEqualTypeOf<"Wall">();
 expectTypeOf(Wall.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<"refresh" | "refreshState" | "refreshLine" | "refreshEndpoints" | "refreshDirection" | "refreshHighlight">
@@ -89,36 +92,46 @@ expectTypeOf(wall["_playDoorSound"]("lock")).toBeVoid();
 expectTypeOf(wall.soundRadius).toBeNumber();
 
 declare const someUser: User.Implementation;
-declare const someEvent: PIXI.FederatedEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 
-expectTypeOf(wall["_canControl"](someUser, someEvent)).toBeBoolean();
+expectTypeOf(wall["_canControl"](someUser, pointerEvent)).toBeBoolean();
 
-expectTypeOf(wall["_onHoverIn"](someEvent)).toEqualTypeOf<false | void>();
-expectTypeOf(wall["_onHoverIn"](someEvent, {})).toEqualTypeOf<false | void>();
-expectTypeOf(wall["_onHoverIn"](someEvent, { hoverOutOthers: true })).toEqualTypeOf<false | void>();
-expectTypeOf(wall["_onHoverIn"](someEvent, { hoverOutOthers: null })).toEqualTypeOf<false | void>();
+expectTypeOf(wall["_onHoverIn"](pointerEvent)).toEqualTypeOf<false | void>();
+expectTypeOf(wall["_onHoverIn"](pointerEvent, {})).toEqualTypeOf<false | void>();
+expectTypeOf(wall["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toEqualTypeOf<false | void>();
+expectTypeOf(wall["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toEqualTypeOf<false | void>();
 
 expectTypeOf(wall["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
 
-expectTypeOf(wall["_onHoverOut"](someEvent)).toBeVoid();
-expectTypeOf(wall["_onClickLeft"](someEvent)).toBeBoolean();
-expectTypeOf(wall["_onClickLeft2"](someEvent)).toBeVoid();
-expectTypeOf(wall["_onClickRight2"](someEvent)).toBeVoid();
-expectTypeOf(wall["_onDragLeftStart"](someEvent)).toBeVoid();
-expectTypeOf(wall["_onDragLeftMove"](someEvent)).toBeVoid();
+expectTypeOf(wall["_onHoverOut"](pointerEvent)).toBeVoid();
+expectTypeOf(wall["_onClickLeft"](pointerEvent)).toBeBoolean();
+expectTypeOf(wall["_onClickLeft2"](pointerEvent)).toBeVoid();
+expectTypeOf(wall["_onClickRight2"](pointerEvent)).toBeVoid();
+expectTypeOf(wall["_onDragLeftStart"](pointerEvent)).toBeVoid();
+expectTypeOf(wall["_onDragLeftMove"](pointerEvent)).toBeVoid();
 
-expectTypeOf(wall["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<Wall.DragLeftDropUpdate[] | null>();
+expectTypeOf(wall["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<Wall.DragLeftDropUpdate[] | null>();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.roof).toBeNull();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.hasActiveRoof).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.identifyInteriorState()).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.orientPoint({ x: 50, y: 79 })).toEqualTypeOf<CONST.WALL_DIRECTIONS>();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.applyThreshold("light", wall.center)).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.applyThreshold("light", wall.center, 200)).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.applyThreshold("light", wall.center, null)).toBeBoolean();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.vertices).toEqualTypeOf<foundry.canvas.geometry.edges.Edge>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.A).toEqualTypeOf<PIXI.Point>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(wall.B).toEqualTypeOf<PIXI.Point>();

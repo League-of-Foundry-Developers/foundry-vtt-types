@@ -16,7 +16,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    * @param data    - Initial data from which to construct the `BaseAmbientSound`
    * @param context - Construction context options
    *
-   * @deprecated Constructing `BaseAmbientSound` directly is not advised. The base document classes exist in
+   * @remarks Constructing `BaseAmbientSound` directly is not advised. The base document classes exist in
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
@@ -52,7 +52,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: AmbientSoundDocument.ParentCollectionName | null;
 
@@ -109,7 +109,9 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends AmbientSoundDocument.Flags.Scope, Key extends AmbientSoundDocument.Flags.Key<Scope>>(
     scope: Scope,

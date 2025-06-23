@@ -1,4 +1,4 @@
-import type { AnyObject, JSONValue, MaybePromise } from "../../../../utils/index.d.mts";
+import type { AnyObject, Identity, JSONValue, MaybePromise } from "../../../../utils/index.d.mts";
 import type { HTMLEnrichedContentElement } from "../elements/_module.d.mts";
 import type ProseMirrorEditor from "./prosemirror-editor.mjs";
 
@@ -259,6 +259,9 @@ declare class TextEditor {
 }
 
 declare namespace TextEditor {
+  interface Any extends AnyTextEditor {}
+  interface AnyConstructor extends Identity<typeof AnyTextEditor> {}
+
   type Options = ProseMirrorOptions | TinyMCEOptions;
 
   interface ProseMirrorOptions extends ProseMirrorEditor._CreateOptions {
@@ -454,6 +457,10 @@ declare namespace TextEditor {
   }
 
   type CreateContentLinkOptions = Omit<ClientDocument.CreateDocumentLinkOptions, "label">;
+}
+
+declare abstract class AnyTextEditor extends TextEditor {
+  constructor(...args: never);
 }
 
 export default TextEditor;

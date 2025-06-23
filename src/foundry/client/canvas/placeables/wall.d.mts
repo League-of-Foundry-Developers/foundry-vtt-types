@@ -214,26 +214,26 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    */
   get soundRadius(): number;
 
-  protected override _canControl(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canControl(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   // options: not null (destructured in super)
-  protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): false | void;
+  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): false | void;
 
-  protected override _onHoverOut(event: PIXI.FederatedEvent): void;
+  protected override _onHoverOut(event: Canvas.Event.Pointer): void;
 
   protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
-  protected override _onClickLeft(event: PIXI.FederatedEvent): boolean;
+  protected override _onClickLeft(event: Canvas.Event.Pointer): boolean;
 
-  protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
+  protected override _onClickLeft2(event: Canvas.Event.Pointer): void;
 
-  protected override _onClickRight2(event: PIXI.FederatedEvent): void;
+  protected override _onClickRight2(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
-  protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): Wall.DragLeftDropUpdate[] | null;
+  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): Wall.DragLeftDropUpdate[] | null;
 
   /**
    * @deprecated since v12, until v14

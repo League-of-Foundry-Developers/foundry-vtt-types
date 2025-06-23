@@ -385,16 +385,9 @@ export interface AllHooks extends DynamicHooks {
    * @param data   - The data that has been dropped onto the Canvas
    * @remarks This is called by {@linkcode Hooks.call}.
    * @remarks An explicit return value of `false` prevents the Document being created.
-   * @see {@link Canvas._onDrop | `Canvas#_onDrop`}
+   * @see `Canvas.#_onDrop`
    */
-  dropCanvasData: (
-    canvas: Canvas,
-    data:
-      | layers.TokenLayer.DropData
-      | layers.NotesLayer.DropData
-      | layers.SoundsLayer.DropData
-      | layers.TilesLayer.DropData,
-  ) => boolean | void;
+  dropCanvasData: (canvas: Canvas, data: Hooks.DropData, event: DragEvent) => boolean | void;
 
   /**
    * A hook event that fires when objects are highlighted on the canvas.
@@ -978,8 +971,7 @@ declare global {
   /**
    * This namespace contains typescript specific type definitions for the {@linkcode Hooks} callback functions. It contains an
    * interface ({@linkcode Hooks.StaticCallbacks}) for callbacks with static names. There are more function types in the
-   * namespace for the dynamic hooks, whose names are generated at runtime. There is also a union of all of the dynamic
-   * hooks ({@linkcode Hooks.DynamicCallbacks}).
+   * namespace for the dynamic hooks, whose names are generated at runtime.
    *
    * Callback types remarked to be called with {@linkcode Hooks.callAll} do not care about the return value of the callback.
    * Callback types remarked to be called with {@linkcode Hooks.call} do care about the return value and will stop executing
@@ -1435,74 +1427,6 @@ declare global {
       entryOptions: ContextMenu.Entry<HTMLElement | JQuery>[],
     ) => boolean | void;
 
-    /**
-     * A hook event that fires when the context menu for a Sound in the PlaylistDirectory is constructed.
-     * @param app          - The Application instance that the context menu is constructed in
-     * @param entryOptions - The context menu entries
-     * @remarks The name for this hook is dynamically created by joining "get" with the type name of the PlaylistDirectory
-     * and "SoundContext".
-     * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@link PlaylistDirectory._contextMenu | `PlaylistDirectory#_contextMenu`}
-     *
-     * @deprecated - This hook appears to have been deleted
-     */
-    type GetSoundContextPlaylistDirectory = (
-      app: foundry.applications.sidebar.tabs.PlaylistDirectory,
-      entryOptions: ContextMenu.Entry<HTMLElement>[],
-    ) => boolean | void;
-
-    /**
-     * A hook event that fires when the context menu for folders in a SidebarTab
-     * is constructed. Substitute the SidebarTab name in the hook event to target
-     * a specific SidebarTab, for example "getActorDirectoryFolderContext".
-     * @param app          - The Application instance that the context menu is constructed in
-     * @param entryOptions - The context menu entries
-     * @remarks The name for this hook is dynamically created by joining "get" with the type name of the SidebarDirectory
-     * and "FolderContext".
-     * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@link SidebarDirectory._contextMenu | `SidebarDirectory#_contextMenu`}
-     *
-     * @deprecated - This hook appears to have been deleted.
-     */
-    type GetSidebarDirectoryFolderContext = (
-      app: foundry.applications.sidebar.DocumentDirectory,
-      entryOptions: ContextMenu.Entry<HTMLElement>[],
-    ) => boolean | void;
-
-    /**
-     * @deprecated - The purpose of dynamic callbacks was to allow you to manually deal with hooks
-     * that fvtt-types had not automatically included. Since then the feature to automate all hooks
-     * was added.
-     */
-    type DynamicCallbacks =
-      | RenderApplication
-      | GetApplicationHeaderButtons
-      | CloseApplication
-      | DrawGroup
-      | TearDownGroup
-      | DrawLayer
-      | TearDownLayer
-      | PastePlaceableObject
-      | DrawObject
-      | RefreshObject
-      | DestroyObject
-      | ControlObject
-      | HoverObject
-      | PreCreateDocument
-      | PreUpdateDocument
-      | PreDeleteDocument
-      | CreateDocument
-      | UpdateDocument
-      | DeleteDocument
-      | InitializeRenderedEffectSourceShaders
-      | ActivateLayer
-      | DeactivateLayer
-      | GetEntryContext
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      | GetSoundContextPlaylistDirectory
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      | GetSidebarDirectoryFolderContext;
-
     interface ErrorCallbackParameters {
       "Canvas#draw": [location: "Canvas#draw", err: Error, data: { layer: layers.CanvasLayer }];
       "Application#render": [location: "Application#render", err: Error, data: Application.RenderOptions];
@@ -1541,5 +1465,11 @@ declare global {
         data: { id: string; documentName: string },
       ];
     }
+
+    type DropData =
+      | layers.TokenLayer.DropData
+      | layers.NotesLayer.DropData
+      | layers.SoundsLayer.DropData
+      | layers.TilesLayer.DropData;
   }
 }

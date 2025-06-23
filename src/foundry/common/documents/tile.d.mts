@@ -16,7 +16,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    * @param data    - Initial data from which to construct the `BaseTile`
    * @param context - Construction context options
    *
-   * @deprecated Constructing `BaseTile` directly is not advised. The base document classes exist in
+   * @remarks Constructing `BaseTile` directly is not advised. The base document classes exist in
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
@@ -94,7 +94,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   /* Document overrides */
 
   // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: TileDocument.ParentCollectionName | null;
 
@@ -151,7 +151,9 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
+  override traverseEmbeddedDocuments(
+    _parentPath?: string,
+  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends TileDocument.Flags.Scope, Key extends TileDocument.Flags.Key<Scope>>(
     scope: Scope,

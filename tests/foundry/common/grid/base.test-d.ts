@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import Canvas = foundry.canvas.Canvas;
+
 declare const baseGrid: foundry.grid.BaseGrid;
 
 expectTypeOf(baseGrid.size).toEqualTypeOf<number>();

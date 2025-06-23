@@ -1,12 +1,12 @@
 import { expectTypeOf } from "vitest";
-import type PointSoundSource from "../../../../../src/foundry/client/canvas/sources/point-sound-source.d.mts";
 
-const PSS = foundry.canvas.sources.PointSoundSource;
+import PointSoundSource = foundry.canvas.sources.PointSoundSource;
+import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
 
-expectTypeOf(PSS.sourceType).toBeString();
-expectTypeOf(PSS.defaultData).toEqualTypeOf<PointSoundSource.SourceData>();
+expectTypeOf(PointSoundSource.sourceType).toBeString();
+expectTypeOf(PointSoundSource.defaultData).toEqualTypeOf<PointSoundSource.SourceData>();
 
-const mySource = new PSS();
+const mySource = new PointSoundSource();
 
 expectTypeOf(mySource.data).toEqualTypeOf<PointSoundSource.SourceData>();
 expectTypeOf(mySource.shape).toEqualTypeOf<PointSourcePolygon>();

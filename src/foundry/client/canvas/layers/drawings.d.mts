@@ -74,26 +74,26 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
    */
   _getNewDrawingData(origin: Canvas.Point): DrawingDocument.CreateData;
 
-  protected override _onClickLeft(event: PIXI.FederatedEvent): void;
+  protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 
-  protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
+  protected override _onClickLeft2(event: Canvas.Event.Pointer): void;
 
   /**
    * @throws A `DataModelValidationError` if document creation fails
    */
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
   /**
    * Handling of mouse-up events which conclude a new object creation after dragging
-   * @remarks Foundry notes this as \@private
+   * @private
    */
-  protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+  protected _onDragLeftDrop(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftCancel(event: PointerEvent): void;
+  protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
-  protected override _onClickRight(event: PIXI.FederatedEvent): void;
+  protected override _onClickRight(event: Canvas.Event.Pointer): void;
 
   /**
    * Use an adaptive precision depending on the size of the grid

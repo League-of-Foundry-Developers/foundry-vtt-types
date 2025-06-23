@@ -2,6 +2,13 @@ import { test, expectTypeOf } from "vitest";
 import { Token, Region } from "#client/canvas/placeables/_module.mjs";
 import type { TokenRing } from "#client/canvas/placeables/tokens/_module.d.mts";
 
+import Canvas = foundry.canvas.Canvas;
+import CanvasAnimation = foundry.canvas.animation.CanvasAnimation;
+import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
+import PreciseText = foundry.canvas.containers.PreciseText;
+import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
+import TextureTransitionFilter = foundry.canvas.rendering.filters.TextureTransitionFilter;
+
 expectTypeOf(Token.embeddedName).toEqualTypeOf<"Token">();
 expectTypeOf(Token.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
@@ -480,68 +487,87 @@ expectTypeOf(token["_onRelease"]({})).toBeVoid();
 
 expectTypeOf(token["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
 
-declare const someEvent: PIXI.FederatedEvent;
-expectTypeOf(token["_canControl"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(token["_canHUD"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(token["_canConfigure"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(token["_canHover"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(token["_canView"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(token["_canDrag"](someUser, someEvent)).toBeBoolean();
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(token["_canControl"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(token["_canHUD"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(token["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(token["_canHover"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(token["_canView"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(token["_canDrag"](someUser, pointerEvent)).toBeBoolean();
 
-expectTypeOf(token["_onHoverIn"](someEvent)).toBeVoid();
-expectTypeOf(token["_onHoverIn"](someEvent, {})).toBeVoid();
-expectTypeOf(token["_onHoverIn"](someEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(token["_onHoverIn"](someEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(token["_onHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_onHoverIn"](pointerEvent, {})).toBeVoid();
+expectTypeOf(token["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
+expectTypeOf(token["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
 
-expectTypeOf(token["_onHoverOut"](someEvent)).toBeVoid();
-expectTypeOf(token["_onClickLeft"](someEvent)).toBeVoid();
-expectTypeOf(token["_propagateLeftClick"](someEvent)).toBeBoolean();
-expectTypeOf(token["_onClickLeft2"](someEvent)).toBeVoid();
-expectTypeOf(token["_onClickRight2"](someEvent)).toBeVoid();
-expectTypeOf(token["_onDragLeftStart"](someEvent)).toBeVoid();
-expectTypeOf(token["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<Token.DragLeftDropUpdate[]>();
-expectTypeOf(token["_onDragLeftMove"](someEvent)).toBeVoid();
+expectTypeOf(token["_onHoverOut"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_onClickLeft"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_propagateLeftClick"](pointerEvent)).toBeBoolean();
+expectTypeOf(token["_onClickLeft2"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_onClickRight2"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_onDragLeftStart"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<Token.DragLeftDropUpdate[]>();
+expectTypeOf(token["_onDragLeftMove"](pointerEvent)).toBeVoid();
 expectTypeOf(token["_onDragEnd"]()).toBeVoid();
 
 // deprecated since v11, until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.updatePosition()).toBeVoid();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.refreshHUD()).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.refreshHUD({})).toBeVoid();
 expectTypeOf(
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   token.refreshHUD({ bars: true, border: true, effects: true, elevation: true, nameplate: true }),
 ).toBeVoid();
 expectTypeOf(
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   token.refreshHUD({ bars: null, border: null, effects: null, elevation: null, nameplate: null }),
 ).toBeVoid();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.updateSource()).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.updateSource({})).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.updateSource({ deleted: true })).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.updateSource({ deleted: null })).toBeVoid();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.getCenter(50, 270)).toEqualTypeOf<Canvas.Point>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.owner).toBeBoolean();
 
 declare const someCombat: Combat.Stored;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.toggleCombat()).toEqualTypeOf<Promise<Combatant.Stored[]>>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.toggleCombat(someCombat)).toEqualTypeOf<Promise<Combatant.Stored[]>>();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.toggleEffect(CONFIG.statusEffects[0]!)).toEqualTypeOf<
   Promise<ActiveEffect.Stored | boolean | undefined>
 >();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.toggleEffect(CONFIG.statusEffects[0]!, {})).toEqualTypeOf<
   Promise<ActiveEffect.Stored | boolean | undefined>
 >();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.toggleEffect(CONFIG.statusEffects[0]!, { active: true, overlay: false })).toEqualTypeOf<
   Promise<ActiveEffect.Stored | boolean | undefined>
 >();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.toggleEffect(CONFIG.statusEffects[0]!, { active: null, overlay: null })).toEqualTypeOf<
   Promise<ActiveEffect.Stored | boolean | undefined>
 >();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token.toggleVisibility()).toEqualTypeOf<Promise<TokenDocument.Stored[]>>();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(token["_recoverFromPreview"]()).toBeVoid();
 
 // Reported by emily3k on Discord, see https://discord.com/channels/732325252788387980/803646399014109205/1375296418478030930

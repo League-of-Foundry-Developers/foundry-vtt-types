@@ -109,7 +109,7 @@ declare class DocumentSheetV2<
 
   protected _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
 
-  protected override _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry>;
+  protected override _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry, void, undefined>;
 
   protected override _configureRenderOptions(options: DeepPartial<RenderOptions>): void;
 

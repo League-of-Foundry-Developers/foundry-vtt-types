@@ -186,22 +186,22 @@ declare class MeasuredTemplate extends PlaceableObject<MeasuredTemplateDocument.
   // _onUpdate is overridden but with no signature changes.
   // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
-  protected override _canControl(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canControl(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  protected override _canHUD(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canHUD(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  protected override _canConfigure(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canConfigure(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  protected override _canView(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canView(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
   // options: not null (destructured)
-  protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): void;
+  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
 
-  protected override _onClickRight(event: PIXI.FederatedEvent): void;
+  protected override _onClickRight(event: Canvas.Event.Pointer): void;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[];
+  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
 
   /**
    * @deprecated since v12, until v14

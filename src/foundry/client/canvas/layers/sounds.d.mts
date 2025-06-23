@@ -109,7 +109,7 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
    * Actions to take when the darkness level of the Scene is changed
    * @param  event - The darkness-changing event
    */
-  protected _onDarknessChange(event: PIXI.FederatedEvent): void;
+  protected _onDarknessChange(event: Canvas.Event.DarknessChange): void;
 
   /**
    * Play a one-shot Sound originating from a predefined point on the canvas.
@@ -171,13 +171,13 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
    */
   protected _onMouseMove(): void;
 
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftDrop(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftCancel(event: PointerEvent): void;
+  protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle PlaylistSound document drop data.

@@ -1,4 +1,4 @@
-import type { InexactPartial } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 
 /**
  * A controller class for managing drag and drop workflows within an Application instance.
@@ -117,6 +117,9 @@ declare class DragDrop {
 }
 
 declare namespace DragDrop {
+  interface Any extends AnyDragDrop {}
+  interface AnyConstructor extends Identity<typeof AnyDragDrop> {}
+
   type Action = "dragstart" | "dragover" | "drop" | "dragenter" | "dragleave" | "dragend";
 
   type PermissionKey = "dragstart" | "drop";
@@ -155,6 +158,10 @@ declare namespace DragDrop {
   }
 
   interface Configuration extends InexactPartial<_Configuration> {}
+}
+
+declare abstract class AnyDragDrop extends DragDrop {
+  constructor(...args: never);
 }
 
 export default DragDrop;

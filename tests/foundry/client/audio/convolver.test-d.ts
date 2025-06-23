@@ -44,5 +44,6 @@ expectTypeOf(effect.disconnect(audioNode)).toEqualTypeOf<void>();
 expectTypeOf(effect.disconnect(audioParam)).toEqualTypeOf<void>();
 expectTypeOf(effect.connect(audioNode)).toEqualTypeOf<AudioNode>();
 // Foundry doesn't support this overload, so its deprecated
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(effect.connect(audioParam)).toEqualTypeOf<AudioParam>();
 expectTypeOf(effect.onConnectFrom(audioNode)).toEqualTypeOf<void>();

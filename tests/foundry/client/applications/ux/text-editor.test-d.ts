@@ -16,6 +16,7 @@ expectTypeOf(enrichedContent).toBeString();
 
 declare const mount: HTMLElement;
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 TextEditor.implementation.create({ engine: "tinymce", target: mount });
 
 TextEditor.implementation.create({ engine: "prosemirror", target: mount });

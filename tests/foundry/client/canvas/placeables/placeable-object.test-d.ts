@@ -3,6 +3,12 @@ import Document = foundry.abstract.Document;
 import type { HandleEmptyObject } from "#utils";
 import { PlaceableObject } from "#client/canvas/placeables/_module.mjs";
 
+import Canvas = foundry.canvas.Canvas;
+import ControlIcon = foundry.canvas.containers.ControlIcon;
+import FormApplication = foundry.appv1.api.FormApplication;
+import LightingLayer = foundry.canvas.layers.LightingLayer;
+import MouseInteractionManager = foundry.canvas.interaction.MouseInteractionManager;
+
 expectTypeOf(PlaceableObject.embeddedName).toBeString();
 
 expectTypeOf(PlaceableObject.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
@@ -128,8 +134,7 @@ expectTypeOf(placeable.activateListeners()).toBeVoid();
 expectTypeOf(placeable["_createInteractionManager"]()).toEqualTypeOf<MouseInteractionManager<FakeLight>>();
 
 declare const someUser: User.Implementation;
-declare const someEvent: PIXI.FederatedEvent;
-declare const dragEvent: DragEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 
 // @ts-expect-error - Arbitrary actions are not allowed based upon authorial intent. Even though
 // subclasses might have new `_can*` methods Atropos has stated that they aren't meant to be
@@ -143,47 +148,47 @@ expectTypeOf(placeable.can(someUser, "control")).toBeBoolean();
 // This means it's impossible to call `_canHUD` through `can`
 placeable.can(someUser, "HUD");
 
-expectTypeOf(placeable["_canHUD"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(placeable["_canConfigure"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(placeable["_canControl"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(placeable["_canView"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(placeable["_canCreate"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(placeable["_canDrag"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(placeable["_canDragLeftStart"](someUser, dragEvent)).toBeBoolean();
-expectTypeOf(placeable["_canHover"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(placeable["_canUpdate"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(placeable["_canDelete"](someUser, someEvent)).toBeBoolean();
+expectTypeOf(placeable["_canHUD"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(placeable["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(placeable["_canControl"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(placeable["_canView"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(placeable["_canCreate"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(placeable["_canDrag"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(placeable["_canDragLeftStart"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(placeable["_canHover"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(placeable["_canUpdate"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(placeable["_canDelete"](someUser, pointerEvent)).toBeBoolean();
 
-expectTypeOf(placeable["_onHoverIn"](someEvent)).toEqualTypeOf<false | void>();
-expectTypeOf(placeable["_onHoverIn"](someEvent, {})).toEqualTypeOf<false | void>();
-expectTypeOf(placeable["_onHoverIn"](someEvent, { hoverOutOthers: true })).toEqualTypeOf<false | void>();
-expectTypeOf(placeable["_onHoverIn"](someEvent, { hoverOutOthers: null })).toEqualTypeOf<false | void>();
+expectTypeOf(placeable["_onHoverIn"](pointerEvent)).toEqualTypeOf<false | void>();
+expectTypeOf(placeable["_onHoverIn"](pointerEvent, {})).toEqualTypeOf<false | void>();
+expectTypeOf(placeable["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toEqualTypeOf<false | void>();
+expectTypeOf(placeable["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toEqualTypeOf<false | void>();
 
-expectTypeOf(placeable["_onHoverOut"](someEvent)).toBeVoid();
-expectTypeOf(placeable["_propagateLeftClick"](someEvent)).toBeBoolean();
-expectTypeOf(placeable["_onClickLeft"](someEvent)).toBeVoid();
-expectTypeOf(placeable["_onUnclickLeft"](someEvent)).toBeVoid();
-expectTypeOf(placeable["_onClickLeft2"](someEvent)).toBeVoid();
+expectTypeOf(placeable["_onHoverOut"](pointerEvent)).toBeVoid();
+expectTypeOf(placeable["_propagateLeftClick"](pointerEvent)).toBeBoolean();
+expectTypeOf(placeable["_onClickLeft"](pointerEvent)).toBeVoid();
+expectTypeOf(placeable["_onUnclickLeft"](pointerEvent)).toBeVoid();
+expectTypeOf(placeable["_onClickLeft2"](pointerEvent)).toBeVoid();
 
-expectTypeOf(placeable["_propagateRightClick"](someEvent)).toBeBoolean();
-expectTypeOf(placeable["_onClickRight"](someEvent)).toBeVoid();
-expectTypeOf(placeable["_onUnclickRight"](someEvent)).toBeVoid();
-expectTypeOf(placeable["_onClickRight2"](someEvent)).toBeVoid();
+expectTypeOf(placeable["_propagateRightClick"](pointerEvent)).toBeBoolean();
+expectTypeOf(placeable["_onClickRight"](pointerEvent)).toBeVoid();
+expectTypeOf(placeable["_onUnclickRight"](pointerEvent)).toBeVoid();
+expectTypeOf(placeable["_onClickRight2"](pointerEvent)).toBeVoid();
 
-expectTypeOf(placeable["_onDragLeftStart"](someEvent)).toBeVoid();
+expectTypeOf(placeable["_onDragLeftStart"](pointerEvent)).toBeVoid();
 expectTypeOf(placeable["_onDragStart"]()).toBeVoid();
 expectTypeOf(placeable["_onDragEnd"]()).toBeVoid();
-expectTypeOf(placeable["_onDragLeftMove"](someEvent)).toBeVoid();
-expectTypeOf(placeable["_onDragLeftDrop"](someEvent)).toBeVoid();
+expectTypeOf(placeable["_onDragLeftMove"](pointerEvent)).toBeVoid();
+expectTypeOf(placeable["_onDragLeftDrop"](pointerEvent)).toBeVoid();
 
-expectTypeOf(placeable["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<
+expectTypeOf(placeable["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<
   PlaceableObject.AnyDragLeftDropUpdate[] | null
 >();
 
-expectTypeOf(placeable["_onDragLeftCancel"](someEvent)).toBeVoid();
-expectTypeOf(placeable["_onDragRightStart"](someEvent)).toBeVoid();
-expectTypeOf(placeable["_onDragRightMove"](someEvent)).toBeVoid();
-expectTypeOf(placeable["_onDragRightDrop"](someEvent)).toBeVoid();
-expectTypeOf(placeable["_onDragRightCancel"](someEvent)).toBeVoid();
+expectTypeOf(placeable["_onDragLeftCancel"](pointerEvent)).toBeVoid();
+expectTypeOf(placeable["_onDragRightStart"](pointerEvent)).toBeVoid();
+expectTypeOf(placeable["_onDragRightMove"](pointerEvent)).toBeVoid();
+expectTypeOf(placeable["_onDragRightDrop"](pointerEvent)).toBeVoid();
+expectTypeOf(placeable["_onDragRightCancel"](pointerEvent)).toBeVoid();
 
-expectTypeOf(placeable["_onLongPress"](someEvent, placeable.center)).toBeVoid();
+expectTypeOf(placeable["_onLongPress"](pointerEvent, placeable.center)).toBeVoid();

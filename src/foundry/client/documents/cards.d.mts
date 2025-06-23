@@ -222,14 +222,12 @@ declare namespace Cards {
    * An instance of `Cards` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends Cards.SubType = Cards.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  interface Invalid extends Document.Internal.Invalid<Implementation> {}
 
   /**
    * An instance of `Cards` that comes from the database.
    */
-  interface Stored<out SubType extends Cards.SubType = Cards.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends Cards.SubType = Cards.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
    * The data put in {@link Cards._source | `Cards#_source`}. This data is what was

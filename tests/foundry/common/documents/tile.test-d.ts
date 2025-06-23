@@ -188,7 +188,11 @@ expectTypeOf(myTile.flags).toEqualTypeOf<
 expectTypeOf(myTile.flags.core?.randomizeVideo).toEqualTypeOf<boolean | undefined>();
 
 // non-schema:
-expectTypeOf((myTile.roof = true)).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+myTile.roof = true;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myTile.roof).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myTile.z).toBeNumber();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myTile.overhead).toBeBoolean();

@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import Application = foundry.appv1.api.Application;
+
 // @ts-expect-error data is required
 new Macro.implementation();
 

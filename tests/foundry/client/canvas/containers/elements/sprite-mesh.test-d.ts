@@ -1,5 +1,8 @@
 import { expectTypeOf } from "vitest";
-import { SpriteMesh } from "#client/canvas/containers/_module.mjs";
+
+import FogSamplerShader = foundry.canvas.rendering.shaders.FogSamplerShader;
+import OccludableSamplerShader = foundry.canvas.rendering.shaders.OccludableSamplerShader;
+import SpriteMesh = foundry.canvas.containers.SpriteMesh;
 
 const mySpriteMesh = new SpriteMesh();
 declare const someTex: PIXI.Texture;

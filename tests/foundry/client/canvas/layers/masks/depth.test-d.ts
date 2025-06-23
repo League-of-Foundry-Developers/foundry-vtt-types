@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
-import { CanvasDepthMask } from "#client/canvas/layers/_module.mjs";
-import { CachedContainer } from "#client/canvas/containers/_module.mjs";
+
+import CanvasDepthMask = foundry.canvas.layers.CanvasDepthMask;
+import CachedContainer = foundry.canvas.containers.CachedContainer;
+import SpriteMesh = foundry.canvas.containers.SpriteMesh;
 
 expectTypeOf(CanvasDepthMask.textureConfiguration).toEqualTypeOf<CachedContainer.TextureConfiguration>();
 

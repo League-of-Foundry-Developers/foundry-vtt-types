@@ -1,6 +1,9 @@
 import { expectTypeOf } from "vitest";
 import { RegionLayer } from "#client/canvas/layers/_module.mjs";
 
+import Canvas = foundry.canvas.Canvas;
+import Region = foundry.canvas.placeables.Region;
+
 expectTypeOf(RegionLayer.documentName).toEqualTypeOf<"Region">();
 expectTypeOf(RegionLayer.instance).toEqualTypeOf<RegionLayer | undefined>();
 expectTypeOf(RegionLayer.layerOptions).toEqualTypeOf<RegionLayer.LayerOptions>();
@@ -41,13 +44,12 @@ expectTypeOf(
 expectTypeOf(layer["_highlightShape"](someShapeData)).toBeVoid();
 
 declare const someUser: User.Implementation;
-declare const someEvent: PIXI.FederatedEvent;
-declare const somePointerEvent: PointerEvent;
-expectTypeOf(layer["_onClickLeft"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onClickLeft2"](someEvent)).toBeVoid();
-expectTypeOf(layer["_canDragLeftStart"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(layer["_onDragLeftStart"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftMove"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftDrop"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftCancel"](somePointerEvent)).toBeVoid();
-expectTypeOf(layer["_onClickRight"](someEvent)).toBeVoid();
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(layer["_onClickLeft"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onClickLeft2"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_canDragLeftStart"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftDrop"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onClickRight"](pointerEvent)).toBeVoid();

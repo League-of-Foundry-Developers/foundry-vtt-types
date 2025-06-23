@@ -102,7 +102,7 @@
     "@codemirror/lang-markdown": "^6.3.2",
     "@pixi/basis": "github:foundry-vtt-types/pixi-basis#main",
     "@pixi/graphics-smooth": "^1.1.1",
-    "@pixi/particle-emitter": "^5.0.8",
+    "@pixi/particle-emitter": "github:foundry-vtt-types/pixi-particle-emitter#main",
     "@types/jquery": "^3.5.32",
     "@types/showdown": "~2.0.6",
     "@types/simple-peer": "~9.11.1",
@@ -148,6 +148,7 @@
     "@typescript-eslint/parser": "^8.31.0",
     "@typescript-eslint/scope-manager": "^8.31.0",
     "@typescript-eslint/utils": "^8.31.0",
+    "@typescript/native-preview": "^7.0.0-dev.20250620.1",
     "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-import-resolver-typescript": "^4.3.2",
@@ -165,7 +166,7 @@
     "type-fest": "^4.41.0",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.31.0",
-    "vitest": "^3.0.5"
+    "vitest": "^4.0.0-beta.1"
   },
   "peerDependencies": {
     "typescript": "^5.4"
@@ -174,6 +175,7 @@
     "index.d.mts",
     "index-lenient.d.mts",
     "src",
+    "tsconfig.base.json",
     "tsconfig.json"
   ],
   "publishConfig": {

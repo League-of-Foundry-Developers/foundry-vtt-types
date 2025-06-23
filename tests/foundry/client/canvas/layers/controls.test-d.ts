@@ -2,6 +2,12 @@ import { expectTypeOf } from "vitest";
 import type { LineIntersection } from "#common/utils/_module.d.mts";
 import { ControlsLayer } from "#client/canvas/layers/_module.mjs";
 
+import Canvas = foundry.canvas.Canvas;
+import Cursor = foundry.canvas.containers.Cursor;
+import InteractionLayer = foundry.canvas.layers.InteractionLayer;
+import Ruler = foundry.canvas.interaction.Ruler;
+import Ray = foundry.canvas.geometry.Ray;
+
 expectTypeOf(ControlsLayer.instance).toExtend<ControlsLayer.Implementation | undefined>();
 expectTypeOf(ControlsLayer.layerOptions).toEqualTypeOf<ControlsLayer.LayerOptions>();
 
@@ -35,9 +41,9 @@ expectTypeOf(layer.drawSelect(someRect)).toBeVoid();
 
 expectTypeOf(layer["_deactivate"]()).toBeVoid();
 expectTypeOf(layer["_onMouseMove"]()).toBeVoid();
-declare const someEvent: PIXI.FederatedEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const somePoint: PIXI.Point;
-expectTypeOf(layer["_onLongPress"](someEvent, somePoint)).toEqualTypeOf<Promise<boolean>>();
+expectTypeOf(layer["_onLongPress"](pointerEvent, somePoint)).toEqualTypeOf<Promise<boolean>>();
 expectTypeOf(layer["_onCanvasPan"]()).toBeVoid();
 
 declare const someUser: User.Implementation;

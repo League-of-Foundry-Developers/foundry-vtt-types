@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import MainMenu = foundry.applications.ui.MainMenu;
+
 type UninitializedGame = { [K in keyof Game]?: never };
 
 expectTypeOf(game).toEqualTypeOf<UninitializedGame | I18nInitGame | InitGame | SetupGame | ReadyGame>();

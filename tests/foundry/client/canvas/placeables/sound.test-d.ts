@@ -2,6 +2,8 @@ import { expectTypeOf } from "vitest";
 import { AmbientSound, PlaceableObject } from "#client/canvas/placeables/_module.mjs";
 import type { Sound } from "#client/audio/_module.d.mts";
 
+import ControlIcon = foundry.canvas.containers.ControlIcon;
+
 expectTypeOf(AmbientSound.embeddedName).toEqualTypeOf<"AmbientSound">();
 expectTypeOf(AmbientSound.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   Array<"refresh" | "refreshField" | "refreshPosition" | "refreshState" | "refreshElevation"> | undefined
@@ -86,22 +88,30 @@ expectTypeOf(sound.initializeSoundSource({ deleted: null })).toBeVoid();
 expectTypeOf(sound["_getSoundSourceData"]()).toEqualTypeOf<AmbientSound.SoundSourceData>();
 
 declare const someUser: User.Implementation;
-declare const someEvent: PIXI.FederatedEvent;
-expectTypeOf(sound["_canHUD"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(sound["_canConfigure"](someUser, someEvent)).toBeBoolean();
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(sound["_canHUD"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(sound["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
 
-expectTypeOf(sound["_onHoverIn"](someEvent)).toBeVoid();
-expectTypeOf(sound["_onHoverIn"](someEvent, {})).toBeVoid();
-expectTypeOf(sound["_onHoverIn"](someEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(sound["_onHoverIn"](someEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(sound["_onHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(sound["_onHoverIn"](pointerEvent, {})).toBeVoid();
+expectTypeOf(sound["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
+expectTypeOf(sound["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
 
-expectTypeOf(sound["_onClickRight"](someEvent)).toBeVoid();
-expectTypeOf(sound["_onDragLeftMove"](someEvent)).toBeVoid();
+expectTypeOf(sound["_onClickRight"](pointerEvent)).toBeVoid();
+expectTypeOf(sound["_onDragLeftMove"](pointerEvent)).toBeVoid();
 expectTypeOf(sound["_onDragEnd"]()).toBeVoid();
-expectTypeOf(sound["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
+expectTypeOf(sound["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
 // deprecated since v12, until v14
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(sound.updateSource()).toBeVoid();
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(sound.updateSource({})).toBeVoid();
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(sound.updateSource({ deleted: true })).toBeVoid();
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(sound.updateSource({ deleted: null })).toBeVoid();

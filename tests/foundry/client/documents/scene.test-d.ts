@@ -1,5 +1,8 @@
 import { expectTypeOf } from "vitest";
 import SchemaField = foundry.data.fields.SchemaField;
+
+import ImageHelper = foundry.helpers.media.ImageHelper;
+
 // @ts-expect-error - A Scene requires name.
 new Scene.implementation();
 

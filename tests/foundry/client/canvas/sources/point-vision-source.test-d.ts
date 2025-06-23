@@ -1,20 +1,23 @@
 import { expectTypeOf } from "vitest";
-import type PointVisionSource from "../../../../../src/foundry/client/canvas/sources/point-vision-source.d.mts";
-import type RenderedEffectSource from "../../../../../src/foundry/client/canvas/sources/rendered-effect-source.d.mts";
 
-const PVS = foundry.canvas.sources.PointVisionSource;
+import AdaptiveVisionShader = foundry.canvas.rendering.shaders.AdaptiveVisionShader;
+import BackgroundVisionShader = foundry.canvas.rendering.shaders.BackgroundVisionShader;
+import PointVisionSource = foundry.canvas.sources.PointVisionSource;
+import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
+import RenderedEffectSource = foundry.canvas.sources.RenderedEffectSource;
+import VisionMode = foundry.canvas.perception.VisionMode;
 
-expectTypeOf(PVS.sourceType).toBeString();
-expectTypeOf(PVS["_initializeShaderKeys"]).toEqualTypeOf<string[]>();
-expectTypeOf(PVS["_refreshUniformsKeys"]).toEqualTypeOf<string[]>();
-expectTypeOf(PVS["_dimLightingLevel"]).toEqualTypeOf<foundry.CONST.LIGHTING_LEVELS>();
-expectTypeOf(PVS["_brightLightingLevel"]).toEqualTypeOf<foundry.CONST.LIGHTING_LEVELS>();
-expectTypeOf(PVS.EDGE_OFFSET).toBeNumber();
-expectTypeOf(PVS.effectsCollection).toBeString();
-expectTypeOf(PVS.defaultData).toEqualTypeOf<PointVisionSource.SourceData>();
-expectTypeOf(PVS["_layers"]).toEqualTypeOf<Record<string, RenderedEffectSource.LayerConfig>>();
+expectTypeOf(PointVisionSource.sourceType).toBeString();
+expectTypeOf(PointVisionSource["_initializeShaderKeys"]).toEqualTypeOf<string[]>();
+expectTypeOf(PointVisionSource["_refreshUniformsKeys"]).toEqualTypeOf<string[]>();
+expectTypeOf(PointVisionSource["_dimLightingLevel"]).toEqualTypeOf<foundry.CONST.LIGHTING_LEVELS>();
+expectTypeOf(PointVisionSource["_brightLightingLevel"]).toEqualTypeOf<foundry.CONST.LIGHTING_LEVELS>();
+expectTypeOf(PointVisionSource.EDGE_OFFSET).toBeNumber();
+expectTypeOf(PointVisionSource.effectsCollection).toBeString();
+expectTypeOf(PointVisionSource.defaultData).toEqualTypeOf<PointVisionSource.SourceData>();
+expectTypeOf(PointVisionSource["_layers"]).toEqualTypeOf<Record<string, RenderedEffectSource.LayerConfig>>();
 
-const mySource = new PVS();
+const mySource = new PointVisionSource();
 
 expectTypeOf(mySource.data).toEqualTypeOf<PointVisionSource.SourceData>();
 expectTypeOf(mySource.shape).toEqualTypeOf<PointSourcePolygon>();
@@ -26,6 +29,7 @@ expectTypeOf(mySource.fov).toEqualTypeOf<PointSourcePolygon>();
 expectTypeOf(mySource.preferred).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(mySource.isAnimated).toBeBoolean();
 expectTypeOf(mySource.lightRadius).toBeNumber();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(mySource.radius).toBeNumber();
 expectTypeOf(mySource.isBlinded).toBeBoolean();
 expectTypeOf(mySource.blinded).toEqualTypeOf<PointVisionSource.BlindedReasons>();
@@ -36,7 +40,7 @@ expectTypeOf(
   mySource["_initialize"]({
     angle: 100,
     animation: {
-      animation: PVS.prototype.animateTime,
+      animation: PointVisionSource.prototype.animateTime,
       // not actually sure if vision animation takes shaders here or not, so omitted
     },
     attenuation: -1,

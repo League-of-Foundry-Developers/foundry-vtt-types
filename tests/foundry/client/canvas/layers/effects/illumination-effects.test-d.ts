@@ -1,5 +1,11 @@
 import { expectTypeOf } from "vitest";
-import { CanvasLayer, CanvasIlluminationEffects, DarknessLevelContainer } from "#client/canvas/layers/_module.mjs";
+
+import CachedContainer = foundry.canvas.containers.CachedContainer;
+import CanvasLayer = foundry.canvas.layers.CanvasLayer;
+import CanvasIlluminationEffects = foundry.canvas.layers.CanvasIlluminationEffects;
+import DarknessLevelContainer = foundry.canvas.layers.DarknessLevelContainer;
+import SpriteMesh = foundry.canvas.containers.SpriteMesh;
+import VisualEffectsMaskingFilter = foundry.canvas.rendering.filters.VisualEffectsMaskingFilter;
 
 const layer = new CanvasIlluminationEffects();
 
@@ -28,9 +34,12 @@ expectTypeOf(layer.draw()).toEqualTypeOf<Promise<CanvasIlluminationEffects>>();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
 // deprecated until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.updateGlobalLight()).toEqualTypeOf<false>();
 // deprecated until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.background()).toBeNull();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.globalLight).toBeBoolean();
 
 // Literally no instance changes to test on DLC

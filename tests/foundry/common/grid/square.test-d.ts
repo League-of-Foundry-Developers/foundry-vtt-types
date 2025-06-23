@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import Canvas = foundry.canvas.Canvas;
+
 declare const config: foundry.grid.SquareGrid.Configuration;
 
 const squareGrid = new foundry.grid.SquareGrid(config);

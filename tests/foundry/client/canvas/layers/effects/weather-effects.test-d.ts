@@ -1,7 +1,11 @@
 import { expectTypeOf } from "vitest";
-import { WeatherEffects } from "#client/canvas/layers/_module.mjs";
-import { EffectsCanvasGroup } from "#client/canvas/groups/_module.mjs";
-import { AbstractWeatherShader } from "#client/canvas/rendering/shaders/_module.mjs";
+
+import AbstractWeatherShader = foundry.canvas.rendering.shaders.AbstractWeatherShader;
+import AutumnLeavesWeatherEffect = foundry.canvas.containers.AutumnLeavesWeatherEffect;
+import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
+import ParticleEffect = foundry.canvas.containers.ParticleEffect;
+import WeatherEffects = foundry.canvas.layers.WeatherEffects;
+import WeatherShaderEffect = foundry.canvas.rendering.shaders.WeatherShaderEffect;
 
 // not an error, Foundry really does this for some reason
 expectTypeOf(WeatherEffects.instance).toEqualTypeOf<EffectsCanvasGroup | undefined>();
@@ -120,4 +124,5 @@ expectTypeOf(
 expectTypeOf(layer.clearEffects()).toBeVoid();
 
 // deprecated until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.weather).toEqualTypeOf<typeof layer>();

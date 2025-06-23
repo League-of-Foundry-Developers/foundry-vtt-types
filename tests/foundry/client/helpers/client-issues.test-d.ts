@@ -2,6 +2,7 @@ import { expectTypeOf } from "vitest";
 
 import Document = foundry.abstract.Document;
 import DataModelValidationError = foundry.data.validation.DataModelValidationError;
+import ClientIssues = foundry.helpers.ClientIssues;
 
 const issues = new ClientIssues();
 

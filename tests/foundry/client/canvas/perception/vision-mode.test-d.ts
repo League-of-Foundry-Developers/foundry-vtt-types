@@ -2,6 +2,10 @@ import { expectTypeOf } from "vitest";
 // eslint-disable-next-line import-x/no-named-default
 import { default as VisionMode, ShaderField } from "#client/canvas/perception/vision-mode.mjs";
 
+import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
+import ColorAdjustmentsSamplerShader = foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader;
+import FlameColorationShader = foundry.canvas.rendering.shaders.FlameColorationShader;
+
 expectTypeOf(VisionMode.LIGHTING_VISIBILITY).toExtend<
   Record<keyof VisionMode.LightingVisibility, VisionMode.LIGHTING_VISIBILITY>
 >();

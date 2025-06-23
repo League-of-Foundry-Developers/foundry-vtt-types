@@ -14,5 +14,6 @@ expectTypeOf(response.ok).toBeBoolean();
 
 const myPicker = new FilePicker();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 myPicker.render(true);
 myPicker.render({ force: true });

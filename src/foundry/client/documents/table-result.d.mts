@@ -157,8 +157,7 @@ declare namespace TableResult {
   /**
    * An instance of `TableResult` that comes from the database.
    */
-  interface Stored<out SubType extends TableResult.SubType = TableResult.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends TableResult.SubType = TableResult.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
    * The data put in {@link TableResult._source | `TableResult#_source`}. This data is what was

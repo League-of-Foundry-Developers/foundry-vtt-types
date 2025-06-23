@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
 
+import Canvas = foundry.canvas.Canvas;
+
 expectTypeOf(PIXI.Circle.approximateVertexDensity(128)).toEqualTypeOf<number>();
 
 declare const somePoint: PIXI.Point;

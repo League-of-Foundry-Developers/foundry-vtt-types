@@ -230,7 +230,7 @@ declare abstract class DataField<
    * but since subclasses *should* still implement an `_cast` that matches their `AssignmentType` and `InitializedType`, it
    * remains `abstract` here
    */
-  protected abstract _cast(value: AssignmentType): InitializedType;
+  protected abstract _cast(value: unknown): AssignmentType;
 
   /**
    * Attempt to retrieve a valid initial value for the DataField.
@@ -839,11 +839,24 @@ declare namespace DataField {
     Omit<ToInputConfigWithOptions<InitializedType>, "options">,
     Choices extends undefined
       ? StringField.PrepareChoiceConfig
-      : NullishProps<StringField.PrepareChoiceConfig, "choices">
+      : Omit<StringField.PrepareChoiceConfig, "choices"> & {
+          choices?: StringField.PrepareChoiceConfig["choices"] | undefined;
+        }
   >;
 
-  // `DataField#toFormGroup` provides default values for these by way of `??=`.
-  interface GroupConfig extends NullishProps<FormGroupConfig, "label" | "hint" | "input"> {}
+  type SelectableToInputConfig<InitializedType, Choices extends StringField.Choices | undefined> =
+    | ToInputConfig<InitializedType>
+    | ToInputConfigWithOptions<InitializedType>
+    | ToInputConfigWithChoices<InitializedType, Choices>;
+
+  /**
+   * `label`, `hint`, and `input` are all provided defaults. Note that
+   */
+  interface GroupConfig extends Omit<FormGroupConfig, "label" | "hint" | "input"> {
+    label?: FormGroupConfig["label"] | null | undefined;
+    hint?: FormGroupConfig["hint"] | null | undefined;
+    input?: FormGroupConfig["input"] | null | undefined;
+  }
 }
 
 declare abstract class AnyDataField extends DataField<any, any, any, any> {
@@ -917,7 +930,7 @@ declare class SchemaField<
   /**
    * Iterate over a SchemaField by iterating over its fields.
    */
-  [Symbol.iterator](): Generator<DataField.Unknown>;
+  [Symbol.iterator](): Generator<DataField.Unknown, void, undefined>;
 
   // TODO: see if its viable to narrow keys, values, entries, has, and get's types via the schema
 
@@ -967,7 +980,7 @@ declare class SchemaField<
 
   override getInitialValue(data?: unknown): InitializedType;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /**
    * @remarks Ensures `options.source` is set via effectively `||= data`, then forwards to each field's `#clean`
@@ -1288,7 +1301,7 @@ declare class BooleanField<
 
   protected static override get _defaults(): BooleanField.Options;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /** @remarks `options` is unused in `BooleanField` */
   protected override _validateType(
@@ -1444,7 +1457,7 @@ declare class NumberField<
 
   protected static override get _defaults(): NumberField.Options;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /**
    * @remarks Applies `integer`, `min`, `max`, and `step`
@@ -1704,7 +1717,7 @@ declare class StringField<
 
   override getInitialValue(data?: unknown): InitializedType;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   protected override _validateSpecial(value: AssignmentType): boolean | void;
 
@@ -1914,7 +1927,7 @@ declare class ObjectField<
   override getInitialValue(data?: unknown): InitializedType;
 
   /** @remarks If `value` has a `#toObject` method, calls it and returns that */
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   override initialize(
     value: PersistedType,
@@ -2287,7 +2300,7 @@ declare class ArrayField<
 
   protected override _validateModel(data: AnyObject, options?: DataField.ValidateModelOptions): void;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /**
    * @remarks `options` gets its `partial` property forced `false`, then each element gets run through its field's `#clean`
@@ -2709,7 +2722,7 @@ declare class EmbeddedDataField<
   override clean(value: AssignmentType, options?: DataField.CleanOptions): InitializedType;
 
   /** @remarks If `value` has a `#toObject` method, calls it and returns that */
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /** @remarks Forwards to super with `options.source: value` */
   override validate(
@@ -2887,7 +2900,7 @@ declare class EmbeddedCollectionField<
    */
   get schema(): this["model"]["schema"];
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /**
    * @remarks Calls the Collection's Document's Implementation's `schema.clean` on every entry in `value`,
@@ -3380,7 +3393,7 @@ declare class DocumentIdField<
 
   protected static override get _defaults(): StringField.Options<unknown>;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /** @remarks `options` is unused in `DocumentIdField` */
   protected override _validateType(
@@ -3582,7 +3595,7 @@ declare class ForeignDocumentField<
 
   protected static override get _defaults(): ForeignDocumentField.Options;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   override initialize(
     value: PersistedType,
@@ -3690,7 +3703,7 @@ declare class ColorField<
 
   /** @remarks Actually returns `Color.from(value).css`, i.e a `string`, the `PersistedType` */
   // TODO: deal with the above
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /** @remarks `options` is only passed to super, where it is unused in `StringField` */
   protected override _validateType(
@@ -3937,7 +3950,7 @@ declare class AngleField<
 
   protected static override get _defaults(): NumberField.Options;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   /**
    * @deprecated "The `AngleField#base` is deprecated in favor of {@link AngleField.normalize | `AngleField#normalize`}." (since v12, until v14)
@@ -4094,7 +4107,7 @@ declare class HueField<
 > extends NumberField<Options, AssignmentType, InitializedType, PersistedType> {
   static get _defaults(): HueField.Options;
 
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   // TODO: _toInput
 }
@@ -4494,7 +4507,9 @@ declare namespace HTMLField {
   >;
 
   // `HTMLField#toFormGroup` provides a default by way of `groupConfig.stacked ??= true`.
-  interface GroupConfig extends NullishProps<DataField.GroupConfig, "stacked"> {}
+  interface GroupConfig extends Omit<DataField.GroupConfig, "stacked"> {
+    stacked?: DataField.GroupConfig["stacked"] | null | undefined;
+  }
 }
 
 /**
@@ -5238,7 +5253,7 @@ declare class TypedSchemaField<
   protected override _cleanType(value: InitializedType, options?: DataField.CleanOptions): InitializedType;
 
   /** @remarks If `value` has a `#toObject` method, calls it and returns that */
-  protected override _cast(value: AssignmentType): InitializedType;
+  protected override _cast(value: unknown): AssignmentType;
 
   protected override _validateSpecial(value: AssignmentType): boolean | void;
 
@@ -5450,7 +5465,9 @@ declare namespace JavaScriptField {
   >;
 
   // `JavaScriptField#toFormGroup` provides a default by way of `groupConfig.stacked ??= true`.
-  interface GroupConfig extends NullishProps<DataField.GroupConfig, "stacked"> {}
+  interface GroupConfig extends Omit<DataField.GroupConfig, "stacked"> {
+    stacked?: DataField.GroupConfig["stacked"] | null | undefined;
+  }
 
   interface ToInputConfig<InitializedType>
     extends SimpleMerge<DataField.ToInputConfig<InitializedType>, TextAreaInputConfig> {}

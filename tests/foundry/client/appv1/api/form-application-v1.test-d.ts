@@ -1,6 +1,9 @@
 import { assertType, expectTypeOf } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
+import FormApplication = foundry.appv1.api.FormApplication;
+import Application = foundry.appv1.api.Application;
+
 declare const formApplication: FormApplication<Actor.Implementation, FormApplication.Options>;
 
 expectTypeOf(formApplication.object).toEqualTypeOf<Actor.Implementation>();

@@ -1,5 +1,8 @@
 import { expectTypeOf } from "vitest";
 
+import TemplateLayer = foundry.canvas.layers.TemplateLayer;
+import FormApplication = foundry.appv1.api.FormApplication;
+
 const doc = new MeasuredTemplateDocument.implementation();
 
 expectTypeOf(doc.isAuthor).toEqualTypeOf<boolean>();

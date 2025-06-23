@@ -2,6 +2,8 @@ import { expectTypeOf } from "vitest";
 import type { DeepPartial } from "fvtt-types/utils";
 import { CompendiumCollection } from "#client/documents/collections/_module.mjs";
 
+import DocumentCollection = foundry.documents.abstract.DocumentCollection;
+
 const compendiumCollection = await foundry.documents.collections.CompendiumCollection.createCompendium({
   type: "JournalEntry",
   label: "Important Plotholes",

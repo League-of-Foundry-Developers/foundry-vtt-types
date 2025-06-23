@@ -1,6 +1,16 @@
 import { expectTypeOf } from "vitest";
-import { PrimaryCanvasGroup } from "#client/canvas/groups/_module.mjs";
-import type { Drawing, Tile, Token } from "#client/canvas/placeables/_module.d.mts";
+
+import Drawing = foundry.canvas.placeables.Drawing;
+import Tile = foundry.canvas.placeables.Tile;
+import Token = foundry.canvas.placeables.Token;
+
+import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
+import PrimaryCanvasGroupAmbienceFilter = foundry.canvas.rendering.filters.PrimaryCanvasGroupAmbienceFilter;
+import PrimaryGraphics = foundry.canvas.primary.PrimaryGraphics;
+import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
+import SpriteMesh = foundry.canvas.containers.SpriteMesh;
+
+import PrimaryCanvasGroup = foundry.canvas.groups.PrimaryCanvasGroup;
 
 expectTypeOf(PrimaryCanvasGroup.groupName).toExtend<keyof CONFIG.Canvas.Groups>();
 expectTypeOf(PrimaryCanvasGroup.tearDownChildren).toEqualTypeOf<boolean>();
@@ -21,6 +31,8 @@ expectTypeOf(myPrimaryGroup.addTile(someTile)).toEqualTypeOf<PrimarySpriteMesh>(
 expectTypeOf(myPrimaryGroup.addDrawing(someDrawing)).toEqualTypeOf<PrimaryGraphics>();
 
 // deprecated since v11, until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myPrimaryGroup.mapElevationAlpha(20)).toEqualTypeOf<number>();
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myPrimaryGroup.mapElevationToDepth(20)).toEqualTypeOf<number>();

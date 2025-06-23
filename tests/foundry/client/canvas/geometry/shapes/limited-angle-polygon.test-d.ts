@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import { LimitedAnglePolygon } from "#client/canvas/geometry/_module.mjs";
 
+import Ray = foundry.canvas.geometry.Ray;
+
 const myPoint = new PIXI.Point(2, 2);
 declare const someRay: Ray;
 

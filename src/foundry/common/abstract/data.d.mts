@@ -55,7 +55,7 @@ declare abstract class DataModel<
    * The source data object for this DataModel instance.
    * Once constructed, the source object is sealed such that no keys may be added nor removed.
    */
-  readonly _source: Readonly<fields.SchemaField.SourceData<Schema>>;
+  readonly _source: fields.SchemaField.SourceData<Schema>;
 
   /**
    * The defined and cached Data Schema for all instances of this DataModel.
@@ -130,7 +130,7 @@ declare abstract class DataModel<
   /**
    * A generator that orders the DataFields in the DataSchema into an expected initialization order.
    */
-  protected static _initializationOrder(): Generator<[string, DataField.Any]>;
+  protected static _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   /**
    * Initialize the instance by copying data from the source object to instance attributes.
@@ -335,11 +335,7 @@ declare namespace DataModel {
   // ```ts
   // EmbeddedDataField<typeof DataModel<{}>> extends SchemaField<infer SubSchema> ? SubSchema : never
   // ```
-  type SchemaOfClass<ConcreteClass extends DataModel.AnyConstructor> = ConcreteClass extends abstract new (
-    ...args: infer _1
-  ) => { schema: { fields: infer Fields extends DataSchema } }
-    ? Fields
-    : never;
+  type SchemaOfClass<ConcreteClass extends DataModel.AnyConstructor> = ReturnType<ConcreteClass["defineSchema"]>;
 
   /**
    * this is how 13.339 splits up the interfaces

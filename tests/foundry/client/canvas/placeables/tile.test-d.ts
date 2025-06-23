@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import { PlaceableObject, Tile, Token } from "#client/canvas/placeables/_module.mjs";
 
+import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
+
 declare const doc: TileDocument.Stored;
 
 expectTypeOf(Tile.embeddedName).toEqualTypeOf<"Tile">();
@@ -104,38 +106,47 @@ expectTypeOf(
 
 expectTypeOf(tile["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
 
-declare const someEvent: PIXI.FederatedEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 
-expectTypeOf(tile["_onHoverIn"](someEvent)).toBeVoid();
-expectTypeOf(tile["_onHoverIn"](someEvent, {})).toBeVoid();
-expectTypeOf(tile["_onHoverIn"](someEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(tile["_onHoverIn"](someEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(tile["_onHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(tile["_onHoverIn"](pointerEvent, {})).toBeVoid();
+expectTypeOf(tile["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
+expectTypeOf(tile["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
 
-expectTypeOf(tile["_onClickLeft"](someEvent)).toBeVoid();
-expectTypeOf(tile["_onDragLeftStart"](someEvent)).toBeVoid();
-expectTypeOf(tile["_onDragLeftMove"](someEvent)).toBeVoid();
-expectTypeOf(tile["_onDragLeftDrop"](someEvent)).toBeVoid();
-expectTypeOf(tile["_onDragLeftCancel"](someEvent)).toBeVoid();
+expectTypeOf(tile["_onClickLeft"](pointerEvent)).toBeVoid();
+expectTypeOf(tile["_onDragLeftStart"](pointerEvent)).toBeVoid();
+expectTypeOf(tile["_onDragLeftMove"](pointerEvent)).toBeVoid();
+expectTypeOf(tile["_onDragLeftDrop"](pointerEvent)).toBeVoid();
+expectTypeOf(tile["_onDragLeftCancel"](pointerEvent)).toBeVoid();
 
-expectTypeOf(tile["_onHandleHoverIn"](someEvent)).toBeVoid();
-expectTypeOf(tile["_onHandleHoverOut"](someEvent)).toBeVoid();
-expectTypeOf(tile["_onHandleDragStart"](someEvent)).toBeVoid();
-expectTypeOf(tile["_onHandleDragMove"](someEvent)).toBeVoid();
-expectTypeOf(tile["_onHandleDragDrop"](someEvent)).toEqualTypeOf<Promise<Tile.Implementation>>();
-expectTypeOf(tile["_onHandleDragCancel"](someEvent)).toBeVoid();
+expectTypeOf(tile["_onHandleHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(tile["_onHandleHoverOut"](pointerEvent)).toBeVoid();
+expectTypeOf(tile["_onHandleDragStart"](pointerEvent)).toBeVoid();
+expectTypeOf(tile["_onHandleDragMove"](pointerEvent)).toBeVoid();
+expectTypeOf(tile["_onHandleDragDrop"](pointerEvent)).toEqualTypeOf<Promise<Tile.Implementation>>();
+expectTypeOf(tile["_onHandleDragCancel"](pointerEvent)).toBeVoid();
 
-expectTypeOf(tile["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
+expectTypeOf(tile["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.isRoof).toEqualTypeOf<boolean>();
 declare const someToken: Token.Implementation;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.testOcclusion(someToken)).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.testOcclusion(someToken, {})).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.testOcclusion(someToken, { corners: true })).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.testOcclusion(someToken, { corners: null })).toBeBoolean();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.containsPixel(50, 50)).toBeBoolean();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.containsPixel(50, 50, 0.3)).toBeBoolean();
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.getPixelAlpha(50, 50)).toBeNumber();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile._getAlphaBounds()).toEqualTypeOf<PIXI.Rectangle | undefined>;

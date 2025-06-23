@@ -14,6 +14,8 @@ expectTypeOf(myPOO._restrictionState).toEqualTypeOf<number>();
 expectTypeOf(myPOO.debounceSetOcclusion(false)).toEqualTypeOf<boolean>();
 
 // deprecated until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myPOO.renderOcclusion(someRenderer)).toEqualTypeOf<void>();
 // deprecated until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myPOO.containsPixel(500, 500, 0.5)).toEqualTypeOf<boolean>();

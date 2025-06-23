@@ -1,4 +1,5 @@
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { InexactPartial } from "#utils";
 
 /**
  * Determine the relative orientation of three points in two-dimensional space.
@@ -46,16 +47,19 @@ export interface LineIntersection {
   t0: number;
 
   /** The vector distance from C to D on segment CD */
-  t1?: number | undefined;
+  t1: number | undefined;
 }
 
-interface LineIntersectionOptions {
+/** @internal */
+type _LineIntersectionOptions = InexactPartial<{
   /**
    * Return the optional vector distance from C to D on CD
    * @defaultValue `false`
    */
-  t1?: boolean;
-}
+  t1: boolean;
+}>;
+
+interface LineIntersectionOptions extends _LineIntersectionOptions {}
 
 /**
  * An internal helper method for computing the intersection between two infinite-length lines.
@@ -85,8 +89,7 @@ export declare function lineLineIntersection(
  * @param b       - The second endpoint of segment AB
  * @param c       - The first endpoint of segment CD
  * @param d       - The second endpoint of segment CD
- * @param epsilon - A small epsilon which defines a tolerance for near-equality
- *                  (default: `1e-8`)
+ * @param epsilon - A small epsilon which defines a tolerance for near-equality (default: `1e-8`)
  *
  * @returns An intersection point, or null if no intersection occurred
  */
@@ -125,8 +128,7 @@ export interface LineCircleIntersection {
  * @param b       - The second vertex of the candidate edge
  * @param center  - The center of the bounding circle
  * @param radius  - The radius of the bounding circle
- * @param epsilon - A small tolerance for floating point precision
- *                  (default: `1e-8`)
+ * @param epsilon - A small tolerance for floating point precision (default: `1e-8`)
  *
  * @returns The intersection of the segment AB with the circle
  */
@@ -158,8 +160,7 @@ export declare function closestPointToSegment(c: Canvas.Point, a: Canvas.Point, 
  * @param p1      - The terminal point of the line segment
  * @param center  - The center of the circle
  * @param radius  - The radius of the circle
- * @param epsilon - A small tolerance for floating point precision
- *                  (default: `0`)
+ * @param epsilon - A small tolerance for floating point precision (default: `0`)
  */
 export declare function quadraticIntersection(
   p0: Canvas.Point,

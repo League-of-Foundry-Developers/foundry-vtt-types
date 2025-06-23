@@ -125,7 +125,7 @@ declare namespace DrawingDocument {
   /**
    * An instance of `DrawingDocument` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<DrawingDocument.Implementation> {}
+  type Stored = Document.Internal.Stored<DrawingDocument.Implementation>;
 
   /**
    * The data put in {@link DrawingDocument._source | `DrawingDocument#_source`}. This data is what was

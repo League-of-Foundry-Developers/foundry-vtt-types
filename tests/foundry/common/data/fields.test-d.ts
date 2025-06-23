@@ -57,9 +57,9 @@ declare global {
 
 expectTypeOf(JEPCoreTypes).toEqualTypeOf<
   "base",
-  "image" | "pdf" | "text" | "video" | foundry.abstract.Document.ModuleSubtype
+  "image" | "pdf" | "text" | "video" | foundry.abstract.Document.ModuleSubType
 >();
-expectTypeOf(JEPSystemTypes).toEqualTypeOf<"headquarters" | foundry.abstract.Document.ModuleSubtype>();
+expectTypeOf(JEPSystemTypes).toEqualTypeOf<"headquarters" | foundry.abstract.Document.ModuleSubType>();
 
 declare const myJournalEntryPage: JournalEntryPage.Implementation;
 if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
@@ -70,6 +70,7 @@ if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
 
 declare const embeddedModel: typeof foundry.data.LightData;
 declare type embeddedOptions = foundry.data.fields.EmbeddedDataField.Options<typeof embeddedModel>;
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 declare const embeddedAssignment: foundry.data.fields.EmbeddedDataField.AssignmentType<
   typeof embeddedModel,
   embeddedOptions

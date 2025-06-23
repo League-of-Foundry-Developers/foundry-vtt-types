@@ -167,14 +167,12 @@ declare namespace ChatMessage {
    * An instance of `ChatMessage` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends ChatMessage.SubType = ChatMessage.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  interface Invalid extends Document.Internal.Invalid<Implementation> {}
 
   /**
    * An instance of `ChatMessage` that comes from the database.
    */
-  interface Stored<out SubType extends ChatMessage.SubType = ChatMessage.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends ChatMessage.SubType = ChatMessage.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
    * The data put in {@link ChatMessage._source | `ChatMessage#_source`}. This data is what was
@@ -512,14 +510,19 @@ declare namespace ChatMessage {
 
   interface GetSpeakerOptions extends NullishProps<_BaseSpeakerOptions> {}
 
-  /** @remarks `token` is required, `alias` falls back to `token.name` */
-  interface GetSpeakerFromTokenOptions extends NullishProps<Pick<_BaseSpeakerOptions, "token" | "alias">, "alias"> {}
+  /**
+   * @deprecated - The associated function was made private without deprecation or direct replacement.
+   */
+  interface GetSpeakerFromTokenOptions extends NullishProps<Pick<_BaseSpeakerOptions, "token" | "alias">> {}
 
-  /** @remarks `actor` is required, `scene` falls back to `canvas.scene`, `alias` falls back to `actor.name` */
-  interface GetSpeakerFromActorOptions
-    extends NullishProps<Pick<_BaseSpeakerOptions, "scene" | "actor" | "alias">, "scene" | "alias"> {}
+  /**
+   * @deprecated - The associated function was made private without deprecation or direct replacement.
+   */
+  interface GetSpeakerFromActorOptions extends NullishProps<Pick<_BaseSpeakerOptions, "scene" | "actor" | "alias">> {}
 
-  /** @remarks `user` is required, `scene` falls back to `canvas.scene`, `alias` falls back to `user.name` */
+  /**
+   *@deprecated - The associated function was made private without deprecation or direct replacement.
+   */
   interface GetSpeakerFromUserOptions extends NullishProps<Pick<_BaseSpeakerOptions, "scene" | "alias">> {
     /** The User who is speaking */
     user: User.Implementation;
@@ -683,21 +686,30 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * A helper to prepare the speaker object based on a target TokenDocument
    * @param options - Options which affect speaker identification
    * @returns The identified speaker data
+   *
+   * @deprecated - This function was made private without deprecation or direct replacement.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   protected static _getSpeakerFromToken(options: ChatMessage.GetSpeakerFromTokenOptions): ChatMessage.SpeakerData;
 
   /**
    * A helper to prepare the speaker object based on a target Actor
    * @param options - Options which affect speaker identification
    * @returns The identified speaker data
+   *
+   * @deprecated - This function was made private without deprecation or direct replacement.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   protected static _getSpeakerFromActor(options: ChatMessage.GetSpeakerFromActorOptions): ChatMessage.SpeakerData;
 
   /**
    * A helper to prepare the speaker object based on a target User
    * @param options - Options which affect speaker identification
    * @returns The identified speaker data
+   *
+   * @deprecated - This function was made private without deprecation or direct replacement.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   protected static _getSpeakerFromUser(options: ChatMessage.GetSpeakerFromUserOptions): ChatMessage.SpeakerData;
 
   /**

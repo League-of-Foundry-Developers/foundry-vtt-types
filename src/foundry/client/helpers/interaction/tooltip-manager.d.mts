@@ -1,4 +1,4 @@
-import type { ValueOf } from "#utils";
+import type { Identity, ValueOf } from "#utils";
 
 /**
  * A singleton Tooltip Manager class responsible for rendering and positioning a dynamic tooltip element which is
@@ -202,10 +202,17 @@ declare class TooltipManager {
 }
 
 declare namespace TooltipManager {
+  interface Any extends AnyTooltipManager {}
+  interface AnyConstructor extends Identity<typeof AnyTooltipManager> {}
+
   /**
    * The directions in which a tooltip can extend, relative to its tool-tipped element.
    */
-  type TOOLTIP_DIRECTIONS = ValueOf<(typeof TooltipManager)["TOOLTIP_DIRECTIONS"]>;
+  type TOOLTIP_DIRECTIONS = ValueOf<typeof TooltipManager.TOOLTIP_DIRECTIONS>;
+}
+
+declare abstract class AnyTooltipManager extends TooltipManager {
+  constructor(...args: never);
 }
 
 export default TooltipManager;

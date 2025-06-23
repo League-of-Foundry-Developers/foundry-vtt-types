@@ -1,8 +1,10 @@
 import { expectTypeOf } from "vitest";
-import { CanvasOcclusionMask } from "#client/canvas/layers/_module.mjs";
-import { CachedContainer } from "#client/canvas/containers/_module.mjs";
-import { PrimaryCanvasObjectMixin } from "#client/canvas/primary/_module.mjs";
-import type { Token } from "#client/canvas/placeables/_module.d.mts";
+
+import CanvasOcclusionMask = foundry.canvas.layers.CanvasOcclusionMask;
+import CachedContainer = foundry.canvas.containers.CachedContainer;
+import PrimaryCanvasObjectMixin = foundry.canvas.primary.PrimaryCanvasObjectMixin;
+import SpriteMesh = foundry.canvas.containers.SpriteMesh;
+import Token = foundry.canvas.placeables.Token;
 
 expectTypeOf(CanvasOcclusionMask.textureConfiguration).toEqualTypeOf<CachedContainer.TextureConfiguration>();
 
@@ -24,4 +26,5 @@ declare const someTokens: Token.Implementation[];
 expectTypeOf(myOcclusionMask["_identifyOccludedObjects"](someTokens));
 
 // deprecated since v11 until v13
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myOcclusionMask._identifyOccludedTiles()).toEqualTypeOf<Set<PrimaryCanvasObjectMixin.AnyMixed>>();

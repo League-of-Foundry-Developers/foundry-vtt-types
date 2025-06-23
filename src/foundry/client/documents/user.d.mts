@@ -126,7 +126,7 @@ declare namespace User {
   /**
    * An instance of `User` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<User.Implementation> {}
+  type Stored = Document.Internal.Stored<User.Implementation>;
 
   /**
    * The data put in {@link User._source | `User#_source`}. This data is what was

@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import { Actors } from "#client/documents/collections/_module.mjs";
 
+import ActorDirectory = foundry.applications.sidebar.tabs.ActorDirectory;
+
 const actors = new Actors([]);
 expectTypeOf(actors.get("")).toEqualTypeOf<Actor.Stored>();
 expectTypeOf(actors.get("", { strict: true, invalid: false })).toEqualTypeOf<Actor.Stored>();

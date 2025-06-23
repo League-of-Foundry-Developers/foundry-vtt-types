@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import { WeatherShaderEffect } from "#client/canvas/rendering/shaders/_module.mjs";
 
+import RainShader = foundry.canvas.rendering.shaders.RainShader;
+
 const myWSE = new WeatherShaderEffect(
   {
     opacity: 1,

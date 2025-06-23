@@ -86,22 +86,26 @@ expectTypeOf(light.initializeLightSource({ deleted: null })).toBeVoid();
 expectTypeOf(light["_getLightSourceData"]()).toEqualTypeOf<AmbientLight.LightSourceData>();
 
 declare const someUser: User.Implementation;
-declare const someEvent: PIXI.FederatedEvent;
-declare const dragEvent: DragEvent;
-expectTypeOf(light["_canHUD"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(light["_canConfigure"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(light["_canDragLeftStart"](someUser, dragEvent)).toBeBoolean();
-expectTypeOf(light["_onHoverIn"](someEvent)).toBeVoid();
-expectTypeOf(light["_onClickRight"](someEvent)).toBeVoid();
-expectTypeOf(light["_onDragLeftMove"](someEvent)).toBeVoid();
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(light["_canHUD"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(light["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(light["_canDragLeftStart"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(light["_onHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(light["_onClickRight"](pointerEvent)).toBeVoid();
+expectTypeOf(light["_onDragLeftMove"](pointerEvent)).toBeVoid();
 expectTypeOf(light["_onDragEnd"]()).toBeVoid();
-expectTypeOf(light["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
+expectTypeOf(light["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
 // deprecated since v12, until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.updateSource()).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.updateSource({})).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.updateSource({ deleted: true })).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.updateSource({ deleted: null })).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.source).toEqualTypeOf<
   PointLightSource.ConfiguredInstance | PointDarknessSource.ConfiguredInstance | undefined
 >();

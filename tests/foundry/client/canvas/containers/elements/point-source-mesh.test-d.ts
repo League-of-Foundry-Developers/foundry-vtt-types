@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { PointSourceMesh } from "#client/canvas/containers/_module.mjs";
+
+import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackgroundShader;
+import PointSourceMesh = foundry.canvas.containers.PointSourceMesh;
 
 const myGeometry = new PIXI.Geometry();
 const myShader = AdaptiveBackgroundShader.create();

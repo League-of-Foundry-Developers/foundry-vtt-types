@@ -76,14 +76,7 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
  *   The most common time this shows up is with the pattern
  *   `exampleFunction({ prop = "foo" } = {}) { ... }`.
  */
-export type IntentionalPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
-  {
-    [K2 in keyof T as Extract<K2, K>]?: T[K2];
-  } & {
-    // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for
-    [K2 in keyof T as Exclude<K2, K>]: T[K2];
-  }
->;
+export type IntentionalPartial<T extends object> = Partial<T>;
 
 /**
  * This type is used to make a constraint where `T` must be statically known to overlap with `U`.
@@ -282,39 +275,6 @@ export type ToMethod<T extends AnyFunction> = {
   method(...args: Parameters<T>): ReturnType<T>;
 }["method"];
 
-/**
- * @deprecated Replaced by {@linkcode Document.SheetClassFor}
- */
-export type ConfiguredSheetClass<T extends Document.AnyConstructor> = GetKey<
-  GetKey<CONFIG, T["metadata"]["name"]>,
-  "sheetClass",
-  T
->;
-
-/**
- * @deprecated Replaced by {@linkcode Document.ObjectClassFor}
- */
-export type ObjectClass<T extends Document.AnyConstructor> = GetKey<
-  GetKey<CONFIG, T["metadata"]["name"]>,
-  "objectClass",
-  T
->;
-
-/**
- * @deprecated Replaced by {@linkcode Document.LayerClassFor}
- */
-export type LayerClass<T extends Document.AnyConstructor> = GetKey<
-  GetKey<CONFIG, T["metadata"]["name"]>,
-  "layerClass",
-  T
->;
-
-/**
- * Actual document types that go in folders
- * @deprecated No replacement as this was deemed too niche.
- */
-export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
-
 export type MaybeEmpty<T extends AnyObject> =
   | T
   | {
@@ -325,8 +285,10 @@ export type MaybeEmpty<T extends AnyObject> =
  * The following uses `extends object` instead of `AnyObject` to allow `O = typeof SomeClass`
  */
 export type PropertiesOfType<O extends object, T> = {
-  [K in keyof O]: [O[K], T] extends [T, O[K]] ? K : never;
+  [K in keyof O]: _KeyOfType<O[K], K, T>;
 }[keyof O];
+
+type _KeyOfType<V, K, T> = V extends T ? K : never;
 
 declare class Branded<in out BrandName extends string> {
   #brand: BrandName;
@@ -573,14 +535,9 @@ export type AllKeysOf<T extends object> = T extends unknown ? keyof T : never;
  *
  * @internal
  */
-export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
-  {
-    [K2 in keyof T as Extract<K2, K>]?: T[K2] | undefined;
-  } & {
-    // Note(LukeAbby): This effectively inlines `Omit<T, K>` hoping for slightly better performance.
-    [K2 in keyof T as Exclude<K2, K>]: T[K2];
-  }
->;
+export type InexactPartial<T extends object> = {
+  [K2 in keyof T]?: T[K2] | undefined;
+};
 
 /**
  * Makes select properties in `T` optional and explicitly allows both `null` and
@@ -614,14 +571,9 @@ export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<
  *
  * @internal
  */
-export type NullishProps<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
-  {
-    [K2 in keyof T as Extract<K2, K>]?: T[K2] | null | undefined;
-  } & {
-    // Note(LukeAbby): This effectively inlines `Omit<T, K>` hoping for slightly better performance.
-    [K2 in keyof T as Exclude<K2, K>]: T[K2];
-  }
->;
+export type NullishProps<T extends object> = {
+  [K2 in keyof T]?: T[K2] | null | undefined;
+};
 
 /**
  * Expand an object that contains keys in dotted notation
@@ -720,14 +672,18 @@ type _MergePlainObject<T extends object, U extends object> = {
   [K in keyof U]: T extends { readonly [_ in K]?: infer V } ? Merge<V, U[K]> : U[K];
 };
 
-interface _MergeComplexObject<T extends object, U extends object> extends Override<T, _MergePlainObject<T, U>> {}
+interface _MergeComplexObject<T extends object, U extends object> extends _Override<T, _MergePlainObject<T, U>> {}
 
 /**
  * Overrides properties of `T` with properties in `U`. Be careful using this type as its internal
  * implementation is likely a bit shaky.
+ *
+ * Note: `U` must NOT be a union. If it is unexpected behavior may occur.
  */
+export type Override<T extends object, U extends object> = T extends unknown ? _Override<T, U> : never;
+
 // @ts-expect-error - This pattern is inherently an error.
-export interface Override<T extends object, U extends object> extends U, T {}
+interface _Override<T extends object, U extends object> extends U, T {}
 
 /**
  * Returns whether the type is a plain object. Excludes functions, arrays, and constructors while still being friendly to interfaces.
@@ -1287,12 +1243,16 @@ export type Identity<T extends object> = T;
  */
 export type DiscriminatedUnion<U extends object> = _DiscriminatedUnion<U, AllKeysOf<U>>;
 
-type _DiscriminatedUnion<U extends object, AllKeys extends AllKeysOf<U>> = U extends unknown
-  ? {
-      [K in keyof U]: U[K];
-    } & {
-      readonly [K in Exclude<AllKeys, keyof U>]?: never;
-    }
+// Note(LukeAbby): The `extends object` is effectively the same as `extends unknown` but used here
+// to keep `Document.SystemOfType<Document.ModuleSubType>` from being `unknown` in dependencies.
+// Inlining `Extract<..., object>` by comparison causes issues, specifically in not counting as
+// covaraint. This isn't an ideal change to make but it works.
+type _DiscriminatedUnion<U extends object, AllKeys extends AllKeysOf<U>> = U extends object
+  ? [Exclude<AllKeys, keyof U>] extends [never]
+    ? U
+    : U & {
+        readonly [K in Exclude<AllKeys, keyof U>]?: never;
+      }
   : never;
 
 /**
@@ -1348,3 +1308,51 @@ type _SplitString<
   : S extends ""
     ? []
     : [...Return, S];
+
+export type DeepReadonly<T extends object> = T extends AnyObject | AnyArray
+  ? { readonly [K in keyof T]: _DeepReadonly<T[K]> }
+  : DeepReadonlyComplex<T>;
+
+type _DeepReadonly<T> = T extends object ? DeepReadonly<T> : T;
+
+interface DeepReadonlyComplex<T extends object> extends _DeepReadonlyComplex<T> {}
+
+// @ts-expect-error - This pattern is intrinsically an error.
+// Note(LukeAbby): The two levels here, `DeepReadonlyComplex` and `_DeepReadonlyComplex`, could just be one.
+// However it gives a better type display as two levels.
+interface _DeepReadonlyComplex<T extends object, R extends object = { readonly [K in keyof T]: _DeepReadonly<T[K]> }>
+  extends R,
+    T {}
+
+/**
+ * @deprecated Replaced by {@linkcode Document.SheetClassFor}
+ */
+export type ConfiguredSheetClass<T extends Document.AnyConstructor> = GetKey<
+  GetKey<CONFIG, T["metadata"]["name"]>,
+  "sheetClass",
+  T
+>;
+
+/**
+ * @deprecated Replaced by {@linkcode Document.ObjectClassFor}
+ */
+export type ObjectClass<T extends Document.AnyConstructor> = GetKey<
+  GetKey<CONFIG, T["metadata"]["name"]>,
+  "objectClass",
+  T
+>;
+
+/**
+ * @deprecated Replaced by {@linkcode Document.LayerClassFor}
+ */
+export type LayerClass<T extends Document.AnyConstructor> = GetKey<
+  GetKey<CONFIG, T["metadata"]["name"]>,
+  "layerClass",
+  T
+>;
+
+/**
+ * Actual document types that go in folders
+ * @deprecated No replacement as this was deemed too niche.
+ */
+export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;

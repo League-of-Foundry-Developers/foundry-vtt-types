@@ -233,14 +233,12 @@ declare namespace Actor {
    * An instance of `Actor` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends Actor.SubType = Actor.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  interface Invalid extends Document.Internal.Invalid<Implementation> {}
 
   /**
    * An instance of `Actor` that comes from the database.
    */
-  interface Stored<out SubType extends Actor.SubType = Actor.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends Actor.SubType = Actor.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
    * The data put in {@link Actor._source | `Actor#_source`}. This data is what was
@@ -754,7 +752,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * If CONFIG.ActiveEffect.legacyTransferral is false, this will also return all the transferred ActiveEffects on any
    * of the Actor's owned Items.
    */
-  allApplicableEffects(): Generator<ActiveEffect.Implementation>;
+  allApplicableEffects(): Generator<ActiveEffect.Implementation, void, undefined>;
 
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Actor

@@ -51,9 +51,9 @@ expectTypeOf(
 ).toBeVoid();
 
 declare const someUser: User.Implementation;
-declare const someEvent: PIXI.FederatedEvent;
-expectTypeOf(region["_canDrag"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(region["_canHUD"](someUser, someEvent)).toBeBoolean();
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(region["_canDrag"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(region["_canHUD"](someUser, pointerEvent)).toBeBoolean();
 
 // @ts-expect-error _onControl is always passed a value
 expectTypeOf(region["_onControl"]()).toBeVoid();
@@ -64,15 +64,15 @@ expectTypeOf(region["_onControl"]({ releaseOthers: false })).toBeVoid();
 expectTypeOf(region["_onRelease"]()).toBeVoid();
 expectTypeOf(region["_onRelease"]({})).toBeVoid();
 
-expectTypeOf(region["_onHoverIn"](someEvent)).toBeVoid();
-expectTypeOf(region["_onHoverIn"](someEvent, {})).toBeVoid();
-expectTypeOf(region["_onHoverIn"](someEvent, { hoverOutOthers: true, updateLegend: false })).toBeVoid();
-expectTypeOf(region["_onHoverIn"](someEvent, { hoverOutOthers: null, updateLegend: null })).toBeVoid();
+expectTypeOf(region["_onHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(region["_onHoverIn"](pointerEvent, {})).toBeVoid();
+expectTypeOf(region["_onHoverIn"](pointerEvent, { hoverOutOthers: true, updateLegend: false })).toBeVoid();
+expectTypeOf(region["_onHoverIn"](pointerEvent, { hoverOutOthers: null, updateLegend: null })).toBeVoid();
 
-expectTypeOf(region["_onHoverOut"](someEvent)).toBeVoid();
-expectTypeOf(region["_onHoverOut"](someEvent, {})).toBeVoid();
-expectTypeOf(region["_onHoverOut"](someEvent, { updateLegend: false })).toBeVoid();
-expectTypeOf(region["_onHoverOut"](someEvent, { updateLegend: null })).toBeVoid();
+expectTypeOf(region["_onHoverOut"](pointerEvent)).toBeVoid();
+expectTypeOf(region["_onHoverOut"](pointerEvent, {})).toBeVoid();
+expectTypeOf(region["_onHoverOut"](pointerEvent, { updateLegend: false })).toBeVoid();
+expectTypeOf(region["_onHoverOut"](pointerEvent, { updateLegend: null })).toBeVoid();
 
 expectTypeOf(region["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
 
@@ -96,4 +96,4 @@ expectTypeOf(region.segmentizeMovement(waypoints, samples, { teleport: null })).
   Region.MovementSegment[]
 >();
 
-expectTypeOf(region["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
+expectTypeOf(region["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
