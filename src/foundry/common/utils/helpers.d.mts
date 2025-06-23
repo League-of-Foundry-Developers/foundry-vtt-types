@@ -305,7 +305,8 @@ export interface GetRouteOptions extends _GetRouteOptions {}
 /**
  * Learn the underlying data type of some variable. Supported identifiable types include:
  * undefined, null, number, string, boolean, function, Array, Set, Map, Promise, Error,
- * HTMLElement (client side only), Object (catchall for other object types)
+ * HTMLElement (client side only), Object (plain objects).
+ * If the type isn't identifiable, Unknown is returned.
  * @param variable - A provided variable
  * @returns The named type of the token
  */
