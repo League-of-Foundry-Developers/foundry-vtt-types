@@ -1,4 +1,12 @@
-import type { Mixin, IntentionalPartial, FixedInstanceType, RequiredProps, AnyObject } from "#utils";
+import type {
+  Mixin,
+  IntentionalPartial,
+  FixedInstanceType,
+  RequiredProps,
+  AnyObject,
+  InexactPartial,
+  Override,
+} from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
@@ -33,7 +41,7 @@ declare class PointEffectSource {
    * otherwise be here, and per the default above this is always a {@linkcode PointSourcePolygon} subclass, always
    * {@linkcode foundry.canvas.geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon} in core
    */
-  shape: PointSourcePolygon | undefined;
+  shape: PointSourcePolygon.Any | undefined;
 
   /**
    * The Edge instances added by this source.
@@ -65,6 +73,15 @@ declare class PointEffectSource {
 
   // TODO: Flatten<IntentionalPartial<SourceData>>
   protected _configure(changes: AnyObject): void;
+
+  /**
+   * @privateRemarks Fake override to account for losing the ability to return `this` in {@linkcode sources.BaseEffectSource.initialize | BaseEffectSource} and
+   * still have Initialized overrides.
+   */
+  initialize(
+    data?: InexactPartial<PointEffectSourceMixin.MixedSourceData>,
+    options?: BaseEffectSource.InitializeOptions,
+  ): PointEffectSourceMixin.Initialized;
 
   protected _initialize(data: IntentionalPartial<PointEffectSourceMixin.MixedSourceData>): void;
 
@@ -111,20 +128,27 @@ declare namespace PointEffectSourceMixin {
 
   type BaseClass = BaseEffectSource.AnyConstructor;
 
-  type MixedSourceData = SourceData & BaseEffectSource.SourceData;
+  type Initialized = Override<
+    PointEffectSourceMixin.AnyMixed,
+    {
+      /**
+       * The geometric shape of the effect source which is generated later.
+       * @remarks This is the initialized type, the shape has been generated if you're accessing this
+       */
+      shape: PointSourcePolygon.Any;
+    }
+  >;
+
+  interface MixedSourceData extends SourceData, BaseEffectSource.SourceData {}
 
   /** @remarks This mixin guarantees certain keys in the return type beyond the base required `type` */
-  // TODO(esheyw): uncomment edgeOptions once canvas.geometry is done
+
   interface PolygonConfig
     extends RequiredProps<
       PointSourcePolygon.Config,
-      | "radius"
-      //| "edgeOptions"
-      | "externalRadius"
-      | "angle"
-      | "rotation"
-      | "priority"
-      | "source"
+      // TODO(esheyw): remove the following once canvas.geometry is done
+      // @ts-expect-error edgeOptions is not implemented yet
+      "radius" | "edgeOptions" | "externalRadius" | "angle" | "rotation" | "priority" | "source"
     > {}
 
   interface SourceData {

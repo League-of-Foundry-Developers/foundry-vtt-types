@@ -52,10 +52,10 @@ expectTypeOf(token.mesh).toEqualTypeOf<PrimarySpriteMesh | undefined>();
 expectTypeOf(token.voidMesh).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(token.detectionFilterMesh).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(token.texture).toEqualTypeOf<PIXI.Texture | undefined>();
-expectTypeOf(token.vision).toEqualTypeOf<foundry.canvas.sources.PointVisionSource.ConfiguredInstance | undefined>();
+expectTypeOf(token.vision).toEqualTypeOf<foundry.canvas.sources.PointVisionSource.Implementation | undefined>();
 expectTypeOf(token.light).toEqualTypeOf<
-  | foundry.canvas.sources.PointLightSource.ConfiguredInstance
-  | foundry.canvas.sources.PointDarknessSource.ConfiguredInstance
+  | foundry.canvas.sources.PointLightSource.Implementation
+  | foundry.canvas.sources.PointDarknessSource.Implementation
   | undefined
 >();
 

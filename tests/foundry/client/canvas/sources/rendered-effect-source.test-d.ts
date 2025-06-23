@@ -1,9 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type RenderedEffectSource from "../../../../../src/foundry/client/canvas/sources/rendered-effect-source.d.mts";
 
-import AdaptiveColorationShader = foundry.canvas.rendering.shaders.AdaptiveColorationShader;
-import AdaptiveDarknessShader = foundry.canvas.rendering.shaders.AdaptiveDarknessShader;
-import AdaptiveIlluminationShader = foundry.canvas.rendering.shaders.AdaptiveIlluminationShader;
+import RenderedEffectSource = foundry.canvas.sources.RenderedEffectSource;
 import AdaptiveLightingShader = foundry.canvas.rendering.shaders.AdaptiveLightingShader;
 import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackgroundShader;
 import BlackHoleDarknessShader = foundry.canvas.rendering.shaders.BlackHoleDarknessShader;
@@ -37,37 +34,13 @@ expectTypeOf(
     Color.from(0x0),
   ),
 ).toEqualTypeOf<Color>();
-expectTypeOf(
-  MyRenderedSource.getCorrectedColor(
-    CONST.LIGHTING_LEVELS.HALFDARK,
-    Color.from("9C9C9C"),
-    Color.from([0.2, 0.7, 0.65]),
-    null,
-  ),
-).toEqualTypeOf<Color>();
 
 declare const object: foundry.canvas.placeables.Token.Implementation;
-// @ts-expect-error A source must be passed a sourceId option at construction
 new MyRenderedSource();
-new MyRenderedSource({ sourceId: foundry.utils.randomID() });
-const mySource = new MyRenderedSource({ object, sourceId: object.id });
+new MyRenderedSource({ object: undefined, sourceId: undefined });
+const mySource = new MyRenderedSource({ object, sourceId: object.sourceId });
 
 expectTypeOf(mySource.animation).toEqualTypeOf<RenderedEffectSource.StoredAnimationConfig>();
-
-// if there's a `darknessShader`, it's a `DarknessAnimationConfig`
-if ("darknessShader" in mySource.animation) {
-  expectTypeOf(mySource.animation.darknessShader).toEqualTypeOf<AdaptiveDarknessShader.AnyConstructor>();
-} else {
-  expectTypeOf(mySource.animation.illuminationShader).toEqualTypeOf<
-    AdaptiveIlluminationShader.AnyConstructor | undefined
-  >();
-  expectTypeOf(mySource.animation.colorationShader).toEqualTypeOf<
-    AdaptiveColorationShader.AnyConstructor | undefined
-  >();
-  expectTypeOf(mySource.animation.backgroundShader).toEqualTypeOf<
-    AdaptiveBackgroundShader.AnyConstructor | undefined
-  >();
-}
 
 expectTypeOf(mySource.layers).toEqualTypeOf<RenderedEffectSource.Layers>();
 // @ts-expect-error RenderedEffectSource provides no layers as of v13
@@ -79,6 +52,7 @@ expectTypeOf(mySource.isAnimated).toBeBoolean();
 expectTypeOf(mySource.hasActiveLayer).toBeBoolean();
 expectTypeOf(mySource.isPreview).toBeBoolean();
 
+// RenderedEffectSource provides no layers, so has no meshes
 expectTypeOf(mySource.background).toEqualTypeOf<undefined>();
 expectTypeOf(mySource.coloration).toEqualTypeOf<undefined>();
 expectTypeOf(mySource.illumination).toEqualTypeOf<undefined>();
@@ -112,10 +86,12 @@ expectTypeOf(
 ).toBeVoid();
 
 expectTypeOf(mySource["_initializeSoftEdges"]()).toBeVoid();
+
+// AnyObject until we get Flatten
 expectTypeOf(mySource["_configure"]({})).toBeVoid();
-expectTypeOf(mySource["_configureShaders"]()).toEqualTypeOf<
-  Record<keyof RenderedEffectSource.Layers, AdaptiveLightingShader.AnyConstructor>
->();
+
+// RenderedEffectSource provides no layers
+expectTypeOf(mySource["_configureShaders"]()).toEqualTypeOf<Record<never, AdaptiveLightingShader.AnyConstructor>>();
 
 const someBackgroundShader = AdaptiveBackgroundShader.create();
 expectTypeOf(
@@ -135,7 +111,10 @@ expectTypeOf(
 ).toBeVoid();
 
 expectTypeOf(mySource["_updateGeometry"]()).toBeVoid();
-expectTypeOf(mySource.drawMeshes().coloration).toEqualTypeOf<PointSourceMesh | null>();
+
+// RenderedEffectSource provides no layers
+expectTypeOf(mySource.drawMeshes()).toEqualTypeOf<Record<never, PointSourceMesh | null>>();
+// @ts-expect-error as RES provides no layers there are no valid keys to pass
 expectTypeOf(mySource["_drawMesh"]("illumination")).toEqualTypeOf<PointSourceMesh | null>();
 
 expectTypeOf(mySource["_updateCommonUniforms"](someBackgroundShader)).toBeVoid();
@@ -144,12 +123,16 @@ expectTypeOf(mySource["_updateColorationUniforms"]()).toBeVoid();
 expectTypeOf(mySource["_updateIlluminationUniforms"]()).toBeVoid();
 expectTypeOf(mySource["_destroy"]()).toBeVoid();
 
+// #animateTime is the prototypical AnimationFunction, it's the provided one in most core-
+// provided configs, and the ones that aren't it call it
+const _animationFunction: RenderedEffectSource.AnimationFunction = mySource.animateTime;
+
 expectTypeOf(mySource.animate(0.8)).toBeVoid();
 expectTypeOf(mySource.animateTime(1)).toBeVoid();
 expectTypeOf(
   mySource.animateTime(1, {
     intensity: undefined,
-    reverse: null,
+    reverse: undefined,
     speed: undefined,
   }),
 ).toBeVoid();
@@ -160,14 +143,3 @@ expectTypeOf(
     speed: 3,
   }),
 ).toBeVoid();
-
-const meshes = mySource.drawMeshes();
-expectTypeOf(mySource.active).toEqualTypeOf<boolean>();
-expectTypeOf(meshes.background?.visible).toEqualTypeOf<boolean | undefined>();
-
-// deprecated since v11, until v13
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(mySource.preview).toBeBoolean();
-
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-mySource.preview = false;

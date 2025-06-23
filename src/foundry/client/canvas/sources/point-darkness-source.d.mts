@@ -1,10 +1,11 @@
-import type { FixedInstanceType, Identity, IntentionalPartial, RequiredProps } from "#utils";
+import type { FixedInstanceType, Identity, InexactPartial, IntentionalPartial, Override, RequiredProps } from "#utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 import type { PointSourceMesh } from "../containers/_module.d.mts";
 import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type BaseEffectSource from "./base-effect-source.d.mts";
 
 /**
  * A specialized subclass of the BaseLightSource which renders a source of darkness as a point-based effect.
@@ -12,7 +13,7 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
 declare class PointDarknessSource<
   SourceData extends PointDarknessSource.SourceData = PointDarknessSource.SourceData,
   SourceShape extends PointSourcePolygon = PointDarknessSource.ConfiguredPolygon,
-  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = PointDarknessSource.Layers,
+  RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = PointDarknessSource.Layers,
 > extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, RenderingLayers> {
   static override sourceType: "darkness";
 
@@ -25,7 +26,6 @@ declare class PointDarknessSource<
   /** @defaultValue `foundry.CONST.LIGHTING_LEVELS.DARKNESS` */
   protected static override _brightLightingLevel: CONST.LIGHTING_LEVELS;
 
-  /** @defaultValue `CONFIG.Canvas.darknessAnimations` */
   protected static get ANIMATIONS(): typeof CONFIG.Canvas.darknessAnimations;
 
   /**
@@ -43,14 +43,21 @@ declare class PointDarknessSource<
 
   /**
    * @remarks See {@linkcode BaseLightSource.defaultData}, {@linkcode PointEffectSourceMixin.AnyMixedConstructor.defaultData | PointEffectSourceMixin.defaultData}
-   * @privateRemarks Not in Foundry code, necessary type override
+   * @privateRemarks Fake override to allow merging to this interface but not its parents
    */
   static override defaultData: PointDarknessSource.SourceData;
+
+  /** @privateRemarks Fake override to remove `number[]` */
+  override shape: SourceShape | undefined;
 
   /**
    * The optional geometric shape is solely utilized for visual representation regarding darkness sources.
    * Used only when an additional radius is added for visuals.
-   * @remarks `undefined` prior to initialization
+   * @remarks Is `undefined` prior to initialization.
+   *
+   * Not included in the {@linkcode PointDarknessSource.Initialized} overrides,
+   * because it being protected makes overriding messy, and it will still include `| null`; removing the `| undefined` doesn't
+   * meaningfully change the ergonomics
    */
   protected _visualShape: SourceShape | null | undefined;
 
@@ -60,6 +67,12 @@ declare class PointDarknessSource<
    * @defaultValue `(CONFIG.Canvas.darknessSourcePaddingMultiplier ?? 0) * canvas.grid.size`
    */
   protected _padding: number;
+
+  /** @privateRemarks Fake override to specify Initialized return type */
+  override initialize(
+    data?: InexactPartial<SourceData>,
+    options?: BaseEffectSource.InitializeOptions,
+  ): PointDarknessSource.Initialized<SourceData, SourceShape, RenderingLayers>;
 
   /** @remarks Unconditionally returns `true` for darkness sources */
   override get requiresEdges(): boolean;
@@ -78,7 +91,7 @@ declare class PointDarknessSource<
 
   protected override _getPolygonConfiguration(): PointDarknessSource.PolygonConfig;
 
-  protected override _drawMesh(layerId: string): PointSourceMesh | null;
+  protected override _drawMesh(layerId: keyof RenderingLayers): PointSourceMesh | null;
 
   protected override _updateGeometry(): void;
 
@@ -103,23 +116,26 @@ declare namespace PointDarknessSource {
   type Initialized<
     SourceData extends PointDarknessSource.SourceData = PointDarknessSource.SourceData,
     SourceShape extends PointSourcePolygon = PointDarknessSource.ConfiguredPolygon,
-    RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = PointDarknessSource.Layers,
-  > = PointDarknessSource<SourceData, SourceShape, RenderingLayers> & {
-    shape: SourceShape;
-    cachedAttenuation: number;
-    computedAttenuation: number;
-  };
+    RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = PointDarknessSource.Layers,
+  > = Override<
+    PointDarknessSource<SourceData, SourceShape, RenderingLayers>,
+    {
+      /**
+       * The geometric shape of the effect source which is generated later.
+       * @remarks This is the initialized type, the shape has been generated if you're accessing this
+       */
+      shape: SourceShape;
 
-  interface SourceData extends BaseLightSource.SourceData, PointEffectSourceMixin.SourceData {
-    /**
-     * @privateRemarks Type override only, a darkness source is not going to use a
-     * {@linkcode RenderedEffectSource.LightAnimationConfig | LightAnimationConfig}
-     */
-    animation: RenderedEffectSource.StoredDarknessAnimationConfig;
-  }
+      // `protected _visualShape` not overridden because it being protected makes overriding messy, and it will
+      // still include `| null`; removing the `| undefined` doesn't meaningfully change the ergonomics
+    }
+  >;
+
+  interface SourceData extends BaseLightSource.SourceData, PointEffectSourceMixin.SourceData {}
 
   interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold" | "radius"> {}
 
+  /** @remarks See {@linkcode PointDarknessSource._layers} */
   // Interface would require `RenderingLayers extends ... = InterfaceToObject<Layers>` in every subclass signature
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   type Layers = {

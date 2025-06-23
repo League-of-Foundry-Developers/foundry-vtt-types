@@ -19,7 +19,7 @@ import type { LightData } from "#common/data/_module.d.mts";
 declare abstract class RenderedEffectSource<
   SourceData extends RenderedEffectSource.SourceData = RenderedEffectSource.SourceData,
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
-  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = RenderedEffectSource.Layers,
+  RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = RenderedEffectSource.Layers,
 > extends sources.BaseEffectSource<SourceData, SourceShape> {
   /**
    * Keys of the data object which require shaders to be re-initialized.
@@ -39,7 +39,7 @@ declare abstract class RenderedEffectSource<
    * @defaultValue `{}`
    * @remarks As of v13, this is `{}` in {@linkcode RenderedEffectSource}, with layer definitions moving to
    * {@linkcode sources.BaseLightSource._layers | BaseLightSource},  {@linkcode sources.PointDarknessSource._layers | PointDarknessSource},
-   * and {@linkcode sources.PointVisionSource | PointVisionSource}
+   * and {@linkcode sources.PointVisionSource._layers | PointVisionSource}
    * @privateRemarks Keys should match the keys of RenderingLayers, can't enforce because static
    */
   protected static get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
@@ -124,6 +124,15 @@ declare abstract class RenderedEffectSource<
    */
   get illumination(): RenderedEffectSource.LayerMesh<RenderingLayers, "illumination">;
 
+  /**
+   * @privateRemarks Fake override to account for losing the ability to return `this` in {@linkcode sources.BaseEffectSource.initialize | BaseEffectSource} and
+   * still have Initialized overrides. `RenderedEffectSource` has no properties that change type when initialized, as it doesn't implement `#_createShapes`
+   */
+  override initialize(
+    data?: InexactPartial<SourceData>,
+    options?: sources.BaseEffectSource.InitializeOptions,
+  ): RenderedEffectSource<SourceData, SourceShape, RenderingLayers>;
+
   protected override _initialize(data: IntentionalPartial<SourceData>): void;
 
   /**
@@ -161,9 +170,9 @@ declare abstract class RenderedEffectSource<
   /**
    * Create a Mesh for a certain rendered layer of this source.
    * @param layerId - The layer key in layers to draw
-   * @returns The drawn mesh for this layer, or null if no mesh is required
+   * @returns The drawn mesh for this layer, or `null` if no mesh is required
    */
-  protected _drawMesh(layerId: string): PointSourceMesh | null;
+  protected _drawMesh(layerId: keyof RenderingLayers): PointSourceMesh | null;
 
   /**
    * Update shader uniforms used by every rendered layer.
@@ -335,30 +344,28 @@ declare namespace RenderedEffectSource {
 
     /**
      * A custom coloration shader used by this animation
-     * @remarks If one isn't provided by this config, the `coloration` layer will use the fallback {@linkcode foundry.canvas.rendering.shaders.AdaptiveColorationShader | AdaptiveColorationShader}
+     * @remarks Required for entries in {@linkcode CONFIG.Canvas.lightAnimations}
+     *
+     * If one isn't provided by this config, the `coloration` layer will use the fallback {@linkcode foundry.canvas.rendering.shaders.AdaptiveColorationShader | AdaptiveColorationShader}
      */
-    colorationShader?: AdaptiveColorationShader.AnyConstructor;
+    colorationShader: AdaptiveColorationShader.AnyConstructor;
 
     /**
      * A custom background shader used by this animation
      * @remarks If one isn't provided by this config, the `background` layer will use the fallback {@linkcode foundry.canvas.rendering.shaders.AdaptiveBackgroundShader | AdaptiveBackgroundShader}
      */
     backgroundShader?: AdaptiveBackgroundShader.AnyConstructor;
-
-    darknessShader?: never;
   }
 
   /** @internal */
   interface _AnimationConfigDarknessShaders {
     /**
      * A custom darkness shader used by this animation
-     * @remarks If one isn't provided by this config, the `darkness` layer will use the fallback {@linkcode foundry.canvas.rendering.shaders.AdaptiveDarknessShader | AdaptiveDarknessShader}
+     * @remarks Required for entries in {@linkcode CONFIG.Canvas.darknessAnimations}
+     *
+     * If one isn't provided by this config, the `darkness` layer will use the fallback {@linkcode foundry.canvas.rendering.shaders.AdaptiveDarknessShader | AdaptiveDarknessShader}
      */
-    darknessShader?: AdaptiveDarknessShader.AnyConstructor;
-
-    illuminationShader?: never;
-    colorationShader?: never;
-    backgroundShader?: never;
+    darknessShader: AdaptiveDarknessShader.AnyConstructor;
   }
 
   /**
@@ -378,6 +385,11 @@ declare namespace RenderedEffectSource {
   /** @remarks The type for entries in {@linkcode CONFIG.Canvas.LightAnimations} */
   interface LightAnimationConfig extends _AnimationConfigBase, _Seed, _AnimationConfigLightingShaders {}
 
+  /** @remarks The type for entries in {@linkcode CONFIG.Canvas.darknessAnimations} */
+  interface DarknessAnimationConfig extends _AnimationConfigBase, _Seed, _AnimationConfigDarknessShaders {}
+
+  type AnimationConfig = LightAnimationConfig | DarknessAnimationConfig;
+
   /**
    * @remarks The type for {@linkcode RenderedEffectSource.animation | RenderedEffectSource#animation} and
    * {@linkcode RenderedEffectSource.data | RenderedEffectSource#data#animation}.
@@ -391,22 +403,10 @@ declare namespace RenderedEffectSource {
    *
    * All properties are optional because `RenderedEffectSource#animation` is initialized to `{}`
    */
-  interface StoredLightAnimationConfig
-    extends IntentionalPartial<LightAnimationConfig>,
-      IntentionalPartial<LightData.AnimationData>,
-      _AnimationConfigComputed {}
-
-  /** @remarks The type for entries in {@linkcode CONFIG.Canvas.darknessAnimations} */
-  interface DarknessAnimationConfig extends _AnimationConfigBase, _Seed, _AnimationConfigDarknessShaders {}
-
-  interface StoredDarknessAnimationConfig
-    extends IntentionalPartial<DarknessAnimationConfig>,
-      IntentionalPartial<LightData.AnimationData>,
-      _AnimationConfigComputed {}
-
-  type AnimationConfig = LightAnimationConfig | DarknessAnimationConfig;
-
-  type StoredAnimationConfig = StoredLightAnimationConfig | StoredDarknessAnimationConfig;
+  interface StoredAnimationConfig
+    extends IntentionalPartial<
+      LightAnimationConfig & DarknessAnimationConfig & LightData.AnimationData & _AnimationConfigComputed
+    > {}
 
   type ConfiguredLightAnimations = ConcreteKeys<CONFIG["Canvas"]["lightAnimations"]>;
 
@@ -457,12 +457,12 @@ declare namespace RenderedEffectSource {
     /**
      * The blend mode used by this layer
      */
-    blendMode: PIXI.BLEND_MODES;
+    blendMode: keyof typeof PIXI.BLEND_MODES;
   }
 
   // Interface would require `RenderingLayers extends ... = InterfaceToObject<Layers>` in every subclass signature
   // RenderedEffectSource provides no layers as of 13.345
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-empty-object-type
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/consistent-type-definitions
   type Layers = {};
 
   /**

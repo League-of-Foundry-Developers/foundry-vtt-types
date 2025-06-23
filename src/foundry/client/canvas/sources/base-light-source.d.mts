@@ -1,5 +1,6 @@
 import type { Identity, InexactPartial, IntentionalPartial } from "#utils";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
+import type BaseEffectSource from "./base-effect-source.d.mts";
 import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 
 /**
@@ -8,11 +9,11 @@ import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_modul
 declare abstract class BaseLightSource<
   SourceData extends BaseLightSource.SourceData = BaseLightSource.SourceData,
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
-  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = BaseLightSource.Layers,
+  RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = BaseLightSource.Layers,
 > extends RenderedEffectSource<SourceData, SourceShape, RenderingLayers> {
   /**
    * @defaultValue `"light"`
-   * @privateRemarks left `string` here, with a real and fake override in {@linkcode foundry.canvas.source.PointDarknessSource | PointDarknessSource}
+   * @privateRemarks left `string` here, with a real and fake override in {@linkcode foundry.canvas.sources.PointDarknessSource | PointDarknessSource}
    * and {@linkcode foundry.canvas.sources.PointLightSource | PointLightSource} respectively
    */
   static override sourceType: string;
@@ -53,10 +54,9 @@ declare abstract class BaseLightSource<
 
   /**
    * The corresponding animation config.
-   * @privateRemarks Only uses {@linkcode CONFIG.Canvas.lightAnimations} in
-   * {@linkcode BaseLightSource}, but
-   * {@linkcode foundry.canvas.sources.PointDarknessSource | PointDarknessSource}
-   * overrides to use `.darknessAnimations`, so the union type is necessary
+   * @privateRemarks Only uses {@linkcode CONFIG.Canvas.lightAnimations} in {@linkcode BaseLightSource}, but
+   * {@linkcode foundry.canvas.sources.PointDarknessSource | PointDarknessSource} overrides to use
+   * `.darknessAnimations`, so the union is necessary
    */
   protected static get ANIMATIONS(): typeof CONFIG.Canvas.lightAnimations | typeof CONFIG.Canvas.darknessAnimations;
 
@@ -105,8 +105,20 @@ declare abstract class BaseLightSource<
 
   /**
    * A ratio of dim:bright as part of the source radius
+   * @defaultValue `1`
+   * @remarks Nothing in `BaseLightSource` or its subclasses sets this except {@linkcode foundry.canvas.sources.PointLightSource._configure | PointLightSource#_configure};
+   * for all other subclasses it is always `1`
    */
   ratio: number;
+
+  /**
+   * @privateRemarks Fake override to account for losing the ability to return `this` in {@linkcode BaseEffectSource.initialize | BaseEffectSource} and
+   * still have Initialized overrides. `BaseLightSource` has no properties that change type when initialized, as it doesn't implement `#_createShapes`
+   */
+  override initialize(
+    data?: InexactPartial<SourceData>,
+    options?: BaseEffectSource.InitializeOptions,
+  ): BaseLightSource<SourceData, SourceShape, RenderingLayers>;
 
   protected override _initialize(data: IntentionalPartial<SourceData>): void;
 
@@ -118,10 +130,10 @@ declare abstract class BaseLightSource<
 
   protected override _updateCommonUniforms(shader: AbstractBaseShader): void;
 
-  /** @remarks Doesn't exist prior to initialization. Ultimately set in {@linkcode BaseLightSource._updateCommonUniforms | _updateCommonUniforms} */
+  /** @remarks Doesn't exist prior to initialization, but not guaranteed to exist after either. Ultimately set in {@linkcode BaseLightSource._updateCommonUniforms | #_updateCommonUniforms} */
   cachedAttenuation?: number;
 
-  /** @remarks Doesn't exist prior to initialization. Ultimately set in {@linkcode BaseLightSource._updateCommonUniforms | _updateCommonUniforms} */
+  /** @remarks Doesn't exist prior to initialization, but not guaranteed to exist after either. Ultimately set in {@linkcode BaseLightSource._updateCommonUniforms | #_updateCommonUniforms} */
   computedAttenuation?: number;
 
   /**
@@ -169,6 +181,7 @@ declare namespace BaseLightSource {
   interface Any extends AnyBaseLightSource {}
   interface AnyConstructor extends Identity<typeof AnyBaseLightSource> {}
 
+  /** @remarks See {@linkcode BaseLightSource._layers} */
   // Interface would require `RenderingLayers extends ... = InterfaceToObject<Layers>` in every subclass signature
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   type Layers = {

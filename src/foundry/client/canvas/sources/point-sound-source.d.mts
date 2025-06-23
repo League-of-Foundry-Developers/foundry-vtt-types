@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Identity, InexactPartial, RequiredProps } from "#utils";
+import type { FixedInstanceType, Identity, InexactPartial, Override, RequiredProps } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
@@ -9,15 +9,24 @@ import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
  */
 declare class PointSoundSource<
   SourceData extends PointSoundSource.SourceData = PointSoundSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointSoundSource.ConfiguredPolygon,
+  SourceShape extends PointSourcePolygon = PointSoundSource.ImplementationPolygon,
 > extends PointEffectSourceMixin(BaseEffectSource)<SourceData, SourceShape> {
   static override sourceType: "sound";
 
   /**
    * @remarks See {@linkcode PointEffectSourceMixin.AnyMixedConstructor.defaultData | PointEffectSourceMixin.defaultData}
-   * @privateRemarks Not in Foundry code, necessary type override
+   * @privateRemarks Fake override to allow merging to this interface but not its parents
    */
   static override defaultData: PointSoundSource.SourceData;
+
+  /** @privateRemarks Fake override to remove `number[]` */
+  override shape: SourceShape | undefined;
+
+  /** @privateRemarks Fake override to specify Initialized return type */
+  override initialize(
+    data?: InexactPartial<SourceData>,
+    options?: BaseEffectSource.InitializeOptions,
+  ): PointSoundSource.Initialized<SourceData, SourceShape>;
 
   override get effectsCollection(): Collection<this>;
 
@@ -42,8 +51,17 @@ declare namespace PointSoundSource {
 
   type Initialized<
     SourceData extends PointSoundSource.SourceData = PointSoundSource.SourceData,
-    SourceShape extends PointSourcePolygon = PointSoundSource.ConfiguredPolygon,
-  > = PointSoundSource<SourceData, SourceShape> & { shape: SourceShape };
+    SourceShape extends PointSourcePolygon = PointSoundSource.ImplementationPolygon,
+  > = Override<
+    PointSoundSource<SourceData, SourceShape>,
+    {
+      /**
+       * The geometric shape of the effect source which is generated later.
+       * @remarks This is the initialized type, the shape has been generated if you're accessing this
+       */
+      shape: SourceShape;
+    }
+  >;
 
   /** @internal */
   type _GetVolumeMultiplierOptions = InexactPartial<{
@@ -60,15 +78,15 @@ declare namespace PointSoundSource {
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["soundSourceClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  interface ConfiguredPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["sound"]> {}
-  interface ConfiguredPolygon extends FixedInstanceType<ConfiguredPolygonClass> {}
+  interface ImplementationPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["sound"]> {}
+  interface ImplementationPolygon extends FixedInstanceType<ImplementationPolygonClass> {}
 }
 
 export default PointSoundSource;
 
 declare abstract class AnyPointSoundSource extends PointSoundSource<
   PointSoundSource.SourceData,
-  PointSoundSource.ConfiguredPolygon
+  PointSoundSource.ImplementationPolygon
 > {
   constructor(...args: never);
 }

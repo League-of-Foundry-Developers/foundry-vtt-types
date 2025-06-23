@@ -26,7 +26,7 @@ declare abstract class BaseEffectSource<
    * An effect source is constructed by providing configuration options.
    * @param options - Options which modify the base effect source instance
    */
-  constructor(options: BaseEffectSource.ConstructorOptions);
+  constructor(options?: BaseEffectSource.ConstructorOptions);
 
   /**
    * The type of source represented by this data structure.
@@ -61,13 +61,14 @@ declare abstract class BaseEffectSource<
    * Some other object which is responsible for this source.
    * @privateRemarks see {@linkcode BaseEffectSource.ConstructorOptions.object}
    */
+  // TODO: 4th type param for this?
   object: placeables.PlaceableObject.Any | EnvironmentCanvasGroup.Any | null;
 
   /**
    * The source id linked to this effect source.
    * @remarks Foundry types this as Readonly<string>, but does nothing to that effect at runtime
    */
-  sourceId: string;
+  sourceId: string | undefined;
 
   /**
    * The data of this source.
@@ -144,8 +145,12 @@ declare abstract class BaseEffectSource<
    * @param data    - Provided data for configuration
    * @param options - Additional options which modify source initialization
    * @returns The initialized source
+   * @privateRemarks This should be returning `this`, but allowing the Initialized overrides requires returning a specific class
    */
-  initialize(data?: InexactPartial<SourceData>, options?: BaseEffectSource.InitializeOptions): this;
+  initialize(
+    data?: InexactPartial<SourceData>,
+    options?: BaseEffectSource.InitializeOptions,
+  ): BaseEffectSource<SourceData, SourceShape>;
 
   /**
    * Subclass specific data initialization steps.
@@ -195,6 +200,8 @@ declare abstract class BaseEffectSource<
 
   /**
    * Add this BaseEffectSource instance to the active collection.
+   * @remarks
+   * @throws If this Source doesn't have a {@linkcode sourceId}
    */
   add(): void;
 
@@ -226,18 +233,19 @@ declare namespace BaseEffectSource {
      * {@linkcode placeables.AmbientSound | AmbientSound}, or {@linkcode placeables.Token | Token} in Foundry usage
      */
     object: placeables.PlaceableObject.Any | EnvironmentCanvasGroup.Any;
-  }>;
 
-  interface ConstructorOptions extends _ConstructorOptions {
     /**
      * A unique ID for this source. This will be set automatically if an object is provided, otherwise is required.
      * @remarks The above is misleading; sourceId **was** only inferred if you passed a `PlaceableObject`
      * _instead_ of an options object to the constructor (which was a deprecated path removed in v13),
      * _not_ if you pass in `{ object: PlaceableObject }`, where you're expected to also pass `sourceId`
-     * yourself.
+     * yourself, if you want it to be {@linkcode BaseEffectSource.add | added} to its
+     * {@linkcode BaseEffectSource.effectsCollection | #effectsCollection}
      */
     sourceId: string;
-  }
+  }>;
+
+  interface ConstructorOptions extends _ConstructorOptions {}
 
   interface SourceData {
     /**

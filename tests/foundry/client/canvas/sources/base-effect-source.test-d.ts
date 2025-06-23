@@ -43,24 +43,21 @@ expectTypeOf(MyEffectSource.effectsCollection).toBeString();
 expectTypeOf(MyEffectSource.defaultData).toEqualTypeOf<BaseEffectSource.SourceData>();
 
 declare const object: foundry.canvas.placeables.Token.Implementation;
-// @ts-expect-error A source must be passed a sourceId option at construction
 new MyEffectSource();
-new MyEffectSource({ sourceId: foundry.utils.randomID() });
-const mySource = new MyEffectSource({ object, sourceId: object.id });
+new MyEffectSource({ object: undefined, sourceId: undefined });
+const mySource = new MyEffectSource({ object, sourceId: object.sourceId });
 
 expectTypeOf(mySource.object).toEqualTypeOf<PlaceableObject.Any | EnvironmentCanvasGroup.Any | null>();
-expectTypeOf(mySource.sourceId).toEqualTypeOf<string>();
+expectTypeOf(mySource.sourceId).toEqualTypeOf<string | undefined>();
 expectTypeOf(mySource.data).toEqualTypeOf<BaseEffectSource.SourceData>();
 expectTypeOf(mySource.shape).toEqualTypeOf<PIXI.Polygon | number[] | undefined>();
 
 expectTypeOf(mySource["_flags"]).toEqualTypeOf<BaseEffectSource.Flags>();
-expectTypeOf((mySource["_flags"].foo = true)).toBeBoolean();
-expectTypeOf((mySource["_flags"].bar = 7)).toBeNumber();
 
 expectTypeOf(mySource.x).toBeNumber();
 expectTypeOf(mySource.y).toBeNumber();
 expectTypeOf(mySource.elevation).toBeNumber();
-expectTypeOf(mySource.effectsCollection).toEqualTypeOf<foundry.utils.Collection<MyEffectSource>>();
+expectTypeOf(mySource.effectsCollection).toEqualTypeOf<Collection<MyEffectSource>>();
 expectTypeOf(mySource.updateId).toBeNumber();
 expectTypeOf(mySource.active).toBeBoolean();
 expectTypeOf(mySource.attached).toBeBoolean();
