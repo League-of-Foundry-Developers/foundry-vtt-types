@@ -1356,3 +1356,40 @@ export type LayerClass<T extends Document.AnyConstructor> = GetKey<
  * @deprecated No replacement as this was deemed too niche.
  */
 export type FolderDocumentTypes = Exclude<foundry.CONST.FOLDER_DOCUMENT_TYPES, "Compendium">;
+
+/**
+ * Currently indistinguishable from `DotKeys` but will eventually avoid `readonly` keys.
+ */
+export type MutableDotKeys<T extends object> = DotKeys<T>;
+
+/**
+ * Currently indistinguishable from `DotKeys` but will eventually avoid keys that can't be deleted.
+ */
+export type DeletableDotKeys<T extends object> = DotKeys<T>;
+
+/**
+ * Gets the valid dotkeys for `T`. Currently only gets keys that are in all items in a union. Later
+ * configuration to loosen this will exist.
+ */
+export type DotKeys<T extends object> = {
+  [K in keyof T]: K | (K extends string ? _DotKeyOf<T[K], `${K}.`> : never);
+}[keyof T];
+
+type _DotKeyOf<T, Prefix extends string = ""> = T extends object
+  ? {
+      [K in keyof T]: K extends string ? `${Prefix}${K}` | _DotKeyOf<T[K], `${Prefix}${K}.`> : never;
+    }[keyof T]
+  : never;
+
+/**
+ * Gets a dot property on `T`.
+ */
+export type GetProperty<T extends object, K extends DotKeys<T>> = _GetProperty<T, K>;
+
+type _GetProperty<T, K> = K extends keyof T
+  ? T[K]
+  : K extends `${infer First}.${infer Rest}`
+    ? First extends keyof T
+      ? _GetProperty<T[First], Rest>
+      : never
+    : never;
