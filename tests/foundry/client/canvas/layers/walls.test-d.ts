@@ -53,13 +53,12 @@ expectTypeOf(layer["_getWallDataFromActiveTool"]("foobar")).toEqualTypeOf<Docume
 
 expectTypeOf(layer.identifyInteriorArea([someWall, someWall])).toEqualTypeOf<PIXI.Polygon[]>();
 
-declare const someEvent: PIXI.FederatedEvent;
-declare const somePointerEvent: PointerEvent;
-expectTypeOf(layer["_onDragLeftStart"](someEvent)).toEqualTypeOf<Promise<Wall.Implementation>>();
-expectTypeOf(layer["_onDragLeftMove"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftDrop"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftCancel"](somePointerEvent)).toBeVoid();
-expectTypeOf(layer["_onClickRight"](someEvent)).toBeVoid();
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toEqualTypeOf<Promise<Wall.Implementation>>();
+expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftDrop"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onClickRight"](pointerEvent)).toBeVoid();
 
 declare const someRay: Ray;
 

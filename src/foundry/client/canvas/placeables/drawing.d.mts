@@ -214,66 +214,66 @@ declare class Drawing extends PlaceableObject<DrawingDocument.Implementation> {
 
   override activateListeners(): void;
 
-  protected override _canControl(user: User.Implementation, _event: PIXI.FederatedEvent): boolean;
+  protected override _canControl(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  protected override _canConfigure(_user: User.Implementation, _event: PIXI.FederatedEvent): boolean;
+  protected override _canConfigure(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
   // options: not null (destructured)
-  protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): void;
+  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
 
   /**
    * Handle mouse movement which modifies the dimensions of the drawn shape
    * @remarks Foundry marked `@internal`
    */
-  protected _onMouseDraw(event: PIXI.FederatedEvent): void;
+  protected _onMouseDraw(event: Canvas.Event.Pointer): void;
 
-  protected override _onClickLeft(event: PIXI.FederatedEvent): void;
+  protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftDrop(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftCancel(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[];
+  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
 
   /**
    * Handle mouse-over event on a control handle
    * @param event - The mouseover event
    */
-  protected _onHandleHoverIn(event: PIXI.FederatedEvent): void;
+  protected _onHandleHoverIn(event: PIXI.FederatedEvent<PointerEvent>): void;
 
   /**
    * Handle mouse-out event on a control handle
    * @param event - The mouseout event
    */
-  protected _onHandleHoverOut(event: PIXI.FederatedEvent): void;
+  protected _onHandleHoverOut(event: PIXI.FederatedEvent<PointerEvent>): void;
 
   /**
    * Starting the resize handle drag event, initialize the original data.
    */
-  protected _onHandleDragStart(event: PIXI.FederatedEvent): void;
+  protected _onHandleDragStart(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle mousemove while dragging a tile scale handler
    * @param event - The mousemove event
    */
-  protected _onHandleDragMove(event: PIXI.FederatedEvent): void;
+  protected _onHandleDragMove(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle mouseup after dragging a tile scale handler
    * @param event - The mouseup event
    */
-  protected _onHandleDragDrop(event: PIXI.FederatedEvent): void;
+  protected _onHandleDragDrop(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle cancellation of a drag event for one of the resizing handles
    */
-  protected _onHandleDragCancel(event: PIXI.FederatedEvent): void;
+  protected _onHandleDragCancel(event: Canvas.Event.Pointer): void;
 
   /**
    * Get a vectorized rescaling transformation for drawing data and dimensions passed in parameter

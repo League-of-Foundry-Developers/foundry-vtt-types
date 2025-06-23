@@ -54,6 +54,9 @@ jobs:
       - name: Type Check (exactOptionalPropertyTypes = false)
         run: npx tsc --exactOptionalPropertyTypes false
 
+      - name: Type Check (TS Go)
+        run: npx tsgo
+
   lint:
     # Can run untrusted code so disable all permissions.
     permissions: {}

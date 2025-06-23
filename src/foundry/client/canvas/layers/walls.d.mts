@@ -134,15 +134,15 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
   identifyInteriorArea(walls: Wall.Implementation[]): PIXI.Polygon[];
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): Promise<Wall.Implementation>;
+  protected override _onDragLeftStart(event: Canvas.Event.Pointer): Promise<Wall.Implementation>;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftDrop(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftCancel(event: PointerEvent): void;
+  protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
-  protected override _onClickRight(event: PIXI.FederatedEvent): void;
+  protected override _onClickRight(event: Canvas.Event.Pointer): void;
 
   /**
    * @deprecated since v11, will be removed in v13

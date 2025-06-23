@@ -15,7 +15,6 @@ import type {
   RemoveIndexSignatures,
   FixedInstanceType,
   NullishProps,
-  AllKeysOf,
   DiscriminatedUnion,
   PickValue,
   Identity,
@@ -48,6 +47,12 @@ import type DocumentSocketResponse from "./socket.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
 
 export default Document;
+
+type InexactPartialExcept<T extends object, RequiredKey> = {
+  [K in keyof T as Extract<K, RequiredKey>]: T[K];
+} & {
+  [K in keyof T as Exclude<K, RequiredKey>]?: T[K] | undefined;
+};
 
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
 type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
@@ -1698,9 +1703,9 @@ declare namespace Document {
     type DeleteOperation<Op extends DatabaseDeleteOperation> = InexactPartial<Omit<Op, "ids">>;
 
     /** Used for {@linkcode Document._preCreateOperation} */
-    type PreCreateOperationStatic<Op extends DatabaseCreateOperation> = InexactPartial<
+    type PreCreateOperationStatic<Op extends DatabaseCreateOperation> = InexactPartialExcept<
       Op,
-      Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "renderSheet" | "data" | "noHook" | "pack" | "parent">
+      "modifiedTime" | "render" | "renderSheet" | "data" | "noHook" | "pack" | "parent"
     >;
 
     /** Used for {@link Document._preCreate | `Document#_preCreate`} */
@@ -1726,12 +1731,9 @@ declare namespace Document {
     >;
 
     /** Used for {@linkcode Document._preUpdateOperation} */
-    type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartial<
+    type PreUpdateOperationStatic<Op extends DatabaseUpdateOperation> = InexactPartialExcept<
       Op,
-      Exclude<
-        AllKeysOf<Op>,
-        "modifiedTime" | "diff" | "recursive" | "render" | "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
-      >
+      "modifiedTime" | "diff" | "recursive" | "render" | "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
     >;
 
     /** Used for {@link Document._preUpdate | `Document#_preUpdate`} */
@@ -1755,14 +1757,14 @@ declare namespace Document {
     >;
 
     /** Used for {@linkcode Document._preDeleteOperation} */
-    type PreDeleteOperationStatic<Op extends DatabaseDeleteOperation> = InexactPartial<
+    type PreDeleteOperationStatic<Op extends DatabaseDeleteOperation> = InexactPartialExcept<
       Op,
-      Exclude<AllKeysOf<Op>, "modifiedTime" | "render" | "ids" | "deleteAll" | "noHook" | "pack" | "parent">
+      "modifiedTime" | "render" | "ids" | "deleteAll" | "noHook" | "pack" | "parent"
     >;
 
     /** Used for {@link Document._preDelete | `Document#_preDelete`} */
     type PreDeleteOperationInstance<Op extends DatabaseDeleteOperation> = Omit<
-      InexactPartial<Op, Exclude<AllKeysOf<Op>, "modifiedTime" | "render">>,
+      InexactPartialExcept<Op, "modifiedTime" | "render">,
       "ids" | "deleteAll" | "noHook" | "pack" | "parent"
     >;
 
@@ -2070,10 +2072,11 @@ declare namespace Document {
   }> &
     _PossibleSubtypeContext<DocumentName>;
 
-  type CreateDialogData<CreateData extends object> = InexactPartial<
-    CreateData,
-    Extract<AllKeysOf<CreateData>, "name" | "type" | "folder">
-  >;
+  // TODO(LukeAbby): Inline into each document.
+  type CreateDialogData<CreateData extends object> = InexactPartial<{
+    [K in keyof CreateData as Extract<K, "name" | "type" | "folder">]: CreateData[K];
+  }> &
+    Omit<CreateData, "name" | "type" | "folder">;
 
   /** @internal */
   type _PossibleSubtypesContext<DocumentName extends Document.Type> =

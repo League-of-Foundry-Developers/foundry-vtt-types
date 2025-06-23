@@ -196,15 +196,17 @@ declare namespace ClientKeybindings {
    */
   type _PassableKeybindingActionConfig = Omit<StoredKeybindingActionConfig, "namespace" | "order">;
 
+  /** @internal */
+  type _KeybindingActionConfigInexactProps = "precedence" | "uneditable" | "editable" | "repeat" | "reservedModifiers";
+
   /**
    * The interface to be passed to {@link ClientKeybindings.register | #register}. `name` is always required,
    * and the properties enumerated in the `InexactPartial` have defaults provided
    * @internal
    */
-  type _KeybindingActionConfig = InexactPartial<
-    IntentionalPartial<_PassableKeybindingActionConfig, Exclude<keyof _PassableKeybindingActionConfig, "name">>,
-    "precedence" | "uneditable" | "editable" | "repeat" | "reservedModifiers"
-  >;
+  type _KeybindingActionConfig = Pick<_PassableKeybindingActionConfig, "name"> &
+    InexactPartial<Pick<_PassableKeybindingActionConfig, _KeybindingActionConfigInexactProps>> &
+    IntentionalPartial<Omit<_PassableKeybindingActionConfig, "name" | _KeybindingActionConfigInexactProps>>;
 
   /**
    * A Client Keybinding Action Configuration
@@ -236,12 +238,15 @@ declare namespace ClientKeybindings {
 
   interface _PassableActionBinding extends Omit<StoredKeybindingActionBinding, "index"> {}
 
+  /** @internal */
+  type _KeybindingActionBinding = Pick<_PassableActionBinding, "key"> &
+    InexactPartial<Omit<_PassableActionBinding, Exclude<keyof _PassableActionBinding, "key">>>;
+
   /**
    * A Client Keybinding Action Binding
    * @remarks Copied from `client/_types.mjs`
    */
-  interface KeybindingActionBinding
-    extends InexactPartial<_PassableActionBinding, Exclude<keyof _PassableActionBinding, "key">> {}
+  interface KeybindingActionBinding extends _KeybindingActionBinding {}
 
   /**
    * An action that can occur when a key is pressed

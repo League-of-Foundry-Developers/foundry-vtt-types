@@ -594,28 +594,28 @@ declare class Canvas extends _InternalCanvas {
   /**
    * Handle right-mouse start drag events occurring on the Canvas.
    */
-  protected _onDragRightStart(event: PIXI.FederatedEvent): void;
+  protected _onDragRightStart(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle right-mouse drag events occurring on the Canvas.
    */
-  protected _onDragRightMove(event: PIXI.FederatedEvent): void;
+  protected _onDragRightMove(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle the conclusion of a right-mouse drag workflow the Canvas stage.
    */
-  protected _onDragRightDrop(event: PIXI.FederatedEvent): void;
+  protected _onDragRightDrop(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle the cancellation of a right-mouse drag workflow the Canvas stage.
    */
-  protected _onDragRightCancel(event: PIXI.FederatedEvent): void;
+  protected _onDragRightCancel(event: Canvas.Event.Pointer): void;
 
   /**
    * Pan the canvas view when the cursor position gets close to the edge of the frame
    * @param event - The originating mouse movement event
    */
-  protected _onDragCanvasPan(event: MouseEvent): ReturnType<this["animatePan"]> | void;
+  protected _onDragCanvasPan(event: Canvas.Event.Pointer): ReturnType<this["animatePan"]> | void;
 
   /**
    * Handle window resizing with the dimensions of the window viewport change
@@ -628,21 +628,12 @@ declare class Canvas extends _InternalCanvas {
    * Handle mousewheel events which adjust the scale of the canvas
    * @param event - The mousewheel event that zooms the canvas
    */
-  protected _onMouseWheel(event: WheelEvent): void;
-
-  /**
-   * Event handler for the drop portion of a drag-and-drop event.
-   * @internal
-   */
-  protected _onDrop(event: DragEvent): void;
+  protected _onMouseWheel(event: Canvas.Event.Wheel): void;
 
   /**
    * Track objects which have pending render flags.
    */
-  readonly pendingRenderFlags: {
-    OBJECTS: Set<FixedInstanceType<ReturnType<typeof RenderFlagsMixin>>>;
-    PERCEPTION: Set<FixedInstanceType<ReturnType<typeof RenderFlagsMixin>>>;
-  };
+  readonly pendingRenderFlags: Canvas.PendingRenderFlags;
 
   /**
    * @deprecated since v11, will be removed in v13
@@ -722,6 +713,20 @@ declare namespace Canvas {
   type PairOfPointsTuple = [x0: number, y0: number, x1: number, y1: number];
 
   /**
+   * A 3D point, expessed as \{x, y, elevation\}.
+   */
+  interface ElevatedPoint {
+    /** The x-coordinate in pixels */
+    x: number;
+
+    /** The y-coordinate in pixels */
+    y: number;
+
+    /** The elevation in grid units */
+    elevation: number;
+  }
+
+  /**
    * A standard rectangle interface.
    * @remarks Copied from `resources/app/common/types.mjs`
    */
@@ -795,6 +800,31 @@ declare namespace Canvas {
      * @privateRemarks forwarded to {@linkcode PIXI.RenderTexture.create}
      */
     textureConfiguration?: PIXI.IBaseTextureOptions | undefined;
+  }
+
+  namespace Event {
+    /** @internal */
+    interface _Base<Original extends UIEvent | PIXI.PixiTouch = UIEvent | PIXI.PixiTouch>
+      extends PIXI.FederatedEvent<Original> {
+      interactionData: MouseInteractionManager.InteractionData<PIXI.DisplayObject>;
+    }
+
+    interface Pointer extends _Base<PointerEvent> {}
+    interface Wheel extends WheelEvent {}
+    interface DeleteKey extends KeyboardEvent {}
+
+    interface DarknessChange extends PIXI.FederatedEvent {
+      type: "darknessChange";
+      environmentData: {
+        darknessLevel: number;
+        priorDarknessLevel: number;
+      };
+    }
+  }
+
+  interface PendingRenderFlags {
+    OBJECTS: Set<FixedInstanceType<ReturnType<typeof RenderFlagsMixin>>>;
+    PERCEPTION: Set<FixedInstanceType<ReturnType<typeof RenderFlagsMixin>>>;
   }
 }
 

@@ -83,21 +83,21 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
    */
   protected _highlightShape(data?: foundry.data.BaseShapeData.CreateData | null): void;
 
-  protected override _onClickLeft(event: PIXI.FederatedEvent): void;
+  protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 
-  protected override _onClickLeft2(event: PIXI.FederatedEvent): void;
+  protected override _onClickLeft2(event: Canvas.Event.Pointer): void;
 
-  protected override _canDragLeftStart(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canDragLeftStart(user: User.Implementation, event: Canvas.Event.Pointer): boolean;
 
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftDrop(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftCancel(event: PointerEvent): void;
+  protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
-  protected override _onClickRight(event: PIXI.FederatedEvent): void;
+  protected override _onClickRight(event: Canvas.Event.Pointer): void;
 }
 
 declare namespace RegionLayer {

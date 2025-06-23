@@ -22,8 +22,10 @@ expectTypeOf(control["_getTexture"]()).toEqualTypeOf<foundry.canvas.loadTexture.
 
 expectTypeOf(control.reposition()).toEqualTypeOf<void>();
 
-declare const someEvent: PIXI.FederatedEvent;
-expectTypeOf(control["_onMouseOver"](someEvent)).toEqualTypeOf<false | void>();
-expectTypeOf(control["_onMouseOut"](someEvent)).toEqualTypeOf<false | void>();
-expectTypeOf(control["_onMouseDown"](someEvent)).toEqualTypeOf<Promise<WallDocument.Implementation> | false | void>();
-expectTypeOf(control["_onRightDown"](someEvent)).toEqualTypeOf<Promise<WallDocument.Implementation> | void>();
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(control["_onMouseOver"](pointerEvent)).toEqualTypeOf<false | void>();
+expectTypeOf(control["_onMouseOut"](pointerEvent)).toEqualTypeOf<false | void>();
+expectTypeOf(control["_onMouseDown"](pointerEvent)).toEqualTypeOf<
+  Promise<WallDocument.Implementation> | false | void
+>();
+expectTypeOf(control["_onRightDown"](pointerEvent)).toEqualTypeOf<Promise<WallDocument.Implementation> | void>();

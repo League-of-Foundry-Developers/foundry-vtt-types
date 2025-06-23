@@ -1,3 +1,4 @@
+import type { AnyFunction } from "#utils";
 // In Foundry itself this file contains re-exports of these other modules.
 // Therefore it has a runtime effect and uses `.mjs` instead of `.d.mts`.
 // While `.mts` could work, to avoid `import-x/no-unresolved` from erroring `.mjs` is used.
@@ -17,4 +18,4 @@ export { default as BitMask } from "./bitmask.mjs";
 export { default as WordTree } from "./word-tree.mjs";
 export { default as StringTree } from "./string-tree.mjs";
 
-// export const AsyncFunction = (async function() {}).constructor;
+export const AsyncFunction: AnyFunction;

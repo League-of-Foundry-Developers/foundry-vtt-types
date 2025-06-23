@@ -42,17 +42,16 @@ expectTypeOf(myShape.points).toEqualTypeOf<Array<number | undefined>>();
 
 /******************************************************************/
 
-const textureDataTestSchema = {
-  textureData: new foundry.data.TextureData(
-    {},
-    { categories: ["IMAGE", "AUDIO"], initial: { src: "path/to/thing.png" } },
-  ),
-};
-type TextureTestSchema = typeof textureDataTestSchema;
+type TextureDataTestSchema = DataModel.SchemaOfClass<typeof TextureDataTestModel>;
 
-class TextureDataTestModel extends DataModel<TextureTestSchema> {
-  static override defineSchema(): TextureTestSchema {
-    return textureDataTestSchema;
+class TextureDataTestModel extends DataModel<TextureDataTestSchema> {
+  static override defineSchema() {
+    return {
+      textureData: new foundry.data.TextureData(
+        {},
+        { categories: ["IMAGE", "AUDIO"], initial: { src: "path/to/thing.png" } },
+      ),
+    };
   }
 }
 const testModel = new TextureDataTestModel();

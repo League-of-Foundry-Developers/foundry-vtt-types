@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 
 import AVClient = foundry.av.AVClient;
-import AVConfig = foundry.av.AVConfig;
+import AVConfig = foundry.applications.settings.menus.AVConfig;
 import AVMaster = foundry.av.AVMaster;
 
 declare class CustomAVCLient extends AVClient {
