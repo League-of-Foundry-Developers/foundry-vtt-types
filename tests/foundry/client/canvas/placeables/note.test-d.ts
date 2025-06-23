@@ -79,13 +79,13 @@ expectTypeOf(
 expectTypeOf(note["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
 
 declare const someUser: User.Implementation;
-declare const someEvent: PIXI.FederatedEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 expectTypeOf(note["_canHover"](someUser)).toBeBoolean();
 expectTypeOf(note["_canView"](someUser)).toBeBoolean();
 expectTypeOf(note["_canConfigure"](someUser)).toBeBoolean();
-expectTypeOf(note["_onHoverIn"](someEvent)).toBeVoid();
-expectTypeOf(note["_onClickLeft2"](someEvent)).toBeVoid();
-expectTypeOf(note["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
+expectTypeOf(note["_onHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(note["_onClickLeft2"](pointerEvent)).toBeVoid();
+expectTypeOf(note["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
 
 // deprecated since v12, until v14
 // eslint-disable-next-line @typescript-eslint/no-deprecated

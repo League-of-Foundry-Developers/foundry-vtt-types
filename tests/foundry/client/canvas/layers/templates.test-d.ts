@@ -20,8 +20,8 @@ expectTypeOf(layer.hookName).toEqualTypeOf<"TemplateLayer">;
 expectTypeOf(layer["_deactivate"]()).toBeVoid();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-declare const someEvent: PIXI.FederatedEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someWheelEvent: WheelEvent;
-expectTypeOf(layer["_onDragLeftStart"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftMove"](someEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<MeasuredTemplate.Implementation> | void>();

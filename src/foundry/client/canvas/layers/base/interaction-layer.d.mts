@@ -1,6 +1,8 @@
 import type { HandleEmptyObject, Identity, NullishProps } from "#utils";
 import type { CanvasLayer } from "../_module.d.mts";
 
+import Canvas = foundry.canvas.Canvas;
+
 /**
  * A subclass of CanvasLayer which provides support for user interaction with its contained objects.
  */
@@ -64,74 +66,73 @@ declare class InteractionLayer extends CanvasLayer {
   getZIndex(): number;
 
   /**
-   * Handle left mouse-click events which originate from the Canvas stage.
-   * @see {@link Canvas._onClickLeft | `Canvas#_onClickLeft`}
-   * @param event - The PIXI InteractionEvent which wraps a PointerEvent
+   * Callback actions which occur on a single left-click event to assume control of the object
+   * @param event - The triggering canvas interaction event
    */
-  protected _onClickLeft(event: PIXI.FederatedEvent): void;
+  protected _onClickLeft(event: Canvas.Event.Pointer): boolean | void;
 
   /**
    * Handle double left-click events which originate from the Canvas stage.
    * @see {@linkcode Canvas.#onClickLeft2}
    * @param event - The PIXI InteractionEvent which wraps a PointerEvent
    */
-  protected _onClickLeft2(event: PIXI.FederatedEvent): void;
+  protected _onClickLeft2(event: Canvas.Event.Pointer): boolean | void;
 
   /**
    * Does the User have permission to left-click drag on the Canvas?
    * @param user  - The User performing the action.
    * @param event - The event object.
    */
-  protected _canDragLeftStart(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected _canDragLeftStart(user: User.Implementation, event: Canvas.Event.Pointer): boolean;
 
   /**
    * Start a left-click drag workflow originating from the Canvas stage.
    * @see {@linkcode Canvas.#onDragLeftStart}
    * @param event - The PIXI InteractionEvent which wraps a PointerEvent
    */
-  protected _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
   /**
    * Continue a left-click drag workflow originating from the Canvas stage.
    * @see {@linkcode Canvas.#onDragLeftMove}
    * @param event - The PIXI InteractionEvent which wraps a PointerEvent
    */
-  protected _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
   /**
    * Conclude a left-click drag workflow originating from the Canvas stage.
    * @see {@linkcode Canvas.#onDragLeftDrop}
    * @param vent - The PIXI InteractionEvent which wraps a PointerEvent
    */
-  protected _onDragLeftDrop(event: PIXI.FederatedEvent): void;
+  protected _onDragLeftDrop(event: Canvas.Event.Pointer): void;
 
   /**
    * Cancel a left-click drag workflow originating from the Canvas stage.
    * @see {@linkcode Canvas.#onDragLeftDrop}
    * @param event - A right-click pointer event on the document.
    */
-  protected _onDragLeftCancel(event: PointerEvent): void;
+  protected _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle right mouse-click events which originate from the Canvas stage.
    * @see {@linkcode Canvas._onClickRight}
    * @param event - The PIXI InteractionEvent which wraps a PointerEvent
    */
-  protected _onClickRight(event: PIXI.FederatedEvent): void;
+  protected _onClickRight(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle mouse-wheel events which occur for this active layer.
    * @see {@linkcode MouseManager._onWheel}
    * @param event - The WheelEvent initiated on the document
    */
-  protected _onMouseWheel(event: WheelEvent): void;
+  protected _onMouseWheel(event: Canvas.Event.Wheel): void;
 
   /**
    * Handle a DELETE keypress while this layer is active.
    * @see {@linkcode ClientKeybindings._onDelete}
    * @param event - The delete key press event
    */
-  protected _onDeleteKey(event: KeyboardEvent): Promise<void>;
+  protected _onDeleteKey(event: Canvas.Event.DeleteKey): Promise<void>;
 }
 
 declare namespace InteractionLayer {

@@ -57,7 +57,7 @@ expectTypeOf(layer["_getOccludableTokens"]()).toEqualTypeOf<Token.Implementation
 // `storeHistory` tests omitted due to current breakage of document `.toObject()` typing
 // The override does not change the signature, so they'd be redundant over the `PlaceablesLayer` tests in any case
 
-declare const someEvent: PIXI.FederatedEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someWheelEvent: WheelEvent;
 declare const someDragEvent: DragEvent;
 expectTypeOf(
@@ -68,7 +68,7 @@ expectTypeOf(
     y: 30000,
   }),
 ).toEqualTypeOf<Promise<number | false | TokenDocument.Implementation>>();
-expectTypeOf(layer["_onClickLeft"](someEvent)).toBeVoid();
+expectTypeOf(layer["_onClickLeft"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token.Implementation[] | void>>();
 
 // deprecated since v12, until v14

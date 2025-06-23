@@ -92,15 +92,15 @@ expectTypeOf(
   layer.emitAtPosition("path/to/file.ogg", { x: 50, y: 50 }, 200, mostNullishPlayAtPositionOptions),
 ).toEqualTypeOf<Promise<foundry.audio.Sound | null>>();
 
-declare const someEvent: PIXI.FederatedEvent;
-declare const somePointerEvent: PointerEvent;
+declare const darknessEvent: foundry.canvas.Canvas.Event.DarknessChange;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someDragEvent: DragEvent;
-expectTypeOf(layer["_onDarknessChange"](someEvent)).toBeVoid();
+expectTypeOf(layer["_onDarknessChange"](darknessEvent)).toBeVoid();
 expectTypeOf(layer["_onMouseMove"]()).toBeVoid();
-expectTypeOf(layer["_onDragLeftStart"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftMove"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftDrop"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftCancel"](somePointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftDrop"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
 
 expectTypeOf(
   layer["_onDropData"](someDragEvent, {

@@ -76,14 +76,7 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
  *   The most common time this shows up is with the pattern
  *   `exampleFunction({ prop = "foo" } = {}) { ... }`.
  */
-export type IntentionalPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
-  {
-    [K2 in keyof T as Extract<K2, K>]?: T[K2];
-  } & {
-    // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for
-    [K2 in keyof T as Exclude<K2, K>]: T[K2];
-  }
->;
+export type IntentionalPartial<T extends object> = Partial<T>;
 
 /**
  * This type is used to make a constraint where `T` must be statically known to overlap with `U`.
@@ -292,8 +285,10 @@ export type MaybeEmpty<T extends AnyObject> =
  * The following uses `extends object` instead of `AnyObject` to allow `O = typeof SomeClass`
  */
 export type PropertiesOfType<O extends object, T> = {
-  [K in keyof O]: [O[K], T] extends [T, O[K]] ? K : never;
+  [K in keyof O]: _KeyOfType<O[K], K, T>;
 }[keyof O];
+
+type _KeyOfType<V, K, T> = V extends T ? K : never;
 
 declare class Branded<in out BrandName extends string> {
   #brand: BrandName;
@@ -540,14 +535,9 @@ export type AllKeysOf<T extends object> = T extends unknown ? keyof T : never;
  *
  * @internal
  */
-export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
-  {
-    [K2 in keyof T as Extract<K2, K>]?: T[K2] | undefined;
-  } & {
-    // Note(LukeAbby): This effectively inlines `Omit<T, K>` hoping for slightly better performance.
-    [K2 in keyof T as Exclude<K2, K>]: T[K2];
-  }
->;
+export type InexactPartial<T extends object> = {
+  [K2 in keyof T]?: T[K2] | undefined;
+};
 
 /**
  * Makes select properties in `T` optional and explicitly allows both `null` and
@@ -581,14 +571,9 @@ export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<
  *
  * @internal
  */
-export type NullishProps<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
-  {
-    [K2 in keyof T as Extract<K2, K>]?: T[K2] | null | undefined;
-  } & {
-    // Note(LukeAbby): This effectively inlines `Omit<T, K>` hoping for slightly better performance.
-    [K2 in keyof T as Exclude<K2, K>]: T[K2];
-  }
->;
+export type NullishProps<T extends object> = {
+  [K2 in keyof T]?: T[K2] | null | undefined;
+};
 
 /**
  * Expand an object that contains keys in dotted notation

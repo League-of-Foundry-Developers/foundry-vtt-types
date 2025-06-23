@@ -2250,6 +2250,11 @@ declare global {
      * Configure the Application classes used to render various core UI elements in the application
      */
     ui: CONFIG.UI;
+
+    /**
+     * Overrides for various core UI/UX helpers.
+     */
+    ux: CONFIG.UX;
   }
 
   namespace CONFIG {
@@ -2316,6 +2321,15 @@ declare global {
 
       /** @defaultValue `CameraViews` */
       webrtc: foundry.applications.apps.av.CameraViews.AnyConstructor;
+    }
+
+    interface UX {
+      ContextMenu: foundry.applications.ux.ContextMenu.AnyConstructor;
+      Draggable: foundry.applications.ux.Draggable.AnyConstructor;
+      DragDrop: foundry.applications.ux.DragDrop.AnyConstructor;
+      FilePicker: foundry.applications.apps.FilePicker.AnyConstructor;
+      TextEditor: foundry.applications.ux.TextEditor.AnyConstructor;
+      TooltipManager: foundry.helpers.interaction.TooltipManager.AnyConstructor;
     }
 
     interface Canvas {

@@ -313,41 +313,35 @@ declare class Ruler extends PIXI.Container {
    * @param event - The drag start event
    * @see {@linkcode Canvas.#onDragLeftStart}
    */
-  protected _onDragStart(event: PIXI.FederatedEvent): void;
+  protected _onDragStart(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle left-click events on the Canvas during Ruler measurement.
    * @param event - The pointer-down event
    * @see {@linkcode Canvas._onClickLeft}
    */
-  protected _onClickLeft(event: PIXI.FederatedEvent): void;
+  protected _onClickLeft(event: Canvas.Event.Pointer): void;
 
   /**
    * Handle right-click events on the Canvas during Ruler measurement.
    * @param event - The pointer-down event
    * @see {@linkcode Canvas._onClickRight}
    */
-  protected _onClickRight(event: PIXI.FederatedEvent): void;
+  protected _onClickRight(event: Canvas.Event.Pointer): void;
 
   /**
    * Continue a Ruler measurement workflow for left-mouse movements on the Canvas.
    * @param event - The mouse move event
    * @see {@linkcode Canvas.#onDragLeftMove}
    */
-  protected _onMouseMove(event: PIXI.FederatedEvent): void;
+  protected _onMouseMove(event: Canvas.Event.Pointer): void;
 
   /**
    * Conclude a Ruler measurement workflow by releasing the left-mouse button.
    * @param event - The pointer-up event
    * @see {@linkcode Canvas.#onDragLeftDrop}
    */
-  protected _onMouseUp(event: PIXI.FederatedEvent): void;
-
-  /**
-   * Move the Token along the measured path when the move key is pressed.
-   * @remarks `context` is unused in 12.331
-   */
-  protected _onMoveKeyDown(context: foundry.helpers.interaction.KeyboardManager.KeyboardEventContext): void;
+  protected _onMouseUp(event: Canvas.Event.Pointer): void;
 }
 
 declare namespace Ruler {

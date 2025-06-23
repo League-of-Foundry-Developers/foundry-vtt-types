@@ -19,7 +19,7 @@ declare class MyInteractionLayer extends InteractionLayer {
 
 expectTypeOf(MyInteractionLayer.layerOptions.baseClass).toEqualTypeOf<typeof MyInteractionLayer>;
 
-declare const someEvent: PIXI.FederatedEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someUser: User.Implementation;
 const layer = new MyInteractionLayer();
 
@@ -33,5 +33,5 @@ expectTypeOf(layer.activate({ tool: "foo" })).toEqualTypeOf<MyInteractionLayer>(
 expectTypeOf(layer["_activate"]()).toBeVoid();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(layer.getZIndex()).toBeNumber();
-expectTypeOf(layer["_canDragLeftStart"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(layer["_onDragLeftStart"](someEvent)).toBeVoid();
+expectTypeOf(layer["_canDragLeftStart"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
