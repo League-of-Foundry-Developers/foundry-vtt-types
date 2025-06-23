@@ -184,10 +184,7 @@ declare namespace DrawingDocument {
      * The _id of the user who created the drawing
      * @defaultValue `game.user?.id`
      */
-    author: fields.ForeignDocumentField<
-      typeof documents.BaseUser,
-      { nullable: false; initial: () => string | undefined }
-    >;
+    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
 
     /**
      * The geometric shape of the drawing

@@ -251,9 +251,9 @@ declare namespace ChatMessage {
 
     /**
      * The _id of the User document who generated this message
-     * @defaultValue `game?.user?.id`
+     * @defaultValue `game.user?.id`
      */
-    author: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string }>;
+    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
 
     /**
      * The timestamp at which point this message was generated
