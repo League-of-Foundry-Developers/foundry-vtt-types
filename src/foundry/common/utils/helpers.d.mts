@@ -5,10 +5,7 @@ import type {
   AnyObject,
   DeepReadonly,
   DeletableDotKeys,
-  DotKeys,
-  GetProperty,
   InexactPartial,
-  MutableDotKeys,
   NonNullish,
 } from "#utils";
 import type Document from "../abstract/document.d.mts";
@@ -350,7 +347,7 @@ export function hasProperty(object: object, key: string): boolean;
  * @param key    - An object property with notation a.b.c
  * @returns The value of the found property
  */
-export function getProperty<T extends object, K extends DotKeys<T>>(object: T, key: K): GetProperty<T, K>;
+export function getProperty(object: object, key: PropertyKey): unknown;
 
 /**
  * A helper function which searches through an object to assign a value using a string key
@@ -359,12 +356,10 @@ export function getProperty<T extends object, K extends DotKeys<T>>(object: T, k
  * @param key    - The string key
  * @param value  - The value to be assigned
  * @returns Whether the value was changed from its previous value
+ *
+ * @remarks - This type is likely to refuse to set a key that isn't known in the future.
  */
-export function setProperty<T extends object, K extends MutableDotKeys<T>>(
-  object: T,
-  key: K,
-  value: GetProperty<T, K>,
-): boolean;
+export function setProperty(object: object, key: PropertyKey, value: unknown): boolean;
 
 /**
  * A helper function which searches through an object to delete a value by a string key.

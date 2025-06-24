@@ -1339,14 +1339,14 @@ export type DeletableDotKeys<T extends object> = DotKeys<T>;
  * configuration to loosen this will exist.
  */
 export type DotKeys<T extends object> = {
-  [K in keyof T]: K | (K extends string ? _DotKeyOf<T[K], `${K}.`, [T]> : never);
+  [K in keyof T]: K | (K extends string ? _DotKeys<T[K], `${K}.`, [T]> : never);
 }[keyof T];
 
-type _DotKeyOf<T, Prefix extends string = "", Stack extends unknown[] = []> = T extends object
+type _DotKeys<T, Prefix extends string = "", Stack extends unknown[] = []> = T extends object
   ? true extends InStack<T, Stack, 10>
     ? never
     : {
-        [K in keyof T]: K extends string ? `${Prefix}${K}` | _DotKeyOf<T[K], `${Prefix}${K}.`, [T, ...Stack]> : never;
+        [K in keyof T]: K extends string ? `${Prefix}${K}` | _DotKeys<T[K], `${Prefix}${K}.`, [T, ...Stack]> : never;
       }[keyof T]
   : never;
 
@@ -1364,11 +1364,14 @@ type IdentityEquals<T, U> =
  */
 export type GetProperty<T extends object, K extends DotKeys<T>> = _GetProperty<T, K>;
 
-type _GetProperty<T, K> = K extends keyof T
+/**
+ * This is causing an issue with TS-Go. See https://github.com/microsoft/typescript-go/issues/1278.
+ */
+type _GetProperty<T, K, Depth extends number[] = []> = K extends keyof T
   ? T[K]
   : K extends `${infer First}.${infer Rest}`
     ? First extends keyof T
-      ? _GetProperty<T[First], Rest>
+      ? _GetProperty<T[First], Rest, [1, ...Depth]>
       : never
     : never;
 
