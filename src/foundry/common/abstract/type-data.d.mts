@@ -44,12 +44,11 @@ type UnmergePartial<
 > = {
   [K in keyof BaseData]?: BaseData[K];
 } & {
-  // Note(LukeAbby): This JSDoc is currently wishful thinking, hoping that JSDoc on index signatures
-  // will be preserved eventually.
-
   /**
    * @deprecated This property only exists once `prepareDerivedData` has been called.
    */
+  // Note(LukeAbby): The above JSDoc is currently wishful thinking, hoping that JSDoc on index signatures
+  // will be preserved eventually.
   // TODO(LukeAbby): At some point it may be a good idea to account for the messy union cases.
   [K in keyof DerivedData as K extends keyof BaseData | keyof Initialized ? never : K]?: never;
 } & {
