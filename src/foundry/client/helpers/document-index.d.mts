@@ -124,8 +124,8 @@ declare namespace DocumentIndex {
 
     uuid: string;
 
-    /** @remarks Only present if this is a Compendium UUID */
-    pack?: string;
+    /** @remarks Only present if this is a Compendium UUID. Never explicitly `undefined` in core usage. */
+    pack?: string | undefined;
   }
 
   /** @internal */
@@ -160,7 +160,7 @@ declare namespace DocumentIndex {
 
   type _AddLeafOptions = InexactPartial<{
     /** The compendium that the index belongs to. */
-    pack?: CompendiumCollection.Any;
+    pack: CompendiumCollection.Any;
   }>;
 
   interface AddLeafOptions extends _AddLeafOptions {}

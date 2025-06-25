@@ -160,10 +160,10 @@ declare namespace ClientKeybindings {
     editable: KeybindingActionBinding[];
 
     /** A function to execute when a key down event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-    onDown?: (ctx: KeyboardManager.KeyboardEventContext) => boolean | void;
+    onDown?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
 
     /** A function to execute when a key up event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-    onUp?: (ctx: KeyboardManager.KeyboardEventContext) => boolean | void;
+    onUp?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
 
     /**
      * If True, allows Repeat events to execute the Action's onDown. Defaults to false.
@@ -172,7 +172,7 @@ declare namespace ClientKeybindings {
     repeat: boolean;
 
     /** If true, only a GM can edit and execute this Action */
-    restricted?: boolean;
+    restricted?: boolean | undefined;
 
     /**
      * Modifiers such as [ "CONTROL" ] that can be also pressed when executing this Action. Prevents using one of these modifiers as a Binding.
@@ -220,7 +220,7 @@ declare namespace ClientKeybindings {
      * @remarks Appears to never exist on stored bindings in {@linkcode ClientKeybindings.bindings | ClientKeybindings#bindings},
      * only existing on values in the `ControlsConfig##pendingEdits` private Map during a binding setting operation in the UI
      */
-    index?: number;
+    index?: number | undefined;
 
     /**
      * The KeyboardEvent#code value from {@link https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values}

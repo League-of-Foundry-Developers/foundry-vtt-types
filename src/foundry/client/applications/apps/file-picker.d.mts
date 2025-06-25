@@ -1,4 +1,4 @@
-import type { AnyObject, DeepPartial, Identity, LazyUnknown } from "#utils";
+import type { AnyObject, DeepPartial, Identity } from "#utils";
 import type { EmptyObject } from "type-fest";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
@@ -271,9 +271,16 @@ declare namespace FilePicker {
   /**
    * @remarks {@linkcode FilePicker.upload} (and {@linkcode FilePicker.uploadPersistent}, which returns a call to the former)
    * claims to return 'the response object', but actually returns the {@linkcode Response#json}, if any of the various early
-   * returns aren't hit
+   * returns aren't hit. Foundry types this as just `object`, but we can infer the shape from what keys they check.
    */
-  type UploadReturn = false | void | EmptyObject | LazyUnknown;
+  type UploadReturn = false | void | EmptyObject | ResponseShape;
+
+  /** @remarks Possibly/probably incomplete, but includes all keys foundry is known to check */
+  interface ResponseShape {
+    error?: string | undefined;
+    path?: string | undefined;
+    message?: string | undefined;
+  }
 
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {
     bucket: string | null;
