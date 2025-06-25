@@ -28,7 +28,7 @@ jobs:
       - run: npm ci --cache .npm --prefer-offline
       - run: |
           # This has been seen going in an infinite loop without `--legacy-peer-deps`.
-          npm add --legacy-peer-deps --force -D typescript@next
+          npm add --legacy-peer-deps --force -D typescript@next @typescript/native-preview
           npx tsc --version
       - run: npm run lint
       - name: Type Check (exactOptionalPropertyTypes = false)

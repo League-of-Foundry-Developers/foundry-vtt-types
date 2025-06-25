@@ -1325,6 +1325,57 @@ interface _DeepReadonlyComplex<T extends object, R extends object = { readonly [
     T {}
 
 /**
+ * Currently indistinguishable from `DotKeys` but will eventually avoid `readonly` keys.
+ */
+export type MutableDotKeys<T extends object> = DotKeys<T>;
+
+/**
+ * Currently indistinguishable from `DotKeys` but will eventually avoid keys that can't be deleted.
+ */
+export type DeletableDotKeys<T extends object> = DotKeys<T>;
+
+/**
+ * Gets the valid dotkeys for `T`. Currently only gets keys that are in all items in a union. Later
+ * configuration to loosen this will exist.
+ */
+export type DotKeys<T extends object> = {
+  [K in keyof T]: K | (K extends string ? _DotKeys<T[K], `${K}.`, [T]> : never);
+}[keyof T];
+
+type _DotKeys<T, Prefix extends string = "", Stack extends unknown[] = []> = T extends object
+  ? true extends InStack<T, Stack, 10>
+    ? never
+    : {
+        [K in keyof T]: K extends string ? `${Prefix}${K}` | _DotKeys<T[K], `${Prefix}${K}.`, [T, ...Stack]> : never;
+      }[keyof T]
+  : never;
+
+type InStack<T, Stack extends unknown[], MaxDepth extends number = 99> = Stack["length"] extends MaxDepth
+  ? true
+  : {
+      [K in keyof Stack & `${number}`]: IdentityEquals<T, Stack[K]>;
+    }[keyof Stack & `${number}`];
+
+type IdentityEquals<T, U> =
+  (<V>() => V extends T ? true : false) extends <V>() => V extends U ? true : false ? true : false;
+
+/**
+ * Gets a dot property on `T`.
+ */
+export type GetProperty<T extends object, K extends DotKeys<T>> = _GetProperty<T, K>;
+
+/**
+ * This is causing an issue with TS-Go. See https://github.com/microsoft/typescript-go/issues/1278.
+ */
+type _GetProperty<T, K, Depth extends number[] = []> = K extends keyof T
+  ? T[K]
+  : K extends `${infer First}.${infer Rest}`
+    ? First extends keyof T
+      ? _GetProperty<T[First], Rest, [1, ...Depth]>
+      : never
+    : never;
+
+/**
  * @deprecated Replaced by {@linkcode Document.SheetClassFor}
  */
 export type ConfiguredSheetClass<T extends Document.AnyConstructor> = GetKey<
