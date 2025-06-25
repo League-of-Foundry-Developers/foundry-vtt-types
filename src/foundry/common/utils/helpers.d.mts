@@ -4,6 +4,7 @@ import type {
   AnyFunction,
   AnyObject,
   DeepReadonly,
+  DeletableDotKeys,
   InexactPartial,
   NonNullish,
 } from "#utils";
@@ -346,7 +347,7 @@ export function hasProperty(object: object, key: string): boolean;
  * @param key    - An object property with notation a.b.c
  * @returns The value of the found property
  */
-export function getProperty(object: object, key: string): unknown;
+export function getProperty(object: object, key: PropertyKey): unknown;
 
 /**
  * A helper function which searches through an object to assign a value using a string key
@@ -355,8 +356,10 @@ export function getProperty(object: object, key: string): unknown;
  * @param key    - The string key
  * @param value  - The value to be assigned
  * @returns Whether the value was changed from its previous value
+ *
+ * @remarks - This type is likely to refuse to set a key that isn't known in the future.
  */
-export function setProperty(object: object, key: string, value: unknown): boolean;
+export function setProperty(object: object, key: PropertyKey, value: unknown): boolean;
 
 /**
  * A helper function which searches through an object to delete a value by a string key.
@@ -365,7 +368,7 @@ export function setProperty(object: object, key: string, value: unknown): boolea
  * @param key    - An object property with notation a.b.c
  * @returns Was the property deleted?
  */
-export function deleteProperty(object: object, key: string): boolean;
+export function deleteProperty<T extends object>(object: T, key: DeletableDotKeys<T>): boolean;
 
 /**
  * Invert an object by assigning its values as keys and its keys as values.
