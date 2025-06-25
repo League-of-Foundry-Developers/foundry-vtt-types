@@ -109,6 +109,12 @@ declare class ClientKeybindings {
   /** Reset all client keybindings back to their default configuration. */
   resetDefaults(): Promise<void>;
 
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _validateBindings(values: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _validateModifiers(keys: never): never;
+
   /**
    * Compares two Keybinding Actions based on their Order
    * @param a - The first Keybinding Action
@@ -125,6 +131,57 @@ declare class ClientKeybindings {
    * @param view - The active game view
    */
   protected _registerCoreKeybindings(view: foundry.Game.View): void;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onSelectAllObjects(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onCycleView(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onDismiss(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onToggleCharacterSheet(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onTarget(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _handleMovement(context: never, layer: never): never;
+
+  /** @deprecated Removed in v13 (this warning will be removed in v14) */
+  protected static _onMeasuredRulerMovement(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onPause(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onHighlight(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _onPan(context: never, movementDirections: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onMacroExecute(context: never, number: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onMacroPageSwap(context: never, page: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onCopy(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onPaste(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onUndo(context: never): never;
+
+  /** @deprecated Removed in v13 (this warning will be removed in v14) */
+  protected static _onZoom(context: never, zoomDirection: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onFocusChat(context: never): never;
 
   #ClientKeybindings: true;
 }
