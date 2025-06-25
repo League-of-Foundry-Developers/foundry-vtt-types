@@ -244,11 +244,11 @@ exports[`vitestTestsImproving`] = {
     "tests/foundry/client/head.test-d.ts:1426768485": [
       [8, 37, 1, "Type \'MainMenu<RenderContext, Configuration, RenderOptions> | undefined\' does not satisfy the constraint \'\\"Expected ..., Actual ...\\" | \\"Expected undefined, Actual ...\\"\'.\\n  Type \'undefined\' is not assignable to type \'\\"Expected ..., Actual ...\\" | \\"Expected undefined, Actual ...\\"\'.", "177612"]
     ],
-    "tests/foundry/client/helpers/client-settings.test-d.ts:894611547": [
-      [80, 3, 1, "Type \'typeof Actor\' is not assignable to type \'undefined\'.", "177583"],
-      [83, 58, 1, "Type \'{ name string; }\' is missing the following properties from type \'Actor<\\"base\\" | \\"character\\" | ModuleSubType>\' \\" __fvtt_types_internal_schema\\", \\" __fvtt_types_internal_source_data\\", \\" __fvtt_types_internal_assignment_data\\", \\" __fvtt_types_internal_initialized_data\\", and 135 more.", "177612"],
-      [92, 3, 1, "Type \'typeof Actor\' is not assignable to type \'undefined\'.", "177583"],
-      [95, 58, 1, "Type \'{ name string; }\' is missing the following properties from type \'Actor<\\"base\\" | \\"character\\" | ModuleSubType>\' \\" __fvtt_types_internal_schema\\", \\" __fvtt_types_internal_source_data\\", \\" __fvtt_types_internal_assignment_data\\", \\" __fvtt_types_internal_initialized_data\\", and 135 more.", "177612"]
+    "tests/foundry/client/helpers/client-settings.test-d.ts:225944179": [
+      [81, 3, 1, "Type \'typeof Actor\' is not assignable to type \'undefined\'.", "177583"],
+      [84, 58, 1, "Type \'{ name string; }\' is missing the following properties from type \'Actor<\\"base\\" | \\"character\\" | ModuleSubType>\' \\" __fvtt_types_internal_schema\\", \\" __fvtt_types_internal_source_data\\", \\" __fvtt_types_internal_assignment_data\\", \\" __fvtt_types_internal_initialized_data\\", and 135 more.", "177612"],
+      [91, 3, 1, "Type \'typeof Actor\' is not assignable to type \'undefined\'.", "177583"],
+      [94, 58, 1, "Type \'{ name string; }\' is missing the following properties from type \'Actor<\\"base\\" | \\"character\\" | ModuleSubType>\' \\" __fvtt_types_internal_schema\\", \\" __fvtt_types_internal_source_data\\", \\" __fvtt_types_internal_assignment_data\\", \\" __fvtt_types_internal_initialized_data\\", and 135 more.", "177612"]
     ],
     "tests/foundry/common/abstract/data.mjs.test-d.ts:1922994951": [
       [19, 54, 1, "Type \'string | undefined\' does not satisfy the constraint \'StrictEqualUsingTSInternalIdenticalToOperator<RemoveIndexSignatures<{ [Key in keyof Schema] Schema[Key][\\" __fvtt_types_internal_initialized_data\\"]; }>[\\"genericProperty\\"], string | undefined> extends true ? unknown  MismatchInfo<RemoveIndexSignatures<{ [Key in keyof Schema] Schema[Key][\\" __fvtt_types_internal_init...\'.\\n  Type \'undefined\' is not assignable to type \'StrictEqualUsingTSInternalIdenticalToOperator<RemoveIndexSignatures<{ [Key in keyof Schema] Schema[Key][\\" __fvtt_types_internal_initialized_data\\"]; }>[\\"genericProperty\\"], string | undefined> extends true ? unknown  MismatchInfo<RemoveIndexSignatures<{ [Key in keyof Schema] Schema[Key][\\" __fvtt_types_internal_init...\'.", "177612"]
