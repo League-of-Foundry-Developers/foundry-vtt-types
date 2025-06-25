@@ -13,8 +13,8 @@ import type { DataField } from "#common/data/fields.d.mts";
  * Game object as as game.settings.
  *
  * @see {@linkcode foundry.Game.settings | Game#settings}
- * @see {@linkcode foundry.applications.sidebar.tabs.Settings}
- * @see {@linkcode foundry.applications.settings.SettingsConfig}
+ * @see {@linkcode foundry.applications.sidebar.tabs.Settings | Settings}
+ * @see {@linkcode foundry.applications.settings.SettingsConfig | SettingsConfig}
  */
 declare class ClientSettings {
   /**
@@ -151,12 +151,11 @@ declare class ClientSettings {
    * game.settings.get("myModule", "myClientSetting");
    * ```
    */
-  // TODO: infer return type from options (document vs not)
-  get<N extends ClientSettings.Namespace, K extends ClientSettings.KeyFor<N>>(
-    namespace: N,
-    key: K,
-    options?: ClientSettings.GetOptions,
-  ): ClientSettings.SettingInitializedType<N, K> | Setting.Implementation;
+  get<
+    N extends ClientSettings.Namespace,
+    K extends ClientSettings.KeyFor<N>,
+    Doc extends boolean | undefined = undefined,
+  >(namespace: N, key: K, options?: ClientSettings.GetOptions<Doc>): ClientSettings.GetSetReturn<N, K, Doc>;
 
   /**
    * Set the value of a game setting for a certain namespace and setting key
@@ -176,12 +175,16 @@ declare class ClientSettings {
    * game.settings.set("myModule", "myClientSetting", "b");
    * ```
    */
-  set<N extends ClientSettings.Namespace, K extends ClientSettings.KeyFor<N>>(
+  set<
+    N extends ClientSettings.Namespace,
+    K extends ClientSettings.KeyFor<N>,
+    Doc extends boolean | undefined = undefined,
+  >(
     namespace: N,
     key: K,
     value: ClientSettings.SettingCreateData<N, K>,
-    options?: ClientSettings.SetOptions,
-  ): Promise<ClientSettings.SettingInitializedType<N, K>>;
+    options?: ClientSettings.SetOptions<Doc>,
+  ): Promise<ClientSettings.GetSetReturn<N, K, Doc>>;
 }
 
 declare namespace ClientSettings {
@@ -249,6 +252,10 @@ declare namespace ClientSettings {
   type ToSettingInitializedType<T extends Type> = ReplaceUndefinedWithNull<
     SettingType<T> | (T extends DataModel.Any ? T : never)
   >;
+
+  type GetSetReturn<N extends Namespace, K extends KeyFor<N>, Doc extends boolean | undefined> = Doc extends true
+    ? Setting.Implementation
+    : SettingInitializedType<N, K>;
 
   /**
    * @internal
@@ -371,30 +378,36 @@ declare namespace ClientSettings {
   }
 
   /** @internal */
-  type _GetOptions = InexactPartial<{
+  type _GetOptions<Doc extends boolean | undefined> = InexactPartial<{
     /**
      * Retrieve the full Setting document instance instead of just its value
      * @defaultValue `false`
      */
-    document: boolean;
+    document: Doc;
   }>;
 
-  interface GetOptions extends _GetOptions {}
+  interface GetOptions<Doc extends boolean | undefined = undefined> extends _GetOptions<Doc> {}
 
   /** @internal */
-  type _SetOptions = InexactPartial<{
+  type _SetOptions<Doc extends boolean | undefined> = InexactPartial<{
     /**
      * Return the updated Setting document instead of just its value
      * @defaultValue `false`
      */
-    document: boolean;
+    document: Doc;
   }>;
 
-  interface SetOptionsCreate extends _SetOptions, Setting.Database.CreateOperation<undefined | false> {}
+  /** @internal */
+  interface _SetOptionsCreate<Doc extends boolean | undefined>
+    extends _SetOptions<Doc>,
+      Setting.Database.CreateOperation<undefined | false> {}
 
-  interface SetOptionsUpdate extends _SetOptions, Setting.Database.UpdateOperation {}
+  /** @internal */
+  interface _SetOptionsUpdate<Doc extends boolean | undefined>
+    extends _SetOptions<Doc>,
+      Setting.Database.UpdateOperation {}
 
-  type SetOptions = SetOptionsCreate | SetOptionsUpdate;
+  type SetOptions<Doc extends boolean | undefined = undefined> = _SetOptionsCreate<Doc> | _SetOptionsUpdate<Doc>;
 
   /**
    * @deprecated Replaced with {@linkcode ClientSettings.SettingInitializedType}.
