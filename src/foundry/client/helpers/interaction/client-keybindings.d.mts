@@ -1,4 +1,4 @@
-import type { Brand, Identity, InexactPartial, IntentionalPartial } from "#utils";
+import type { Brand, Identity, InexactPartial } from "#utils";
 import type KeyboardManager from "./keyboard-manager.d.mts";
 
 /**
@@ -26,6 +26,12 @@ declare class ClientKeybindings {
    */
   bindings: Map<string, ClientKeybindings.StoredKeybindingActionBinding[]> | undefined;
 
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _registered: never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _moveTime: never;
+
   static MOVEMENT_DIRECTIONS: ClientKeybindings.MovementDirections;
 
   static ZOOM_DIRECTIONS: ClientKeybindings.ZoomDirections;
@@ -35,7 +41,10 @@ declare class ClientKeybindings {
    */
   get moveKeys(): Set<string>;
 
-  /** Initializes the keybinding values for all registered actions */
+  /**
+   * Initializes the keybinding values for all registered actions
+   * @remarks Called just after the `setup` hook, and every time the `core.keybindings` setting changes
+   */
   initialize(): void;
 
   /**
@@ -102,12 +111,18 @@ declare class ClientKeybindings {
    *     }
    * ]);
    * ```
-   * @remarks Passing `undefined` or nothing as `bindings` resets to the default.
+   * @remarks Passing `undefined` or nothing as `bindings` deletes stored values for this key, effectively resetting to the values provided at registration
    */
   set(namespace: string, action: string, bindings?: ClientKeybindings.KeybindingActionBinding[]): Promise<void>;
 
   /** Reset all client keybindings back to their default configuration. */
   resetDefaults(): Promise<void>;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _validateBindings(values: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _validateModifiers(keys: never): never;
 
   /**
    * Compares two Keybinding Actions based on their Order
@@ -126,6 +141,57 @@ declare class ClientKeybindings {
    */
   protected _registerCoreKeybindings(view: foundry.Game.View): void;
 
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onSelectAllObjects(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onCycleView(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onDismiss(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onToggleCharacterSheet(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onTarget(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _handleMovement(context: never, layer: never): never;
+
+  /** @deprecated Removed in v13 (this warning will be removed in v14) */
+  protected static _onMeasuredRulerMovement(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onPause(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onHighlight(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _onPan(context: never, movementDirections: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onMacroExecute(context: never, number: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onMacroPageSwap(context: never, page: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onCopy(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onPaste(context: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onUndo(context: never): never;
+
+  /** @deprecated Removed in v13 (this warning will be removed in v14) */
+  protected static _onZoom(context: never, zoomDirection: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onFocusChat(context: never): never;
+
   #ClientKeybindings: true;
 }
 
@@ -134,36 +200,61 @@ declare namespace ClientKeybindings {
   interface AnyConstructor extends Identity<typeof AnyClientKeybindings> {}
 
   /**
-   * @remarks The shape of stored ({@linkcode ClientKeybindings.actions | #actions}) action configs.
-   * Any optional properties here are not provided defaults by {@link ClientKeybindings.register | #register}
+   * Properties of {@linkcode StoredKeybindActionConfig} that are neither computed nor provided defaults by {@linkcode ClientKeybindings.register | #register}
+   * @internal
    */
-  interface StoredKeybindingActionConfig {
-    /** The namespace within which the action was registered */
+  type _KeybindActionConfigOptional = InexactPartial<{
+    /** An additional human readable hint */
+    hint: string;
+
+    /**
+     * A function to execute when a key down event occurs. If True is returned, the event is consumed and no further keybinds execute.
+     * @remarks Not passing at least one of `onUp` or `onDown` will lead to a fairly useless keybinding
+     */
+    onDown: (ctx: KeyboardManager.KeyboardEventContext) => boolean | void;
+
+    /**
+     * A function to execute when a key up event occurs. If True is returned, the event is consumed and no further keybinds execute.
+     * @remarks Not passing at least one of `onUp` or `onDown` will lead to a fairly useless keybinding
+     */
+    onUp: (ctx: KeyboardManager.KeyboardEventContext) => boolean | void;
+
+    /** If true, only a GM can edit and execute this Action */
+    restricted: boolean;
+  }>;
+
+  /**
+   * A Client Keybinding Action Configuration
+   * @remarks The shape of stored ({@linkcode ClientKeybindings.actions | #actions}) action configs, after defaults provided by
+   * {@linkcode ClientKeybindings.register | #register} are applied.
+   */
+  interface StoredKeybindingActionConfig extends _KeybindActionConfigOptional {
+    /**
+     * The namespace within which the action was registered
+     * @remarks e.g `"core"`, `"my-package"`
+     *
+     * Not included in {@linkcode KeybindActionConfig}, as it's separated out into the first argument of {@linkcode ClientKeybindings.register | #register}
+     */
     namespace: string;
 
     /** The human readable name */
     name: string;
 
-    /** An additional human readable hint */
-    hint?: string;
-
     /**
      * The default bindings that can never be changed nor removed.
      * @defaultValue `[]`
+     * @remarks The output of `ClientSettings##validateBindings`, run on either the value provided to {@linkcode ClientKeybindings.register | #register},
+     * or `[]` if none
      */
     uneditable: KeybindingActionBinding[];
 
     /**
      * The default bindings that can be changed by the user.
      * @defaultValue `[]`
+     * @remarks The output of `ClientSettings##validateBindings`, run on either the value provided to {@linkcode ClientKeybindings.register | #register},
+     * or `[]` if none
      */
     editable: KeybindingActionBinding[];
-
-    /** A function to execute when a key down event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-    onDown?: (ctx: KeyboardManager.KeyboardEventContext) => boolean | void;
-
-    /** A function to execute when a key up event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-    onUp?: (ctx: KeyboardManager.KeyboardEventContext) => boolean | void;
 
     /**
      * If True, allows Repeat events to execute the Action's onDown. Defaults to false.
@@ -171,12 +262,11 @@ declare namespace ClientKeybindings {
      */
     repeat: boolean;
 
-    /** If true, only a GM can edit and execute this Action */
-    restricted?: boolean;
-
     /**
      * Modifiers such as [ "CONTROL" ] that can be also pressed when executing this Action. Prevents using one of these modifiers as a Binding.
      * @defaultValue `[]`
+     * @remarks The output of `ClientSettings##validateModifiers`, run on either the value provided to {@linkcode ClientKeybindings.register | #register},
+     * or `[]` if none
      */
     reservedModifiers: string[];
 
@@ -186,7 +276,10 @@ declare namespace ClientKeybindings {
      */
     precedence: CONST.KEYBINDING_PRECEDENCE;
 
-    /** The recorded registration order of the action */
+    /**
+     * The recorded registration order of the action
+     * @remarks Always computed by {@linkcode ClientKeybindings.register | #register}; not included in {@linkcode KeybindActionConfig}
+     */
     order: number;
   }
 
@@ -196,69 +289,83 @@ declare namespace ClientKeybindings {
    */
   type _PassableKeybindingActionConfig = Omit<StoredKeybindingActionConfig, "namespace" | "order">;
 
-  /** @internal */
-  type _KeybindingActionConfigInexactProps = "precedence" | "uneditable" | "editable" | "repeat" | "reservedModifiers";
-
   /**
-   * The interface to be passed to {@link ClientKeybindings.register | #register}. `name` is always required,
-   * and the properties enumerated in the `InexactPartial` have defaults provided
+   * The interface to be passed to {@link ClientKeybindings.register | #register}. `name` is always required.
    * @internal
    */
   type _KeybindingActionConfig = Pick<_PassableKeybindingActionConfig, "name"> &
-    InexactPartial<Pick<_PassableKeybindingActionConfig, _KeybindingActionConfigInexactProps>> &
-    IntentionalPartial<Omit<_PassableKeybindingActionConfig, "name" | _KeybindingActionConfigInexactProps>>;
+    InexactPartial<Pick<_PassableKeybindingActionConfig, Exclude<keyof _PassableKeybindingActionConfig, "name">>>;
 
   /**
-   * A Client Keybinding Action Configuration
-   * @remarks Copied from `client/_types.mjs`
+   *
    */
   interface KeybindingActionConfig extends _KeybindingActionConfig {}
 
-  interface StoredKeybindingActionBinding {
+  /** @internal */
+  type _StoredKeybindingActionBindingComputed = InexactPartial<{
     /**
      * A numeric index which tracks this bindings position during form rendering
      * @remarks Appears to never exist on stored bindings in {@linkcode ClientKeybindings.bindings | ClientKeybindings#bindings},
      * only existing on values in the `ControlsConfig##pendingEdits` private Map during a binding setting operation in the UI
      */
-    index?: number;
+    index: number;
+  }>;
 
+  interface StoredKeybindingActionBinding extends _StoredKeybindingActionBindingComputed {
     /**
-     * The KeyboardEvent#code value from {@link https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values}
+     * The {@linkcode KeyboardEvent.code | KeyboardEvent#code} value from {@link https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values}
      * @remarks Registration will throw if one of {@linkcode KeyboardManager.PROTECTED_KEYS} is passed
      */
     key: string;
 
     /**
-     * An array of modifiers keys from KeyboardManager.MODIFIER_KEYS which are required for this binding to be activated
+     * An array of modifiers keys from {@linkcode KeyboardManager.MODIFIER_KEYS} which are required for this binding to be activated
      * @defaultValue `[]`
-     * @remarks The `keyof ... ` (UPPERCASE values) part of this union has a "For backwards compatibility" comment attached by foundry; no deprecation warning or `until` provided
+     * @remarks Always provided by `ClientKeybindings##validateBindings`, which calls `##validateModifiers` with an `?? []` default
+     *
+     * The `keyof ... ` (UPPERCASE values) part of this union has a "For backwards compatibility" comment attached by foundry; no deprecation warning or `until` provided
      */
     modifiers: (KeyboardManager.MODIFIER_KEYS | keyof KeyboardManager.ModifierKeys)[];
   }
 
+  /**
+   * See {@linkcode _StoredKeybindingActionBindingComputed.index}
+   * @internal
+   */
   interface _PassableActionBinding extends Omit<StoredKeybindingActionBinding, "index"> {}
 
-  /** @internal */
+  /**
+   * `modifiers` is optional because `##validateModifiers` is always called with a `?? []` default
+   * @internal
+   */
   type _KeybindingActionBinding = Pick<_PassableActionBinding, "key"> &
-    InexactPartial<Omit<_PassableActionBinding, Exclude<keyof _PassableActionBinding, "key">>>;
+    InexactPartial<Pick<_PassableActionBinding, Exclude<keyof _PassableActionBinding, "key">>>;
 
   /**
    * A Client Keybinding Action Binding
-   * @remarks Copied from `client/_types.mjs`
+   * @remarks The type passed to {@linkcode ClientKeybindings.set | ClientKeybindings#set}. All properties are optional except for `key`
    */
   interface KeybindingActionBinding extends _KeybindingActionBinding {}
 
   /**
    * An action that can occur when a key is pressed
-   * @remarks
+   * @remarks The type generated by {@linkcode ClientKeybindings.initialize | ClientKeybindings#initialize} from registered {@linkcode ClientKeybindings.actions | actions},
+   * and put into the {@linkcode ClientKeybindings.activeKeys | ClientKeybindings#activeKeys} array for its `key`.
    *
-   * Copied from `client/_types.mjs`
+   * All keys are required because they are all provided by `#initialize`, but keys that are neither computed there nor provided defaults by
+   * {@linkcode ClientKeybindings.register | ClientKeybindings#register} are `| undefined`
    */
   interface KeybindingAction {
-    /** The namespaced machine identifier of the Action */
+    /**
+     * The namespaced machine identifier of the Action
+     * @remarks e.g `"core.target"`, `"my-package.my-action"`
+     */
     action: string;
 
-    /** The Keyboard key */
+    /**
+     * The Keyboard key
+     * @remarks e.g `"KeyA"`, `"CapsLock"`
+     */
     key: string;
 
     /** The human readable name */

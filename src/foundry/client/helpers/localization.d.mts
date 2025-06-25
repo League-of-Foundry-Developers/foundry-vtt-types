@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial } from "#utils";
+import type { DotKeys, Identity, InexactPartial } from "#utils";
 
 /**
  * A helper class which assists with localization and string translation
@@ -108,6 +108,18 @@ declare class Localization {
    */
   setLanguage(lang: string): Promise<void>;
 
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _discoverSupportedLanguages(): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _getTranslations(lang: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _filterLanguagePaths(pkg: never, lang: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _loadTranslationFile(src: never): never;
+
   /**
    * Return whether a certain string has a known translation defined.
    * @param stringId - The string key being translated
@@ -171,8 +183,7 @@ declare class Localization {
    * @param objects - The objects to sort, this array will be mutated
    * @param key     - The key to sort the objects by. This can be provided in dot-notation.
    */
-  // TODO(LukeAbby): Should be constrained to dot property keys of `objects`
-  sortObjects<T extends object>(objects: Array<T>, key: string): T[];
+  sortObjects<T extends object>(objects: Array<T>, key: DotKeys<T>): T[];
 
   #Localization: true;
 }

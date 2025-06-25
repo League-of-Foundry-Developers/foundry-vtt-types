@@ -42,7 +42,7 @@ clientSettings.register("foo", "bar", {
   default: true,
 });
 clientSettings.set("foo", "bar", false);
-expectTypeOf(clientSettings.get("foo", "bar")).toEqualTypeOf<boolean>();
+expectTypeOf(clientSettings.get("foo", "bar")).toEqualTypeOf<boolean | Setting.Implementation>();
 
 // @ts-expect-error - Expect an error because the setting wasn't registered.
 clientSettings.get("foo", "baz");
@@ -83,7 +83,9 @@ clientSettings.register("data-model", "setting", {
 expectTypeOf(clientSettings.set("data-model", "setting", { name: "Test Actor" })).toEqualTypeOf<
   Promise<Actor.Implementation>
 >();
-expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<Actor.Implementation>();
+expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<
+  Actor.Implementation | Setting.Implementation
+>();
 
 clientSettings.register("data-model", "setting", {
   scope: "client",
@@ -93,16 +95,18 @@ clientSettings.register("data-model", "setting", {
 expectTypeOf(clientSettings.set("data-model", "setting", { name: "Test Actor" })).toEqualTypeOf<
   Promise<Actor.Implementation>
 >();
-expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<Actor.Implementation>();
+expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<
+  Actor.Implementation | Setting.Implementation
+>();
 
 // core settings
 
 expectTypeOf(clientSettings.get("core", "combatTrackerConfig")).toEqualTypeOf<
-  MaybeEmpty<{ resource: string; skipDefeated: boolean }>
+  MaybeEmpty<{ resource: string; skipDefeated: boolean }> | Setting.Implementation
 >();
 expectTypeOf(clientSettings.get("core", "compendiumConfiguration")).toEqualTypeOf<
-  Partial<Record<string, foundry.documents.collections.CompendiumCollection.Configuration>>
+  Partial<Record<string, foundry.documents.collections.CompendiumCollection.Configuration>> | Setting.Implementation
 >();
 
 type RollMode = keyof typeof CONFIG.Dice.rollModes;
-expectTypeOf(clientSettings.get("core", "rollMode")).toEqualTypeOf<RollMode | null>();
+expectTypeOf(clientSettings.get("core", "rollMode")).toEqualTypeOf<RollMode | null | Setting.Implementation>();

@@ -238,7 +238,7 @@ declare namespace CalendarData {
     leapYear: boolean;
   }
 
-  type PartialTimeComponents = IntentionalPartial<TimeComponents>;
+  interface PartialTimeComponents extends IntentionalPartial<TimeComponents> {}
 
   /** @returns The returned string format */
   type TimeFormatter = (

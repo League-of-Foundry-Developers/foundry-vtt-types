@@ -46,5 +46,15 @@ expectTypeOf(localization.getListFormatter({})).toEqualTypeOf<Intl.ListFormat>()
 expectTypeOf(localization.getListFormatter({ style: "short", type: "disjunction" })).toEqualTypeOf<Intl.ListFormat>();
 expectTypeOf(localization.getListFormatter({ style: undefined, type: undefined })).toEqualTypeOf<Intl.ListFormat>();
 
-declare const itemArray: Item.Implementation[];
-expectTypeOf(localization.sortObjects(itemArray, "name")).toEqualTypeOf<Item.Implementation[]>();
+// Avoiding testing with something as complicated as a Document for now
+// declare const itemArray: Item.Implementation[];
+// expectTypeOf(localization.sortObjects(itemArray, "name")).toEqualTypeOf<Item.Implementation[]>();
+
+interface SomeObject {
+  foo: number;
+  bar: string;
+}
+declare const someObjectArray: SomeObject[];
+expectTypeOf(localization.sortObjects(someObjectArray, "foo")).toEqualTypeOf<SomeObject[]>();
+// @ts-expect-error baz is not a property of SomeObject
+expectTypeOf(localization.sortObjects(someObjectArray, "baz")).toEqualTypeOf<SomeObject[]>();

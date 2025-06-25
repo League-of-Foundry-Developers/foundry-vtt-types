@@ -667,8 +667,8 @@ declare namespace Game {
     /** @remarks From limited empirical sampling, only `false` if the package lacks a manifest */
     reinstallable: boolean;
 
-    /** @remarks Not included if the package itself lacks a manifest (e.g JB2A patreon pack) */
-    manifest?: string;
+    /** @remarks Not included if the package itself lacks a manifest (e.g JB2A patreon pack). Never seen explicitly `undefined` during testing */
+    manifest?: string | undefined;
 
     /** @remarks Presumably `"world" | "system" | "module"`, but difficult to confirm. */
     type: string;

@@ -6,6 +6,12 @@ import type { Identity } from "#utils";
 declare class GamepadManager {
   constructor();
 
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _gamepadPoller: never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _connectedGamepads: never;
+
   /**
    * How often Gamepad polling should check for button presses
    * @defaultValue `100`
@@ -17,6 +23,18 @@ declare class GamepadManager {
    * @internal
    */
   protected _activateListeners(): void;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _onGamepadConnect(event: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _onGamepadDisconnect(event: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _pollGamepads(event: never): never;
+
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _handleGamepadInput(gamepadId: never, up: never, repeat: never): never;
 }
 
 declare namespace GamepadManager {

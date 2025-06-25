@@ -9,49 +9,49 @@
 // eslint-disable-next-line import-x/export
 export * from "#common/_types.mjs";
 
-// type HotReloadData =
+type HotReloadData = unknown;
 
-// type RulerWaypoint =
+type RulerWaypoint = unknown;
 
-// type GridMeasurePathResultWaypoint =
+type GridMeasurePathResultWaypoint = unknown;
 
-// type TokenFindMovementPathWaypoint =
+type TokenFindMovementPathWaypoint = unknown;
 
-// type TokenConstrainMovementPathWaypoint =
+type TokenConstrainMovementPathWaypoint = unknown;
 
-// type TokenConstrainMovementPathOptions =
+type TokenConstrainMovementPathOptions = unknown;
 
-// type TokenFindMovementPathOptions =
+type TokenFindMovementPathOptions = unknown;
 
-// type TokenFindMovementPathJob =
+type TokenFindMovementPathJob = unknown;
 
-// type TokenGEtTerrainMovementPathWaypoint =
+type TokenGEtTerrainMovementPathWaypoint = unknown;
 
-// type TokenTerrainMovementWaypoint =
+type TokenTerrainMovementWaypoint = unknown;
 
-// type TokenRulerData =
+type TokenRulerData = unknown;
 
-// type TokenPlannedMovement =
+type TokenPlannedMovement = unknown;
 
-// type TokenRulerWaypointData =
+type TokenRulerWaypointData = unknown;
 
-// type TokenRulerWaypoint =
+type TokenRulerWaypoint = unknown;
 
-// type TokenDragContext =
+type TokenDragContext = unknown;
 
-// type TokenAnimationData =
+type TokenAnimationData = unknown;
 
-// type TokenAnimationContext =
+type TokenAnimationContext = unknown;
 
-// type TokenAnimationOptions =
+type TokenAnimationOptions = unknown;
 
-// type TokenAnimationTransition =
+type TokenAnimationTransition = unknown;
 
-// type TokenMovementActionCostFunction =
+type TokenMovementActionCostFunction = unknown;
 
-// type TokenMovementActionConfig =
+type TokenMovementActionConfig = unknown;
 
-// type CanvasViewPosition =
+type CanvasViewPosition = unknown;
 
 type CanvasVisibilityTest = foundry.canvas.groups.CanvasVisibility.Test;
 
@@ -59,27 +59,27 @@ type CanvasVisibilityTestConfiguration = foundry.canvas.groups.CanvasVisibility.
 
 type CanvasVisibilityTextureConfiguration = foundry.canvas.groups.CanvasVisibility.TextureConfiguration;
 
-// type ReticuleOptions =
+type ReticuleOptions = unknown;
 
-// type ActivityData =
+type ActivityData = unknown;
 
-// type CanvasPerformanceSettings =
+type CanvasPerformanceSettings = unknown;
 
-// type CanvasSupportedComponents =
+type CanvasSupportedComponents = unknown;
 
-// type CanvasDimensions =
+type CanvasDimensions = unknown;
 
-// type JournalEntryPageHeading =
+type JournalEntryPageHeading = unknown;
 
 type SearchableField = foundry.data.fields.DataField.Any | Record<string, foundry.data.fields.DataField.Any>;
 
-// type FromCompendiumOptions =
+type FromCompendiumOptions = unknown;
 
-// type RollTableHTMLEmbedConfig =
+type RollTableHTMLEmbedConfig = unknown;
 
-// type ManageCompendiumRequest =
+type ManageCompendiumRequest = unknown;
 
-// type ManageCompendiumResponse =
+type ManageCompendiumResponse = unknown;
 
 type WorldCompendiumPackConfiguration = unknown;
 
@@ -89,9 +89,9 @@ type SettingConfig = foundry.helpers.ClientSettings.SettingConfig;
 
 type SettingSubmenuConfig = foundry.helpers.ClientSettings.SettingSubmenuConfig;
 
-type KeybindingActionConfig = foundry.helpers.interaction.ClientKeybindings.KeybindingActionConfig;
+type KeybindingActionConfig = foundry.helpers.interaction.ClientKeybindings.StoredKeybindingActionConfig;
 
-type KeybindingActionBinding = foundry.helpers.interaction.ClientKeybindings.KeybindingActionBinding;
+type KeybindingActionBinding = foundry.helpers.interaction.ClientKeybindings.StoredKeybindingActionBinding;
 
 type KeybindingAction = foundry.helpers.interaction.ClientKeybindings.KeybindingAction;
 
