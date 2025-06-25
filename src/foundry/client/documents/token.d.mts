@@ -6,9 +6,9 @@ import type { ActorDeltaField } from "#common/documents/token.d.mts";
 import type BaseToken from "#common/documents/token.d.mts";
 import type { LightData, TextureData } from "#common/data/data.mjs";
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
+import type DataModel from "#common/abstract/data.mjs";
 
 import fields = foundry.data.fields;
-import type DataModel from "#common/abstract/data.mjs";
 
 declare namespace TokenDocument {
   /**
@@ -146,16 +146,16 @@ declare namespace TokenDocument {
     /**
      * Gets the collection document for an embedded document.
      */
-    // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.DocumentFor<
+      Metadata.Embedded,
+      CollectionName
+    >;
 
     /**
      * Gets the collection for an embedded document.
      */
     type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
-      // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
-      Document.Any,
+      TokenDocument.Implementation,
       Metadata.Embedded,
       CollectionName
     >;

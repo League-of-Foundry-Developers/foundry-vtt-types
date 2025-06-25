@@ -12,6 +12,7 @@ const tests = {
         typecheck: {
           enabled: true,
           only: true,
+          checker: "tsgo",
         },
       });
 
