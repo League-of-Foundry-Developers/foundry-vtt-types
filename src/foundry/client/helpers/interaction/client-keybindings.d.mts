@@ -294,7 +294,7 @@ declare namespace ClientKeybindings {
    * @internal
    */
   type _KeybindingActionConfig = Pick<_PassableKeybindingActionConfig, "name"> &
-    InexactPartial<Pick<_PassableKeybindingActionConfig, Exclude<"name", keyof _PassableActionBinding>>>;
+    InexactPartial<Pick<_PassableKeybindingActionConfig, Exclude<keyof _PassableKeybindingActionConfig, "name">>>;
 
   /**
    *
@@ -335,11 +335,11 @@ declare namespace ClientKeybindings {
   interface _PassableActionBinding extends Omit<StoredKeybindingActionBinding, "index"> {}
 
   /**
-   *
+   * `modifiers` is optional because `##validateModifiers` is always called with a `?? []` default
    * @internal
    */
   type _KeybindingActionBinding = Pick<_PassableActionBinding, "key"> &
-    InexactPartial<Omit<_PassableActionBinding, Exclude<keyof _PassableActionBinding, "key">>>;
+    InexactPartial<Pick<_PassableActionBinding, Exclude<keyof _PassableActionBinding, "key">>>;
 
   /**
    * A Client Keybinding Action Binding
