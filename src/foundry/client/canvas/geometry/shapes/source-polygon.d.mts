@@ -1,7 +1,8 @@
-import type { Brand, Coalesce, Identity, InexactPartial, NullishProps } from "#utils";
+import type { Brand, Coalesce, Identity, InexactPartial } from "#utils";
 import type PointEffectSourceMixin from "#client/canvas/sources/point-effect-source.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
+import type { PolygonVertex } from "#client/canvas/geometry/edges/_module.d.mts";
 
 /**
  * An extension of the default PIXI.Polygon which is used to represent the line of sight for a point source.
@@ -321,7 +322,7 @@ declare namespace PointSourcePolygon {
 
   interface StoredConfig extends _RequiredConfig, _BaseConfig, _OptionalOnlyConfig, _ComputedConfig {}
 
-  interface Config extends _RequiredConfig, NullishProps<_BaseConfig>, _OptionalOnlyConfig {}
+  interface Config extends _RequiredConfig, InexactPartial<_BaseConfig>, _OptionalOnlyConfig {}
 
   type BoundaryShapes = PIXI.Rectangle | PIXI.Circle | PIXI.Polygon;
 
@@ -333,8 +334,8 @@ declare namespace PointSourcePolygon {
   /** @internal */
   interface _CollisionTypesReturnMap {
     any: boolean;
-    closest: foundry.canvas.geometry.edges.PolygonVertex | null;
-    all: foundry.canvas.geometry.edges.PolygonVertex[];
+    closest: PolygonVertex | null;
+    all: PolygonVertex[];
   }
 
   type TestCollision<Mode extends CollisionModes> = _CollisionTypesReturnMap[Mode];
