@@ -1,4 +1,4 @@
-import type { Identity, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type Edge from "./edge.d.mts";
 import type PolygonVertex from "./vertex.d.mts";
 
@@ -7,15 +7,7 @@ import type PolygonVertex from "./vertex.d.mts";
  * This class is not designed or intended for use outside of that context.
  */
 declare class CollisionResult {
-  constructor({
-    target,
-    collisions,
-    cwEdges,
-    ccwEdges,
-    isBehind,
-    isLimited,
-    wasLimited,
-  }?: CollisionResult.ConstructorValues);
+  constructor(values?: CollisionResult.ConstructorValues);
 
   /**
    * The vertex that was the target of this result
@@ -30,33 +22,31 @@ declare class CollisionResult {
 
   /**
    * The set of edges connected to the target vertex that continue clockwise
-   * @defaultValue `new Set()`
    */
-  cwEdges: Set<Edge>;
+  cwEdges: Set<Edge> | undefined;
 
   /**
    * The set of edges connected to the target vertex that continue counter-clockwise
-   * @defaultValue `new Set()`
    */
-  ccwEdges: Set<Edge>;
+  ccwEdges: Set<Edge> | undefined;
 
   /**
    * Is the target vertex for this result behind some closer active edge?
    * @remarks Set directly from the constructor, so possibly was passed nullish
    */
-  isBehind: boolean | undefined | null;
+  isBehind: boolean | undefined;
 
   /**
    * Does the target vertex for this result impose a limited collision?
    * @remarks Set directly from the constructor, so possibly was passed nullish
    */
-  isLimited: boolean | undefined | null;
+  isLimited: boolean | undefined;
 
   /**
    * Has the set of collisions for this result encountered a limited edge?
    * @remarks Set directly from the constructor, so possibly was passed nullish
    */
-  wasLimited: boolean | undefined | null;
+  wasLimited: boolean | undefined;
 
   /**
    * Is this result limited in the clockwise direction?
@@ -99,16 +89,14 @@ declare namespace CollisionResult {
   interface Any extends AnyCollisionResult {}
   interface AnyConstructor extends Identity<typeof AnyCollisionResult> {}
 
-  type _ConstructorValues = NullishProps<{
+  type _ConstructorValues = InexactPartial<{
     /**
      * The set of edges connected to the target vertex that continue clockwise
-     * @defaultValue `new Set()`
      */
     cwEdges: Set<Edge>;
 
     /**
      * The set of edges connected to the target vertex that continue counter-clockwise
-     * @defaultValue `new Set()`
      */
     ccwEdges: Set<Edge>;
 
@@ -120,6 +108,12 @@ declare namespace CollisionResult {
 
     /** Has the set of collisions for this result encountered a limited edge? */
     wasLimited: boolean;
+
+    /**
+     * The array of collision points which apply to this result
+     * @defaultValue `[]`
+     */
+    collisions: PolygonVertex[];
   }>;
 
   interface ConstructorValues extends _ConstructorValues {
@@ -127,18 +121,11 @@ declare namespace CollisionResult {
      * The vertex that was the target of this result
      */
     target: PolygonVertex;
-
-    /**
-     * The array of collision points which apply to this result
-     * @defaultValue `[]`
-     * @remarks Can't be `null` as it only has a parameter default
-     */
-    collisions?: PolygonVertex[] | undefined;
   }
 }
+
+export default CollisionResult;
 
 declare abstract class AnyCollisionResult extends CollisionResult {
   constructor(...args: never);
 }
-
-export default CollisionResult;
