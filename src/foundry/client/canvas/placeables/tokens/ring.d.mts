@@ -1,7 +1,13 @@
 import type { Brand, FixedInstanceType, Identity, InitializedOn } from "#utils";
+
+// Note(LukeAbby): Filed as a bug
+// eslint-disable-next-line import-x/no-duplicates
 import type { DynamicRingData } from "./_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
+
+// Note(LukeAbby): Filed as a bug
+// eslint-disable-next-line import-x/no-duplicates
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 /**
