@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { InterfaceToObject } from "fvtt-types/utils";
 import { TokenRing } from "#client/canvas/placeables/tokens/_module.mjs";
+
 import BaseToken = foundry.documents.BaseToken;
 import Document = foundry.abstract.Document;
 
