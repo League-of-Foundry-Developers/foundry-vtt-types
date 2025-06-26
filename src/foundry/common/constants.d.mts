@@ -1791,7 +1791,7 @@ export declare const FILE_CATEGORIES: {
   GRAPHICS: _GRAPHICS_FILE_EXTENSIONS;
 
   /**
-   * @deprecated 'The "MEDIA" file category is deprecated. Use CONST.MEDIA_FILE_CATEGORIES instead.' (since v13, until v15)
+   * @deprecated 'The "MEDIA" file category is deprecated. Use {@linkcode CONST.MEDIA_FILE_CATEGORIES} instead.' (since v13, until v15)
    */
   MEDIA: MEDIA_MIME_TYPES;
 };

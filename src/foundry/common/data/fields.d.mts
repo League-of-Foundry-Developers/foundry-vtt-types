@@ -72,14 +72,14 @@ declare abstract class DataField<
 
   /**
    * The field name of this DataField instance.
-   * This is assigned by SchemaField#initialize.
+   * This is assigned by {@linkcode SchemaField.initialize | SchemaField#initialize}.
    * @internal
    */
   name: string | undefined;
 
   /**
    * A reference to the parent schema to which this DataField belongs.
-   * This is assigned by SchemaField#initialize.
+   * This is assigned by {@linkcode SchemaField.initialize | SchemaField#initialize}.
    * @internal
    */
   parent: DataField.Any | undefined;
