@@ -3,7 +3,8 @@ import type Edge from "./edge.d.mts";
 import type { Quadtree } from "../_module.d.mts";
 
 /**
- * A special class of Map which defines all the edges used to restrict perception in a Scene.
+ * A specialized Map class that manages all edges used to restrict perception in a Scene.
+ * Integrates with a Quadtree for efficient spatial queries.
  */
 declare class CanvasEdges extends Map<string, Edge> {
   /**
@@ -28,7 +29,7 @@ declare class CanvasEdges extends Map<string, Edge> {
    * Retrieves edges that intersect with a given rectangle.
    * Utilizes the Quadtree for efficient spatial querying.
    * @param rect - The rectangle to query against.
-   * @returns A set of Edge instances that intersect with the provided rectangle.
+   * @returns A set of {@linkcode Edge} instances that intersect with the provided rectangle.
    */
   getEdges(rect: PIXI.Rectangle, options?: CanvasEdges.GetEdgesOptions): Set<Edge>;
 
