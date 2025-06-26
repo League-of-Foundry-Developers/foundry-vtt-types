@@ -608,7 +608,7 @@ declare namespace DataField {
 
   namespace Options {
     /** Any DataField.Options. */
-    // Note(LukeAbby): This `& object` is intentional. Its purpose is to allow options like `{ integer: true }` to be assigned.
+    // Note(LukeAbby): This `, Identity<object>` is intentional. Its purpose is to allow options like `{ integer: true }` to be assigned.
     // This is an issue because `{ integer: true }` does not extend `{ required?: boolean }` because they have no properties in common.
     // Even though `{ integer: true, required: undefined }` would extend `{ required?: boolean }` following the regular rules of surplus properties being allowed.
     // `object` was chosen over `AnyObject` so that people may pass in interfaces.
@@ -1736,6 +1736,9 @@ declare class StringField<
    */
   protected _isValidChoice(value: string): boolean;
 
+  /** @deprecated Replaced with {@linkcode StringField._prepareChoiceConfig} in v13 (this warning will be removed in v14) */
+  protected static _getChoices(options: never): never;
+
   /**
    * Prepare form input configuration to accept a limited choice set of options.
    * @internal
@@ -1893,6 +1896,9 @@ declare namespace StringField {
   interface PrepareChoiceConfig extends _PrepareChoiceConfig {
     choices: DataField.AnyChoices;
   }
+
+  /** @deprecated Replaced with {@linkcode PrepareChoiceConfig} in v13 */
+  interface GetChoicesOptions extends PrepareChoiceConfig {}
 }
 
 /**
@@ -3122,6 +3128,9 @@ declare class EmbeddedCollectionDeltaField<
 > {
   static override get implementation(): typeof EmbeddedCollectionDelta;
 
+  /** @deprecated Removed and replaced with a {@linkcode _cleanElement} implementation in v13 (this warning will be removed in v14) */
+  protected _cleanType(value: never, options: never): never;
+
   protected override _cleanElement(
     value: AnyObject,
     options?: DataField.CleanOptions,
@@ -3701,9 +3710,16 @@ declare class ColorField<
     options?: DataField.InitializeOptions,
   ): InitializedType | (() => InitializedType | null);
 
-  /** @remarks Actually returns `Color.from(value).css`, i.e a `string`, the `PersistedType` */
-  // TODO: deal with the above
+  /**
+   * @deprecated Removed in v13, instead inheriting {@linkcode StringField.getInitialValue | StringField#getInitialValue}
+   * (this warning will be removed in v14)
+   */
+  getInitialValue(data: never): never;
+
   protected override _cast(value: unknown): AssignmentType;
+
+  /** @deprecated Removed in v13 (this warning will be removed in v14) */
+  protected override _cleanType(value: never, options: never): never;
 
   /** @remarks `options` is only passed to super, where it is unused in `StringField` */
   protected override _validateType(
