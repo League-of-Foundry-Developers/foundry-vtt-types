@@ -1,4 +1,4 @@
-import type { Brand, Identity, InexactPartial, NullishProps } from "#utils";
+import type { Brand, Identity, InexactPartial, NullishProps, ToMethod } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PrimaryCanvasObjectMixin } from "#client/canvas/primary/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
@@ -196,6 +196,8 @@ declare namespace Quadtree {
    */
   interface Options<T> extends _Options<T> {}
 
+  type CollisionTestFunction<T> = ToMethod<(o: Quadtree.Object<T>, rect: PIXI.Rectangle) => boolean>;
+
   /** @internal */
   type _GetObjectsOptions<T> = NullishProps<{
     /**
@@ -204,7 +206,7 @@ declare namespace Quadtree {
      * function should return true if the object should be added to the result set.
      */
     // Note(LukeAbby): Made a method to preserve covariance.
-    collisionTest(o: Quadtree.Object<T>, rect: Canvas.Rectangle): boolean;
+    collisionTest: CollisionTestFunction<T>;
 
     /**
      * The existing result set, for internal use.
