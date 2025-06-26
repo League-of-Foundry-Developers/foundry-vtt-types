@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import type { fields } from "./_module.d.mts";
 
 // After seeing that none of these types add anything or are even exported a
 // very reasonable question may be: Why on earth does this file exist?
@@ -10,11 +11,11 @@
 // TODO: Stubs
 export {};
 
-type DataFieldValidator = unknown;
+type DataFieldValidator = fields.DataField.Validator<fields.DataField.Any, unknown>;
 
-type DataFieldOptions = unknown;
+type DataFieldOptions = fields.DataField.Options.Any;
 
-type DataFieldContext = unknown;
+type DataFieldContext = fields.DataField.ConstructionContext;
 
 type FormGroupConfig = unknown;
 
@@ -28,22 +29,22 @@ type CodeMirrorInputConfig = unknown;
 
 type LightAnimationData = unknown;
 
-type NumberFieldOptions = unknown;
+type NumberFieldOptions = fields.NumberField.Options;
 
-type StringFieldOptions = unknown;
+type StringFieldOptions = fields.StringField.Options;
 
 type ChoiceInputConfig = unknown;
 
-type ArrayFieldOptions = unknown;
+type ArrayFieldOptions = fields.ArrayField.Options<unknown>;
 
-type DocumentUUIDFieldOptions = unknown;
+type DocumentUUIDFieldOptions = fields.DocumentUUIDField.Options;
 
-type FilePathFieldOptions = unknown;
+type FilePathFieldOptions = fields.FilePathField;
 
-type DocumentFlags = unknown;
+type DocumentFlags = Record<string, Record<string, unknown>>;
 
-type DocumentStats = unknown;
+type DocumentStats = fields.DocumentStatsField.Data;
 
-type JavaScriptFieldOptions = unknown;
+type JavaScriptFieldOptions = fields.JavaScriptField.Options;
 
 type ElementValidationFailure = unknown;

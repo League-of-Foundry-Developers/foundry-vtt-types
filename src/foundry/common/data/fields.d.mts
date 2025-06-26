@@ -560,42 +560,41 @@ declare namespace DataField {
     validationError: "is not a valid value";
   }
 
-  interface Options<BaseAssignmentType> {
+  /** @internal */
+  type _Options<BaseAssignmentType> = InexactPartial<{
     /**
      * Is this field required to be populated?
      * @defaultValue `false`
      */
-    required?: boolean | undefined;
+    required: boolean;
 
     /**
      * Can this field have null values?
      * @defaultValue `false`
      */
-    nullable?: boolean | undefined;
+    nullable: boolean;
 
     /**
      * Can this field only be modified by a gamemaster or assistant gamemaster?
      * @defaultValue `false`
      */
-    gmOnly?: boolean | undefined;
+    gmOnly: boolean;
 
     /** The initial value of a field, or a function which assigns that initial value. */
-    initial?:
-      | DataField.Options.InitialType<
-          // TODO(LukeAbby): Add a `ValidateOptions` type or something of that sort in order to
-          // catch incorrect initial types.
-          DataField.Options.InitialReturnType<BaseAssignmentType, boolean, boolean>
-        >
-      | undefined;
-
-    /** A data validation function which accepts one argument with the current value. */
-    validate?: DataField.Validator<DataField.Any, BaseAssignmentType> | undefined;
+    initial: DataField.Options.InitialType<
+      // TODO(LukeAbby): Add a `ValidateOptions` type or something of that sort in order to
+      // catch incorrect initial types.
+      DataField.Options.InitialReturnType<BaseAssignmentType, boolean, boolean>
+    >;
 
     /** A localizable label displayed on forms which render this field. */
-    label?: string | undefined;
+    label: string;
 
     /** Localizable help text displayed on forms which render this field. */
-    hint?: string | undefined;
+    hint: string;
+
+    /** A data validation function which accepts one argument with the current value. */
+    validate: DataField.Validator<DataField.Any, BaseAssignmentType>;
 
     /**
      * A custom validation error string. When displayed will be prepended with the
@@ -603,8 +602,10 @@ declare namespace DataField {
      * used when the return type of the validate function is a boolean. If an Error
      * is thrown in the validate function, the string message of that Error is used.
      */
-    validationError?: string | undefined;
-  }
+    validationError: string;
+  }>;
+
+  interface Options<BaseAssignmentType> extends _Options<BaseAssignmentType> {}
 
   namespace Options {
     /** Any DataField.Options. */
@@ -3518,10 +3519,10 @@ declare class DocumentUUIDField<
 
 declare namespace DocumentUUIDField {
   type Options = StringField.Options & {
-    /* A specific document type in CONST.ALL_DOCUMENT_TYPES required by this field */
+    /** A specific document type in {@linkcode CONST.ALL_DOCUMENT_TYPES} required by this field */
     type?: Document.Type | undefined;
 
-    /* Does this field require (or prohibit) embedded documents? */
+    /** Does this field require (or prohibit) embedded documents? */
     embedded?: boolean | undefined;
   };
 
@@ -4896,6 +4897,8 @@ declare namespace DocumentStatsField {
      */
     exportSource: SchemaField<ExportSourceSchema, { nullable: true }>;
   }
+
+  interface Data extends SchemaField.InitializedData<Schema> {}
 }
 
 interface ExportSourceSchema extends DataSchema {
