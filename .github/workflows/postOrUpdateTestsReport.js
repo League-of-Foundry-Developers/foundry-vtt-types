@@ -17,7 +17,7 @@ import * as fs from "fs/promises";
  * @typedef ReportArguments
  * @property {GitHub} github
  * @property {Context} context
- * @property {import("@actions/core")} core
+ * @property {typeof import("@actions/core")} core
  */
 
 /**
