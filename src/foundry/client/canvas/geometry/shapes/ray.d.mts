@@ -147,6 +147,8 @@ declare class Ray {
    * @see {@linkcode foundry.utils.lineSegmentIntersection}
    */
   intersectSegment(coords: Canvas.PairOfPointsTuple): LineIntersection | null;
+
+  #Ray: true;
 }
 
 declare namespace Ray {
