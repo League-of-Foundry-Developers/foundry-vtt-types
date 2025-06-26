@@ -5,6 +5,7 @@ import ClientKeybindings = foundry.helpers.interaction.ClientKeybindings;
 
 declare const kbdEvent: KeyboardEvent;
 
+expectTypeOf(KeyboardManager.isUniversalMode).toBeBoolean();
 expectTypeOf(KeyboardManager.MODIFIER_KEYS).toExtend<
   Record<keyof KeyboardManager.ModifierKeys, KeyboardManager.MODIFIER_KEYS>
 >();
@@ -12,6 +13,9 @@ expectTypeOf(KeyboardManager.MODIFIER_CODES).toEqualTypeOf<Record<"Alt" | "Contr
 expectTypeOf(KeyboardManager.PROTECTED_KEYS).toEqualTypeOf<string[]>();
 expectTypeOf(KeyboardManager.CONTROL_KEY_STRING).toBeString();
 expectTypeOf(KeyboardManager.KEYCODE_DISPLAY_MAPPING).toEqualTypeOf<Record<string, string>>();
+expectTypeOf(KeyboardManager.PRINTABLE_CHAR_REGEX).toEqualTypeOf<RegExp>();
+
+expectTypeOf(KeyboardManager.translateKey(kbdEvent)).toBeString();
 
 expectTypeOf(KeyboardManager.emulateKeypress(true, "KeyA")).toEqualTypeOf<KeyboardManager.KeyboardEventContext>();
 expectTypeOf(KeyboardManager.emulateKeypress(true, "KeyA", {})).toEqualTypeOf<KeyboardManager.KeyboardEventContext>();

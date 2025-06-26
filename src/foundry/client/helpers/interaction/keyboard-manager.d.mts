@@ -29,6 +29,11 @@ declare class KeyboardManager {
   moveKeys: Set<string>;
 
   /**
+   * Is logical keybindings active?
+   */
+  static get isUniversalMode(): boolean;
+
+  /**
    * Allowed modifier keys
    */
   static MODIFIER_KEYS: KeyboardManager.ModifierKeys;
@@ -91,6 +96,17 @@ declare class KeyboardManager {
    * ```
    */
   static KEYCODE_DISPLAY_MAPPING: Record<string, string>;
+
+  /**
+   * Matches any single graphic Unicode code-point (letters, digits, punctuation, symbols, including emoji).
+   * Non-printable identifiers like *ArrowLeft*, *ShiftLeft*, *Dead* never match.
+   */
+  static PRINTABLE_CHAR_REGEX: RegExp;
+
+  /**
+   * Canonical identifier for a key press.
+   */
+  static translateKey(event: KeyboardEvent): string;
 
   /**
    * Determines whether an `HTMLElement` currently has focus, which may influence keybinding actions.
@@ -156,9 +172,7 @@ declare class KeyboardManager {
   protected static _getContextDisplayString(context: never, includeModifiers: never): never;
 
   /**
-   * Given a standardized pressed key, find all matching registered Keybind Actions.
-   * @param context - A standardized keyboard event context
-   * @returns The matched Keybind Actions. May be empty.
+   * Given a keyboard-event context, return every registered keybinding that matches it (may be empty).
    * @internal
    */
   protected static _getMatchingActions(
@@ -261,11 +275,13 @@ declare namespace KeyboardManager {
 
   /**
    * Keyboard event context
-   * @remarks Copied from `client/_types.mjs`
    */
   interface KeyboardEventContext {
     /** The normalized string key, such as "KeyA" */
     key: string;
+
+    /** The logical string key, such as "a" */
+    logicalKey: string;
 
     /** The originating keypress event */
     event: KeyboardEvent;
