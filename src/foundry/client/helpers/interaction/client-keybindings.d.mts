@@ -319,6 +319,11 @@ declare namespace ClientKeybindings {
     key: string;
 
     /**
+     * The Keyboard logical code if universal mode is enable (it is code otherwise)
+     */
+    logicalKey: string;
+
+    /**
      * An array of modifiers keys from {@linkcode KeyboardManager.MODIFIER_KEYS} which are required for this binding to be activated
      * @defaultValue `[]`
      * @remarks Always provided by `ClientKeybindings##validateBindings`, which calls `##validateModifiers` with an `?? []` default
@@ -338,8 +343,8 @@ declare namespace ClientKeybindings {
    * `modifiers` is optional because `##validateModifiers` is always called with a `?? []` default
    * @internal
    */
-  type _KeybindingActionBinding = Pick<_PassableActionBinding, "key"> &
-    InexactPartial<Pick<_PassableActionBinding, Exclude<keyof _PassableActionBinding, "key">>>;
+  type _KeybindingActionBinding = Pick<_PassableActionBinding, "key" | "logicalKey"> &
+    InexactPartial<Pick<_PassableActionBinding, Exclude<keyof _PassableActionBinding, "key" | "logicalKey">>>;
 
   /**
    * A Client Keybinding Action Binding

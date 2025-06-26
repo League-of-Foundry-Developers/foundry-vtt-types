@@ -27,8 +27,8 @@ expectTypeOf(keybindings.initialize()).toEqualTypeOf<void>();
 expectTypeOf(
   keybindings.register("core", "someAction", {
     name: "Do the Action",
-    editable: [{ key: "KeyA", modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] }],
-    uneditable: [{ key: "Numpad7", modifiers: ["CONTROL"] }],
+    editable: [{ key: "KeyA", logicalKey: "KeyA", modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] }],
+    uneditable: [{ key: "Numpad7", logicalKey: "Numpad7", modifiers: ["CONTROL"] }],
     hint: "Some description of the action to be done",
     onDown: (context: KeyboardManager.KeyboardEventContext) => (!context.repeat ? true : undefined),
     onUp: (_context: KeyboardManager.KeyboardEventContext) => !!(Math.random() > 0.5),
@@ -46,9 +46,9 @@ expectTypeOf(keybindings.get("core", "someOtherAction")).toEqualTypeOf<
 // setting with no value or explicit undefined clears bindings
 expectTypeOf(keybindings.set("core", "yetAnother")).toEqualTypeOf<Promise<void>>();
 expectTypeOf(keybindings.set("core", "yetAnother", undefined)).toEqualTypeOf<Promise<void>>();
-expectTypeOf(keybindings.set("core", "yetAnother", [{ key: "F7", modifiers: ["SHIFT"] }])).toEqualTypeOf<
-  Promise<void>
->();
+expectTypeOf(
+  keybindings.set("core", "yetAnother", [{ key: "F7", logicalKey: "F7", modifiers: ["SHIFT"] }]),
+).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(keybindings.resetDefaults()).toEqualTypeOf<Promise<void>>();
 
