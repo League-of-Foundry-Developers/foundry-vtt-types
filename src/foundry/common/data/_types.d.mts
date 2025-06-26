@@ -47,4 +47,4 @@ type DocumentStats = fields.DocumentStatsField.Data;
 
 type JavaScriptFieldOptions = fields.JavaScriptField.Options;
 
-type ElementValidationFailure = unknown;
+type ElementValidationFailure = foundry.data.validation.DataModelValidationFailure.ElementValidationFailure;

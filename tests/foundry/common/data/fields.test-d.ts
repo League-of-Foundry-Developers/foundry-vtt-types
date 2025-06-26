@@ -1,8 +1,9 @@
 import { expectTypeOf, test } from "vitest";
 
 import DataField = foundry.data.fields.DataField;
+import fields = foundry.data.fields;
 
-type DataSchema = foundry.data.fields.DataSchema;
+type DataSchema = fields.DataSchema;
 
 // #2554 Null and undefined for SchemaField and EmbeddedDataField
 
