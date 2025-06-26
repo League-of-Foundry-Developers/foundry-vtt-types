@@ -116,6 +116,14 @@ declare namespace PolygonMesher {
   }
 
   /**
+   * Properties are only made optional, not `| undefined`, because
+   * {@linkcode PolygonMesher.constructor | the constructor} provides defaults
+   * by spread operator:
+   * ```js
+   * constructor(poly, options = {}) {
+   *   this.options = {...this.constructor._defaultOptions, ...options}
+   * ```
+   *
    * `miterLimit` is allowed to be `undefined` because it's passed to {@linkcode ClipperLib.ClipperOffset | new ClipperLib.ClipperOffset()},
    *  which provides its own default if `=== undefined`
    * @internal
@@ -123,15 +131,6 @@ declare namespace PolygonMesher {
   type _ConstructorOptions = IntentionalPartial<Pick<Options, Exclude<keyof Options, "miterLimit">>> &
     InexactPartial<Pick<Options, "miterLimit">>;
 
-  /**
-   * @remarks Properties are only made optional, not `| undefined`, because
-   * {@linkcode PolygonMesher.constructor | the constructor} provides defaults
-   * by spread operator:
-   * ```js
-   * constructor(poly, options = {}) {
-   *   this.options = {...this.constructor._defaultOptions, ...options}
-   * ```
-   */
   interface ConstructorOptions extends _ConstructorOptions {}
 }
 
