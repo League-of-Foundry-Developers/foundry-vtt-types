@@ -1,13 +1,28 @@
 import { expectTypeOf } from "vitest";
-import { Edge, PolygonVertex } from "#client/canvas/geometry/edges/_module.mjs";
-import type { PlaceableObject, Wall } from "#client/canvas/placeables/_module.d.mts";
 
 import Canvas = foundry.canvas.Canvas;
+import Edge = foundry.canvas.geometry.edges.Edge;
+import PolygonVertex = foundry.canvas.geometry.edges.PolygonVertex;
+import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
+import Wall = foundry.canvas.placeables.Wall;
 
 declare const p: Canvas.Point;
 declare const someWall: Wall.Implementation;
 
-const edge = new foundry.canvas.geometry.edges.Edge(p, p, {
+new Edge(p, p);
+new Edge(p, p, {
+  type: undefined,
+  sight: undefined,
+  move: undefined,
+  sound: undefined,
+  light: undefined,
+  id: undefined,
+  object: undefined,
+  direction: undefined,
+  threshold: undefined,
+  priority: undefined,
+});
+const edge = new Edge(p, p, {
   type: "darkness",
   sight: CONST.WALL_SENSE_TYPES.DISTANCE,
   move: CONST.WALL_SENSE_TYPES.LIMITED,
@@ -22,6 +37,7 @@ const edge = new foundry.canvas.geometry.edges.Edge(p, p, {
     light: 200,
     sight: 2000,
   },
+  priority: 7,
 });
 
 expectTypeOf(edge.a).toEqualTypeOf<PIXI.Point>();
@@ -30,12 +46,12 @@ expectTypeOf(edge.b).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(edge.id).toEqualTypeOf<string | undefined>();
 if (edge.object) expectTypeOf(edge.object).toEqualTypeOf<PlaceableObject.Any>();
 expectTypeOf(edge.type).toEqualTypeOf<Edge.EdgeTypes>();
-expectTypeOf(edge.direction).toEqualTypeOf<foundry.CONST.WALL_DIRECTIONS>();
-expectTypeOf(edge.light).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
-expectTypeOf(edge.move).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
-expectTypeOf(edge.sight).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
-expectTypeOf(edge.sound).toEqualTypeOf<foundry.CONST.WALL_SENSE_TYPES>();
-expectTypeOf(edge.threshold).toEqualTypeOf<WallDocument.ThresholdData | undefined | null>();
+expectTypeOf(edge.direction).toEqualTypeOf<CONST.WALL_DIRECTIONS>();
+expectTypeOf(edge.light).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
+expectTypeOf(edge.move).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
+expectTypeOf(edge.sight).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
+expectTypeOf(edge.sound).toEqualTypeOf<CONST.WALL_SENSE_TYPES>();
+expectTypeOf(edge.threshold).toEqualTypeOf<WallDocument.ThresholdData | undefined>();
 expectTypeOf(edge.nw).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(edge.se).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(edge.bounds).toEqualTypeOf<PIXI.Rectangle>();
@@ -50,7 +66,7 @@ expectTypeOf(edge.clone()).toEqualTypeOf<foundry.canvas.geometry.edges.Edge>();
 declare const edge2: Edge;
 expectTypeOf(edge.getIntersection(edge2)).toEqualTypeOf<foundry.utils.LineIntersection | void>();
 expectTypeOf(edge.applyThreshold("sound", p)).toEqualTypeOf<boolean>();
-expectTypeOf(edge.orientPoint(p)).toEqualTypeOf<foundry.CONST.WALL_DIRECTIONS>();
+expectTypeOf(edge.orientPoint(p)).toEqualTypeOf<CONST.WALL_DIRECTIONS>();
 expectTypeOf(edge.recordIntersections(edge2)).toEqualTypeOf<void>();
 expectTypeOf(edge.removeIntersections()).toEqualTypeOf<void>();
 

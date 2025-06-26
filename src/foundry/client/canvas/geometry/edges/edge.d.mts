@@ -1,6 +1,6 @@
 import type PolygonVertex from "./vertex.d.mts";
 import type { LineIntersection } from "#common/utils/geometry.d.mts";
-import type { Identity, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
@@ -15,7 +15,6 @@ declare class Edge {
    * @param b - The second endpoint of the edge
    * @param options - Additional options which describe the edge
    */
-  // options: not null (destructured)
   constructor(a: Canvas.Point, b: Canvas.Point, options?: Edge.ConstructorOptions);
 
   /**
@@ -38,7 +37,7 @@ declare class Edge {
    * A PlaceableObject that is responsible for this edge, if any
    * @remarks This property is never read by Foundry, so it being nullish won't break anything as of 12.331
    */
-  object: PlaceableObject.Any | undefined | null;
+  object: PlaceableObject.Any | undefined;
 
   /**
    * The type of edge
@@ -48,38 +47,44 @@ declare class Edge {
 
   /**
    * The direction of effect for the edge.
+   * @defaultValue {@linkcode CONST.WALL_DIRECTIONS.BOTH}
    */
-  direction: foundry.CONST.WALL_DIRECTIONS;
+  direction: CONST.WALL_DIRECTIONS;
 
   /**
    * How this edge restricts light.
-   * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+   * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
    */
-  light: foundry.CONST.WALL_SENSE_TYPES;
+  light: CONST.WALL_SENSE_TYPES;
 
   /**
    * How this edge restricts movement.
-   * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+   * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
    */
-  move: foundry.CONST.WALL_SENSE_TYPES;
+  move: CONST.WALL_SENSE_TYPES;
 
   /**
    * How this edge restricts sight.
-   * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+   * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
    */
-  sight: foundry.CONST.WALL_SENSE_TYPES;
+  sight: CONST.WALL_SENSE_TYPES;
 
   /**
    * How this edge restricts sound.
-   * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+   * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
    */
-  sound: foundry.CONST.WALL_SENSE_TYPES;
+  sound: CONST.WALL_SENSE_TYPES;
 
   /**
    * Specialized threshold data for this edge.
-   * @remarks Foundry only accesses this in nullish-safe ways as of 12.331
    */
-  threshold: WallDocument.ThresholdData | undefined | null;
+  threshold: WallDocument.ThresholdData | undefined;
+
+  /**
+   * A source priority for this edge. Typically zero unless this edge was contributed by a high-priority source.
+   * @defaultValue `0`
+   */
+  priority: number;
 
   /**
    * The endpoint of the edge which is oriented towards the top-left.
@@ -103,16 +108,14 @@ declare class Edge {
 
   /**
    * A PolygonVertex instance.
-   * Used as part of ClockwiseSweepPolygon computation.
-   * @defaultValue `undefined`
+   * Used as part of {@linkcode ClockwiseSweepPolygon} computation.
    * @remarks Only set in {@link ClockwiseSweepPolygon._identifyVertices | `ClockwiseSweepPolygon#_identifyVertices`} (part of CSP initialization)
    */
   vertexA: PolygonVertex | undefined;
 
   /**
    * A PolygonVertex instance.
-   * Used as part of ClockwiseSweepPolygon computation.
-   * @defaultValue `undefined`
+   * Used as part of {@linkcode ClockwiseSweepPolygon} computation.
    * @remarks Only set in {@link ClockwiseSweepPolygon._identifyVertices | `ClockwiseSweepPolygon#_identifyVertices`} (part of CSP initialization)
    */
   vertexB: PolygonVertex | undefined;
@@ -120,7 +123,7 @@ declare class Edge {
   /**
    * Is this edge limited for a particular type?
    */
-  isLimited(type: foundry.CONST.WALL_RESTRICTION_TYPES): boolean;
+  isLimited(type: CONST.WALL_RESTRICTION_TYPES): boolean;
 
   /**
    * Create a copy of the Edge which can be safely mutated.
@@ -137,24 +140,19 @@ declare class Edge {
    * If the proximity threshold is met, this edge excluded from perception calculations.
    * @param sourceType     - Sense type for the source
    * @param sourceOrigin   - The origin or position of the source on the canvas
-   * @param externalRadius - The external radius of the source
-   *                         (default: `0`)
-   * @returns True if the edge has a threshold greater than 0 for the source type,
-   *          and the source type is within that distance.
+   * @param externalRadius - The external radius of the source (default: `0`)
+   * @returns True if the edge has a threshold greater than `0` for the source type,
+   * and the source type is within that distance.
    */
-  applyThreshold(
-    sourceType: Edge.AttenuationTypes,
-    sourceOrigin: Canvas.Point,
-    externalRadius?: number | null,
-  ): boolean;
+  applyThreshold(sourceType: Edge.AttenuationTypes, sourceOrigin: Canvas.Point, externalRadius?: number): boolean;
 
   /**
    * Determine the orientation of this Edge with respect to a reference point.
    * @param point - Some reference point, relative to which orientation is determined
-   * @returns An orientation in CONST.WALL_DIRECTIONS which indicates whether the Point is left,
-   *          right, or collinear (both) with the Edge
+   * @returns An orientation in {@linkcode CONST.WALL_DIRECTIONS} which indicates whether the Point is left,
+   * right, or collinear (both) with the Edge
    */
-  orientPoint(point: Canvas.Point): foundry.CONST.WALL_DIRECTIONS;
+  orientPoint(point: Canvas.Point): CONST.WALL_DIRECTIONS;
 
   /**
    * Identify intersections between a provided iterable of edges.
@@ -179,7 +177,7 @@ declare namespace Edge {
   interface AnyConstructor extends Identity<typeof AnyEdge> {}
 
   /** @internal */
-  type _ConstructorOptions = NullishProps<{
+  type _ConstructorOptions = InexactPartial<{
     /**
      * A string used to uniquely identify this edge
      *
@@ -200,44 +198,52 @@ declare namespace Edge {
 
     /**
      * How this edge restricts light
-     * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+     * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
      */
-    light: foundry.CONST.WALL_SENSE_TYPES;
+    light: CONST.WALL_SENSE_TYPES;
 
     /**
      * How this edge restricts movement
-     * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+     * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
      */
-    move: foundry.CONST.WALL_SENSE_TYPES;
+    move: CONST.WALL_SENSE_TYPES;
 
     /**
      * How this edge restricts sight
-     * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+     * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
      */
-    sight: foundry.CONST.WALL_SENSE_TYPES;
+    sight: CONST.WALL_SENSE_TYPES;
 
     /**
      * How this edge restricts sound
-     * @defaultValue `CONST.WALL_SENSE_TYPES.NONE`
+     * @defaultValue {@linkcode CONST.WALL_SENSE_TYPES.NONE}
      */
-    sound: foundry.CONST.WALL_SENSE_TYPES;
+    sound: CONST.WALL_SENSE_TYPES;
 
     /**
      * A direction of effect for the edge
-     * @defaultValue `CONST.WALL_DIRECTIONS.BOTH`
+     * @defaultValue {@linkcode CONST.WALL_DIRECTIONS.BOTH}
      */
-    direction: foundry.CONST.WALL_DIRECTIONS;
+    direction: CONST.WALL_DIRECTIONS;
 
     /**
      * Configuration of threshold data for this edge
      * @remarks Foundry only accesses this in nullish-safe ways as of 12.331
      */
     threshold: WallDocument.ThresholdData;
+
+    /**
+     * A source priority for this edge. Typically zero unless this edge was contributed by a high-priority source.
+     * @defaultValue `0`
+     */
+    priority: number;
   }>;
 
   interface ConstructorOptions extends _ConstructorOptions {}
 
-  type EdgeTypes = "wall" | "darkness" | "innerBounds" | "outerBounds";
+  type EdgeTypes = "wall" | "darkness" | "light" | "innerBounds" | "outerBounds";
+
+  interface EdgeOptions extends Record<EdgeTypes, boolean> {}
 
   type AttenuationTypes = Exclude<foundry.CONST.WALL_RESTRICTION_TYPES, "move">;
 
