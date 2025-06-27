@@ -521,6 +521,9 @@ declare namespace Playlist {
   interface PlayNextOptions extends _PlayNextOptions {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -537,6 +540,9 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * @param context - Construction context options
    */
   constructor(...args: Playlist.ConstructorArgs);
+
+  /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
+  protected _playbackOrder: never;
 
   /**
    * The order in which sounds within this playlist will be played (if sequential or shuffled)
@@ -784,10 +790,15 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<Playlist.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"Playlist">,
-    options?: Document.CreateDialogOptions<"Playlist">,
+    data?: Playlist.CreateDialogData,
+    createOptions?: Playlist.Database.CreateOptions,
+    options?: Playlist.CreateDialogOptions,
   ): Promise<Playlist.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Playlist">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

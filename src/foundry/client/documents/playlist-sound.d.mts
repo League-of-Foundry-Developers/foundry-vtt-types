@@ -1,4 +1,4 @@
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type Sound from "#client/audio/sound.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -370,6 +370,9 @@ declare namespace PlaylistSound {
   interface DropDataOptions extends Document.DropDataOptions {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -500,10 +503,15 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
-    data: Document.CreateDialogData<PlaylistSound.CreateData> | undefined,
-    createOptions?: Document.Database.CreateOperationForName<"PlaylistSound">,
-    options?: Document.CreateDialogOptions<"PlaylistSound">,
+    data: PlaylistSound.CreateDialogData | undefined,
+    createOptions?: PlaylistSound.Database.CreateOptions,
+    options?: PlaylistSound.CreateDialogOptions,
   ): Promise<PlaylistSound.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"PlaylistSound">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

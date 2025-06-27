@@ -50,6 +50,9 @@ declare class Users extends foundry.documents.abstract.WorldCollection<"User", "
 
   /** @remarks This is not marked as protected because it is used in {@link Game.activateSocketListeners | `Game#activateSocketListeners`} */
   static _activateSocketListeners(socket: io.Socket): void;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  static _handleUserActivity(userId: never, activityData?: never): never;
 }
 
 declare namespace Users {

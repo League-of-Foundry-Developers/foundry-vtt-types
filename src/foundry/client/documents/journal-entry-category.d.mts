@@ -1,4 +1,4 @@
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type Document from "#common/abstract/document.mjs";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseJournalEntryCategory from "#common/documents/journal-entry-category.d.mts";
@@ -338,6 +338,9 @@ declare namespace JournalEntryCategory {
   type Resource = string | number | null;
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -365,10 +368,15 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<JournalEntryCategory.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"JournalEntryCategory">,
-    options?: Document.CreateDialogOptions<"JournalEntryCategory">,
+    data?: JournalEntryCategory.CreateDialogData,
+    createOptions?: JournalEntryCategory.Database.CreateOptions,
+    options?: JournalEntryCategory.CreateDialogOptions,
   ): Promise<JournalEntryCategory.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"JournalEntryCategory">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

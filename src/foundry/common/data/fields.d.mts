@@ -3868,6 +3868,7 @@ declare class AngleField<
 
 declare namespace AngleField {
   interface Options extends NumberField.Options {
+    /** Whether the angle should be normalized to [0,360) before being clamped to [0,360]. The default is true. */
     normalize?: boolean | undefined;
   }
 

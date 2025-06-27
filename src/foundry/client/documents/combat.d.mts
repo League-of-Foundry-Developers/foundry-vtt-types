@@ -569,6 +569,9 @@ declare namespace Combat {
   type CONFIG_SETTING = "combatTrackerConfig";
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -752,11 +755,8 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   /**
    * Clear the movement history of all Tokens within this Combat.
-   * @overload
-   */
-  /**
+   * or
    * Clear the movement history of the Combatants' Tokens.
-   * @overload
    * @param combatants - The combatants whose movement history is cleared
    */
   clearMovementHistories(combatants?: Iterable<Combatant.Implementation>): Promise<void>;
@@ -1009,10 +1009,15 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<Combat.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"Combat">,
-    options?: Document.CreateDialogOptions<"Combat">,
+    data?: Combat.CreateDialogData,
+    createOptions?: Combat.Database.CreateOptions,
+    options?: Combat.CreateDialogOptions,
   ): Promise<Combat.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Combat">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

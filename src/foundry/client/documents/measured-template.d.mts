@@ -1,4 +1,4 @@
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -424,6 +424,9 @@ declare namespace MeasuredTemplateDocument {
   interface DropDataOptions extends Document.DropDataOptions {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -470,10 +473,15 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
-    data: Document.CreateDialogData<MeasuredTemplateDocument.CreateData> | undefined,
-    createOptions?: Document.Database.CreateOperationForName<"MeasuredTemplate">,
-    options?: Document.CreateDialogOptions<"MeasuredTemplate">,
+    data: MeasuredTemplateDocument.CreateDialogData | undefined,
+    createOptions?: MeasuredTemplateDocument.Database.CreateOptions,
+    options?: MeasuredTemplateDocument.CreateDialogOptions,
   ): Promise<MeasuredTemplateDocument.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"MeasuredTemplate">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

@@ -53,13 +53,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   /**
    * Validate whether the drawing has some visible content (as required by validation).
    */
-  protected static _validateVisibleContent(
-    data: Partial<Pick<BaseDrawing.InitializedData, "shape">> &
-      Pick<
-        BaseDrawing.InitializedData,
-        "text" | "textAlpha" | "fillType" | "fillAlpha" | "strokeWidth" | "strokeAlpha"
-      >,
-  ): boolean;
+  protected static _validateVisibleContent(data: DrawingDocument.ValidateVisibleContentData): boolean;
 
   /**
    * @remarks

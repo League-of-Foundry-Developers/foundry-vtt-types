@@ -1,5 +1,5 @@
 import type { ConfiguredCombatantGroup } from "fvtt-types/configuration";
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type Document from "#common/abstract/document.mjs";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseCombatantGroup from "#common/documents/combatant-group.d.mts";
@@ -410,6 +410,9 @@ declare namespace CombatantGroup {
   type Resource = string | number | null;
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -461,10 +464,15 @@ declare class CombatantGroup<
   
    // data: not null (parameter default only), context: not null (destructured)
    static override createDialog(
-    data?: Document.CreateDialogData<CombatantGroup.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"CombatantGroup">,
-    options?: Document.CreateDialogOptions<"CombatantGroup">,
+    data?: CombatantGroup.CreateDialogData,
+    createOptions?: CombatantGroup.Database.CreateOptions,
+    options?: CombatantGroup.CreateDialogOptions,
    ): Promise<CombatantGroup.Stored | null | undefined>;
+
+   override deleteDialog(
+       options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+       operation?: Document.Database.DeleteOperationForName<"CombatantGroup">
+     ): Promise<this | false | null | undefined>;
   
    // options: not null (parameter default only)
    static override fromDropData(

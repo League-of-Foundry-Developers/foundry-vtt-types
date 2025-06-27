@@ -1,4 +1,4 @@
-import type { Identity, IntentionalPartial, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type { DatabaseGetOperation } from "#common/abstract/_types.d.mts";
 import type Document from "#common/abstract/document.d.mts";
@@ -381,6 +381,9 @@ declare namespace FogExploration {
   interface LoadOptions extends Omit<IntentionalPartial<DatabaseGetOperation>, "query"> {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -446,9 +449,14 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: FogExploration.CreateData,
-    createOptions?: Document.Database.CreateOperationForName<"FogExploration">,
-    options?: Document.CreateDialogOptions<"FogExploration">,
+    createOptions?: FogExploration.Database.CreateOptions,
+    options?: FogExploration.CreateDialogOptions,
   ): Promise<FogExploration.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"FogExploration">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

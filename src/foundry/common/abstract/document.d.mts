@@ -2120,6 +2120,7 @@ declare namespace Document {
           types: Exclude<Document.SubTypesOf<DocumentName>, "base">[];
         }>;
 
+  /** @deprecated in favor of {@linkcode CreateDialogOptions} */
   type CreateDialogContext<
     DocumentName extends Document.Type,
     Parent extends Document.Any | null,

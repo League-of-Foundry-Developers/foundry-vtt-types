@@ -89,9 +89,6 @@ declare class DirectoryCollection {
     b: DirectoryCollectionMixin.StandardSortEntry,
   ): number;
 
-  /**
-   * @remarks marked by foundry as `@override`
-   */
   protected _onModifyContents<A extends DatabaseAction>(
     action: A,
     documents: Document.AnyStored,

@@ -459,6 +459,9 @@ declare namespace Adventure {
   interface ImportOptions extends _ImportOptions, PrepareImportOptions {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -524,10 +527,15 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
-    data: Document.CreateDialogData<Adventure.CreateData> | undefined,
-    createOptions?: Document.Database.CreateOperationForName<"Adventure">,
-    options?: Document.CreateDialogOptions<"Adventure">,
+    data: Adventure.CreateDialogData | undefined,
+    createOptions?: Adventure.Database.CreateOptions,
+    options?: Adventure.CreateDialogOptions,
   ): Promise<Adventure.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Adventure">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

@@ -2,7 +2,7 @@ import type { ConfiguredRegionBehavior } from "fvtt-types/configuration";
 import type Document from "#common/abstract/document.d.mts";
 import type BaseRegionBehavior from "#common/documents/region-behavior.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 
 import fields = foundry.data.fields;
 
@@ -409,6 +409,9 @@ declare namespace RegionBehavior {
   interface DropDataOptions extends Document.DropDataOptions {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -454,9 +457,9 @@ declare class RegionBehavior<
    * @remarks No type changes, just removes `executeScript` from `options.types` if the user lacks the `MACRO_SCRIPT` permission
    */
   static override createDialog(
-    data: Document.CreateDialogData<RegionBehavior.CreateData> | undefined,
-    createOptions?: Document.Database.CreateOperationForName<"RegionBehavior">,
-    dialogOptions?: Document.CreateDialogOptions<"RegionBehavior">,
+    data: RegionBehavior.CreateDialogData | undefined,
+    createOptions?: RegionBehavior.Database.CreateOptions,
+    dialogoptions?: RegionBehavior.CreateDialogOptions,
   ): Promise<RegionBehavior.Stored | null | undefined>;
 
   /*
@@ -477,6 +480,11 @@ declare class RegionBehavior<
   static override defaultName(
     context?: RegionBehavior.DefaultNameContext,
   ): string;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"RegionBehavior">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

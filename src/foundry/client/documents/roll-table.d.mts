@@ -570,6 +570,9 @@ declare namespace RollTable {
   }
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -871,10 +874,15 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<RollTable.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"RollTable">,
-    options?: Document.CreateDialogOptions<"RollTable">,
+    data?: RollTable.CreateDialogData,
+    createOptions?: RollTable.Database.CreateOptions,
+    options?: RollTable.CreateDialogOptions,
   ): Promise<RollTable.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"RollTable">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

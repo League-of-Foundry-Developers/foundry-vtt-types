@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "fvtt-types/configuration";
-import type { Merge, NullishProps } from "#utils";
+import type { InexactPartial, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -491,6 +491,9 @@ declare namespace Macro {
     | (SubType extends "script" ? Promise<unknown> | void : never);
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -567,9 +570,14 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Macro.CreateData,
-    createOptions?: Document.Database.CreateOperationForName<"Macro">,
-    options?: Document.CreateDialogOptions<"Macro">,
+    createOptions?: Macro.Database.CreateOptions,
+    options?: Macro.CreateDialogOptions,
   ): Promise<Macro.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Macro">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

@@ -553,11 +553,14 @@ declare namespace User {
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   interface QueryOptions {
     /**
      * The timeout in milliseconds
      */
-    timeout?: number;
+    timeout?: number | undefined;
   }
 
   type QueryName = keyof typeof CONFIG.queries;
@@ -601,7 +604,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * Track the Token documents that this User is currently moving.
    * @remarks foundry marks as `@readonly`
    */
-  movingTokens: ReadonlySet<TokenDocument>;
+  movingTokens: Set<TokenDocument>;
 
   /**
    * A flag for whether the current User is a Trusted Player
@@ -634,7 +637,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   /**
    * Is this User the designated User among the Users that satisfy the given condition?
-   * This function calls {@link foundry.documents.collections.Users#getDesignatedUser} and compares the designated User
+   * This function calls {@linkcode foundry.documents.collections.Users.getDesignatedUser | `foundry.documents.collections.Users#getDesignatedUser`} and compares the designated User
    * to this User.
    * @example
    * // Is the current User the designated User to create Tokens?
@@ -740,10 +743,15 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<User.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"User">,
-    options?: Document.CreateDialogOptions<"User">,
+    data?: User.CreateDialogData,
+    createOptions?: User.Database.CreateOptions,
+    options?: User.CreateDialogOptions,
   ): Promise<User.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"User">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

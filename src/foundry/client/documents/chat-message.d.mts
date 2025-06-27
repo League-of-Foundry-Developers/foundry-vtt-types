@@ -1,5 +1,5 @@
 import type { ConfiguredChatMessage } from "fvtt-types/configuration";
-import type { AnyObject, InterfaceToObject, Merge, NullishProps } from "#utils";
+import type { AnyObject, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
@@ -585,6 +585,9 @@ declare namespace ChatMessage {
   type PassableRollMode = CONST.DICE_ROLL_MODES | "roll";
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -683,6 +686,22 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   // options: not null (destructured)
   static getSpeaker(options?: ChatMessage.GetSpeakerOptions): ChatMessage.SpeakerData;
 
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected static _getSpeakerFromToken(options: never): never;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected static _getSpeakerFromActor(options: never): never;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected static _getSpeakerFromUser(options: never): never;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _renderRollContent(messageData: never): never;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _renderRollHTML(isPrivate?: never): never;
+
+
   /**
    * Obtain an Actor instance which represents the speaker of this message (if any)
    * @param speaker - The speaker data object
@@ -744,10 +763,15 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<ChatMessage.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"ChatMessage">,
-    options?: Document.CreateDialogOptions<"ChatMessage">,
+    data?: ChatMessage.CreateDialogData,
+    createOptions?: ChatMessage.Database.CreateOptions,
+    options?: ChatMessage.CreateDialogOptions,
   ): Promise<ChatMessage.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"ChatMessage">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

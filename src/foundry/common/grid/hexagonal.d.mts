@@ -361,9 +361,15 @@ declare namespace HexagonalGrid {
     even: boolean;
   }
 
-  // TODO: Figure out to do with this lil guy
-  /** Cube coordinates in a hexagonal grid. q + r + s = 0. */
-  interface Cube {
+  /**
+   * @deprecated in favor of {@linkcode Cube2D}
+   */
+  interface Cube extends Cube2D {}
+
+  /**
+   * 2D cube coordinates in a hexagonal grid. q + r + s = 0.
+   */
+  interface Cube2D {
     /**
      * The coordinate along the E-W (columns) or SW-NE (rows) axis.
      * Equal to the offset column coordinate if column orientation.
@@ -379,11 +385,6 @@ declare namespace HexagonalGrid {
     /** The coordinate along the SE-NW axis. */
     s: number;
   }
-
-  /**
-   * 2D cube coordinates in a hexagonal grid. q + r + s = 0.
-   */
-  interface Cube2D extends Cube {}
 
   /**
    * 3D cube coordinates in a hexagonal grid. q + r + s = 0.

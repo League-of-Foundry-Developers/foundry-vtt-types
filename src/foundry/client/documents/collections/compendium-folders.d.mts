@@ -24,7 +24,7 @@ declare class CompendiumFolderCollection extends foundry.documents.abstract.Docu
   //   options?: foundry.abstract.Document.OnUpdateOptions<"Folder">,
   // ): Promise<Folder.Implementation[]>;
 
-  // Note(Michael) omitted `_onModifyContents` override because that's what Luke did elsewhere
+  // Note(LukeAbby): The override for `_onModifyContents` becomes unreasonably long and doesn't add any changes and so has been omitted.
 }
 
 export default CompendiumFolderCollection;

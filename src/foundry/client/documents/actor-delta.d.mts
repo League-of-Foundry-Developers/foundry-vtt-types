@@ -2,7 +2,7 @@ import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { ConfiguredActorDelta } from "fvtt-types/configuration";
-import type { Identity, Merge, NullishProps, RequiredProps } from "#utils";
+import type { Identity, InexactPartial, Merge, NullishProps, RequiredProps } from "#utils";
 import type DataModel from "#common/abstract/data.d.mts";
 
 import fields = foundry.data.fields;
@@ -519,6 +519,9 @@ declare namespace ActorDelta {
   interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -737,10 +740,15 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
-    data: Document.CreateDialogData<ActorDelta.CreateData> | undefined,
-    createOptions?: Document.Database.CreateOperationForName<"ActorDelta">,
-    options?: Document.CreateDialogOptions<"ActorDelta">,
+    data: ActorDelta.CreateDialogData | undefined,
+    createOptions?: ActorDelta.Database.CreateOptions,
+    options?: ActorDelta.CreateDialogOptions,
   ): Promise<ActorDelta.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: ActorDelta.Database.DeleteOperation
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

@@ -1,4 +1,4 @@
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -346,6 +346,9 @@ declare namespace Setting {
   interface DropDataOptions extends Document.DropDataOptions {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -401,9 +404,14 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Setting.CreateData,
-    createOptions?: Document.Database.CreateOperationForName<"Setting">,
-    options?: Document.CreateDialogOptions<"Setting">,
+    createOptions?: Setting.Database.CreateOptions,
+    options?: Setting.CreateDialogOptions,
   ): never;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Setting">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

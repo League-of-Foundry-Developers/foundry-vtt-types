@@ -82,7 +82,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @returns The snapped position
    */
   getSnappedPosition(
-    data?: InexactPartial<foundry.canvas.Canvas.ElevatedPoint & TokenDocument.Dimensions>,
+    data?: TokenDocument.Dimensions3D,
   ): foundry.canvas.Canvas.ElevatedPoint;
 
   /**
@@ -91,7 +91,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @returns The top-left grid offset
    */
   protected _positionToGridOffset(
-    data?: InexactPartial<foundry.canvas.Canvas.ElevatedPoint & TokenDocument.Dimensions>,
+    data?: TokenDocument.Dimensions3D,
   ): foundry.grid.BaseGrid.Offset3D;
 
   /**
@@ -102,7 +102,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    */
   protected _gridOffsetToPosition(
     offset: foundry.grid.BaseGrid.Offset3D,
-    data?: InexactPartial<TokenDocument.Dimensions>,
+    data?: TokenDocument.PartialDimensions,
   ): foundry.canvas.Canvas.ElevatedPoint;
 
   /**
@@ -110,7 +110,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param data - The width and/or height in grid units (must be positive)
    * @returns The width and height in pixels
    */
-  getSize(data?: Partial<{ width: number; height: number }>): { width: number; height: number };
+  getSize(data?: InexactPartial<TokenDocument.ShapelessDimensions>): TokenDocument.ShapelessDimensions;
 
   /**
    * Get the center point of the Token.
@@ -118,7 +118,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @returns The center point
    */
   getCenterPoint(
-    data?: InexactPartial<foundry.canvas.Canvas.ElevatedPoint & TokenDocument.Dimensions>,
+    data?: TokenDocument.Dimensions3D,
   ): foundry.canvas.Canvas.ElevatedPoint;
 
   /**
@@ -128,7 +128,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @returns The grid space polygon or undefined if gridless
    */
   getGridSpacePolygon(
-    data?: InexactPartial<TokenDocument.Dimensions>,
+    data?: TokenDocument.PartialDimensions,
   ): foundry.canvas.Canvas.Point[] | void;
 
   /**
@@ -139,7 +139,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @returns The offsets of occupied grid spaces
    */
   getOccupiedGridSpaceOffsets(
-    data?: InexactPartial<foundry.canvas.Canvas.Point & TokenDocument.Dimensions>,
+    data?: TokenDocument.Dimensions2D,
   ): foundry.grid.BaseGrid.Offset2D[];
 
   /**

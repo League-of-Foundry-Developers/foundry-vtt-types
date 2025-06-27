@@ -1,4 +1,4 @@
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseAmbientSound from "#common/documents/ambient-sound.mjs";
@@ -431,6 +431,9 @@ declare namespace AmbientSoundDocument {
   }
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -467,10 +470,15 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
-    data: Document.CreateDialogData<AmbientSoundDocument.CreateData> | undefined,
-    createOptions?: Document.Database.CreateOperationForName<"AmbientSound">,
-    options?: Document.CreateDialogOptions<"AmbientSound">,
+    data: AmbientSoundDocument.CreateDialogData | undefined,
+    createOptions?: AmbientSoundDocument.Database.CreateOptions,
+    options?: AmbientSoundDocument.CreateDialogOptions,
   ): Promise<AmbientSoundDocument.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"AmbientSound">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

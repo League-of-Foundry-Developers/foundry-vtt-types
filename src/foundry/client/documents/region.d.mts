@@ -1,4 +1,4 @@
-import type { Merge, NullishProps } from "#utils";
+import type { InexactPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseShapeData } from "#common/data/data.mjs";
@@ -567,12 +567,15 @@ declare namespace RegionDocument {
     /** The elevation in grid units. */
     elevation: number;
 
-    /** Teleport from the previous to this waypoint? Default: `false`. */
-    teleport?: boolean;
+    /**
+     * Teleport from the previous to this waypoint?
+     * @defaultValue `false`.
+     */
+    teleport?: boolean | undefined;
   }
 
   interface MovementSegment {
-    /** The type of this segment (see {@link CONST.REGION_MOVEMENT_SEGMENTS}). */
+    /** The type of this segment (see {@linkcode CONST.REGION_MOVEMENT_SEGMENTS}). */
     type: CONST.REGION_MOVEMENT_SEGMENTS;
 
     /** The waypoint that this segment starts from. */
@@ -586,6 +589,9 @@ declare namespace RegionDocument {
   }
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -604,9 +610,9 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * The value of this property must not be mutated.
    * 
    * This property is updated only by a document update.
+   * @remarks marked by foundry as readonly
    */
-  // TODO: this `any`
-  get regionShapes(): ReadonlyArray<foundry.data.regionShapes.RegionShape<any>>;
+  get regionShapes(): foundry.data.regionShapes.RegionShape.Any[];
   
     /**
      * The polygons of this Region.
@@ -696,6 +702,9 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * @internal
    */
   protected static _activateSocketListeners(socket: WebSocket): void;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected static _updateTokens(regions: never, options?: never): never;
 
   // _onUpdate, _onCreateOperation, _onUpdateOperation, and _onDeleteOperation are overridden from BaseRegion without signature changes.
 
@@ -841,10 +850,15 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
-    data: Document.CreateDialogData<RegionDocument.CreateData> | undefined,
-    createOptions?: Document.Database.CreateOperationForName<"Region">,
-    options?: Document.CreateDialogOptions<"Region">,
+    data: RegionDocument.CreateDialogData | undefined,
+    createOptions?: RegionDocument.Database.CreateOptions,
+    options?: RegionDocument.CreateDialogOptions,
   ): Promise<RegionDocument.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Region">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

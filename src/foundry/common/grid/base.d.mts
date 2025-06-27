@@ -543,14 +543,10 @@ declare namespace BaseGrid {
     thickness?: number | undefined;
   }
 
-  // TODO: Figure out to do with this lil guy
-  interface Offset {
-    /** The row coordinate */
-    i: number;
-
-    /** The column coordinate */
-    j: number;
-  }
+  /**
+   * @deprecated in favor of {@linkcode Offset2D}
+   */
+  interface Offset extends Offset2D {}
 
   /**
    * 2D offset coordinates of a grid space.
@@ -575,8 +571,10 @@ declare namespace BaseGrid {
 
   type OffsetRange = [i0: number, j0: number, i1: number, j1: number];
 
-  // TODO: Figure out to do with this lil guy
-  type Coordinates = Offset | Canvas.Point;
+  /**
+   * @deprecated in favor of {@linkcode Coordinates2D}
+   */
+  type Coordinates = Coordinates2D;
 
   type Coordinates2D = Offset2D | Canvas.Point;
 
@@ -657,16 +655,9 @@ declare namespace BaseGrid {
   }
 
   /**
-   * A function that returns the cost for a given move between grid spaces.
-   * In square and hexagonal grids the grid spaces are always adjacent unless teleported.
-   * The distance is 0 if and only if teleported. The function is never called with the same offsets.
-   * @param from     - The offset that is moved from.
-   * @param to       - The offset that is moved to.
-   * @param distance - The distance between the grid spaces, or 0 if teleported.
-   * @returns The cost of the move between the grid spaces.
+   * @deprecated in favor of {@linkcode MeasurePathCostFunction2D}
    */
-  // TODO: Figure out to do with this lil guy
-  type MeasurePathCostFunction = (from: Offset, to: Offset, distance: number) => number;
+  type MeasurePathCostFunction = MeasurePathCostFunction2D<unknown>;
 
   /**
    * A function that returns the cost for a given move between grid spaces in 2D.

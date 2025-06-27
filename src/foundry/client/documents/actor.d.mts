@@ -616,6 +616,9 @@ declare namespace Actor {
   }
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -678,6 +681,12 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * The statuses that are applied to this actor by active effects
    */
   statuses: Set<string>;
+
+  /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
+  protected _tokenImages: never;
+
+  /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
+  protected _lastWildcard: never;
 
   /**
    * Provide a thumbnail image path used to represent this document.
@@ -983,10 +992,15 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<Actor.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"Actor">,
-    options?: Document.CreateDialogOptions<"Actor">,
+    data?: Actor.CreateDialogData,
+    createOptions?: Actor.Database.CreateOptions,
+    options?: Actor.CreateDialogOptions,
   ): Promise<Actor.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Actor">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

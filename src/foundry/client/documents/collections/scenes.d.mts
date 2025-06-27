@@ -39,6 +39,9 @@ declare class Scenes extends foundry.documents.abstract.WorldCollection<"Scene",
   /** @remarks This is not marked as protected because it is used in {@link Game.activateSocketListeners | `Game#activateSocketListeners`} */
   static _activateSocketListeners(socket: io.Socket): void;
 
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected static _pullToScene(sceneId: never): never;
+
   override fromCompendium<Options extends foundry.documents.abstract.WorldCollection.FromCompendiumOptions | undefined>(
     document: Scene.Implementation | Scene.CreateData,
     options?: Options,

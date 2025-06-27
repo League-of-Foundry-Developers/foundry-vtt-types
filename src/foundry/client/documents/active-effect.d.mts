@@ -1,5 +1,5 @@
 import type { ConfiguredActiveEffect } from "fvtt-types/configuration";
-import type { AnyMutableObject, IntentionalPartial, InterfaceToObject, JSONValue, Merge, RequiredProps } from "#utils";
+import type { AnyMutableObject, InexactPartial, IntentionalPartial, InterfaceToObject, JSONValue, Merge, RequiredProps } from "#utils";
 import type { DataModel } from "#common/abstract/data.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "#common/data/fields.d.mts";
@@ -624,6 +624,9 @@ declare namespace ActiveEffect {
     : unknown;
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -782,6 +785,15 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    */
   protected _applyLegacy(actor: Actor.Implementation, change: ActiveEffect.ChangeData, changes: AnyMutableObject): void;
 
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _castDelta(raw: never, type: never): never;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _castArray(raw: never, type: never): never;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _parseOrString(raw: never): never;
+
   /**
    * Apply an ActiveEffect that uses an ADD application mode.
    * The way that effects are added depends on the data type of the current value.
@@ -915,10 +927,15 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
-    data: Document.CreateDialogData<ActiveEffect.CreateData> | undefined,
-    createOptions?: Document.Database.CreateOperationForName<"ActiveEffect">,
-    options?: Document.CreateDialogOptions<"ActiveEffect">,
+    data: ActiveEffect.CreateDialogData | undefined,
+    createOptions?: ActiveEffect.Database.CreateOptions,
+    options?: ActiveEffect.CreateDialogOptions,
   ): Promise<ActiveEffect.Stored | null | undefined>;
+
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: ActiveEffect.Database.DeleteOperation
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

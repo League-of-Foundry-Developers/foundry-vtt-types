@@ -1,7 +1,7 @@
 import type Document from "#common/abstract/document.d.mts";
 import type { documents } from "#client/client.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { InterfaceToObject, Merge } from "#utils";
+import type { InexactPartial, InterfaceToObject, Merge } from "#utils";
 import type BaseJournalEntry from "#common/documents/journal-entry.mjs";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
 import type { NotesLayer } from "#client/canvas/layers/_module.d.mts";
@@ -465,6 +465,9 @@ declare namespace JournalEntry {
   >;
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -649,10 +652,15 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<JournalEntry.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"JournalEntry">,
-    options?: Document.CreateDialogOptions<"JournalEntry">,
+    data?: JournalEntry.CreateDialogData,
+    createOptions?: JournalEntry.Database.CreateOptions,
+    options?: JournalEntry.CreateDialogOptions,
   ): Promise<JournalEntry.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"JournalEntry">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

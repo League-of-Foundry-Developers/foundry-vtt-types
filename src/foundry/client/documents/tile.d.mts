@@ -1,4 +1,4 @@
-import type { InterfaceToObject, Merge } from "#utils";
+import type { InexactPartial, InterfaceToObject, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { TextureData } from "#common/data/data.mjs";
@@ -444,6 +444,9 @@ declare namespace TileDocument {
   interface DropDataOptions extends Document.DropDataOptions {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -479,10 +482,15 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
-    data: Document.CreateDialogData<TileDocument.CreateData> | undefined,
-    createOptions?: Document.Database.CreateOperationForName<"Tile">,
-    options?: Document.CreateDialogOptions<"Tile">,
+    data: TileDocument.CreateDialogData | undefined,
+    createOptions?: TileDocument.Database.CreateOptions,
+    options?: TileDocument.CreateDialogOptions,
   ): Promise<TileDocument.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Tile">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

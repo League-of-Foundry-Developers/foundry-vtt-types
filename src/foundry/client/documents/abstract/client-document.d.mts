@@ -30,8 +30,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * A cached reference to the Application instance used to configure this Document.
    * @defaultValue `null`
    * @remarks Created during construction via `defineProperty`, with options `{value: null, writable: true, enumerable: false}`
-   *
-   * Foundry marked `@internal`
+   * @internal
    */
   protected readonly _sheet: FixedInstanceType<Document.SheetClassFor<DocumentName>> | null;
 
@@ -58,7 +57,6 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
 
   /**
    * Is this document in a compendium? A stricter check than `Docmuent#inCompendium`.
-   * @remarks foundry annotated as `@override`
    */
   get inCompendium(): boolean;
 
@@ -339,8 +337,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @privateRemarks `| undefined` is included in the return types of the specific document overrides due to {@link Document.create | `Document.create`}
    * possibly being `undefined` if creation is cancelled by preCreate methods or hooks
    */
-  // data: not null (parameter default only), option: not null (parameter default only), options: not null (destructured)
-  static createDialog(data: Document.CreateDialogData<never>, createOptions?: Document.Database.CreateOperation<never>, options?: Document.CreateDialogOptions<never>): Promise<unknown>;
+  static createDialog(data: never, createOptions?: never, options?: never): Promise<unknown>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
@@ -351,7 +348,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @returns A Promise that resolves to the deleted Document
    */
   // options: not null (parameter default only)
-  deleteDialog(options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>, operation?: Document.Database.DeleteOperation<never>): Promise<this | false | null | undefined>;
+  deleteDialog(options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>, operation?: never): Promise<this | false | null | undefined>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.

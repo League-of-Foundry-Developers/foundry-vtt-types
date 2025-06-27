@@ -476,6 +476,8 @@ declare namespace Folder {
   }
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
 }
 
 /**
@@ -557,10 +559,15 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
   /** @remarks Creates and renders a {@link FolderConfig | `FolderConfig`} instead of a simple Dialog */
   // data, options: not null (parameter defaults only)
   static override createDialog(
-    data?: Document.CreateDialogData<Folder.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"Folder">,
-    options?: Document.CreateDialogOptions<"Folder">,
+    data?: Folder.CreateDialogData,
+    createOptions?: Folder.Database.CreateOptions,
+    options?: Folder.CreateDialogOptions,
   ): Promise<Folder.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Folder">
+    ): Promise<this | false | null | undefined>;
 
   /**
    * Export all Documents contained in this Folder to a given Compendium pack.

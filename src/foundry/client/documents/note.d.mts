@@ -1,4 +1,4 @@
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -431,6 +431,9 @@ declare namespace NoteDocument {
   interface DropDataOptions extends Document.DropDataOptions {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -448,10 +451,15 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
   constructor(...args: NoteDocument.ConstructorArgs);
 
   static override createDialog(
-    data: Document.CreateDialogData<NoteDocument.CreateData> | undefined,
-    createOptions?: Document.Database.CreateOperationForName<"Note">,
-    dialogOptions?: Document.CreateDialogOptions<"Note">,
+    data: NoteDocument.CreateDialogData | undefined,
+    createOptions?: NoteDocument.Database.CreateOptions,
+    dialogoptions?: NoteDocument.CreateDialogOptions,
   ): Promise<NoteDocument.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Note">
+    ): Promise<this | false | null | undefined>;
 
   /**
    * The associated JournalEntry which is referenced by this Note

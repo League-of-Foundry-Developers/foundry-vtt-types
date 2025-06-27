@@ -25,7 +25,7 @@ declare namespace TokenDocument {
   /**
    * The documents embedded within `TokenDocument`.
    */
-  type Hierarchy = DeepReadonly<Document.HierarchyOf<Schema>>;
+  type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
    * The implementation of the `TokenDocument` document instance configured through `CONFIG.Token.documentClass` in Foundry and
@@ -656,6 +656,7 @@ declare namespace TokenDocument {
     /**
      * The terrain data from the previous to this waypoint.
      * @defaultValue `undefined`
+     * @remarks Not technically a union, but dependent on whether `CONFIG.Token.movement?.TerrainData` exists
      */
     terrain:
       | fields.EmbeddedDataField<typeof TerrainData, { nullable: true; initial: undefined }>
@@ -713,6 +714,10 @@ declare namespace TokenDocument {
   }
 
   interface MeasuredMovementWaypoint extends SchemaField.InitializedData<MeasuredMovementWaypointSchema> {}
+
+  interface GetCompleteMovementPathWaypoint extends InexactPartial<Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost">> {}
+
+  interface CompleteMovementWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {}
 
   /**
    * The schema for {@linkcode TokenDocument}. This is the source of truth for how an TokenDocument document
@@ -1114,7 +1119,17 @@ declare namespace TokenDocument {
     shape: CONST.TOKEN_SHAPES;
   }
 
-  interface Dimensions extends Omit<Position, "width" | "height" | "shape"> {}
+  interface Dimensions extends Pick<Position, "width" | "height" | "shape"> {}
+
+  interface PartialDimensions extends InexactPartial<Dimensions> {}
+
+  interface ShapelessDimensions extends Omit<Dimensions, "shape"> {}
+
+  interface Dimensions2D extends InexactPartial<foundry.canvas.Canvas.Point & Dimensions> {}
+
+  interface Dimensions3D extends InexactPartial<foundry.canvas.Canvas.ElevatedPoint & Dimensions> {}
+
+  interface ResizeOptions extends InexactPartial<Omit<TokenDocument.Database.UpdateOperation, "updates">> {}
 
   interface MovementWaypoint extends Omit<MeasuredMovementWaypoint, "terrain" | "intermediate" | "userId" | "movementId" | "cost"> {}
 
@@ -1220,6 +1235,12 @@ declare namespace TokenDocument {
     continuePromise: Promise<boolean> | undefined;
   }
 
+  interface MovementContinuationState {
+    handles: Map<string | symbol, TokenDocument.MovementContinuationHandle>;
+    callbacks: Array<(continued: boolean) => void>;
+    pending: Set<string>;
+  }
+
   interface MovementContinuationData {
     /**
      * The movement ID
@@ -1249,7 +1270,7 @@ declare namespace TokenDocument {
     /**
      * Resolve function of the wait promise
      */
-    resolveWaitPromise: () => {} | undefined;
+    resolveWaitPromise: (() => void) | undefined;
 
     /**
      * The promise that resolves after the update workflow
@@ -1260,13 +1281,11 @@ declare namespace TokenDocument {
      * The movement continuation states
      */
     states: {
-      [movementId: string]: {
-        handles: Map<string | symbol, TokenDocument.MovementContinuationHandle>;
-        callbacks: Array<(continued: boolean) => void>;
-        pending: Set<string>;
-      }
+      [movementId: string]: TokenDocument.MovementContinuationState
     }
   }
+
+  interface ConstrainOptions extends Omit<ConstrainMovementPathOptions, "preview" | "history"> {}
 
   interface MovementData {
     /**
@@ -1317,7 +1336,7 @@ declare namespace TokenDocument {
     /**
      * The options to constrain movement
      */
-    constrainOptions: Omit<TokenDocument.ConstrainMovementPathOptions, "preview" | "history">;
+    constrainOptions: ConstrainOptions;
 
     /**
      * Automatically rotate the token in the direction of movement?
@@ -1350,7 +1369,7 @@ declare namespace TokenDocument {
     method: MovementMethod;
     autoRotate: boolean;
     showRuler: boolean;
-    constrainOptions: Omit<ConstrainMovementPathOptions, "preview" | "history">;
+    constrainOptions: ConstrainOptions;
   }
 
   interface MovementCostFunction extends foundry.grid.BaseGrid.MeasurePathCostFunction3D<MovementSegmentData> {}
@@ -1360,7 +1379,7 @@ declare namespace TokenDocument {
      * Measure a preview path?
      * @defaultValue `false`
      */
-    preview?: boolean;
+    preview?: boolean | undefined;
   }
 
   interface MovementOperation extends Omit<MovementData, "user" | "state" | "updateOptions"> {}
@@ -1390,6 +1409,9 @@ declare namespace TokenDocument {
   interface SegmentizeMovementWaypoint extends InexactPartial<Pick<MeasuredMovementWaypoint, "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped">> {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -1556,7 +1578,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param options    - Parameters of the update operation
    * @returns A Promise that resolves to true if the Token was resized, otherwise resolves to false
    */
-  resize(dimensions: Partial<TokenDocument.Dimensions>, options?: Partial<Omit<TokenDocument.Database.UpdateOperation, "updates">>): Promise<boolean>;
+  resize(dimensions: TokenDocument.PartialDimensions, options?: TokenDocument.ResizeOptions): Promise<boolean>;
 
   /**
    * Stop the movement of this Token document. The movement cannot be continued after being stopped.
@@ -1571,7 +1593,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * Returns a callback that can be used to resume the movement later.
    * Only after all callbacks and keys have been called the movement of the Token is resumed.
    * If the callback is called within the update operation workflow, the movement is resumed after the workflow.
-   * @overload
    * @returns The callback to resume movement if the movement was or is paused,
    *                                              otherwise null
    * @example
@@ -1583,15 +1604,12 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * event.data.token.toggleStatusEffect("invisible", {active: true});
    * const resumed = await resumeMovement();
    * ```
-   */
-  /**
    * Pause the movement of this Token document. The movement can be resumed after being paused.
    * Only the User that initiated the movement can pause it.
    * Returns a promise that resolves to true if the movement was resumed by
    * {@link foundry.documents.TokenDocument.resumeMovement | `TokenDocument#resumeMovement`} with the same key that was passed to this function.
    * Only after all callbacks and keys have been called the movement of the Token is resumed.
    * If the callback is called within the update operation workflow, the movement is resumed after the workflow.
-   * @overload
    * @param key - The key to resume movement with {@link foundry.documents.TokenDocument.resumeMovement | `TokenDocument#resumeMovement`}
    * @returns The continuation promise if the movement was paused, otherwise null
    * @example
@@ -1609,7 +1627,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * }
    * ```
    */
-  pauseMovement(key?: string): () => Promise<boolean> | Promise<boolean> | null;
+  pauseMovement(key?: string): (() => Promise<boolean>) | Promise<boolean> | null;
 
   /**
    * Resume the movement given its ID and the key that was passed to {@link foundry.documents.TokenDocument.pauseMovement | `TokenDocument#pauseMovement`}.
@@ -1630,7 +1648,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param waypoints - The waypoints of movement
    * @returns The path of movement with all intermediate steps 
    */
-  getCompleteMovementPath(waypoints: Partial<Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId" | "cost">>): Omit<TokenDocument.MeasuredMovementWaypoint, "userId" | "movementId" | "cost">;
+  getCompleteMovementPath(waypoints: TokenDocument.GetCompleteMovementPathWaypoint[]): TokenDocument.CompleteMovementWaypoint[];
 
   /**
    * Add or remove this Token from a Combat encounter.
@@ -1694,7 +1712,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @returns The Region IDs this Token is in after changes ar applied (sorted)
    * @internal
    */
-  protected _identifyRegions(changes?: InexactPartial<TokenDocument.UpdateData>): string[];
+  protected _identifyRegions(changes?: TokenDocument.UpdateData): string[];
 
   /**
    * Reject the movement or modify the update operation as needed based on the movement.
@@ -1707,7 +1725,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    */
   protected _preUpdateMovement(
     movement: TokenDocument.PreMovementOptions,
-    operation: Partial<TokenDocument.Database.UpdateOperation>
+    operation: TokenDocument.Database.UpdateOperation
   ): Promise<boolean | void>;
 
   /**
@@ -1715,9 +1733,9 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param movement  - The movement of this Token
    * @param operation - The update operation
    * @param user      - The User that requested the update operation
-   * @remarks default implementation does nothing
+   * @remarks default implementation does nothing, foundry marked `movement` as readonly
    */
-  protected _onUpdateMovement(movement: DeepReadonly<TokenDocument.MovementOperation>, operation: Partial<TokenDocument.Database.UpdateOperation>, user: User.Implementation): void;
+  protected _onUpdateMovement(movement: TokenDocument.MovementOperation, operation: TokenDocument.Database.UpdateOperation, user: User.Implementation): void;
 
   /**
    * Called when the current movement is stopped.
@@ -1778,8 +1796,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   /**
    * Test whether the Token is inside the Region.
-   * This function determines the state of {@link TokenDocument#regions} and
-   * {@link foundry.documents.RegionDocument#tokens}.
+   * This function determines the state of {@linkcode TokenDocument.regions | TokenDocument#regions} and
+   * {@linkcode foundry.documents.RegionDocument.tokens | foundry.documents.RegionDocument#tokens}.
    * The Token and the Region must be in the same Scene.
    *
    * Implementations of this function are restricted in the following ways:
@@ -1798,16 +1816,11 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * of these fields. If an override of this function uses non-Token properties other than `Scene#grid.type` and
    * `Scene#grid.size`,
    * {@link foundry.documents.Scene#updateTokenRegions} must be called when any of those properties change.
-   * @overload
-   * @param region - The region.
-   */
-  /**
-   * @overload
    * @param region - The region.
    * @param data   - The position and dimensions. Defaults to the values of the document source.
    * @returns Is inside the Region?
    */
-  testInsideRegion(region: RegionDocument, data?: Partial<foundry.canvas.Canvas.ElevatedPoint & TokenDocument.Dimensions>): boolean;
+  testInsideRegion(region: RegionDocument, data?: TokenDocument.Dimensions3D): boolean;
 
   /**
    * Split the Token movement path through the Region into its segments.
@@ -1816,15 +1829,15 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * Implementations of this function are restricted in the following ways:
    *   - The segments must go through the waypoints.
    *   - The *from* position matches the *to* position of the succeeding segment.
-   *   - The Token must be contained (w.r.t. {@link TokenDocument#testInsideRegion}) within the Region
+   *   - The Token must be contained (w.r.t. {@linkcode TokenDocument.testInsideRegion | `TokenDocument#testInsideRegion`}) within the Region
    *     at the *from* and *to* of MOVE segments.
-   *   - The Token must be contained (w.r.t. {@link TokenDocument#testInsideRegion}) within the Region
+   *   - The Token must be contained (w.r.t. {@linkcode TokenDocument.testInsideRegion | `TokenDocument#testInsideRegion`}) within the Region
    *     at the *to* position of ENTER segments.
-   *   - The Token must be contained (w.r.t. {@link TokenDocument#testInsideRegion}) within the Region
+   *   - The Token must be contained (w.r.t. {@linkcode TokenDocument.testInsideRegion | `TokenDocument#testInsideRegion`}) within the Region
    *     at the *from* position of EXIT segments.
-   *   - The Token must not be contained (w.r.t. {@link TokenDocument#testInsideRegion}) within the
+   *   - The Token must not be contained (w.r.t. {@linkcode TokenDocument.testInsideRegion | `TokenDocument#testInsideRegion`}) within the
    *     Region at the *from* position of ENTER segments.
-   *   - The Token must not be contained (w.r.t. {@link TokenDocument#testInsideRegion}) within the
+   *   - The Token must not be contained (w.r.t. {@linkcode TokenDocument.testInsideRegion | `TokenDocument#testInsideRegion`}) within the
    *     Region at the *to* position of EXIT segments.
    *   - This function must not use prepared field values that are animated. In particular, it must use the source
    *     instead of prepared values of the following fields: `x`, `y`, `elevation`, `width`, `height`, and `shape`.
@@ -2045,10 +2058,15 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
-    data: Document.CreateDialogData<TokenDocument.CreateData> | undefined,
-    createOptions?: Document.Database.CreateOperationForName<"Token">,
-    options?: Document.CreateDialogOptions<"Token">,
+    data: TokenDocument.CreateDialogData | undefined,
+    createOptions?: TokenDocument.Database.CreateOptions,
+    options?: TokenDocument.CreateDialogOptions,
   ): Promise<TokenDocument.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Token">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

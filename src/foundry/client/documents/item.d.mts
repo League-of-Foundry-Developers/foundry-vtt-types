@@ -2,7 +2,7 @@ import type { ConfiguredItem } from "fvtt-types/configuration";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { AnyObject, Merge } from "#utils";
+import type { AnyObject, InexactPartial, Merge } from "#utils";
 import type BaseItem from "#common/documents/item.mjs";
 
 import fields = foundry.data.fields;
@@ -517,6 +517,9 @@ declare namespace Item {
   }
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -690,10 +693,15 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<Item.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"Item">,
-    options?: Document.CreateDialogOptions<"Item">,
+    data?: Item.CreateDialogData,
+    createOptions?: Item.Database.CreateOptions,
+    options?: Item.CreateDialogOptions,
   ): Promise<Item.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Item">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

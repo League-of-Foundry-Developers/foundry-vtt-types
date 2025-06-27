@@ -23,6 +23,9 @@ declare class CompendiumCollection<
   /** A subsidiary collection which contains the more minimal index of the pack */
   index: IndexTypeForMetadata<Type>;
 
+  /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
+  _flush: never
+
   /**
    * The amount of time that Document instances within this CompendiumCollection are held in memory.
    * Accessing the contents of the Compendium pack extends the duration of this lifetime.

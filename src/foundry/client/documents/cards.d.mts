@@ -695,6 +695,9 @@ declare namespace Cards {
   }
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -793,6 +796,15 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
   // options: not null (destructured where forwarded)
   recall(options?: Cards.RecallOptions): Promise<this>;
 
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _resetDeck(options?: never): never;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _resetStack(options?: never): never;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _postChatNotification(source: never, action: never, context: never): never;
+
   /**
    * A sorting function that is used to determine the standard order of Card documents within an un-shuffled stack.
    * @param a - The card being sorted
@@ -856,9 +868,9 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
   /** @remarks No type changes, just creates a fancier `Dialog` than `super` */
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<Cards.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"Cards">,
-    options?: Document.CreateDialogOptions<"Cards">,
+    data?: Cards.CreateDialogData,
+    createOptions?: Cards.Database.CreateOptions,
+    options?: Cards.CreateDialogOptions,
   ): Promise<Cards.Stored | null | undefined>;
 
   /*

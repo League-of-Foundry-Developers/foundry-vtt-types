@@ -1107,6 +1107,9 @@ declare namespace Scene {
   interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 }
 
 /**
@@ -1228,10 +1231,7 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
   /**
    * For all Tokens in this Scene identify the Regions that each Token is contained in and update the regions of each
    * Token accordingly.
-   *
-   * @overload
-   */
-  /**
+   * or
    * For the given Tokens in this Scene identify the Regions that each Token is contained in and update the regions of
    * each Token accordingly.
    *
@@ -1239,11 +1239,13 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    * {@link TokenDocument.testInsideRegion | `foundry.documents.TokenDocument#testInsideRegion`} is overridden and non-Token properties other than
    * `Scene#grid.type` and `Scene#grid.size` change that are used in the override of
    * {@link TokenDocument.TestInsideRegion | `foundry.documents.TokenDocument#testInsideRegion`}.
-   * @overload
-   * @param tokens - The Tokens whoses regions should be updates
+   * @param tokens - The Tokens whose regions should be updates
    * @returns The array of Tokens whose regions changed
    */
   updateTokenRegions(tokens?: Iterable<TokenDocument>): Promise<TokenDocument[]>;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _repositionObject(sceneUpdateData: never): never;
 
   // _preCreate, _preCreateOperation, _onCreate, and _preUpdate, _onUpdateOperation, _onUpdate, and _onDelete are all overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
@@ -1395,10 +1397,15 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
 
   // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<Scene.CreateData>,
-    createOptions?: Document.Database.CreateOperationForName<"Scene">,
-    options?: Document.CreateDialogOptions<"Scene">,
+    data?: Scene.CreateDialogData,
+    createOptions?: Scene.Database.CreateOptions,
+    options?: Scene.CreateDialogOptions,
   ): Promise<Scene.Stored | null | undefined>;
+
+  override deleteDialog(
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"Scene">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

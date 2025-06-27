@@ -1,6 +1,6 @@
 import type * as CONST from "#common/constants.d.mts";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "#utils";
+import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise, ConcreteKeys, InexactPartial } from "#utils";
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
 import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
@@ -2017,7 +2017,7 @@ declare global {
          * }
          * ```
          */
-        actions: Record<string, Partial<CONFIG.Token.MovementActionConfig>>;
+        actions: Record<string, CONFIG.Token.MovementActionConfig>;
       };
 
       /** @defaultValue `"TOKEN.Adjectives"` */
@@ -3466,30 +3466,31 @@ declare global {
         /** The base cost (terrain cost) */
         baseCost: number,
 
-        /** The offset that is moved from */
-        from: Readonly<foundry.grid.BaseGrid.Offset3D>,
+        /**
+         * The offset that is moved from
+         * @remarks foundry marked as `readonly`
+         */
+        from: foundry.grid.BaseGrid.Offset3D,
         
-        /** The offset that is moved to */
-        to: Readonly<foundry.grid.BaseGrid.Offset3D>,
+        /**
+         * The offset that is moved to
+         * @remarks foundry marked as `readonly`
+         */
+        to: foundry.grid.BaseGrid.Offset3D,
         
         /** The distance between the grid spaces */
         distance: number,
 
-        /** The properties of the segment */
-        segment: Readonly<TokenDocument.MovementSegmentData>
+        /**
+         * The properties of the segment
+         * @remarks foundry marked as `readonly`
+         */
+        segment: TokenDocument.MovementSegmentData
       ) => number;
 
-      interface MovementActionConfig {
-        /**
-         * The label of the movement action.
-         */
-        label: string;
+      interface AnimationOptions extends Pick<foundry.canvas.placeables.Token.AnimateOptions, "duration" | "movementSpeed" | "easing" | "ontick"> {}
 
-        /**
-         * The icon of the movement action.
-         */
-        icon: string;
-
+      interface _MovementActionConfig {
         /**
          * The number that is used to sort the movement actions / movement action configs.
          * Determines the order in the Token Config/HUD and of cycling.
@@ -3515,7 +3516,7 @@ declare global {
          * The type of walls that block this movement, if any.
          * @defaultValue `"move"`
          */
-        walls: string | null;
+        walls: ConcreteKeys<CONFIG.Canvas.PolygonBackends> | null;
 
         /**
          * Is segment of the movement visualized by the ruler?
@@ -3527,7 +3528,7 @@ declare global {
          * Get the default animation options for this movement action.
          * @defaultValue `() => ({})`
          */
-        getAnimationOptions: (token: foundry.canvas.placeables.Token) => Pick<foundry.canvas.placeables.Token.AnimateOptions, "duration" | "movementSpeed" | "easing" | "ontick">;
+        getAnimationOptions: (token: foundry.canvas.placeables.Token) => AnimationOptions;
         
         /**
          * Can the current User select this movement action for the given Token? If selectable, the movement action of the
@@ -3539,7 +3540,7 @@ declare global {
         /**
          * If set, this function is used to derive the terrain difficulty from from nonderived difficulties,
          * which are those that do not have `deriveTerrainDifficulty` set.
-         * Used by {@link foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType}.
+         * Used by {@linkcode foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType}.
          * Derived terrain difficulties are not configurable via the behavior UI.
          */
         deriveTerrainDifficulty: ((nonDerivedDifficulties: {[action: string]: number}) => number) | null;
@@ -3549,6 +3550,20 @@ declare global {
          * @defaultValue `() => cost => cost`
          */
         getCostFunction: (token: TokenDocument, options: TokenDocument.MeasureMovementPathOptions) => MovementActionCostFunction;
+      }
+
+      interface MovementActionOptionalConfig extends InexactPartial<_MovementActionConfig> {}
+
+      interface MovementActionConfig extends MovementActionOptionalConfig {
+        /**
+         * The label of the movement action.
+         */
+        label: string;
+
+        /**
+         * The icon of the movement action.
+         */
+        icon: string;
       }
     }
 

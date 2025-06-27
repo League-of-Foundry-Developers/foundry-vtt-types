@@ -25,6 +25,9 @@ declare class Folders extends foundry.documents.abstract.WorldCollection<"Folder
     user: User.Implementation,
   ): void;
 
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _refreshJournalEntrySheets(): never;
+
   render(
     force?: boolean,
     context?: foundry.appv1.api.Application.Options | foundry.applications.api.ApplicationV2.RenderOptions,
