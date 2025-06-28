@@ -6,6 +6,10 @@ import type { PolygonVertex } from "#client/canvas/geometry/edges/_module.d.mts"
 
 /**
  * An extension of the default PIXI.Polygon which is used to represent the line of sight for a point source.
+ * @remarks Static methods that need subclass overrides to account for expanded Configs:
+ * - {@linkcode PointSourcePolygon.benchmark}
+ * - {@linkcode PointSourcePolygon.create}
+ * - {@linkcode PointSourcePolygon.testCollision}
  */
 declare abstract class PointSourcePolygon extends PIXI.Polygon {
   /**
@@ -26,13 +30,13 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
 
   /**
    * The origin point of the source polygon.
-   * @remarks Not initialized to any value, but immediately set by `PointSourcePolygon#initialize`
+   * @privateRemarks Not initialized to any value, but immediately set by {@linkcode PointSourcePolygon.initialize | #initialize}
    */
-  origin: Canvas.Point;
+  origin: Canvas.ElevatedPoint;
 
   /**
    * The configuration of this polygon.
-   * @remarks Initialized as `{}` but immediately filled by `PointSourcePolygon#initialize`
+   * @remarks Initialized as `{}` but immediately filled by  {@linkcode PointSourcePolygon.initialize | #initialize}
    */
   config: PointSourcePolygon.StoredConfig;
 
@@ -93,10 +97,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    * @param intersectionOptions - Options passed to the shape intersection method
    * @returns A new constrained polygon
    */
-  applyConstraint(
-    constraint: PIXI.Polygon,
-    intersectionOptions?: PIXI.Polygon.IntersectPolygonOptions, // not:null (property set on it via `??=`)
-  ): this;
+  applyConstraint(constraint: PIXI.Polygon, intersectionOptions?: PIXI.Polygon.IntersectPolygonOptions): this;
   applyConstraint(constraint: PIXI.Circle, intersectionOptions?: PIXI.Circle.WACIntersectPolygonOptions): this;
   applyConstraint(constraint: PIXI.Circle, intersectionOptions?: PIXI.Circle.ClipperLibIntersectPolygonOptions): this;
   applyConstraint(constraint: PIXI.Rectangle, intersectionOptions?: PIXI.Rectangle.WACIntersectPolygonOptions): this;
@@ -118,20 +119,19 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    * @param origin      - An origin point
    * @param destination - A destination point
    * @param config      - The configuration that defines a certain Polygon type
-   * @param mode        - The collision mode to test: "any", "all", or "closest"
-   *                      (default: "all")
+   * @param mode        - The collision mode to test: "any", "all", or "closest" (default: "all")
    * @returns The collision result depends on the mode of the test:
-   *          - any: returns a boolean for whether any collision occurred
-   *          - all: returns a sorted array of PolygonVertex instances
-   *          - closest: returns a PolygonVertex instance or null
+   *          - `any`: returns a boolean for whether any collision occurred
+   *          - `all`: returns a sorted array of PolygonVertex instances
+   *          - `closest`: returns a PolygonVertex instance or null
    * @remarks Despite being an `={}` parameter, `options` is required as it must be a valid
    * `PointSourcePolygon.Config`, which has a required property (`type`)
    */
   static testCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
     origin: Canvas.Point,
     destination: Canvas.Point,
-    { mode, ...config }: PointSourcePolygon.TestCollisionConfig<Mode>,
-  ): PointSourcePolygon.TestCollision<Coalesce<Mode, "all">>;
+    { mode, ...config }: PointSourcePolygon.TestCollisionOptions<Mode>,
+  ): PointSourcePolygon.TestCollision<Mode>;
 
   /**
    * Determine the set of collisions which occurs for a Ray.
@@ -142,6 +142,7 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
   protected abstract _testCollision<Mode extends PointSourcePolygon.CollisionModes>(
     ray: Ray,
     mode: Mode,
+    destination: Canvas.ElevatedPoint,
   ): PointSourcePolygon.TestCollision<Mode>;
 
   /**
@@ -163,15 +164,6 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    * @remarks Mutates and returns the same reference it's passed, not a new polygon
    */
   static applyThresholdAttenuation<PolyType extends PointSourcePolygon>(polygon: PolyType): PolyType;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks You are referencing PointSourcePolygon#rays which is no longer a required property of that interface.
-   *          If your subclass uses the rays property it should be explicitly defined by the subclass which requires it.
-   */
-  get rays(): Ray[];
-
-  set rays(rays);
 }
 
 declare namespace PointSourcePolygon {
@@ -180,6 +172,7 @@ declare namespace PointSourcePolygon {
 
   type WALL_DIRECTION_MODES = Brand<number, "PointSourcePolygon.WALL_DIRECTION_MODES">;
 
+  /** @remarks {@linkcode PointSourcePolygon.WALL_DIRECTION_MODES} is frozen*/
   interface WallDirectionModes {
     readonly NORMAL: 0 & WALL_DIRECTION_MODES;
     readonly REVERSED: 1 & WALL_DIRECTION_MODES;
@@ -187,20 +180,17 @@ declare namespace PointSourcePolygon {
   }
 
   /** @internal */
-  type _TestCollisionConfig<Mode> = InexactPartial<{
+  type _TestCollisionOptions<Mode extends CollisionModes | undefined> = InexactPartial<{
     /**
      * The collision mode to test: "any", "all", or "closest"
      * @defaultValue `"all"`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     mode: Mode;
   }>;
 
-  interface TestCollisionConfig<Mode> extends _TestCollisionConfig<Mode>, Config {}
-
   /**
+   * Properties of the config that get set in `#initialize` or elsewhere with no respect to their passed value
    * @internal
-   * @privateRemarks Properties of the config that get set in `#initialize` or elsewhere with no respect to their passed value
    */
   interface _ComputedConfig {
     /**
@@ -238,8 +228,9 @@ declare namespace PointSourcePolygon {
   }
 
   /**
+   * Properties of the config that have defaults for nullish values in `#initialize`, and thus are guaranteed in the stored config
    * @internal
-   * @privateRemarks Properties of the config that have defaults for nullish values in `#initialize`, and thus are guaranteed in the stored config
+   * @privateRemarks
    */
   interface _BaseConfig {
     /**
@@ -326,10 +317,29 @@ declare namespace PointSourcePolygon {
 
   type BoundaryShapes = PIXI.Rectangle | PIXI.Circle | PIXI.Polygon;
 
-  /** @remarks Foundry comments 'TODO: "universal" will be deprecated in v14' */
-  type PolygonType = "light" | "sight" | "sound" | "move" | "universal";
+  /**
+   * @remarks Foundry comments 'TODO: "universal" will be deprecated in v14'
+   *
+   * This is provided as a union of literals, but after the removal of universal, it will
+   * also match the provided keys of {@linkcode CONFIG.Canvas.polygonBackends}, or
+   * {@linkcode CONST.WALL_RESTRICTION_TYPES} plus `"darkness"`
+   */
+  type PolygonType = "light" | "darkness" | "sight" | "sound" | "move" | "universal";
 
   type CollisionModes = "any" | "all" | "closest";
+
+  interface TestCollisionConfig extends Omit<Config, "type"> {
+    /**
+     * The type of polygon being computed
+     * @remarks {@linkcode PointSourcePolygon.testCollision} supports only those polygon types that are
+     * also a type of collision, and so far (v13) there's no such thing as a darkness-blocking wall.
+     */
+    type: CONST.WALL_RESTRICTION_TYPES;
+  }
+
+  interface TestCollisionOptions<Mode extends CollisionModes | undefined = undefined>
+    extends _TestCollisionOptions<Mode>,
+      TestCollisionConfig {}
 
   /** @internal */
   interface _CollisionTypesReturnMap {
@@ -338,7 +348,10 @@ declare namespace PointSourcePolygon {
     all: PolygonVertex[];
   }
 
-  type TestCollision<Mode extends CollisionModes> = _CollisionTypesReturnMap[Mode];
+  type TestCollision<Mode extends CollisionModes | undefined = undefined> = _CollisionTypesReturnMap[Coalesce<
+    Mode,
+    "all"
+  >];
 }
 
 export default PointSourcePolygon;

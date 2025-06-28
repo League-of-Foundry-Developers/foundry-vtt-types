@@ -150,7 +150,7 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
    */
   checkCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
     ray: Ray,
-    options: PointSourcePolygon.TestCollisionConfig<Mode>,
+    options: PointSourcePolygon.TestCollisionOptions<Mode>,
   ): PointSourcePolygon.TestCollision<Coalesce<Mode, "all">>;
 
   /**

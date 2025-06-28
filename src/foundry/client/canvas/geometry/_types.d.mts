@@ -15,7 +15,7 @@ type ClipperPoint = PIXI.Polygon.ClipperPoint;
 
 type EdgeType = Edge.EdgeTypes;
 
-type EdgeOptions = Edge.EdgeOptions;
+type EdgeOptions = ClockwiseSweepPolygon.EdgeOptions;
 
 type PointSourcePolygonType = PointSourcePolygon.PolygonType;
 

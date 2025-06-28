@@ -1,4 +1,4 @@
-import type { Identity, IntentionalPartial } from "#utils";
+import type { Identity, InexactPartial, IntentionalPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Edge from "#client/canvas/geometry/edges/edge.d.mts";
 import type { PointSourcePolygon, Ray } from "#client/canvas/geometry/_module.d.mts";
@@ -10,7 +10,7 @@ import type { PointSourcePolygon, Ray } from "#client/canvas/geometry/_module.d.
  */
 declare class ClockwiseSweepPolygon extends PointSourcePolygon {
   // This does not appear in Foundry code, it's a necessary type override
-  static override create(origin: Canvas.Point, config: PointSourcePolygon.Config): ClockwiseSweepPolygon;
+  static override create(origin: Canvas.Point, config: ClockwiseSweepPolygon.Config): ClockwiseSweepPolygon;
 
   // This does not appear in foundry code, it's a necessary type override
   override config: ClockwiseSweepPolygon.StoredConfig;
@@ -28,7 +28,6 @@ declare class ClockwiseSweepPolygon extends PointSourcePolygon {
   /**
    * A collection of rays which are fired at vertices
    */
-  // @ts-expect-error Getter/setter routine is deprecated functionality as of v11, removed in v13
   rays: ClockwiseSweepPolygon.Ray[];
 
   override initialize(origin: Canvas.Point, config: PointSourcePolygon.Config): void;
@@ -45,8 +44,9 @@ declare class ClockwiseSweepPolygon extends PointSourcePolygon {
 
   /**
    * Determine the edge types and their manner of inclusion for this polygon instance
+   * @remarks
    */
-  protected _determineEdgeTypes(): ClockwiseSweepPolygon.DetermineEdgesReturn;
+  protected _determineEdgeTypes(): ClockwiseSweepPolygon.EdgeTypesConfiguration;
 
   /**
    * Test whether a wall should be included in the computed polygon for a given origin and type
@@ -57,7 +57,7 @@ declare class ClockwiseSweepPolygon extends PointSourcePolygon {
    */
   protected _testEdgeInclusion(
     edge: Edge,
-    edgeTypes: ClockwiseSweepPolygon.DetermineEdgesReturn,
+    edgeTypes: ClockwiseSweepPolygon.EdgeTypesConfiguration,
     bounds: PIXI.Rectangle,
   ): boolean;
 
@@ -160,21 +160,50 @@ declare namespace ClockwiseSweepPolygon {
   interface Any extends AnyClockwiseSweepPolygon {}
   interface AnyConstructor extends Identity<typeof AnyClockwiseSweepPolygon> {}
 
+  interface EdgeOptions extends Record<Edge.EdgeTypes, boolean> {}
+
+  /** @internal */
+  type _Config = InexactPartial<{
+    /**
+     *
+     * @defaultValue `0`
+     */
+    priority: number;
+
+    /**
+     * Deactivate/Activate specific edge types behaviors.
+     */
+    edgeOptions: EdgeOptions;
+
+    /**
+     * Edge types configuration object. This is not required by most polygons and will be inferred based on the polygon type and priority.
+     *
+     * How modes are working:
+     * - `0` (no):     The edges of this type are rejected and not processed (equivalent of not having an edgeType.)
+     * - `1` (maybe):  The edges are processed and tested for inclusion.
+     * - `2` (always): The edges are automatically included.
+     */
+    edgeTypes: EdgeTypesConfiguration;
+  }>;
+  interface Config extends PointSourcePolygon.Config {}
+
   interface StoredConfig extends PointSourcePolygon.StoredConfig {
     /** The computed bounding box for the polygon */
     boundingBox: PIXI.Rectangle;
   }
 
   /**
-   * @remarks Foundry types this as `Record<Edge.EdgeTypes, 0 | 1 | 2>`, but some keys are mutually exclusive,
-   * and none are ever set to `0`, they're simply omitted and then tested for truthiness in `#_testEdgeInclusion`
+   * @remarks Foundry types this as `Record<Edge.EdgeTypes, 0 | 1 | 2>`, but no keys are ever set to `0`, they're simply omitted,
+   * then tested for truthiness in {@linkcode ClockwiseSweepPolygon._testEdgeInclusion | #_testEdgeInclusion}.
    */
-  type DetermineEdgesReturn = IntentionalPartial<Record<Edge.EdgeTypes, 1 | 2>>;
+  interface EdgeTypesConfiguration extends IntentionalPartial<Record<Edge.EdgeTypes, 1 | 2>> {}
+
+  interface EdgeOptions extends Record<Edge.EdgeTypes, boolean> {}
 
   interface Ray extends foundry.canvas.geometry.Ray {
     /**
-     * @remarks Only set in `ClockwiseSweepPolygon#_switchEdge` and only consumed in `#visualize`,
-     * despite unrelated method(s) having parameters claiming to want a `PolygonRay`
+     * @remarks Only set in {@linkcode ClockwiseSweepPolygon._switchEdge | ClockwiseSweepPolygon#_switchEdge} and only consumed in
+     * {@linkcode ClockwiseSweepPolygon.visualize | #visualize}, despite unrelated method(s) having parameters claiming to want a `PolygonRay`
      *
      * Tested for truthiness in `#visualize` before use, so a nullish value is fine but never attains in core
      */

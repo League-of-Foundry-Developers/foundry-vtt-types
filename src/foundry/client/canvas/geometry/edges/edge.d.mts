@@ -243,8 +243,6 @@ declare namespace Edge {
 
   type EdgeTypes = "wall" | "darkness" | "light" | "innerBounds" | "outerBounds";
 
-  interface EdgeOptions extends Record<EdgeTypes, boolean> {}
-
   type AttenuationTypes = Exclude<foundry.CONST.WALL_RESTRICTION_TYPES, "move">;
 
   interface IntersectionEntry {

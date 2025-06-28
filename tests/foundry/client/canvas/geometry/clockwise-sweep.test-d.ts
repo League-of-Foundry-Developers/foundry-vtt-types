@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 import { ClockwiseSweepPolygon, WeilerAthertonClipper } from "#client/canvas/geometry/_module.mjs";
-import { PolygonVertex } from "#client/canvas/geometry/edges/_module.mjs";
+
+import PolygonVertex = foundry.canvas.geometry.edges.PolygonVertex;
 
 const pointA = new PIXI.Point(0, 0);
 const pointB = new PIXI.Point(0, 0);
@@ -21,16 +22,31 @@ expectTypeOf(ClockwiseSweepPolygon.testCollision(pointA, pointB, { mode: "all", 
   PolygonVertex[]
 >();
 
-let myCSP;
-expectTypeOf(
-  (myCSP = ClockwiseSweepPolygon.create(
-    { x: 0, y: 0 },
-    {
-      type: "light",
-    },
-  )),
-).toEqualTypeOf<ClockwiseSweepPolygon>();
-
+ClockwiseSweepPolygon.create(
+  { x: 0, y: 0 },
+  {
+    type: "light",
+  },
+);
+const myCSP = ClockwiseSweepPolygon.create(
+  { x: 0, y: 0 },
+  {
+    type: "light",
+    angle: undefined,
+    boundaryShapes: undefined,
+    debug: undefined,
+    density: undefined,
+    externalRadius: undefined,
+    includeDarkness: undefined,
+    priority: undefined,
+    radius: undefined,
+    rotation: undefined,
+    source: undefined,
+    useInnerBounds: undefined,
+    useThreshold: undefined,
+    wallDirectionMode: undefined,
+  },
+);
 expectTypeOf(
   myCSP.applyConstraint(somePoly, {
     clipType: ClipperLib.ClipType.ctXor,
