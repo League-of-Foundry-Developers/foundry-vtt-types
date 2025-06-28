@@ -703,21 +703,24 @@ declare namespace DataField {
 
   interface ConstructionContext extends _ConstructionContext {}
 
-  interface AddTypesOptions {
+  /** @internal */
+  type _AddTypesOptions = InexactPartial<{
     /**
      * The root data model source
      * @remarks Not expected to be passed externally, the top level `_addTypes` call sets this to the passed `source`,
      * making it available to subsidiary calls
      */
-    source?: AnyObject;
+    source: AnyObject;
 
     /**
      * The root data model changes
      * @remarks Not expected to be passed externally, the top level `_addTypes` call sets this to the passed `changes`,
      * making it available to subsidiary calls
      */
-    changes?: AnyObject;
-  }
+    changes: AnyObject;
+  }>;
+
+  interface AddTypesOptions extends _AddTypesOptions {}
 
   /** @internal */
   type _ValidationOptions = InexactPartial<{
