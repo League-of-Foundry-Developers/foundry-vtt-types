@@ -69,7 +69,7 @@ declare abstract class RenderedEffectSource<
    * The animation configuration applied to this source
    * @defaultValue `{}`
    */
-  animation: RenderedEffectSource.StoredAnimationConfig;
+  animation: RenderedEffectSource.AnimationConfig;
 
   /**
    * Track the status of rendering layers
@@ -237,7 +237,7 @@ declare namespace RenderedEffectSource {
      * An animation configuration for the source
      * @defaultValue `{}`
      */
-    animation: StoredAnimationConfig;
+    animation: AnimationConfig;
 
     /**
      * A color applied to the rendered effect
@@ -251,9 +251,9 @@ declare namespace RenderedEffectSource {
     /**
      * An integer seed to synchronize (or de-synchronize) animations
      * @defaultValue `null`
-     * @remarks This will remain null in `#data` if not specified, which will lead to `Math.floor(Math.random() * 100000)`
+     * @remarks This will remain null in `#data` if not specified, which will lead to using `Math.floor(Math.random() * 100000)` at runtime
      *
-     * If specified, takes precedence over `RenderedEffectSource#animation.seed`
+     * If specified, this will take precedence over {@linkcode RenderedEffectSource.AnimationConfig.seed | RenderedEffectSource#animation.seed}
      */
     seed: number | null;
 
@@ -298,7 +298,7 @@ declare namespace RenderedEffectSource {
   interface AnimationFunctionOptions extends _AnimationFunctionOptions {}
 
   /**
-   * Properties *every* core-provided config has
+   * Properties *every* {@linkcode CONFIG.Canvas.lightAnimations}/{@linkcode CONFIG.Canvas.darknessAnimations | darknessAnimations} entry requires
    * @internal
    */
   interface _AnimationConfigBase {
@@ -318,21 +318,18 @@ declare namespace RenderedEffectSource {
   }
 
   /** @internal */
-  interface _Seed {
+  type _Seed = InexactPartial<{
     /**
      * The animation seed
      * @defaultValue `Math.floor(Math.random() * 100000)`
      * @remarks No Foundry-provided config ({@linkcode CONFIG.Canvas.lightAnimations}, {@linkcode CONFIG.Canvas.darknessAnimations})
-     * specifies this, but it would be respected if set
+     * specifies this, but it would be respected if set.
      */
-    seed?: number;
-  }
+    seed: number;
+  }>;
 
   /**
    * Shaders to override the defaults for each rendering layer this effect affects.
-   *
-   * Each Foundry-provided entry in {@linkcode CONFIG.Canvas.lightAnimations} provides at least a `colorationShader`,
-   * but nothing in the code enforces this.
    * @internal
    */
   interface _AnimationConfigLightingShaders {
@@ -340,7 +337,7 @@ declare namespace RenderedEffectSource {
      * A custom illumination shader used by this animation
      * @remarks If one isn't provided by this config, the `illumination` layer will use the fallback {@linkcode foundry.canvas.rendering.shaders.AdaptiveIlluminationShader | AdaptiveIlluminationShader}
      */
-    illuminationShader?: AdaptiveIlluminationShader.AnyConstructor;
+    illuminationShader: AdaptiveIlluminationShader.AnyConstructor;
 
     /**
      * A custom coloration shader used by this animation
@@ -354,7 +351,7 @@ declare namespace RenderedEffectSource {
      * A custom background shader used by this animation
      * @remarks If one isn't provided by this config, the `background` layer will use the fallback {@linkcode foundry.canvas.rendering.shaders.AdaptiveBackgroundShader | AdaptiveBackgroundShader}
      */
-    backgroundShader?: AdaptiveBackgroundShader.AnyConstructor;
+    backgroundShader: AdaptiveBackgroundShader.AnyConstructor;
   }
 
   /** @internal */
@@ -368,27 +365,21 @@ declare namespace RenderedEffectSource {
     darknessShader: AdaptiveDarknessShader.AnyConstructor;
   }
 
-  /**
-   * {@linkcode RenderedEffectSource.animation | this.animation.time} always gets set by {@linkcode RenderedEffectSource.animateTime | #animateTime},
-   * which all animation functions end up calling
-   * @internal
-   */
-  interface _AnimationConfigComputed {
-    /**
-     * The animation time
-     * @remarks Always computed, never specified in any of the provided animations in `CONFIG`.
-     * Set on the stored config by {@linkcode RenderedEffectSource.animateTime | RenderedEffectSource#animateTime}
-     */
-    time?: number;
-  }
-
-  /** @remarks The type for entries in {@linkcode CONFIG.Canvas.LightAnimations} */
-  interface LightAnimationConfig extends _AnimationConfigBase, _Seed, _AnimationConfigLightingShaders {}
-
-  /** @remarks The type for entries in {@linkcode CONFIG.Canvas.darknessAnimations} */
-  interface DarknessAnimationConfig extends _AnimationConfigBase, _Seed, _AnimationConfigDarknessShaders {}
-
-  type AnimationConfig = LightAnimationConfig | DarknessAnimationConfig;
+  /** @internal */
+  type _AnimationConfig = InexactPartial<
+    _AnimationConfigBase &
+      _AnimationConfigLightingShaders &
+      _AnimationConfigDarknessShaders &
+      _Seed &
+      LightData.AnimationData & {
+        /**
+         * The animation time
+         * @remarks Always computed, never specified in any of the provided animations in `CONFIG`.
+         * Set on the stored config by {@linkcode RenderedEffectSource.animateTime | RenderedEffectSource#animateTime}
+         */
+        time?: number;
+      }
+  >;
 
   /**
    * @remarks The type for {@linkcode RenderedEffectSource.animation | RenderedEffectSource#animation} and
@@ -403,10 +394,7 @@ declare namespace RenderedEffectSource {
    *
    * All properties are optional because `RenderedEffectSource#animation` is initialized to `{}`
    */
-  interface StoredAnimationConfig
-    extends IntentionalPartial<
-      LightAnimationConfig & DarknessAnimationConfig & LightData.AnimationData & _AnimationConfigComputed
-    > {}
+  interface AnimationConfig extends _AnimationConfig {}
 
   type ConfiguredLightAnimations = ConcreteKeys<CONFIG["Canvas"]["lightAnimations"]>;
 

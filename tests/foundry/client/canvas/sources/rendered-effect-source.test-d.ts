@@ -40,7 +40,7 @@ new MyRenderedSource();
 new MyRenderedSource({ object: undefined, sourceId: undefined });
 const mySource = new MyRenderedSource({ object, sourceId: object.sourceId });
 
-expectTypeOf(mySource.animation).toEqualTypeOf<RenderedEffectSource.StoredAnimationConfig>();
+expectTypeOf(mySource.animation).toEqualTypeOf<RenderedEffectSource.AnimationConfig>();
 
 expectTypeOf(mySource.layers).toEqualTypeOf<RenderedEffectSource.Layers>();
 // @ts-expect-error RenderedEffectSource provides no layers as of v13
