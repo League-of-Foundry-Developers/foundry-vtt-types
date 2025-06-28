@@ -2677,7 +2677,8 @@ declare global {
         roundPoints: canvasLayers.GridLayer.GridStyle;
       }
 
-      interface LightAnimations extends Record<string, RenderedEffectSource.LightAnimationConfig> {
+      interface LightAnimations {
+        [animationID: string]: RenderedEffectSource.LightAnimationConfig;
         flame: LightAnimations.Flame;
         torch: LightAnimations.Torch;
         revolving: LightAnimations.Revolving;
@@ -2940,7 +2941,8 @@ declare global {
         }
       }
 
-      interface DarknessAnimations extends Record<string, RenderedEffectSource.DarknessAnimationConfig> {
+      interface DarknessAnimations {
+        [animationID: string]: RenderedEffectSource.DarknessAnimationConfig;
         magicalGloom: DarknessAnimations.MagicalGloom;
         roiling: DarknessAnimations.Roiling;
         hole: DarknessAnimations.Hole;

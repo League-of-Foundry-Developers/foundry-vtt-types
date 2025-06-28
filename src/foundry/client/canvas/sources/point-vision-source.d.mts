@@ -189,7 +189,6 @@ declare class PointVisionSource<
    * If the light perception radius is unconstrained, no new polygon instance is created;
    * instead the LOS polygon of this vision source is returned.
    * @returns The new polygon or `this.los`.
-   * @remarks Not `|undefined` because calling this
    */
   protected _createLightPolygon(): SourceShape;
 
@@ -327,15 +326,15 @@ declare namespace PointVisionSource {
   }
 
   /** @privateRemarks Foundry types this as just the Record, but only ever checks the one key */
-  interface BlindedReasons extends Record<string, boolean> {
+  interface BlindedReasons extends Record<string, boolean | undefined> {
     /** @remarks See `PointVisionSource##updateBlindedState` */
-    darkness?: boolean;
+    darkness?: boolean | undefined;
 
     /** @remarks See {@linkcode foundry.canvas.placeables.Token._getVisionBlindedStates | Token#_getVisionBlindedStates} */
-    blind?: boolean;
+    blind?: boolean | undefined;
 
     /** @remarks See {@linkcode foundry.canvas.placeables.Token._getVisionBlindedStates | Token#_getVisionBlindedStates} */
-    burrow?: boolean;
+    burrow?: boolean | undefined;
   }
 
   interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "radius" | "useThreshold"> {}
