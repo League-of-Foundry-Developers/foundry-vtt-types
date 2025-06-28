@@ -4367,7 +4367,7 @@ declare class AnyField extends DataField<DataField.Options.Any, unknown, unknown
    * @remarks No longer exists, as the 'simply returns value' method body has been moved up to {@link DataField._cast | `DataField`}.
    * It's been left here as we're lying about it still being abstract in `DataField`.
    */
-  override _cast<T>(value: T): T;
+  override _cast(value: unknown): unknown;
 
   /**
    * @remarks `options` is unused in `AnyField`
