@@ -121,10 +121,7 @@ declare namespace TextureCompressor {
     out: ArrayBuffer;
   }>;
 
-  interface CompressBufferBase64Options extends _CommonOptions {
-    // Foundry still lists the properties `type` and `quality` in the typedef,  but `compressBufferBase64`
-    // no longer passes them along to the worker script, so they're unused as of v13
-  }
+  interface CompressBufferBase64Options extends _CommonOptions {}
 
   interface ExpandBufferOptions extends _CommonOptions, _Out {}
 
