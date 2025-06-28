@@ -236,7 +236,6 @@ declare namespace Macro {
      * The _id of a User document which created this Macro *
      * @defaultValue `game?.user?.id`
      */
-    // TODO: retype this to `DocumentAuthorField`
     author: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
 
     /**
@@ -292,7 +291,6 @@ declare namespace Macro {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    // TODO: retype this to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**

@@ -591,7 +591,41 @@ declare namespace BaseGrid {
     resolution?: number | undefined;
   }
 
-  type MeasurePathWaypoint = Coordinates | (Configuration & { teleport: boolean });
+  interface _MeasurePathWaypointData {
+
+    /**
+     * Teleport to this waypoint?
+     * @defaultValue `false`
+     */
+    teleport?: boolean;
+
+    /**
+     * Measure of the segment from the previous to this waypoint? The distance, cost, spaces,
+     * diagonals, and Euclidean length of a segment that is not measured are always 0.
+     * @defaultValue `true`
+     */
+    measure?: boolean;
+  }
+
+  interface MeasurePathWaypointData2D extends _MeasurePathWaypointData {
+    /**
+     * A predetermined cost (nonnegative) or a cost function to be used instead of `options.cost`.
+     */
+    cost?: number | MeasurePathCostFunction2D;
+  }
+
+  interface MeasurePathWaypointData3D extends _MeasurePathWaypointData {
+    /**
+     * A predetermined cost (nonnegative) or a cost function to be used instead of `options.cost`.
+     */
+    cost?: number | MeasurePathCostFunction3D;
+  }
+
+  type MeasurePathWaypoint2D = InexactPartial<Coordinates2D & MeasurePathWaypointData2D>
+
+  type MeasurePathWaypoint3D = InexactPartial<Coordinates3D & MeasurePathWaypointData3D>
+
+  type MeasurePathWaypoint = MeasurePathWaypoint2D | MeasurePathWaypoint3D
 
   /** The measurements of a waypoint. */
   interface MeasurePathResultWaypoint {
@@ -657,7 +691,7 @@ declare namespace BaseGrid {
   /**
    * @deprecated in favor of {@linkcode MeasurePathCostFunction2D}
    */
-  type MeasurePathCostFunction = MeasurePathCostFunction2D<unknown>;
+  type MeasurePathCostFunction = MeasurePathCostFunction2D;
 
   /**
    * A function that returns the cost for a given move between grid spaces in 2D.
@@ -668,9 +702,9 @@ declare namespace BaseGrid {
    * @param distance - The distance between the grid spaces
    * @param segment  - The properties of the segment
    * @returns The cost of the move between the grid spaces (nonnegative)
+   * @remarks foundry marks `from`, `to`, and `segment` as readonly
    */
-  // TODO: `SegmentData` type, properly
-  type MeasurePathCostFunction2D<SegmentData extends unknown> = (from: Readonly<Offset2D>, to: Readonly<Offset2D>, distance: number, segment: Readonly<SegmentData>) => number;
+  type MeasurePathCostFunction2D = (from: Offset2D, to: Offset2D, distance: number, segment: foundry.grid.BaseGrid.MeasurePathWaypoint2D) => number;
 
   /**
    * A function that returns the cost for a given move between grid spaces in 3D.
@@ -681,9 +715,9 @@ declare namespace BaseGrid {
    * @param distance - The distance between the grid spaces
    * @param segment  - The properties of the segment
    * @returns The cost of the move between the grid spaces (nonnegative)
+   * @remarks foundry marks `from`, `to`, and `segment` as readonly
    */
-  // TODO: `SegmentData` type, properly
-  type MeasurePathCostFunction3D<SegmentData extends unknown> = (from: Readonly<Offset3D>, to: Readonly<Offset3D>, distance: number, segment: Readonly<SegmentData>) => number;
+  type MeasurePathCostFunction3D = (from: Offset3D, to: Offset3D, distance: number, segment: foundry.grid.BaseGrid.MeasurePathWaypoint3D) => number;
 
   interface Dimensions {
     width: number;

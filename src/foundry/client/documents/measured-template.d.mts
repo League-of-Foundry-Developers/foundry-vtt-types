@@ -182,7 +182,6 @@ declare namespace MeasuredTemplateDocument {
      * The _id of the user who created this measured template
      * @defaultValue `game?.user?.id`
      */
-    // TODO: retype this to `DocumentAuthorField`
     author: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string | undefined }>;
 
     /**
@@ -283,7 +282,6 @@ declare namespace MeasuredTemplateDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    // TODO: retype this to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
   }
 

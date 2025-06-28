@@ -336,7 +336,6 @@ declare namespace Card {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    // TODO: retype this to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     _stats: fields.DocumentStatsField;

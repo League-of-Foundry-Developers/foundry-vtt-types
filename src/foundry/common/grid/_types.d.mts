@@ -41,9 +41,9 @@ type GridMeasurePathResultSegment = unknown;
 
 type GridMeasurePathResult = unknown;
 
-type GridMeasurePathCostFunction2D<SegmentData extends unknown> = BaseGrid.MeasurePathCostFunction2D<SegmentData>;
+type GridMeasurePathCostFunction2D = BaseGrid.MeasurePathCostFunction2D;
 
-type GridMeasurePathCostFunction3D<SegmentData extends unknown> = BaseGrid.MeasurePathCostFunction3D<SegmentData>;
+type GridMeasurePathCostFunction3D = BaseGrid.MeasurePathCostFunction3D;
 
 type GridConfiguration = BaseGrid.Configuration;
 

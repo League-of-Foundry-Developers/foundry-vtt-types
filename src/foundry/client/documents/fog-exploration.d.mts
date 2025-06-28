@@ -214,7 +214,6 @@ declare namespace FogExploration {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    // TODO: retype to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     _stats: fields.DocumentStatsField;

@@ -274,7 +274,6 @@ declare namespace User {
      * An object of optional key/value flags.
      * @defaultValue `{}`
      */
-    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**
@@ -719,6 +718,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @param queryOptions - The query options
    * @returns The query result
    */
+  // TODO: should this return be `Promise<Awaited<User.QueryReturn<QueryName>>>`? If so, inline into `QueryReturn`?
   query<QueryName extends User.QueryName>(queryName: QueryName, queryData: User.QueryData<QueryName>, {timeout}?: User.QueryOptions): Promise<User.QueryReturn<QueryName>>;
 
   // _onUpdate and _onDelete are overridden but with no signature changes.

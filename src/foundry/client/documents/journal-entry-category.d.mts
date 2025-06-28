@@ -175,7 +175,6 @@ declare namespace JournalEntryCategory {
     /**
      * An object of optional key/value flags.
      */
-    // TODO: retype this to `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
 
     /**

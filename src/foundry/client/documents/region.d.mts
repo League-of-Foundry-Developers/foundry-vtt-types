@@ -308,7 +308,6 @@ declare namespace RegionDocument {
     /**
      * An object of optional key/value flags
      */
-    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name>;
   }
 

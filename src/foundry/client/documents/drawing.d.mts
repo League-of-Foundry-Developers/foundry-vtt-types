@@ -183,7 +183,6 @@ declare namespace DrawingDocument {
      * The _id of the user who created the drawing
      * @defaultValue `game.user?.id`
      */
-    // TODO: retype to `DocumentAuthorField`
     author: fields.ForeignDocumentField<
       typeof documents.BaseUser,
       { nullable: false; initial: () => string | undefined }
@@ -351,8 +350,7 @@ declare namespace DrawingDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    // TODO: retype to `DocumentFlagsField`
-    flags: fields.ObjectField.FlagsField<"Drawing">;
+    flags: fields.ObjectField.FlagsField<Name>;
   }
 
   namespace Database {

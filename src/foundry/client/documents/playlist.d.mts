@@ -336,8 +336,7 @@ declare namespace Playlist {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    // TODO: retype as `DocumentFlagsField`
-    flags: fields.ObjectField.FlagsField<"Playlist">;
+    flags: fields.ObjectField.FlagsField<Name>;
 
     /**
      * An object of creation and access information

@@ -574,7 +574,6 @@ declare namespace TokenDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    // TODO: retype as `DocumentFlagsField`
     flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
   }
 
@@ -1219,8 +1218,9 @@ declare namespace TokenDocument {
     /**
      * Consider movement history? If true, uses the current movement history. If waypoints are passed, uses those as the history.
      * @defaultValue: `false`
+     * @remarks marked by foundry as readonly
      */
-    history: boolean | DeepReadonly<TokenDocument.MeasuredMovementWaypoint[]>;
+    history: boolean | TokenDocument.MeasuredMovementWaypoint[];
   }
 
   interface MovementContinuationHandle {
@@ -1377,7 +1377,9 @@ declare namespace TokenDocument {
     constrainOptions: ConstrainOptions;
   }
 
-  interface MovementCostFunction extends foundry.grid.BaseGrid.MeasurePathCostFunction3D<MovementSegmentData> {}
+  interface MovementCostFunction extends Omit<foundry.grid.BaseGrid.MeasurePathCostFunction3D, "segment"> {
+    segment: MovementSegmentData
+  }
 
   interface MovementCostAggregatorResult {
     from: foundry.grid.BaseGrid.Offset3D;
@@ -1597,7 +1599,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @returns A Promise that resolves to true if the Token was moved, otherwise resolves to false
    */
   move(
-    waypoints: Partial<TokenDocument.MovementWaypoint> | Partial<TokenDocument.MovementWaypoint>[],
+    waypoints: InexactPartial<TokenDocument.MovementWaypoint> | InexactPartial<TokenDocument.MovementWaypoint>[],
     options?: InexactPartial<TokenDocument.MoveOptions>
   ): Promise<boolean>;
 
