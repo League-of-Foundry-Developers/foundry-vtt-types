@@ -155,7 +155,7 @@ declare class ClientSettings {
     N extends ClientSettings.Namespace,
     K extends ClientSettings.KeyFor<N>,
     Doc extends boolean | undefined = undefined,
-  >(namespace: N, key: K, options?: ClientSettings.GetOptions<Doc>): ClientSettings.GetSetReturn<N, K, Doc>;
+  >(namespace: N, key: K, options?: ClientSettings.GetOptions<Doc>): ClientSettings.Get<N, K, Doc>;
 
   /**
    * Set the value of a game setting for a certain namespace and setting key
@@ -184,7 +184,7 @@ declare class ClientSettings {
     key: K,
     value: ClientSettings.SettingCreateData<N, K>,
     options?: ClientSettings.SetOptions<Doc>,
-  ): Promise<ClientSettings.GetSetReturn<N, K, Doc>>;
+  ): Promise<ClientSettings.Get<N, K, Doc>>;
 }
 
 declare namespace ClientSettings {
@@ -253,7 +253,7 @@ declare namespace ClientSettings {
     SettingType<T> | (T extends DataModel.Any ? T : never)
   >;
 
-  type GetSetReturn<N extends Namespace, K extends KeyFor<N>, Doc extends boolean | undefined> = Doc extends true
+  type Get<N extends Namespace, K extends KeyFor<N>, Doc extends boolean | undefined> = Doc extends true
     ? Setting.Implementation
     : SettingInitializedType<N, K>;
 

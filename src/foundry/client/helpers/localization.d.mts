@@ -91,12 +91,10 @@ declare class Localization {
 
   /**
    * Localize the "label" and "hint" properties for all fields in a data schema.
-   * @param schema   -
-   * @param prefixes - (default: `[]`)
-   * @param options  -
    */
   static localizeSchema(
     schema: foundry.data.fields.SchemaField.Any,
+    /** @defaultValue `[]` */
     prefixes?: string[],
     options?: Localization.LocalizeSchemaOptions,
   ): void;

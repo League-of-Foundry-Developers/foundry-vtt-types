@@ -218,7 +218,7 @@ declare namespace TooltipManager {
      * @deprecated "The `content` option has been deprecated in favor of the `html` option" (since v13, until v15)
      * @remarks Ignored if `html` is passed
      */
-    content?: HTMLElement;
+    content: HTMLElement;
   }>;
 
   interface ActivateOptions extends _ActivateOptions {}

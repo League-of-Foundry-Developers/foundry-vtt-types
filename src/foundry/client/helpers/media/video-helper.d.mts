@@ -114,7 +114,8 @@ declare class VideoHelper {
   /**
    * Test a URL to see if it points to a YouTube video.
    * @param url - The URL to test. (default: `""`)
-   * @remarks It makes no sense that the only parameter has a default value, but it does
+   * @remarks `url` is optional because it has a default value, but since the empty string is not a valid YouTube URL,
+   * calling this without passing a value does not seem useful.
    */
   isYouTubeURL(url?: string): boolean;
 
