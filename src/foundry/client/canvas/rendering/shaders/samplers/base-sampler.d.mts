@@ -121,7 +121,7 @@ declare class BaseSamplerShader extends AbstractBaseShader {
   static batchGeometry: BaseSamplerShader.BatchGeometry;
 
   /**
-   * The size of a vertice with all its packed attributes.
+   * The size of a vertex with all its packed attributes.
    * @defaultValue `6`
    */
   static batchVertexSize: number;
