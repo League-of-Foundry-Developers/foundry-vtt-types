@@ -17,9 +17,10 @@ import type { TextureTransitionFilter } from "#client/canvas/rendering/filters/_
 import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { TokenRing } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
+import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
+
 import BaseToken = foundry.documents.BaseToken;
 import sources = foundry.canvas.sources;
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
 
 declare module "#configuration" {
   namespace Hooks {

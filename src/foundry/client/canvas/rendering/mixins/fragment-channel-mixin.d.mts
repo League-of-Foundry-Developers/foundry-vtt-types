@@ -38,7 +38,7 @@ declare class AdaptiveFragmentChannel {
 }
 
 /**
- * A mixin which decorates a shader or filter and construct a fragment shader according to a chosen channel.
+ * A mixin that decorates a shader or filter and construct a fragment shader according to a chosen channel.
  * @param ShaderClass - The parent ShaderClass class being mixed.
  */
 declare function AdaptiveFragmentChannelMixin<BaseClass extends AdaptiveFragmentChannelMixin.BaseClass>(
