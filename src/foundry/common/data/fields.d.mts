@@ -609,7 +609,7 @@ declare namespace DataField {
 
   namespace Options {
     /** Any DataField.Options. */
-    // Note(LukeAbby): This `, Identity<object>` is intentional. Its purpose is to allow options like `{ integer: true }` to be assigned.
+    // Note(LukeAbby): Extending `Identity<object>` is intentional. Its purpose is to allow options like `{ integer: true }` to be assigned.
     // This is an issue because `{ integer: true }` does not extend `{ required?: boolean }` because they have no properties in common.
     // Even though `{ integer: true, required: undefined }` would extend `{ required?: boolean }` following the regular rules of surplus properties being allowed.
     // `object` was chosen over `AnyObject` so that people may pass in interfaces.
@@ -851,12 +851,12 @@ declare namespace DataField {
     | ToInputConfigWithChoices<InitializedType, Choices>;
 
   /**
-   * `label`, `hint`, and `input` are all provided defaults. Note that
+   * `label`, `hint`, and `input` are all provided defaults.
    */
   interface GroupConfig extends Omit<FormGroupConfig, "label" | "hint" | "input"> {
-    label?: FormGroupConfig["label"] | null | undefined;
-    hint?: FormGroupConfig["hint"] | null | undefined;
-    input?: FormGroupConfig["input"] | null | undefined;
+    label?: FormGroupConfig["label"] | undefined;
+    hint?: FormGroupConfig["hint"] | undefined;
+    input?: FormGroupConfig["input"] | undefined;
   }
 }
 
@@ -2010,53 +2010,6 @@ declare namespace ObjectField {
   type InitializedType<Options extends DataField.Options<AnyObject>> = DataField.DerivedInitializedType<
     AnyObject,
     _EffectiveOptions<Options>
-  >;
-
-  // TODO: remove FlagsField once document moves are done and all schemas are updated
-  namespace FlagsField {
-    /**
-     * @internal
-     */
-    type _TwoLevelPartial<T> = {
-      [K in keyof T]?: _PartialObject<T[K]>;
-    };
-
-    /**
-     * @internal
-     */
-    type _PartialObject<T> = T extends object ? Partial<T> : T;
-  }
-
-  /**
-   * A helper to create a flags object field for the given key in the {@linkcode FlagConfig}.
-   * @template Key            - the key to look for in the FlagConfig
-   * @template ExtensionFlags - additional flags besides the ones configured for the class
-   * @template Options        - the options of the field
-   */
-  type FlagsField<
-    Name extends Document.Type,
-    // The type `{}` is useful here because in an intersection it reduces down to nothing unlike `EmptyObject`.
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    ExtensionFlags extends AnyObject = {},
-    Options extends DataField.Options.Any = ObjectField.DefaultOptions,
-  > = ObjectField<
-    Options,
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    DataField.DerivedAssignmentType<
-      // Note(LukeAbby): This is to make sure `UpdateData` etc. is partial.
-      FlagsField._TwoLevelPartial<
-        Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>
-      >,
-      MergedOptions<Options>
-    >,
-    DataField.DerivedInitializedType<
-      Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>,
-      MergedOptions<Options>
-    >,
-    DataField.DerivedInitializedType<
-      Document.ConfiguredFlagsForName<Name> & ExtensionFlags & InterfaceToObject<Document.CoreFlags>,
-      MergedOptions<Options>
-    >
   >;
 }
 
