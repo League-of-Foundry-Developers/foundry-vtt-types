@@ -230,6 +230,9 @@ declare namespace ChatMessage {
     /** @defaultValue `"base"` */
     type: fields.DocumentTypeField<typeof BaseChatMessage, { initial: typeof CONST.BASE_DOCUMENT_TYPE }>;
 
+    /**
+     * Data for a ChatMessage subtype, defined by a System or Module
+     */
     system: fields.TypeDataField<typeof BaseChatMessage>;
 
     /**

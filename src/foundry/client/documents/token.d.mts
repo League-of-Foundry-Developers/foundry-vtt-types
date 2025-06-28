@@ -1324,6 +1324,11 @@ declare namespace TokenDocument {
     history: TokenDocument.MovementHistoryData;
 
     /**
+     * Was the movement constrained?
+     */
+    constrained: boolean;
+
+    /**
      * Was the movement recorded in the movement history?
      */
     recorded: boolean;
@@ -1374,13 +1379,46 @@ declare namespace TokenDocument {
 
   interface MovementCostFunction extends foundry.grid.BaseGrid.MeasurePathCostFunction3D<MovementSegmentData> {}
 
-  interface MeasureMovementPathOptions {
-    /**
-     * Measure a preview path?
-     * @defaultValue `false`
-     */
-    preview?: boolean | undefined;
+  interface MovementCostAggregatorResult {
+    from: foundry.grid.BaseGrid.Offset3D;
+    to: foundry.grid.BaseGrid.Offset3D;
+    cost: number;
   }
+
+  /** Returns the aggregated cost */
+  type MovementCostAggregator = (
+    
+    /**
+     * The results of the cost function calls.
+     * The array may be sorted but otherwise not mutated
+     * @remarks marked by foundry as readonly
+     */
+    results: MovementCostAggregatorResult[],
+
+    /** The distance between the grid spaces. */
+    distance: number,
+
+    /**
+     * The properties of the segment
+     * @remarks marked by foundry as readonly
+     */
+    segment: MovementSegmentData
+  ) => number;
+
+  interface MeasureMovementPathOptions extends InexactPartial<{
+    
+    /** 
+     * The function that returns the cost for a given move between grid spaces
+     * (default is the distance travelled along the direct path)
+     */
+    cost: MovementCostFunction;
+
+    /**
+     * The cost aggregator.
+     * @defaultValue `CONFIG.Token.movement.costAggregator`
+     */
+    aggregator: MovementCostAggregator;
+  }> {}
 
   interface MovementOperation extends Omit<MovementData, "user" | "state" | "updateOptions"> {}
 

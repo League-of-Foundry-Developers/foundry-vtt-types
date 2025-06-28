@@ -537,7 +537,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   /**
    * Execute the Macro command.
    * @param scope - Macro execution scope which is passed to script macros
-   * @returns A promising containing a created {@linkcode ChatMessage} (or `undefined`) if a chat
+   * @returns A promise containing a created {@linkcode ChatMessage} (or `undefined`) if a chat
    *          macro or the return value if a script macro. A void return is possible if the user
    *          is not permitted to execute macros or a script macro execution fails.
    * @remarks Forwards to either `#executeChat` or `#executeScript`

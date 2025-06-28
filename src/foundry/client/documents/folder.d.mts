@@ -478,6 +478,8 @@ declare namespace Folder {
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  interface ChildNode extends foundry.documents.abstract.DirectoryCollectionMixin.TreeNode<Implementation> {}
 }
 
 /**
@@ -502,15 +504,14 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
   depth: number | undefined;
 
   /**
-   * An array of other Folders which are the displayed children of this one. This differs from the results of
-   * {@link Folder.getSubfolders | `Folder#getSubfolders`} because reports the subset of child folders which
-   * are displayed to the current User in the UI.
-   * @remarks Despite Foundry's typing, this is not an array of Folder documents.
+   * An array of nodes representing the children of this one. This differs from the results of
+   * {@link Folder.getSubfolders | `Folder#getSubfolders`}, which reports the subset of child Folders
+   * displayed to the current User in the UI.
    *
    * Initialized by {@link DirectoryCollection.initializeTree | `DirectoryCollection#initializeTree`}, so always
    * `undefined` in temporary documents, and prior to first UI render in stored documents
    */
-  children: foundry.documents.abstract.DirectoryCollectionMixin.TreeNode<Folder.Implementation>[] | undefined;
+  children: Folder.ChildNode | undefined;
 
   /**
    * Return whether the folder is displayed in the sidebar to the current User.

@@ -49,10 +49,20 @@ declare namespace PlaylistSound {
         labelPlural: string;
         compendiumIndexFields: ["name", "sort"];
         schemaVersion: string;
+        permissions: Metadata.Permissions;
       }>
     > {}
 
-  // No need for Metadata namespace
+  namespace Metadata {
+    /**
+     * The permissions for whether a certain user can create, update, or delete this document.
+     */
+    interface Permissions {
+      create: "OWNER";
+      update: "OWNER";
+      delete: "OWNER";
+    }
+  }
 
   /**
    * A document's parent is something that can contain it.

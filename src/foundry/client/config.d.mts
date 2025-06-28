@@ -3549,7 +3549,7 @@ declare global {
          * The cost modification function.
          * @defaultValue `() => cost => cost`
          */
-        getCostFunction: (token: TokenDocument, options: TokenDocument.MeasureMovementPathOptions) => MovementActionCostFunction;
+        getCostFunction: (token: TokenDocument, options: foundry.canvas.placeables.Token.MeasureMovementPathOptions) => MovementActionCostFunction;
       }
 
       interface MovementActionOptionalConfig extends InexactPartial<_MovementActionConfig> {}

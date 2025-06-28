@@ -235,7 +235,7 @@ declare namespace User {
     color: fields.ColorField<{ required: true; nullable: false; initial: () => string }>;
 
     /**
-     * @remarks Omitted from the `UserData` typedef as of 13.342, so no official description; Fairly self-explanatory though.
+     * The user's personal pronouns.
      * @defaultValue `""`
      */
     pronouns: fields.StringField<{ required: true }>;

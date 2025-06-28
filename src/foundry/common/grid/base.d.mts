@@ -562,7 +562,7 @@ declare namespace BaseGrid {
   /**
    * 3D offset coordinates of a grid space.
    */
-  interface Offset3D extends Offset {
+  interface Offset3D extends Offset2D {
     /**
      * The vertical coordinate (an integer)
      */

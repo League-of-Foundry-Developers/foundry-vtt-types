@@ -244,7 +244,7 @@ declare namespace Card {
     type: fields.DocumentTypeField<typeof BaseCard, { initial: typeof CONST.BASE_DOCUMENT_TYPE }>;
 
     /**
-     * Game system data which is defined by the system template.json model
+     * Data for a Card subtype, defined by a System or Module
      * @defaultValue `{}`
      */
     system: fields.TypeDataField<typeof BaseCard>;

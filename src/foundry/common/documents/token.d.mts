@@ -58,6 +58,11 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   static MOVEMENT_FIELDS: Readonly<string[]>;
 
   /**
+   * Are the given positions equal? 
+   */
+  static arePositionsEqual(position1: TokenDocument.Position, position2: TokenDocument.Position): boolean;
+
+  /**
    * The default icon used for newly created Token documents
    * @defaultValue `CONST.DEFAULT_TOKEN`
    */
@@ -75,6 +80,11 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     changes?: TokenDocument.UpdateData,
     options?: DataModel.UpdateOptions,
   ): TokenDocument.UpdateData;
+
+  override clone<Save extends boolean | null | undefined = false>(
+      data?: BaseToken.CreateData,
+      context?: Document.CloneContext<Save>
+    ): Document.Clone<this, Save>;
 
   /**
    * Get the snapped position of the Token.

@@ -307,7 +307,7 @@ declare namespace Item {
     }>;
 
     /**
-     * The system data object which is defined by the system template.json model
+     * Data for an Item subtype, defined by a System or Module
      * @defaultValue `{}`
      */
     system: fields.TypeDataField<typeof documents.BaseItem>;

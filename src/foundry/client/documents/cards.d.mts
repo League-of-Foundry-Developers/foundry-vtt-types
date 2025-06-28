@@ -314,7 +314,7 @@ declare namespace Cards {
     }>;
 
     /**
-     * Game system data which is defined by the system template.json model
+     * Data for a Cards subtype, defined by a System or Module
      * @defaultValue `{}`
      */
     system: fields.TypeDataField<typeof BaseCards>;

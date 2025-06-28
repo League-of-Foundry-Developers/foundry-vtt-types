@@ -570,7 +570,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * Play the next Sound within the sequential or shuffled Playlist.
    * @param soundId - The currently playing sound ID, if known
    * @param options - Additional options which configure the next track
-   * @returns The updated Playlist document
+   * @returns If successfully updated, this Playlist document
    */
   // options: not null (destructured)
   playNext(soundId?: string | null, options?: Playlist.PlayNextOptions): Promise<this | undefined | null>;

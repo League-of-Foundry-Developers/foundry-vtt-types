@@ -1275,6 +1275,14 @@ declare namespace Token {
     effects: boolean;
   }>;
   interface RefreshHUDOptions extends _RefreshHUDOptions {}
+
+  interface MeasureMovementPathOptions {
+    /**
+     * Measure a preview path?
+     * @defaultValue `false`
+     */
+    preview?: boolean | undefined;
+  }
 }
 
 export default Token;

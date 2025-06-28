@@ -526,7 +526,7 @@ declare namespace Scene {
     tokenVision: fields.BooleanField<{ initial: true }>;
 
     /**
-     * @remarks Fog data for this scene
+     * Fog-exploration settings and other data
      */
     fog: fields.SchemaField<{
       /**
@@ -547,6 +547,9 @@ declare namespace Scene {
        */
       overlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; virtual: true }>;
 
+      /**
+       * Fog-exploration coloration data
+       */
       colors: fields.SchemaField<{
         /**
          * A color tint applied to explored regions of fog of war
@@ -821,14 +824,14 @@ declare namespace Scene {
     }>;
 
     /**
-     * @remarks The style of grid line used. This field has no special validation, but provided values
-     * should match keys of {@linkcode CONFIG.Canvas.gridStyles}
+     * The line style of the grid.
+     * @remarks This field has no special validation, but provided values should match keys of {@linkcode CONFIG.Canvas.gridStyles}
      * @defaultValue `"solidLines"`
      */
     style: fields.StringField<{ required: true; blank: false; initial: "solidLines" }>;
 
     /**
-     * @remarks The width of drawn grid lines
+     * The thickness of the grid lines.
      * @defaultValue `1`
      */
     thickness: fields.NumberField<{ required: true; nullable: false; positive: true; integer: true; initial: 1 }>;

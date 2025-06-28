@@ -253,7 +253,7 @@ declare namespace RegionBehavior {
     type: fields.DocumentTypeField<typeof BaseRegionBehavior>;
 
     /**
-     * The system data object which is defined by the system template.json model
+     * Data for a RegionBehavior subtype, defined by a System or Module
      */
     system: fields.TypeDataField<typeof BaseRegionBehavior>;
 

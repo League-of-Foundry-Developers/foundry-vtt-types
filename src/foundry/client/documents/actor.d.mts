@@ -307,7 +307,7 @@ declare namespace Actor {
     img: fields.FilePathField<{ categories: ["IMAGE"]; initial: (data: unknown) => string }>;
 
     /**
-     * The system data object which is defined by the system template.json model
+     * Data for an Actor subtype, defined by a System or Module
      * @defaultValue `{}`
      */
     system: fields.TypeDataField<typeof BaseActor>;
@@ -723,6 +723,11 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * Whether the Actor has at least one Combatant in the active Combat that represents it.
    */
   get inCombat(): boolean;
+
+  override clone<Save extends boolean | null | undefined = false>(
+    data?: Actor.CreateData,
+    context?: Document.CloneContext<Save>
+  ): Document.Clone<this, Save>;
 
   /**
    * Apply any transformations to the Actor data which are caused by ActiveEffects.

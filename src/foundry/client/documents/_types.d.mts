@@ -20,11 +20,13 @@ type _ActiveEffectDuration = ActiveEffect.Duration;
 
 type ActiveEffectDuration = ActiveEffect.DurationData & _ActiveEffectDuration;
 
+type FolderChildNode = Folder.ChildNode;
+
 type CombatHistoryData = Combat.HistoryData;
 
-type CombatTurnEventContext = unknown;
+type CombatTurnEventContext = Combat.TurnEventContext;
 
-type CombatRoundEventContext = unknown;
+type CombatRoundEventContext = Combat.RoundEventContext;
 
 // TODO: Data extends object, pass generic to RegionDocument.RegionEvent once set up
 type RegionEvent<Data> = RegionDocument.RegionEvent;
@@ -81,9 +83,9 @@ type RegionTokenRoundStartEvent = RegionTokenRoundEvent;
 
 type RegionTokenRoundEndEvent = RegionTokenRoundEvent;
 
-type RegionMovementSegment = unknown;
+type RegionMovementSegment = Region.MovementSegment;
 
-type RegionSegmentizeMovementPathWaypoint = unknown;
+type RegionSegmentizeMovementPathWaypoint = RegionDocument.SegmentizeMovementPathWaypoint;
 
 type RollTableDraw = RollTable.Draw;
 
@@ -93,38 +95,40 @@ type TrackedAttributesDescription = TokenDocument.TrackedAttributesDescription;
 
 type TokenMeasuredMovementWaypoint = TokenDocument.MeasuredMovementWaypoint;
 
-type TokenMovementWaypoint = unknown;
+type TokenMovementWaypoint = TokenDocument.MovementWaypoint;
 
-type TokenMovementSegmentData = unknown;
+type TokenMovementSegmentData = TokenDocument.MovementSegmentData;
 
 type TokenMeasureMovementPathWaypoint = unknown;
 
-type TokenMeasureMovementPathOptions = unknown;
+type TokenMeasureMovementPathOptions = Token.MeasureMovementPathOptions;
 
-type TokenMovementCostFunction = unknown;
+type TokenMovementCostFunction = TokenDocument.MovementCostFunction;
 
-type TokenGetCompleteMovementPathWaypoint = unknown;
+type TokenMovementCostAggregator = TokenDocument.MovementCostAggregator;
 
-type TokenCompleteMovementWaypoint = unknown;
+type TokenGetCompleteMovementPathWaypoint = TokenDocument.GetCompleteMovementPathWaypoint;
 
-type TokenSegmentizeMovementWaypoint = unknown;
+type TokenCompleteMovementWaypoint = TokenDocument.CompleteMovementWaypoint;
+
+type TokenSegmentizeMovementWaypoint = TokenDocument.SegmentizeMovementWaypoint;
 
 type TokenRegionMovementWaypoint = unknown;
 
 type TokenRegionMovementSegment = unknown;
 
-type TokenMovementSectionData = unknown;
+type TokenMovementSectionData = TokenDocument.MovementSectionData;
 
-type TokenMovementHistoryData = unknown;
+type TokenMovementHistoryData = TokenDocument.MovementHistoryData;
 
-type TokenMovementMethod = unknown;
+type TokenMovementMethod = TokenDocument.MovementMethod;
 
-type TokenMovementState = unknown;
+type TokenMovementState = TokenDocument.MovementState;
 
-type TokenMovementData = unknown;
+type TokenMovementData = TokenDocument.MovementData;
 
-type TokenMovementOperation = unknown;
+type TokenMovementOperation = TokenDocument.MovementOperation;
 
-type TokenMovementContinuationData = unknown;
+type TokenMovementContinuationData = TokenDocument.MovementContinuationData;
 
-type TokenMovementContinuationHandle = unknown;
+type TokenMovementContinuationHandle = TokenDocument.MovementContinuationHandle;

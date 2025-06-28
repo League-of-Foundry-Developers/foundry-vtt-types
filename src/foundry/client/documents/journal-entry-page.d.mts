@@ -315,6 +315,7 @@ declare namespace JournalEntryPage {
      */
     video: fields.SchemaField<{
       /**
+       * Show player controls for this video?
        * @defaultValue `true`
        */
       controls: fields.BooleanField<{ initial: true }>;
