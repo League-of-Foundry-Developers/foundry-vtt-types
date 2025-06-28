@@ -374,8 +374,7 @@ declare namespace RenderedEffectSource {
       LightData.AnimationData & {
         /**
          * The animation time
-         * @remarks Always computed, never specified in any of the provided animations in `CONFIG`.
-         * Set on the stored config by {@linkcode RenderedEffectSource.animateTime | RenderedEffectSource#animateTime}
+         * @remarks Always computed. Set on the stored config by {@linkcode RenderedEffectSource.animateTime | RenderedEffectSource#animateTime}
          */
         time?: number;
       }
