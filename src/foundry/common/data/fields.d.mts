@@ -2391,7 +2391,6 @@ declare namespace ArrayField {
 
   /**
    * The type of the default options for the {@linkcode ArrayField} class.
-   * @template AssignmentElementType - the assignment type of the elements in the array
    */
   type DefaultOptions = SimpleMerge<
     DataField.DefaultOptions,
@@ -2587,7 +2586,6 @@ declare namespace SetField {
 
   /**
    * The type of the default options for the {@linkcode SetField} class.
-   * @template AssignmentElementType - the assignment type of the elements in the array
    */
   type DefaultOptions = ArrayField.DefaultOptions;
 
