@@ -19,7 +19,7 @@ declare class Folders extends foundry.documents.abstract.WorldCollection<"Folder
 
   _onModifyContents<A extends DatabaseAction>(
     action: A,
-    documents: readonly Folder.Implementation[],
+    documents: Folder.Stored[],
     result: readonly foundry.documents.BaseFolder.UpdateData[] | readonly string[],
     operation: DatabaseOperationMap[A],
     user: User.Implementation,

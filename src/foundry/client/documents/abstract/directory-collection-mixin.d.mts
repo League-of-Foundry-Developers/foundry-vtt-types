@@ -1,6 +1,4 @@
-import type { DatabaseAction, DatabaseOperationMap } from "#common/abstract/_types.mjs";
-import type Document from "#common/abstract/document.mjs";
-import type { AnyObject, FixedInstanceType, Mixin } from "#utils";
+import type { FixedInstanceType, Mixin } from "#utils";
 
 /**
  * An extension of the Collection class which adds behaviors specific to tree-based collections of entries and folders.
@@ -89,13 +87,17 @@ declare class DirectoryCollection {
     b: DirectoryCollectionMixin.StandardSortEntry,
   ): number;
 
-  protected _onModifyContents<A extends DatabaseAction>(
-    action: A,
-    documents: Document.AnyStored,
-    result: readonly AnyObject[] | readonly string[],
-    operation: DatabaseOperationMap[A],
-    user: User.Implementation,
-  ): void;
+  // Note(LukeAbby): This override has been commented out because it was being added as an overload
+  // with `DocumentCollection` and causing problems. The main solution would be to use `this` but
+  // that's awkward. This method really only makes sense on `DocumentCollection` subclaseses as well.
+
+  // protected _onModifyContents<A extends DatabaseAction>(
+  //   action: A,
+  //   documents: readonly Document.AnyStored[],
+  //   result: readonly AnyObject[] | readonly string[],
+  //   operation: DatabaseOperationMap[A],
+  //   user: User.Implementation,
+  // ): void;
 }
 
 /**

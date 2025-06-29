@@ -56,9 +56,10 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
     : null;
 
   /**
-   * Is this document in a compendium? A stricter check than `Docmuent#inCompendium`.
+   * Is this document in a compendium? A stricter check than {@link Document.inCompendium | `Document#inCompendium`}.
    */
-  get inCompendium(): boolean;
+  // Note(LukeAbby): See https://github.com/microsoft/TypeScript/issues/61967
+  // get inCompendium(): boolean;
 
   /**
    * A boolean indicator for whether the current game User has ownership rights for this Document.
