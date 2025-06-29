@@ -1066,7 +1066,7 @@ declare namespace Scene {
     columns: number;
   }
 
-  interface _ThumbnailCreationData extends ImageHelper.TextureToImageOptions {
+  interface _ThumbnailCreationData {
     /**
      * A background image to use for thumbnail creation, otherwise the current scene
      * background is used.
@@ -1094,13 +1094,13 @@ declare namespace Scene {
      * @remarks Foundry writes `image/jpg` but this functions the same as `image/png  `.
      * The correct MIME type is `image/jpeg`.
      */
-    format: ImageHelper.Format | null;
+    format: CONST.IMAGE_FILE_EXTENSIONS;
 
     /**
      * What compression quality should be used for jpeg or webp, between 0 and 1
      * @defaultValue `0.8`
      */
-    quality: number | null;
+    quality: number;
   }
 
   interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}

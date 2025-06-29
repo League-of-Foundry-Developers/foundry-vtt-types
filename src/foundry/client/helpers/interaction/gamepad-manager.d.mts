@@ -1,20 +1,16 @@
+import type { Identity } from "#utils";
+
 /**
  * Management class for Gamepad events
  */
 declare class GamepadManager {
   constructor();
 
-  /**
-   * @defaultValue `null`
-   * @internal
-   */
-  protected _gamepadPoller: number | null;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _gamepadPoller: never;
 
-  /**
-   * The connected Gamepads
-   * @internal
-   */
-  protected _connectedGamepads: Map<string, GamepadManager.ConnectedGamepad>;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _connectedGamepads: never;
 
   /**
    * How often Gamepad polling should check for button presses
@@ -24,45 +20,30 @@ declare class GamepadManager {
 
   /**
    * Begin listening to gamepad events.
+   * @internal
    */
   protected _activateListeners(): void;
 
-  /**
-   * Handles a Gamepad Connection event, adding its info to the poll list
-   * @param event - The originating Event
-   * @internal
-   */
-  protected _onGamepadConnect(event: GamepadEvent): void;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _onGamepadConnect(event: never): never;
 
-  /**
-   * Handles a Gamepad Disconnect event, removing it from consideration for polling
-   * @param event - The originating Event
-   * @internal
-   */
-  protected _onGamepadDisconnect(event: GamepadEvent): void;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _onGamepadDisconnect(event: never): never;
 
-  /**
-   * Polls all Connected Gamepads for updates. If they have been updated, checks status of Axis and Buttons,
-   * firing off Keybinding Contexts as appropriate
-   * @internal
-   */
-  protected _pollGamepads(): void;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _pollGamepads(event: never): never;
 
-  /**
-   * Converts a Gamepad Input event into a KeyboardEvent, then fires it
-   * @param gamepadId - The string representation of the Gamepad Input
-   * @param up        - True if the Input is pressed or active
-   * @param repeat    - True if the Input is being held
-   *                    (default: `false`)
-   * @internal
-   */
-  protected _handleGamepadInput(gamepadId: string, up: boolean, repeat?: boolean): void;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _handleGamepadInput(gamepadId: never, up: never, repeat: never): never;
 }
 
 declare namespace GamepadManager {
+  interface Any extends AnyGamepadManager {}
+  interface AnyConstructor extends Identity<typeof AnyGamepadManager> {}
+
   /**
    * Connected Gamepad info
-   * @remarks Copied from `resources/app/common/types.mjs`
+   * @remarks Copied from `client/_types.mjs`
    */
   interface ConnectedGamepad {
     /** A map of axes values */
@@ -74,3 +55,7 @@ declare namespace GamepadManager {
 }
 
 export default GamepadManager;
+
+declare abstract class AnyGamepadManager extends GamepadManager {
+  constructor(...args: never);
+}
