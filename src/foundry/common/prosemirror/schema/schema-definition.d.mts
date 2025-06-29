@@ -6,7 +6,7 @@ import type {
   // DOMOutputSpec only used for link
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   DOMOutputSpec,
-  TagParseRule,
+  Attrs,
 } from "prosemirror-model";
 
 /**
@@ -54,10 +54,7 @@ declare namespace SchemaDefinition {
   /** @remarks A member of the {@linkcode DOMOutputSpec} union with `any` changed to `unknown` */
   type DOMOutputSpecTuple = [string, ...unknown[]];
 
-  /**
-   * @privateRemarks `Record<string, any> | false | null`, vs Foundry's `object|boolean`
-   */
-  type GetAttrsReturn = ReturnType<NonNullable<TagParseRule["getAttrs"]>>;
+  type GetAttrsReturn = Attrs | false | null;
 }
 
 export default SchemaDefinition;
