@@ -16,9 +16,9 @@ declare namespace Actor {
   type Name = "Actor";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create an `Actor`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Actor`.
@@ -294,11 +294,17 @@ declare namespace Actor {
     _id: fields.DocumentIdField;
 
     /** The name of this Actor */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /** An Actor subtype which configures the system data model applied */
-    // TODO: required with no initial, needs assignment type override
-    type: fields.DocumentTypeField<typeof BaseActor>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    type: fields.DocumentTypeField<typeof BaseActor, {}, Actor.SubType, Actor.SubType, Actor.SubType>;
 
     /**
      * An image file path which provides the artwork for this Actor
@@ -613,6 +619,15 @@ declare namespace Actor {
     /** Whether the new value is part of an attribute bar, or just a direct value */
     isBar: boolean;
   }
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -644,7 +659,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param data    - Initial data from which to construct the `Actor`
    * @param context - Construction context options
    */
-  constructor(...args: Actor.ConstructorArgs);
+  constructor(data: Actor.CreateData, context?: Actor.ConstructionContext);
 
   // options: not null (parameter default only, destructured in super)
   protected override _configure(options?: Document.ConfigureOptions): void;
@@ -768,7 +783,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   // data, options: not null (parameter defaults only)
   getTokenDocument(
     data?: TokenDocument.CreateData,
-    options?: Document.ConstructionContext<TokenDocument.Parent>,
+    options?: TokenDocument.ConstructionContext,
   ): Promise<TokenDocument.Implementation>;
 
   /**

@@ -2,7 +2,8 @@ import { expectTypeOf } from "vitest";
 import type AdditionalTypesField from "../../../../src/foundry/common/packages/sub-types.d.mts";
 
 const baseSystem = new foundry.packages.BaseSystem({
-  changelog: "Test",
+  id: "Test",
+  title: "Test",
 });
 
 expectTypeOf(baseSystem.strictDataCleaning).toEqualTypeOf<boolean>();

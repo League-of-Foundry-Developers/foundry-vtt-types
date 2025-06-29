@@ -24,7 +24,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    * You should use {@link Adventure.implementation | `new Adventure.implementation(...)`} instead which will give you
    * a system specific implementation of `Adventure`.
    */
-  constructor(...args: Adventure.ConstructorArgs);
+  constructor(data: Adventure.CreateData, context?: Adventure.ConstructionContext);
 
   /**
    * @defaultValue
@@ -289,6 +289,7 @@ export default BaseAdventure;
 
 declare namespace BaseAdventure {
   export import Name = Adventure.Name;
+  export import ConstructionContext = Adventure.ConstructionContext;
   export import ConstructorArgs = Adventure.ConstructorArgs;
   export import Hierarchy = Adventure.Hierarchy;
   export import Metadata = Adventure.Metadata;

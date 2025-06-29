@@ -12,9 +12,9 @@ declare namespace WallDocument {
   type Name = "Wall";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Wall`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `WallDocument`.
@@ -490,6 +490,15 @@ declare namespace WallDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -503,7 +512,7 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
    * @param data    - Initial data from which to construct the `WallDocument`
    * @param context - Construction context options
    */
-  constructor(...args: WallDocument.ConstructorArgs);
+  constructor(data: WallDocument.CreateData, context?: WallDocument.ConstructionContext);
 
   /*
    * After this point these are not really overridden methods.

@@ -13,9 +13,9 @@ declare namespace TileDocument {
   type Name = "Tile";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Tile`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Tile`.
@@ -441,6 +441,15 @@ declare namespace TileDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -454,7 +463,7 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
    * @param data    - Initial data from which to construct the `TileDocument`
    * @param context - Construction context options
    */
-  constructor(...args: TileDocument.ConstructorArgs);
+  constructor(data: TileDocument.CreateData, context?: TileDocument.ConstructionContext);
 
   override prepareDerivedData(): void;
 

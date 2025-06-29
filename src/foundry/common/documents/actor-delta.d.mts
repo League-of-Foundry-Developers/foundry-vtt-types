@@ -28,7 +28,8 @@ declare abstract class BaseActorDelta<
    * You should use {@link ActorDelta.implementation | `new ActorDelta.implementation(...)`} instead which will give you
    * a system specific implementation of `ActorDelta`.
    */
-  constructor(...args: ActorDelta.ConstructorArgs);
+  // Note(LukeAbby): `data` is not actually required but `context.parent` is.
+  constructor(data: ActorDelta.CreateData | undefined, context: ActorDelta.ConstructionContext);
 
   /**
    * @defaultValue
@@ -50,17 +51,6 @@ declare abstract class BaseActorDelta<
   static override metadata: BaseActorDelta.Metadata;
 
   static override defineSchema(): BaseActorDelta.Schema;
-
-  /**
-   * @remarks Forwards to `this.parent.canUserModify`. Core's `TokenDocument` implementation doesn't override this method,
-   * so without further extension that's equivalent to {@link Document.canUserModify | `Document#canUserModify`}
-   */
-  // data: not null (parameter default only)
-  override canUserModify<Action extends "create" | "update" | "delete">(
-    user: User.Implementation,
-    action: Action,
-    data?: Document.CanUserModifyData<TokenDocument.Schema, Action>,
-  ): boolean;
 
   /** @remarks Forwards to {@link TokenDocument.testUserPermission | `this.parent.testUserPermission`} */
   // options: not null (destructured)
@@ -381,6 +371,7 @@ declare namespace BaseActorDelta {
   interface AnyConstructor extends Identity<typeof AnyBaseActorDelta> {}
 
   export import Name = ActorDelta.Name;
+  export import ConstructionContext = ActorDelta.ConstructionContext;
   export import ConstructorArgs = ActorDelta.ConstructorArgs;
   export import Hierarchy = ActorDelta.Hierarchy;
   export import Metadata = ActorDelta.Metadata;

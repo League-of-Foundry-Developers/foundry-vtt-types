@@ -15,9 +15,9 @@ declare namespace ChatMessage {
   type Name = "ChatMessage";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `ChatMessage`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `ChatMessage`.
@@ -586,6 +586,15 @@ declare namespace ChatMessage {
   }
 
   type PassableRollMode = CONST.DICE_ROLL_MODES | "roll";
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -601,7 +610,8 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * @param data    - Initial data from which to construct the `ChatMessage`
    * @param context - Construction context options
    */
-  constructor(...args: ChatMessage.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: ChatMessage.CreateData, context?: ChatMessage.ConstructionContext);
 
   /**
    * Is the display of dice rolls in this message collapsed (false) or expanded (true)

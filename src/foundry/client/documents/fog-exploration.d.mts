@@ -14,9 +14,9 @@ declare namespace FogExploration {
   type Name = "FogExploration";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `FogExploration`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `FogExploration`.
@@ -378,6 +378,15 @@ declare namespace FogExploration {
    * with this interface via `{query, ...options}` before passing to {@link ClientDatabaseBackend.get | `this.database.get`}
    */
   interface LoadOptions extends Omit<IntentionalPartial<DatabaseGetOperation>, "query"> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -388,7 +397,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
    * @param data    - Initial data from which to construct the `FogExploration`
    * @param context - Construction context options
    */
-  constructor(...args: FogExploration.ConstructorArgs);
+  constructor(data?: FogExploration.CreateData, context?: FogExploration.ConstructionContext);
 
   /**
    * Obtain the fog of war exploration progress for a specific Scene and User.

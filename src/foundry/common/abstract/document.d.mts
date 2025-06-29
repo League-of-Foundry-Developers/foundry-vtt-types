@@ -160,7 +160,7 @@ declare abstract class Document<
   /**
    * Return a reference to the implemented subclass of this base document type.
    */
-  static get implementation(): Document.AnyConstructor;
+  static get implementation(): Document.Internal.Constructor;
 
   /**
    * The base document definition that this document class extends from.
@@ -963,16 +963,6 @@ declare namespace Document {
     | "Item"
     | "JournalEntryPage"
     | "RegionBehavior";
-
-  // The `data` parameter has a default of `{}`. This means it's optional in that scenario.
-  // Note(LukeAbby): Update when `ParameterWithDefaults` is added.
-  // `CreateData` also should be updated to allow `undefined` directly.
-  type ConstructorParameters<CreateData extends object | undefined, Parent extends Document.Any | null> = [
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    {},
-  ] extends [CreateData]
-    ? [data?: CreateData, context?: Document.ConstructionContext<Parent>]
-    : [data: CreateData, context?: Document.ConstructionContext<Parent>];
 
   type CoreTypesForName<Name extends Type> = string &
     GetKey<Document.MetadataFor<Name>, "coreTypes", [CONST.BASE_DOCUMENT_TYPE]>[number];
@@ -2399,4 +2389,14 @@ declare namespace Document {
    * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use {@linkcode Document.ModuleSubType} instead.
    */
   type ModuleSubtype = ModuleSubType;
+
+  /**
+   * @deprecated This type was used to simplify the logic behind `ConstructorArgs` but that's now being deprecated.
+   */
+  type ConstructorParameters<CreateData extends object | undefined, Parent extends Document.Any | null> = [
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    {},
+  ] extends [CreateData]
+    ? [data?: CreateData, context?: Document.ConstructionContext<Parent>]
+    : [data: CreateData, context?: Document.ConstructionContext<Parent>];
 }

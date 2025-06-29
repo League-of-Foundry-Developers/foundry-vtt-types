@@ -15,9 +15,9 @@ declare namespace JournalEntryPage {
   type Name = "JournalEntryPage";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `JournalEntryPage`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `JournalEntryPage`.
@@ -229,7 +229,13 @@ declare namespace JournalEntryPage {
     /**
      * The text name of this page.
      */
-    name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The type of this page, in {@linkcode BaseJournalEntryPage.TYPES}.
@@ -582,6 +588,15 @@ declare namespace JournalEntryPage {
   }>;
 
   interface EmbedImagePageConfig extends _EmbedImagePageConfig, TextEditor.DocumentHTMLEmbedConfig {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -596,7 +611,7 @@ declare class JournalEntryPage<
    * @param data    - Initial data from which to construct the `JournalEntryPage`
    * @param context - Construction context options
    */
-  constructor(...args: JournalEntryPage.ConstructorArgs);
+  constructor(data: JournalEntryPage.CreateData, context?: JournalEntryPage.ConstructionContext);
 
   /**
    * The cached table of contents for this JournalEntryPage.

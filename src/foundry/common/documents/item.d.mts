@@ -27,7 +27,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    * You should use {@link Item.implementation | `new Item.implementation(...)`} instead which will give you
    * a system specific implementation of `Item`.
    */
-  constructor(...args: Item.ConstructorArgs);
+  constructor(data: Item.CreateData, context?: Item.ConstructionContext);
 
   /**
    * @defaultValue
@@ -358,6 +358,7 @@ export default BaseItem;
 
 declare namespace BaseItem {
   export import Name = Item.Name;
+  export import ConstructionContext = Item.ConstructionContext;
   export import ConstructorArgs = Item.ConstructorArgs;
   export import Hierarchy = Item.Hierarchy;
   export import Metadata = Item.Metadata;

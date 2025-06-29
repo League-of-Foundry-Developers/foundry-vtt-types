@@ -13,9 +13,9 @@ declare namespace Folder {
   type Name = "Folder";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Folder`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Folder`.
@@ -211,10 +211,17 @@ declare namespace Folder {
     _id: fields.DocumentIdField;
 
     /** The name of this Folder */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /** The document type which this Folder contains, from {@linkcode CONST.FOLDER_DOCUMENT_TYPES} */
-    type: fields.DocumentTypeField<typeof BaseFolder>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    type: fields.DocumentTypeField<typeof BaseFolder, {}, Folder.SubType, Folder.SubType, Folder.SubType>;
 
     /**
      * An HTML description of the contents of this folder
@@ -473,6 +480,15 @@ declare namespace Folder {
     /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
     resolve?: never;
   }
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -487,7 +503,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * @param data    - Initial data from which to construct the `Folder`
    * @param context - Construction context options
    */
-  constructor(...args: Folder.ConstructorArgs);
+  constructor(data: Folder.CreateData, context?: Folder.ConstructionContext);
 
   /**
    * The depth of this folder in its sidebar tree

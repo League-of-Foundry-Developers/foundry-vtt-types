@@ -23,7 +23,8 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    * You should use {@link NoteDocument.implementation | `new NoteDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `NoteDocument`.
    */
-  constructor(...args: NoteDocument.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: NoteDocument.CreateData, context?: NoteDocument.ConstructionContext);
 
   /**
    * @defaultValue
@@ -303,6 +304,7 @@ export default BaseNote;
 
 declare namespace BaseNote {
   export import Name = NoteDocument.Name;
+  export import ConstructionContext = NoteDocument.ConstructionContext;
   export import ConstructorArgs = NoteDocument.ConstructorArgs;
   export import Hierarchy = NoteDocument.Hierarchy;
   export import Metadata = NoteDocument.Metadata;

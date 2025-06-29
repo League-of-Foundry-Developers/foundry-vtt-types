@@ -17,9 +17,9 @@ declare namespace TokenDocument {
   type Name = "Token";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Token`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `TokenDocument`.
@@ -943,6 +943,15 @@ declare namespace TokenDocument {
   // | (Name extends "ActiveEffect" ? globalThis.Collection<ActiveEffect.Implementation> : never)
   // | (Name extends Embedded.CollectionName ? Embedded.CollectionFor<Name> : never);
   type GetEmbeddedCollectionResult<_Name extends GetEmbeddedCollectionName> = Collection.Any;
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -956,7 +965,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param data    - Initial data from which to construct the `TokenDocument`
    * @param context - Construction context options
    */
-  constructor(...args: TokenDocument.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: TokenDocument.CreateData, context?: TokenDocument.ConstructionContext);
 
   /**
    * A singleton collection which holds a reference to the synthetic token actor by its base actor's ID.

@@ -14,9 +14,9 @@ declare namespace Card {
   type Name = "Card";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Card`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Card`.
@@ -228,7 +228,13 @@ declare namespace Card {
     _id: fields.DocumentIdField;
 
     /** The text name of this card */
-    name: fields.StringField<{ required: true; blank: false; label: "CARD.Name" }>;
+    name: fields.StringField<
+      { required: true; blank: false; label: "CARD.Name" },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * A text description of this card which applies to all faces
@@ -505,6 +511,15 @@ declare namespace Card {
    * @remarks {@link Card.discard | `Card#discard`} calls {@link Cards.pass | `this.parent.pass`} with `action: "discard"` provided
    */
   interface DiscardOptions extends PassOptions {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -517,7 +532,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @param data    - Initial data from which to construct the `Card`
    * @param context - Construction context options
    */
-  constructor(...args: Card.ConstructorArgs);
+  constructor(data: Card.CreateData, context?: Card.ConstructionContext);
 
   /**
    * The current card face

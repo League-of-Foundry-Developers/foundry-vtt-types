@@ -14,9 +14,9 @@ declare namespace Cards {
   type Name = "Cards";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Cards`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Cards`.
@@ -289,8 +289,8 @@ declare namespace Cards {
      * The type of this stack, in BaseCards.metadata.types
      * @defaultValue `BaseCards.TYPES[0]`
      */
-    // TODO: type is required at construction, no "base" allowed
-    type: fields.DocumentTypeField<typeof BaseCards>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    type: fields.DocumentTypeField<typeof BaseCards, {}, Cards.SubType, Cards.SubType, Cards.SubType>;
 
     /**
      * A text description of this stack
@@ -687,6 +687,15 @@ declare namespace Cards {
      */
     toUpdate: Record<string, Card.UpdateData[]>;
   }
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -702,7 +711,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    * @param data    - Initial data from which to construct the `Cards`
    * @param context - Construction context options
    */
-  constructor(...args: Cards.ConstructorArgs);
+  constructor(data: Cards.CreateData, context?: Cards.ConstructionContext);
 
   /**
    * Provide a thumbnail image path used to represent this document.

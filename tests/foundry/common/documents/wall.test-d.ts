@@ -7,16 +7,16 @@ class TestBaseWall extends BaseWall {}
 
 // TODO: ensure `c` required for creation
 // @ts-expect-error Wall requires `c` for creation
-let myWall = new TestBaseWall();
+new TestBaseWall();
 
 // @ts-expect-error Wall requires `c` for creation
-myWall = new TestBaseWall({});
+new TestBaseWall({});
 
 // @ts-expect-error - c must be a length-4 array of integer coordinates
-myWall = new TestBaseWall({ c: [10, 20] });
+new TestBaseWall({ c: [10, 20] });
 
 // @ts-expect-error - c must be a length-4 array of integer coordinates
-myWall = new TestBaseWall({ c: [10, 20, 30, 40, 50] });
+new TestBaseWall({ c: [10, 20, 30, 40, 50] });
 
 new TestBaseWall({
   c: [10, 20, 30, 40],
@@ -60,7 +60,7 @@ new TestBaseWall({
   ds: 9999,
 });
 
-myWall = new TestBaseWall({
+new TestBaseWall({
   _id: "XXXXXSomeIDXXXXX",
   c: [20, 30, 240, 340],
   light: CONST.WALL_SENSE_TYPES.DISTANCE,
@@ -83,7 +83,8 @@ myWall = new TestBaseWall({
     },
   },
 });
-myWall = new TestBaseWall({
+
+new TestBaseWall({
   _id: null,
   c: [20, 30, 240, 340],
   light: null,
@@ -102,9 +103,10 @@ myWall = new TestBaseWall({
   },
   flags: null,
 });
-myWall = new TestBaseWall({ threshold: null });
 
-myWall = new TestBaseWall({
+new TestBaseWall({ c: [20, 30, 240, 340], threshold: null });
+
+new TestBaseWall({
   _id: undefined,
   c: [20, 30, 240, 340],
   light: undefined,
@@ -123,7 +125,8 @@ myWall = new TestBaseWall({
   },
   flags: undefined,
 });
-myWall = new TestBaseWall({ threshold: undefined });
+
+const myWall = new TestBaseWall({ c: [20, 30, 240, 340], threshold: undefined });
 
 expectTypeOf(myWall).toEqualTypeOf<foundry.documents.BaseWall>();
 

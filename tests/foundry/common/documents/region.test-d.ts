@@ -9,13 +9,14 @@ import type { Region } from "#client/canvas/placeables/_module.d.mts";
 class TestRegion extends BaseRegion {}
 
 declare const someScriptBehavior: RegionBehavior.OfType<"executeScript">;
-let myRegion;
-// @ts-expect-error Region construction requires a `name`
-myRegion = new TestRegion();
-// @ts-expect-error Region construction requires a `name`
-myRegion = new TestRegion({});
 
-myRegion = new TestRegion({
+// @ts-expect-error Region construction requires a `name`
+new TestRegion();
+
+// @ts-expect-error Region construction requires a `name`
+new TestRegion({});
+
+new TestRegion({
   _id: "XXXXXSomeIDXXXXX",
   name: "Some Region",
   color: "#ABEFCD",
@@ -46,7 +47,7 @@ myRegion = new TestRegion({
   },
 });
 
-myRegion = new TestRegion({
+new TestRegion({
   _id: null,
   name: "Some Region",
   color: null,
@@ -60,12 +61,13 @@ myRegion = new TestRegion({
   locked: null,
   flags: null,
 });
-myRegion = new TestRegion({
+
+new TestRegion({
   name: "Some Region",
   elevation: null,
 });
 
-myRegion = new TestRegion({
+new TestRegion({
   _id: undefined,
   name: "Some Region",
   color: undefined,
@@ -79,7 +81,8 @@ myRegion = new TestRegion({
   locked: undefined,
   flags: undefined,
 });
-myRegion = new TestRegion({
+
+const myRegion = new TestRegion({
   name: "Some Region",
   elevation: undefined,
 });

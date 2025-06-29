@@ -14,9 +14,9 @@ declare namespace ActiveEffect {
   type Name = "ActiveEffect";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create an `ActiveEffect`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `ActiveEffect`.
@@ -223,7 +223,13 @@ declare namespace ActiveEffect {
      * The name of the ActiveEffect
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * An image path used to depict the ActiveEffect as an icon
@@ -616,6 +622,15 @@ declare namespace ActiveEffect {
   type ApplyFieldReturn<Field extends DataField.Any | null | undefined> = Field extends DataField.Any
     ? DataField.InitializedTypeFor<Field>
     : unknown;
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -633,7 +648,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param data    - Initial data from which to construct the `ActiveEffect`
    * @param context - Construction context options
    */
-  constructor(...args: ActiveEffect.ConstructorArgs);
+  constructor(data: ActiveEffect.CreateData, context?: ActiveEffect.ConstructionContext);
 
   /**
    * Create an ActiveEffect instance from some status effect ID.
@@ -649,7 +664,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
   // options: not null (parameter default only)
   static fromStatusEffect(
     statusId: string,
-    options?: Document.ConstructionContext<ActiveEffect.Parent>,
+    options?: ActiveEffect.ConstructionContext,
   ): Promise<ActiveEffect.Implementation>;
 
   /**
@@ -666,7 +681,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
   protected static _fromStatusEffect(
     statusId: string,
     effectData: ActiveEffect.CreateData,
-    options?: Document.ConstructionContext<ActiveEffect.Parent>,
+    options?: ActiveEffect.ConstructionContext,
   ): Promise<ActiveEffect.Implementation>;
 
   /**

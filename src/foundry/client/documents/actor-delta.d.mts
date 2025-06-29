@@ -14,17 +14,9 @@ declare namespace ActorDelta {
   type Name = "ActorDelta";
 
   /**
-   * The arguments to construct the document.
-   * @privateRemarks This is off-template, as ActorDelta throws if not provided a valid TokenDocument
-   * parent in the construction context for any construction, not just `.create`ion
+   * @privateRemarks This is off-template, as `ActorDelta` requires a valid parent to validate.
    */
-  interface ConstructorArgs
-    extends Identity<
-      [
-        data: CreateData | undefined,
-        context: RequiredProps<Document.ConstructionContext<TokenDocument.Implementation>, "parent">,
-      ]
-    > {}
+  interface ConstructionContext extends RequiredProps<Document.ConstructionContext<Parent>, "parent"> {}
 
   /**
    * The documents embedded within `ActorDelta`.
@@ -511,6 +503,16 @@ declare namespace ActorDelta {
   }>;
 
   interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   * @privateRemarks This is off-template, as ActorDelta throws if not provided a valid TokenDocument
+   * parent in the construction context for any construction, not just `.create`ion
+   */
+  interface ConstructorArgs extends Identity<[data: CreateData | undefined, context: ConstructionContext]> {}
 }
 
 /**
@@ -523,7 +525,8 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    * @param data    - Initial data from which to construct the `ActorDelta`
    * @param context - Construction context options
    */
-  constructor(...args: ActorDelta.ConstructorArgs);
+  // Note(LukeAbby): `data` is not actually required but `context.parent` is.
+  constructor(data: ActorDelta.CreateData | undefined, context: ActorDelta.ConstructionContext);
 
   // options: not null (parameter default only, destructured in super)
   protected override _configure(options?: Document.ConfigureOptions): void;

@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "fvtt-types/configuration";
-import type { Merge } from "#utils";
+import type { Merge, RequiredProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -14,9 +14,10 @@ declare namespace Combatant {
   type Name = "Combatant";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Combatant`.
+   * @privateRemarks This is off-template, as `Combatant` requires a valid parent to validate.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends RequiredProps<Document.ConstructionContext<Parent>, "parent"> {}
 
   /**
    * The documents embedded within `Combatant`.
@@ -438,6 +439,15 @@ declare namespace Combatant {
    * make us any more wrong than currently.
    */
   type Resource = string | number | null;
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -452,7 +462,8 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    * @param data    - Initial data from which to construct the `Combatant`
    * @param context - Construction context options
    */
-  constructor(...args: Combatant.ConstructorArgs);
+  // Note(LukeAbby): `data` is not actually required but `context.parent` is.
+  constructor(data: Combatant.CreateData | undefined, context: Combatant.ConstructionContext);
 
   /**
    * The token video source image (if any)

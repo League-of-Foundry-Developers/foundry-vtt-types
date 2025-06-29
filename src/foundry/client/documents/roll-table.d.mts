@@ -14,9 +14,9 @@ declare namespace RollTable {
   type Name = "RollTable";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `RollTable`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `RollTable`.
@@ -238,7 +238,13 @@ declare namespace RollTable {
      * The name of this RollTable
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * An image file path which provides the thumbnail artwork for this RollTable
@@ -567,6 +573,15 @@ declare namespace RollTable {
      */
     rollable?: boolean | undefined;
   }
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -581,7 +596,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * @param data    - Initial data from which to construct the `RollTable`
    * @param context - Construction context options
    */
-  constructor(...args: RollTable.ConstructorArgs);
+  constructor(data: RollTable.CreateData, context?: RollTable.ConstructionContext);
 
   /**
    * Provide a thumbnail image path used to represent this document.

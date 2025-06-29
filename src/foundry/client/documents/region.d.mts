@@ -16,7 +16,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * @param data    - Initial data from which to construct the `RegionDocument`
    * @param context - Construction context options
    */
-  constructor(...args: RegionDocument.ConstructorArgs);
+  constructor(data: RegionDocument.CreateData, context?: RegionDocument.ConstructionContext);
 
   /**
    * Test whether the given point (at the given elevation) is inside this Region.
@@ -234,9 +234,9 @@ declare namespace RegionDocument {
   type Name = "Region";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Region`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `RegionDocument`.
@@ -455,7 +455,13 @@ declare namespace RegionDocument {
     /**
      * The name used to describe the Region
      */
-    name: fields.StringField<{ required: true; blank: false; label: "Name"; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; label: "Name"; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The color used to highlight the Region
@@ -789,6 +795,15 @@ declare namespace RegionDocument {
   interface _EventData {
     readonly [K: string]: Document.Any | _EventData | _EventData[];
   }
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 export default RegionDocument;

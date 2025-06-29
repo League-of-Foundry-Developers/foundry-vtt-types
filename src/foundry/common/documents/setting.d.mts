@@ -23,7 +23,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    * You should use {@link Setting.implementation | `new Setting.implementation(...)`} instead which will give you
    * a system specific implementation of `Setting`.
    */
-  constructor(...args: Setting.ConstructorArgs);
+  constructor(data: Setting.CreateData, context?: Setting.ConstructionContext);
 
   /**
    * @defaultValue
@@ -268,6 +268,7 @@ export default BaseSetting;
 
 declare namespace BaseSetting {
   export import Name = Setting.Name;
+  export import ConstructionContext = Setting.ConstructionContext;
   export import ConstructorArgs = Setting.ConstructorArgs;
   export import Hierarchy = Setting.Hierarchy;
   export import Metadata = Setting.Metadata;

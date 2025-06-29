@@ -23,7 +23,8 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    * You should use {@link AmbientLightDocument.implementation | `new AmbientLightDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `AmbientLightDocument`.
    */
-  constructor(...args: AmbientLightDocument.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: AmbientLightDocument.CreateData, context?: AmbientLightDocument.ConstructionContext);
 
   /**
    * @defaultValue
@@ -277,6 +278,7 @@ export default BaseAmbientLight;
 
 declare namespace BaseAmbientLight {
   export import Name = AmbientLightDocument.Name;
+  export import ConstructionContext = AmbientLightDocument.ConstructionContext;
   export import ConstructorArgs = AmbientLightDocument.ConstructorArgs;
   export import Hierarchy = AmbientLightDocument.Hierarchy;
   export import Metadata = AmbientLightDocument.Metadata;

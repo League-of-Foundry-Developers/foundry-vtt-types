@@ -14,9 +14,9 @@ declare namespace Item {
   type Name = "Item";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Item`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Item`.
@@ -290,11 +290,17 @@ declare namespace Item {
     _id: fields.DocumentIdField;
 
     /** The name of this Item */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /** An Item subtype which configures the system data model applied */
-    // TODO: required with no initial, needs assignment type override
-    type: fields.DocumentTypeField<typeof documents.BaseItem>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    type: fields.DocumentTypeField<typeof documents.BaseItem, {}, Item.SubType, Item.SubType, Item.SubType>;
 
     /**
      * An image file path which provides the artwork for this Item
@@ -513,6 +519,15 @@ declare namespace Item {
     /** @defaultValue `Item.DEFAULT_ICON` */
     img: string;
   }
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -530,7 +545,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    * @param data    - Initial data from which to construct the `Item`
    * @param context - Construction context options
    */
-  constructor(...args: Item.ConstructorArgs);
+  constructor(data: Item.CreateData, context?: Item.ConstructionContext);
 
   /**
    * A convenience alias of Item#parent which is more semantically intuitive

@@ -13,9 +13,9 @@ declare namespace TableResult {
   type Name = "TableResult";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `TableResult`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `TableResult`.
@@ -261,9 +261,12 @@ declare namespace TableResult {
     range: fields.ArrayField<
       fields.NumberField<{ integer: true }>,
       {
-        validate: (r: [start: number, end: number]) => boolean;
+        validate: (r: unknown) => r is [start: number, end: number];
         validationError: "must be a length-2 array of ascending integers";
-      }
+      },
+      [start: number, end: number],
+      [start: number, end: number],
+      [start: number, end: number]
     >;
 
     /**
@@ -412,6 +415,15 @@ declare namespace TableResult {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -425,7 +437,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
    * @param data    - Initial data from which to construct the `TableResult`
    * @param context - Construction context options
    */
-  constructor(...args: TableResult.ConstructorArgs);
+  constructor(data: TableResult.CreateData, context?: TableResult.ConstructionContext);
 
   /**
    * A path reference to the icon image used to represent this result

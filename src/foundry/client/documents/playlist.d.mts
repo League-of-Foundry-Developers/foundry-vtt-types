@@ -12,9 +12,9 @@ declare namespace Playlist {
   type Name = "Playlist";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Playlist`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Playlist`.
@@ -241,7 +241,13 @@ declare namespace Playlist {
     /**
      * The name of this playlist
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The description of this playlist
@@ -517,6 +523,15 @@ declare namespace Playlist {
   }>;
 
   interface PlayNextOptions extends _PlayNextOptions {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -532,7 +547,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * @param data    - Initial data from which to construct the `Playlist`
    * @param context - Construction context options
    */
-  constructor(...args: Playlist.ConstructorArgs);
+  constructor(data: Playlist.CreateData, context?: Playlist.ConstructionContext);
 
   /**
    * Playlists may have a playback order which defines the sequence of Playlist Sounds

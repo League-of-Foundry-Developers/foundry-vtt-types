@@ -13,9 +13,9 @@ declare namespace MeasuredTemplateDocument {
   type Name = "MeasuredTemplate";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `MeasuredTemplateDocument`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `MeasuredTemplateDocument`.
@@ -423,6 +423,15 @@ declare namespace MeasuredTemplateDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -436,7 +445,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
    * @param data    - Initial data from which to construct the `MeasuredTemplateDocument`
    * @param context - Construction context options
    */
-  constructor(...args: MeasuredTemplateDocument.ConstructorArgs);
+  constructor(data?: MeasuredTemplateDocument.CreateData, context?: MeasuredTemplateDocument.ConstructionContext);
 
   /**
    * Rotation is an alias for direction

@@ -22,7 +22,7 @@ declare abstract class BaseJournalEntryPage<
    * You should use {@link JournalEntryPage.implementation | `new JournalEntryPage.implementation(...)`} instead which will give you
    * a system specific implementation of `JournalEntryPage`.
    */
-  constructor(...args: JournalEntryPage.ConstructorArgs);
+  constructor(data: JournalEntryPage.CreateData, context?: JournalEntryPage.ConstructionContext);
 
   _source: BaseJournalEntryPage.Source;
 
@@ -295,6 +295,7 @@ export default BaseJournalEntryPage;
 
 declare namespace BaseJournalEntryPage {
   export import Name = JournalEntryPage.Name;
+  export import ConstructionContext = JournalEntryPage.ConstructionContext;
   export import ConstructorArgs = JournalEntryPage.ConstructorArgs;
   export import Hierarchy = JournalEntryPage.Hierarchy;
   export import Metadata = JournalEntryPage.Metadata;

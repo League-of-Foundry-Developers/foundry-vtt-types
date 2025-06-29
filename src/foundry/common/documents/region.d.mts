@@ -20,7 +20,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    * You should use {@link RegionDocument.implementation | `new RegionDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `RegionDocument`.
    */
-  constructor(...args: RegionDocument.ConstructorArgs);
+  constructor(data: RegionDocument.CreateData, context?: RegionDocument.ConstructionContext);
 
   /**
    * @defaultValue
@@ -314,6 +314,7 @@ export default BaseRegion;
 
 declare namespace BaseRegion {
   export import Name = RegionDocument.Name;
+  export import ConstructionContext = RegionDocument.ConstructionContext;
   export import ConstructorArgs = RegionDocument.ConstructorArgs;
   export import Hierarchy = RegionDocument.Hierarchy;
   export import Metadata = RegionDocument.Metadata;

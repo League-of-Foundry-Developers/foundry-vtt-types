@@ -14,9 +14,9 @@ declare namespace DrawingDocument {
   type Name = "Drawing";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `DrawingDocument`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `DrawingDocument`.
@@ -482,6 +482,15 @@ declare namespace DrawingDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -495,7 +504,9 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
    * @param data    - Initial data from which to construct the `DrawingDocument`
    * @param context - Construction context options
    */
-  constructor(...args: DrawingDocument.ConstructorArgs);
+  // Note(LukeAbby): Required because while `DrawingDocument` has no directly required schema
+  // properties the `validateJoint` method will fail.
+  constructor(data: DrawingDocument.CreateData, context?: DrawingDocument.ConstructionContext);
 
   /**
    * Is the current User the author of this drawing?

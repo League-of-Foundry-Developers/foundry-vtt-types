@@ -15,9 +15,9 @@ declare namespace JournalEntry {
   type Name = "JournalEntry";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `JournalEntry`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `JournalEntry`.
@@ -246,7 +246,13 @@ declare namespace JournalEntry {
     /**
      * The name of this JournalEntry
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The pages contained within this JournalEntry document
@@ -455,6 +461,15 @@ declare namespace JournalEntry {
     JournalEntry.DirectDescendant,
     JournalEntry.Metadata.Embedded
   >;
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -468,7 +483,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    * @param data    - Initial data from which to construct the `JournalEntry`
    * @param context - Construction context options
    */
-  constructor(...args: JournalEntry.ConstructorArgs);
+  constructor(data: JournalEntry.CreateData, context?: JournalEntry.ConstructionContext);
 
   /**
    * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar

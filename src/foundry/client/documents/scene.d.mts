@@ -15,9 +15,9 @@ declare namespace Scene {
   type Name = "Scene";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Scene`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Scene`.
@@ -413,7 +413,13 @@ declare namespace Scene {
      * The name of this scene
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * Is this scene currently active? Only one scene may be active at a given time
@@ -1104,6 +1110,15 @@ declare namespace Scene {
   }
 
   interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -1117,7 +1132,7 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    * @param data    - Initial data from which to construct the `Scene`
    * @param context - Construction context options
    */
-  constructor(...args: Scene.ConstructorArgs);
+  constructor(data: Scene.CreateData, context?: Scene.ConstructionContext);
 
   /**
    * Track the viewed position of each scene (while in memory only, not persisted)

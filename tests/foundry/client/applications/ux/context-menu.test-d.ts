@@ -3,7 +3,7 @@ import { expectTypeOf } from "vitest";
 import ContextMenu = foundry.applications.ux.ContextMenu;
 import JournalSheet = foundry.appv1.sheets.JournalSheet;
 
-const myJournal = new JournalEntry.implementation();
+const myJournal = new JournalEntry.implementation({ name: "Journal" });
 
 const testAppV1 = new JournalSheet(myJournal);
 const testAppV2 = new foundry.applications.sheets.journal.JournalEntrySheet({ document: myJournal });

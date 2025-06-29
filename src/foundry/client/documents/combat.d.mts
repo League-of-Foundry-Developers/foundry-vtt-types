@@ -15,9 +15,9 @@ declare namespace Combat {
   type Name = "Combat";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Combat`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Combat`.
@@ -552,6 +552,15 @@ declare namespace Combat {
   }
 
   type CONFIG_SETTING = "combatTrackerConfig";
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -567,7 +576,8 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param data    - Initial data from which to construct the `Combat`
    * @param context - Construction context options
    */
-  constructor(...args: Combat.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: Combat.CreateData, context?: Combat.ConstructionContext);
 
   /** Track the sorted turn order of this combat encounter */
   turns: Combatant.Implementation[];

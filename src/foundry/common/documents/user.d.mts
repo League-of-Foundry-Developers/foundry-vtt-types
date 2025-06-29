@@ -24,7 +24,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * You should use {@link User.implementation | `new User.implementation(...)`} instead which will give you
    * a system specific implementation of `User`.
    */
-  constructor(...args: User.ConstructorArgs);
+  constructor(data: User.CreateData, context?: User.ConstructionContext);
 
   /**
    * @defaultValue
@@ -317,6 +317,7 @@ export default BaseUser;
 
 declare namespace BaseUser {
   export import Name = User.Name;
+  export import ConstructionContext = User.ConstructionContext;
   export import ConstructorArgs = User.ConstructorArgs;
   export import Hierarchy = User.Hierarchy;
   export import Metadata = User.Metadata;

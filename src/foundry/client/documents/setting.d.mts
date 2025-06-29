@@ -11,9 +11,9 @@ declare namespace Setting {
   type Name = "Setting";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Setting`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Setting`.
@@ -180,13 +180,18 @@ declare namespace Setting {
      * The setting key, a composite of \{scope\}.\{name\}
      * @defaultValue `""`
      */
-    key: fields.StringField<{
-      required: true;
-      nullable: false;
-      blank: false;
-      validate: (k: string) => k is `${string}.${string}`;
-      validationError: "must have the format {scope}.{field}";
-    }>;
+    key: fields.StringField<
+      {
+        required: true;
+        nullable: false;
+        blank: false;
+        validate: (k: string) => k is `${string}.${string}`;
+        validationError: "must have the format {scope}.{field}";
+      },
+      `${string}.${string}`,
+      `${string}.${string}`,
+      `${string}.${string}`
+    >;
 
     /**
      * The setting value, which is serialized to JSON
@@ -337,6 +342,15 @@ declare namespace Setting {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -349,7 +363,7 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
    * @param data    - Initial data from which to construct the `Setting`
    * @param context - Construction context options
    */
-  constructor(...args: Setting.ConstructorArgs);
+  constructor(data: Setting.CreateData, context?: Setting.ConstructionContext);
 
   /**
    * The setting configuration for this setting document.

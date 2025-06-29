@@ -24,7 +24,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * You should use {@link TokenDocument.implementation | `new TokenDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `TokenDocument`.
    */
-  constructor(...args: TokenDocument.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: TokenDocument.CreateData, context?: TokenDocument.ConstructionContext);
 
   /**
    * @defaultValue
@@ -402,6 +403,7 @@ export default BaseToken;
 
 declare namespace BaseToken {
   export import Name = TokenDocument.Name;
+  export import ConstructionContext = TokenDocument.ConstructionContext;
   export import ConstructorArgs = TokenDocument.ConstructorArgs;
   export import Hierarchy = TokenDocument.Hierarchy;
   export import Metadata = TokenDocument.Metadata;

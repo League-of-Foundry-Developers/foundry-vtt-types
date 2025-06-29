@@ -3,7 +3,7 @@ import { expectTypeOf } from "vitest";
 const myBackend = new foundry.data.ClientDatabaseBackend();
 
 expectTypeOf(
-  myBackend.create(Item.implementation, { data: [{ name: "foo" }], broadcast: true, pack: null }),
+  myBackend.create(Item.implementation, { data: [{ type: "base", name: "foo" }], broadcast: true, pack: null }),
 ).toEqualTypeOf<Promise<Item.Implementation[]>>();
 
 expectTypeOf(
