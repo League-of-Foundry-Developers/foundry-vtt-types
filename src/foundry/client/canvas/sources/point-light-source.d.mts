@@ -1,5 +1,14 @@
-import type { AnyObject, FixedInstanceType, Identity, IntentionalPartial, RequiredProps } from "#utils";
 import type {
+  AnyObject,
+  FixedInstanceType,
+  Identity,
+  InexactPartial,
+  IntentionalPartial,
+  Override,
+  RequiredProps,
+} from "#utils";
+import type {
+  BaseEffectSource,
   BaseLightSource,
   PointEffectSourceMixin,
   RenderedEffectSource,
@@ -7,26 +16,44 @@ import type {
 import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { CanvasVisibility } from "#client/canvas/groups/_module.d.mts";
+import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
 
 /**
  * A specialized subclass of the BaseLightSource which renders a source of light as a point-based effect.
  */
 declare class PointLightSource<
   SourceData extends PointLightSource.SourceData = PointLightSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointSourcePolygon,
-  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = RenderedEffectSource.Layers,
+  SourceShape extends PointSourcePolygon = PointLightSource.ImplementationPolygon,
+  RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = BaseLightSource.Layers,
 > extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, RenderingLayers> {
+  /** @privateRemarks Actually inherited from {@linkcode BaseLightSource} */
+  static override sourceType: "light";
+
   /** @defaultValue `"lightSources"` */
   static override effectsCollection: string;
 
-  /** @privateRemarks Not in Foundry code, necessary type override */
-  static override defaultData: PointLightSource.SourceData;
+  /** @privateRemarks Fake override to remove darknessAnimations */
+  protected static get ANIMATIONS(): typeof CONFIG.Canvas.lightAnimations;
 
   /**
-   * @privateRemarks This is not in foundry's code, but since this class (and its parent) implements `_createShapes`,
-   * and we are counting what happens in `initialize` as 'the constructor', this gets to be declared never undefined.
+   * @remarks See {@linkcode BaseLightSource.defaultData}, {@linkcode PointEffectSourceMixin.AnyMixedConstructor.defaultData | PointEffectSourceMixin.defaultData}
+   * @privateRemarks Fake override to allow merging to this interface but not its parents
    */
-  override shape: SourceShape;
+  static override defaultData: PointLightSource.SourceData;
+
+  /** @privateRemarks Fake override to remove `number[]` */
+  override shape: SourceShape | undefined;
+
+  override get requiresEdges(): boolean;
+
+  /** @privateRemarks Fake override to specify Initialized return type */
+  override initialize(
+    data?: InexactPartial<SourceData>,
+    options?: BaseEffectSource.InitializeOptions,
+  ): PointLightSource.Initialized<SourceData, SourceShape, RenderingLayers>;
+
+  /** @privateRemarks Fake override to reinstate the keyof constraint we lost in the mixin */
+  protected _drawMesh(layerId: keyof RenderingLayers): PointSourceMesh | null;
 
   protected override _initialize(data: IntentionalPartial<SourceData>): void;
 
@@ -41,7 +68,6 @@ declare class PointLightSource<
    * Test whether this LightSource provides visibility to see a certain target object.
    * @param config - The visibility test configuration
    * @returns Is the target object visible to this source?
-   * @remarks Despite being an `={}` parameter, this will error if `config.tests` is not at least an empty array of `CanvasVisibility.Test`s
    */
   testVisibility(config: CanvasVisibility.TestConfig): boolean;
 
@@ -54,36 +80,52 @@ declare class PointLightSource<
   protected _canDetectObject(target?: PlaceableObject.Any | null): boolean;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks `"BaseLightSource#isDarkness is now obsolete. Use DarknessSource instead."`
-   *
-   * Always returns `false`
-   * @privateRemarks This isn't actually overridden here, `BaseLightSource#isDarkness` always returns false, but it's type as `boolean` there to allow `PointDarknessSource#isDarkness` to return true.
+   * @deprecated "`BaseLightSource#isDarkness` is now obsolete. Use {@linkcode foundry.canvas.sources.PointDarknessSource | PointDarknessSource} instead." (since v12, until v14)
+   * @remarks Always returns `false`
+   * @privateRemarks This isn't actually overridden here; {@linkcode BaseLightSource.isDarkness | BaseLightSource#isDarkness} always returns false, but it's typed as `boolean`
+   * there since {@linkcode foundry.canvas.sources.PointDarknessSource | PointDarknessSource#isDarkness} returns true.
    */
   get isDarkness(): false;
+
+  #PointLightSource: true;
 }
 
 declare namespace PointLightSource {
   interface Any extends AnyPointLightSource {}
   interface AnyConstructor extends Identity<typeof AnyPointLightSource> {}
 
-  interface SourceData extends PointEffectSourceMixin.SourceData, BaseLightSource.SourceData {
-    animation: RenderedEffectSource.StoredLightAnimationConfig;
-  }
+  type Initialized<
+    SourceData extends PointLightSource.SourceData = PointLightSource.SourceData,
+    SourceShape extends PointSourcePolygon = PointLightSource.ImplementationPolygon,
+    RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = BaseLightSource.Layers,
+  > = Override<
+    PointLightSource<SourceData, SourceShape, RenderingLayers>,
+    {
+      /**
+       * The geometric shape of the effect source which is generated later.
+       * @remarks This is the initialized type, the shape has been generated if you're accessing this
+       */
+      shape: SourceShape;
+    }
+  >;
 
-  interface PolygonConfig
-    extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold" | "includeDarkness"> {}
+  interface SourceData extends PointEffectSourceMixin.SourceData, BaseLightSource.SourceData {}
 
-  type ConfiguredClass = CONFIG["Canvas"]["lightSourceClass"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold"> {}
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["lightSourceClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
+
+  interface ImplementationPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["light"]> {}
+  interface ImplementationPolygon extends FixedInstanceType<ImplementationPolygonClass> {}
 }
+
+export default PointLightSource;
 
 declare abstract class AnyPointLightSource extends PointLightSource<
   PointLightSource.SourceData,
   PointSourcePolygon,
-  RenderedEffectSource.Layers
+  BaseLightSource.Layers
 > {
   constructor(...args: never);
 }
-
-export default PointLightSource;

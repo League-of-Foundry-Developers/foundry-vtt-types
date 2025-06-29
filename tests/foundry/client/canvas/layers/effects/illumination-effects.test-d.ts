@@ -11,7 +11,7 @@ const layer = new CanvasIlluminationEffects();
 
 expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof CanvasLayer>();
 
-expectTypeOf(layer.filter).toEqualTypeOf<VisualEffectsMaskingFilter.ImplementationInstance | undefined>();
+expectTypeOf(layer.filter).toEqualTypeOf<VisualEffectsMaskingFilter.Implementation | undefined>();
 expectTypeOf(layer.lights).toEqualTypeOf<PIXI.Container>();
 expectTypeOf(layer.backgroundColorTexture).toEqualTypeOf<PIXI.Texture>();
 expectTypeOf(layer.baselineMesh).toEqualTypeOf<SpriteMesh>();

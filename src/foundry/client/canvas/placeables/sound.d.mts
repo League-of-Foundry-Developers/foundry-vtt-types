@@ -47,7 +47,7 @@ declare class AmbientSound extends PlaceableObject<AmbientSoundDocument.Implemen
    *
    * Set `undefined` by {@link AmbientSound._destroy | `AmbientSound#_destroy`}.
    */
-  source: foundry.canvas.sources.PointSoundSource.ConfiguredInstance | undefined;
+  source: foundry.canvas.sources.PointSoundSource.Implementation | undefined;
 
   /**
    * The area that is affected by this ambient sound.

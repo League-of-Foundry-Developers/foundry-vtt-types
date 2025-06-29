@@ -1,6 +1,7 @@
-import type { NullishProps, IntentionalPartial, AnyObject, Identity } from "#utils";
-import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
-import type { CanvasGroupMixin, EffectsCanvasGroup } from "#client/canvas/groups/_module.d.mts";
+import type { IntentionalPartial, AnyObject, Identity, InexactPartial } from "#utils";
+import type * as placeables from "#client/canvas/placeables/_module.d.mts";
+import type { EnvironmentCanvasGroup } from "#client/canvas/groups/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * TODO - Re-document after ESM refactor.
@@ -23,10 +24,8 @@ declare abstract class BaseEffectSource<
   /**
    * An effect source is constructed by providing configuration options.
    * @param options - Options which modify the base effect source instance
-   * @remarks Passing a PlaceableObject is deprecated, and will be removed in v13
    */
-  // not null (property access)
-  constructor(options?: BaseEffectSource.ConstructorOptions | PlaceableObject);
+  constructor(options?: BaseEffectSource.ConstructorOptions);
 
   /**
    * The type of source represented by this data structure.
@@ -37,7 +36,8 @@ declare abstract class BaseEffectSource<
 
   /**
    * The target collection into the effects canvas group.
-   * @remarks Foundry marked `@abstract`; Is `undefined` in `BaseEffectSource`
+   * @abstract
+   * @remarks Is `undefined` in `BaseEffectSource`
    */
   static effectsCollection: string | undefined;
 
@@ -57,9 +57,10 @@ declare abstract class BaseEffectSource<
 
   /**
    * Some other object which is responsible for this source.
-   * @privateRemarks In Foundry practice this appears to only ever be `null`, `Token.Implementation`, or `EffectsCanvasGroup` in v12
+   * @privateRemarks see {@linkcode BaseEffectSource.ConstructorOptions.object}
    */
-  object: PlaceableObject.Any | CanvasGroupMixin.AnyMixed | null;
+  // TODO: 4th type param for this?
+  object: placeables.PlaceableObject.Any | EnvironmentCanvasGroup.Any | null;
 
   /**
    * The source id linked to this effect source.
@@ -74,9 +75,13 @@ declare abstract class BaseEffectSource<
 
   /**
    * The geometric shape of the effect source which is generated later.
-   * @remarks This only isn't `undefined` in subclasses implementing `_createShapes()`, usually via {@link foundry.canvas.sources.PointEffectSourceMixin | `PointEffectSourceMixin`}
+   * @remarks This is `undefined` prior to the first call to {@linkcode BaseEffectSource.initialize | BaseEffectSource#Initialize}
+   *
+   * Only ever `number[]` in {@linkcode foundry.canvas.sources.GlobalLightSource}, and only if
+   * {@linkcode foundry.canvas.sources.GlobalLightSource.customPolygon | #customPolygon} is set
+   * to a `number[]` before initialization.
    */
-  shape: SourceShape | undefined;
+  shape: SourceShape | number[] | undefined;
 
   /**
    * A collection of boolean flags which control rendering and refresh behavior for the source.
@@ -102,7 +107,7 @@ declare abstract class BaseEffectSource<
   /**
    * The EffectsCanvasGroup collection linked to this effect source.
    */
-  get effectsCollection(): foundry.utils.Collection<this>;
+  get effectsCollection(): Collection<this>;
 
   /**
    * Returns the update ID associated with this source.
@@ -138,16 +143,18 @@ declare abstract class BaseEffectSource<
    * @param data    - Provided data for configuration
    * @param options - Additional options which modify source initialization
    * @returns The initialized source
+   * @privateRemarks This should be returning `this`, but allowing the Initialized overrides requires returning a specific class
    */
-  // options: not null (destructured)
-  initialize(data?: NullishProps<SourceData> | null, options?: BaseEffectSource.InitializeOptions): this;
+  initialize(
+    data?: InexactPartial<SourceData>,
+    options?: BaseEffectSource.InitializeOptions,
+  ): BaseEffectSource<SourceData, SourceShape>;
 
   /**
    * Subclass specific data initialization steps.
    * @param data - Provided data for configuration
-   * @remarks Not actually `abstract`, but a is a no-op in `BaseEffectSource`
    */
-  protected _initialize(
+  protected abstract _initialize(
     /** @privateRemarks `IntentionalPartial` because `#initialize` has filtered invalid keys and replaced any nullish values before calling this */
     data: IntentionalPartial<SourceData>,
   ): void;
@@ -191,6 +198,8 @@ declare abstract class BaseEffectSource<
 
   /**
    * Add this BaseEffectSource instance to the active collection.
+   * @remarks
+   * @throws If this Source doesn't have a {@linkcode sourceId}
    */
   add(): void;
 
@@ -200,22 +209,13 @@ declare abstract class BaseEffectSource<
   remove(): void;
 
   /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks `"BaseEffectSource#sourceType is deprecated. Use BaseEffectSource.sourceType instead."`
+   * Test whether the point is contained within the shape of the source.
+   * @param point - The point.
+   * @returns Is inside the source?
    */
-  get sourceType(): string;
+  testPoint(point: Canvas.ElevatedPoint): boolean;
 
-  /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks `"BaseEffectSource#_createShape is deprecated in favor of BaseEffectSource#_createShapes."`
-   */
-  protected _createShape(): void;
-
-  /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks `"BaseEffectSource#disabled is deprecated in favor of BaseEffectSource#data#disabled or BaseEffectSource#active depending on your use case."`
-   */
-  get disabled(): boolean;
+  #BaseEffectSource: true;
 }
 
 declare namespace BaseEffectSource {
@@ -223,25 +223,27 @@ declare namespace BaseEffectSource {
   interface AnyConstructor extends Identity<typeof AnyBaseEffectSource> {}
 
   /** @internal */
-  type _ConstructorOptions = NullishProps<{
+  type _ConstructorOptions = InexactPartial<{
     /**
      * An optional PlaceableObject which is responsible for this source
-     * @remarks Only the global light source is passed the ECG
+     * @remarks The {@linkcode EnvironmentCanvasGroup} passes itself when creating the global light source during its construction,
+     * as an exception to Foundry's typing of just {@linkcode PlaceableObject}. Otherwise, is only ever {@linkcode placeables.AmbientLight | AmbientLight},
+     * {@linkcode placeables.AmbientSound | AmbientSound}, or {@linkcode placeables.Token | Token} in Foundry usage
      */
-    object: PlaceableObject.Any | EffectsCanvasGroup.Any;
+    object: placeables.PlaceableObject.Any | EnvironmentCanvasGroup.Any;
+
+    /**
+     * A unique ID for this source. This will be set automatically if an object is provided, otherwise is required.
+     * @remarks The above is misleading; sourceId **was** only inferred if you passed a `PlaceableObject`
+     * _instead_ of an options object to the constructor (which was a deprecated path removed in v13),
+     * _not_ if you pass in `{ object: PlaceableObject }`, where you're expected to also pass `sourceId`
+     * yourself, if you want it to be {@linkcode BaseEffectSource.add | added} to its
+     * {@linkcode BaseEffectSource.effectsCollection | #effectsCollection}
+     */
+    sourceId: string;
   }>;
 
-  interface ConstructorOptions extends _ConstructorOptions {
-    /**
-     * A unique ID for this source. This will be set automatically if an
-     * object is provided, otherwise is required.
-     * @remarks The above is misleading; sourceId will only be inferred if you pass a `PlaceableObject`
-     * _instead_ of an options object to the constructor (which is a deprecated path removed in v13),
-     * _not_ if you pass in `{ object: PlaceableObject }`, where you're expected to also pass `sourceId`
-     * yourself.
-     */
-    sourceId?: string;
-  }
+  interface ConstructorOptions extends _ConstructorOptions {}
 
   interface SourceData {
     /**
@@ -270,7 +272,7 @@ declare namespace BaseEffectSource {
   }
 
   /** @internal */
-  type _InitializeOptions = NullishProps<{
+  type _InitializeOptions = InexactPartial<{
     /**
      * Should source data be reset to default values before applying changes?
      * @defaultValue `false`
@@ -278,7 +280,6 @@ declare namespace BaseEffectSource {
     reset: boolean;
   }>;
 
-  /** @privateRemarks Foundry describes an `options.behaviors` key, but it is neither checked for nor used at runtime */
   interface InitializeOptions extends _InitializeOptions {}
 
   /** @privateRemarks The `| number` is from Foundry's typing, but core only uses boolean flags in v12.331 */
@@ -289,8 +290,8 @@ declare namespace BaseEffectSource {
   }
 }
 
+export default BaseEffectSource;
+
 declare abstract class AnyBaseEffectSource extends BaseEffectSource<BaseEffectSource.SourceData, PIXI.Polygon> {
   constructor(...args: never);
 }
-
-export default BaseEffectSource;

@@ -99,7 +99,7 @@ declare namespace VisualEffectsMaskingFilter {
 
   // TODO: This can't be an interface yet because of 'An interface can only extend an object type or intersection of object types with statically known members' errors
   type ImplementationClass = CONFIG["Canvas"]["visualEffectsMaskingFilter"];
-  interface ImplementationInstance extends FixedInstanceType<ImplementationClass> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   type PostProcessModes = Array<keyof typeof VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES>;
 

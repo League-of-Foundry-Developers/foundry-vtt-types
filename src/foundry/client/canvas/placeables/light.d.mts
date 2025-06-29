@@ -35,7 +35,7 @@ declare class AmbientLight extends PlaceableObject<AmbientLightDocument.Implemen
    *
    * Set `undefined` in {@link AmbientLight._destroy | `AmbientLight#_destroy`}.
    */
-  lightSource: PointLightSource.ConfiguredInstance | PointDarknessSource.ConfiguredInstance | undefined;
+  lightSource: PointLightSource.Implementation | PointDarknessSource.Implementation | undefined;
 
   static override embeddedName: "AmbientLight";
 

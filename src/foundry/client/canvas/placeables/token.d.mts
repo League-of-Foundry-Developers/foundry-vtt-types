@@ -140,7 +140,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * @remarks `undefined` prior to first draw or after {@link Token._destroy | `Token#_destroy`} is called, or
    * {@link Token.initializeVisionSource | `Token#initializeVisionSource`} is called with `{deleted: true}`
    */
-  vision: sources.PointVisionSource.ConfiguredInstance | undefined;
+  vision: sources.PointVisionSource.Implementation | undefined;
 
   /**
    * A reference to the LightSource object which defines this light source area of effect
@@ -150,7 +150,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    *
    * Whether this is a LightSource or a DarknessSource depends on `this.document.light.negative`
    */
-  light: sources.PointLightSource.ConfiguredInstance | sources.PointDarknessSource.ConfiguredInstance | undefined;
+  light: sources.PointLightSource.Implementation | sources.PointDarknessSource.Implementation | undefined;
 
   /**
    * The current animations of this Token.

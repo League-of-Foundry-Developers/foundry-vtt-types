@@ -51,9 +51,6 @@ exports[`vitestTestsImproving`] = {
     "tests/foundry/client/canvas/rendering/shaders/lighting/illumination-lighting.test-d.ts:2889223545": [
       [11, 20, 1, "Property \'isRequired\' does not exist on type \'AbstractBaseShader\'.", "177611"]
     ],
-    "tests/foundry/client/canvas/sources/base-light-source.test-d.ts:4186860499": [
-      [18, 52, 1, "Type \'Record<string, AnimationConfig>\' does not satisfy the constraint \'{ [x string] \\"Expected ..., Actual never\\"; }\'.\\n  \'string\' index signatures are incompatible.\\n    Type \'AnimationConfig\' is not assignable to type \'\\"Expected ..., Actual never\\"\'.\\n      Type \'DarknessAnimationConfig\' is not assignable to type \'\\"Expected ..., Actual never\\"\'.", "177603"]
-    ],
     "tests/foundry/client/documents/abstract/client-document.test-d.ts:438507210": [
       [26, 5, 1, "Type \'string[]\' is not assignable to type \'undefined\'.", "177604"],
       [38, 5, 1, "Type \'string[]\' is not assignable to type \'undefined\'.", "177604"],

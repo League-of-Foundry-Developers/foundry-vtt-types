@@ -1,6 +1,6 @@
 import type * as CONST from "#common/constants.d.mts";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise } from "#utils";
+import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise, RemoveIndexSignatures, InexactPartial } from "#utils";
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
 import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
@@ -9,7 +9,7 @@ import type * as canvasGroups from "#client/canvas/groups/_module.d.mts";
 import type * as perception from "#client/canvas/perception/_module.d.mts";
 import type * as placeables from "#client/canvas/placeables/_module.d.mts";
 import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
-import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
+import type * as geometry from "#client/canvas/geometry/_module.d.mts";
 
 import SimplePeerAVClient = foundry.av.clients.SimplePeerAVClient;
 
@@ -2399,7 +2399,7 @@ declare global {
 
       /**
        * @defaultValue `foundry.canvas.sources.PointSoundSource`
-       * @remarks Can't be `AnyConstructor` as it's instantiated via `new`
+       * @remarks Can't be `AnyConstructor` as it's instantiated expecting a compatible constructor
        */
       soundSourceClass: typeof foundry.canvas.sources.PointSoundSource;
 
@@ -2441,9 +2441,9 @@ declare global {
 
       gridStyles: Canvas.GridStyles;
 
-      lightAnimations: Canvas.LightAnimations;
+      lightAnimations: RemoveIndexSignatures<Canvas.LightAnimations>;
 
-      darknessAnimations: Canvas.DarknessAnimations;
+      darknessAnimations: RemoveIndexSignatures<Canvas.DarknessAnimations>;
 
       /**
        * A registry of Scenes which are managed by a specific SceneManager class.
@@ -2574,18 +2574,19 @@ declare global {
         bright: number;
       }
 
+      /**
+       * @privateRemarks Foundry types this as `{@enum `{@linkcode geometry.PointSourcePolygon | PointSourcePolygon}`}`,
+       * but all the runtime defaults are {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}. It is not
+       * impossible to add a new type of source with its own, non-CSP class, but this is unlikely to come up in real world
+       * code.
+       */
       interface PolygonBackends {
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        sight: PointSourcePolygon.AnyConstructor;
-
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        light: PointSourcePolygon.AnyConstructor;
-
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        sound: PointSourcePolygon.AnyConstructor;
-
-        /** @defaultValue `typeof ClockwiseSweepPolygon` */
-        move: PointSourcePolygon.AnyConstructor;
+        sight: geometry.ClockwiseSweepPolygon.AnyConstructor;
+        light: geometry.ClockwiseSweepPolygon.AnyConstructor;
+        darkness: geometry.ClockwiseSweepPolygon.AnyConstructor;
+        sound: geometry.ClockwiseSweepPolygon.AnyConstructor;
+        move: geometry.ClockwiseSweepPolygon.AnyConstructor;
+        [K: string]: geometry.PointSourcePolygon.AnyConstructor;
       }
 
       interface GridStyles {
@@ -2676,8 +2677,36 @@ declare global {
         roundPoints: canvasLayers.GridLayer.GridStyle;
       }
 
+      interface LightSourceAnimationConfig
+        extends RenderedEffectSource._AnimationConfigBase,
+          Pick<RenderedEffectSource._AnimationConfigLightingShaders, "colorationShader">,
+          InexactPartial<Omit<RenderedEffectSource._AnimationConfigLightingShaders, "colorationShader">>,
+          RenderedEffectSource._Seed {}
+
       interface LightAnimations {
-        flame: {
+        [animationID: string]: LightSourceAnimationConfig;
+        flame: LightAnimations.Flame;
+        torch: LightAnimations.Torch;
+        revolving: LightAnimations.Revolving;
+        siren: LightAnimations.Siren;
+        pulse: LightAnimations.Pulse;
+        chroma: LightAnimations.Chroma;
+        wave: LightAnimations.Wave;
+        fog: LightAnimations.Fog;
+        sunburst: LightAnimations.Sunburst;
+        dome: LightAnimations.Dome;
+        emanation: LightAnimations.Emanation;
+        hexa: LightAnimations.Hexa;
+        ghost: LightAnimations.Ghost;
+        energy: LightAnimations.Energy;
+        vortex: LightAnimations.Vortex;
+        witchwave: LightAnimations.WitchWave;
+        rainbowswirl: LightAnimations.RainbowSwirl;
+        radialrainbow: LightAnimations.RadialRainbow;
+        fairy: LightAnimations.Fairy;
+      }
+      namespace LightAnimations {
+        interface Flame extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationFame"` */
           label: string;
 
@@ -2689,9 +2718,9 @@ declare global {
 
           /** @defaultValue `FlameColorationShader` */
           colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        torch: {
+        interface Torch extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationTorch"` */
           label: string;
 
@@ -2703,9 +2732,9 @@ declare global {
 
           /** @defaultValue `TorchColorationShader` */
           colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        revolving: {
+        interface Revolving extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationRevolving"` */
           label: string;
 
@@ -2714,9 +2743,9 @@ declare global {
 
           /** @defaultValue `RevolvingColorationShader` */
           colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        siren: {
+        interface Siren extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationSiren"` */
           label: string;
 
@@ -2728,9 +2757,9 @@ declare global {
 
           /** @defaultValue `SirenIlluminationShader` */
           colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        pulse: {
+        interface Pulse extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationPulse"` */
           label: string;
 
@@ -2742,9 +2771,9 @@ declare global {
 
           /** @defaultValue `PulseColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        chroma: {
+        interface Chroma extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationChroma"` */
           label: string;
 
@@ -2753,9 +2782,9 @@ declare global {
 
           /** @defaultValue `ChromaColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        wave: {
+        interface Wave extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationWave"` */
           label: string;
 
@@ -2767,9 +2796,9 @@ declare global {
 
           /** @defaultValue `WaveColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        fog: {
+        interface Fog extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationFog"` */
           label: string;
 
@@ -2778,9 +2807,9 @@ declare global {
 
           /** @defaultValue `FogColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        sunburst: {
+        interface Sunburst extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationSunburst"` */
           label: string;
 
@@ -2792,9 +2821,9 @@ declare global {
 
           /** @defaultValue `SunburstColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        dome: {
+        interface Dome extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationLightDome"` */
           label: string;
 
@@ -2803,9 +2832,9 @@ declare global {
 
           /** @defaultValue `LightDomeColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        emanation: {
+        interface Emanation extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationEmanation"` */
           label: string;
 
@@ -2814,9 +2843,9 @@ declare global {
 
           /** @defaultValue `EmanationColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        hexa: {
+        interface Hexa extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationHexaDome";` */
           label: string;
 
@@ -2825,9 +2854,9 @@ declare global {
 
           /** @defaultValue `HexaDomeColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        ghost: {
+        interface Ghost extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationGhostLight"` */
           label: string;
 
@@ -2839,9 +2868,9 @@ declare global {
 
           /** @defaultValue `GhostLightColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        energy: {
+        interface Energy extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationEnergyField"` */
           label: string;
 
@@ -2850,9 +2879,9 @@ declare global {
 
           /** @defaultValue `EnergyFieldColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        vortex: {
+        interface Vortex extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationVortex"` */
           label: string;
 
@@ -2864,9 +2893,9 @@ declare global {
 
           /** @defaultValue `VortexColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        witchwave: {
+        interface WitchWave extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationBewitchingWave"` */
           label: string;
 
@@ -2878,9 +2907,9 @@ declare global {
 
           /** @defaultValue `BewitchingWaveColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        rainbowswirl: {
+        interface RainbowSwirl extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationSwirlingRainbow"` */
           label: string;
 
@@ -2889,9 +2918,9 @@ declare global {
 
           /** @defaultValue `SwirlingRainbowColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        radialrainbow: {
+        interface RadialRainbow extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationRadialRainbow"` */
           label: string;
 
@@ -2900,9 +2929,9 @@ declare global {
 
           /** @defaultValue `RadialRainbowColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
 
-        fairy: {
+        interface Fairy extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationFairyLight"` */
           label: string;
 
@@ -2914,11 +2943,23 @@ declare global {
 
           /** @defaultValue `FairyLightColorationShader` */
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
-        };
+        }
       }
 
+      interface DarknessSourceAnimationConfig
+        extends RenderedEffectSource._AnimationConfigBase,
+          RenderedEffectSource._AnimationConfigDarknessShaders,
+          RenderedEffectSource._Seed {}
+
       interface DarknessAnimations {
-        magicalGloom: {
+        [animationID: string]: DarknessSourceAnimationConfig;
+        magicalGloom: DarknessAnimations.MagicalGloom;
+        roiling: DarknessAnimations.Roiling;
+        hole: DarknessAnimations.Hole;
+      }
+
+      namespace DarknessAnimations {
+        interface MagicalGloom extends DarknessSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationMagicalGloom"` */
           label: string;
 
@@ -2927,9 +2968,9 @@ declare global {
 
           /** @defaultValue `MagicalGloomDarknessShader` */
           darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
-        };
+        }
 
-        roiling: {
+        interface Roiling extends DarknessSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationRoilingMass"` */
           label: string;
 
@@ -2938,9 +2979,9 @@ declare global {
 
           /** @defaultValue `RoilingDarknessShader` */
           darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
-        };
+        }
 
-        hole: {
+        interface Hole extends DarknessSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationBlackHole"` */
           label: string;
 
@@ -2949,7 +2990,7 @@ declare global {
 
           /** @defaultValue `BlackHoleDarknessShader` */
           darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
-        };
+        }
       }
 
       interface Pings {

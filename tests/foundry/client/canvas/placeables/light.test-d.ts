@@ -107,5 +107,5 @@ expectTypeOf(light.updateSource({ deleted: true })).toBeVoid();
 expectTypeOf(light.updateSource({ deleted: null })).toBeVoid();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(light.source).toEqualTypeOf<
-  PointLightSource.ConfiguredInstance | PointDarknessSource.ConfiguredInstance | undefined
+  PointLightSource.Implementation | PointDarknessSource.Implementation | undefined
 >();
