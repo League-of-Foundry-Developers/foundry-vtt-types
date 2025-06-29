@@ -68,12 +68,17 @@ expectTypeOf(
   ),
 ).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
 expectTypeOf(
-  ActiveEffect.createDialog(createData, {
-    parent: someActor,
-    pack: "some.pack",
-    // TODO: add mock subtypes so this has valid values to test ("base" is excluded)
-    //types: [],
-  }),
+  ActiveEffect.createDialog(
+    createData,
+    {
+      parent: someActor,
+      pack: "some.pack",
+    },
+    {
+      // TODO: add mock subtypes so this has valid values to test ("base" is excluded)
+      //types: [],
+    },
+  ),
 ).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
 expectTypeOf(
   ActiveEffect.createDialog(
@@ -95,12 +100,10 @@ declare const aeSource: ActiveEffect.Source;
 expectTypeOf(
   ActiveEffect.fromDropData({
     data: aeSource,
-    type: "ActiveEffect",
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
 expectTypeOf(
   ActiveEffect.fromDropData({
-    type: "ActiveEffect",
     uuid: "someUUID", // TODO: This should be allowed
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
@@ -108,7 +111,6 @@ expectTypeOf(
   ActiveEffect.fromDropData(
     {
       data: aeSource,
-      type: "ActiveEffect",
     },
     {}, // options is vestigial, this is AnyObject
   ),

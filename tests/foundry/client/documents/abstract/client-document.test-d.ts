@@ -22,38 +22,58 @@ declare const createData: Item.CreateData;
 declare const dialogOptions: InexactPartial<Dialog.Options>;
 expectTypeOf(Item.createDialog({}, {})).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 expectTypeOf(
-  Item.createDialog(createData, {
-    types: ["armor"], // fake subtype defined in the test file for Item
-    pack: "some.pack",
-    parent: someActor,
-    ...dialogOptions,
-  }),
+  Item.createDialog(
+    createData,
+    {
+      pack: "some.pack",
+      parent: someActor,
+    },
+    {
+      types: ["armor"], // fake subtype defined in the test file for Item
+      ...dialogOptions,
+    },
+  ),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 
 // @ts-expect-error "foo" is not a valid Item type
 Item.createDialog({}, { types: ["foo"] });
 
 expectTypeOf(
-  Item.createDialog(createData, {
-    types: ["armor"], // fake subtype defined in the test file for Item
-    pack: "some.pack",
-    parent: someActor,
-    ...dialogOptions,
-  }),
+  Item.createDialog(
+    createData,
+    {
+      pack: "some.pack",
+      parent: someActor,
+    },
+    {
+      types: ["armor"], // fake subtype defined in the test file for Item
+      ...dialogOptions,
+    },
+  ),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 expectTypeOf(
-  Item.createDialog(createData, {
-    types: null,
-    pack: null,
-    parent: null,
-  }),
+  Item.createDialog(
+    createData,
+    {
+      pack: null,
+      parent: null,
+    },
+    {
+      types: null,
+    },
+  ),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 expectTypeOf(
-  Item.createDialog(createData, {
-    types: undefined,
-    pack: undefined,
-    parent: undefined,
-  }),
+  Item.createDialog(
+    createData,
+    {
+      pack: undefined,
+      parent: undefined,
+    },
+    {
+      types: undefined,
+    },
+  ),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 
 expectTypeOf(Item.defaultName()).toBeString();
@@ -69,9 +89,9 @@ expectTypeOf(Item.defaultName({ type: null, pack: null, parent: null })).toBeStr
 expectTypeOf(Item.defaultName({ type: undefined, pack: undefined, parent: undefined })).toBeString();
 
 declare const itemDropData: Item.DropData;
-expectTypeOf(Item.fromDropData(itemDropData)).toEqualTypeOf<Promise<Item.Implementation>>();
+expectTypeOf(Item.fromDropData(itemDropData)).toEqualTypeOf<Promise<Item.Implementation | undefined>>();
 // there are no actual options to test
-expectTypeOf(Item.fromDropData(itemDropData, {})).toEqualTypeOf<Promise<Item.Implementation>>();
+expectTypeOf(Item.fromDropData(itemDropData, {})).toEqualTypeOf<Promise<Item.Implementation | undefined>>();
 
 declare const itemSource: Item.Source;
 const constructionContext = {
