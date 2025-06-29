@@ -1,4 +1,3 @@
-/* eslint-disable import-x/extensions */
 import { expectTypeOf } from "vitest";
 import {
   details,
@@ -22,154 +21,47 @@ import {
   rp,
   rt,
   iframe,
-} from "../../../../../src/foundry/common/prosemirror/schema/other.mjs";
+} from "#common/prosemirror/schema/other.mjs";
+import type { NodeSpec } from "prosemirror-model";
 
-expectTypeOf(details).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(details).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(summary).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(summary).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(summaryBlock).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(summaryBlock).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(dl).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(dl).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(dt).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(dt).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(dd).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(dd).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(fieldset).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(fieldset).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(legend).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(legend).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(picture).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(picture).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(audio).toEqualTypeOf<{
-  content: string;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(audio).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(video).toEqualTypeOf<{
-  content: string;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(video).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(track).toEqualTypeOf<{
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-}>();
+expectTypeOf(track).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(source).toEqualTypeOf<{
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-}>();
+expectTypeOf(source).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(object).toEqualTypeOf<{
-  inline: boolean;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-}>();
+expectTypeOf(object).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(figure).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(figure).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(figcaption).toEqualTypeOf<{
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(figcaption).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(small).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(small).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(ruby).toEqualTypeOf<{
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(ruby).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(rp).toEqualTypeOf<{
-  content: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(rp).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(rt).toEqualTypeOf<{
-  content: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-}>();
+expectTypeOf(rt).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(iframe).toEqualTypeOf<{
-  attrs: Record<string, unknown>;
-  managed: Record<string, unknown>;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, unknown];
-}>();
+expectTypeOf(iframe).toEqualTypeOf<NodeSpec>();
