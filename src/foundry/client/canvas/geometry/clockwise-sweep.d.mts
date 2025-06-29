@@ -165,7 +165,7 @@ declare namespace ClockwiseSweepPolygon {
   /** @internal */
   type _Config = InexactPartial<{
     /**
-     *
+     * Optional priority when it comes to ignore edges from darkness and light sources
      * @defaultValue `0`
      */
     priority: number;
@@ -184,11 +184,27 @@ declare namespace ClockwiseSweepPolygon {
      * - `2` (always): The edges are automatically included.
      */
     edgeTypes: EdgeTypesConfiguration;
-  }>;
-  interface Config extends PointSourcePolygon.Config {}
 
-  interface StoredConfig extends PointSourcePolygon.StoredConfig {
-    /** The computed bounding box for the polygon */
+    /**
+     * @deprecated "`config.useInnerBounds` is now deprecated, replaced by {@linkcode ClockwiseSweepPolygon.Config.edgeTypes | edgeTypes}
+     * polygon configuration behaviors." (since v13, until v15)
+     */
+    useInnerBounds: boolean;
+
+    /**
+     * @deprecated "`config.includeDarkness` is now deprecated, replaced by {@linkcode ClockwiseSweepPolygon.Config.edgeTypes | edgeTypes}
+     * polygon configuration behaviors." (since v13, until v15)
+     */
+    includeDarkness: boolean;
+  }>;
+
+  interface Config extends PointSourcePolygon.Config, _Config {}
+
+  interface StoredConfig extends PointSourcePolygon.StoredConfig, _Config {
+    /**
+     * The computed bounding box for the polygon
+     * @privateRemarks Foundry includes this in the `PointSourcePolygon` typedef, but it is only used in `ClockwiseSweepPolygon`
+     */
     boundingBox: PIXI.Rectangle;
   }
 

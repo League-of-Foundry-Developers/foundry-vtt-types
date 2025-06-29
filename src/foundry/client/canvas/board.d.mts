@@ -697,7 +697,7 @@ declare namespace Canvas {
   }
 
   /**
-   * A single point, expressed as an object \{x, y\}
+   * A single point, expressed as an object `{x, y}`
    * @remarks Copied from `resources/app/common/types.mjs`
    */
   type Point = PIXI.Point | { x: number; y: number };
@@ -712,8 +712,10 @@ declare namespace Canvas {
     elevation: number;
   }
 
+  type PossiblyElevatedPoint = Point | ElevatedPoint;
+
   /**
-   * A single point, expressed as an array \[x,y\]
+   * A single point, expressed as an array `[x,y]`
    * @remarks Copied from `resources/app/common/types.mjs`
    *
    * Renamed from `PointArray` to avoid confusion (for `[{x,y},{x,y}]` for example)

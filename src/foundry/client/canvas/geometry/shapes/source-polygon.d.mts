@@ -51,18 +51,22 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
    * @param origin     - The origin point to benchmark
    * @param config     - The polygon configuration to benchmark
    */
-  static benchmark(iterations: number, origin: Canvas.Point, config: PointSourcePolygon.Config): Promise<void>;
+  static benchmark(
+    iterations: number,
+    origin: Canvas.PossiblyElevatedPoint,
+    config: PointSourcePolygon.Config,
+  ): Promise<void>;
 
   /**
    * Compute the polygon given a point origin and radius
-   * @param origin - The origin source point
+   * @param origin - The origin source point. The elevation defaults to the elevation of `config.source` if passed and otherwise `0`.
    * @param config - Configuration options which customize the polygon computation
    * @returns The computed polygon instance
    * @remarks Subclasses must implement a `.create` override to accurately type the return.
    *
    * Despite being a `={}` parameter, a `config` object with a valid `type` property must be passed
    */
-  static create(origin: Canvas.Point, config: PointSourcePolygon.Config): unknown;
+  static create(origin: Canvas.PossiblyElevatedPoint, config: PointSourcePolygon.Config): unknown;
 
   /**
    * Create a clone of this polygon.
@@ -84,10 +88,10 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
 
   /**
    * Customize the provided configuration object for this polygon type.
-   * @param origin - The provided polygon origin
+   * @param origin - The provided polygon origin. The elevation defaults to the elevation of `config.source` if passed and otherwise `0`.
    * @param config - The provided configuration object
    */
-  initialize(origin: Canvas.Point, config: PointSourcePolygon.Config): void;
+  initialize(origin: Canvas.PossiblyElevatedPoint, config: PointSourcePolygon.Config): void;
 
   /**
    * Apply a constraining boundary shape to an existing PointSourcePolygon.
@@ -116,20 +120,20 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
   /**
    * Test whether a Ray between the origin and destination points would collide with a boundary of this Polygon.
    * A valid wall restriction type is compulsory and must be passed into the config options.
-   * @param origin      - An origin point
-   * @param destination - A destination point
+   * @param origin      - An origin point. The elevation defaults to the elevation of `config.source` if passed and otherwise `0`.
+   * @param destination - A destination point. The elevation defaults to the elevation of the origin.
    * @param config      - The configuration that defines a certain Polygon type
    * @param mode        - The collision mode to test: "any", "all", or "closest" (default: "all")
    * @returns The collision result depends on the mode of the test:
-   *          - `any`: returns a boolean for whether any collision occurred
-   *          - `all`: returns a sorted array of PolygonVertex instances
-   *          - `closest`: returns a PolygonVertex instance or null
+   * - `any`: returns a boolean for whether any collision occurred
+   * - `all`: returns a sorted array of PolygonVertex instances
+   * - `closest`: returns a PolygonVertex instance or null
    * @remarks Despite being an `={}` parameter, `options` is required as it must be a valid
    * `PointSourcePolygon.Config`, which has a required property (`type`)
    */
   static testCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
-    origin: Canvas.Point,
-    destination: Canvas.Point,
+    origin: Canvas.PossiblyElevatedPoint,
+    destination: Canvas.PossiblyElevatedPoint,
     { mode, ...config }: PointSourcePolygon.TestCollisionOptions<Mode>,
   ): PointSourcePolygon.TestCollision<Mode>;
 
@@ -179,69 +183,67 @@ declare namespace PointSourcePolygon {
     readonly BOTH: 2 & WALL_DIRECTION_MODES;
   }
 
-  /** @internal */
-  type _TestCollisionOptions<Mode extends CollisionModes | undefined> = InexactPartial<{
-    /**
-     * The collision mode to test: "any", "all", or "closest"
-     * @defaultValue `"all"`
-     */
-    mode: Mode;
-  }>;
-
   /**
-   * Properties of the config that get set in `#initialize` or elsewhere with no respect to their passed value
+   * Properties of the config that get set with no respect to their passed value
    * @internal
    */
   interface _ComputedConfig {
     /**
      * Does this polygon have a limited radius?
-     * @remarks `true` if `(cfg.radius > 0) && (cfg.radius < canvas.dimensions.maxR)`
+     * @defaultValue `(cfg.radius > 0) && (cfg.radius < canvas.dimensions.maxR)`
+     * @remarks Set by {@linkcode PointSourcePolygon.initialize | PointSourcePolygon#initialize}
      */
     hasLimitedRadius: boolean;
 
     /**
      * Does this polygon have a limited angle?
-     * @remarks `true` if `cfg.angle !== 360`
+     * @defaultValue `cfg.angle !== 360`
+     * @remarks Set by {@linkcode PointSourcePolygon.initialize | PointSourcePolygon#initialize}
      */
     hasLimitedAngle: boolean;
   }
 
   /**
+   * Properties of the config that might be omitted but can't be explicitly `undefined`
    * @internal
-   * @privateRemarks Properties of the config that might be omitted but can't be explicitly `undefined`
    */
   interface _OptionalOnlyConfig {
     /**
-     * The object (if any) that spawned this polygon.
-     * @remarks Not guaranteed by `PointSourcePolygon#initialize` but will exist in all configs created by `PointEffectSourceMixin` subclasses. No default provided
-     * @privateRemarks Foundry types this as `PointSource` which is neither a typedef nor a class, not even a mixin class name. The type here matches usage and tracks with what they probably meant.
-     */
-    source?: PointEffectSourceMixin.AnyMixed;
-
-    /**
      * The external radius of the source
-     * @remarks Can't be `undefined` or `null` or its use in math would produce `NaN`s.
+     * @remarks Can't be `undefined` or its use in math would produce `NaN`s.
      *
-     * Not guaranteed by `PointSourcePolygon#initialize` but will exist in all configs created by `PointEffectSourceMixin` subclasses.
+     * Not guaranteed by {@linkcode PointSourcePolygon.initialize | PointSourcePolygon#initialize} but will exist in all configs created by {@linkcode PointEffectSourceMixin} subclasses.
      */
     externalRadius?: number;
   }
 
   /**
+   * Properties not guaranteed to exist by {@linkcode PointSourcePolygon.initialize | PointSourcePolygon#initialize}, without restrictions on nullishness
+   */
+  type _InexactConfig = InexactPartial<{
+    /**
+     * The object (if any) that spawned this polygon.
+     * @remarks Not guaranteed by {@linkcode PointSourcePolygon.initialize | PointSourcePolygon#initialize} but will exist in all configs created by {@linkcode PointEffectSourceMixin} subclasses.
+     * @privateRemarks Foundry types this as `PointEffectSource` which is the mixin class name, which isn't exported. The type here matches usage and tracks with what they probably meant.
+     */
+    source?: PointEffectSourceMixin.AnyMixed;
+  }>;
+
+  /**
    * Properties of the config that have defaults for nullish values in `#initialize`, and thus are guaranteed in the stored config
    * @internal
-   * @privateRemarks
    */
   interface _BaseConfig {
     /**
      * A limited radius of the resulting polygon
-     * @defaultValue `canvas.dimensions.maxR`
+     * @defaultValue {@linkcode Canvas.Dimensions.maxR | canvas.dimensions.maxR}
+     * @remarks Will be replaced with `maxR` if passed value is larger
      */
     radius: number;
 
     /**
      * The desired density of padding rays, a number per PI
-     * @defaultValue `PIXI.Circle.approximateVertexDensity(cfg.radius)`
+     * @defaultValue {@linkcode PIXI.Circle.approximateVertexDensity | PIXI.Circle.approximateVertexDensity(cfg.radius)}
      */
     density: number;
 
@@ -258,15 +260,8 @@ declare namespace PointSourcePolygon {
     rotation: number;
 
     /**
-     * Does this polygon use the Scene inner or outer bounding rectangle
-     * @defaultValue `true` if `type === "sight"` and the origin point is inside `canvas.dimensions.sceneRect` else `false`
-     * @remarks Computed if not provided or passed nullish.
-     */
-    useInnerBounds: boolean;
-
-    /**
      * Customize how wall direction of one-way walls is applied
-     * @defaultValue `PointSourcePolygon.WALL_DIRECTION_MODES.NORMAL`
+     * @defaultValue {@linkcode PointSourcePolygon.WALL_DIRECTION_MODES.NORMAL}
      */
     wallDirectionMode: PointSourcePolygon.WALL_DIRECTION_MODES;
 
@@ -277,15 +272,8 @@ declare namespace PointSourcePolygon {
     useThreshold: boolean;
 
     /**
-     * Include edges coming from darkness sources
-     * @defaultValue `false`
-     */
-    includeDarkness: boolean;
-
-    /**
      * Limiting polygon boundary shapes
      * @defaultValue `[]`
-     * @remarks Never passed in Foundry practice
      */
     boundaryShapes: Array<BoundaryShapes>;
 
@@ -303,26 +291,25 @@ declare namespace PointSourcePolygon {
   }
 
   /**
+   * The only property required in all configs
    * @internal
-   * @privateRemarks The only property required in all configs
    */
   interface _RequiredConfig {
     /** The type of polygon being computed */
     type: PolygonType;
   }
 
-  interface StoredConfig extends _RequiredConfig, _BaseConfig, _OptionalOnlyConfig, _ComputedConfig {}
+  interface StoredConfig extends _RequiredConfig, _BaseConfig, _OptionalOnlyConfig, _InexactConfig, _ComputedConfig {}
 
-  interface Config extends _RequiredConfig, InexactPartial<_BaseConfig>, _OptionalOnlyConfig {}
+  interface Config extends _RequiredConfig, InexactPartial<_BaseConfig>, _OptionalOnlyConfig, _InexactConfig {}
 
   type BoundaryShapes = PIXI.Rectangle | PIXI.Circle | PIXI.Polygon;
 
   /**
    * @remarks Foundry comments 'TODO: "universal" will be deprecated in v14'
    *
-   * This is provided as a union of literals, but after the removal of universal, it will
-   * also match the provided keys of {@linkcode CONFIG.Canvas.polygonBackends}, or
-   * {@linkcode CONST.WALL_RESTRICTION_TYPES} plus `"darkness"`
+   * @privateRemarks This is provided as a union of literals, but after the removal of universal, it will also match the provided
+   * keys of {@linkcode CONFIG.Canvas.polygonBackends}, or {@linkcode CONST.WALL_RESTRICTION_TYPES} plus `"darkness"`
    */
   type PolygonType = "light" | "darkness" | "sight" | "sound" | "move" | "universal";
 
@@ -336,6 +323,15 @@ declare namespace PointSourcePolygon {
      */
     type: CONST.WALL_RESTRICTION_TYPES;
   }
+
+  /** @internal */
+  type _TestCollisionOptions<Mode extends CollisionModes | undefined> = InexactPartial<{
+    /**
+     * The collision mode to test: "any", "all", or "closest"
+     * @defaultValue `"all"`
+     */
+    mode: Mode;
+  }>;
 
   interface TestCollisionOptions<Mode extends CollisionModes | undefined = undefined>
     extends _TestCollisionOptions<Mode>,
