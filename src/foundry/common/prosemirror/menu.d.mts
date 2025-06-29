@@ -43,7 +43,7 @@ declare class ProseMirrorMenu extends ProseMirrorPlugin {
   /**
    * Additional options to configure the plugin's behaviour.
    */
-  options: Required<ProseMirrorMenu.ConstructionOptions>;
+  options: ProseMirrorMenu.ConstructionOptions;
 
   /**
    * The dropdowns configured for this menu.
@@ -246,39 +246,42 @@ declare namespace ProseMirrorMenu {
 
   interface ToggleTextBlockOptions extends _Attrs {}
 
-  interface Item {
+  /** @internal */
+  type _Item = InexactPartial<{
+    /** An optional class to apply to the menu item. */
+    class: string;
+
+    /** An optional style to apply to the title text. */
+    style: string;
+
+    /** The menu item's icon HTML. */
+    icon: string;
+
+    /** The mark to apply to the selected text. */
+    mark: MarkType;
+
+    /** The node to wrap the selected text in. */
+    node: NodeType;
+
+    /** An object of attributes for the node or mark. */
+    attrs: Attrs;
+
+    /** A numeric priority which determines whether this item is displayed as the dropdown title. Lower priority takes precedence. */
+    priority: number;
+
+    /** The command to run when the menu item is clicked. */
+    cmd: ProseMirrorKeyMaps.Command;
+
+    /** Whether the current item is active under the given selection or cursor. (default: `false`) */
+    active: boolean;
+  }>;
+
+  interface Item extends _Item {
     /** A string identifier for this menu item. */
     action: string;
 
     /** The description of the menu item. */
     title: string;
-
-    /** An optional class to apply to the menu item. */
-    class?: string;
-
-    /** An optional style to apply to the title text. */
-    style?: string;
-
-    /** The menu item's icon HTML. */
-    icon?: string;
-
-    /** The mark to apply to the selected text. */
-    mark?: MarkType;
-
-    /** The node to wrap the selected text in. */
-    node?: NodeType;
-
-    /** An object of attributes for the node or mark. */
-    attrs?: Attrs; // object
-
-    /** A numeric priority which determines whether this item is displayed as the dropdown title. Lower priority takes precedence. */
-    priority?: number;
-
-    /** The command to run when the menu item is clicked. */
-    cmd?: ProseMirrorKeyMaps.Command;
-
-    /** Whether the current item is active under the given selection or cursor. (default: `false`) */
-    active?: boolean;
   }
 
   /**

@@ -11,9 +11,13 @@ declare class ImageNode extends SchemaDefinition {
 
   static override getAttrs(el: HTMLImageElement): SchemaDefinition.GetAttrsReturn;
 
-  static override toDOM(node: Node): [string, Attrs];
+  static override toDOM(node: Node): ImageNode.ToDOMReturn;
 
   static override make(): NodeSpec;
+}
+
+declare namespace ImageNode {
+  type ToDOMReturn = [string, Attrs];
 }
 
 export default ImageNode;

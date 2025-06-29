@@ -29,7 +29,7 @@ declare class ImageLinkNode extends SchemaDefinition {
 }
 
 declare namespace ImageLinkNode {
-  type ToDOMReturn = [...ReturnType<typeof LinkMark.toDOM>, ReturnType<typeof ImageNode.toDOM>];
+  type ToDOMReturn = [...LinkMark.ToDOMReturn, ImageNode.ToDOMReturn];
 }
 
 export default ImageLinkNode;

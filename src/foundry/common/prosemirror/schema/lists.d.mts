@@ -1,9 +1,8 @@
-import type { RequiredProps } from "#utils";
 import type { NodeSpec } from "prosemirror-model";
 
-export declare const ol: RequiredProps<NodeSpec, "content" | "managed" | "group" | "attrs" | "parseDOM" | "toDOM">;
+export declare const ol: NodeSpec;
 
-export declare const ul: RequiredProps<NodeSpec, "content" | "group" | "parseDOM" | "toDOM">;
+export declare const ul: NodeSpec;
 
 /**
  * ProseMirror enforces a stricter subset of HTML where block and inline content cannot be mixed. For example, the
@@ -31,6 +30,6 @@ export declare const ul: RequiredProps<NodeSpec, "content" | "group" | "parseDOM
  * We can address this by hooking into the DOM parsing and 'tagging' the extra paragraph elements inserted this way so
  * that when the contents are serialized again, they can be removed. This is left as a TODO for now.
  */
-export declare const li: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
+export declare const li: NodeSpec;
 
-export declare const liText: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
+export declare const liText: NodeSpec;

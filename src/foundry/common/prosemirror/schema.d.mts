@@ -1,7 +1,8 @@
-import type { Schema } from "prosemirror-model";
-// splitListItem is set as the handler for the `list_item` node on the schema
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { splitListItem } from "prosemirror-schema-list";
+// Several imports are just used for links in this file
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import type { NodeSpec, Schema } from "prosemirror-model";
+// splitListItem is set as the handler for the `list_item` node on the schema but isn't used in an externally visible way
+// import type { splitListItem } from "prosemirror-schema-list";
 import type {
   paragraph,
   blockquote,
@@ -71,21 +72,29 @@ import type LinkMark from "./schema/link-mark.d.mts";
 import type ImageLinkNode from "./schema/image-link-node.d.mts";
 import type SecretNode from "./schema/secret-node.d.mts";
 // AttributeCapture#attributeCapture is used as a bound handler for all nodes and marks
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type AttributeCapture from "./schema/attribute-capture.d.mts";
+// import type AttributeCapture from "./schema/attribute-capture.d.mts";
+import type { Identity } from "#utils";
 
-export declare const nodes: {
+export declare const nodes: Nodes;
+
+interface Nodes extends Identity<typeof builtInTableNodes> {
   // Core Nodes.
-  doc: { content: string };
-  text: { group: string };
+  doc: Doc;
+  text: Text;
   paragraph: typeof paragraph;
   blockquote: typeof blockquote;
-  secret: ReturnType<typeof SecretNode.make>;
+
+  /** @remarks See{@linkcode SecretNode.make} */
+  secret: NodeSpec;
   horizontal_rule: typeof horizontal_rule;
   heading: typeof heading;
   code_block: typeof code_block;
-  image_link: ReturnType<typeof ImageLinkNode.make>;
-  image: ReturnType<typeof ImageNode.make>;
+
+  /** @remarks See {@linkcode ImageLinkNode.make} */
+  image_link: NodeSpec;
+
+  /** @remarks See {@linkcode ImageNode.make} */
+  image: NodeSpec;
   hard_break: typeof hard_break;
 
   // Lists.
@@ -108,11 +117,7 @@ export declare const nodes: {
   table_header_complex: typeof table_header_complex;
   table_cell_complex_block: typeof table_cell_complex_block;
   table_header_complex_block: typeof table_header_complex_block;
-  // ...(typeof builtInTableNodes):
-  table: (typeof builtInTableNodes)["table"];
-  table_cell: (typeof builtInTableNodes)["table_cell"];
-  table_header: (typeof builtInTableNodes)["table_header"];
-  table_row: (typeof builtInTableNodes)["table_row"];
+  // ...(typeof builtInTableNodes): handled with & at the
 
   // Misc.
   details: typeof details;
@@ -136,19 +141,33 @@ export declare const nodes: {
   rp: typeof rp;
   rt: typeof rt;
   iframe: typeof iframe;
-};
+}
 
-export declare const marks: {
+interface Doc {
+  /** @defaultValue `"block+"` */
+  content: string;
+}
+
+interface Text {
+  /** @defaultValue `"inline"` */
+  group: string;
+}
+
+export declare const marks: Marks;
+
+interface Marks {
   superscript: typeof superscript;
   subscript: typeof subscript;
   span: typeof span;
   font: typeof font;
-  link: ReturnType<typeof LinkMark.make>;
+
+  /** @remarks See {@linkcode LinkMark.make} */
+  link: NodeSpec;
   em: typeof em;
   strong: typeof strong;
   underline: typeof underline;
   strikethrough: typeof strikethrough;
   code: typeof code;
-};
+}
 
 export declare const schema: Schema<keyof typeof nodes, keyof typeof marks>;

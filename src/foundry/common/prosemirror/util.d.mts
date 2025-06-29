@@ -38,7 +38,7 @@ declare namespace serializeHTMLString {
      * The number of spaces to use for indentation. See {@link _StringNode.toString | `StringNode#toString`} for details.
      * @defaultValue `0`
      */
-    spaces?: string | number;
+    spaces: string | number;
   }>;
 
   interface Options extends _Options {}

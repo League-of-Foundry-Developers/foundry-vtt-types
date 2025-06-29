@@ -1,4 +1,13 @@
-import type { MarkSpec, Node, NodeSpec, AttributeSpec, DOMOutputSpec, TagParseRule } from "prosemirror-model";
+import type {
+  MarkSpec,
+  Node,
+  NodeSpec,
+  AttributeSpec,
+  // DOMOutputSpec only used for link
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  DOMOutputSpec,
+  TagParseRule,
+} from "prosemirror-model";
 
 /**
  * An abstract interface for a ProseMirror schema definition
@@ -42,8 +51,8 @@ declare abstract class SchemaDefinition {
 }
 
 declare namespace SchemaDefinition {
-  /** @privateRemarks just to show provenance */
-  type DOMOutputSpecTuple = Extract<DOMOutputSpec, readonly [string, ...any[]]>;
+  /** @remarks A member of the {@linkcode DOMOutputSpec} union with `any` changed to `unknown` */
+  type DOMOutputSpecTuple = [string, ...unknown[]];
 
   /**
    * @privateRemarks `Record<string, any> | false | null`, vs Foundry's `object|boolean`

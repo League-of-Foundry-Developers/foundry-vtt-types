@@ -33,14 +33,18 @@ import { columnResizing, tableEditing } from "prosemirror-tables";
 import DOMParser from "./dom-parser.mjs";
 import ProseMirrorPasteTransformer from "./paste-transformer.mjs";
 
-declare const dom: {
+declare const dom: Dom;
+
+interface Dom {
   parser: DOMParser;
   serializer: DOMSerializer;
   parseString: typeof parseHTMLString;
   serializeString: typeof serializeHTMLString;
-};
+}
 
-declare const defaultPlugins: {
+declare const defaultPlugins: DefaultPlugins;
+
+interface DefaultPlugins {
   inputRules: ReturnType<typeof ProseMirrorInputRules.build>;
   keyMaps: ReturnType<typeof ProseMirrorKeyMaps.build>;
   menu: ReturnType<typeof ProseMirrorMenu.build>;
@@ -53,7 +57,7 @@ declare const defaultPlugins: {
   history: ReturnType<typeof history>;
   columnResizing: ReturnType<typeof columnResizing>;
   tables: ReturnType<typeof tableEditing>;
-};
+}
 
 export * as commands from "prosemirror-commands";
 export * as transform from "prosemirror-transform";

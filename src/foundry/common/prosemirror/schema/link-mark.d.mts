@@ -12,7 +12,7 @@ declare class LinkMark extends SchemaDefinition {
 
   static override getAttrs(el: HTMLLinkElement): SchemaDefinition.GetAttrsReturn;
 
-  static override toDOM(node: Node): [string, Attrs];
+  static override toDOM(node: Node): LinkMark.ToDOMReturn;
 
   static override make(): MarkSpec;
 
@@ -26,6 +26,10 @@ declare class LinkMark extends SchemaDefinition {
    * @remarks Really does unconditionally return `true`, return type is per Foundry
    */
   static onClick(view: EditorView, pos: number, event: PointerEvent, mark: Mark): boolean | void;
+}
+
+declare namespace LinkMark {
+  type ToDOMReturn = [string, Attrs];
 }
 
 export default LinkMark;

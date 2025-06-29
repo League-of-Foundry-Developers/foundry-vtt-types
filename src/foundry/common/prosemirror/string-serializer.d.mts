@@ -68,7 +68,7 @@ declare namespace StringSerializer {
 
   interface SpecToStringNodeReturn {
     outer: StringNode;
-    content?: StringNode;
+    content?: StringNode | undefined;
   }
 }
 
@@ -124,13 +124,13 @@ declare namespace StringNode {
      * @internal
      * @defaultValue `0`
      */
-    _depth?: number;
+    _depth: number;
 
     /**
      * @internal
      * @defaultValue `false`
      */
-    _inlineParent?: boolean;
+    _inlineParent: boolean;
   }>;
 
   interface ToStringOptions extends _ToStringOptions {}

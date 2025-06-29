@@ -1,44 +1,43 @@
-import type { RequiredProps } from "#utils";
 import type { NodeSpec } from "prosemirror-model";
 
-export declare const details: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
+export declare const details: NodeSpec;
 
-export declare const summary: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
+export declare const summary: NodeSpec;
 
-export declare const summaryBlock: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
+export declare const summaryBlock: NodeSpec;
 
-export declare const dl: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
+export declare const dl: NodeSpec;
 
-export declare const dt: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
+export declare const dt: NodeSpec;
 
-export declare const dd: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
+export declare const dd: NodeSpec;
 
-export declare const fieldset: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
+export declare const fieldset: NodeSpec;
 
-export declare const legend: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
+export declare const legend: NodeSpec;
 
-export declare const picture: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
+export declare const picture: NodeSpec;
 
-export declare const audio: RequiredProps<NodeSpec, "content" | "group" | "parseDOM" | "toDOM">;
+export declare const audio: NodeSpec;
 
-export declare const video: RequiredProps<NodeSpec, "content" | "group" | "parseDOM" | "toDOM">;
+export declare const video: NodeSpec;
 
-export declare const track: RequiredProps<NodeSpec, "parseDOM" | "toDOM">;
+export declare const track: NodeSpec;
 
-export declare const source: RequiredProps<NodeSpec, "parseDOM" | "toDOM">;
+export declare const source: NodeSpec;
 
-export declare const object: RequiredProps<NodeSpec, "inline" | "group" | "parseDOM" | "toDOM">;
+export declare const object: NodeSpec;
 
-export declare const figure: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
+export declare const figure: NodeSpec;
 
-export declare const figcaption: RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">;
+export declare const figcaption: NodeSpec;
 
-export declare const small: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
+export declare const small: NodeSpec;
 
-export declare const ruby: RequiredProps<NodeSpec, "content" | "group" | "defining" | "parseDOM" | "toDOM">;
+export declare const ruby: NodeSpec;
 
-export declare const rp: RequiredProps<NodeSpec, "content" | "parseDOM" | "toDOM">;
+export declare const rp: NodeSpec;
 
-export declare const rt: RequiredProps<NodeSpec, "content" | "parseDOM" | "toDOM">;
+export declare const rt: NodeSpec;
 
-export declare const iframe: RequiredProps<NodeSpec, "attrs" | "managed" | "group" | "defining" | "parseDOM" | "toDOM">;
+export declare const iframe: NodeSpec;

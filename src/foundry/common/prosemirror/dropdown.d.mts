@@ -73,7 +73,7 @@ declare namespace ProseMirrorDropDown {
 
   interface Entry extends ProseMirrorMenu.Item {
     /** Any child entries. */
-    children?: Entry[];
+    children?: Entry[] | undefined;
   }
 
   interface Config {
@@ -87,7 +87,7 @@ declare namespace ProseMirrorDropDown {
      * An optional icon to use instead of a text label.
      * @remarks Takes the form of an HTML string, e.g `'<i class="fa-solid fa-table fa-fw"></i>'`
      */
-    icon?: string;
+    icon?: string | undefined;
 
     /** The drop-down entries. */
     entries: Entry[];
