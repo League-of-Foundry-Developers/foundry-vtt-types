@@ -132,6 +132,8 @@ expectTypeOf(myToken.texture).toEqualTypeOf<
   foundry.data.fields.SchemaField.InitializedData<foundry.data.TextureData.Schema>
 >();
 
+// deprecated since v13 until v15
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myToken.hexagonalShape).toEqualTypeOf<CONST.TOKEN_HEXAGONAL_SHAPES>();
 expectTypeOf(myToken.x).toBeNumber();
 expectTypeOf(myToken.y).toBeNumber();

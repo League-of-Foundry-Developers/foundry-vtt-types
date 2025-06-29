@@ -700,7 +700,7 @@ declare namespace Canvas {
    * A 2D point, expressed as `{x, y}`
    * @remarks Copied from `common/_types.mjs`
    */
-  type Point = { x: number; y: number };
+  interface Point { x: number; y: number }
 
   /**
    * A 3D point, expressed as `{x, y, elevation}`.

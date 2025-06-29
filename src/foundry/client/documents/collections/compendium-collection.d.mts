@@ -307,7 +307,7 @@ declare class CompendiumCollection<
 
   // Note(LukeAbby): The override for `updateAll` and `_onModifyContents` become unreasonably long and don't add any changes and so has been omitted.
 
-  override render(force?: boolean, options?: Application.Options | ApplicationV2.RenderOptions): void;
+  override render(force?: boolean, options?: foundry.appv1.api.Application.Options | ApplicationV2.RenderOptions): void;
 
   /**
    * Handle changes to the world compendium configuration setting.

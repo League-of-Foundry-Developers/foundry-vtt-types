@@ -1220,7 +1220,7 @@ declare namespace TokenDocument {
 
     /**
      * Consider movement history? If true, uses the current movement history. If waypoints are passed, uses those as the history.
-     * @defaultValue: `false`
+     * @defaultValue `false`
      * @remarks marked by foundry as readonly
      */
     history: boolean | TokenDocument.MeasuredMovementWaypoint[];
@@ -1495,7 +1495,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   /**
    * The movement continuation state of this Token document.
    * @internal
-   * @defaultValue ```js
+   * @defaultValue 
+   * ```js
    * {
    *   movementId: "",
    *   continueCounter: 0,
@@ -1833,12 +1834,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   /**
    * Are these changes moving the Token?
-   * @overload
-   * @param changes - The (candidate) changes
-   */
-  /**
+   * OR
    * Are these changes moving the Token from the given origin?
-   * @overload
    * @param changes - The (candidate) changes
    * @param origin  - The origin
    * @returns Is movement?
@@ -1892,7 +1889,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param data   - The position and dimensions. Defaults to the values of the document source.
    * @returns Is inside the Region?
    */
-  testInsideRegion(region: RegionDocument, data?: TokenDocument.Dimensions3D): boolean;
+  testInsideRegion(region: RegionDocument.Implementation, data?: TokenDocument.Dimensions3D): boolean;
 
   /**
    * Split the Token movement path through the Region into its segments.
@@ -1918,7 +1915,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @returns The movement split into its segments
    */
   segmentizeRegionMovementPath(
-    region: RegionDocument,
+    region: RegionDocument.Implementation,
     waypoints: TokenDocument.SegmentizeMovementWaypoint[],
   ): RegionDocument.MovementSegment[];
 

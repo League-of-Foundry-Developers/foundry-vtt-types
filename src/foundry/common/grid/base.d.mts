@@ -171,7 +171,7 @@ declare abstract class BaseGrid {
        * The function that returns the cost for a given move between
        * grid spaces (default is the distance traveled along the direct path)
        */
-      cost: BaseGrid.MeasurePathCostFunction;
+      cost: BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
     }>,
   ): BaseGrid.MeasurePathResult;
 
@@ -189,7 +189,7 @@ declare abstract class BaseGrid {
        * The function that returns the cost for a given move between
        * grid spaces (default is the distance traveled along the direct path)
        */
-      cost: BaseGrid.MeasurePathCostFunction;
+      cost: BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
     }>,
     result: BaseGrid.MeasurePathResult,
   ): void;
@@ -543,10 +543,7 @@ declare namespace BaseGrid {
     thickness?: number | undefined;
   }
 
-  /**
-   * @deprecated in favor of {@linkcode Offset2D}
-   */
-  interface Offset extends Offset2D {}
+  type Offset = Offset2D | Offset3D;
 
   /**
    * 2D offset coordinates of a grid space.
@@ -571,10 +568,7 @@ declare namespace BaseGrid {
 
   type OffsetRange = [i0: number, j0: number, i1: number, j1: number];
 
-  /**
-   * @deprecated in favor of {@linkcode Coordinates2D}
-   */
-  type Coordinates = Coordinates2D;
+  type Coordinates = Coordinates2D | Coordinates3D;
 
   type Coordinates2D = Offset2D | Canvas.Point;
 

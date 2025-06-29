@@ -76,6 +76,9 @@ expectTypeOf(chat.applyRollMode("custom-roll-mode")).toEqualTypeOf<void>();
 chat.applyRollMode("unknown-roll-mode");
 
 expectTypeOf(chat.getRollData()).toEqualTypeOf<AnyObject>();
+
+// deprecated since v13 until v15
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(chat.getHTML()).toEqualTypeOf<Promise<JQuery>>();
 expectTypeOf(chat.export()).toEqualTypeOf<string>();
 

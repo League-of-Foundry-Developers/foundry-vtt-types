@@ -361,10 +361,7 @@ declare namespace HexagonalGrid {
     even: boolean;
   }
 
-  /**
-   * @deprecated in favor of {@linkcode Cube2D}
-   */
-  interface Cube extends Cube2D {}
+  type Cube = Cube2D | Cube3D;
 
   /**
    * 2D cube coordinates in a hexagonal grid. q + r + s = 0.
@@ -396,7 +393,7 @@ declare namespace HexagonalGrid {
     k: number;
   }
 
-  interface Offset extends BaseGrid.Offset {}
+  type Offset = BaseGrid.Offset;
 
   interface OffsetRange extends BaseGrid.OffsetRange {}
 
@@ -423,7 +420,7 @@ declare namespace HexagonalGrid {
 
   interface MeasurePathResult extends BaseGrid.MeasurePathResult {}
 
-  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction;
+  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
 
   interface Dimensions extends BaseGrid.Dimensions {}
 }

@@ -618,7 +618,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * Track the Token documents that this User is currently moving.
    * @remarks foundry marks as `@readonly`
    */
-  movingTokens: Set<TokenDocument>;
+  movingTokens: Set<TokenDocument.Implementation>;
 
   /**
    * A flag for whether the current User is a Trusted Player
@@ -655,7 +655,9 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * to this User.
    * @example
    * // Is the current User the designated User to create Tokens?
+   * ```js
    * const isDesignated = game.user.isDesignated(user => user.active && user.can("TOKEN_CREATE"));
+   * ```
    * @param condition - The condition the Users must satisfy
    * @returns Is designated User?
    */

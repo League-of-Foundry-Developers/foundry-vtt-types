@@ -937,7 +937,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param user      - The User that deleted the Tokens
    */
   protected static _onDeleteTokens(
-    tokens: TokenDocument[],
+    tokens: TokenDocument.Implementation[],
     operation: Combat.Database.DeleteOperation,
     user: User.Implementation,
   ): void;

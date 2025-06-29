@@ -3602,7 +3602,7 @@ declare global {
          * Token can be set to this movement action by the User via the UI and when cycling.
          * @defaultValue `() => true`
          */
-        canSelect: (token: TokenDocument | foundry.data.PrototypeToken) => boolean;
+        canSelect: (token: TokenDocument.Implementation | foundry.data.PrototypeToken) => boolean;
 
         /**
          * If set, this function is used to derive the terrain difficulty from from nonderived difficulties,
@@ -3617,7 +3617,7 @@ declare global {
          * @defaultValue `() => cost => cost`
          */
         getCostFunction: (
-          token: TokenDocument,
+          token: TokenDocument.Implementation,
           options: foundry.canvas.placeables.Token.MeasureMovementPathOptions,
         ) => MovementActionCostFunction;
       }

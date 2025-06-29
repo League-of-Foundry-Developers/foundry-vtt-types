@@ -48,7 +48,7 @@ declare class Gridless extends BaseGrid {
 declare namespace Gridless {
   interface Configuration extends BaseGrid.Configuration {}
 
-  interface Offset extends BaseGrid.Offset {}
+  type Offset = BaseGrid.Offset;
 
   interface OffsetRange extends BaseGrid.OffsetRange {}
 

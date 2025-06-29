@@ -70,7 +70,7 @@ expectTypeOf(ruler["_addWaypoint"](somePoint)).toBeVoid();
 expectTypeOf(ruler["_addWaypoint"](somePoint, {})).toBeVoid();
 expectTypeOf(ruler["_addWaypoint"](somePoint, { snap: null })).toBeVoid();
 
-expectTypeOf(ruler["_getCostFunction"]()).toEqualTypeOf<foundry.grid.BaseGrid.MeasurePathCostFunction | void>();
+expectTypeOf(ruler["_getCostFunction"]()).toEqualTypeOf<foundry.grid.BaseGrid.MeasurePathCostFunction2D | foundry.grid.BaseGrid.MeasurePathCostFunction3D | void>();
 expectTypeOf(ruler["_computeDistance"]()).toBeVoid();
 
 declare const fullRulerSegment: Ruler.MeasurementSegment;

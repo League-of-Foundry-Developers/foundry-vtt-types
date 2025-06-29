@@ -68,7 +68,7 @@ declare namespace SquareGrid {
     diagonals: number;
   }
 
-  interface Offset extends BaseGrid.Offset {}
+  type Offset = BaseGrid.Offset;
 
   interface OffsetRange extends BaseGrid.OffsetRange {}
 

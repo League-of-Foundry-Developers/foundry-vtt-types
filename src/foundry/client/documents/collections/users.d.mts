@@ -42,11 +42,13 @@ declare class Users extends foundry.documents.abstract.WorldCollection<"User", "
    * Qualifying Users aren't necessary active Users unless it is part of the condition.
    * @example
    * // Get the designated User for creating Tokens that is active
+   * ```js
    * const user = game.users.getDesignatedUser(user => user.active && user.can("TOKEN_CREATE"));
+   * ```
    * @param condition - The condition the Users must satisfy
    * @returns The designated User or `null`
    */
-  getDesignatedUser(condition: (user: User) => boolean): User | null;
+  getDesignatedUser(condition: (user: User.Implementation) => boolean): User.Implementation | null;
 
   /** @remarks This is not marked as protected because it is used in {@link Game.activateSocketListeners | `Game#activateSocketListeners`} */
   static _activateSocketListeners(socket: io.Socket): void;

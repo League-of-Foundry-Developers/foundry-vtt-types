@@ -212,6 +212,7 @@ expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: null }
 // migrateData and shimData overridden with no signature changes
 
 // deprecated since v12 until v14
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(fullTestAE.icon).toEqualTypeOf<string | null | undefined>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 fullTestAE.icon = "path/to/tex.png";

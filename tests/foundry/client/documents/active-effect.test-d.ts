@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject, JSONValue } from "../../../../src/utils/index.d.mts";
+import type { AnyMutableObject } from "../../../../src/utils/index.d.mts";
 
 import DataModel = foundry.abstract.DataModel;
 import Document = foundry.abstract.Document;
@@ -191,10 +191,6 @@ effect.sourceName = "foo";
 expectTypeOf(effect.apply(someActor, change)).toEqualTypeOf<AnyMutableObject>();
 expectTypeOf(effect["_applyLegacy"](someActor, change, {})).toBeVoid();
 
-expectTypeOf(effect["_castDelta"]("7", "number")).toEqualTypeOf<JSONValue>();
-expectTypeOf(effect["_castArray"](`["foo", 7, "bar"]`, "string")).toEqualTypeOf<Array<JSONValue>>();
-expectTypeOf(effect["_parseOrString"](`{ "foo": undefined, "bar": "invalidJSON", }`)).toEqualTypeOf<JSONValue>();
-
 expectTypeOf(effect["_applyAdd"](someActor, change, 5, 1, {})).toBeVoid();
 expectTypeOf(effect["_applyMultiply"](someActor, change, 2, 4, {})).toBeVoid();
 expectTypeOf(effect["_applyOverride"](someActor, change, "foo", "bar", {})).toBeVoid();
@@ -204,10 +200,6 @@ expectTypeOf(effect["_applyCustom"](someActor, change, { baz: 17 }, { fizz: fals
 // getFlag override has no type changes, handled in BaseActiveEffect tests
 
 expectTypeOf(effect["_displayScrollingStatus"](true)).toBeVoid();
-
-// deprecated since v11 until v13
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(effect._getSourceName()).toEqualTypeOf<Promise<string>>();
 
 // ClientDocument instance override(s)
 

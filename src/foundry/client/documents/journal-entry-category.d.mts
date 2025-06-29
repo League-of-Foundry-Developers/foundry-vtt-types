@@ -13,7 +13,11 @@ declare namespace JournalEntryCategory {
 
   /**
    * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 
   /**
@@ -373,9 +377,9 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
   ): Promise<JournalEntryCategory.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"JournalEntryCategory">,
-  ): Promise<this | false | null | undefined>;
+      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+      operation?: Document.Database.DeleteOperationForName<"JournalEntryCategory">
+    ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

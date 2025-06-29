@@ -32,7 +32,7 @@ expectTypeOf(user.color).toEqualTypeOf<Color>();
 const queryConfig = { timeout: 100 };
 
 expectTypeOf(user.query("dialog", { type: "confirm", config: { content: "Do thing?" } }, queryConfig)).toEqualTypeOf<
-  Promise<DialogV2.QueryReturn<"confirm", {}>>
+  Promise<DialogV2.QueryReturn<"confirm", object>>
 >();
 
 declare module "fvtt-types/configuration" {

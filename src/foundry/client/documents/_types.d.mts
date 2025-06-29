@@ -83,7 +83,7 @@ type RegionTokenRoundStartEvent = RegionTokenRoundEvent;
 
 type RegionTokenRoundEndEvent = RegionTokenRoundEvent;
 
-type RegionMovementSegment = Region.MovementSegment;
+type RegionMovementSegment = foundry.canvas.placeables.Region.MovementSegment;
 
 type RegionSegmentizeMovementPathWaypoint = RegionDocument.SegmentizeMovementPathWaypoint;
 
@@ -101,7 +101,7 @@ type TokenMovementSegmentData = TokenDocument.MovementSegmentData;
 
 type TokenMeasureMovementPathWaypoint = unknown;
 
-type TokenMeasureMovementPathOptions = Token.MeasureMovementPathOptions;
+type TokenMeasureMovementPathOptions = foundry.canvas.placeables.Token.MeasureMovementPathOptions;
 
 type TokenMovementCostFunction = TokenDocument.MovementCostFunction;
 

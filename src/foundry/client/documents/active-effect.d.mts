@@ -4,7 +4,6 @@ import type {
   InexactPartial,
   IntentionalPartial,
   InterfaceToObject,
-  JSONValue,
   Merge,
   RequiredProps,
 } from "#utils";
