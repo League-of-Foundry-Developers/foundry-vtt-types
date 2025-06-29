@@ -14,7 +14,7 @@ const sound = new CONFIG.AmbientSound.objectClass(doc);
 
 expectTypeOf(sound.controlIcon).toEqualTypeOf<ControlIcon | null>();
 expectTypeOf(sound.sound).toEqualTypeOf<Sound | null | undefined>();
-expectTypeOf(sound.source).toEqualTypeOf<foundry.canvas.sources.PointSoundSource.ConfiguredInstance | undefined>();
+expectTypeOf(sound.source).toEqualTypeOf<foundry.canvas.sources.PointSoundSource.Implementation | undefined>();
 expectTypeOf(sound.field).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(sound["_createSound"]()).toEqualTypeOf<Sound | null>();
 

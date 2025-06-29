@@ -23,7 +23,7 @@ declare class CanvasColorationEffects extends CanvasLayer {
    * The filter used to mask visual effects on this layer
    * @remarks Only `undefined` prior to first draw
    */
-  filter: VisualEffectsMaskingFilter.ImplementationInstance | undefined;
+  filter: VisualEffectsMaskingFilter.Implementation | undefined;
 
   /**
    * Clear coloration effects container

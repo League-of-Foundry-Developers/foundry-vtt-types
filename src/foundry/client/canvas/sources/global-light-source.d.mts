@@ -1,7 +1,8 @@
-import type { FixedInstanceType, Identity } from "#utils";
+import type { FixedInstanceType, Identity, InexactPartial, Override } from "#utils";
 import type BaseLightSource from "./base-light-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
+import type BaseEffectSource from "./base-effect-source.d.mts";
 
 /**
  * A specialized subclass of the BaseLightSource which is used to render global light source linked to the scene.
@@ -9,10 +10,9 @@ import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_modul
 declare class GlobalLightSource<
   SourceData extends GlobalLightSource.SourceData = GlobalLightSource.SourceData,
   SourceShape extends PIXI.Polygon = PIXI.Polygon,
-  RenderingLayers extends Record<string, RenderedEffectSource.SourceLayer> = RenderedEffectSource.Layers,
+  RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = BaseLightSource.Layers,
 > extends BaseLightSource<SourceData, SourceShape, RenderingLayers> {
-  /** @defaultValue `"GlobalLight"` */
-  static override sourceType: string;
+  static override sourceType: "GlobalLight";
 
   /** @defaultValue `"lightSources"` */
   static override effectsCollection: string;
@@ -32,24 +32,28 @@ declare class GlobalLightSource<
    *   darkness: {min: 0, max: 0}
    * }
    * ```
+   * @remarks See {@linkcode BaseLightSource.defaultData}
    */
   static override defaultData: GlobalLightSource.SourceData;
 
-  /** @privateRemarks This class implements `#_createShapes`, so it's shape property will 'never' be undefined (after initialization) */
-  shape: SourceShape;
-
   /**
    * Name of this global light source.
-   * @defaultValue `this.constructor.sourceType` (`"GlobalLight"`)
+   * @defaultValue {@linkcode GlobalLightSource.sourceType | this.constructor.sourceType}
    */
   name: string;
 
   /**
    * A custom polygon placeholder.
    * @defaultValue `null`
-   * @remarks This is not set anywhere in Foundry code, so will always be null barring system/module/user action
+   * @remarks This is not set anywhere in Foundry code, so will always be `null` barring system/module/user action
    */
   customPolygon: PIXI.Polygon | number[] | null;
+
+  /** @privateRemarks Fake override to specify Initialized return type */
+  override initialize(
+    data?: InexactPartial<SourceData>,
+    options?: BaseEffectSource.InitializeOptions,
+  ): GlobalLightSource.Initialized<SourceData, SourceShape, RenderingLayers>;
 
   protected override _createShapes(): void;
 
@@ -64,14 +68,26 @@ declare namespace GlobalLightSource {
   interface Any extends AnyGlobalLightSource {}
   interface AnyConstructor extends Identity<typeof AnyGlobalLightSource> {}
 
+  type Initialized<
+    SourceData extends GlobalLightSource.SourceData = GlobalLightSource.SourceData,
+    SourceShape extends PIXI.Polygon = PIXI.Polygon,
+    RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = BaseLightSource.Layers,
+  > = Override<
+    GlobalLightSource<SourceData, SourceShape, RenderingLayers>,
+    {
+      /**
+       * The geometric shape of the effect source which is generated later.
+       * @remarks This is the initialized type, the shape has been generated if you're accessing this
+       */
+      shape: SourceShape | number[];
+    }
+  >;
+
   /**
    * @privateRemarks `attenuation`, `priority`, and `elevation` exist in the parent interface,
    * but are here for defaultValue overrides
    */
   interface SourceData extends BaseLightSource.SourceData {
-    /** @privateRemarks Type override only, the global light is not going to use a `darknessShader` */
-    animation: RenderedEffectSource.StoredLightAnimationConfig;
-
     /**
      * @defaultValue `0`
      * @remarks Seemingly unused here, since `GlobalLightSource` does not inherit from `PointEffectSourceMixin`
@@ -87,7 +103,10 @@ declare namespace GlobalLightSource {
     /** @defaultValue `0` */
     attenuation: number;
 
-    /** @defaultValue `-Infinity` */
+    /**
+     * @defaultValue `-Infinity`
+     * @remarks Seemingly unused here, since `GlobalLightSource` does not inherit from `PointEffectSourceMixin`
+     */
     priority: number;
 
     // `vision` override omitted as it doesn't change the default

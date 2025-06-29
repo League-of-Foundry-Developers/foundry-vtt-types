@@ -1,44 +1,19 @@
-export declare const em: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+import type { MarkSpec } from "prosemirror-model";
 
-export declare const strong: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const em: MarkSpec;
 
-export declare const code: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const strong: MarkSpec;
 
-export declare const underline: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, Record<string, string>, number];
-};
+export declare const code: MarkSpec;
 
-export declare const strikethrough: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const underline: MarkSpec;
 
-export declare const superscript: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const strikethrough: MarkSpec;
 
-export declare const subscript: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const superscript: MarkSpec;
 
-export declare const span: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const subscript: MarkSpec;
 
-export declare const font: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, Record<string, string>];
-};
+export declare const span: MarkSpec;
+
+export declare const font: MarkSpec;

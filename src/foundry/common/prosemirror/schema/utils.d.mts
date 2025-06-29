@@ -1,3 +1,5 @@
+// None of these functions ever get re-exported, they're only used within `prosemirror/schema/**`
+
 /**
  * Determine if an HTML element contains purely inline content, i.e. only text nodes and 'mark' elements.
  * @param element - The element.
@@ -14,7 +16,7 @@ export declare function isElementEmpty(element: HTMLElement): boolean;
  * Convert an element's style attribute string into an object.
  * @param str - The style string.
  */
-export declare function stylesFromString(str: string): Record<string, unknown>;
+export declare function stylesFromString(str: string): Record<string, string>;
 
 /**
  * Merge two style attribute strings.

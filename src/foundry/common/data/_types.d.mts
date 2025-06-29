@@ -27,7 +27,7 @@ type CodeMirrorLanguage = unknown;
 
 type CodeMirrorInputConfig = unknown;
 
-type LightAnimationData = unknown;
+type LightAnimationData = foundry.data.LightData.AnimationData;
 
 type NumberFieldOptions = fields.NumberField.Options;
 

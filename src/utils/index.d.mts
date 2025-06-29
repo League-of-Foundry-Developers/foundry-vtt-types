@@ -536,7 +536,7 @@ export type AllKeysOf<T extends object> = T extends unknown ? keyof T : never;
  * @internal
  */
 export type InexactPartial<T extends object> = {
-  [K2 in keyof T]?: T[K2] | undefined;
+  [K in keyof T]?: T[K] | undefined;
 };
 
 /**
@@ -572,7 +572,7 @@ export type InexactPartial<T extends object> = {
  * @internal
  */
 export type NullishProps<T extends object> = {
-  [K2 in keyof T]?: T[K2] | null | undefined;
+  [K in keyof T]?: T[K] | null | undefined;
 };
 
 /**

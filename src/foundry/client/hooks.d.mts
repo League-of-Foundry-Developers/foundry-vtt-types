@@ -1,7 +1,7 @@
 import type { EditorState, Plugin } from "prosemirror-state";
 import type { DeepPartial, EmptyObject, ValueOf } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
-import type { ProseMirrorDropDown } from "#common/prosemirror/menu.d.mts";
+import type { ProseMirrorDropDown } from "#common/prosemirror/_module.d.mts";
 import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
 import type PointVisionSource from "#client/canvas/sources/point-vision-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";

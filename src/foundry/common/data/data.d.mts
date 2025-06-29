@@ -19,6 +19,8 @@ type DataSchema = foundry.data.fields.DataSchema;
 declare namespace LightData {
   type Parent = TokenDocument.Implementation | AmbientLightDocument.Implementation;
 
+  interface AnimationData extends fields.SchemaField.InitializedData<LightAnimationDataSchema> {}
+
   interface LightAnimationDataSchema extends DataSchema {
     /**
      * The animation type which is applied

@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Identity, NullishProps, RequiredProps } from "#utils";
+import type { FixedInstanceType, Identity, InexactPartial, Override, RequiredProps } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
@@ -9,41 +9,63 @@ import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
  */
 declare class PointSoundSource<
   SourceData extends PointSoundSource.SourceData = PointSoundSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointSourcePolygon,
+  SourceShape extends PointSourcePolygon = PointSoundSource.ImplementationPolygon,
 > extends PointEffectSourceMixin(BaseEffectSource)<SourceData, SourceShape> {
-  /** @defaultValue `"sound"` */
-  static override sourceType: string;
-
-  /** @privateRemarks Not in Foundry code, necessary type override */
-  static override defaultData: PointSoundSource.SourceData;
+  static override sourceType: "sound";
 
   /**
-   * @privateRemarks This is not in foundry's code, but since this class (and its parent) implements `_createShapes`,
-   * and we are counting what happens in `initialize` as 'the constructor', this gets to be declared never undefined.
+   * @remarks See {@linkcode PointEffectSourceMixin.AnyMixedConstructor.defaultData | PointEffectSourceMixin.defaultData}
+   * @privateRemarks Fake override to allow merging to this interface but not its parents
    */
-  override shape: SourceShape;
+  static override defaultData: PointSoundSource.SourceData;
 
-  override get effectsCollection(): foundry.utils.Collection<this>;
+  /** @privateRemarks Fake override to remove `number[]` */
+  override shape: SourceShape | undefined;
+
+  /** @privateRemarks Fake override to specify Initialized return type */
+  override initialize(
+    data?: InexactPartial<SourceData>,
+    options?: BaseEffectSource.InitializeOptions,
+  ): PointSoundSource.Initialized<SourceData, SourceShape>;
+
+  override get effectsCollection(): Collection<this>;
 
   override _getPolygonConfiguration(): PointSoundSource.PolygonConfig;
 
   /**
    * Get the effective volume at which an AmbientSound source should be played for a certain listener.
-   * @remarks If `listener` is falsey, returns `0`. If `options.easing` is falsey, returns `1`
    */
-  getVolumeMultiplier(listener?: Canvas.Point | null, options?: PointSoundSource.GetVolumeMultiplierOptions): number;
+  getVolumeMultiplier(listener: Canvas.ElevatedPoint, options?: PointSoundSource.GetVolumeMultiplierOptions): number;
+
+  /**
+   * Get the effective volume at which an AmbientSound source should be played for a certain listener.
+   * @deprecated "PointSoundSource#getVolumeMultiplier({@linkcode Canvas.Point | Point}) has been deprecated in favor of
+   * PointSoundSource#getVolumeMultiplier({@linkcode Canvas.ElevatedPoint | ElevatedPoint})." (since v13, until v15)
+   */
+  getVolumeMultiplier(listener: Canvas.Point, options?: PointSoundSource.GetVolumeMultiplierOptions): number;
 }
 
 declare namespace PointSoundSource {
   interface Any extends AnyPointSoundSource {}
   interface AnyConstructor extends Identity<typeof AnyPointSoundSource> {}
 
+  type Initialized<
+    SourceData extends PointSoundSource.SourceData = PointSoundSource.SourceData,
+    SourceShape extends PointSourcePolygon = PointSoundSource.ImplementationPolygon,
+  > = Override<
+    PointSoundSource<SourceData, SourceShape>,
+    {
+      /**
+       * The geometric shape of the effect source which is generated later.
+       * @remarks This is the initialized type, the shape has been generated if you're accessing this
+       */
+      shape: SourceShape;
+    }
+  >;
+
   /** @internal */
-  type _GetVolumeMultiplierOptions = NullishProps<{
-    /**
-     * @defaultValue `true`
-     * @remarks If `false`, return `1`
-     */
+  type _GetVolumeMultiplierOptions = InexactPartial<{
+    /** @defaultValue `true` */
     easing: boolean;
   }>;
 
@@ -53,12 +75,18 @@ declare namespace PointSoundSource {
 
   interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "useThreshold"> {}
 
-  type ConfiguredClass = CONFIG["Canvas"]["soundSourceClass"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
-}
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["soundSourceClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-declare abstract class AnyPointSoundSource extends PointSoundSource<PointSoundSource.SourceData, PointSourcePolygon> {
-  constructor(...args: never);
+  interface ImplementationPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["sound"]> {}
+  interface ImplementationPolygon extends FixedInstanceType<ImplementationPolygonClass> {}
 }
 
 export default PointSoundSource;
+
+declare abstract class AnyPointSoundSource extends PointSoundSource<
+  PointSoundSource.SourceData,
+  PointSoundSource.ImplementationPolygon
+> {
+  constructor(...args: never);
+}
