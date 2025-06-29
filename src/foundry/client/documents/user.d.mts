@@ -570,7 +570,7 @@ declare namespace User {
 
   type QueryName = keyof typeof CONFIG.queries;
   type QueryData<QueryName extends User.QueryName> = Parameters<(typeof CONFIG.queries)[QueryName]>[0];
-  type QueryReturn<QueryName extends User.QueryName> = ReturnType<(typeof CONFIG.queries)[QueryName]>;
+  type QueryReturn<QueryName extends User.QueryName> = Awaited<ReturnType<(typeof CONFIG.queries)[QueryName]>>;
 
   /**
    * The arguments to construct the document.
@@ -735,7 +735,6 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @param queryOptions - The query options
    * @returns The query result
    */
-  // TODO: should this return be `Promise<Awaited<User.QueryReturn<QueryName>>>`? If so, inline into `QueryReturn`?
   query<QueryName extends User.QueryName>(
     queryName: QueryName,
     queryData: User.QueryData<QueryName>,

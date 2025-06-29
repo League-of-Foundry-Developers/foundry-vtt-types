@@ -590,6 +590,27 @@ declare namespace ChatMessage {
 
   type PassableRollMode = CONST.DICE_ROLL_MODES | "roll";
 
+  /**
+   * These keys are overriden in `ChatMessage#renderHTML`
+   *
+   * @internal
+   */
+  type _SetMessageKey =
+    | "canDelete"
+    | "message"
+    | "user"
+    | "author"
+    | "speakerActor"
+    | "alias"
+    | "cssClass"
+    | "isWhisper"
+    | "whisperTo";
+
+  interface RenderHTMLOptions extends Omit<MessageData, _SetMessageKey> {
+    canDelete?: boolean | undefined;
+    canClose?: boolean | undefined;
+  }
+
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
@@ -742,8 +763,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * Render the HTML for the ChatMessage which should be added to the log
    * @param options - Additional options passed to the Handlebars Template.
    */
-  // TODO: better type `options`
-  renderHTML(options?: { canDelete?: boolean; canClose?: boolean }): Promise<HTMLElement>;
+  renderHTML(options?: ChatMessage.RenderHTMLOptions): Promise<HTMLElement>;
 
   // _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
