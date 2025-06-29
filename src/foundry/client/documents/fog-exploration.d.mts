@@ -1,4 +1,4 @@
-import type { Identity, IntentionalPartial, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type { DatabaseGetOperation } from "#common/abstract/_types.d.mts";
 import type Document from "#common/abstract/document.d.mts";
@@ -330,6 +330,11 @@ declare namespace FogExploration {
      * and {@link FogExploration._onDeleteDescendantDocuments | `FogExploration#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<FogExploration.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode FogExploration.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -356,6 +361,11 @@ declare namespace FogExploration {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /** @internal */
   type _LoadQuery = NullishProps<{
@@ -405,10 +415,9 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
    * @param options    - Additional options passed to DatabaseBackend#get. (default: `{}`)
    * @returns
    */
-  // query: not null (destructured)
   static load(
     query?: FogExploration.LoadQuery,
-    options?: FogExploration.LoadOptions | null,
+    options?: FogExploration.LoadOptions,
   ): Promise<FogExploration.Implementation | null>;
 
   /**
@@ -432,12 +441,6 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
     options: FogExploration.LoadOptions,
   ): Promise<FogExploration.Implementation | null>;
 
-  /**
-   * @deprecated since v11, until v13
-   * @remarks "`explore` is obsolete and always returns `true`. The fog exploration does not record position anymore."
-   */
-  explore(source: unknown, force?: boolean): true;
-
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.
@@ -452,16 +455,21 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
 
   // Descendant Document operations have been left out because FogExploration does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"FogExploration", FogExploration.Parent>): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: FogExploration.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data?: FogExploration.CreateData,
-    context?: Document.CreateDialogContext<"FogExploration", FogExploration.Parent>,
+    data: FogExploration.CreateData | undefined,
+    createOptions: FogExploration.Database.DialogCreateOptions,
+    options?: FogExploration.CreateDialogOptions,
   ): Promise<FogExploration.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"FogExploration">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: FogExploration.DropData,
     options?: FogExploration.DropDataOptions,

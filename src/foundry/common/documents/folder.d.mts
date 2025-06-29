@@ -38,13 +38,21 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
    *   label: "DOCUMENT.Folder",
    *   labelPlural: "DOCUMENT.Folders",
    *   coreTypes: CONST.FOLDER_DOCUMENT_TYPES,
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseFolder.Metadata;
 
   static override defineSchema(): BaseFolder.Schema;
+
+  /** @defaultValue `["DOCUMENT", "FOLDER"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /**
+   * @throws If `data.folder === data._id` (no putting folders inside themselves)
+   */
+  static validateJoint(data: Folder.Source): void;
 
   /**
    * Allow folder sorting modes
@@ -93,7 +101,7 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   override parent: BaseFolder.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Folder.Implementation | Folder.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Folder.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Folder.Implementation, Temporary>>>;
@@ -108,7 +116,7 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
     operation?: Document.Database.DeleteDocumentsOperation<Folder.Database.Delete>,
   ): Promise<Folder.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Folder.CreateData | Folder.CreateData[],
     operation?: Folder.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Folder.Implementation, Temporary> | undefined>;
@@ -210,8 +218,6 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): undefined;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 
@@ -276,12 +282,6 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
   protected static override _schema: SchemaField<Folder.Schema>;
 
   static override get schema(): SchemaField<Folder.Schema>;
-
-  /**
-   * @remarks Actual override, not just part of the template
-   * @throws If `data.folder === data._id` (no putting folders inside themselves)
-   */
-  static validateJoint(data: Folder.Source): void;
 
   // options: not null (parameter default only, destructured in super)
   static override fromSource(source: Folder.CreateData, context?: DataModel.FromSourceOptions): Folder.Implementation;

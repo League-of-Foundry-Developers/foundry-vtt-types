@@ -11,8 +11,6 @@ import type { DataField, SchemaField } from "#common/data/fields.mjs";
 declare abstract class BaseRegionBehavior<
   out SubType extends BaseRegionBehavior.SubType = BaseRegionBehavior.SubType,
 > extends Document<"RegionBehavior", BaseRegionBehavior._Schema, any> {
-  #baseRegionBehavior: true;
-
   /**
    * @param data    - Initial data from which to construct the `BaseRegionBehavior`
    * @param context - Construction context options
@@ -39,6 +37,7 @@ declare abstract class BaseRegionBehavior<
    *     "displayScrollingText",
    *     "executeMacro",
    *     "executeScript",
+   *     "modifyMovementCost",
    *     "pauseGame",
    *     "suppressWeather",
    *     "teleportToken",
@@ -50,13 +49,16 @@ declare abstract class BaseRegionBehavior<
    *     create: this.#canCreate,
    *     update: this.#canUpdate
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseRegionBehavior.Metadata;
 
   static override defineSchema(): BaseRegionBehavior.Schema;
+
+  /** @defaultValue `["DOCUMENT", "BEHAVIOR"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /** @remarks Returns `user.isGM` */
   static override canUserCreate(user: User.Implementation): boolean;
@@ -98,7 +100,7 @@ declare abstract class BaseRegionBehavior<
 
   override parent: BaseRegionBehavior.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<RegionBehavior.Implementation | RegionBehavior.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RegionBehavior.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<RegionBehavior.Implementation, Temporary>>>;
@@ -113,7 +115,7 @@ declare abstract class BaseRegionBehavior<
     operation?: Document.Database.DeleteDocumentsOperation<RegionBehavior.Database.Delete>,
   ): Promise<RegionBehavior.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: RegionBehavior.CreateData | RegionBehavior.CreateData[],
     operation?: RegionBehavior.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<RegionBehavior.Implementation, Temporary> | undefined>;
@@ -219,8 +221,6 @@ declare abstract class BaseRegionBehavior<
     operation: RegionBehavior.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

@@ -1,5 +1,12 @@
 import type { ConfiguredActiveEffect } from "fvtt-types/configuration";
-import type { AnyMutableObject, IntentionalPartial, InterfaceToObject, JSONValue, Merge, RequiredProps } from "#utils";
+import type {
+  AnyMutableObject,
+  InexactPartial,
+  IntentionalPartial,
+  InterfaceToObject,
+  Merge,
+  RequiredProps,
+} from "#utils";
 import type { DataModel } from "#common/abstract/data.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "#common/data/fields.d.mts";
@@ -49,10 +56,16 @@ declare namespace ActiveEffect {
         label: string;
         labelPlural: string;
         schemaVersion: string;
+        permissions: Metadata.Permissions;
       }>
     > {}
 
-  // No need for Metadata namespace
+  namespace Metadata {
+    interface Permissions {
+      create: "OWNER";
+      delete: "OWNER";
+    }
+  }
 
   /**
    * Allowed subtypes of `ActiveEffect`. This is configured through various methods. Modern Foundry
@@ -492,6 +505,11 @@ declare namespace ActiveEffect {
      * and {@link ActiveEffect._onDeleteDescendantDocuments | `ActiveEffect#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<ActiveEffect.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode ActiveEffect.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -623,6 +641,11 @@ declare namespace ActiveEffect {
     ? DataField.InitializedTypeFor<Field>
     : unknown;
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   /**
    * The arguments to construct the document.
    *
@@ -661,7 +684,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @throws An error if there is no status effect in `CONFIG.statusEffects` with the given status ID and if
    * the status has implicit statuses but doesn't have a static _id.
    */
-  // options: not null (parameter default only)
   static fromStatusEffect(
     statusId: string,
     options?: ActiveEffect.ConstructionContext,
@@ -677,7 +699,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    *
    * @remarks Core's implementation doesn't use `statusId`, simply returning `new this(effectData, options)`
    */
-  // options: not null (destructured where forwarded)
   protected static _fromStatusEffect(
     statusId: string,
     effectData: ActiveEffect.CreateData,
@@ -686,7 +707,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   /**
    * Is there some system logic that makes this active effect ineligible for application?
-   * @remarks Core's implementation always returns `false`
+   * @remarks Core's implementation defers to `system.isSuppressed` on a `TypeDataModel`, else `false`. As such all overrides should begin with `if (super.isSuppressed) return true;`
    */
   get isSuppressed(): boolean;
 
@@ -704,8 +725,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    *  Does this Active Effect currently modify an Actor?
    */
   get modifiesActor(): boolean;
-
-  override prepareBaseData(): void;
 
   override prepareDerivedData(): void;
 
@@ -734,7 +753,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @returns The decimal representation
    * @private
    */
-  // nTurns: not null (`!== undefined` check)
   protected _getCombatTime(round: number, turn: number, nTurns?: number): number;
 
   /**
@@ -775,11 +793,10 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   /**
    * Apply this ActiveEffect to a provided Actor.
-   * TODO: This method is poorly conceived. Its functionality is static, applying a provided change to an Actor
-   * TODO: When we revisit this in Active Effects V2 this should become an Actor method, or a static method
    * @param actor  - The Actor to whom this effect should be applied
    * @param change - The change data being applied
    * @returns An object of property paths and their updated values.
+   * @remarks In the future this likely will become either an `Actor` method or a static one
    */
   apply(actor: Actor.Implementation, change: ActiveEffect.ChangeData): AnyMutableObject;
 
@@ -792,31 +809,14 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    */
   protected _applyLegacy(actor: Actor.Implementation, change: ActiveEffect.ChangeData, changes: AnyMutableObject): void;
 
-  /**
-   * Cast a raw ActiveEffect.EffectChangeData change string to the desired data type.
-   * @param raw - The raw string value
-   * @param type - The target data type that the raw value should be cast to match
-   * @returns The parsed delta cast to the target data type
-   * @private
-   * @remarks Core's implementation returns `boolean | number | string` or the return of {@link ActiveEffect._parseOrString | `ActiveEffect#_parseOrString`}
-   */
-  protected _castDelta(raw: string, type: string): JSONValue;
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _castDelta(raw: never, type: never): never;
 
-  /**
-   * Cast a raw ActiveEffect.EffectChangeData change string to an Array of an inner type.
-   * @param raw  - The raw string value
-   * @param type - The target data type of inner array elements
-   * @returns The parsed delta cast as a typed array
-   */
-  protected _castArray(raw: string, type: string): JSONValue[];
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _castArray(raw: never, type: never): never;
 
-  /**
-   * Parse serialized JSON, or retain the raw string.
-   * @param raw - A raw serialized string
-   * @returns The parsed value, or the original value if parsing failed
-   * @remarks Tries to `JSON.parse(raw)`, simply returns `raw` if error
-   */
-  protected _parseOrString(raw: string): JSONValue;
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _parseOrString(raw: never): never;
 
   /**
    * Apply an ActiveEffect that uses an ADD application mode.
@@ -833,7 +833,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @returns The resulting applied value
-   * @private
    * @remarks Core's implementation does not use `actor`
    */
   protected _applyAdd(
@@ -853,7 +852,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @returns The resulting applied value
-   * @private
    * @remarks Core's implementation does not use `actor`
    */
   protected _applyMultiply(
@@ -873,7 +871,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @returns The resulting applied value
-   * @private
    * @remarks Core's implementation does not use `actor` or `current`
    */
   protected _applyOverride(
@@ -893,7 +890,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @returns The resulting applied value
-   * @private
    * @remarks Core's implementation does not use `actor`
    */
   protected _applyUpgrade(
@@ -912,7 +908,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @returns The resulting applied value
-   * @private
    */
   protected _applyCustom(
     actor: Actor.Implementation,
@@ -927,31 +922,13 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    */
   static getInitialDuration(): ActiveEffect.GetInitialDurationReturn;
 
-  /**
-   * @remarks If attempting to set `core.statusId`, logs a compatibility warning:
-   *
-   * "You are setting flags.core.statusId on an Active Effect. This flag is deprecated
-   * in favor of the {@link ActiveEffect.statuses | `statuses`} set."
-   */
-  override getFlag<Scope extends ActiveEffect.Flags.Scope, Key extends ActiveEffect.Flags.Key<Scope>>(
-    scope: Scope,
-    key: Key,
-  ): Document.GetFlag<ActiveEffect.Name, Scope, Key>;
-
-  // _preCreate, _onCreate, _preUpdate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseActiveEffect.
+  // _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseActiveEffect.
 
   /**
    * Display changes to active effects as scrolling Token status text.
    * @param enabled - Is the active effect currently enabled?
    */
   protected _displayScrollingStatus(enabled: boolean): void;
-
-  /**
-   * Get the name of the source of the Active Effect
-   * @deprecated since v11, will be removed in v13
-   * @remarks "You are accessing `ActiveEffect._getSourceName` which is deprecated."
-   */
-  _getSourceName(): Promise<string>;
 
   /*
    * After this point these are not really overridden methods.
@@ -967,18 +944,21 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   // Descendant Document operations have been left out because ActiveEffect does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(
-    context?: Document.DefaultNameContext<"ActiveEffect", NonNullable<ActiveEffect.Parent>>,
-  ): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: ActiveEffect.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data: Document.CreateDialogData<ActiveEffect.CreateData> | undefined,
-    context: Document.CreateDialogContext<"ActiveEffect", NonNullable<ActiveEffect.Parent>>,
+    data: ActiveEffect.CreateDialogData | undefined,
+    createOptions: ActiveEffect.Database.DialogCreateOptions,
+    options?: ActiveEffect.CreateDialogOptions,
   ): Promise<ActiveEffect.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: ActiveEffect.Database.DeleteOperation,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: ActiveEffect.DropData,
     options?: ActiveEffect.DropDataOptions,
@@ -990,6 +970,8 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
   ): Promise<ActiveEffect.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
+  #ActiveEffect: true;
 }
 
 export default ActiveEffect;

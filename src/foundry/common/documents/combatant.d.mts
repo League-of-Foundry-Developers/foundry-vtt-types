@@ -40,10 +40,11 @@ declare abstract class BaseCombatant<
    *   isEmbedded: true,
    *   hasTypeData: true,
    *   permissions: {
-   *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     create: "OWNER",
+   *     update: this.#canUpdate,
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -57,7 +58,7 @@ declare abstract class BaseCombatant<
    * Returns {@link DOCUMENT_OWNERSHIP_LEVELS.OWNER | `OWNER`} if `user.isGM`, otherwise forwards to `this.actor?.getUserLevel(user)`.
    * If thats nullish, returns {@link DOCUMENT_OWNERSHIP_LEVELS.NONE | `NONE`}
    */
-  override getUserLevel(user?: User.Implementation | null): DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): DOCUMENT_OWNERSHIP_LEVELS;
 
   /*
    * After this point these are not really overridden methods.
@@ -96,7 +97,7 @@ declare abstract class BaseCombatant<
 
   override parent: BaseCombatant.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Combatant.Implementation | Combatant.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Combatant.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Combatant.Implementation, Temporary>>>;
@@ -111,7 +112,7 @@ declare abstract class BaseCombatant<
     operation?: Document.Database.DeleteDocumentsOperation<Combatant.Database.Delete>,
   ): Promise<Combatant.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Combatant.CreateData | Combatant.CreateData[],
     operation?: Combatant.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Combatant.Implementation, Temporary> | undefined>;
@@ -214,8 +215,6 @@ declare abstract class BaseCombatant<
     operation: Combatant.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

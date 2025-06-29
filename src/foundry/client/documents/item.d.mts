@@ -2,7 +2,7 @@ import type { ConfiguredItem } from "fvtt-types/configuration";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { AnyObject, Merge } from "#utils";
+import type { AnyObject, InexactPartial, Merge } from "#utils";
 import type BaseItem from "#common/documents/item.mjs";
 
 import fields = foundry.data.fields;
@@ -68,7 +68,8 @@ declare namespace Item {
      * The permissions for whether a certain user can create, update, or delete this document.
      */
     interface Permissions {
-      create: "ITEM_CREATE";
+      create(user: User.Internal.Implementation, doc: Implementation, data: CreateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -312,7 +313,7 @@ declare namespace Item {
     }>;
 
     /**
-     * The system data object which is defined by the system template.json model
+     * Data for an Item subtype, defined by a System or Module
      * @defaultValue `{}`
      */
     system: fields.TypeDataField<typeof documents.BaseItem>;
@@ -452,6 +453,11 @@ declare namespace Item {
      * and {@link Item._onDeleteDescendantDocuments | `Item#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Item.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Item.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -478,6 +484,11 @@ declare namespace Item {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
     Item.Stored,
@@ -696,16 +707,19 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    */
   protected override _onDeleteDescendantDocuments(...args: Item.OnDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Item", Item.Parent>): string;
+  static override defaultName(context?: Item.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<Item.CreateData>,
-    context?: Document.CreateDialogContext<"Item", Item.Parent>,
+    data?: Item.CreateDialogData,
+    createOptions?: Item.Database.DialogCreateOptions,
+    options?: Item.CreateDialogOptions,
   ): Promise<Item.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Item">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: Item.DropData,
     options?: Item.DropDataOptions,

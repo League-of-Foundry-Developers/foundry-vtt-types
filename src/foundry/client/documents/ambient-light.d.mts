@@ -1,4 +1,4 @@
-import type { InterfaceToObject, Merge } from "#utils";
+import type { InexactPartial, InterfaceToObject, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { LightData } from "#common/data/data.mjs";
@@ -334,6 +334,11 @@ declare namespace AmbientLightDocument {
      * and {@link AmbientLightDocument._onDeleteDescendantDocuments | `AmbientLightDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<AmbientLightDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode AmbientLightDocument.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -367,6 +372,11 @@ declare namespace AmbientLightDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.
@@ -416,18 +426,21 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
 
   // Descendant Document operations have been left out because AmbientLight does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(
-    context?: Document.DefaultNameContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,
-  ): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: AmbientLightDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data: Document.CreateDialogData<AmbientLightDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"AmbientLight", NonNullable<AmbientLightDocument.Parent>>,
+    data: AmbientLightDocument.CreateDialogData | undefined,
+    createOptions: AmbientLightDocument.Database.DialogCreateOptions,
+    options?: AmbientLightDocument.CreateDialogOptions,
   ): Promise<AmbientLightDocument.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"AmbientLight">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: AmbientLightDocument.DropData,
     options?: AmbientLightDocument.DropDataOptions,

@@ -414,6 +414,11 @@ declare namespace RollTable {
      * and {@link RollTable._onDeleteDescendantDocuments | `RollTable#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<RollTable.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode RollTable.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -455,6 +460,11 @@ declare namespace RollTable {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
     RollTable.Stored,
@@ -528,7 +538,7 @@ declare namespace RollTable {
   /**
    * Additional options which modify message creation
    */
-  interface ToMessageOptions<Temporary extends boolean | undefined = false> {
+  interface ToMessageOptions<Temporary extends boolean | undefined = undefined> {
     /**
      * An optional Roll instance which produced the drawn results
      */
@@ -665,12 +675,6 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
   roll(options?: RollTable.RollOptions): Promise<RollTable.Draw>;
 
   /**
-   * Handle a roll from within embedded content.
-   * @param event - The originating event.
-   */
-  protected _rollFromEmbeddedHTML(event: PointerEvent): Promise<void>;
-
-  /**
    * Get an Array of valid results for a given rolled total
    * @param value - The rolled value
    * @returns An Array of results
@@ -740,6 +744,15 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
   ): Promise<HTMLElement | null>;
 
   /**
+   * Handle a roll from within embedded content.
+   * @param event  - The originating event
+   * @param action - The named action that was clicked
+   */
+  protected _onClickEmbedAction(event: PointerEvent, action: string): Promise<void>;
+
+  override onEmbed(element: foundry.applications.elements.HTMLDocumentEmbedElement): void;
+
+  /**
    * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
    * this method must be overridden like so:
    * ```typescript
@@ -775,7 +788,6 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    */
   protected override _onDeleteDescendantDocuments(...args: RollTable.OnDeleteDescendantDocumentsArgs): void;
 
-  // options: not null (parameter default only, destructured in super)
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: foundry.documents.collections.CompendiumCollection.Any | null,
     options?: Options,
@@ -786,7 +798,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * @param folder  - The Folder document from which to create a roll table
    * @param options - Additional options passed to the RollTable.create method
    */
-  static fromFolder<Temporary extends boolean | undefined = false>(
+  static fromFolder<Temporary extends boolean | undefined = undefined>(
     folder: Folder.Implementation,
     options?: RollTable.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<WallDocument.Implementation, Temporary> | undefined>;
@@ -875,16 +887,19 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    */
   protected override _preDeleteDescendantDocuments(...args: RollTable.PreDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"RollTable", RollTable.Parent>): string;
+  static override defaultName(context?: RollTable.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<RollTable.CreateData>,
-    context?: Document.CreateDialogContext<"RollTable", RollTable.Parent>,
+    data?: RollTable.CreateDialogData,
+    createOptions?: RollTable.Database.DialogCreateOptions,
+    options?: RollTable.CreateDialogOptions,
   ): Promise<RollTable.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"RollTable">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: RollTable.DropData,
     options?: RollTable.DropDataOptions,

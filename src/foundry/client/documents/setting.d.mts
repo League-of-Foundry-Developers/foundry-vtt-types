@@ -1,4 +1,5 @@
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
+import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 
@@ -204,6 +205,12 @@ declare namespace Setting {
     }>;
 
     /**
+     * The ID of the user this Setting belongs to, if user-scoped.
+     * @defaultValue `null`
+     */
+    user: fields.ForeignDocumentField<typeof documents.BaseUser, { idOnly: true }>;
+
+    /**
      * An object of creation and access information
      * @defaultValue see {@linkcode fields.DocumentStatsField}
      */
@@ -308,6 +315,11 @@ declare namespace Setting {
      * and {@link Setting._onDeleteDescendantDocuments | `Setting#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Setting.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Setting.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -343,6 +355,11 @@ declare namespace Setting {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   /**
    * The arguments to construct the document.
    *
@@ -370,10 +387,9 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
    */
   get config(): foundry.applications.settings.SettingsConfig | undefined;
 
-  // options: not null (parameter default only)
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  // _onCreate and _preUpdate are overridden but with no signature changes.
+  // _onCreate and _onUpdate are overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
   /**
@@ -397,19 +413,22 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
 
   // Descendant Document operations have been left out because Setting does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Setting", Setting.Parent>): string;
+  static override defaultName(context?: Setting.DefaultNameContext): string;
 
   /**
    * @throws Foundry tries to figure out the folders for the world collection and errors out
    */
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Setting.CreateData,
-    context?: Document.CreateDialogContext<"Setting", Setting.Parent>,
+    createOptions?: Setting.Database.DialogCreateOptions,
+    options?: Setting.CreateDialogOptions,
   ): never;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Setting">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: Setting.DropData,
     options?: Setting.DropDataOptions,

@@ -1,6 +1,5 @@
 import type { AnyMutableObject, Identity } from "#utils";
 import type Document from "../abstract/document.mts";
-import type { documents } from "#client/client.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
@@ -44,7 +43,11 @@ declare abstract class BaseActorDelta<
    *     Item: "items",
    *     ActiveEffect: "effects"
    *   },
-   *   schemaVersion: "12.324"
+   *   permissions: {
+   *     create: "OWNER",
+   *     delete: "OWNER"
+   *   }
+   *   schemaVersion: "13.341"
    * });
    * ```
    */
@@ -52,13 +55,7 @@ declare abstract class BaseActorDelta<
 
   static override defineSchema(): BaseActorDelta.Schema;
 
-  /** @remarks Forwards to {@link TokenDocument.testUserPermission | `this.parent.testUserPermission`} */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  override getUserLevel(user: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Retrieve the base actor's collection, if it exists.
@@ -74,26 +71,36 @@ declare abstract class BaseActorDelta<
    * @param delta     - The ActorDelta.
    * @param baseActor - The base Actor.
    * @param context   - Context to supply to synthetic Actor instantiation.
-   * @remarks `context` is spread into an object, so it being `null` is effectively the same as omitted
+   * @remarks `baseActor` is documented as being a `BaseActor` but in practice can only ever be `Actor.Implementation`
    */
   static applyDelta(
     delta: BaseActorDelta,
-    baseActor: documents.BaseActor,
-    context?: BaseActorDelta.ApplyDeltaContext | null,
+    baseActor: Actor.Implementation,
+    context?: BaseActorDelta.ApplyDeltaContext,
   ): Actor.Implementation | null;
 
   /**
    * @remarks
    * Migrations:
-   * - {@link documents.BaseActor.migrateData | `BaseActor`}'s
+   * - {@link foundry.documents.BaseActor.migrateData | `BaseActor`}'s
    *
    * Simply forwards to `BaseActor`
    */
   static migrateData(source: AnyMutableObject): AnyMutableObject;
 
+  /**
+   * Prepare changes to a descendent delta collection.
+   * @param changes - Candidate source changes. (default: `{}`)
+   * @param options - Options which determine how the new data is merged. (default: `{}`)
+   */
+  protected _prepareDeltaUpdate(changes: ActorDelta.UpdateData, options: DataModel.UpdateOptions): void;
+
+  /** @remarks passes to {@linkcode _prepareDeltaUpdate} prior to calling super */
+  override updateSource(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): ActorDelta.UpdateData;
+
   /** @remarks Strips optional (`required: false`) fields from the object before returning */
   // TODO: Properly type this override
-  override toObject(source?: boolean | null): SchemaField.SourceData<ActorDelta.Schema>;
+  override toObject(source?: boolean): SchemaField.SourceData<ActorDelta.Schema>;
 
   /*
    * After this point these are not really overridden methods.
@@ -132,7 +139,7 @@ declare abstract class BaseActorDelta<
 
   override parent: BaseActorDelta.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<ActorDelta.Implementation | ActorDelta.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ActorDelta.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<ActorDelta.Implementation, Temporary>>>;
@@ -147,7 +154,7 @@ declare abstract class BaseActorDelta<
     operation?: Document.Database.DeleteDocumentsOperation<ActorDelta.Database.Delete>,
   ): Promise<ActorDelta.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: ActorDelta.CreateData | ActorDelta.CreateData[],
     operation?: ActorDelta.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<ActorDelta.Implementation, Temporary> | undefined>;
@@ -283,8 +290,6 @@ declare abstract class BaseActorDelta<
     operation: ActorDelta.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

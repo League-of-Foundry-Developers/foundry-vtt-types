@@ -37,9 +37,10 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
    *   label: "DOCUMENT.Playlist",
    *   labelPlural: "DOCUMENT.Playlists",
    *   permissions: {
-   *     create: "PLAYLIST_CREATE"
+   *     create: "PLAYLIST_CREATE",
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * }
    * ```
    */
@@ -47,12 +48,20 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static override defineSchema(): BasePlaylist.Schema;
 
+  /** @defaultValue `["DOCUMENT", "PLAYLIST"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  protected override _initialize(options?: Document.InitializeOptions): void;
+
   /**
    * @remarks
    * Migrations:
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.
@@ -89,7 +98,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   override parent: Playlist.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Playlist.Implementation | Playlist.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Playlist.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Playlist.Implementation, Temporary>>>;
@@ -104,7 +113,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     operation?: Document.Database.DeleteDocumentsOperation<Playlist.Database.Delete>,
   ): Promise<Playlist.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Playlist.CreateData | Playlist.CreateData[],
     operation?: Playlist.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Playlist.Implementation, Temporary> | undefined>;
@@ -240,8 +249,6 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     operation: Playlist.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

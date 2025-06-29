@@ -40,9 +40,9 @@ declare abstract class BaseChatMessage<
    *   isPrimary: true,
    *   permissions: {
    *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -50,16 +50,7 @@ declare abstract class BaseChatMessage<
 
   static override defineSchema(): BaseChatMessage.Schema;
 
-  /**
-   * @remarks Returns `true` if `user` is the `author` of the `ChatMessage` and `options.exact` is falsey.
-   * Otherwise, forwards to {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * @remarks
@@ -117,7 +108,7 @@ declare abstract class BaseChatMessage<
 
   override parent: BaseChatMessage.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<ChatMessage.Implementation | ChatMessage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ChatMessage.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<ChatMessage.Implementation, Temporary>>>;
@@ -132,7 +123,7 @@ declare abstract class BaseChatMessage<
     operation?: Document.Database.DeleteDocumentsOperation<ChatMessage.Database.Delete>,
   ): Promise<ChatMessage.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: ChatMessage.CreateData | ChatMessage.CreateData[],
     operation?: ChatMessage.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<ChatMessage.Implementation, Temporary> | undefined>;
@@ -235,8 +226,6 @@ declare abstract class BaseChatMessage<
     operation: ChatMessage.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

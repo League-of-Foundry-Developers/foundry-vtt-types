@@ -12,7 +12,7 @@ expectTypeOf(CONFIG.AmbientLight.objectClass).toEqualTypeOf<AmbientLight.Impleme
 expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Implementation | null>(); // canvasDocumentMixin
 expectTypeOf(doc.layer).toEqualTypeOf<LightingLayer>(); // canvasDocumentMixin
 expectTypeOf(doc.isGlobal).toEqualTypeOf<boolean>(); // class itself
-expectTypeOf(doc.compendium).toEqualTypeOf<undefined>(); // TODO: Determine if embedded documents can have this metadata
+expectTypeOf(doc.compendium).toEqualTypeOf<null>(); // TODO: Determine if embedded documents can have this metadata
 
 // Test the inheritance of static members
 expectTypeOf(AmbientLightDocument.documentName).toEqualTypeOf<"AmbientLight">(); // Document

@@ -20,20 +20,17 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
 
   /**
    * A collection of Application instances which should be re-rendered whenever this document is updated.
-   * The keys of this object are the application ids and the values are Application instances. Each
-   * Application in this object will have its render method called by {@link Document.render | `Document#render`}.
-   * @see {@link Document.render | `Document#render`}
+   * The keys of this object are the application ids and the values are Application instances.
    * @defaultValue `{}`
    * @remarks Created during construction via `defineProperty`, with options `{value: {}, writable: false, enumerable: false}`
    */
   readonly apps: Record<string, Application.Any | ApplicationV2.Any>;
 
   /**
-   * A cached reference to the FormApplication instance used to configure this Document.
+   * A cached reference to the Application instance used to configure this Document.
    * @defaultValue `null`
    * @remarks Created during construction via `defineProperty`, with options `{value: null, writable: true, enumerable: false}`
-   *
-   * Foundry marked `@private`
+   * @internal
    */
   protected readonly _sheet: FixedInstanceType<Document.SheetClassFor<DocumentName>> | null;
 
@@ -49,14 +46,20 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * Return a reference to the parent Collection instance which contains this Document.
    */
-  get collection(): Collection<this>;
+  get collection(): Collection<this> | null;
 
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
   get compendium(): DocumentName extends foundry.documents.collections.CompendiumCollection.DocumentName
     ? foundry.documents.collections.CompendiumCollection<DocumentName>
-    : undefined;
+    : null;
+
+  /**
+   * Is this document in a compendium? A stricter check than {@link Document.inCompendium | `Document#inCompendium`}.
+   */
+  // Note(LukeAbby): See https://github.com/microsoft/TypeScript/issues/61967
+  // get inCompendium(): boolean;
 
   /**
    * A boolean indicator for whether the current game User has ownership rights for this Document.
@@ -139,7 +142,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
 
   /**
    * Render all Application instances which are connected to this document by calling their respective
-   * @see {@link Application.render | `Application#render`}
+   * @see {@link foundry.applications.api.ApplicationV2.render | `foundry.applications.api.ApplicationV2#render`}
    * @param force   - Force rendering
    *                  (default: `false`)
    * @param context - Optional context
@@ -314,37 +317,40 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * Whenever the Document's sheet changes, close any existing applications for this Document, and re-render the new
    * sheet if one was already open.
    */
-  // options: not null (destructured)
   protected _onSheetChange(options?: ClientDocument.OnSheetChangeOptions): Promise<void>;
 
   /**
    * Gets the default new name for a Document
    * @param context - The context for which to create the Document name.
    */
-  // context: not null (destructured)
-  static defaultName(context?: Document.DefaultNameContext<never, never>): string;
+  static defaultName(context: never): string;
 
   /**
    * Present a Dialog form to create a new Document of this type.
    * Choose a name and a type from a select menu of types.
-   * @param data    - Initial data with which to populate the creation form    (default: `{}`)
-   * @param context - Additional context options or dialog positioning options (default: `{}`)
+   * @param data          - Document creation data               (default: `{}`)
+   * @param createOptions - Document creation options            (default: `{}`)
+   * @param options       - Options forwarded to DialogV2.prompt (default: `{}`)
    * @returns A Promise which resolves to the created Document, or null if the dialog was closed.
    * @throws If the document has
    * @privateRemarks `| undefined` is included in the return types of the specific document overrides due to {@link Document.create | `Document.create`}
    * possibly being `undefined` if creation is cancelled by preCreate methods or hooks
    */
-  // data: not null (parameter default only), option: not null (destructured)
-  static createDialog(data: never, context: never): Promise<unknown>;
+  static createDialog(data: never, createOptions: never, options?: never): Promise<unknown>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
-   * @param options - Positioning and sizing options for the resulting dialog
-   *                  (default: `{}`)
-   * @returns A Promise which resolves to the deleted Document
+   * @param options   - Additional options passed to `DialogV2.confirm`
+   *                    (default: `{}`)
+   * @param operation - Document deletion options.
+   *                    (default: `{}`)
+   * @returns A Promise that resolves to the deleted Document
    */
   // options: not null (parameter default only)
-  deleteDialog(options?: InexactPartial<foundry.appv1.api.Dialog.Options>): Promise<this | false | null | undefined>;
+  deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: never,
+  ): Promise<this | false | null | undefined>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
@@ -440,6 +446,12 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   ): Promise<HTMLElement | null>;
 
   /**
+   * Specific callback actions to take when the embedded HTML for this document has been added to the DOM.
+   * @param element - The embedded document HTML
+   */
+  onEmbed(element: foundry.applications.elements.HTMLDocumentEmbedElement): void;
+
+  /**
    * A method that can be overridden by subclasses to customize embedded HTML generation.
    * @param config  - Configuration for embedding behavior.
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
@@ -473,102 +485,6 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | null>;
-
-  /**
-   * Preliminary actions taken before a set of embedded Documents in this parent Document are created.
-   * @param embeddedName - The name of the embedded Document type
-   * @param result       - An Array of created data objects
-   * @param options      - Options which modified the creation operation
-   * @param userId       - The ID of the User who triggered the operation
-   * @deprecated since v11
-   */
-  protected _preCreateEmbeddedDocuments(
-    embeddedName: string,
-    result: AnyObject[],
-    options: Document.ModificationOptions,
-    userId: string,
-  ): void;
-
-  /**
-   * Follow-up actions taken after a set of embedded Documents in this parent Document are created.
-   * @param embeddedName - The name of the embedded Document type
-   * @param documents    - An Array of created Documents
-   * @param result       - An Array of created data objects
-   * @param options      - Options which modified the creation operation
-   * @param userId       - The ID of the User who triggered the operation
-   * @deprecated since v11
-   */
-  protected _onCreateEmbeddedDocuments(
-    embeddedName: string,
-    documents: never,
-    result: AnyObject[],
-    options: Document.ModificationOptions,
-    userId: string,
-  ): void;
-
-  /**
-   * Preliminary actions taken before a set of embedded Documents in this parent Document are updated.
-   * @param embeddedName - The name of the embedded Document type
-   * @param result       - An Array of incremental data objects
-   * @param options      - Options which modified the update operation
-   * @param userId       - The ID of the User who triggered the operation
-   * @deprecated since v11
-   */
-  protected _preUpdateEmbeddedDocuments(
-    embeddedName: string,
-    result: AnyObject[],
-    options: Document.ModificationOptions,
-    userId: string,
-  ): void;
-
-  /**
-   * Follow-up actions taken after a set of embedded Documents in this parent Document are updated.
-   * @param embeddedName - The name of the embedded Document type
-   * @param documents    - An Array of updated Documents
-   * @param result       - An Array of incremental data objects
-   * @param options      - Options which modified the update operation
-   * @param userId       - The ID of the User who triggered the operation
-   * @deprecated since v11
-   */
-  protected _onUpdateEmbeddedDocuments(
-    embeddedName: string,
-    documents: never,
-    result: AnyObject[],
-    options: Document.ModificationContext<Document.Any | null>,
-    userId: string,
-  ): void;
-
-  /**
-   * Preliminary actions taken before a set of embedded Documents in this parent Document are deleted.
-   * @param embeddedName - The name of the embedded Document type
-   * @param result       - An Array of document IDs being deleted
-   * @param options      - Options which modified the deletion operation
-   * @param userId       - The ID of the User who triggered the operation
-   * @deprecated since v11
-   */
-  protected _preDeleteEmbeddedDocuments(
-    embeddedName: string,
-    result: string[],
-    options: Document.ModificationContext<Document.Any | null>,
-    userId: string,
-  ): void;
-
-  /**
-   * Follow-up actions taken after a set of embedded Documents in this parent Document are deleted.
-   * @param embeddedName - The name of the embedded Document type
-   * @param documents    - An Array of deleted Documents
-   * @param result       - An Array of document IDs being deleted
-   * @param options      - Options which modified the deletion operation
-   * @param userId       - The ID of the User who triggered the operation
-   * @deprecated since v11
-   */
-  protected _onDeleteEmbeddedDocuments(
-    embeddedName: string,
-    documents: never,
-    result: string[],
-    options: Document.ModificationContext<Document.Any | null>,
-    userId: string,
-  ): void;
 }
 
 type _ClientDocumentType = InternalClientDocument<Document.Type> & Document.AnyConstructor;

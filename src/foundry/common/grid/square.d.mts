@@ -68,7 +68,7 @@ declare namespace SquareGrid {
     diagonals: number;
   }
 
-  interface Offset extends BaseGrid.Offset {}
+  type Offset = BaseGrid.Offset;
 
   interface OffsetRange extends BaseGrid.OffsetRange {}
 
@@ -93,7 +93,7 @@ declare namespace SquareGrid {
     diagonals: number;
   }
 
-  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction;
+  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
 
   interface Dimensions extends BaseGrid.Dimensions {}
 }

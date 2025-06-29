@@ -1716,7 +1716,7 @@ declare class StringField<
    * returns the array of choices.
    * @defaultValue `undefined`
    */
-  choices: string[] | Record<string, string> | (() => string[] | Record<string, string>) | undefined;
+  choices: StringField.Choices | undefined;
 
   /** @defaultValue `false` */
   textSearch: boolean;
@@ -1892,7 +1892,7 @@ declare namespace StringField {
 
   type BaseChoices =
     | {
-        readonly [K: string]: string;
+        readonly [K: string]: string | { label: string };
       }
     | readonly string[];
 
@@ -3941,6 +3941,7 @@ declare class AngleField<
 
 declare namespace AngleField {
   interface Options extends NumberField.Options {
+    /** Whether the angle should be normalized to [0,360) before being clamped to [0,360]. The default is true. */
     normalize?: boolean | undefined;
   }
 

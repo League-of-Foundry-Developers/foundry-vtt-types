@@ -313,7 +313,7 @@ declare namespace Actor {
     img: fields.FilePathField<{ categories: ["IMAGE"]; initial: (data: unknown) => string }>;
 
     /**
-     * The system data object which is defined by the system template.json model
+     * Data for an Actor subtype, defined by a System or Module
      * @defaultValue `{}`
      */
     system: fields.TypeDataField<typeof BaseActor>;
@@ -465,6 +465,11 @@ declare namespace Actor {
      * and {@link Actor._onDeleteDescendantDocuments | `Actor#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Actor.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Actor.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -516,6 +521,11 @@ declare namespace Actor {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   interface GetDefaultArtworkReturn {
     img: string;
     texture: GetDefaultArtworkTextureReturn;
@@ -529,7 +539,7 @@ declare namespace Actor {
     [SubType in Item.SubType]: Array<Item.OfType<SubType>>;
   };
 
-  type GetActiveTokensReturn<Document extends boolean | null | undefined> = Document extends true
+  type GetActiveTokensReturn<Document extends boolean | undefined> = Document extends true
     ? TokenDocument.Implementation[]
     : Token.Implementation[];
 
@@ -661,7 +671,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    */
   constructor(data: Actor.CreateData, context?: Actor.ConstructionContext);
 
-  // options: not null (parameter default only, destructured in super)
   protected override _configure(options?: Document.ConfigureOptions): void;
 
   /**
@@ -674,7 +683,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   >;
 
   /** @remarks `||=`s the `prototypeToken`'s `name` and `texture.src` fields with the main actor's values */
-  // options: not null (parameter default only)
   protected override _initializeSource(
     data: this | Actor.CreateData,
     options?: Document.InitializeSourceOptions,
@@ -691,19 +699,11 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    */
   statuses: Set<string>;
 
-  /**
-   * A cached array of image paths which can be used for this Actor's token.
-   * Null if the list has not yet been populated.
-   * @defaultValue `null`
-   * @private
-   */
-  protected _tokenImages: string[] | null;
+  /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
+  protected _tokenImages: never;
 
-  /**
-   * Cache the last drawn wildcard token to avoid repeat draws
-   * @defaultValue `null`
-   */
-  protected _lastWildcard: string | null;
+  /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
+  protected _lastWildcard: never;
 
   /**
    * Provide a thumbnail image path used to represent this document.
@@ -711,7 +711,8 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   get thumbnail(): string;
 
   /**
-   * Provide an object which organizes all embedded Item instances by their type
+   * A convenience getter to an object that organizes all embedded Item instances by subtype. The object is cached and
+   * lazily re-computed as needed.
    */
   get itemTypes(): Actor.ItemTypes;
 
@@ -740,6 +741,11 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    */
   get inCombat(): boolean;
 
+  override clone<Save extends boolean | null | undefined = false>(
+    data?: Actor.CreateData,
+    context?: Document.CloneContext<Save>,
+  ): Document.Clone<this, Save>;
+
   /**
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
    */
@@ -756,8 +762,8 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    *                   (default: `false`)
    * @returns An array of Token instances in the current Scene which reference this Actor.
    */
-  getActiveTokens<ReturnDocument extends boolean | null | undefined = false>(
-    linked?: boolean | null,
+  getActiveTokens<ReturnDocument extends boolean | undefined = false>(
+    linked?: boolean,
     document?: ReturnDocument,
   ): Actor.GetActiveTokensReturn<ReturnDocument>;
 
@@ -780,7 +786,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
    * @returns The created TokenData instance
    */
-  // data, options: not null (parameter defaults only)
   getTokenDocument(
     data?: TokenDocument.CreateData,
     options?: TokenDocument.ConstructionContext,
@@ -821,7 +826,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param options - Configuration for how initiative for this Actor is rolled.
    * @returns A promise which resolves to the Combat document once rolls are complete.
    */
-  // options: not null (destructured)
   rollInitiative(options?: Actor.RollInitiativeOptions): Promise<void>;
 
   /**
@@ -834,25 +838,15 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    *            - false if an existing effect needed to be removed
    *            - undefined if no changes need to be made
    */
-  // options: not null (destructured)
   toggleStatusEffect(
     statusId: string,
     options?: Actor.ToggleStatusEffectOptions,
   ): Promise<ActiveEffect.Implementation | boolean | undefined>;
 
   /**
-   * Request wildcard token images from the server and return them.
-   * @param actorId - The actor whose prototype token contains the wildcard image path.
-   * @private
-   */
-  // options: not null (parameter default only)
-  protected static _requestTokenImages(actorId: string, options?: Actor.RequestTokenImagesOptions): Promise<string[]>;
-
-  /**
    * Get this actor's dependent tokens.
    * If the actor is a synthetic token actor, only the exact Token which it represents will be returned.
    */
-  // options: not null (destructured)
   getDependentTokens(options?: Actor.GetDependentTokensOptions): TokenDocument.Implementation[];
 
   /**
@@ -1011,16 +1005,19 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    */
   protected override _preDeleteDescendantDocuments(...args: Actor.PreDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Actor", Actor.Parent>): string;
+  static override defaultName(context?: Actor.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<Actor.CreateData>,
-    context?: Document.CreateDialogContext<"Actor", Actor.Parent>,
+    data?: Actor.CreateDialogData,
+    createOptions?: Actor.Database.DialogCreateOptions,
+    options?: Actor.CreateDialogOptions,
   ): Promise<Actor.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Actor">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: Actor.DropData,
     options?: Actor.DropDataOptions,
@@ -1032,6 +1029,8 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   ): Promise<Actor.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
+  #Actor: true;
 }
 
 export default Actor;

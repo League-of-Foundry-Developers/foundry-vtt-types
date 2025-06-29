@@ -36,9 +36,9 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    *   isEmbedded: true,
    *   permissions: {
    *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -46,16 +46,10 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   static override defineSchema(): BaseMeasuredTemplate.Schema;
 
-  /**
-   * @remarks Returns `true` if `user` is the `author` of the `MeasuredTemplate` and `options.exact` is falsey.
-   * Otherwise, forwards to {@link Document.testUserPermission | Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  /** @defaultValue `["DOCUMENT", "TEMPLATE"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * @remarks
@@ -113,7 +107,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   override parent: MeasuredTemplateDocument.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<MeasuredTemplateDocument.Implementation | MeasuredTemplateDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<MeasuredTemplateDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<MeasuredTemplateDocument.Implementation, Temporary>>>;
@@ -128,7 +122,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     operation?: Document.Database.DeleteDocumentsOperation<MeasuredTemplateDocument.Database.Delete>,
   ): Promise<MeasuredTemplateDocument.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: MeasuredTemplateDocument.CreateData | MeasuredTemplateDocument.CreateData[],
     operation?: MeasuredTemplateDocument.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<MeasuredTemplateDocument.Implementation, Temporary> | undefined>;
@@ -234,8 +228,6 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     operation: MeasuredTemplateDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

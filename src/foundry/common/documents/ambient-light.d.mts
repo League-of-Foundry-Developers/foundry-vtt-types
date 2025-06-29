@@ -34,7 +34,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    *   collection: "lights",
    *   label: "DOCUMENT.AmbientLight",
    *   labelPlural: "DOCUMENT.AmbientLights",
-   *   schemaVersion: "12.324",
+   *   schemaVersion: "13.341",
    * })
    * ```
    */
@@ -42,7 +42,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static override defineSchema(): BaseAmbientLight.Schema;
 
-  /** @defaultValue `["AMBIENT_SOUND"]` */
+  /** @defaultValue `["DOCUMENT", "AMBIENT_LIGHT"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
   /*
@@ -74,7 +74,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   override parent: BaseAmbientLight.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<AmbientLightDocument.Implementation | AmbientLightDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<AmbientLightDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<AmbientLightDocument.Implementation, Temporary>>>;
@@ -89,7 +89,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     operation?: Document.Database.DeleteDocumentsOperation<AmbientLightDocument.Database.Delete>,
   ): Promise<AmbientLightDocument.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: AmbientLightDocument.CreateData | AmbientLightDocument.CreateData[],
     operation?: AmbientLightDocument.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<AmbientLightDocument.Implementation, Temporary> | undefined>;
@@ -195,8 +195,6 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     operation: AmbientLightDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

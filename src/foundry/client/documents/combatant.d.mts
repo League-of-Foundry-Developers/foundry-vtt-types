@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "fvtt-types/configuration";
-import type { Merge, RequiredProps } from "#utils";
+import type { InexactPartial, Merge, RequiredProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -60,8 +60,9 @@ declare namespace Combatant {
      * The permissions for whether a certain user can create, update, or delete this document.
      */
     interface Permissions {
-      create(user: User.Internal.Implementation, doc: Implementation): boolean;
+      create: "OWNER";
       update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -264,9 +265,8 @@ declare namespace Combatant {
 
     /**
      * The initiative score for the Combatant which determines its turn order
-     * @defaultValue `null`
      */
-    initiative: fields.NumberField<{ label: "COMBAT.CombatantInitiative" }>;
+    initiative: fields.NumberField<{ required: true; label: "COMBAT.CombatantInitiative" }>;
 
     /**
      * Is this Combatant currently hidden?
@@ -279,6 +279,12 @@ declare namespace Combatant {
      * @defaultValue `false`
      */
     defeated: fields.BooleanField<{ label: "COMBAT.CombatantDefeated" }>;
+
+    /**
+     * An optional group this Combatant belongs to.
+     * @defaultValue `null`
+     */
+    group: fields.DocumentIdField<{ readonly: false }>;
 
     /**
      * An object of optional key/value flags
@@ -396,6 +402,11 @@ declare namespace Combatant {
      * and {@link Combatant._onDeleteDescendantDocuments | `Combatant#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Combatant.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Combatant.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -422,6 +433,11 @@ declare namespace Combatant {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * @remarks
@@ -505,19 +521,6 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   get isDefeated(): boolean;
 
   /**
-   * @remarks Returns `true` for GMs, regardless of `options.exact`. Otherwise, returns
-   * `this.actor?.canUserModify(user, "update") || false`
-   *
-   * @privateRemarks This is the only document that overrides this in the non-Base class
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
-
-  /**
    * Get a Roll object which represents the initiative roll for this Combatant.
    * @param formula -  An explicit Roll formula to use for the combatant.
    * @returns The Roll instance to use for the combatant.
@@ -529,7 +532,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    * @param formula - A dice formula which overrides the default for this Combatant.
    * @returns The updated Combatant.
    */
-  rollInitiative(formula: string): Promise<this | undefined>;
+  rollInitiative(formula?: string): Promise<this | undefined>;
 
   /**
    * @remarks Initializes `_videoSrc`, applies `img` and `name` fallbacks, and calls {@link Combatant.updateResource | `Combatant#updateResource`}
@@ -548,6 +551,16 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    */
   protected _getInitiativeFormula(): string;
 
+  /**
+   * Prepare derived data based on group membership.
+   */
+  protected _prepareGroup(): void;
+
+  /**
+   * Clear the movement history of the Combatant's Token.
+   */
+  clearMovementHistory: Promise<void>;
+
   // DatabaseLifecycle Events are overridden but with no signature changes.
   // These are already covered in BaseCombatant
 
@@ -565,18 +578,21 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
 
   // Descendant Document operations have been left out because Combatant does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(
-    context?: Document.DefaultNameContext<"Combatant", NonNullable<Combatant.Parent>>,
-  ): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: Combatant.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data: Document.CreateDialogData<Combatant.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Combatant", NonNullable<Combatant.Parent>>,
+    data: Combatant.CreateDialogData | undefined,
+    createOptions: Combatant.Database.DialogCreateOptions,
+    options?: Combatant.CreateDialogOptions,
   ): Promise<Combatant.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Combatant">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: Combatant.DropData,
     options?: Combatant.DropDataOptions,

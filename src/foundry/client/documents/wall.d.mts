@@ -1,4 +1,4 @@
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseWall from "#common/documents/wall.mjs";
@@ -188,6 +188,31 @@ declare namespace WallDocument {
 
   interface ThresholdData extends fields.SchemaField.InitializedData<ThresholdSchema> {}
 
+  interface AnimationSchema extends DataSchema {
+    /** @defaultValue `1` */
+    direction: fields.NumberField<{ choices: [-1, 1]; initial: 1 }>;
+
+    /** @defaultValue `false` */
+    double: fields.BooleanField<{ initial: false }>;
+
+    /** @defaultValue `750` */
+    duration: fields.NumberField<{ positive: true; integer: true; initial: 750 }>;
+
+    /** @defaultValue `false` */
+    flip: fields.BooleanField<{ initial: false }>;
+
+    /** @defaultValue `1.0` */
+    strength: fields.NumberField<{ initial: 1.0; min: 0; max: 2.0; step: 0.05 }>;
+
+    /** @defaultValue `null` */
+    texture: fields.FilePathField<{ categories: ["IMAGE"]; virtual: true }>;
+
+    /** @defaultValue `"swing"` */
+    type: fields.StringField<{ initial: "swing"; blank: true }>;
+  }
+
+  interface AnimationData extends fields.SchemaField.InitializedData<AnimationSchema> {}
+
   /**
    * The schema for {@linkcode WallDocument}. This is the source of truth for how an WallDocument document
    * must be structured.
@@ -232,7 +257,7 @@ declare namespace WallDocument {
     light: fields.NumberField<
       {
         required: true;
-        choices: CONST.WALL_SENSE_TYPES[];
+        choices: Record<CONST.WALL_SENSE_TYPES, string>;
         initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
         validationError: "must be a value in CONST.WALL_SENSE_TYPES";
       },
@@ -249,7 +274,7 @@ declare namespace WallDocument {
     move: fields.NumberField<
       {
         required: true;
-        choices: CONST.WALL_MOVEMENT_TYPES[];
+        choices: Record<CONST.WALL_MOVEMENT_TYPES, string>;
         initial: typeof CONST.WALL_MOVEMENT_TYPES.NORMAL;
         validationError: "must be a value in CONST.WALL_MOVEMENT_TYPES";
       },
@@ -266,7 +291,7 @@ declare namespace WallDocument {
     sight: fields.NumberField<
       {
         required: true;
-        choices: CONST.WALL_SENSE_TYPES[];
+        choices: Record<CONST.WALL_SENSE_TYPES, string>;
         initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
         validationError: "must be a value in CONST.WALL_SENSE_TYPES";
       },
@@ -283,7 +308,7 @@ declare namespace WallDocument {
     sound: fields.NumberField<
       {
         required: true;
-        choices: CONST.WALL_SENSE_TYPES[];
+        choices: Record<CONST.WALL_SENSE_TYPES, string>;
         initial: typeof CONST.WALL_SENSE_TYPES.NORMAL;
         validationError: "must be a value in CONST.WALL_SENSE_TYPES";
       },
@@ -300,7 +325,7 @@ declare namespace WallDocument {
     dir: fields.NumberField<
       {
         required: true;
-        choices: CONST.WALL_DIRECTIONS[];
+        choices: Record<CONST.WALL_DIRECTIONS, string>;
         initial: typeof CONST.WALL_DIRECTIONS.BOTH;
         validationError: "must be a value in CONST.WALL_DIRECTIONS";
       },
@@ -317,7 +342,7 @@ declare namespace WallDocument {
     door: fields.NumberField<
       {
         required: true;
-        choices: CONST.WALL_DOOR_TYPES[];
+        choices: Record<CONST.WALL_DOOR_TYPES, string>;
         initial: typeof CONST.WALL_DOOR_TYPES.NONE;
         validationError: "must be a value in CONST.WALL_DOOR_TYPES";
       },
@@ -334,7 +359,7 @@ declare namespace WallDocument {
     ds: fields.NumberField<
       {
         required: true;
-        choices: CONST.WALL_DOOR_STATES[];
+        choices: Record<CONST.WALL_DOOR_STATES, string>;
         initial: typeof CONST.WALL_DOOR_STATES.CLOSED;
         validationError: "must be a value in CONST.WALL_DOOR_STATES";
       },
@@ -355,6 +380,9 @@ declare namespace WallDocument {
      * @defaultValue see properties
      */
     threshold: fields.SchemaField<ThresholdSchema>;
+
+    /** @defaultValue `null` */
+    animation: fields.SchemaField<AnimationSchema, { required: true; nullable: true; initial: null }>;
 
     /**
      * An object of optional key/value flags
@@ -464,6 +492,11 @@ declare namespace WallDocument {
      * and {@link WallDocument._onDeleteDescendantDocuments | `WallDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<WallDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode WallDocument.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -490,6 +523,11 @@ declare namespace WallDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.
@@ -528,16 +566,21 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Wall", NonNullable<WallDocument.Parent>>): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: WallDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data: Document.CreateDialogData<WallDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Wall", NonNullable<WallDocument.Parent>>,
+    data: WallDocument.CreateDialogData | undefined,
+    createOptions: WallDocument.Database.DialogCreateOptions,
+    options?: WallDocument.CreateDialogOptions,
   ): Promise<WallDocument.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Wall">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: WallDocument.DropData,
     options?: WallDocument.DropDataOptions,

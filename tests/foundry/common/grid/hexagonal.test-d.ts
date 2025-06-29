@@ -33,7 +33,7 @@ expectTypeOf(hexGrid.getShape()).toEqualTypeOf<Canvas.Point[]>();
 expectTypeOf(hexGrid.getVertices(coords)).toEqualTypeOf<Canvas.Point[]>();
 
 declare const behavior: foundry.grid.HexagonalGrid.SnappingBehavior;
-declare const cube: foundry.grid.HexagonalGrid.Cube;
+declare const cube: foundry.grid.HexagonalGrid.Cube2D;
 declare const offset: foundry.grid.HexagonalGrid.Offset;
 
 expectTypeOf(hexGrid.getSnappedPoint(p, behavior)).toEqualTypeOf<Canvas.Point>();

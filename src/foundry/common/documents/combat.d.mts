@@ -39,17 +39,21 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    *   label: "DOCUMENT.Combat",
    *   labelPlural: "DOCUMENT.Combats",
    *   embedded: {
-   *     Combatant: "combatants"
+   *     Combatant: "combatants",
+   *     CombatantGroup: "groups"
    *   },
    *   hasTypeData: true,
    *   permissions: {
    *     update: this.#canUpdate
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseCombat.Metadata;
+
+  /** @defaultValue `["DOCUMENT", "COMBAT"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   static override defineSchema(): BaseCombat.Schema;
 
@@ -68,6 +72,12 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    * @remarks Foundry's implementation always returns `true`
    */
   protected _canChangeTurn(user: User.Implementation): boolean;
+
+  protected override _preUpdate(
+    changed: Combat.UpdateData,
+    options: Combat.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
   /*
    * After this point these are not really overridden methods.
@@ -106,7 +116,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   override parent: BaseCombat.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Combat.Implementation | Combat.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Combat.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Combat.Implementation, Temporary>>>;
@@ -121,7 +131,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
     operation?: Document.Database.DeleteDocumentsOperation<Combat.Database.Delete>,
   ): Promise<Combat.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Combat.CreateData | Combat.CreateData[],
     operation?: Combat.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Combat.Implementation, Temporary> | undefined>;
@@ -215,12 +225,6 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
     user: User.Implementation,
   ): Promise<void>;
 
-  protected override _preUpdate(
-    changed: Combat.UpdateData,
-    options: Combat.Database.PreUpdateOptions,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
-
   protected override _onUpdate(
     changed: Combat.UpdateData,
     options: Combat.Database.OnUpdateOperation,
@@ -257,8 +261,6 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
     operation: Combat.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

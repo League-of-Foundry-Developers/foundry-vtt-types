@@ -44,12 +44,12 @@ if (myMacro.type === "chat") {
 expectTypeOf(myMacro.apps).toEqualTypeOf<
   Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>
 >();
-expectTypeOf(myMacro.collection).toEqualTypeOf<Collection<Macro.Implementation>>();
+expectTypeOf(myMacro.collection).toEqualTypeOf<Collection<Macro.Implementation> | null>();
 expectTypeOf(myMacro.folder).toEqualTypeOf<Folder.Implementation | null>();
 expectTypeOf(myMacro.isOwner).toEqualTypeOf<boolean>();
 
 // static properties and functions of `ClientDocumentMixin`
-expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro.Implementation | null | undefined>>();
+expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro.Stored | null | undefined>>();
 
 // properties of `Document`
 expectTypeOf(myMacro.parent).toEqualTypeOf<null>();
@@ -57,6 +57,6 @@ expectTypeOf(myMacro.pack).toEqualTypeOf<string | null>();
 
 // static properties of `Document`
 expectTypeOf(Macro.create({ name: "Some Macro" })).toEqualTypeOf<Promise<Macro.Stored | undefined>>();
-expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<Macro.Stored[] | undefined>>();
+expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
 expectTypeOf(Macro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Implementation[]>>();
 expectTypeOf(Macro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Implementation[]>>();

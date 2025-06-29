@@ -455,7 +455,7 @@ declare namespace Scene {
      * An image or video file path providing foreground media for the scene
      * @defaultValue `null`
      */
-    foreground: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
+    foreground: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; virtual: true }>;
 
     /**
      * The elevation of the foreground layer where overhead tiles reside
@@ -496,13 +496,13 @@ declare namespace Scene {
      */
     initial: fields.SchemaField<{
       /** @defaultValue `null` */
-      x: fields.NumberField<{ integer: true; nullable: true }>;
+      x: fields.NumberField<{ integer: true; required: true }>;
 
       /** @defaultValue `null` */
-      y: fields.NumberField<{ integer: true; nullable: true }>;
+      y: fields.NumberField<{ integer: true; required: true }>;
 
       /** @defaultValue `0.5` */
-      scale: fields.NumberField<{ nullable: true; min: 0.25; max: 3; initial: 0.5 }>;
+      scale: fields.NumberField<{ required: true; positive: true }>;
     }>;
 
     /**
@@ -522,7 +522,7 @@ declare namespace Scene {
       {},
       // eslint-disable-next-line @typescript-eslint/no-deprecated
       fields.SchemaField.Internal.AssignmentType<GridSchema, fields.SchemaField.DefaultOptions>,
-      foundry.grid.BaseGrid | fields.SchemaField.Internal.InitializedType<GridSchema, fields.SchemaField.DefaultOptions>
+      foundry.grid.BaseGrid
     >;
 
     /**
@@ -532,7 +532,7 @@ declare namespace Scene {
     tokenVision: fields.BooleanField<{ initial: true }>;
 
     /**
-     * @remarks Fog data for this scene
+     * Fog-exploration settings and other data
      */
     fog: fields.SchemaField<{
       /**
@@ -551,20 +551,23 @@ declare namespace Scene {
        * A special overlay image or video texture which is used for fog of war
        * @defaultValue `null`
        */
-      overlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
+      overlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; virtual: true }>;
 
+      /**
+       * Fog-exploration coloration data
+       */
       colors: fields.SchemaField<{
         /**
          * A color tint applied to explored regions of fog of war
          * @defaultValue `null`
          */
-        explored: fields.ColorField<{ label: "SCENES.FogExploredColor" }>;
+        explored: fields.ColorField;
 
         /**
          * A color tint applied to unexplored regions of fog of war
          * @defaultValue `null`
          */
-        unexplored: fields.ColorField<{ label: "SCENES.FogUnexploredColor" }>;
+        unexplored: fields.ColorField;
       }>;
     }>;
 
@@ -826,14 +829,14 @@ declare namespace Scene {
     }>;
 
     /**
-     * @remarks The style of grid line used. This field has no special validation, but provided values
-     * should match keys of {@linkcode CONFIG.Canvas.gridStyles}
+     * The line style of the grid.
+     * @remarks This field has no special validation, but provided values should match keys of {@linkcode CONFIG.Canvas.gridStyles}
      * @defaultValue `"solidLines"`
      */
     style: fields.StringField<{ required: true; blank: false; initial: "solidLines" }>;
 
     /**
-     * @remarks The width of drawn grid lines
+     * The thickness of the grid lines.
      * @defaultValue `1`
      */
     thickness: fields.NumberField<{ required: true; nullable: false; positive: true; integer: true; initial: 1 }>;
@@ -965,6 +968,11 @@ declare namespace Scene {
      * and {@link Scene._onDeleteDescendantDocuments | `Scene#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Scene.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Scene.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -991,6 +999,11 @@ declare namespace Scene {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   type PreCreateDescendantDocumentsArgs =
     | Document.PreCreateDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
@@ -1138,6 +1151,7 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    * Track the viewed position of each scene (while in memory only, not persisted)
    * When switching back to a previously viewed scene, we can automatically pan to the previous position.
    * @defaultValue `{}`
+   * @internal
    * @remarks This is intentionally public because it is used in Canvas._initializeCanvasPosition() and Canvas.pan()
    */
   _viewPosition: Canvas.ViewPosition;
@@ -1145,8 +1159,15 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
   /**
    * Track whether the scene is the active view
    * @defaultValue `this.active`
+   * @internal
    */
   protected _view: boolean;
+
+  /**
+   * The grid instance.
+   */
+  // Note: Foundry overrides the schema to set `grid` to a grid subclass in `Scene.#getGrid`
+  grid: foundry.grid.BaseGrid;
 
   /**
    * Determine the canvas dimensions this Scene would occupy, if rendered
@@ -1166,6 +1187,12 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
   get isView(): boolean;
 
   /**
+   * Pull the specified users to this Scene.
+   * @param users - An array of User documents or IDs.
+   */
+  pullUsers(users?: (User.Implementation | string)[]): void;
+
+  /**
    * Set this scene as currently active
    * @returns A Promise which resolves to the current scene once it has been successfully activated
    */
@@ -1178,10 +1205,14 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
   view(): Promise<this | number>;
 
   /**
+   * Unview the current Scene, clearing the game canvas.
+   */
+  unview(): Promise<this | undefined>;
+
+  /**
    * @param createData - (default: `{}`)
    * @param options    - (default: `{}`)
    */
-  // data: not null (property access), context: not null (destructured)
   override clone<Save extends boolean | null | undefined = false>(
     data?: Scene.CreateData,
     context?: Document.CloneContext<Save>,
@@ -1214,14 +1245,32 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
   /** @remarks If the scene has a `journal`, forwards to that journal's `#_onClickDocumentLink` */
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
-  // _preCreate, _preCreateOperation, _onCreate, and _preUpdate, _onUpdate, _preDelete, and _onDelete are all overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  /**
+   * Clear the movement history of all Tokens within this Scene.
+   */
+  clearMovementHistories(): Promise<void>;
 
   /**
-   * Handle repositioning of placed objects when the Scene dimensions change
-   * @private
+   * For all Tokens in this Scene identify the Regions that each Token is contained in and update the regions of each
+   * Token accordingly.
+   * or
+   * For the given Tokens in this Scene identify the Regions that each Token is contained in and update the regions of
+   * each Token accordingly.
+   *
+   * This function doesn't need to be called by the systems/modules unless
+   * {@link TokenDocument.testInsideRegion | `foundry.documents.TokenDocument#testInsideRegion`} is overridden and non-Token properties other than
+   * `Scene#grid.type` and `Scene#grid.size` change that are used in the override of
+   * {@link TokenDocument.TestInsideRegion | `foundry.documents.TokenDocument#testInsideRegion`}.
+   * @param tokens - The Tokens whose regions should be updates
+   * @returns The array of Tokens whose regions changed
    */
-  protected _repositionObject(sceneUpdateData: Scene.UpdateData): Scene.UpdateData;
+  updateTokenRegions(tokens?: Iterable<TokenDocument.Implementation>): Promise<TokenDocument.Implementation[]>;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _repositionObject(sceneUpdateData: never): never;
+
+  // _preCreate, _preCreateOperation, _onCreate, and _preUpdate, _onUpdateOperation, _onUpdate, and _onDelete are all overridden but with no signature changes.
+  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
   /**
    * Handle Scene activation workflow if the active state is changed to true
@@ -1301,7 +1350,6 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    */
   protected override _preDeleteDescendantDocuments(...args: Scene.PreDeleteDescendantDocumentsArgs): void;
 
-  // options: not null (parameter default only, destructured in super)
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: foundry.documents.collections.CompendiumCollection.Any | null,
     options?: Options,
@@ -1312,7 +1360,6 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    * @param data - (default: `{}`)
    * @returns The created thumbnail data.
    */
-  // data: not null (destructured)
   createThumbnail(data?: Scene.ThumbnailCreationData): Promise<ImageHelper.ThumbnailReturn>;
 
   /*
@@ -1365,16 +1412,19 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    */
   protected override _onDeleteDescendantDocuments(...args: Scene.OnDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Scene", Scene.Parent>): string;
+  static override defaultName(context?: Scene.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<Scene.CreateData>,
-    context?: Document.CreateDialogContext<"Scene", Scene.Parent>,
+    data?: Scene.CreateDialogData,
+    createOptions?: Scene.Database.DialogCreateOptions,
+    options?: Scene.CreateDialogOptions,
   ): Promise<Scene.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Scene">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: Scene.DropData,
     options?: Scene.DropDataOptions,
@@ -1384,6 +1434,8 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
     source: Scene.Source,
     context?: Document.FromImportContext<Scene.Parent> | null,
   ): Promise<Scene.Implementation>;
+
+  #Scene: true;
 }
 
 export default Scene;

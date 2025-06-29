@@ -1,4 +1,4 @@
-import type { InterfaceToObject, Merge } from "#utils";
+import type { InexactPartial, InterfaceToObject, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { TextureData } from "#common/data/data.mjs";
@@ -189,13 +189,13 @@ declare namespace TileDocument {
      * The x-coordinate position of the top-left corner of the tile
      * @defaultValue `0`
      */
-    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
+    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * The y-coordinate position of the top-left corner of the tile
      * @defaultValue `0`
      */
-    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
+    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * The elevation of the tile
@@ -253,7 +253,7 @@ declare namespace TileDocument {
        */
       mode: fields.NumberField<
         {
-          choices: CONST.OCCLUSION_MODES[];
+          choices: Record<CONST.OCCLUSION_MODES, string>;
           initial: typeof CONST.OCCLUSION_MODES.NONE;
           validationError: "must be a value in CONST.TILE_OCCLUSION_MODES";
         },
@@ -402,6 +402,11 @@ declare namespace TileDocument {
      * and {@link TileDocument._onDeleteDescendantDocuments | `TileDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<TileDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode TileDocument.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -442,6 +447,11 @@ declare namespace TileDocument {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   /**
    * The arguments to construct the document.
    *
@@ -481,15 +491,21 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Tile does not have any descendant documents.
 
-  static override defaultName(context?: Document.DefaultNameContext<"Tile", NonNullable<TileDocument.Parent>>): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: TileDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data: Document.CreateDialogData<TileDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Tile", NonNullable<TileDocument.Parent>>,
+    data: TileDocument.CreateDialogData | undefined,
+    createOptions: TileDocument.Database.DialogCreateOptions,
+    options?: TileDocument.CreateDialogOptions,
   ): Promise<TileDocument.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Tile">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: TileDocument.DropData,
     options?: TileDocument.DropDataOptions,

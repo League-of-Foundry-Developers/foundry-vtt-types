@@ -45,7 +45,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    *     create: this.#canCreate,
    *     update: this.#canUpdate
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -72,8 +72,23 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     options?: Document.InitializeSourceOptions,
   ): BaseActor.Source;
 
+  /** @remarks calls `DocumentStatsField._shimDocument(this)` */
+  protected override _initialize(options?: Document.InitializeOptions): void;
+
   /** @remarks Returns `user.hasPermission("ACTOR_CREATE")` */
   static override canUserCreate(user: User.Implementation): boolean;
+
+  protected override _preCreate(
+    data: Actor.CreateData,
+    options: Actor.Database.PreCreateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
+
+  protected override _preUpdate(
+    changed: Actor.UpdateData,
+    options: Actor.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
   /**
    * @remarks
@@ -81,6 +96,9 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.
@@ -119,7 +137,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   override parent: BaseActor.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Actor.Implementation | Actor.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Actor.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Actor.Implementation, Temporary>>>;
@@ -134,7 +152,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     operation?: Document.Database.DeleteDocumentsOperation<Actor.Database.Delete>,
   ): Promise<Actor.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Actor.CreateData | Actor.CreateData[],
     operation?: Actor.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Actor.Implementation, Temporary> | undefined>;
@@ -204,12 +222,6 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     key: Key,
   ): Promise<this>;
 
-  protected override _preCreate(
-    data: Actor.CreateData,
-    options: Actor.Database.PreCreateOptions,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
-
   protected override _onCreate(data: Actor.CreateData, options: Actor.Database.OnCreateOperation, userId: string): void;
 
   protected static override _preCreateOperation(
@@ -223,12 +235,6 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     operation: Actor.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
-
-  protected override _preUpdate(
-    changed: Actor.UpdateData,
-    options: Actor.Database.PreUpdateOptions,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: Actor.UpdateData,
@@ -266,8 +272,6 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     operation: Actor.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

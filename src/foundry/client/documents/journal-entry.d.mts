@@ -1,7 +1,7 @@
 import type Document from "#common/abstract/document.d.mts";
 import type { documents } from "#client/client.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { InterfaceToObject, Merge } from "#utils";
+import type { InexactPartial, InterfaceToObject, Merge } from "#utils";
 import type BaseJournalEntry from "#common/documents/journal-entry.mjs";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
 import type { NotesLayer } from "#client/canvas/layers/_module.d.mts";
@@ -61,6 +61,7 @@ declare namespace JournalEntry {
      * The embedded metadata
      */
     interface Embedded {
+      JournalEntryCategory: "categories";
       JournalEntryPage: "pages";
     }
 
@@ -69,6 +70,7 @@ declare namespace JournalEntry {
      */
     interface Permissions {
       create: "JOURNAL_CREATE";
+      delete: "OWNER";
     }
   }
 
@@ -267,6 +269,12 @@ declare namespace JournalEntry {
     folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
 
     /**
+     * The categories contained within this JournalEntry.
+     * @defaultValue `[]`
+     */
+    categories: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryCategory, JournalEntry.Implementation>;
+
+    /**
      * The numeric sort value which orders this JournalEntry relative to its siblings
      * @defaultValue `0`
      */
@@ -392,6 +400,11 @@ declare namespace JournalEntry {
      * and {@link JournalEntry._onDeleteDescendantDocuments | `JournalEntry#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<JournalEntry.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode JournalEntry.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -425,6 +438,11 @@ declare namespace JournalEntry {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
     JournalEntry.Stored,
@@ -494,7 +512,6 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    * @remarks "Upgrade to OBSERVER ownership if the journal entry is in a LIMITED compendium,
    * as LIMITED has no special meaning for journal entries in this context."
    */
-  // user: not null (parameter default only where forwarded)
   override getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
@@ -519,10 +536,14 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    * @param options - Options which modify the pan operation
    * @returns A Promise which resolves once the pan animation has concluded
    */
-  // options: not null (parameter default only, destructured where forwarded)
   panToNote(options?: NotesLayer.PanToNoteOptions): Promise<void>;
 
   // _onUpdate and _onDelete are overridden but with no signature changes from their definition in BaseJournalEntry.
+
+  /**
+   * A sorting comparator for `JournalEntryCategory` documents
+   */
+  static sortCategories(a: JournalEntryCategory.Implementation, b: JournalEntryCategory.Implementation): number;
 
   /*
    * After this point these are not really overridden methods.
@@ -644,16 +665,19 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    */
   protected override _onDeleteDescendantDocuments(...args: Cards.OnDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"JournalEntry", JournalEntry.Parent>): string;
+  static override defaultName(context?: JournalEntry.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<JournalEntry.CreateData>,
-    context?: Document.CreateDialogContext<"JournalEntry", JournalEntry.Parent>,
+    data?: JournalEntry.CreateDialogData,
+    createOptions?: JournalEntry.Database.DialogCreateOptions,
+    options?: JournalEntry.CreateDialogOptions,
   ): Promise<JournalEntry.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"JournalEntry">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: JournalEntry.DropData,
     options?: JournalEntry.DropDataOptions,

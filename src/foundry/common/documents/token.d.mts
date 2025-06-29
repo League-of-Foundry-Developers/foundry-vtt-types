@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, DeepReadonly, InexactPartial } from "#utils";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -44,13 +44,24 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    *     update: this.#canUpdate,
    *     delete: "TOKEN_DELETE"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseToken.Metadata;
 
   static override defineSchema(): BaseToken.Schema;
+
+  /** @defaultValue `["DOCUMENT", "TOKEN"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
+  /** @defaultValue `["x", "y", "elevation", "width", "height", "shape"]` */
+  static MOVEMENT_FIELDS: Readonly<string[]>;
+
+  /**
+   * Are the given positions equal?
+   */
+  static arePositionsEqual(position1: TokenDocument.Position, position2: TokenDocument.Position): boolean;
 
   /**
    * The default icon used for newly created Token documents
@@ -59,15 +70,11 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   static DEFAULT_ICON: string;
 
   /**
-   * @remarks If `this.actor`, uses {@link Actor.testUserPermission | `this.actor.testUserPermission`} otherwise `super`'s. Core's `Actor` implementation
-   * doesn't override this method, so without further extension, that's equivalent to {@link Document.testUserPermission | `Document#testUserPermission`}
+   * Prepare changes to a descendent delta collection.
+   * @param changes - Candidate source changes.
+   * @param options - Options which determine how the new data is merged.
    */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  protected _prepareDeltaUpdate(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateOptions): void;
 
   // changes, options: not null (parameter default only)
   override updateSource(
@@ -75,24 +82,103 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: DataModel.UpdateOptions,
   ): TokenDocument.UpdateData;
 
+  override clone<Save extends boolean | null | undefined = false>(
+    data?: BaseToken.CreateData,
+    context?: Document.CloneContext<Save>,
+  ): Document.Clone<this, Save>;
+
+  /**
+   * Get the snapped position of the Token.
+   * @param data - The position and dimensions
+   * @returns The snapped position
+   */
+  getSnappedPosition(data?: TokenDocument.Dimensions3D): foundry.canvas.Canvas.ElevatedPoint;
+
+  /**
+   * Get the top-left offset of the Token
+   * @param data - The position and dimensions
+   * @returns The top-left grid offset
+   */
+  protected _positionToGridOffset(data?: TokenDocument.Dimensions3D): foundry.grid.BaseGrid.Offset3D;
+
+  /**
+   * Get the position of the Token from the top-left grid offset.
+   * @param offset - The top-left grid offset
+   * @param data   - The dimensions that override the current dimensions
+   * @returns The snapped position
+   */
+  protected _gridOffsetToPosition(
+    offset: foundry.grid.BaseGrid.Offset3D,
+    data?: TokenDocument.PartialDimensions,
+  ): foundry.canvas.Canvas.ElevatedPoint;
+
+  /**
+   * Get the width and height of the Token in pixels.
+   * @param data - The width and/or height in grid units (must be positive)
+   * @returns The width and height in pixels
+   */
+  getSize(data?: InexactPartial<TokenDocument.ShapelessDimensions>): TokenDocument.ShapelessDimensions;
+
+  /**
+   * Get the center point of the Token.
+   * @param data - The position and dimensions
+   * @returns The center point
+   */
+  getCenterPoint(data?: TokenDocument.Dimensions3D): foundry.canvas.Canvas.ElevatedPoint;
+
+  /**
+   * Get the grid space polygon of the Token.
+   * Returns undefined in gridless grids because there are no grid spaces.
+   * @param data - The dimensions
+   * @returns The grid space polygon or undefined if gridless
+   */
+  getGridSpacePolygon(data?: TokenDocument.PartialDimensions): foundry.canvas.Canvas.Point[] | void;
+
+  /**
+   * Get the offsets of grid spaces that are occupied by this Token at the current or given position.
+   * The grid spaces the Token occupies are those that are covered by the Token's shape in the snapped position.
+   * Returns an empty array in gridless grids.
+   * @param data - The position and dimensions
+   * @returns The offsets of occupied grid spaces
+   */
+  getOccupiedGridSpaceOffsets(data?: TokenDocument.Dimensions2D): foundry.grid.BaseGrid.Offset2D[];
+
+  /**
+   * Get the hexagonal offsets given the type, width, and height.
+   * @param width   - The width of the Token (positive)
+   * @param height  - The height of the Token (positive)
+   * @param shape   - The shape (one of {@link CONST.TOKEN_SHAPES})
+   * @param columns - Column-based instead of row-based hexagonal grid?
+   * @returns The hexagonal offsets
+   */
+  protected static _getHexagonalOffsets(
+    width: number,
+    height: number,
+    shape: CONST.TOKEN_SHAPES,
+    columns: boolean,
+  ): DeepReadonly<TokenDocument.HexagonalOffsetsData>;
+
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   // TODO: Update with the Delta conditionality
-  override toObject(source?: boolean | null): TokenDocument.Source;
+  override toObject(source?: boolean): TokenDocument.Source;
 
   /**
    * @remarks
    * Migrations:
-   * - `actorData` to `delta` (since v11, no specified end)
+   * - `hexagonalShape` to `shape` (since v13, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
   /**
    * @remarks
    * Shims:
-   * - `actorData` to `delta` (since v11, until v13)
    * - `effects` to nothing (since v12, until v14)
    *   - "`TokenDocument#effects` is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated `Actor`")
    * - `overlayEffect` to nothing (since v12, until v14)
    *   - "`TokenDocument#overlayEffect` is deprecated in favor of using `ActiveEffect` documents on the associated `Actor`")
+   * - `hexagonalShape` to `shape` (since v13, until v15)
+   *   - "`TokenDocument#hexagonalShape` is deprecated in favor of `TokenDocument#shape`."
    */
   // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
@@ -108,6 +194,12 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @remarks "TokenDocument# is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated Actor"
    */
   get overlayEffect(): "";
+
+  /**
+   * @deprecated since v13, until v15
+   * @remarks "TokenDocument#hexagonalShape is deprecated in favor of {@linkcode TokenDocument#shape}"
+   */
+  get hexagonalShape(): CONST.TOKEN_SHAPES;
 
   /*
    * After this point these are not really overridden methods.
@@ -144,7 +236,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   override parent: TokenDocument.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<TokenDocument.Implementation | TokenDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<TokenDocument.Implementation, Temporary>>>;
@@ -159,7 +251,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     operation?: Document.Database.DeleteDocumentsOperation<TokenDocument.Database.Delete>,
   ): Promise<TokenDocument.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: TokenDocument.CreateData | TokenDocument.CreateData[],
     operation?: TokenDocument.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<TokenDocument.Implementation, Temporary> | undefined>;

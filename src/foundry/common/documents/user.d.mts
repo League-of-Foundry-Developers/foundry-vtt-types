@@ -39,13 +39,13 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    *     update: this.#canUpdate,
    *     delete: this.#canDelete
    *   },
-   *   schemaVersion: "12.324",
+   *   schemaVersion: "13.341",
    * });
    * ```
    */
   static override metadata: User.Metadata;
 
-  /** @defaultValue `["USER"]` */
+  /** @defaultValue `["DOCUMENT", "USER"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
   static override defineSchema(): BaseUser.Schema;
@@ -70,7 +70,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   can(action: BaseUser.ActionPermission): boolean;
 
   /** @remarks Returns `.OWNER` for the User in question, `.NONE` for everyone else */
-  override getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Test whether the User has at least a specific permission
@@ -122,7 +122,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override parent: User.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<User.Implementation | User.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<User.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<User.Implementation, Temporary>>>;
@@ -137,7 +137,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
     operation?: Document.Database.DeleteDocumentsOperation<User.Database.Delete>,
   ): Promise<User.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: User.CreateData | User.CreateData[],
     operation?: User.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<User.Implementation, Temporary> | undefined>;
@@ -236,8 +236,6 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
     operation: User.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): undefined;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
 

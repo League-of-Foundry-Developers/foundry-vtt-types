@@ -57,6 +57,10 @@ const documents = {
     name: "Combatant",
     hasSubtype: false,
   },
+  CombatantGroup: {
+    name: "CombatantGroup",
+    hasSubtype: false,
+  },
   FogExploration: {
     name: "FogExploration",
     hasSubtype: false,
@@ -75,6 +79,10 @@ const documents = {
   },
   JournalEntry: {
     name: "JournalEntry",
+    hasSubtype: false,
+  },
+  JournalEntryCategory: {
+    name: "JournalEntryCategory",
     hasSubtype: false,
   },
   Macro: {

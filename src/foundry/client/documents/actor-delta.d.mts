@@ -2,7 +2,7 @@ import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { ConfiguredActorDelta } from "fvtt-types/configuration";
-import type { Identity, Merge, NullishProps, RequiredProps } from "#utils";
+import type { Identity, InexactPartial, Merge, NullishProps, RequiredProps } from "#utils";
 import type DataModel from "#common/abstract/data.d.mts";
 
 import fields = foundry.data.fields;
@@ -49,6 +49,7 @@ declare namespace ActorDelta {
         labelPlural: string;
         isEmbedded: true;
         embedded: Metadata.Embedded;
+        permissions: Metadata.Permissions;
         schemaVersion: string;
       }>
     > {}
@@ -60,6 +61,11 @@ declare namespace ActorDelta {
     interface Embedded {
       Item: "items";
       ActiveEffect: "effects";
+    }
+
+    interface Permissions {
+      create: "OWNER";
+      delete: "OWNER";
     }
   }
 
@@ -418,6 +424,11 @@ declare namespace ActorDelta {
      * and {@link ActorDelta._onDeleteDescendantDocuments | `ActorDelta#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<ActorDelta.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode ActorDelta.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -504,6 +515,11 @@ declare namespace ActorDelta {
 
   interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   /**
    * The arguments to construct the document.
    *
@@ -528,27 +544,28 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   // Note(LukeAbby): `data` is not actually required but `context.parent` is.
   constructor(data: ActorDelta.CreateData | undefined, context: ActorDelta.ConstructionContext);
 
-  // options: not null (parameter default only, destructured in super)
   protected override _configure(options?: Document.ConfigureOptions): void;
 
-  // options: not null (destructured)
   protected override _initialize(options?: ActorDelta.InitializeOptions): void;
 
   /** Pass-through the type from the synthetic Actor, if it exists. */
-  _type: string;
+  get type(): string;
+
+  set type(type: string);
+
+  protected _type: string;
 
   /**
    * Apply this ActorDelta to the base Actor and return a synthetic Actor.
    * @param context - Context to supply to synthetic Actor instantiation.
    * @remarks Forwards `context` to {@link BaseActorDelta.applyDelta | `this.constructor.applyDelta(this, this.parent.baseActor, context)`}
    */
-  apply(context?: BaseActorDelta.ApplyDeltaContext | null): Actor.Implementation | null;
+  apply(context?: BaseActorDelta.ApplyDeltaContext): Actor.Implementation | null;
 
   /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
   override prepareEmbeddedDocuments(): void;
 
   // TODO: accurately type changes and return type
-  // changes, options: not null (parameter default only)
   override updateSource(
     // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });` and `super.updateSource`.
     // However it's likely the overlap between these two types is pretty high.
@@ -586,6 +603,11 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    * @param doc - The parent whose immediate children have been modified.
    */
   _handleDeltaCollectionUpdates(doc: Document.Any): void;
+
+  /** @remarks `"No-op as ActorDeltas do not have sheets."` */
+  protected override _onSheetChange(): Promise<void>;
+
+  protected override _prepareDeltaUpdate(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): void;
 
   // _onUpdate and _onDelete are all overridden but with no signature changes from BaseActorDelta.
 
@@ -716,18 +738,21 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    */
   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
-  static override defaultName(
-    context?: Document.DefaultNameContext<"ActorDelta", NonNullable<ActorDelta.Parent>>,
-  ): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: ActorDelta.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data: Document.CreateDialogData<ActorDelta.CreateData> | undefined,
-    context: Document.CreateDialogContext<"ActorDelta", NonNullable<ActorDelta.Parent>>,
+    data: ActorDelta.CreateDialogData | undefined,
+    createOptions: ActorDelta.Database.DialogCreateOptions,
+    options?: ActorDelta.CreateDialogOptions,
   ): Promise<ActorDelta.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: ActorDelta.Database.DeleteOperation,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: ActorDelta.DropData,
     options?: ActorDelta.DropDataOptions,

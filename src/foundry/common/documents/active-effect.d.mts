@@ -35,7 +35,11 @@ declare abstract class BaseActiveEffect<
    *   hasTypeData: true,
    *   label: "DOCUMENT.ActiveEffect",
    *   labelPlural: "DOCUMENT.ActiveEffects",
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341",
+   *   permissions: {
+   *     create: "OWNER",
+   *     delete: "OWNER"
+   *   }
    * });
    * ```
    */
@@ -43,37 +47,18 @@ declare abstract class BaseActiveEffect<
 
   static override defineSchema(): BaseActiveEffect.Schema;
 
-  /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.canUserModify(user, "update")`, dropping `data` and forcing `action`,
-   * otherwise `super`'s (with all arguments forwarded). Core's `Actor` implementation doesn't override this method, and while
-   * core's `Item` does, it only mirrors this functionality, so without further extension all roads lead to {@link Document.canUserModify | `Document#canUserModify`}
-   */
-  // data: not null (parameter default only)
-  override canUserModify<Action extends "create" | "update" | "delete">(
-    user: User.Implementation,
-    action: Action,
-    data?: Document.CanUserModifyData<ActiveEffect.Schema, Action>,
-  ): boolean;
+  /** @defaultValue `["DOCUMENT", "EFFECT"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
-  /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Actor` implementation
-   * doesn't override this method, and `Item` only optionally forwards to `Actor`, so without further extension all roads
-   * lead to {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
+  protected override _preCreate(
+    data: ActiveEffect.CreateData,
+    options: ActiveEffect.Database.PreCreateOptions,
     user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
-
-  // _preCreate overridden but with no signature changes.
-  // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
+  ): Promise<boolean | void>;
 
   /**
    * @remarks
    * Migrations:
-   * - `label` to `name` (since v11, no specified end)
    * - `icon` to `img` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
@@ -81,19 +66,10 @@ declare abstract class BaseActiveEffect<
   /**
    * @remarks
    * Shims:
-   * - `label` to `name` (since v11, until v13)
    * - `icon` to `img` (since v12, until v14)
    */
   // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks Replaced by `name`
-   */
-  get label(): this["name"];
-
-  set label(value);
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -140,7 +116,7 @@ declare abstract class BaseActiveEffect<
 
   override parent: BaseActiveEffect.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<ActiveEffect.Implementation | ActiveEffect.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ActiveEffect.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<ActiveEffect.Implementation, Temporary>>>;
@@ -194,12 +170,6 @@ declare abstract class BaseActiveEffect<
     scope: Scope,
     key: Key,
   ): Promise<this>;
-
-  protected override _preCreate(
-    data: ActiveEffect.CreateData,
-    options: ActiveEffect.Database.PreCreateOptions,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: ActiveEffect.CreateData,
@@ -261,8 +231,6 @@ declare abstract class BaseActiveEffect<
     operation: ActiveEffect.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.

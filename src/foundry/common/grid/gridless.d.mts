@@ -48,7 +48,7 @@ declare class Gridless extends BaseGrid {
 declare namespace Gridless {
   interface Configuration extends BaseGrid.Configuration {}
 
-  interface Offset extends BaseGrid.Offset {}
+  type Offset = BaseGrid.Offset;
 
   interface OffsetRange extends BaseGrid.OffsetRange {}
 
@@ -64,7 +64,7 @@ declare namespace Gridless {
 
   interface MeasurePathResult extends BaseGrid.MeasurePathResult {}
 
-  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction;
+  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
 
   interface Dimensions extends BaseGrid.Dimensions {}
 }
