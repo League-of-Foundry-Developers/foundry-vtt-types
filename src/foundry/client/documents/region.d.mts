@@ -1,4 +1,4 @@
-import type { Merge, NullishProps } from "#utils";
+import type { InexactPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseShapeData } from "#common/data/data.mjs";
@@ -6,7 +6,6 @@ import type BaseRegion from "#common/documents/region.mjs";
 import type { Region } from "#client/canvas/placeables/_module.d.mts";
 
 import fields = foundry.data.fields;
-import Canvas = foundry.canvas.Canvas;
 
 /**
  * The client-side Region document which extends the common BaseRegion model.
@@ -19,11 +18,87 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   constructor(data: RegionDocument.CreateData, context?: RegionDocument.ConstructionContext);
 
   /**
+   * The shapes of this Region.
+   *
+   * The value of this property must not be mutated.
+   *
+   * This property is updated only by a document update.
+   * @remarks marked by foundry as readonly
+   */
+  get regionShapes(): foundry.data.regionShapes.RegionShape.Any[];
+
+  /**
+   * The polygons of this Region.
+   *
+   * The value of this property must not be mutated.
+   *
+   * This property is updated only by a document update.
+   */
+  get polygons(): ReadonlyArray<PIXI.Polygon>;
+
+  /**
+   * The polygon tree of this Region.
+   *
+   * The value of this property must not be mutated.
+   *
+   * This property is updated only by a document update.
+   */
+  get polygonTree(): foundry.data.regionShapes.RegionPolygonTree;
+
+  /**
+   * The Clipper paths of this Region.
+   *
+   * The value of this property must not be mutated.
+   *
+   * This property is updated only by a document update.
+   */
+  get clipperPaths(): ReadonlyArray<ReadonlyArray<ClipperLib.IntPoint>>;
+
+  /**
+   * The triangulation of this Region.
+   *
+   * The value of this property must not be mutated.
+   *
+   * This property is updated only by a document update.
+   */
+  get triangulation(): Readonly<{ vertices: Float32Array; indices: Uint16Array | Uint32Array }>;
+
+  /**
+   * The bounds of this Region.
+   *
+   * The value of this property must not be mutated.
+   *
+   * This property is updated only by a document update.
+   */
+  get bounds(): PIXI.Rectangle;
+
+  /**
+   * The tokens inside this region.
+   * @remarks marked by foundry as `@readonly`
+   */
+  tokens: ReadonlySet<TokenDocument.Implementation>;
+
+  prepareBaseData(): void;
+
+  /**
    * Test whether the given point (at the given elevation) is inside this Region.
    * @param point - The point.
-   * @returns Is the point inside this Region?
+   * @returns Is this point inside this Region?
    */
-  testPoint(point: Canvas.ElevatedPoint): boolean;
+  testPoint(point: foundry.canvas.Canvas.ElevatedPoint): boolean;
+
+  /**
+   * Split the movement path into its segments.
+   * @param waypoints - The waypoints of movement.
+   * @param samples   - The points relative to the waypoints that are tested.
+   *                    Whenever one of them is inside the region, the moved object
+   *                    is considered to be inside the region.
+   * @returns The movement split into its segments.
+   */
+  segmentizeMovementPath(
+    waypoints: RegionDocument.SegmentizeMovementPathWaypoint[],
+    samples: foundry.canvas.Canvas.Point[],
+  ): RegionDocument.MovementSegment[];
 
   /**
    * Teleport a Token into this Region.
@@ -33,8 +108,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * `TOKEN_DELETE` permissions. If the Token is teleported to different Scene, it is deleted
    * and a new Token Document in the other Scene is created.
    * @param token - An existing Token Document to teleport
-   * @returns The same Token Document if teleported within the same Scene,
-   * or a new Token Document if teleported to a different Scene
+   * @returns The same Token Document if teleported within the same Scene, or a new Token Document if teleported to a different Scene
    */
   teleportToken(token: TokenDocument.Implementation): Promise<TokenDocument.Implementation>;
 
@@ -45,25 +119,10 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    */
   protected static _activateSocketListeners(socket: WebSocket): void;
 
-  /**
-   * Update the tokens of the given regions.
-   *
-   * If called during Region/Scene create/update/delete workflows, the Token documents are always reset and
-   * so never in an animated state, which means the reset option may be false. It is important that the
-   * containment test is not done in an animated state.
-   * @param regions - The regions to update the tokens for
-   * @internal
-   */
-  // options: not null (destructured)
-  protected static _updateTokens(
-    regions: RegionDocument.Implementation[],
-    options?: RegionDocument.UpdateTokensOptions,
-  ): Promise<void>;
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected static _updateTokens(regions: never, options?: never): never;
 
-  // _onCreateOperation, _onUpdateOperation, and _onDeleteOperation are overridden from BaseRegion without signature changes.
-
-  /** The tokens inside this region. */
-  tokens: Set<TokenDocument.Implementation>;
+  // _onUpdate, _onCreateOperation, _onUpdateOperation, and _onDeleteOperation are overridden from BaseRegion without signature changes.
 
   /**
    * Trigger the Region event.
@@ -201,15 +260,19 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: Document.DefaultNameContext<"Region", NonNullable<RegionDocument.Parent>>,
-  ): string;
+  static override defaultName(context?: RegionDocument.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
-    data: Document.CreateDialogData<RegionDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Region", NonNullable<RegionDocument.Parent>>,
+    data: RegionDocument.CreateDialogData | undefined,
+    createOptions?: RegionDocument.Database.CreateOptions,
+    options?: RegionDocument.CreateDialogOptions,
   ): Promise<RegionDocument.Stored | null | undefined>;
+
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Region">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(
