@@ -10,7 +10,7 @@ declare const myFile: File;
 
 const response = await FilePicker.upload("foo", "bar", myFile);
 
-expectTypeOf(response.ok).toBeBoolean();
+expectTypeOf(response).toEqualTypeOf<FilePicker.UploadReturn>();
 
 const myPicker = new FilePicker();
 

@@ -43,6 +43,7 @@ clientSettings.register("foo", "bar", {
 });
 clientSettings.set("foo", "bar", false);
 expectTypeOf(clientSettings.get("foo", "bar")).toEqualTypeOf<boolean>();
+expectTypeOf(clientSettings.get("foo", "bar", { document: true })).toEqualTypeOf<Setting.Implementation>();
 
 // @ts-expect-error - Expect an error because the setting wasn't registered.
 clientSettings.get("foo", "baz");

@@ -1,4 +1,4 @@
-import type { AnyObject } from "#utils";
+import type { AnyObject, Identity } from "#utils";
 import type { DatabaseOperationMap, DocumentSocketRequest } from "#common/abstract/_types.d.mts";
 
 /**
@@ -20,6 +20,9 @@ declare class SocketInterface {
 }
 
 declare namespace SocketInterface {
+  interface Any extends AnySocketInterface {}
+  interface AnyConstructor extends Identity<typeof AnySocketInterface> {}
+
   /** @remarks Copied from `resources/app/common/types.mjs` */
   type RequestData = AnyObject | AnyObject[] | string | readonly string[];
 
@@ -65,3 +68,7 @@ declare namespace SocketInterface {
 }
 
 export default SocketInterface;
+
+declare abstract class AnySocketInterface extends SocketInterface {
+  constructor(...args: never);
+}

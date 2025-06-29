@@ -94,7 +94,7 @@ declare class InternalBitMask<T extends Record<string, boolean>> extends Number 
    * Convert value of this BitMask to object representation according to structure.
    * @returns The data represented by the bitmask.
    */
-  toObject(): Record<string, boolean>;
+  toObject(): this;
 
   /**
    * Creates a clone of this BitMask instance.

@@ -1,7 +1,5 @@
-import type { LazyUnknown, ValueOf } from "#utils";
+import type { Brand, Identity, InexactPartial } from "#utils";
 import type KeyboardManager from "./keyboard-manager.d.mts";
-import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { InteractionLayer } from "#client/canvas/layers/_module.d.mts";
 
 /**
  * A class responsible for managing defined game keybinding.
@@ -10,15 +8,14 @@ import type { InteractionLayer } from "#client/canvas/layers/_module.d.mts";
  * When Foundry Virtual Tabletop is initialized, a singleton instance of this class is constructed within the global
  * Game object as as game.keybindings.
  *
- * @see {@linkcode Game.keybindings}
- * @see {@linkcode SettingKeybindingConfig}
- * @see {@linkcode KeybindingsConfig}
+ * @see {@linkcode foundry.Game.keybindings | Game#keybindings}
+ * @see {@linkcode foundry.applications.sidebar.apps.ControlsConfig | ControlsConfig}
  */
 declare class ClientKeybindings {
   constructor();
 
   /** Registered Keybinding actions */
-  actions: Map<string, ClientKeybindings.KeybindingActionConfig>;
+  actions: Map<`${string}.${string}`, ClientKeybindings.StoredKeybindingActionConfig>;
 
   /** A mapping of a string key to possible Actions that might execute off it */
   activeKeys: Map<string, ClientKeybindings.KeybindingAction[]>;
@@ -27,21 +24,13 @@ declare class ClientKeybindings {
    * A stored cache of Keybind Actions Ids to Bindings
    * @remarks This is only undefined before the "ready" hook.
    */
-  bindings: Map<string, ClientKeybindings.KeybindingActionBinding[]> | undefined;
+  bindings: Map<string, ClientKeybindings.StoredKeybindingActionBinding[]> | undefined;
 
-  /**
-   * A count of how many registered keybindings there are
-   * @internal
-   * @defaultValue `0`
-   */
-  protected _registered: number;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _registered: never;
 
-  /**
-   * A timestamp which tracks the last time a pan operation was performed
-   * @internal
-   * @defaultValue `0`
-   */
-  protected _moveTime: number;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _moveTime: never;
 
   static MOVEMENT_DIRECTIONS: ClientKeybindings.MovementDirections;
 
@@ -52,7 +41,10 @@ declare class ClientKeybindings {
    */
   get moveKeys(): Set<string>;
 
-  /** Initializes the keybinding values for all registered actions */
+  /**
+   * Initializes the keybinding values for all registered actions
+   * @remarks Called just after the `setup` hook, and every time the `core.keybindings` setting changes
+   */
   initialize(): void;
 
   /**
@@ -81,10 +73,11 @@ declare class ClientKeybindings {
    *   onDown: () => { ui.notifications.info("Pressed!") },
    *   onUp: () => {},
    *   restricted: true,                         // Restrict this Keybinding to gamemaster only?
-   *   reservedModifiers: ["Alt""],              // If the ALT modifier is pressed, the notification is permanent instead of temporary
+   *   reservedModifiers: ["Alt"],              // If the ALT modifier is pressed, the notification is permanent instead of temporary
    *   precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
    * }
    * ```
+   * @remarks
    * @throws if called after `this.bindings` has been initialized.
    */
   register(namespace: string, action: string, data: ClientKeybindings.KeybindingActionConfig): void;
@@ -100,7 +93,7 @@ declare class ClientKeybindings {
    * game.keybindings.get("myModule", "showNotification");
    * ```
    */
-  get(namespace: string, action: string): ClientKeybindings.KeybindingActionBinding[];
+  get(namespace: string, action: string): ClientKeybindings.StoredKeybindingActionBinding[];
 
   /**
    * Set the editable Bindings of a Keybinding Action for a certain namespace and Action
@@ -118,30 +111,18 @@ declare class ClientKeybindings {
    *     }
    * ]);
    * ```
-   * @remarks Passing `undefined` or nothing as `bindings` resets to the default.
+   * @remarks Passing `undefined` or nothing as `bindings` deletes stored values for this key, effectively resetting to the values provided at registration
    */
   set(namespace: string, action: string, bindings?: ClientKeybindings.KeybindingActionBinding[]): Promise<void>;
 
   /** Reset all client keybindings back to their default configuration. */
   resetDefaults(): Promise<void>;
 
-  /**
-   * A helper method that, when given a value, ensures that the returned value is a standardized Binding array
-   * @param values - An array of keybinding assignments to be validated
-   * @returns An array of keybinding assignments confirmed as valid
-   * @internal
-   */
-  protected static _validateBindings(
-    values: Array<ClientKeybindings.KeybindingActionBinding>,
-  ): Array<Required<ClientKeybindings.KeybindingActionBinding>>;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _validateBindings(values: never): never;
 
-  /**
-   * Validate that assigned modifiers are allowed
-   * @param keys - An array of modifiers which may be valid
-   * @returns An array of modifiers which are confirmed as valid
-   * @internal
-   */
-  protected static _validateModifiers(keys: string[]): string[];
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _validateModifiers(keys: never): never;
 
   /**
    * Compares two Keybinding Actions based on their Order
@@ -149,247 +130,267 @@ declare class ClientKeybindings {
    * @param b - the second Keybinding Action
    * @internal
    */
-  static _compareActions(a: ClientKeybindings.KeybindingAction, b: ClientKeybindings.KeybindingAction): number;
+  protected static _compareActions(
+    a: ClientKeybindings.ActionComparison,
+    b: ClientKeybindings.ActionComparison,
+  ): number;
 
   /**
    * Register core keybindings.
-   * @param view           - The active game view
+   * @param view - The active game view
    */
   protected _registerCoreKeybindings(view: foundry.Game.View): void;
 
-  /**
-   * Handle Select all action
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onSelectAllObjects(context?: KeyboardManager.KeyboardEventContext): boolean;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onSelectAllObjects(context: never): never;
 
-  /**
-   * Handle Cycle View actions
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onCycleView(context: KeyboardManager.KeyboardEventContext): boolean;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onCycleView(context: never): never;
 
-  /**
-   * Handle Dismiss actions
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onDismiss(context?: KeyboardManager.KeyboardEventContext): Promise<boolean>;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onDismiss(context: never): never;
 
-  /**
-   * Open Character sheet for current token or controlled actor
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onToggleCharacterSheet(
-    context?: KeyboardManager.KeyboardEventContext,
-  ): ReturnType<foundry.Game["toggleCharacterSheet"]>;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onToggleCharacterSheet(context: never): never;
 
-  /**
-   * Handle action to target the currently hovered token.
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onTarget(context: KeyboardManager.KeyboardEventContext): boolean;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onTarget(context: never): never;
 
-  /**
-   * Handle DELETE Keypress Events
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onDelete(context?: KeyboardManager.KeyboardEventContext): boolean;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _handleMovement(context: never, layer: never): never;
 
-  /**
-   * Handle keyboard movement once a small delay has elapsed to allow for multiple simultaneous key-presses.
-   * @param context - The context data of the event
-   * @param layer   - The active InteractionLayer instance
-   * @internal
-   */
-  protected _handleMovement(context: KeyboardManager.KeyboardEventContext, layer: InteractionLayer): void;
+  /** @deprecated Removed in v13 (this warning will be removed in v14) */
+  protected static _onMeasuredRulerMovement(context: never): never;
 
-  /** Handle panning the canvas using CTRL + directional keys */
-  protected _handleCanvasPan(): ReturnType<Canvas["animatePan"]>;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onPause(context: never): never;
 
-  /**
-   * Handle Measured Ruler Movement Action
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onMeasuredRulerMovement(context?: KeyboardManager.KeyboardEventContext): boolean | void;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onHighlight(context: never): never;
 
-  /**
-   * Handle Pause Action
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onPause(context?: KeyboardManager.KeyboardEventContext): true;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _onPan(context: never, movementDirections: never): never;
 
-  /**
-   * Handle Highlight action
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onHighlight(context?: KeyboardManager.KeyboardEventContext): boolean;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onMacroExecute(context: never, number: never): never;
 
-  /**
-   * Handle Pan action
-   * @param context            - The context data of the event
-   * @param movementDirections - The Directions being panned in
-   * @internal
-   */
-  protected _onPan(
-    context: KeyboardManager.KeyboardEventContext,
-    movementDirections: ClientKeybindings.MovementDirection[],
-  ): boolean;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onMacroPageSwap(context: never, page: never): never;
 
-  /**
-   * Handle Macro executions
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onMacroExecute(
-    context: KeyboardManager.KeyboardEventContext,
-    number: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0,
-  ): boolean;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onCopy(context: never): never;
 
-  /**
-   * Handle Macro page swaps
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onMacroPageSwap(context: KeyboardManager.KeyboardEventContext, page: number): true;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onPaste(context: never): never;
 
-  /**
-   * Handle action to copy data to clipboard
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onCopy(context?: KeyboardManager.KeyboardEventContext): boolean;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onUndo(context: never): never;
 
-  /**
-   * Handle Paste action
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onPaste(context: KeyboardManager.KeyboardEventContext): boolean;
+  /** @deprecated Removed in v13 (this warning will be removed in v14) */
+  protected static _onZoom(context: never, zoomDirection: never): never;
 
-  /**
-   * Handle Undo action
-   * @param context - The context data of the event
-   * @internal
-   */
-  protected static _onUndo(context?: KeyboardManager.KeyboardEventContext): boolean;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected static _onFocusChat(context: never): never;
 
-  /**
-   * Handle presses to keyboard zoom keys
-   * @param context       - The context data of the event
-   * @param zoomDirection - The direction to zoom
-   * @internal
-   */
-  protected static _onZoom(
-    context: KeyboardManager.KeyboardEventContext | LazyUnknown,
-    zoomDirection: ClientKeybindings.ZoomDirection,
-  ): boolean;
-
-  /**
-   * Bring the chat window into view and focus the input
-   * @param context - The context data of the event
-   * @internal
-   */
-  static _onFocusChat(context: KeyboardManager.KeyboardEventContext): boolean;
+  #ClientKeybindings: true;
 }
 
 declare namespace ClientKeybindings {
+  interface Any extends AnyClientKeybindings {}
+  interface AnyConstructor extends Identity<typeof AnyClientKeybindings> {}
+
+  /**
+   * Properties of {@linkcode StoredKeybindActionConfig} that are neither computed nor provided defaults by {@linkcode ClientKeybindings.register | #register}
+   * @internal
+   */
+  type _KeybindActionConfigOptional = InexactPartial<{
+    /** An additional human readable hint */
+    hint: string;
+
+    /**
+     * A function to execute when a key down event occurs. If True is returned, the event is consumed and no further keybinds execute.
+     * @remarks Not passing at least one of `onUp` or `onDown` will lead to a fairly useless keybinding
+     */
+    onDown: (ctx: KeyboardManager.KeyboardEventContext) => boolean | void;
+
+    /**
+     * A function to execute when a key up event occurs. If True is returned, the event is consumed and no further keybinds execute.
+     * @remarks Not passing at least one of `onUp` or `onDown` will lead to a fairly useless keybinding
+     */
+    onUp: (ctx: KeyboardManager.KeyboardEventContext) => boolean | void;
+
+    /** If true, only a GM can edit and execute this Action */
+    restricted: boolean;
+  }>;
+
   /**
    * A Client Keybinding Action Configuration
-   * @remarks Copied from `resources/app/common/types.mjs`
+   * @remarks The shape of stored ({@linkcode ClientKeybindings.actions | #actions}) action configs, after defaults provided by
+   * {@linkcode ClientKeybindings.register | #register} are applied.
    */
-  interface KeybindingActionConfig {
-    /** The namespace within which the action was registered */
-    namespace?: string;
+  interface StoredKeybindingActionConfig extends _KeybindActionConfigOptional {
+    /**
+     * The namespace within which the action was registered
+     * @remarks e.g `"core"`, `"my-package"`
+     *
+     * Not included in {@linkcode KeybindActionConfig}, as it's separated out into the first argument of {@linkcode ClientKeybindings.register | #register}
+     */
+    namespace: string;
 
     /** The human readable name */
     name: string;
 
-    /** An additional human readable hint */
-    hint?: string | undefined;
+    /**
+     * The default bindings that can never be changed nor removed.
+     * @defaultValue `[]`
+     * @remarks The output of `ClientSettings##validateBindings`, run on either the value provided to {@linkcode ClientKeybindings.register | #register},
+     * or `[]` if none
+     */
+    uneditable: KeybindingActionBinding[];
 
-    /** The default bindings that can never be changed nor removed. */
-    uneditable?: KeybindingActionBinding[] | undefined;
+    /**
+     * The default bindings that can be changed by the user.
+     * @defaultValue `[]`
+     * @remarks The output of `ClientSettings##validateBindings`, run on either the value provided to {@linkcode ClientKeybindings.register | #register},
+     * or `[]` if none
+     */
+    editable: KeybindingActionBinding[];
 
-    /** The default bindings that can be changed by the user. */
-    editable?: KeybindingActionBinding[] | undefined;
+    /**
+     * If True, allows Repeat events to execute the Action's onDown. Defaults to false.
+     * @defaultValue `false`
+     */
+    repeat: boolean;
 
-    /** A function to execute when a key down event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-    onDown?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
+    /**
+     * Modifiers such as [ "CONTROL" ] that can be also pressed when executing this Action. Prevents using one of these modifiers as a Binding.
+     * @defaultValue `[]`
+     * @remarks The output of `ClientSettings##validateModifiers`, run on either the value provided to {@linkcode ClientKeybindings.register | #register},
+     * or `[]` if none
+     */
+    reservedModifiers: string[];
 
-    /** A function to execute when a key up event occurs. If True is returned, the event is consumed and no further keybinds execute. */
-    onUp?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
+    /**
+     * The preferred precedence of running this Keybinding Action
+     * @defaultValue {@linkcode CONST.KEYBINDING_PRECEDENCE.NORMAL}
+     */
+    precedence: CONST.KEYBINDING_PRECEDENCE;
 
-    /** If True, allows Repeat events to execute the Action's onDown. Defaults to false. */
-    repeat?: boolean | undefined;
-
-    /** If true, only a GM can edit and execute this Action */
-    restricted?: boolean | undefined;
-
-    /** Modifiers such as [ "CONTROL" ] that can be also pressed when executing this Action. Prevents using one of these modifiers as a Binding. */
-    reservedModifiers?: string[] | undefined;
-
-    /** The preferred precedence of running this Keybinding Action */
-    precedence?: number | undefined; // TODO: KEYBINDING_PRECEDENCE?
-
-    /** The recorded registration order of the action */
-    order?: number | undefined;
+    /**
+     * The recorded registration order of the action
+     * @remarks Always computed by {@linkcode ClientKeybindings.register | #register}; not included in {@linkcode KeybindActionConfig}
+     */
+    order: number;
   }
+
+  /**
+   * Omitted fields are overwritten by {@link ClientKeybindings.register | #register} regardless of passed values
+   * @internal
+   */
+  type _PassableKeybindingActionConfig = Omit<StoredKeybindingActionConfig, "namespace" | "order">;
+
+  /** @internal */
+  type _KeybindingActionConfig = Pick<_PassableKeybindingActionConfig, "name"> &
+    InexactPartial<Pick<_PassableKeybindingActionConfig, Exclude<keyof _PassableKeybindingActionConfig, "name">>>;
+
+  /**
+   * The interface to be passed to {@link ClientKeybindings.register | #register}. `name` is always required.
+   */
+  interface KeybindingActionConfig extends _KeybindingActionConfig {}
+
+  /** @internal */
+  type _StoredKeybindingActionBindingComputed = InexactPartial<{
+    /**
+     * A numeric index which tracks this bindings position during form rendering
+     * @remarks Appears to never exist on stored bindings in {@linkcode ClientKeybindings.bindings | ClientKeybindings#bindings},
+     * only existing on values in the `ControlsConfig##pendingEdits` private Map during a binding setting operation in the UI
+     */
+    index: number;
+  }>;
+
+  interface StoredKeybindingActionBinding extends _StoredKeybindingActionBindingComputed {
+    /**
+     * The {@linkcode KeyboardEvent.code | KeyboardEvent#code} value from {@link https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values}
+     * @remarks Registration will throw if one of {@linkcode KeyboardManager.PROTECTED_KEYS} is passed
+     */
+    key: string;
+
+    /**
+     * The Keyboard logical code if universal mode is enable (it is code otherwise)
+     */
+    logicalKey: string;
+
+    /**
+     * An array of modifiers keys from {@linkcode KeyboardManager.MODIFIER_KEYS} which are required for this binding to be activated
+     * @defaultValue `[]`
+     * @remarks Always provided by `ClientKeybindings##validateBindings`, which calls `##validateModifiers` with an `?? []` default
+     *
+     * The `keyof ... ` (UPPERCASE values) part of this union has a "For backwards compatibility" comment attached by foundry; no deprecation warning or `until` provided
+     */
+    modifiers: (KeyboardManager.MODIFIER_KEYS | keyof KeyboardManager.ModifierKeys)[];
+  }
+
+  /**
+   * See {@linkcode _StoredKeybindingActionBindingComputed.index}
+   * @internal
+   */
+  interface _PassableActionBinding extends Omit<StoredKeybindingActionBinding, "index"> {}
+
+  /**
+   * `modifiers` is optional because `##validateModifiers` is always called with a `?? []` default
+   * @internal
+   */
+  type _KeybindingActionBinding = Pick<_PassableActionBinding, "key" | "logicalKey"> &
+    InexactPartial<Pick<_PassableActionBinding, Exclude<keyof _PassableActionBinding, "key" | "logicalKey">>>;
 
   /**
    * A Client Keybinding Action Binding
-   * @remarks Copied from `resources/app/common/types.mjs`
+   * @remarks The type passed to {@linkcode ClientKeybindings.set | ClientKeybindings#set}. All properties are optional except for `key`
    */
-  interface KeybindingActionBinding {
-    /** A numeric index which tracks this bindings position during form rendering */
-    index?: number | undefined;
-
-    /** The KeyboardEvent#code value from https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values */
-    key: string;
-
-    /** An array of modifiers keys from KeyboardManager.MODIFIER_KEYS which are required for this binding to be activated */
-    modifiers?: string[] | undefined;
-  }
+  interface KeybindingActionBinding extends _KeybindingActionBinding {}
 
   /**
    * An action that can occur when a key is pressed
-   * @remarks Copied from `resources/app/common/types.mjs`
+   * @remarks This is the type generated by {@linkcode ClientKeybindings.initialize | ClientKeybindings#initialize} from registered
+   * {@linkcode ClientKeybindings.actions | actions}, and put into the {@linkcode ClientKeybindings.activeKeys | ClientKeybindings#activeKeys}
+   * array for its `key`.
+   *
+   * All keys are required because they are all provided by `#initialize`, but keys that are neither computed there nor provided defaults by
+   * {@linkcode ClientKeybindings.register | ClientKeybindings#register} are `| undefined`
    */
   interface KeybindingAction {
-    /** The namespaced machine identifier of the Action */
+    /**
+     * The namespaced machine identifier of the Action
+     * @remarks e.g `"core.target"`, `"my-package.my-action"`
+     */
     action: string;
 
-    /** The Keyboard key */
+    /**
+     * The Keyboard key
+     * @remarks e.g `"KeyA"`, `"CapsLock"`
+     */
     key: string;
 
     /** The human readable name */
     name: string;
 
     /** Required modifiers */
-    requiredModifiers: string[];
+    requiredModifiers: KeyboardManager.MODIFIER_KEYS[];
 
     /** Optional (reserved) modifiers */
-    optionalModifiers: string[];
+    optionalModifiers: KeyboardManager.MODIFIER_KEYS[];
 
     /** The handler that executes onDown */
-    onDown?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
+    onDown: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
 
     /** The handler that executes onUp */
-    onUp?: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
+    onUp: ((ctx: KeyboardManager.KeyboardEventContext) => boolean | void) | undefined;
 
     /** If True, allows Repeat events to execute this Action's onDown */
     repeat: boolean;
 
     /** If true, only a GM can execute this Action */
-    restricted: boolean;
+    restricted: boolean | undefined;
 
     /** The registration precedence */
     precedence: number;
@@ -398,19 +399,34 @@ declare namespace ClientKeybindings {
     order: number;
   }
 
+  /**
+   * @remarks The only two properties that {@linkcode ClientKeybindings._compareActions} care about.
+   * Its JSDoc provides this type as an anonymous inline `Pick`, but in actual use it's always passed
+   * full {@linkcode KeybindingAction}s, so it's somewhat redundant.
+   */
+  interface ActionComparison extends Pick<KeybindingAction, "precedence" | "order"> {}
+
+  type MOVEMENT_DIRECTIONS = Brand<string, "ClientKeybindings.MOVEMENT_DIRECTIONS">;
+
   interface MovementDirections {
-    UP: "up";
-    LEFT: "left";
-    DOWN: "down";
-    RIGHT: "right";
+    UP: "up" & MOVEMENT_DIRECTIONS;
+    LEFT: "left" & MOVEMENT_DIRECTIONS;
+    DOWN: "down" & MOVEMENT_DIRECTIONS;
+    RIGHT: "right" & MOVEMENT_DIRECTIONS;
+    DESCEND: "descend" & MOVEMENT_DIRECTIONS;
+    ASCEND: "ascend" & MOVEMENT_DIRECTIONS;
   }
-  type MovementDirection = ValueOf<MovementDirections>;
+
+  type ZOOM_DIRECTIONS = Brand<string, "ClientKeybindings.ZOOM_DIRECTIONS">;
 
   interface ZoomDirections {
-    IN: "in";
-    OUT: "out";
+    IN: "in" & ZOOM_DIRECTIONS;
+    OUT: "out" & ZOOM_DIRECTIONS;
   }
-  type ZoomDirection = ValueOf<ZoomDirections>;
 }
 
 export default ClientKeybindings;
+
+declare abstract class AnyClientKeybindings extends ClientKeybindings {
+  constructor(...args: never);
+}

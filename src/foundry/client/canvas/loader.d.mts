@@ -98,7 +98,7 @@ declare class TextureLoader {
    * Return a URL with a cache-busting query parameter appended.
    * @param src - The source URL being attempted
    * @returns The new URL, or false on a failure.
-   * @remarks As of v13, simply forwards to {@linkcode foundry.utils.getCacheBustURL}; Foundry comments `TODO @deprecated in v14`   *
+   * @remarks As of v13, simply forwards to {@linkcode foundry.utils.getCacheBustURL}; Foundry comments `TODO @deprecated in v14`
    */
   static getCacheBustURL(src: string): string | false;
 

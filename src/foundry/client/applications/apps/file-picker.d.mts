@@ -1,4 +1,5 @@
 import type { AnyObject, DeepPartial, Identity } from "#utils";
+import type { EmptyObject } from "type-fest";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type { FormSelectOption } from "../forms/fields.d.mts";
@@ -179,40 +180,34 @@ declare class FilePicker<
    * @param source  - The data source to which the file should be uploaded
    * @param path    - The destination path
    * @param file    - The File object to upload
-   * @param body    - Additional file upload options sent in the POST body
-   *                  (default: `{}`)
-   * @param options - Additional options to configure how the method behaves
-   *                  (default: `{}`)
+   * @param body    - Additional file upload options sent in the POST body (default: `{}`)
+   * @param options - Additional options to configure how the method behaves (default: `{}`)
    * @returns The response object
    */
-  // not: null
   static upload(
     source: string,
     path: string,
     file: File,
     body?: FilePicker.UploadBody,
     options?: FilePicker.UploadOptions,
-  ): Promise<Response>;
+  ): Promise<FilePicker.UploadReturn>;
 
   /**
    * A convenience function that uploads a file to a given package's persistent /storage/ directory
    * @param packageId - The id of the package to which the file should be uploaded. Only supports Systems and Modules.
    * @param path      - The relative destination path in the package's storage directory
    * @param file      - The File object to upload
-   * @param body      - Additional file upload options sent in the POST body
-   *                    (default: `{}`)
-   * @param options   - Additional options to configure how the method behaves
-   *                    (default: `{}`)
+   * @param body      - Additional file upload options sent in the POST body (default: `{}`)
+   * @param options   - Additional options to configure how the method behaves (default: `{}`)
    * @returns The response object
    */
-  // not: null
   static uploadPersistent(
     packageId: string,
     path: string,
     file: File,
     body?: FilePicker.UploadBody,
     options?: FilePicker.UploadOptions,
-  ): Promise<Response>;
+  ): Promise<FilePicker.UploadReturn>;
 
   /**
    * Browse to a specific location for this FilePicker instance
@@ -268,6 +263,26 @@ declare class FilePicker<
 declare namespace FilePicker {
   interface Any extends AnyFilePicker {}
   interface AnyConstructor extends Identity<typeof AnyFilePicker> {}
+
+  /**
+   * @remarks {@linkcode FilePicker.upload} (and {@linkcode FilePicker.uploadPersistent}, which returns a call to the former)
+   * claims to return 'the response object', but actually returns the {@linkcode Response#json}, if any of the various early
+   * returns aren't hit:
+   * - If the response includes a `.error`, returns `false`
+   * - If the response does not include an error but does return an empty `path`, returns void
+   * - If the response is a success with a truthy `path`, returns {@linkcode SuccessResponse}
+   * - If any of the above processes *throw* an error:
+   *   - If it's a {@linkcode foundry.utils.HttpError}, returns void
+   *   - Any other type of error, returns an empty object
+   *
+   */
+  type UploadReturn = false | void | SuccessResponse | EmptyObject;
+
+  interface SuccessResponse {
+    status: "success";
+    path: string;
+    message: string;
+  }
 
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {
     bucket: string | null;
