@@ -316,15 +316,13 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * Whenever the Document's sheet changes, close any existing applications for this Document, and re-render the new
    * sheet if one was already open.
    */
-  // options: not null (destructured)
   protected _onSheetChange(options?: ClientDocument.OnSheetChangeOptions): Promise<void>;
 
   /**
    * Gets the default new name for a Document
    * @param context - The context for which to create the Document name.
    */
-  // context: not null (destructured)
-  static defaultName(context?: Document.DefaultNameContext<never, never>): string;
+  static defaultName(context?: never): string;
 
   /**
    * Present a Dialog form to create a new Document of this type.
