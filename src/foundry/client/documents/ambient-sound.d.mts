@@ -392,6 +392,11 @@ declare namespace AmbientSoundDocument {
      * and {@link AmbientSoundDocument._onDeleteDescendantDocuments | `AmbientSoundDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<AmbientSoundDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode AmbientSoundDocument.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -475,13 +480,13 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
 
   // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: AmbientSoundDocument.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: AmbientSoundDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: AmbientSoundDocument.CreateDialogData | undefined,
-    createOptions?: AmbientSoundDocument.Database.CreateOptions,
+    createOptions: AmbientSoundDocument.Database.DialogCreateOptions,
     options?: AmbientSoundDocument.CreateDialogOptions,
   ): Promise<AmbientSoundDocument.Stored | null | undefined>;
 
@@ -490,7 +495,6 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
     operation?: Document.Database.DeleteOperationForName<"AmbientSound">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: AmbientSoundDocument.DropData,
     options?: AmbientSoundDocument.DropDataOptions,

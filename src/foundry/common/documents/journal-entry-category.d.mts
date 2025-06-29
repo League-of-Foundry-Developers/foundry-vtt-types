@@ -28,7 +28,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
    * You should use {@link JournalEntryCategory.implementation | `new JournalEntryCategory.implementation(...)`} instead which will give you
    * a system specific implementation of `JournalEntryCategory`.
    */
-  constructor(...args: JournalEntryCategory.ConstructorArgs);
+  constructor(data: JournalEntryCategory.CreateData, context?: JournalEntryCategory.ConstructionContext);
 
   /**
    * @defaultValue
@@ -82,7 +82,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   override parent: JournalEntryCategory.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<JournalEntryCategory.Implementation | JournalEntryCategory.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<JournalEntryCategory.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<JournalEntryCategory.Implementation, Temporary>>>;
@@ -97,7 +97,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
     operation?: Document.Database.DeleteDocumentsOperation<JournalEntryCategory.Database.Delete>,
   ): Promise<JournalEntryCategory.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: JournalEntryCategory.CreateData | JournalEntryCategory.CreateData[],
     operation?: JournalEntryCategory.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<JournalEntryCategory.Implementation, Temporary> | undefined>;
@@ -280,6 +280,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
 declare namespace BaseJournalEntryCategory {
   export import Name = JournalEntry.Name;
+  export import ConstructionContext = Item.ConstructionContext;
   export import ConstructorArgs = JournalEntry.ConstructorArgs;
   export import Hierarchy = JournalEntry.Hierarchy;
   export import Metadata = JournalEntry.Metadata;

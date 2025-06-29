@@ -402,6 +402,11 @@ declare namespace NoteDocument {
      * and {@link NoteDocument._onDeleteDescendantDocuments | `NoteDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<NoteDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode NoteDocument.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -459,9 +464,10 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
   constructor(data?: NoteDocument.CreateData, context?: NoteDocument.ConstructionContext);
 
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: NoteDocument.CreateDialogData | undefined,
-    createOptions?: NoteDocument.Database.CreateOptions,
+    createOptions: NoteDocument.Database.DialogCreateOptions,
     dialogoptions?: NoteDocument.CreateDialogOptions,
   ): Promise<NoteDocument.Stored | null | undefined>;
 
@@ -499,10 +505,9 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Note does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: NoteDocument.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: NoteDocument.DefaultNameContext): string;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: NoteDocument.DropData,
     options?: NoteDocument.DropDataOptions,

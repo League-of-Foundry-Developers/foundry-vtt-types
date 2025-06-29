@@ -1814,7 +1814,10 @@ declare namespace Document {
       | (DocumentType extends "Token" ? TokenDocument.Database.Create : never)
       | (DocumentType extends "Wall" ? WallDocument.Database.Create : never);
 
-    type CreateOperationForName<DocumentType extends Document.Type, Temporary extends boolean | undefined = false> =
+    type CreateOperationForName<
+      DocumentType extends Document.Type,
+      Temporary extends boolean | undefined = undefined,
+    > =
       | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "ActorDelta" ? ActorDelta.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Actor" ? Actor.Database.CreateOperation<Temporary> : never)
@@ -2073,20 +2076,20 @@ declare namespace Document {
           type?: never;
         };
 
-  type DefaultNameContext<DocumentName extends Document.Type, Parent extends Document.Any | null> = NullishProps<{
+  type DefaultNameContext<DocumentName extends Document.Type, Parent extends Document.Any | null> = InexactPartial<{
     /**
      * A compendium pack within which the Document should be created
      * @remarks Only used to generate the list of existing names to check against when incrementing the index for the `(number)` suffix.
      * Ignored if falsey, or if `parent` is provided and truthy.
      */
-    pack: string;
+    pack: string | null;
 
     /**
      * A parent document within which the created Document should belong
      * @remarks Only used to generate the list of existing names to check against when incrementing the index for the `(number)` suffix.
      * Ignored if falsey.
      */
-    parent: Parent;
+    parent: Parent | null;
   }> &
     _PossibleSubtypeContext<DocumentName>;
 

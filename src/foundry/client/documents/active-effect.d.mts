@@ -505,6 +505,11 @@ declare namespace ActiveEffect {
      * and {@link ActiveEffect._onDeleteDescendantDocuments | `ActiveEffect#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<ActiveEffect.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode ActiveEffect.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -679,7 +684,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @throws An error if there is no status effect in `CONFIG.statusEffects` with the given status ID and if
    * the status has implicit statuses but doesn't have a static _id.
    */
-  // options: not null (parameter default only)
   static fromStatusEffect(
     statusId: string,
     options?: ActiveEffect.ConstructionContext,
@@ -695,7 +699,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    *
    * @remarks Core's implementation doesn't use `statusId`, simply returning `new this(effectData, options)`
    */
-  // options: not null (destructured where forwarded)
   protected static _fromStatusEffect(
     statusId: string,
     effectData: ActiveEffect.CreateData,
@@ -750,7 +753,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @returns The decimal representation
    * @private
    */
-  // nTurns: not null (`!== undefined` check)
   protected _getCombatTime(round: number, turn: number, nTurns?: number): number;
 
   /**
@@ -942,13 +944,13 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   // Descendant Document operations have been left out because ActiveEffect does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: ActiveEffect.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: ActiveEffect.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: ActiveEffect.CreateDialogData | undefined,
-    createOptions?: ActiveEffect.Database.CreateOptions,
+    createOptions: ActiveEffect.Database.DialogCreateOptions,
     options?: ActiveEffect.CreateDialogOptions,
   ): Promise<ActiveEffect.Stored | null | undefined>;
 
@@ -957,7 +959,6 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
     operation?: ActiveEffect.Database.DeleteOperation,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: ActiveEffect.DropData,
     options?: ActiveEffect.DropDataOptions,

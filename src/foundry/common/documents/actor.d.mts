@@ -137,7 +137,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   override parent: BaseActor.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Actor.Implementation | Actor.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Actor.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Actor.Implementation, Temporary>>>;
@@ -152,7 +152,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     operation?: Document.Database.DeleteDocumentsOperation<Actor.Database.Delete>,
   ): Promise<Actor.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Actor.CreateData | Actor.CreateData[],
     operation?: Actor.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Actor.Implementation, Temporary> | undefined>;

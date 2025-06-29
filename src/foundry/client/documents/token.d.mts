@@ -922,6 +922,11 @@ declare namespace TokenDocument {
      * and {@link TokenDocument._onDeleteDescendantDocuments | `TokenDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<TokenDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode TokenDocument.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -1574,7 +1579,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
     options?: Document.InitializeSourceOptions,
   ): TokenDocument.Source;
 
-  // options: not null (parameter default only)
   protected override _initialize(options?: Document.InitializeOptions): void;
 
   override prepareBaseData(): void;
@@ -1605,7 +1609,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param barName     - The named bar to retrieve the attribute for
    * @returns The attribute displayed on the Token bar, if any
    */
-  // options: not null (destructured)
   getBarAttribute(barName: string, options?: TokenDocument.GetBarAttributeOptions): TokenDocument.GetBarAttributeReturn;
 
   /**
@@ -1723,7 +1726,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param options - Additional options passed to TokenDocument.createCombatants or TokenDocument.deleteCombatants (default: `{}`)
    * @returns Is this Token now an active Combatant?
    */
-  // options: not null (destructured)
   toggleCombatant(options?: TokenDocument.ToggleCombatantOptions): Promise<boolean>;
 
   /**
@@ -1732,7 +1734,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param options - Options which modify the toggle operation (default: `{}`)
    * @returns An array of created Combatant documents
    */
-  // options: not null (destructured)
   static createCombatants(
     tokens: TokenDocument.Implementation[],
     options?: TokenDocument.CreateCombatantsOptions,
@@ -1744,7 +1745,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param options - Options which modify the operation (default: `{}`)
    * @returns An array of deleted Combatant documents
    */
-  // options: not null (destructured)
   static deleteCombatants(
     tokens: TokenDocument.Implementation[],
     options?: TokenDocument.DeleteCombatantsOptions,
@@ -2030,7 +2030,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
    * @remarks After updating the synthetic actor, forwards to {@link TokenDocument._onRelatedUpdate | `TokenDocument#_onRelatedUpdate`}
    */
-  // update, options: not null (parameter defaults only)
   protected _onUpdateBaseActor(update?: Actor.UpdateData, options?: Actor.Database.OnUpdateOperation): void;
 
   /**
@@ -2054,7 +2053,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param _path - (default: `[]`)
    */
   // TODO: There's some very complex handling for non-datamodel Actor system implementations if we want
-  // _path: not null (parameter default only)
   static getTrackedAttributes(
     data?: TokenDocument.TrackedAttributesSubject | null,
     _path?: string[],
@@ -2064,7 +2062,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * Retrieve an Array of attribute choices from a plain object.
    * @param schema - The schema to explore for attributes.
    */
-  // _path: not null (parameter default only)
   protected static _getTrackedAttributesFromObject(
     data: AnyObject | AnyArray,
     _path?: string[],
@@ -2107,7 +2104,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @deprecated since v12
    * @remarks "`TokenDocument#toggleActiveEffect` is deprecated in favor of {@link Actor.toggleStatusEffect | `Actor#toggleStatusEffect`}"
    */
-  // options: not null (destructured)
   toggleActiveEffect(effectData: CONFIG.StatusEffect, options?: Actor.ToggleStatusEffectOptions): Promise<boolean>;
 
   /*
@@ -2122,13 +2118,13 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   // ClientDocument overrides
 
-  // context: not null (destructured)
-  static override defaultName(context?: TokenDocument.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: TokenDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: TokenDocument.CreateDialogData | undefined,
-    createOptions?: TokenDocument.Database.CreateOptions,
+    createOptions: TokenDocument.Database.DialogCreateOptions,
     options?: TokenDocument.CreateDialogOptions,
   ): Promise<TokenDocument.Stored | null | undefined>;
 
@@ -2137,7 +2133,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
     operation?: Document.Database.DeleteOperationForName<"Token">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: TokenDocument.DropData,
     options?: TokenDocument.DropDataOptions,

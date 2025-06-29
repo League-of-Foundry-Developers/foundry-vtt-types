@@ -12,13 +12,9 @@ declare namespace JournalEntryCategory {
   type Name = "JournalEntryCategory";
 
   /**
-   * The arguments to construct the document.
-   *
-   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * The context used to create a `JournalEntryCategory`.
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `JournalEntryCategory`.
@@ -296,6 +292,11 @@ declare namespace JournalEntryCategory {
      * and {@link JournalEntryCategory._onDeleteDescendantDocuments | `JournalEntryCategory#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<JournalEntryCategory.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode JournalEntryCategory.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -323,7 +324,7 @@ declare namespace JournalEntryCategory {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
@@ -344,12 +345,27 @@ declare namespace JournalEntryCategory {
    * make us any more wrong than currently.
    */
   type Resource = string | number | null;
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
  * The client-side JournalEntryCategory document which extends the common BaseJournalEntryCategory model.
  */
 declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.ClientDocument {
+  /**
+   * @param data    - Initial data from which to construct the `JournalEntryCategory`
+   * @param context - Construction context options
+   */
+  constructor(data: JournalEntryCategory.CreateData, context?: JournalEntryCategory.ConstructionContext);
+
   override prepareDerivedData(): void;
 
   /*
@@ -366,13 +382,13 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
 
   // Descendant Document operations have been left out because JournalEntryCategory does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: JournalEntryCategory.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: JournalEntryCategory.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data?: JournalEntryCategory.CreateDialogData,
-    createOptions?: JournalEntryCategory.Database.CreateOptions,
+    data: JournalEntryCategory.CreateDialogData | undefined,
+    createOptions: JournalEntryCategory.Database.DialogCreateOptions,
     options?: JournalEntryCategory.CreateDialogOptions,
   ): Promise<JournalEntryCategory.Stored | null | undefined>;
 
@@ -381,7 +397,6 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
     operation?: Document.Database.DeleteOperationForName<"JournalEntryCategory">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: JournalEntryCategory.DropData,
     options?: JournalEntryCategory.DropDataOptions,

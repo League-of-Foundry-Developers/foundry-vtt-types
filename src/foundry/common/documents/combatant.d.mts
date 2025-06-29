@@ -97,7 +97,7 @@ declare abstract class BaseCombatant<
 
   override parent: BaseCombatant.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Combatant.Implementation | Combatant.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Combatant.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Combatant.Implementation, Temporary>>>;
@@ -112,7 +112,7 @@ declare abstract class BaseCombatant<
     operation?: Document.Database.DeleteDocumentsOperation<Combatant.Database.Delete>,
   ): Promise<Combatant.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Combatant.CreateData | Combatant.CreateData[],
     operation?: Combatant.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Combatant.Implementation, Temporary> | undefined>;

@@ -492,6 +492,11 @@ declare namespace WallDocument {
      * and {@link WallDocument._onDeleteDescendantDocuments | `WallDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<WallDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode WallDocument.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -561,13 +566,13 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: WallDocument.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: WallDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: WallDocument.CreateDialogData | undefined,
-    createOptions?: WallDocument.Database.CreateOptions,
+    createOptions: WallDocument.Database.DialogCreateOptions,
     options?: WallDocument.CreateDialogOptions,
   ): Promise<WallDocument.Stored | null | undefined>;
 
@@ -576,7 +581,6 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
     operation?: Document.Database.DeleteOperationForName<"Wall">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: WallDocument.DropData,
     options?: WallDocument.DropDataOptions,

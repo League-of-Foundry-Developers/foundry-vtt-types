@@ -112,7 +112,7 @@ declare abstract class BaseTableResult<
 
   override parent: BaseTableResult.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<TableResult.Implementation | TableResult.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TableResult.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<TableResult.Implementation, Temporary>>>;
@@ -127,7 +127,7 @@ declare abstract class BaseTableResult<
     operation?: Document.Database.DeleteDocumentsOperation<TableResult.Database.Delete>,
   ): Promise<TableResult.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: TableResult.CreateData | TableResult.CreateData[],
     operation?: TableResult.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<TableResult.Implementation, Temporary> | undefined>;

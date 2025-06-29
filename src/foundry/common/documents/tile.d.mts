@@ -119,7 +119,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   override parent: TileDocument.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<TileDocument.Implementation | TileDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TileDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<TileDocument.Implementation, Temporary>>>;
@@ -134,7 +134,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     operation?: Document.Database.DeleteDocumentsOperation<TileDocument.Database.Delete>,
   ): Promise<TileDocument.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: TileDocument.CreateData | TileDocument.CreateData[],
     operation?: TileDocument.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<TileDocument.Implementation, Temporary> | undefined>;

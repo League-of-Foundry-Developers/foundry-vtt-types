@@ -460,6 +460,11 @@ declare namespace ChatMessage {
      * and {@link ChatMessage._onDeleteDescendantDocuments | `ChatMessage#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<ChatMessage.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode ChatMessage.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -725,7 +730,6 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    *
    * @returns The identified speaker data
    */
-  // options: not null (destructured)
   static getSpeaker(options?: ChatMessage.GetSpeakerOptions): ChatMessage.SpeakerData;
 
   /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
@@ -797,13 +801,11 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
 
   // Descendant Document operations have been left out because ChatMessage does not have any descendant documents.
 
-  // context: not null (destructured)
   static override defaultName(context?: ChatMessage.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: ChatMessage.CreateDialogData,
-    createOptions?: ChatMessage.Database.CreateOptions,
+    createOptions?: ChatMessage.Database.DialogCreateOptions,
     options?: ChatMessage.CreateDialogOptions,
   ): Promise<ChatMessage.Stored | null | undefined>;
 
@@ -812,7 +814,6 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
     operation?: Document.Database.DeleteOperationForName<"ChatMessage">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: ChatMessage.DropData,
     options?: ChatMessage.DropDataOptions,

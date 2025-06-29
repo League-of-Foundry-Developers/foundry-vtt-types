@@ -44,16 +44,11 @@ exports[`vitestTestsImproving`] = {
     "tests/foundry/client/canvas/rendering/shaders/lighting/illumination-lighting.test-d.ts:2889223545": [
       [11, 20, 1, "Property \'isRequired\' does not exist on type \'AbstractBaseShader\'.", "177611"]
     ],
-    "tests/foundry/client/documents/abstract/canvas-document.test-d.ts:673147519": [
-      [15, 44, 1, "Type \'undefined\' does not satisfy the constraint \'\\"Expected undefined, Actual null\\"\'.", "177612"],
-      [20, 41, 1, "Type \'{ parent Scene; }\' is missing the following properties from type \'CreateOptions<Create<boolean | undefined>>\' modifiedTime, render, renderSheet", "177600"]
-    ],
     "tests/foundry/client/documents/abstract/client-document.test-d.ts:438507210": [
-      [23, 36, 1, "Type \'{}\' is missing the following properties from type \'CreateOptions<Create<boolean | undefined>>\' modifiedTime, render, renderSheet", "177612"],
-      [26, 5, 1, "Object literal may only specify known properties, and \'types\' does not exist in type \'CreateOptions<Create<boolean | undefined>>\'.", "177604"],
-      [38, 5, 1, "Object literal may only specify known properties, and \'types\' does not exist in type \'CreateOptions<Create<boolean | undefined>>\'.", "177604"],
-      [46, 5, 1, "Object literal may only specify known properties, and \'types\' does not exist in type \'CreateOptions<Create<boolean | undefined>>\'.", "177604"],
-      [53, 5, 1, "Object literal may only specify known properties, and \'types\' does not exist in type \'CreateOptions<Create<boolean | undefined>>\'.", "177604"],
+      [26, 5, 1, "Object literal may only specify known properties, and \'types\' does not exist in type \'InexactPartial<Create<boolean | undefined>>\'.", "177604"],
+      [38, 5, 1, "Object literal may only specify known properties, and \'types\' does not exist in type \'InexactPartial<Create<boolean | undefined>>\'.", "177604"],
+      [46, 5, 1, "Object literal may only specify known properties, and \'types\' does not exist in type \'InexactPartial<Create<boolean | undefined>>\'.", "177604"],
+      [53, 5, 1, "Object literal may only specify known properties, and \'types\' does not exist in type \'InexactPartial<Create<boolean | undefined>>\'.", "177604"],
       [72, 61, 1, "Type \'Promise<_CustomItemClass>\' does not satisfy the constraint \'{ catch <TResult = never>(onrejected? ((reason any) => TResult | PromiseLike<TResult>) | null | undefined) => Promise<TResult | _CustomItemClass | undefined>; finally \\"Expected function, Actual function\\"; then \\"Expected function, Actual function\\"; [toStringTag] string; }\'.\\n  Types of property \'finally\' are incompatible.\\n    Type \'(onfinally? (() => void) | null | undefined) => Promise<_CustomItemClass>\' is not assignable to type \'\\"Expected function, Actual function\\"\'.", "177612"],
       [74, 65, 1, "Type \'Promise<_CustomItemClass>\' does not satisfy the constraint \'{ catch <TResult = never>(onrejected? ((reason any) => TResult | PromiseLike<TResult>) | null | undefined) => Promise<TResult | _CustomItemClass | undefined>; finally \\"Expected function, Actual function\\"; then \\"Expected function, Actual function\\"; [toStringTag] string; }\'.\\n  Types of property \'finally\' are incompatible.\\n    Type \'(onfinally? (() => void) | null | undefined) => Promise<_CustomItemClass>\' is not assignable to type \'\\"Expected function, Actual function\\"\'.", "177612"],
       [109, 45, 1, "Type \'Collection<_CustomItemClass, Methods<_CustomItemClass>>\' does not satisfy the constraint \'\\"Expected ..., Actual null\\"\'.", "177612"],
@@ -61,18 +56,9 @@ exports[`vitestTestsImproving`] = {
       [314, 3, 1, "Type \'Omit<unknown, \\"_id\\">\' is missing the following properties from type \'{ _stats { compendiumSource \\"Expected never, Actual null\\" | \\"Expected never, Actual string\\"; coreVersion \\"Expected never, Actual null\\" | \\"Expected never, Actual string\\"; ... 6 more ...; systemVersion \\"Expected never, Actual null\\" | \\"Expected never, Actual string\\"; }; ... 8 more ...; type \\"Expected ...\' _stats, effects, flags, folder, and 6 more.", "177566"],
       [314, 41, 1, "Type \'BaseItem<\\"armor\\" | \\"base\\" | \\"weapon\\" | ModuleSubType>\' does not satisfy the constraint \'ALL_DOCUMENT_TYPES\'.", "177612"]
     ],
-    "tests/foundry/client/documents/active-effect.test-d.ts:2797458595": [
-      [65, 5, 1, "Type \'{ parent Actor<\\"base\\" | \\"character\\" | Document.ModuleSubType>; }\' is missing the following properties from type \'CreateOptions<Create<boolean | undefined>>\' modifiedTime, render, renderSheet", "177541"],
-      [73, 5, 1, "Object literal may only specify known properties, and \'pack\' does not exist in type \'CreateOptions<Create<boolean | undefined>>\'.", "177546"],
-      [83, 7, 1, "Object literal may only specify known properties, and \'pack\' does not exist in type \'CreateOptions<Create<boolean | undefined>>\'.", "177541"],
-      [90, 5, 1, "Object literal may only specify known properties, and \'pack\' does not exist in type \'CreateOptions<Create<boolean | undefined>>\'.", "177583"],
-      [98, 5, 1, "Object literal may only specify known properties, and \'type\' does not exist in type \'DropData<\\"ActiveEffect\\">\'.", "177583"],
-      [103, 5, 1, "Object literal may only specify known properties, and \'type\' does not exist in type \'DropData<\\"ActiveEffect\\">\'.", "177616"],
-      [111, 7, 1, "Object literal may only specify known properties, and \'type\' does not exist in type \'DropData<\\"ActiveEffect\\">\'.", "177541"]
-    ],
-    "tests/foundry/client/documents/actor-delta.test-d.ts:3912933542": [
-      [11, 31, 1, "Type \'\\"\\"\' has no properties in common with type \'ApplyDeltaContext\'.", "177632"],
-      [11, 50, 1, "Type \'Actor<\\"base\\" | \\"character\\" | ModuleSubType>\' does not satisfy the constraint \'\\"Expected ..., Actual null\\"\'.", "177548"]
+    "tests/foundry/client/documents/actor-delta.test-d.ts:1170165382": [
+      [20, 31, 1, "Type \'\\"\\"\' has no properties in common with type \'ApplyDeltaContext\'.", "177632"],
+      [20, 50, 1, "Type \'Actor<\\"base\\" | \\"character\\" | ModuleSubType>\' does not satisfy the constraint \'\\"Expected ..., Actual null\\"\'.", "177548"]
     ],
     "tests/foundry/client/documents/actor.test-d.ts:501444937": [
       [17, 45, 1, "Type \'InitializedType<{ categories [\\"IMAGE\\"]; initial (data unknown) => string; }>\' does not satisfy the constraint \'\\"Expected null, Actual never\\" | \\"Expected string, Actual never\\" | \\"Expected undefined, Actual never\\"\'.\\n  Type \'undefined\' is not assignable to type \'\\"Expected null, Actual never\\" | \\"Expected string, Actual never\\" | \\"Expected undefined, Actual never\\"\'.", "177606"],
@@ -186,10 +172,6 @@ exports[`vitestTestsImproving`] = {
       [11, 41, 1, "Type \'Sound | null\' does not satisfy the constraint \'\\"Expected ..., Actual undefined\\" | \\"Expected null, Actual undefined\\"\'.\\n  Type \'null\' is not assignable to type \'\\"Expected ..., Actual undefined\\" | \\"Expected null, Actual undefined\\"\'.", "177609"],
       [15, 42, 1, "Type \'void | Promise<void> | Promise<Sound>\' does not satisfy the constraint \'{ catch never; finally never; then never; [toStringTag] never; }\'.\\n  Type \'void\' is not assignable to type \'{ catch never; finally never; then never; [toStringTag] never; }\'.", "177623"]
     ],
-    "tests/foundry/client/documents/scene.test-d.ts:1973163449": [
-      [14, 40, 1, "Type \'BaseGrid | { type GRID_TYPES; size number; style string; thickness number; color Color; alpha number; distance number; units string; }\' does not satisfy the constraint \'{ addHighlightLayer \\"Expected never, Actual function\\"; alpha number; calculateDimensions \\"Expected never, Actual function\\"; clearHighlightLayer \\"Expected never, Actual function\\"; ... 48 more ...; w \\"Expected never, Actual number\\"; }\'.\\n  Type \'BaseGrid\' is not assignable to type \'{ addHighlightLayer \\"Expected never, Actual function\\"; alpha number; calculateDimensions \\"Expected never, Actual function\\"; clearHighlightLayer \\"Expected never, Actual function\\"; ... 48 more ...; w \\"Expected never, Actual number\\"; }\'.\\n    Types of property \'addHighlightLayer\' are incompatible.\\n      Type \'(name string) => unknown\' is not assignable to type \'\\"Expected never, Actual function\\"\'.", "177621"],
-      [57, 46, 1, "Type \'string\' does not satisfy the constraint \'\\"Expected string, Actual null\\" | \\"Expected string, Actual undefined\\"\'.", "177612"]
-    ],
     "tests/foundry/client/documents/setting.test-d.ts:4130226978": [
       [16, 41, 1, "Type \'string\' does not satisfy the constraint \'\\"Expected string, Actual never\\"\'.", "177561"],
       [27, 25, 1, "Expected 1 arguments, but got 0.", "177612"]
@@ -201,9 +183,6 @@ exports[`vitestTestsImproving`] = {
       [4, 52, 1, "Type \'BaseScene\' is missing the following properties from type \'Scene\' apps, _sheet, collection, compendium, and 54 more.", "177617"],
       [15, 63, 1, "Type \'Collection<_CustomItemClass, Methods<_CustomItemClass>>\' does not satisfy the constraint \'{ clear () => void; contents \\"Expected ..., Actual unknown\\"[]; delete (key string) => boolean; entries \\"Expected function, Actual function\\"; filter \\"Expected function, Actual function\\"; ... 14 more ...; [toStringTag] string; }\'.\\n  Types of property \'contents\' are incompatible.\\n    Type \'_CustomItemClass[]\' is not assignable to type \'\\"Expected ..., Actual unknown\\"[]\'.\\n      Type \'_CustomItemClass\' is not assignable to type \'\\"Expected ..., Actual unknown\\"\'.", "177649"],
       [17, 3, 1, "Type \'Collection<ActiveEffect<\\"base\\" | ModuleSubType>, Methods<ActiveEffect<\\"base\\" | ModuleSubType>>>\' does not satisfy the constraint \'{ clear () => void; contents \\"Expected ..., Actual unknown\\"[]; delete (key string) => boolean; entries \\"Expected function, Actual function\\"; filter \\"Expected function, Actual function\\"; ... 14 more ...; [toStringTag] string; }\'.\\n  Types of property \'contents\' are incompatible.\\n    Type \'ActiveEffect<\\"base\\" | ModuleSubType>[]\' is not assignable to type \'\\"Expected ..., Actual unknown\\"[]\'.\\n      Type \'ActiveEffect<\\"base\\" | ModuleSubType>\' is not assignable to type \'\\"Expected ..., Actual unknown\\"\'.", "177566"]
-    ],
-    "tests/foundry/client/documents/user.test-d.ts:457464901": [
-      [34, 104, 1, "Expected 1 arguments, but got 0.", "177612"]
     ],
     "tests/foundry/client/head.test-d.ts:1426768485": [
       [8, 37, 1, "Type \'MainMenu<RenderContext, Configuration, RenderOptions> | undefined\' does not satisfy the constraint \'\\"Expected ..., Actual ...\\" | \\"Expected undefined, Actual ...\\"\'.\\n  Type \'undefined\' is not assignable to type \'\\"Expected ..., Actual ...\\" | \\"Expected undefined, Actual ...\\"\'.", "177612"]

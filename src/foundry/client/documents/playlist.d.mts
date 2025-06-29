@@ -449,6 +449,11 @@ declare namespace Playlist {
      * and {@link Playlist._onDeleteDescendantDocuments | `Playlist#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Playlist.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Playlist.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -586,7 +591,6 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * @param options - Additional options which configure the next track
    * @returns If successfully updated, this Playlist document
    */
-  // options: not null (destructured)
   playNext(soundId?: string | null, options?: Playlist.PlayNextOptions): Promise<this | undefined | null>;
 
   /**
@@ -637,7 +641,6 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    */
   protected _sortSounds(a: PlaylistSound.Implementation, b: PlaylistSound.Implementation): number;
 
-  // options: not null (destructured)
   override toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
@@ -727,7 +730,6 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    */
   bulkImportSounds(paths: string[]): Promise<PlaylistSound.Implementation[]>;
 
-  // options: not null (parameter default only, destructured in super)
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: foundry.documents.collections.CompendiumCollection.Any | null,
     options?: Options,
@@ -799,13 +801,11 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    */
   protected override _preDeleteDescendantDocuments(...args: Playlist.PreDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
   static override defaultName(context?: Playlist.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Playlist.CreateDialogData,
-    createOptions?: Playlist.Database.CreateOptions,
+    createOptions?: Playlist.Database.DialogCreateOptions,
     options?: Playlist.CreateDialogOptions,
   ): Promise<Playlist.Stored | null | undefined>;
 
@@ -814,7 +814,6 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
     operation?: Document.Database.DeleteOperationForName<"Playlist">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Playlist.DropData,
     options?: Playlist.DropDataOptions,

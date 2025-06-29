@@ -462,6 +462,11 @@ declare namespace Combat {
      * and {@link Combat._onDeleteDescendantDocuments | `Combat#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Combat.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Combat.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -1020,13 +1025,11 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    */
   protected override _preDeleteDescendantDocuments(...args: Combat.PreDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
   static override defaultName(context?: Combat.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Combat.CreateDialogData,
-    createOptions?: Combat.Database.CreateOptions,
+    createOptions?: Combat.Database.DialogCreateOptions,
     options?: Combat.CreateDialogOptions,
   ): Promise<Combat.Stored | null | undefined>;
 
@@ -1035,7 +1038,6 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
     operation?: Document.Database.DeleteOperationForName<"Combat">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Combat.DropData,
     options?: Combat.DropDataOptions,

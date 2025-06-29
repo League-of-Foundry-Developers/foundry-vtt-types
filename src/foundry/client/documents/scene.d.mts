@@ -522,7 +522,7 @@ declare namespace Scene {
       {},
       // eslint-disable-next-line @typescript-eslint/no-deprecated
       fields.SchemaField.Internal.AssignmentType<GridSchema, fields.SchemaField.DefaultOptions>,
-      foundry.grid.BaseGrid | fields.SchemaField.Internal.InitializedType<GridSchema, fields.SchemaField.DefaultOptions>
+      foundry.grid.BaseGrid
     >;
 
     /**
@@ -968,6 +968,11 @@ declare namespace Scene {
      * and {@link Scene._onDeleteDescendantDocuments | `Scene#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Scene.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Scene.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -1161,6 +1166,7 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
   /**
    * The grid instance.
    */
+  // Note: Foundry overrides the schema to set `grid` to a grid subclass in `Scene.#getGrid`
   grid: foundry.grid.BaseGrid;
 
   /**
@@ -1207,7 +1213,6 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    * @param createData - (default: `{}`)
    * @param options    - (default: `{}`)
    */
-  // data: not null (property access), context: not null (destructured)
   override clone<Save extends boolean | null | undefined = false>(
     data?: Scene.CreateData,
     context?: Document.CloneContext<Save>,
@@ -1345,7 +1350,6 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    */
   protected override _preDeleteDescendantDocuments(...args: Scene.PreDeleteDescendantDocumentsArgs): void;
 
-  // options: not null (parameter default only, destructured in super)
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: foundry.documents.collections.CompendiumCollection.Any | null,
     options?: Options,
@@ -1356,7 +1360,6 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    * @param data - (default: `{}`)
    * @returns The created thumbnail data.
    */
-  // data: not null (destructured)
   createThumbnail(data?: Scene.ThumbnailCreationData): Promise<ImageHelper.ThumbnailReturn>;
 
   /*
@@ -1409,13 +1412,11 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    */
   protected override _onDeleteDescendantDocuments(...args: Scene.OnDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
   static override defaultName(context?: Scene.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Scene.CreateDialogData,
-    createOptions?: Scene.Database.CreateOptions,
+    createOptions?: Scene.Database.DialogCreateOptions,
     options?: Scene.CreateDialogOptions,
   ): Promise<Scene.Stored | null | undefined>;
 
@@ -1424,7 +1425,6 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
     operation?: Document.Database.DeleteOperationForName<"Scene">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Scene.DropData,
     options?: Scene.DropDataOptions,

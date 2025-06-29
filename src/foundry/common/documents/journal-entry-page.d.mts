@@ -85,7 +85,7 @@ declare abstract class BaseJournalEntryPage<
 
   override parent: BaseJournalEntryPage.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<JournalEntryPage.Implementation | JournalEntryPage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<JournalEntryPage.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<JournalEntryPage.Implementation, Temporary>>>;
@@ -100,7 +100,7 @@ declare abstract class BaseJournalEntryPage<
     operation?: Document.Database.DeleteDocumentsOperation<JournalEntryPage.Database.Delete>,
   ): Promise<JournalEntryPage.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: JournalEntryPage.CreateData | JournalEntryPage.CreateData[],
     operation?: JournalEntryPage.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<JournalEntryPage.Implementation, Temporary> | undefined>;

@@ -364,6 +364,11 @@ declare namespace Folder {
      * and {@link Folder._onDeleteDescendantDocuments | `Folder#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Folder.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Folder.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -573,10 +578,9 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
   // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
   /** @remarks Creates and renders a {@link FolderConfig | `FolderConfig`} instead of a simple Dialog */
-  // data, options: not null (parameter defaults only)
   static override createDialog(
     data?: Folder.CreateDialogData,
-    createOptions?: Folder.Database.CreateOptions,
+    createOptions?: Folder.Database.DialogCreateOptions,
     options?: Folder.CreateDialogOptions,
   ): Promise<Folder.Stored | null | undefined>;
 
@@ -592,7 +596,6 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * @param options - Additional options which customize how content is exported. See {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`} (default: `{}`)
    * @returns The updated Compendium Collection instance
    */
-  // options: not null (parameter default only)
   exportToCompendium<Pack extends foundry.documents.collections.CompendiumCollection.Any>(
     pack: Pack,
     options?: Folder.ExportToCompendiumOptions,
@@ -607,7 +610,6 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * @remarks - Foundry documents `pack` as just being a `string` but it is unused in favor of `options.pack`, and Foundry itself
    * calls `exportDialog` with `null`.
    */
-  // options: not null (parameter default only)
   exportDialog(pack: string | null, options?: Folder.ExportDialogOptions): Promise<void>;
 
   /**
@@ -637,10 +639,8 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
 
   // Descendant Document operations have been left out because Folder does not have any descendant documents.
 
-  // context: not null (destructured)
   static override defaultName(context?: Folder.DefaultNameContext): string;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Folder.DropData,
     options?: Folder.DropDataOptions,

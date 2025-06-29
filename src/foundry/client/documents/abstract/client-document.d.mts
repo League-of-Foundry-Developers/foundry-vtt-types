@@ -323,7 +323,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * Gets the default new name for a Document
    * @param context - The context for which to create the Document name.
    */
-  static defaultName(context?: never): string;
+  static defaultName(context: never): string;
 
   /**
    * Present a Dialog form to create a new Document of this type.
@@ -336,7 +336,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @privateRemarks `| undefined` is included in the return types of the specific document overrides due to {@link Document.create | `Document.create`}
    * possibly being `undefined` if creation is cancelled by preCreate methods or hooks
    */
-  static createDialog(data: never, createOptions?: never, options?: never): Promise<unknown>;
+  static createDialog(data: never, createOptions: never, options?: never): Promise<unknown>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.

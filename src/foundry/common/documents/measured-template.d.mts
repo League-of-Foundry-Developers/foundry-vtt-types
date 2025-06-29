@@ -107,7 +107,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   override parent: MeasuredTemplateDocument.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<MeasuredTemplateDocument.Implementation | MeasuredTemplateDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<MeasuredTemplateDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<MeasuredTemplateDocument.Implementation, Temporary>>>;
@@ -122,7 +122,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     operation?: Document.Database.DeleteDocumentsOperation<MeasuredTemplateDocument.Database.Delete>,
   ): Promise<MeasuredTemplateDocument.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: MeasuredTemplateDocument.CreateData | MeasuredTemplateDocument.CreateData[],
     operation?: MeasuredTemplateDocument.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<MeasuredTemplateDocument.Implementation, Temporary> | undefined>;

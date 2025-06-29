@@ -424,6 +424,11 @@ declare namespace ActorDelta {
      * and {@link ActorDelta._onDeleteDescendantDocuments | `ActorDelta#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<ActorDelta.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode ActorDelta.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -539,10 +544,8 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   // Note(LukeAbby): `data` is not actually required but `context.parent` is.
   constructor(data: ActorDelta.CreateData | undefined, context: ActorDelta.ConstructionContext);
 
-  // options: not null (parameter default only, destructured in super)
   protected override _configure(options?: Document.ConfigureOptions): void;
 
-  // options: not null (destructured)
   protected override _initialize(options?: ActorDelta.InitializeOptions): void;
 
   /** Pass-through the type from the synthetic Actor, if it exists. */
@@ -563,7 +566,6 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   override prepareEmbeddedDocuments(): void;
 
   // TODO: accurately type changes and return type
-  // changes, options: not null (parameter default only)
   override updateSource(
     // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });` and `super.updateSource`.
     // However it's likely the overlap between these two types is pretty high.
@@ -736,13 +738,13 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    */
   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
-  static override defaultName(context?: ActorDelta.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: ActorDelta.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: ActorDelta.CreateDialogData | undefined,
-    createOptions?: ActorDelta.Database.CreateOptions,
+    createOptions: ActorDelta.Database.DialogCreateOptions,
     options?: ActorDelta.CreateDialogOptions,
   ): Promise<ActorDelta.Stored | null | undefined>;
 
@@ -751,7 +753,6 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
     operation?: ActorDelta.Database.DeleteOperation,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: ActorDelta.DropData,
     options?: ActorDelta.DropDataOptions,

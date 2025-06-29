@@ -382,6 +382,11 @@ declare namespace Adventure {
      * and {@link Adventure._onDeleteDescendantDocuments | `Adventure#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Adventure.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Adventure.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -409,7 +414,7 @@ declare namespace Adventure {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
@@ -492,7 +497,6 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
    * @remarks If this creation is happening in a provided `pack`, and that pack is **not** system-specific,
    * strips `Actor`s, `Item`s, and `Actor` and `Item` `Folders` from `source`s
    */
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: Adventure.CreateData,
     context?: DataModel.FromSourceOptions,
@@ -504,7 +508,6 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
    * @param options - Options which configure and customize the import process
    * @returns The import result
    */
-  // options: not null (destructured)
   import(options?: Adventure.ImportOptions): Promise<Adventure.ImportResult>;
 
   /**
@@ -512,7 +515,6 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
    * @param options - Options passed in from the import dialog to configure the import behavior
    * @returns A subset of adventure fields to import.
    */
-  // options: not null (destructured)
   prepareImport(options?: Adventure.PrepareImportOptions): Promise<Adventure.ImportData>;
 
   /**
@@ -536,13 +538,13 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
 
   // Descendant Document operations have been left out because Adventure does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: Adventure.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: Adventure.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: Adventure.CreateDialogData | undefined,
-    createOptions?: Adventure.Database.CreateOptions,
+    createOptions: Adventure.Database.DialogCreateOptions,
     options?: Adventure.CreateDialogOptions,
   ): Promise<Adventure.Stored | null | undefined>;
 
@@ -551,7 +553,6 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
     operation?: Document.Database.DeleteOperationForName<"Adventure">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Adventure.DropData,
     options?: Adventure.DropDataOptions,

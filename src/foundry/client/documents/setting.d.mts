@@ -315,6 +315,11 @@ declare namespace Setting {
      * and {@link Setting._onDeleteDescendantDocuments | `Setting#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Setting.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Setting.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -382,7 +387,6 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
    */
   get config(): foundry.applications.settings.SettingsConfig | undefined;
 
-  // options: not null (parameter default only)
   protected override _initialize(options?: Document.InitializeOptions): void;
 
   // _onCreate and _onUpdate are overridden but with no signature changes.
@@ -409,16 +413,14 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
 
   // Descendant Document operations have been left out because Setting does not have any descendant documents.
 
-  // context: not null (destructured)
   static override defaultName(context?: Setting.DefaultNameContext): string;
 
   /**
    * @throws Foundry tries to figure out the folders for the world collection and errors out
    */
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Setting.CreateData,
-    createOptions?: Setting.Database.CreateOptions,
+    createOptions?: Setting.Database.DialogCreateOptions,
     options?: Setting.CreateDialogOptions,
   ): never;
 
@@ -427,7 +429,6 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
     operation?: Document.Database.DeleteOperationForName<"Setting">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Setting.DropData,
     options?: Setting.DropDataOptions,

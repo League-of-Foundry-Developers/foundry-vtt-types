@@ -357,6 +357,11 @@ declare namespace PlaylistSound {
      * and {@link PlaylistSound._onDeleteDescendantDocuments | `PlaylistSound#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<PlaylistSound.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode PlaylistSound.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -472,7 +477,6 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
    */
   load(): Promise<void>;
 
-  // options: not null (destructured)
   toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
@@ -520,13 +524,14 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because PlaylistSound does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: PlaylistSound.DefaultNameContext): string;
+  // Note: `context` is required because otherwise a `collection` cannot be found.
+  static override defaultName(context: PlaylistSound.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
+  // Note: `context` is required because otherwise a `collection` cannot be found.
   static override createDialog(
     data: PlaylistSound.CreateDialogData | undefined,
-    createOptions?: PlaylistSound.Database.CreateOptions,
+    createOptions: PlaylistSound.Database.DialogCreateOptions,
     options?: PlaylistSound.CreateDialogOptions,
   ): Promise<PlaylistSound.Stored | null | undefined>;
 
@@ -535,7 +540,6 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
     operation?: Document.Database.DeleteOperationForName<"PlaylistSound">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: PlaylistSound.DropData,
     options?: PlaylistSound.DropDataOptions,

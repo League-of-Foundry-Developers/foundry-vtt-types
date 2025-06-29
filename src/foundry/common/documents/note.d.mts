@@ -94,7 +94,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   override parent: NoteDocument.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<NoteDocument.Implementation | NoteDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<NoteDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<NoteDocument.Implementation, Temporary>>>;
@@ -109,7 +109,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     operation?: Document.Database.DeleteDocumentsOperation<NoteDocument.Database.Delete>,
   ): Promise<NoteDocument.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: NoteDocument.CreateData | NoteDocument.CreateData[],
     operation?: NoteDocument.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<NoteDocument.Implementation, Temporary> | undefined>;

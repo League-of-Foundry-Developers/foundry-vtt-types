@@ -484,6 +484,11 @@ declare namespace Cards {
      * and {@link Cards._onDeleteDescendantDocuments | `Cards#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Cards.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Cards.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -751,7 +756,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
   /**
    * @remarks Sets `context.keepEmbeddedIds` to `false` if it's `=== undefined`
    */
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Cards.Implementation | Cards.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Cards.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Cards.Implementation, Temporary>>>;
@@ -764,7 +769,6 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    * @param options - Options which modify how the deal operation is performed (default: `{}`)
    * @returns This Cards document after the deal operation has completed
    */
-  // number: not null (dealing 0 cards makes no sense), options: not null (destructured)
   deal(to: Cards.Implementation[], number?: number, options?: Cards.DealOptions): Promise<Cards.Implementation>;
 
   /**
@@ -774,7 +778,6 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    * @param options - Additional options which modify the pass operation (default: `{}`)
    * @returns An array of the Card embedded documents created within the destination stack
    */
-  // options: not null (destructured)
   pass(to: Cards.Implementation, ids: string[], options?: Cards.PassOptions): Promise<Card.Implementation[]>;
 
   /**
@@ -784,7 +787,6 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    * @param options - Options which modify how the draw operation is performed (default: `{}`)
    * @returns An array of the Card documents which were drawn
    */
-  // number: not null (drawing 0 cards makes no sense), options: not null (destructured)
   draw(from: Cards.Implementation, number?: number, options?: Cards.DrawOptions): Promise<Card.Implementation[]>;
 
   /**
@@ -792,7 +794,6 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    * @param options - Options which modify how the shuffle operation is performed. (default: `{}`)
    * @returns The Cards document after the shuffle operation has completed
    */
-  // options: not null (destructured)
   shuffle(options?: Cards.ShuffleOptions): Promise<this>;
 
   /**
@@ -801,7 +802,6 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    * @param options - Options which modify the recall operation
    * @returns The Cards document after the recall operation has completed.
    */
-  // options: not null (destructured where forwarded)
   recall(options?: Cards.RecallOptions): Promise<this>;
 
   /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
@@ -868,16 +868,14 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    */
   resetDialog(): Promise<this | false | null>;
 
-  // options: not null (parameter default only)
   override deleteDialog(
     options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
   ): Promise<this | false | null | undefined>;
 
   /** @remarks No type changes, just creates a fancier `Dialog` than `super` */
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Cards.CreateDialogData,
-    createOptions?: Cards.Database.CreateOptions,
+    createOptions?: Cards.Database.DialogCreateOptions,
     options?: Cards.CreateDialogOptions,
   ): Promise<Cards.Stored | null | undefined>;
 
@@ -1001,10 +999,8 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    */
   protected override _onDeleteDescendantDocuments(...args: Cards.OnDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
   static override defaultName(context?: Cards.DefaultNameContext): string;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Cards.DropData,
     options?: Cards.DropDataOptions,

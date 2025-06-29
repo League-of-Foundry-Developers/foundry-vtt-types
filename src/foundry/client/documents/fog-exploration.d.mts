@@ -330,6 +330,11 @@ declare namespace FogExploration {
      * and {@link FogExploration._onDeleteDescendantDocuments | `FogExploration#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<FogExploration.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode FogExploration.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -357,7 +362,7 @@ declare namespace FogExploration {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
@@ -410,7 +415,6 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
    * @param options    - Additional options passed to DatabaseBackend#get. (default: `{}`)
    * @returns
    */
-  // query: not null (destructured)
   static load(
     query?: FogExploration.LoadQuery,
     options?: FogExploration.LoadOptions,
@@ -451,13 +455,13 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
 
   // Descendant Document operations have been left out because FogExploration does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: FogExploration.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: FogExploration.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data?: FogExploration.CreateData,
-    createOptions?: FogExploration.Database.CreateOptions,
+    data: FogExploration.CreateData | undefined,
+    createOptions: FogExploration.Database.DialogCreateOptions,
     options?: FogExploration.CreateDialogOptions,
   ): Promise<FogExploration.Stored | null | undefined>;
 
@@ -466,7 +470,6 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
     operation?: Document.Database.DeleteOperationForName<"FogExploration">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: FogExploration.DropData,
     options?: FogExploration.DropDataOptions,

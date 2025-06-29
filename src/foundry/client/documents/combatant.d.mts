@@ -402,6 +402,11 @@ declare namespace Combatant {
      * and {@link Combatant._onDeleteDescendantDocuments | `Combatant#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Combatant.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Combatant.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -573,13 +578,13 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
 
   // Descendant Document operations have been left out because Combatant does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: Combatant.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: Combatant.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: Combatant.CreateDialogData | undefined,
-    createOptions?: Combatant.Database.CreateOptions,
+    createOptions: Combatant.Database.DialogCreateOptions,
     options?: Combatant.CreateDialogOptions,
   ): Promise<Combatant.Stored | null | undefined>;
 
@@ -588,7 +593,6 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
     operation?: Document.Database.DeleteOperationForName<"Combatant">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Combatant.DropData,
     options?: Combatant.DropDataOptions,

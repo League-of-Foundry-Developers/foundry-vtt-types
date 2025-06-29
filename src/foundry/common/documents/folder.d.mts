@@ -101,7 +101,7 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
 
   override parent: BaseFolder.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Folder.Implementation | Folder.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Folder.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Folder.Implementation, Temporary>>>;
@@ -116,7 +116,7 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
     operation?: Document.Database.DeleteDocumentsOperation<Folder.Database.Delete>,
   ): Promise<Folder.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Folder.CreateData | Folder.CreateData[],
     operation?: Folder.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Folder.Implementation, Temporary> | undefined>;

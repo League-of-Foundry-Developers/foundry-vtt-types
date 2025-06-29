@@ -453,6 +453,11 @@ declare namespace Item {
      * and {@link Item._onDeleteDescendantDocuments | `Item#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Item.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Item.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -702,13 +707,11 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    */
   protected override _onDeleteDescendantDocuments(...args: Item.OnDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
   static override defaultName(context?: Item.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Item.CreateDialogData,
-    createOptions?: Item.Database.CreateOptions,
+    createOptions?: Item.Database.DialogCreateOptions,
     options?: Item.CreateDialogOptions,
   ): Promise<Item.Stored | null | undefined>;
 
@@ -717,7 +720,6 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
     operation?: Document.Database.DeleteOperationForName<"Item">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Item.DropData,
     options?: Item.DropDataOptions,

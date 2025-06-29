@@ -404,6 +404,11 @@ declare namespace Macro {
      * and {@link Macro._onDeleteDescendantDocuments | `Macro#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Macro.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Macro.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -555,7 +560,6 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    *          is not permitted to execute macros or a script macro execution fails.
    * @remarks Forwards to either `#executeChat` or `#executeScript`
    */
-  // scope: not null (parameter default only, destructured where forwarded)
   execute(scope?: Macro.ExecuteScope<SubType>): Macro.ExecuteReturn<SubType>;
 
   /** @remarks Returns `this.execute({event})` */
@@ -577,13 +581,11 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
 
   // Descendant Document operations have been left out because Macro does not have any descendant documents.
 
-  // context: not null (destructured)
   static override defaultName(context?: Macro.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Macro.CreateData,
-    createOptions?: Macro.Database.CreateOptions,
+    createOptions?: Macro.Database.DialogCreateOptions,
     options?: Macro.CreateDialogOptions,
   ): Promise<Macro.Stored | null | undefined>;
 
@@ -592,7 +594,6 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
     operation?: Document.Database.DeleteOperationForName<"Macro">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Macro.DropData,
     options?: Macro.DropDataOptions,

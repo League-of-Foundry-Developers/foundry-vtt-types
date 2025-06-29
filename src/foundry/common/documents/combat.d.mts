@@ -116,7 +116,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   override parent: BaseCombat.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Combat.Implementation | Combat.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Combat.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Combat.Implementation, Temporary>>>;
@@ -131,7 +131,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
     operation?: Document.Database.DeleteDocumentsOperation<Combat.Database.Delete>,
   ): Promise<Combat.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Combat.CreateData | Combat.CreateData[],
     operation?: Combat.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Combat.Implementation, Temporary> | undefined>;

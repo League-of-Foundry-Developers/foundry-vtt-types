@@ -402,6 +402,11 @@ declare namespace TileDocument {
      * and {@link TileDocument._onDeleteDescendantDocuments | `TileDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<TileDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode TileDocument.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -486,12 +491,13 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Tile does not have any descendant documents.
 
-  static override defaultName(context?: TileDocument.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: TileDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: TileDocument.CreateDialogData | undefined,
-    createOptions?: TileDocument.Database.CreateOptions,
+    createOptions: TileDocument.Database.DialogCreateOptions,
     options?: TileDocument.CreateDialogOptions,
   ): Promise<TileDocument.Stored | null | undefined>;
 
@@ -500,7 +506,6 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
     operation?: Document.Database.DeleteOperationForName<"Tile">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: TileDocument.DropData,
     options?: TileDocument.DropDataOptions,

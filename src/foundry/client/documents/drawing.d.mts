@@ -455,6 +455,11 @@ declare namespace DrawingDocument {
      * and {@link DrawingDocument._onDeleteDescendantDocuments | `DrawingDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<DrawingDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode DrawingDocument.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -544,13 +549,13 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Drawing does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: DrawingDocument.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: DrawingDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: DrawingDocument.CreateDialogData | undefined,
-    createOptions?: DrawingDocument.Database.CreateOptions,
+    createOptions: DrawingDocument.Database.DialogCreateOptions,
     options?: DrawingDocument.CreateDialogOptions,
   ): Promise<DrawingDocument.Stored | null | undefined>;
 
@@ -559,7 +564,6 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
     operation?: Document.Database.DeleteOperationForName<"Drawing">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: DrawingDocument.DropData,
     options?: DrawingDocument.DropDataOptions,

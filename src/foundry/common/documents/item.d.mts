@@ -120,7 +120,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   override parent: BaseItem.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Item.Implementation | Item.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Item.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Item.Implementation, Temporary>>>;
@@ -135,7 +135,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     operation?: Document.Database.DeleteDocumentsOperation<Item.Database.Delete>,
   ): Promise<Item.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Item.CreateData | Item.CreateData[],
     operation?: Item.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Item.Implementation, Temporary> | undefined>;

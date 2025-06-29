@@ -75,7 +75,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   override parent: BaseAmbientSound.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<AmbientSoundDocument.Implementation | AmbientSoundDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<AmbientSoundDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<AmbientSoundDocument.Implementation, Temporary>>>;
@@ -90,7 +90,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     operation?: Document.Database.DeleteDocumentsOperation<AmbientSoundDocument.Database.Delete>,
   ): Promise<AmbientSoundDocument.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: AmbientSoundDocument.CreateData | AmbientSoundDocument.CreateData[],
     operation?: AmbientSoundDocument.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<AmbientSoundDocument.Implementation, Temporary> | undefined>;

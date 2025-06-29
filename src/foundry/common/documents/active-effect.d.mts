@@ -116,7 +116,7 @@ declare abstract class BaseActiveEffect<
 
   override parent: BaseActiveEffect.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<ActiveEffect.Implementation | ActiveEffect.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ActiveEffect.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<ActiveEffect.Implementation, Temporary>>>;

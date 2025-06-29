@@ -387,6 +387,11 @@ declare namespace User {
      * and {@link User._onDeleteDescendantDocuments | `User#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<User.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode User.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -680,15 +685,9 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * `slot` defaults to the first unused slot if not provided. Slots are `1`-indexed.
    * @throws If `slot` is provided and either less than `1` or more than `50`, or not provided when there's no open slots
    */
-  // options: not null (destructured)
   assignHotbarMacro(
-    macro: Macro.Implementation,
+    macro: Macro.Implementation | null,
     slot?: `${number}` | number,
-    options?: User.AssignHotbarMacroOptions,
-  ): Promise<this | undefined>;
-  assignHotbarMacro(
-    macro: null,
-    slot: `${number}` | number,
     options?: User.AssignHotbarMacroOptions,
   ): Promise<this | undefined>;
 
@@ -709,7 +708,6 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * Activity data uses a volatile event to prevent unnecessary buffering if the client temporarily loses connection.
    * @param activityData - An object of User activity data to submit to the server for broadcast. (default: `{}`)
    */
-  // activityData: not null (parameter default only), options: not null (destructured)
   broadcastActivity(activityData?: User.ActivityData, options?: User.BroadcastActivityOptions): void;
 
   /**
@@ -717,7 +715,6 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @param page - The hotbar page number (default: `1`)
    * @remarks Core's implementation hardcodes returning 10 results at a time (single page of the hotbar)
    */
-  // page: not null (would produce negative hotbar indices)
   getHotbarMacros(page?: number): User.GetHotbarMacrosData[];
 
   /**
@@ -725,7 +722,6 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * This function handles changes made elsewhere and does not broadcast to other connected clients.
    * @param targetIds - An array of Token ids which represents the new target set (default: `[]`)
    */
-  // targetIds: not null (parameter default only)
   protected _onUpdateTokenTargets(targetIds?: string[]): void;
 
   /**
@@ -758,13 +754,11 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   // Descendant Document operations have been left out because User does not have any descendant documents.
 
-  // context: not null (destructured)
   static override defaultName(context?: User.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: User.CreateDialogData,
-    createOptions?: User.Database.CreateOptions,
+    createOptions?: User.Database.DialogCreateOptions,
     options?: User.CreateDialogOptions,
   ): Promise<User.Stored | null | undefined>;
 
@@ -773,7 +767,6 @@ declare class User extends BaseUser.Internal.ClientDocument {
     operation?: Document.Database.DeleteOperationForName<"User">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: User.DropData,
     options?: User.DropDataOptions,

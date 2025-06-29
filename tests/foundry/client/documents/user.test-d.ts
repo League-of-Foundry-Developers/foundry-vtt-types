@@ -2,7 +2,6 @@ import { assertType, expectTypeOf, test } from "vitest";
 
 import UserTargets = foundry.canvas.placeables.tokens.UserTargets;
 import FormApplication = foundry.appv1.api.FormApplication;
-import DialogV2 = foundry.applications.api.DialogV2;
 
 // @ts-expect-error - requires a name.
 new User.implementation();
@@ -32,7 +31,7 @@ expectTypeOf(user.color).toEqualTypeOf<Color>();
 const queryConfig = { timeout: 100 };
 
 expectTypeOf(user.query("dialog", { type: "confirm", config: { content: "Do thing?" } }, queryConfig)).toEqualTypeOf<
-  Promise<DialogV2.QueryReturn<"confirm", object>>
+  Promise<User.QueryReturn<"dialog">>
 >();
 
 declare module "fvtt-types/configuration" {

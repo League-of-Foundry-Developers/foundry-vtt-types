@@ -88,7 +88,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   override parent: FogExploration.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<FogExploration.Implementation | FogExploration.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<FogExploration.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<FogExploration.Implementation, Temporary>>>;
@@ -103,7 +103,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     operation?: Document.Database.DeleteDocumentsOperation<FogExploration.Database.Delete>,
   ): Promise<FogExploration.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: FogExploration.CreateData | FogExploration.CreateData[],
     operation?: FogExploration.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<FogExploration.Implementation, Temporary> | undefined>;

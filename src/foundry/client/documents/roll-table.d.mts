@@ -414,6 +414,11 @@ declare namespace RollTable {
      * and {@link RollTable._onDeleteDescendantDocuments | `RollTable#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<RollTable.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode RollTable.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -533,7 +538,7 @@ declare namespace RollTable {
   /**
    * Additional options which modify message creation
    */
-  interface ToMessageOptions<Temporary extends boolean | undefined = false> {
+  interface ToMessageOptions<Temporary extends boolean | undefined = undefined> {
     /**
      * An optional Roll instance which produced the drawn results
      */
@@ -783,7 +788,6 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    */
   protected override _onDeleteDescendantDocuments(...args: RollTable.OnDeleteDescendantDocumentsArgs): void;
 
-  // options: not null (parameter default only, destructured in super)
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: foundry.documents.collections.CompendiumCollection.Any | null,
     options?: Options,
@@ -794,7 +798,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * @param folder  - The Folder document from which to create a roll table
    * @param options - Additional options passed to the RollTable.create method
    */
-  static fromFolder<Temporary extends boolean | undefined = false>(
+  static fromFolder<Temporary extends boolean | undefined = undefined>(
     folder: Folder.Implementation,
     options?: RollTable.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<WallDocument.Implementation, Temporary> | undefined>;
@@ -883,13 +887,11 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    */
   protected override _preDeleteDescendantDocuments(...args: RollTable.PreDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
   static override defaultName(context?: RollTable.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: RollTable.CreateDialogData,
-    createOptions?: RollTable.Database.CreateOptions,
+    createOptions?: RollTable.Database.DialogCreateOptions,
     options?: RollTable.CreateDialogOptions,
   ): Promise<RollTable.Stored | null | undefined>;
 
@@ -898,7 +900,6 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
     operation?: Document.Database.DeleteOperationForName<"RollTable">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: RollTable.DropData,
     options?: RollTable.DropDataOptions,

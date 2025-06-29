@@ -139,7 +139,7 @@ declare abstract class BaseActorDelta<
 
   override parent: BaseActorDelta.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<ActorDelta.Implementation | ActorDelta.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ActorDelta.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<ActorDelta.Implementation, Temporary>>>;
@@ -154,7 +154,7 @@ declare abstract class BaseActorDelta<
     operation?: Document.Database.DeleteDocumentsOperation<ActorDelta.Database.Delete>,
   ): Promise<ActorDelta.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: ActorDelta.CreateData | ActorDelta.CreateData[],
     operation?: ActorDelta.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<ActorDelta.Implementation, Temporary> | undefined>;

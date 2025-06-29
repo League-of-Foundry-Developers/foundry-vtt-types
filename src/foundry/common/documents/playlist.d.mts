@@ -98,7 +98,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   override parent: Playlist.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Playlist.Implementation | Playlist.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Playlist.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Playlist.Implementation, Temporary>>>;
@@ -113,7 +113,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     operation?: Document.Database.DeleteDocumentsOperation<Playlist.Database.Delete>,
   ): Promise<Playlist.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Playlist.CreateData | Playlist.CreateData[],
     operation?: Playlist.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Playlist.Implementation, Temporary> | undefined>;

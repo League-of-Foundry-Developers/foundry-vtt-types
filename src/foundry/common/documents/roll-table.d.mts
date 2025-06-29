@@ -101,7 +101,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   override parent: RollTable.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<RollTable.Implementation | RollTable.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RollTable.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<RollTable.Implementation, Temporary>>>;
@@ -116,7 +116,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
     operation?: Document.Database.DeleteDocumentsOperation<RollTable.Database.Delete>,
   ): Promise<RollTable.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: RollTable.CreateData | RollTable.CreateData[],
     operation?: RollTable.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<RollTable.Implementation, Temporary> | undefined>;

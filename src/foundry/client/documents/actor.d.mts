@@ -465,6 +465,11 @@ declare namespace Actor {
      * and {@link Actor._onDeleteDescendantDocuments | `Actor#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Actor.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Actor.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -666,7 +671,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    */
   constructor(data: Actor.CreateData, context?: Actor.ConstructionContext);
 
-  // options: not null (parameter default only, destructured in super)
   protected override _configure(options?: Document.ConfigureOptions): void;
 
   /**
@@ -679,7 +683,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   >;
 
   /** @remarks `||=`s the `prototypeToken`'s `name` and `texture.src` fields with the main actor's values */
-  // options: not null (parameter default only)
   protected override _initializeSource(
     data: this | Actor.CreateData,
     options?: Document.InitializeSourceOptions,
@@ -783,7 +786,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
    * @returns The created TokenData instance
    */
-  // data, options: not null (parameter defaults only)
   getTokenDocument(
     data?: TokenDocument.CreateData,
     options?: TokenDocument.ConstructionContext,
@@ -824,7 +826,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param options - Configuration for how initiative for this Actor is rolled.
    * @returns A promise which resolves to the Combat document once rolls are complete.
    */
-  // options: not null (destructured)
   rollInitiative(options?: Actor.RollInitiativeOptions): Promise<void>;
 
   /**
@@ -837,7 +838,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    *            - false if an existing effect needed to be removed
    *            - undefined if no changes need to be made
    */
-  // options: not null (destructured)
   toggleStatusEffect(
     statusId: string,
     options?: Actor.ToggleStatusEffectOptions,
@@ -847,7 +847,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * Get this actor's dependent tokens.
    * If the actor is a synthetic token actor, only the exact Token which it represents will be returned.
    */
-  // options: not null (destructured)
   getDependentTokens(options?: Actor.GetDependentTokensOptions): TokenDocument.Implementation[];
 
   /**
@@ -1006,13 +1005,11 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    */
   protected override _preDeleteDescendantDocuments(...args: Actor.PreDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
   static override defaultName(context?: Actor.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Actor.CreateDialogData,
-    createOptions?: Actor.Database.CreateOptions,
+    createOptions?: Actor.Database.DialogCreateOptions,
     options?: Actor.CreateDialogOptions,
   ): Promise<Actor.Stored | null | undefined>;
 
@@ -1021,7 +1018,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
     operation?: Document.Database.DeleteOperationForName<"Actor">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Actor.DropData,
     options?: Actor.DropDataOptions,

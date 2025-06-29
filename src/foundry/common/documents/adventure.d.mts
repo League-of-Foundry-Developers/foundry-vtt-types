@@ -91,7 +91,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   override parent: Adventure.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Adventure.Implementation | Adventure.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Adventure.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Adventure.Implementation, Temporary>>>;
@@ -106,7 +106,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     operation?: Document.Database.DeleteDocumentsOperation<Adventure.Database.Delete>,
   ): Promise<Adventure.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Adventure.CreateData | Adventure.CreateData[],
     operation?: Adventure.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Adventure.Implementation, Temporary> | undefined>;

@@ -108,7 +108,7 @@ declare abstract class BaseChatMessage<
 
   override parent: BaseChatMessage.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<ChatMessage.Implementation | ChatMessage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ChatMessage.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<ChatMessage.Implementation, Temporary>>>;
@@ -123,7 +123,7 @@ declare abstract class BaseChatMessage<
     operation?: Document.Database.DeleteDocumentsOperation<ChatMessage.Database.Delete>,
   ): Promise<ChatMessage.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: ChatMessage.CreateData | ChatMessage.CreateData[],
     operation?: ChatMessage.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<ChatMessage.Implementation, Temporary> | undefined>;

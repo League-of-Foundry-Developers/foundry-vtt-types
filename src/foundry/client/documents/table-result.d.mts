@@ -391,6 +391,11 @@ declare namespace TableResult {
      * and {@link TableResult._onDeleteDescendantDocuments | `TableResult#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<TableResult.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode TableResult.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -486,13 +491,13 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
 
   // Descendant Document operations have been left out because TableResult does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: TableResult.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: TableResult.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: TableResult.CreateDialogData | undefined,
-    createOptions?: TableResult.Database.CreateOptions,
+    createOptions: TableResult.Database.DialogCreateOptions,
     options?: TableResult.CreateDialogOptions,
   ): Promise<TableResult.Stored | null | undefined>;
 
@@ -501,7 +506,6 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
     operation?: Document.Database.DeleteOperationForName<"TableResult">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: TableResult.DropData,
     options?: TableResult.DropDataOptions,

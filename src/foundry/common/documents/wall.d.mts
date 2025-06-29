@@ -79,7 +79,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   override parent: WallDocument.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<WallDocument.Implementation | WallDocument.CreateData> | undefined,
     operation?: WallDocument.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<Document.TemporaryIf<WallDocument.Implementation, Temporary>>>;
@@ -94,7 +94,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     operation?: WallDocument.Database.DeleteDocumentsOperation,
   ): Promise<WallDocument.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: WallDocument.CreateData | WallDocument.CreateData[],
     operation?: WallDocument.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<WallDocument.Implementation, Temporary> | undefined>;

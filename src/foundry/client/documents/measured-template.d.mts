@@ -394,6 +394,11 @@ declare namespace MeasuredTemplateDocument {
      * and {@link MeasuredTemplateDocument._onDeleteDescendantDocuments | `MeasuredTemplateDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<MeasuredTemplateDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode MeasuredTemplate.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -473,13 +478,13 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
 
   // Descendant Document operations have been left out because MeasuredTemplate does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: MeasuredTemplateDocument.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: MeasuredTemplateDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: MeasuredTemplateDocument.CreateDialogData | undefined,
-    createOptions?: MeasuredTemplateDocument.Database.CreateOptions,
+    createOptions: MeasuredTemplateDocument.Database.DialogCreateOptions,
     options?: MeasuredTemplateDocument.CreateDialogOptions,
   ): Promise<MeasuredTemplateDocument.Stored | null | undefined>;
 
@@ -488,7 +493,6 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
     operation?: Document.Database.DeleteOperationForName<"MeasuredTemplate">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: MeasuredTemplateDocument.DropData,
     options?: MeasuredTemplateDocument.DropDataOptions,

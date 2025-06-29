@@ -516,6 +516,11 @@ declare namespace JournalEntryPage {
      * and {@link JournalEntryPage._onDeleteDescendantDocuments | `JournalEntryPage#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<JournalEntryPage.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode JournalEntryPage.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -660,7 +665,6 @@ declare class JournalEntryPage<
    * @param html    - The HTML content to generate a ToC outline for.
    * @param options - Additional options to configure ToC generation.
    */
-  // options: not null (destructured)
   static buildTOC(
     html: HTMLElement[],
     options?: JournalEntryPage.BuildTOCOptions,
@@ -679,14 +683,12 @@ declare class JournalEntryPage<
    * @param heading - The heading element.
    * @param options - Additional options to configure the returned node.
    */
-  // options: not null (destructured)
   protected static _makeHeadingNode(
     heading: HTMLHeadingElement,
     options?: JournalEntryPage.MakeHeadingNodeOptions,
   ): JournalEntryPage.JournalEntryPageHeading;
 
   /** @remarks Uses `eventData`, unlike {@link ClientDocument._createDocumentLink | `ClientDocument#_createDocumentLink`} */
-  // options: not null (destructured)
   override _createDocumentLink(eventData: AnyObject, options?: JournalEntryPage.CreateDocumentLinkOptions): string;
 
   /**
@@ -752,7 +754,6 @@ declare class JournalEntryPage<
    * </section>
    * ```
    */
-  // options: not null (parameter default only)
   protected _embedTextPage(
     config: JournalEntryPage.EmbedTextPageConfig,
     options?: TextEditor.EnrichmentOptions,
@@ -788,7 +789,6 @@ declare class JournalEntryPage<
    *
    * @remarks Core's implementation always returns a {@linkcode HTMLImageElement}, and does not use `options`
    */
-  // config: not null (destructured), options: not null (parameter default only)
   protected _embedImagePage(
     config?: JournalEntryPage.EmbedImagePageConfig,
     options?: TextEditor.EnrichmentOptions,
@@ -808,13 +808,13 @@ declare class JournalEntryPage<
 
   // Descendant Document operations have been left out because JournalEntryPage does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: JournalEntryPage.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: JournalEntryPage.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: JournalEntryPage.CreateDialogData | undefined,
-    createOptions?: JournalEntryPage.Database.CreateOptions,
+    createOptions: JournalEntryPage.Database.DialogCreateOptions,
     options?: JournalEntryPage.CreateDialogOptions,
   ): Promise<JournalEntryPage.Stored | null | undefined>;
 
@@ -823,7 +823,6 @@ declare class JournalEntryPage<
     operation?: Document.Database.DeleteOperationForName<"JournalEntryPage">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: JournalEntryPage.DropData,
     options?: JournalEntryPage.DropDataOptions,

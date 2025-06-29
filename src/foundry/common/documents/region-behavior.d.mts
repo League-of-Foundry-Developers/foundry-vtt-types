@@ -100,7 +100,7 @@ declare abstract class BaseRegionBehavior<
 
   override parent: BaseRegionBehavior.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<RegionBehavior.Implementation | RegionBehavior.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RegionBehavior.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<RegionBehavior.Implementation, Temporary>>>;
@@ -115,7 +115,7 @@ declare abstract class BaseRegionBehavior<
     operation?: Document.Database.DeleteDocumentsOperation<RegionBehavior.Database.Delete>,
   ): Promise<RegionBehavior.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: RegionBehavior.CreateData | RegionBehavior.CreateData[],
     operation?: RegionBehavior.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<RegionBehavior.Implementation, Temporary> | undefined>;

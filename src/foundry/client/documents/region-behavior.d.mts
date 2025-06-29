@@ -387,6 +387,11 @@ declare namespace RegionBehavior {
      * and {@link RegionBehavior._onDeleteDescendantDocuments | `RegionBehavior#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<RegionBehavior.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode RegionBehavior.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -469,11 +474,13 @@ declare class RegionBehavior<
   protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
   /**
-   * @remarks No type changes, just removes `executeScript` from `options.types` if the user lacks the `MACRO_SCRIPT` permission
+   * @remarks `createOptions` must contain a `pack` or `parent`.
+   *
+   * Also this override removes `executeScript` from `options.types` if the user lacks the `MACRO_SCRIPT` permission
    */
   static override createDialog(
     data: RegionBehavior.CreateDialogData | undefined,
-    createOptions?: RegionBehavior.Database.CreateOptions,
+    createOptions: RegionBehavior.Database.DialogCreateOptions,
     dialogoptions?: RegionBehavior.CreateDialogOptions,
   ): Promise<RegionBehavior.Stored | null | undefined>;
 
@@ -491,15 +498,14 @@ declare class RegionBehavior<
 
   // Descendant Document operations have been left out because RegionBehavior does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: RegionBehavior.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: RegionBehavior.DefaultNameContext): string;
 
   override deleteDialog(
     options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"RegionBehavior">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: RegionBehavior.DropData,
     options?: RegionBehavior.DropDataOptions,

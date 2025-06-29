@@ -259,13 +259,13 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    */
   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
-  static override defaultName(context?: RegionDocument.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: RegionDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: RegionDocument.CreateDialogData | undefined,
-    createOptions?: RegionDocument.Database.CreateOptions,
+    createOptions: RegionDocument.Database.DialogCreateOptions,
     options?: RegionDocument.CreateDialogOptions,
   ): Promise<RegionDocument.Stored | null | undefined>;
 
@@ -274,7 +274,6 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
     operation?: Document.Database.DeleteOperationForName<"Region">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: RegionDocument.DropData,
     options?: RegionDocument.DropDataOptions,
@@ -705,6 +704,11 @@ declare namespace RegionDocument {
      * and {@link RegionDocument._onDeleteDescendantDocuments | `RegionDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<RegionDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode RegionDocument.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**

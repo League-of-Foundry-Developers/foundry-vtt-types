@@ -25,7 +25,7 @@ declare abstract class BaseCombatantGroup<
    * You should use {@link CombatantGroup.implementation | `new CombatantGroup.implementation(...)`} instead which will give you
    * a system specific implementation of `CombatantGroup`.
    */
-  constructor(...args: CombatantGroup.ConstructorArgs);
+  constructor(data: CombatantGroup.CreateData, context?: CombatantGroup.ConstructionContext);
 
   /**
    * @defaultValue
@@ -82,7 +82,7 @@ declare abstract class BaseCombatantGroup<
 
   override parent: BaseCombatantGroup.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<CombatantGroup.Implementation | CombatantGroup.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<CombatantGroup.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<CombatantGroup.Implementation, Temporary>>>;
@@ -97,7 +97,7 @@ declare abstract class BaseCombatantGroup<
     operation?: Document.Database.DeleteDocumentsOperation<CombatantGroup.Database.Delete>,
   ): Promise<CombatantGroup.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: CombatantGroup.CreateData | CombatantGroup.CreateData[],
     operation?: CombatantGroup.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<CombatantGroup.Implementation, Temporary> | undefined>;
@@ -280,6 +280,7 @@ declare abstract class BaseCombatantGroup<
 
 declare namespace BaseCombatantGroup {
   export import Name = CombatantGroup.Name;
+  export import ConstructionContext = Item.ConstructionContext;
   export import ConstructorArgs = CombatantGroup.ConstructorArgs;
   export import Hierarchy = CombatantGroup.Hierarchy;
   export import Metadata = CombatantGroup.Metadata;

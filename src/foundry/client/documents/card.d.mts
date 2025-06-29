@@ -470,6 +470,11 @@ declare namespace Card {
      * and {@link Card._onDeleteDescendantDocuments | `Card#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Card.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Card.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -594,7 +599,6 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @param options - Options which modify the pass operation (default: `{}`)
    * @returns A reference to this card after the it has been passed to another parent document
    */
-  // options: not null (destructured)
   pass(to: Cards.Implementation, options?: Card.PassOptions): Promise<Card.Implementation | undefined>;
 
   /**
@@ -602,7 +606,6 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @see {@link Card.pass | `Card#pass`}
    * @remarks This method is currently a more semantic alias for {@link Card.pass | `Card#pass`}.
    */
-  // options: not null (destructured)
   play(to: Cards.Implementation, options?: Card.PlayOptions): Promise<Card.Implementation | undefined>;
 
   /**
@@ -610,7 +613,6 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @see {@link Card.pass | `Card#pass`}
    * @remarks This method is currently a more semantic alias for {@link Card.pass | `Card#pass`}.
    */
-  // options: not null (destructured)
   discard(to: Cards.Implementation, options?: Card.DiscardOptions): Promise<Card.Implementation | undefined>;
 
   /**
@@ -619,7 +621,6 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @returns A reference to the recalled card belonging to its original parent
    * @remarks Core's implementation doesn't use `options` at all
    */
-  // options: not null (parameter default only)
   recall(options?: AnyObject): Promise<Card.Implementation | undefined>;
 
   /**
@@ -628,7 +629,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @param options     - Options which modify the message creation operation (default: `{}`)
    * @returns The created chat message
    */
-  toMessage<Temporary extends boolean | undefined = false>(
+  toMessage<Temporary extends boolean | undefined = undefined>(
     messageData?: DeepPartial<foundry.documents.BaseChatMessage.CreateData>,
     options?: ChatMessage.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<ChatMessage.Implementation, Temporary> | undefined>;
@@ -647,13 +648,13 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
 
   // Descendant Document operations have been left out because Card does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: Card.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: Card.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: Card.CreateDialogData | undefined,
-    createOptions?: Card.Database.CreateOptions,
+    createOptions: Card.Database.DialogCreateOptions,
     options?: Card.CreateDialogOptions,
   ): Promise<Card.Stored | null | undefined>;
 
@@ -662,7 +663,6 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
     operation?: Document.Database.DeleteOperationForName<"Card">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Card.DropData,
     options?: Card.DropDataOptions,

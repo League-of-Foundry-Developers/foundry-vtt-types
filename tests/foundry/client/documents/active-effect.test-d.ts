@@ -49,14 +49,19 @@ expectTypeOf(ActiveEffect.getInitialDuration()).toEqualTypeOf<ActiveEffect.GetIn
 // ClientDocument static overrides
 
 declare const someItem: Item.Implementation;
-expectTypeOf(ActiveEffect.defaultName()).toBeString();
-expectTypeOf(ActiveEffect.defaultName({})).toBeString();
+
+// @ts-expect-error `defaultName` requires a `pack` or `parent`.
+ActiveEffect.defaultName();
+
 expectTypeOf(ActiveEffect.defaultName({ pack: "some.pack", parent: someItem, type: "base" })).toBeString();
 expectTypeOf(ActiveEffect.defaultName({ pack: undefined, parent: undefined, type: undefined })).toBeString();
 expectTypeOf(ActiveEffect.defaultName({ pack: null, parent: null, type: null })).toBeString();
 
-// @ts-expect-error - ActiveEffect.createDialog requires a parent
-await ActiveEffect.createDialog({}, {});
+// Note: this call will fail at runtime but a validator function to require `pack` or `parent` has not yet been written.
+expectTypeOf(ActiveEffect.defaultName({})).toBeString();
+
+// @ts-expect-error - `ActiveEffect.createDialog` requires `createOptions` for pack information.
+await ActiveEffect.createDialog({});
 
 declare const someActor: Actor.Implementation;
 expectTypeOf(

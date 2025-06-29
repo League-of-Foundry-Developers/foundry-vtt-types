@@ -113,7 +113,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   override parent: BaseCards.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Cards.Implementation | Cards.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Cards.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Cards.Implementation, Temporary>>>;
@@ -128,7 +128,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
     operation?: Document.Database.DeleteDocumentsOperation<Cards.Database.Delete>,
   ): Promise<Cards.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Cards.CreateData | Cards.CreateData[],
     operation?: Cards.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Cards.Implementation, Temporary> | undefined>;

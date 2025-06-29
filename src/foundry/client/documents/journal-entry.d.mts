@@ -400,6 +400,11 @@ declare namespace JournalEntry {
      * and {@link JournalEntry._onDeleteDescendantDocuments | `JournalEntry#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<JournalEntry.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode JournalEntry.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -507,7 +512,6 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    * @remarks "Upgrade to OBSERVER ownership if the journal entry is in a LIMITED compendium,
    * as LIMITED has no special meaning for journal entries in this context."
    */
-  // user: not null (parameter default only where forwarded)
   override getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
@@ -532,7 +536,6 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    * @param options - Options which modify the pan operation
    * @returns A Promise which resolves once the pan animation has concluded
    */
-  // options: not null (parameter default only, destructured where forwarded)
   panToNote(options?: NotesLayer.PanToNoteOptions): Promise<void>;
 
   // _onUpdate and _onDelete are overridden but with no signature changes from their definition in BaseJournalEntry.
@@ -662,13 +665,11 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    */
   protected override _onDeleteDescendantDocuments(...args: Cards.OnDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
   static override defaultName(context?: JournalEntry.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: JournalEntry.CreateDialogData,
-    createOptions?: JournalEntry.Database.CreateOptions,
+    createOptions?: JournalEntry.Database.DialogCreateOptions,
     options?: JournalEntry.CreateDialogOptions,
   ): Promise<JournalEntry.Stored | null | undefined>;
 
@@ -677,7 +678,6 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
     operation?: Document.Database.DeleteOperationForName<"JournalEntry">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: JournalEntry.DropData,
     options?: JournalEntry.DropDataOptions,

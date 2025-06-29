@@ -13,13 +13,9 @@ declare namespace CombatantGroup {
   type Name = "CombatantGroup";
 
   /**
-   * The arguments to construct the document.
-   *
-   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * The context used to create a `CombatantGroup`.
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `CombatantGroup`.
@@ -368,6 +364,11 @@ declare namespace CombatantGroup {
      * and {@link CombatantGroup._onDeleteDescendantDocuments | `CombatantGroup#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<CombatantGroup.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode CombatantGroup.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -395,7 +396,7 @@ declare namespace CombatantGroup {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
@@ -416,6 +417,15 @@ declare namespace CombatantGroup {
    * make us any more wrong than currently.
    */
   type Resource = string | number | null;
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -426,6 +436,12 @@ declare namespace CombatantGroup {
 declare class CombatantGroup<
   out SubType extends CombatantGroup.SubType = CombatantGroup.SubType,
 > extends BaseCombatantGroup.Internal.ClientDocument<SubType> {
+  /**
+   * @param data    - Initial data from which to construct the `CombatantGroup`
+   * @param context - Construction context options
+   */
+  constructor(data: CombatantGroup.CreateData, context?: CombatantGroup.ConstructionContext);
+
   /**
    * A group is considered defeated if all its members are defeated, or it has no members.
    */
@@ -462,13 +478,13 @@ declare class CombatantGroup<
 
   // Descendant Document operations have been left out because CombatantGroup does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: CombatantGroup.DefaultNameContext): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: CombatantGroup.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data?: CombatantGroup.CreateDialogData,
-    createOptions?: CombatantGroup.Database.CreateOptions,
+    data: CombatantGroup.CreateDialogData | undefined,
+    createOptions: CombatantGroup.Database.DialogCreateOptions,
     options?: CombatantGroup.CreateDialogOptions,
   ): Promise<CombatantGroup.Stored | null | undefined>;
 
@@ -477,7 +493,6 @@ declare class CombatantGroup<
     operation?: Document.Database.DeleteOperationForName<"CombatantGroup">,
   ): Promise<this | false | null | undefined>;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: CombatantGroup.DropData,
     options?: CombatantGroup.DropDataOptions,
