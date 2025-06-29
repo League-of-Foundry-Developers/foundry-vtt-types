@@ -12,9 +12,9 @@ declare namespace Adventure {
   type Name = "Adventure";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create an `Adventure`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Adventure`.
@@ -171,11 +171,17 @@ declare namespace Adventure {
     /**
      * The human-readable name of the Adventure
      */
-    name: fields.StringField<{
-      required: true;
-      blank: false;
-      textSearch: true;
-    }>;
+    name: fields.StringField<
+      {
+        required: true;
+        blank: false;
+        textSearch: true;
+      },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The file path for the primary image of the adventure
@@ -269,7 +275,7 @@ declare namespace Adventure {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     /**
      * An object of creation and access information
@@ -461,6 +467,15 @@ declare namespace Adventure {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -471,7 +486,7 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
    * @param data    - Initial data from which to construct the `Adventure`
    * @param context - Construction context options
    */
-  constructor(...args: Adventure.ConstructorArgs);
+  constructor(data: Adventure.CreateData, context?: Adventure.ConstructionContext);
 
   /**
    * @remarks If this creation is happening in a provided `pack`, and that pack is **not** system-specific,

@@ -13,9 +13,9 @@ declare namespace AmbientLightDocument {
   type Name = "AmbientLight";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create an `AmbientLightDocument`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `AmbientLight`.
@@ -220,7 +220,7 @@ declare namespace AmbientLightDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
+    flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
   }
 
   namespace Database {
@@ -372,6 +372,15 @@ declare namespace AmbientLightDocument {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -385,7 +394,11 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
    * @param data    - Initial data from which to construct the `AmbientLightDocument`
    * @param context - Construction context options
    */
-  constructor(...args: AmbientLightDocument.ConstructorArgs);
+  constructor(
+    // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+    data?: AmbientLightDocument.CreateData,
+    context?: AmbientLightDocument.ConstructionContext,
+  );
 
   // _onUpdate is overridden but with no signature changes from its implementation in BaseAmbientLight.
 

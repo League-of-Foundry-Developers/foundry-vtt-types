@@ -158,26 +158,28 @@ expectTypeOf(drawing.enableTextEditing({ forceTextEditing: null, isNew: undefine
 expectTypeOf(drawing.activateListeners()).toBeVoid();
 
 declare const someUser: User.Implementation;
-declare const someEvent: PIXI.FederatedEvent;
-expectTypeOf(drawing["_canControl"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(drawing["_canConfigure"](someUser, someEvent)).toBeBoolean();
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(drawing["_canControl"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(drawing["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
 
-expectTypeOf(drawing["_onHoverIn"](someEvent)).toBeVoid();
-expectTypeOf(drawing["_onHoverIn"](someEvent, {})).toBeVoid();
-expectTypeOf(drawing["_onHoverIn"](someEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(drawing["_onHoverIn"](someEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(drawing["_onHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(drawing["_onHoverIn"](pointerEvent, {})).toBeVoid();
+expectTypeOf(drawing["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
+expectTypeOf(drawing["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
 
-expectTypeOf(drawing["_onMouseDraw"](someEvent)).toBeVoid();
-expectTypeOf(drawing["_onClickLeft"](someEvent)).toBeVoid();
-expectTypeOf(drawing["_onDragLeftStart"](someEvent)).toBeVoid();
-expectTypeOf(drawing["_onDragLeftMove"](someEvent)).toBeVoid();
-expectTypeOf(drawing["_onDragLeftDrop"](someEvent)).toBeVoid();
-expectTypeOf(drawing["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<PlaceableObject.DragLeftDropUpdate[]>();
-expectTypeOf(drawing["_onDragLeftCancel"](someEvent)).toBeVoid();
+expectTypeOf(drawing["_onMouseDraw"](pointerEvent)).toBeVoid();
+expectTypeOf(drawing["_onClickLeft"](pointerEvent)).toBeVoid();
+expectTypeOf(drawing["_onDragLeftStart"](pointerEvent)).toBeVoid();
+expectTypeOf(drawing["_onDragLeftMove"](pointerEvent)).toBeVoid();
+expectTypeOf(drawing["_onDragLeftDrop"](pointerEvent)).toBeVoid();
+expectTypeOf(drawing["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<
+  PlaceableObject.DragLeftDropUpdate[]
+>();
+expectTypeOf(drawing["_onDragLeftCancel"](pointerEvent)).toBeVoid();
 
-expectTypeOf(drawing["_onHandleHoverIn"](someEvent)).toBeVoid();
-expectTypeOf(drawing["_onHandleHoverOut"](someEvent)).toBeVoid();
-expectTypeOf(drawing["_onHandleDragStart"](someEvent)).toBeVoid();
-expectTypeOf(drawing["_onHandleDragMove"](someEvent)).toBeVoid();
-expectTypeOf(drawing["_onHandleDragDrop"](someEvent)).toBeVoid();
-expectTypeOf(drawing["_onHandleDragCancel"](someEvent)).toBeVoid();
+expectTypeOf(drawing["_onHandleHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(drawing["_onHandleHoverOut"](pointerEvent)).toBeVoid();
+expectTypeOf(drawing["_onHandleDragStart"](pointerEvent)).toBeVoid();
+expectTypeOf(drawing["_onHandleDragMove"](pointerEvent)).toBeVoid();
+expectTypeOf(drawing["_onHandleDragDrop"](pointerEvent)).toBeVoid();
+expectTypeOf(drawing["_onHandleDragCancel"](pointerEvent)).toBeVoid();

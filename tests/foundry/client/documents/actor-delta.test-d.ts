@@ -1,7 +1,11 @@
 import { expectTypeOf } from "vitest";
 // import type { ArmorData, WeaponData } from "./item.test-d";
 
-const actorDelta = new ActorDelta.implementation();
+// No data is required but `parent` is.
+const actorDelta = new ActorDelta.implementation(undefined, {
+  parent: new TokenDocument.implementation(),
+});
+
 expectTypeOf(actorDelta).toEqualTypeOf<ActorDelta.Implementation>();
 
 expectTypeOf(actorDelta.apply("")).toEqualTypeOf<Actor.Implementation>();

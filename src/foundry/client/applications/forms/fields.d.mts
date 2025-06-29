@@ -176,6 +176,7 @@ export interface FormSelectOption {
   disabled?: boolean;
   selected?: boolean;
   rule?: boolean;
+  dataset?: Record<string, string>;
 }
 
 interface _SelectInputConfig {

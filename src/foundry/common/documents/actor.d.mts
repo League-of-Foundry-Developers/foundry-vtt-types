@@ -27,7 +27,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    * You should use {@link Actor.implementation | `new Actor.implementation(...)`} instead which will give you
    * a system specific implementation of `Actor`.
    */
-  constructor(...args: Actor.ConstructorArgs);
+  constructor(data: Actor.CreateData, context?: Actor.ConstructionContext);
 
   /**
    * @defaultValue
@@ -350,6 +350,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
 declare namespace BaseActor {
   export import Name = Actor.Name;
+  export import ConstructionContext = Actor.ConstructionContext;
   export import ConstructorArgs = Actor.ConstructorArgs;
   export import Hierarchy = Actor.Hierarchy;
   export import Metadata = Actor.Metadata;

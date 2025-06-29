@@ -22,7 +22,7 @@ declare abstract class BaseRegionBehavior<
    * You should use {@link RegionBehavior.implementation | `new RegionBehavior.implementation(...)`} instead which will give you
    * a system specific implementation of `RegionBehavior`.
    */
-  constructor(...args: RegionBehavior.ConstructorArgs);
+  constructor(data: RegionBehavior.CreateData, context?: RegionBehavior.ConstructionContext);
 
   /**
    * @defaultValue
@@ -304,6 +304,7 @@ export default BaseRegionBehavior;
 
 declare namespace BaseRegionBehavior {
   export import Name = RegionBehavior.Name;
+  export import ConstructionContext = RegionBehavior.ConstructionContext;
   export import ConstructorArgs = RegionBehavior.ConstructorArgs;
   export import Hierarchy = RegionBehavior.Hierarchy;
   export import Metadata = RegionBehavior.Metadata;

@@ -61,7 +61,7 @@ export interface ProcessBufferRedToBufferRGBAOptions
   extends _Out,
     _CommonRequiredProperties,
     _CommonOptionalProperties {
-  /** Buffer to expand */
+  /** Buffer to expand. */
   buffer: Uint8ClampedArray;
 }
 
@@ -69,7 +69,7 @@ export interface ProcessBufferRGBAToBufferRedOptions
   extends _Out,
     _CommonRequiredProperties,
     _CommonOptionalProperties {
-  /** Buffer to reduce */
+  /** Buffer to reduce. */
   buffer: Uint8ClampedArray;
 }
 

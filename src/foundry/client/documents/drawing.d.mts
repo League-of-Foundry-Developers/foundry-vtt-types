@@ -14,9 +14,9 @@ declare namespace DrawingDocument {
   type Name = "Drawing";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `DrawingDocument`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `DrawingDocument`.
@@ -183,10 +183,7 @@ declare namespace DrawingDocument {
      * The _id of the user who created the drawing
      * @defaultValue `game.user?.id`
      */
-    author: fields.ForeignDocumentField<
-      typeof documents.BaseUser,
-      { nullable: false; initial: () => string | undefined }
-    >;
+    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
 
     /**
      * The geometric shape of the drawing
@@ -350,7 +347,7 @@ declare namespace DrawingDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
   }
 
   namespace Database {
@@ -490,8 +487,17 @@ declare namespace DrawingDocument {
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
-  interface ValidateVisibleContentData extends IntentionalPartial<Pick<BaseDrawing.InitializedData, "shape">>, 
+  interface ValidateVisibleContentData extends IntentionalPartial<Pick<BaseDrawing.InitializedData, "shape">>,
     Pick<BaseDrawing.InitializedData, "text" | "textAlpha" | "fillType" | "fillAlpha" | "strokeWidth" | "strokeAlpha"> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -505,7 +511,9 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
    * @param data    - Initial data from which to construct the `DrawingDocument`
    * @param context - Construction context options
    */
-  constructor(...args: DrawingDocument.ConstructorArgs);
+  // Note(LukeAbby): Required because while `DrawingDocument` has no directly required schema
+  // properties the `validateJoint` method will fail.
+  constructor(data: DrawingDocument.CreateData, context?: DrawingDocument.ConstructionContext);
 
   /**
    * Fields included in the drawing defaults setting

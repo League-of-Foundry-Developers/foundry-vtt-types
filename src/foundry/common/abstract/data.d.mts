@@ -1,4 +1,4 @@
-import type { AnyMutableObject, AnyObject, EmptyObject, Identity, NullishProps } from "#utils";
+import type { AnyMutableObject, AnyObject, EmptyObject, Identity, InexactPartial, NullishProps } from "#utils";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
@@ -300,7 +300,10 @@ declare namespace DataModel {
    */
   interface ConcreteConstructor extends Identity<typeof ConcreteDataModel> {}
 
-  type CreateData<Schema extends DataSchema> = fields.SchemaField.CreateData<Schema> | DataModel<Schema, any>;
+  // TODO(LukeAbby): see if `| DataModel<Schema, any>` needs to be added back.
+  // Seems rare in practice and causes terrible errors. May not need to be added back if `DataModel`.
+  // is always assignable.
+  type CreateData<Schema extends DataSchema> = fields.SchemaField.CreateData<Schema>;
 
   // TODO(LukeAbby): Make optional only if `{}` is assignable to `CreateData`.
   type ConstructorArgs<
@@ -335,11 +338,7 @@ declare namespace DataModel {
   // ```ts
   // EmbeddedDataField<typeof DataModel<{}>> extends SchemaField<infer SubSchema> ? SubSchema : never
   // ```
-  type SchemaOfClass<ConcreteClass extends DataModel.AnyConstructor> = ConcreteClass extends abstract new (
-    ...args: infer _1
-  ) => { schema: { fields: infer Fields extends DataSchema } }
-    ? Fields
-    : never;
+  type SchemaOfClass<ConcreteClass extends DataModel.AnyConstructor> = ReturnType<ConcreteClass["defineSchema"]>;
 
   /**
    * this is how 13.339 splits up the interfaces
@@ -443,7 +442,7 @@ declare namespace DataModel {
   /** `DataModel#constructor` pulls `parent` out of the passed `ConstructionContext` before forwarding to `#_initialize` */
   interface InitializeOptions extends _ConstructionContext {}
 
-  type _UpdateOptions = NullishProps<{
+  type _UpdateOptions = InexactPartial<{
     /** Do not finally apply the change, but instead simulate the update workflow  */
     dryRun: boolean;
 
@@ -453,7 +452,12 @@ declare namespace DataModel {
      */
     fallback: boolean;
 
-    /** Apply changes to inner objects recursively rather than replacing the top-level object */
+    /**
+     * Apply changes to inner objects recursively rather than replacing the top-level object
+     * @defaultValue `true`
+     * @remarks No actual default is applied to this property anywhere in Foundry code, but behaviour depending on this option uses  `=== false`
+     * checks, so it effectively is `true` by default
+     */
     recursive: boolean;
 
     /** An advanced option used specifically and internally by the ActorDelta model */

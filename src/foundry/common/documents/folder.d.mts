@@ -27,7 +27,7 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
    * You should use {@link Folder.implementation | `new Folder.implementation(...)`} instead which will give you
    * a system specific implementation of `Folder`.
    */
-  constructor(...args: Folder.ConstructorArgs);
+  constructor(data: Folder.CreateData, context?: Folder.ConstructionContext);
 
   /**
    * @defaultValue
@@ -293,6 +293,7 @@ export default BaseFolder;
 
 declare namespace BaseFolder {
   export import Name = Folder.Name;
+  export import ConstructionContext = Folder.ConstructionContext;
   export import ConstructorArgs = Folder.ConstructorArgs;
   export import Hierarchy = Folder.Hierarchy;
   export import Metadata = Folder.Metadata;

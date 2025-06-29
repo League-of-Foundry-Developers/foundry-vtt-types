@@ -15,9 +15,9 @@ declare namespace Macro {
   type Name = "Macro";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Macro`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Macro`.
@@ -224,7 +224,13 @@ declare namespace Macro {
      * The name of this Macro
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * A Macro subtype from CONST.MACRO_TYPES
@@ -234,9 +240,9 @@ declare namespace Macro {
 
     /**
      * The _id of a User document which created this Macro *
-     * @defaultValue `game?.user?.id`
+     * @defaultValue `game.user?.id`
      */
-    author: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
+    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
 
     /**
      * An image file path which provides the thumbnail artwork for this Macro
@@ -291,7 +297,7 @@ declare namespace Macro {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     /**
      * An object of creation and access information
@@ -492,6 +498,15 @@ declare namespace Macro {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -508,7 +523,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    * @param data    - Initial data from which to construct the `Macro`
    * @param context - Construction context options
    */
-  constructor(...args: Macro.ConstructorArgs);
+  constructor(data: Macro.CreateData, context?: Macro.ConstructionContext);
 
   /**
    * Is the current User the author of this macro?

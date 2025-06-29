@@ -3,16 +3,15 @@ import type { Identity } from "#utils";
 declare class InternalBitMask<T extends Record<string, boolean>> extends Number {
   /**
    * Create a new BitMask instance.
-   * @param states    - An object containing valid states and their corresponding initial boolean values (default is null).
+   * @param states - An object containing valid states and their corresponding initial boolean values (default is null).
+   * @remarks
+   * @throws If the passed list of states has more than 32 keys
    */
   constructor(states?: T | null);
 
-  // a placeholder private method to help subclassing
-  #bitmask: true;
-
   /**
    * The enum associated with this structure.
-   * @readonly
+   * @remarks Foundry marks `@readonly`; the object is frozen, but the property is not
    */
   states: Readonly<{ [K in keyof T]: K }>;
 
@@ -95,7 +94,7 @@ declare class InternalBitMask<T extends Record<string, boolean>> extends Number 
    * Convert value of this BitMask to object representation according to structure.
    * @returns The data represented by the bitmask.
    */
-  toObject(): Record<string, boolean>;
+  toObject(): this;
 
   /**
    * Creates a clone of this BitMask instance.
@@ -109,6 +108,8 @@ declare class InternalBitMask<T extends Record<string, boolean>> extends Number 
    * @returns Shader bit mask constants generated from the states.
    */
   static generateShaderBitMaskConstants(states: string[]): string;
+
+  #BitMask: true;
 }
 
 declare namespace BitMask {

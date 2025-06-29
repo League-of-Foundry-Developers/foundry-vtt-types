@@ -31,15 +31,14 @@ expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(layer._getNewDrawingData(somePoint)).toEqualTypeOf<DrawingDocument.CreateData>();
 
-declare const someEvent: PIXI.FederatedEvent;
-declare const somePointerEvent: PointerEvent;
-expectTypeOf(layer["_onClickLeft"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onClickLeft2"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftStart"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftMove"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftDrop"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftCancel"](somePointerEvent)).toBeVoid();
-expectTypeOf(layer["_onClickRight"](someEvent)).toBeVoid();
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(layer["_onClickLeft"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onClickLeft2"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftDrop"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onClickRight"](pointerEvent)).toBeVoid();
 
 // deprecated since v12 until v14
 // eslint-disable-next-line @typescript-eslint/no-deprecated

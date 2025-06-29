@@ -15,9 +15,9 @@ declare namespace Scene {
   type Name = "Scene";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Scene`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Scene`.
@@ -156,16 +156,16 @@ declare namespace Scene {
     /**
      * Gets the collection document for an embedded document.
      */
-    // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.DocumentFor<
+      Metadata.Embedded,
+      CollectionName
+    >;
 
     /**
      * Gets the collection for an embedded document.
      */
     type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
-      // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
-      Document.Any,
+      Scene.Implementation,
       Metadata.Embedded,
       CollectionName
     >;
@@ -413,7 +413,13 @@ declare namespace Scene {
      * The name of this scene
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * Is this scene currently active? Only one scene may be active at a given time
@@ -680,7 +686,7 @@ declare namespace Scene {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     /**
      * An object of creation and access information
@@ -1069,7 +1075,7 @@ declare namespace Scene {
     columns: number;
   }
 
-  interface _ThumbnailCreationData extends ImageHelper.TextureToImageOptions {
+  interface _ThumbnailCreationData {
     /**
      * A background image to use for thumbnail creation, otherwise the current scene
      * background is used.
@@ -1097,13 +1103,13 @@ declare namespace Scene {
      * @remarks Foundry writes `image/jpg` but this functions the same as `image/png  `.
      * The correct MIME type is `image/jpeg`.
      */
-    format: ImageHelper.Format | null;
+    format: CONST.IMAGE_FILE_EXTENSIONS;
 
     /**
      * What compression quality should be used for jpeg or webp, between 0 and 1
      * @defaultValue `0.8`
      */
-    quality: number | null;
+    quality: number;
   }
 
   interface ThumbnailCreationData extends InexactPartial<_ThumbnailCreationData> {}
@@ -1112,6 +1118,15 @@ declare namespace Scene {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -1125,7 +1140,7 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    * @param data    - Initial data from which to construct the `Scene`
    * @param context - Construction context options
    */
-  constructor(...args: Scene.ConstructorArgs);
+  constructor(data: Scene.CreateData, context?: Scene.ConstructionContext);
 
   /**
    * Track the viewed position of each scene (while in memory only, not persisted)

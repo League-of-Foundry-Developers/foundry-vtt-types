@@ -1,4 +1,4 @@
-import type { AnyArray, AnyObject, InexactPartial, FixedInstanceType } from "#utils";
+import type { AnyArray, AnyObject, InexactPartial, FixedInstanceType, Identity } from "#utils";
 import type FormApplication from "#client/appv1/api/form-application-v1.mjs";
 import type ApplicationV2 from "#client/applications/api/application.d.mts";
 import type { CustomFormInput } from "#client/applications/forms/fields.d.mts";
@@ -12,17 +12,21 @@ import type { DataField } from "#common/data/fields.d.mts";
  * When Foundry Virtual Tabletop is initialized, a singleton instance of this class is constructed within the global
  * Game object as as game.settings.
  *
- * @see {@link Game.settings | `Game#settings`}
- * @see {@linkcode Settings}
- * @see {@linkcode SettingsConfig}
+ * @see {@linkcode foundry.Game.settings | Game#settings}
+ * @see {@linkcode foundry.applications.sidebar.tabs.Settings | Settings}
+ * @see {@linkcode foundry.applications.settings.SettingsConfig | SettingsConfig}
  */
 declare class ClientSettings {
+  /**
+   * @remarks
+   * @throws If {@linkcode game.settings} has already been initialized
+   */
   constructor(worldSettings?: Setting.Implementation["_source"][]);
 
   /**
    * A object of registered game settings for this scope
    */
-  settings: Map<keyof globalThis.SettingConfig & (string & {}), ClientSettings.SettingConfig>;
+  settings: ClientSettings.SettingsMap;
 
   /**
    * Registered settings menus which trigger secondary applications
@@ -32,7 +36,9 @@ declare class ClientSettings {
   /**
    * The storage interfaces used for persisting settings
    * Each storage interface shares the same API as window.localStorage
-   * @remarks This is a lie, it doesn't actually have the same interface...
+   * @remarks The above claim is only true in as much as the `getItem` signatures are compatible;
+   * {@linkcode foundry.documents.collections.WorldSettings | WorldSettings} lacks `key`, `setItem`,
+   * and `removeItem` methods
    */
   storage: Map<string, Storage | foundry.documents.collections.WorldSettings>;
 
@@ -42,7 +48,13 @@ declare class ClientSettings {
   get sheet(): foundry.applications.settings.SettingsConfig;
 
   /**
-   * Register a new game setting under this setting scope
+   * Register a new namespaced game setting. The setting's scope determines where the setting is saved.
+   * World - World settings are applied to everyone in the World. Use this for settings like system rule variants that
+   * everyone must abide by.
+   * User - User settings are applied to an individual user. Use this for settings that are a player's personal
+   * preference, like 3D dice skins.
+   * Client - Client settings are applied to the browser or client used to access the World. Use this for settings that
+   * are affected by the client itself, such as screen dimensions, resolution, or performance.
    *
    * @param namespace - The namespace under which the setting is registered
    * @param key       - The key name for the setting under the namespace
@@ -84,6 +96,18 @@ declare class ClientSettings {
    *   }
    * });
    * ```
+   *
+   *  @example Register a user setting
+   * ```js
+   * game.settings.register("myModule", "myUserSetting", {
+   *   name: "Register a Module Setting with a checkbox",
+   *   hint: "A description of the registered setting and its behavior.",
+   *   scope: "user",       // This specifies a user-level setting
+   *   config: true,        // This specifies that the setting appears in the configuration view
+   *   type: new foundry.fields.BooleanField(),
+   *   default: false
+   * });
+   * ```
    */
   register<
     T extends ClientSettings.Type,
@@ -106,7 +130,7 @@ declare class ClientSettings {
    *   name: "My Settings Submenu",
    *   label: "Settings Menu Label",      // The text label used in the button
    *   hint: "A description of what will occur in the submenu dialog.",
-   *   icon: "fas fa-bars",               // A Font Awesome icon used in the submenu button
+   *   icon: "fa-solid fa-bars",               // A Font Awesome icon used in the submenu button
    *   type: MySubmenuApplicationClass,   // A FormApplication subclass which should be created
    *   restricted: true                   // Restrict this submenu to gamemaster only?
    * });
@@ -127,10 +151,11 @@ declare class ClientSettings {
    * game.settings.get("myModule", "myClientSetting");
    * ```
    */
-  get<N extends ClientSettings.Namespace, K extends ClientSettings.KeyFor<N>>(
-    namespace: N,
-    key: K,
-  ): ClientSettings.SettingInitializedType<N, K>;
+  get<
+    N extends ClientSettings.Namespace,
+    K extends ClientSettings.KeyFor<N>,
+    Doc extends boolean | undefined = undefined,
+  >(namespace: N, key: K, options?: ClientSettings.GetOptions<Doc>): ClientSettings.Get<N, K, Doc>;
 
   /**
    * Set the value of a game setting for a certain namespace and setting key
@@ -150,17 +175,26 @@ declare class ClientSettings {
    * game.settings.set("myModule", "myClientSetting", "b");
    * ```
    */
-  set<N extends ClientSettings.Namespace, K extends ClientSettings.KeyFor<N>>(
+  set<
+    N extends ClientSettings.Namespace,
+    K extends ClientSettings.KeyFor<N>,
+    Doc extends boolean | undefined = undefined,
+  >(
     namespace: N,
     key: K,
     value: ClientSettings.SettingCreateData<N, K>,
-    options?: Setting.Database.CreateOperation<undefined | false> | Setting.Database.UpdateOperation,
-  ): Promise<ClientSettings.SettingInitializedType<N, K>>;
+    options?: ClientSettings.SetOptions<Doc>,
+  ): Promise<ClientSettings.Get<N, K, Doc>>;
 }
 
 declare namespace ClientSettings {
+  interface Any extends AnyClientSettings {}
+  interface AnyConstructor extends Identity<typeof AnyClientSettings> {}
+
   type Namespace = GetNamespaces<keyof globalThis.SettingConfig>;
   type KeyFor<N extends Namespace> = GetKeys<N, keyof globalThis.SettingConfig>;
+
+  type SettingsMap = Map<keyof globalThis.SettingConfig & (string & {}), ClientSettings.SettingConfig>;
 
   interface RegisterData<
     T extends ClientSettings.Type,
@@ -219,6 +253,10 @@ declare namespace ClientSettings {
     SettingType<T> | (T extends DataModel.Any ? T : never)
   >;
 
+  type Get<N extends Namespace, K extends KeyFor<N>, Doc extends boolean | undefined> = Doc extends true
+    ? Setting.Implementation
+    : SettingInitializedType<N, K>;
+
   /**
    * @internal
    */
@@ -270,7 +308,7 @@ declare namespace ClientSettings {
     requiresReload?: boolean;
 
     /** Executes when the value of this Setting changes */
-    onChange?: (value: InitializedData) => void;
+    onChange?: (value: InitializedData, options?: Omit<SetOptions, "document">) => void;
 
     /**
      * A custom form field input used in conjunction with a DataField type
@@ -280,7 +318,7 @@ declare namespace ClientSettings {
 
   /**
    * A Client Setting
-   * @remarks Copied from `resources/app/common/types.mjs`
+   * @remarks Copied from `client/_types.mjs`
    * @remarks Not to be confused with {@linkcode globalThis.SettingConfig} which is how you register setting types in this project
    */
   interface SettingConfig<T extends Type = (value: unknown) => unknown>
@@ -339,6 +377,38 @@ declare namespace ClientSettings {
     restricted: boolean;
   }
 
+  /** @internal */
+  type _GetOptions<Doc extends boolean | undefined> = InexactPartial<{
+    /**
+     * Retrieve the full Setting document instance instead of just its value
+     * @defaultValue `false`
+     */
+    document: Doc;
+  }>;
+
+  interface GetOptions<Doc extends boolean | undefined = undefined> extends _GetOptions<Doc> {}
+
+  /** @internal */
+  type _SetOptions<Doc extends boolean | undefined> = InexactPartial<{
+    /**
+     * Return the updated Setting document instead of just its value
+     * @defaultValue `false`
+     */
+    document: Doc;
+  }>;
+
+  /** @internal */
+  interface _SetOptionsCreate<Doc extends boolean | undefined>
+    extends _SetOptions<Doc>,
+      Setting.Database.CreateOperation<undefined | false> {}
+
+  /** @internal */
+  interface _SetOptionsUpdate<Doc extends boolean | undefined>
+    extends _SetOptions<Doc>,
+      Setting.Database.UpdateOperation {}
+
+  type SetOptions<Doc extends boolean | undefined = undefined> = _SetOptionsCreate<Doc> | _SetOptionsUpdate<Doc>;
+
   /**
    * @deprecated Replaced with {@linkcode ClientSettings.SettingInitializedType}.
    */
@@ -351,6 +421,10 @@ declare namespace ClientSettings {
 }
 
 export default ClientSettings;
+
+declare abstract class AnyClientSettings extends ClientSettings {
+  constructor(...args: never);
+}
 
 type SettingFunction = (value: never) => unknown;
 type SettingConstructor = new (value: never) => unknown;

@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial } from "#utils";
+import type { Coalesce, Identity } from "#utils";
 import type Application from "#client/appv1/api/application-v1.d.mts";
 
 /**
@@ -8,7 +8,7 @@ import type Application from "#client/appv1/api/application-v1.d.mts";
  */
 declare class ContextMenu<UsesJQuery extends boolean = true> {
   /**
-   * @param container   - The containing HTML element within which the menu is positioned
+   * @param container - The containing HTML element within which the menu is positioned
    * @param selector  - A CSS selector which activates the context menu.
    * @param menuItems - An Array of entries to display in the menu
    * @param options   - Additional options to configure the context menu.
@@ -16,20 +16,8 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   constructor(
     container: HTMLElement,
     selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
-    options: ContextMenu.ConstructorOptions<UsesJQuery>,
-  );
-
-  /**
-   * @deprecated "ContextMenu is changing to no longer transact jQuery objects.
-   * You may temporarily pass the jQuery option to nominate a behavior.
-   * In v14 the default will become false."
-   */
-  constructor(
-    element: JQuery,
-    selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
-    options: ContextMenu.ConstructorOptions<UsesJQuery>,
+    menuItems: ContextMenu.Entry<HTMLElement>[],
+    options: ContextMenu.ConstructorOptions<false>,
   );
 
   /**
@@ -39,25 +27,10 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
    * This parameter will be false by default in v14 and deprecated entirely in v15 at which point only HTMLElement references will be used."
    */
   constructor(
-    element: HTMLElement,
+    element: HTMLElement | JQuery,
     selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
-    options?: InexactPartial<ContextMenu.ConstructorOptions<UsesJQuery>, "jQuery">,
-  );
-
-  /**
-   * @deprecated "ContextMenu is changing to no longer transact jQuery objects. You must begin passing an HTMLElement instead."
-   *
-   * @deprecated "ContextMenu is changing to no longer transact jQuery objects for menu item callbacks.
-   * Because the jQuery option provided to the ContextMenu constructor was undefined, your  callbacks will receive jQuery objects.
-   * You may opt-out and receive HTMLElement references instead by passing jQuery: false to the constructor.
-   * This parameter will be false by default in v14 and deprecated entirely in v15 at which point only HTMLElement references will be used."
-   */
-  constructor(
-    element: JQuery,
-    selector: string | null | undefined,
-    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
-    options?: InexactPartial<ContextMenu.ConstructorOptions<UsesJQuery>, "jQuery">,
+    menuItems: ContextMenu.Entry<HTMLElement | JQuery>[],
+    options?: Omit<ContextMenu.ConstructorOptions<UsesJQuery>, "jQuery"> & { jQuery?: false | undefined },
   );
 
   /**
@@ -67,53 +40,16 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
    * @param selector  - The target CSS selector which activates the menu.
    * @param menuItems - The array of menu items being rendered.
    * @param options   - Additional options to configure context menu initialization. (default: `"EntryContext"`)
+   *
+   * @deprecated "ContextMenu.create is deprecated and only supports Application (v1) instances."
    */
-  static create<UsesJQuery extends boolean = true>(
-    app: Application.Any,
-    html: HTMLElement,
+  static create<UsesJQuery extends boolean | undefined = true>(
+    app: Application.Any | foundry.applications.api.ApplicationV2.Any,
+    html: HTMLElement | JQuery,
     selector: string,
     menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
-    options: ContextMenu.CreateOptions<UsesJQuery>,
-  ): ContextMenu<UsesJQuery>;
-
-  /**
-   * @deprecated "ContextMenu is changing to no longer transact jQuery objects for menu item callbacks.
-   * Because the jQuery option provided to the ContextMenu constructor was undefined, your  callbacks will receive jQuery objects.
-   * You may opt-out and receive HTMLElement references instead by passing jQuery: false to the constructor.
-   * This parameter will be false by default in v14 and deprecated entirely in v15 at which point only HTMLElement references will be used."
-   */
-  static create(
-    app: Application.Any,
-    html: HTMLElement,
-    selector: string,
-    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<true>>[],
-    options?: InexactPartial<ContextMenu.CreateOptions<true>, "jQuery">,
-  ): ContextMenu<true>;
-
-  /**
-   * @deprecated "ContextMenu is changing to no longer transact jQuery objects. You must begin passing an HTMLElement instead."
-   */
-  static create<UsesJQuery extends boolean = true>(
-    app: Application.Any,
-    html: JQuery,
-    selector: string,
-    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
-    options: ContextMenu.CreateOptions<UsesJQuery>,
-  ): ContextMenu<UsesJQuery>;
-
-  /**
-   * @deprecated "ContextMenu is changing to no longer transact jQuery objects for menu item callbacks.
-   * Because the jQuery option provided to the ContextMenu constructor was undefined, your callbacks will receive jQuery objects.
-   * You may opt-out and receive HTMLElement references instead by passing jQuery: false to the constructor.
-   * This parameter will be false by default in v14 and deprecated entirely in v15 at which point only HTMLElement references will be used."
-   */
-  static create(
-    app: Application.Any,
-    html: JQuery,
-    selector: string,
-    menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<true>>[],
-    options?: InexactPartial<ContextMenu.CreateOptions<true>, "jQuery">,
-  ): ContextMenu<true>;
+    options: Omit<ContextMenu.CreateOptions<never>, "jQuery"> & { jQuery?: false | undefined },
+  ): ContextMenu<Coalesce<UsesJQuery, true>>;
 
   /**
    * The menu element.
@@ -374,7 +310,7 @@ declare namespace ContextMenu {
     hookName?: string;
   }
 
-  type JQueryOrHTML<IsJQuery extends boolean | undefined> = IsJQuery extends false ? HTMLElement : JQuery;
+  type JQueryOrHTML<IsJQuery extends boolean | undefined> = IsJQuery extends false | undefined ? HTMLElement : JQuery;
 }
 
 declare abstract class AnyContextMenu extends ContextMenu<boolean> {

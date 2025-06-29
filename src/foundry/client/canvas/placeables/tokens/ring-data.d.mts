@@ -45,7 +45,7 @@ declare namespace DynamicRingData {
           INVISIBILITY: "TOKEN.RING.EFFECTS.INVISIBILITY";
         };
       },
-      Record<string, string>,
+      Record<string, string> | null | undefined,
       Record<string, string>
     >;
 

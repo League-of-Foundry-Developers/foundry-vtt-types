@@ -1,149 +1,43 @@
-export declare const details: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+import type { NodeSpec } from "prosemirror-model";
 
-export declare const summary: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const details: NodeSpec;
 
-export declare const summaryBlock: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const summary: NodeSpec;
 
-export declare const dl: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const summaryBlock: NodeSpec;
 
-export declare const dt: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const dl: NodeSpec;
 
-export declare const dd: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const dt: NodeSpec;
 
-export declare const fieldset: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const dd: NodeSpec;
 
-export declare const legend: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const fieldset: NodeSpec;
 
-export declare const picture: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const legend: NodeSpec;
 
-export declare const audio: {
-  content: string;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const picture: NodeSpec;
 
-export declare const video: {
-  content: string;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const audio: NodeSpec;
 
-export declare const track: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-};
+export declare const video: NodeSpec;
 
-export declare const source: {
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-};
+export declare const track: NodeSpec;
 
-export declare const object: {
-  inline: boolean;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string];
-};
+export declare const source: NodeSpec;
 
-export declare const figure: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const object: NodeSpec;
 
-export declare const figcaption: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const figure: NodeSpec;
 
-export declare const small: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const figcaption: NodeSpec;
 
-export declare const ruby: {
-  content: string;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const small: NodeSpec;
 
-export declare const rp: {
-  content: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const ruby: NodeSpec;
 
-export declare const rt: {
-  content: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const rp: NodeSpec;
 
-export declare const iframe: {
-  attrs: Record<string, unknown>;
-  managed: Record<string, unknown>;
-  group: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, unknown];
-};
+export declare const rt: NodeSpec;
+
+export declare const iframe: NodeSpec;

@@ -24,7 +24,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * You should use {@link DrawingDocument.implementation | `new DrawingDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `DrawingDocument`.
    */
-  constructor(...args: DrawingDocument.ConstructorArgs);
+  constructor(data: DrawingDocument.CreateData, context?: DrawingDocument.ConstructionContext);
 
   /**
    * @defaultValue
@@ -318,6 +318,7 @@ export default BaseDrawing;
 
 declare namespace BaseDrawing {
   export import Name = DrawingDocument.Name;
+  export import ConstructionContext = DrawingDocument.ConstructionContext;
   export import ConstructorArgs = DrawingDocument.ConstructorArgs;
   export import Hierarchy = DrawingDocument.Hierarchy;
   export import Metadata = DrawingDocument.Metadata;

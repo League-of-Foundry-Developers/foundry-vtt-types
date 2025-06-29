@@ -6,10 +6,10 @@ import type { ActorDeltaField } from "#common/documents/token.d.mts";
 import type BaseToken from "#common/documents/token.d.mts";
 import type { LightData, TextureData } from "#common/data/data.mjs";
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
-
-import fields = foundry.data.fields;
 import type DataModel from "#common/abstract/data.mjs";
 import type { TerrainData } from "#client/data/terrain-data.mjs";
+
+import fields = foundry.data.fields;
 
 declare namespace TokenDocument {
   /**
@@ -18,9 +18,9 @@ declare namespace TokenDocument {
   type Name = "Token";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Token`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `TokenDocument`.
@@ -147,16 +147,16 @@ declare namespace TokenDocument {
     /**
      * Gets the collection document for an embedded document.
      */
-    // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.DocumentFor<
+      Metadata.Embedded,
+      CollectionName
+    >;
 
     /**
      * Gets the collection for an embedded document.
      */
     type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
-      // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
-      Document.Any,
+      TokenDocument.Implementation,
       Metadata.Embedded,
       CollectionName
     >;
@@ -574,7 +574,7 @@ declare namespace TokenDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
+    flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
   }
 
   interface DetectionModeSchema extends DataSchema {
@@ -1091,27 +1091,27 @@ declare namespace TokenDocument {
      * The top-left x-coordinate in pixels (integer).
      */
     x: number;
-    
+
     /**
      * The top-left y-coordinate in pixels (integer).
      */
     y: number;
-    
+
     /**
      * The elevation in grid units.
      */
     elevation: number;
-    
+
     /**
      * The width in grid spaces (positive).
      */
     width: number;
-    
+
     /**
      * The height in grid spaces (positive).
      */
     height: number;
-    
+
     /**
      * The shape type (see {@link CONST.TOKEN_SHAPES}).
      */
@@ -1169,27 +1169,27 @@ declare namespace TokenDocument {
      * The recorded waypoints of the movement path
      */
     recorded: TokenDocument.MovementSectionData;
-    
+
     /**
      * The unrecorded waypoints of the movement path
      */
     unrecorded: TokenDocument.MovementSectionData;
-    
+
     /**
      * The distance of the combined movement path
      */
     distance: number;
-    
+
     /**
      * The cost of the combined movement path
      */
     cost: number;
-    
+
     /**
      * The number spaces of moved along the combined path
      */
     space: number;
-    
+
     /**
      * The number of diagonals moved along the combined path
      */
@@ -1202,7 +1202,7 @@ declare namespace TokenDocument {
      * @defaultValue `false`
      */
     preview: boolean;
-    
+
     /**
      * Ignore walls?
      * @defaultValue `false`
@@ -1228,7 +1228,7 @@ declare namespace TokenDocument {
      * The movement ID
      */
     movementId: string;
-    
+
     /**
      * The continuation promise
      */
@@ -1246,7 +1246,7 @@ declare namespace TokenDocument {
      * The movement ID
      */
     movementId: string;
-    
+
     /**
      * The number of continuations
      */
@@ -1261,7 +1261,7 @@ declare namespace TokenDocument {
      * The continuation promise
      */
     continuePromise: Promise<boolean> | null;
-    
+
     /**
      * The promise to wait for before continuing movement
      */
@@ -1332,7 +1332,7 @@ declare namespace TokenDocument {
      * Was the movement recorded in the movement history?
      */
     recorded: boolean;
-    
+
     /**
      * The method of movement
      */
@@ -1389,7 +1389,7 @@ declare namespace TokenDocument {
 
   /** Returns the aggregated cost */
   type MovementCostAggregator = (
-    
+
     /**
      * The results of the cost function calls.
      * The array may be sorted but otherwise not mutated
@@ -1408,8 +1408,8 @@ declare namespace TokenDocument {
   ) => number;
 
   interface MeasureMovementPathOptions extends InexactPartial<{
-    
-    /** 
+
+    /**
      * The function that returns the cost for a given move between grid spaces
      * (default is the distance travelled along the direct path)
      */
@@ -1452,6 +1452,15 @@ declare namespace TokenDocument {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -1465,7 +1474,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param data    - Initial data from which to construct the `TokenDocument`
    * @param context - Construction context options
    */
-  constructor(...args: TokenDocument.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: TokenDocument.CreateData, context?: TokenDocument.ConstructionContext);
 
   /**
    * The current movement data of this Token document.
@@ -1686,7 +1696,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   /**
    * Get the path of movement with the intermediate steps of the direct path between waypoints.
    * @param waypoints - The waypoints of movement
-   * @returns The path of movement with all intermediate steps 
+   * @returns The path of movement with all intermediate steps
    */
   getCompleteMovementPath(waypoints: TokenDocument.GetCompleteMovementPathWaypoint[]): TokenDocument.CompleteMovementWaypoint[];
 
@@ -1747,7 +1757,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   // _onUpdateOperation, _onDeleteOperation are all overridden but with no signature changes from their definition in BaseToken.
 
   /**
-   * 
+   *
    * @param changes - The changes that will be applied to this Token
    * @returns The Region IDs this Token is in after changes ar applied (sorted)
    * @internal

@@ -1,4 +1,5 @@
 import type { SchemaField } from "#common/data/fields.d.mts";
+import type { Identity } from "#utils";
 import type { PrototypeToken } from "../../data/_module.d.mts";
 
 /**
@@ -6,16 +7,22 @@ import type { PrototypeToken } from "../../data/_module.d.mts";
  */
 declare class CompendiumArt extends Map<string, CompendiumArt.Info> {
   /**
+   * @remarks
+   * @throws "You may not re-initialize the singleton {@linkcode CompendiumArt}. Use {@linkcode game.compendiumArt} instead."
+   */
+  constructor(iterable?: Iterable<[string, CompendiumArt.Info]> | null);
+
+  /**
    * The key for the package manifest flag used to store the mapping information.
    * @defaultValue `"compendiumArtMappings"`
    */
-  readonly FLAG: string;
+  FLAG: string;
 
   /**
    * The key for the setting used to store the World's art preferences.
    * @defaultValue `"compendiumArtConfiguration"`
    */
-  readonly SETTING: string;
+  SETTING: string;
 
   /**
    * Whether art application is enabled. This should be switched off when performing client-side compendium migrations
@@ -33,19 +40,15 @@ declare class CompendiumArt extends Map<string, CompendiumArt.Info> {
    * Collate Document art mappings from active packages.
    * @internal
    */
-  _registerArt(): Promise<void>;
+  protected _registerArt(): Promise<void>;
 
-  /**
-   * Parse a provided art mapping and store it for reference later, and update compendium indices to use the provided
-   * art.
-   * @param packageId - The ID of the package providing the mapping.
-   * @param mapping   - The art mapping information provided by the package.
-   * @param credit    - An optional credit string for use by the game system to apply in an appropriate place.
-   */
-  #parseArtMapping(packageId: string, mapping: CompendiumArt.Mapping, credit?: string): Promise<void>;
+  #CompendiumArt: true;
 }
 
 declare namespace CompendiumArt {
+  interface Any extends AnyCompendiumArt {}
+  interface AnyConstructor extends Identity<typeof CompendiumArt> {}
+
   interface Info {
     /**
      * The path to the Actor's portrait image.
@@ -88,7 +91,7 @@ declare namespace CompendiumArt {
     /**
      * An optional credit string for use by the game system to apply in an appropriate place.
      */
-    credit?: string | undefined;
+    credit: string | undefined;
 
     /**
      * The package's user-configured priority.
@@ -98,3 +101,7 @@ declare namespace CompendiumArt {
 }
 
 export default CompendiumArt;
+
+declare abstract class AnyCompendiumArt extends CompendiumArt {
+  constructor(...args: never);
+}

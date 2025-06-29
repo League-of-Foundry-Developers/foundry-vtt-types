@@ -1,20 +1,29 @@
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-import type { AnyObject, FixedInstanceType, Identity, IntentionalPartial, RequiredProps } from "#utils";
+import type {
+  AnyObject,
+  FixedInstanceType,
+  Identity,
+  InexactPartial,
+  IntentionalPartial,
+  Override,
+  RequiredProps,
+} from "#utils";
 import type { AbstractBaseShader, AdaptiveVisionShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
+import type BaseEffectSource from "./base-effect-source.d.mts";
+import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
 
 /**
  * A specialized subclass of RenderedEffectSource which represents a source of point-based vision.
  */
 declare class PointVisionSource<
   SourceData extends PointVisionSource.SourceData = PointVisionSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointSourcePolygon,
-  RenderingLayers extends RenderedEffectSource.Layers = RenderedEffectSource.Layers,
+  SourceShape extends PointSourcePolygon = PointVisionSource.ImplementationPolygon,
+  RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = PointVisionSource.Layers,
 > extends PointEffectSourceMixin(RenderedEffectSource)<SourceData, SourceShape, RenderingLayers> {
-  /** @defaultValue `"sight"` */
-  static override sourceType: string;
+  static override sourceType: "sight";
 
   /** @defaultValue `["visionMode", "blinded"]` */
   protected static override _initializeShaderKeys: string[];
@@ -24,16 +33,17 @@ declare class PointVisionSource<
 
   /**
    * The corresponding lighting levels for dim light.
-   * @defaultValue `foundry.CONST.LIGHTING_LEVELS.DIM`
+   * @defaultValue {@linkcode CONST.LIGHTING_LEVELS.DIM}
    */
-  protected static _dimLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+  protected static _dimLightingLevel: CONST.LIGHTING_LEVELS;
 
   /**
    * The corresponding lighting levels for bright light.
-   * @defaultValue `foundry.CONST.LIGHTING_LEVELS.BRIGHT`
+   * @defaultValue {@linkcode CONST.LIGHTING_LEVELS.BRIGHT}
    */
-  protected static _brightLightingLevel: foundry.CONST.LIGHTING_LEVELS;
+  protected static _brightLightingLevel: CONST.LIGHTING_LEVELS;
 
+  /** @defaultValue `-2` */
   static override EDGE_OFFSET: number;
 
   /** @defaultValue `"visionSources"` */
@@ -52,19 +62,38 @@ declare class PointVisionSource<
    *   lightRadius: null
    * }
    * ```
+   * @remarks See {@linkcode RenderedEffectSource.defaultData}, {@linkcode PointEffectSourceMixin.AnyMixedConstructor.defaultData | PointEffectSourceMixin.defaultData}
    */
   static override defaultData: PointVisionSource.SourceData;
 
-  /** @remarks Overrides `Adaptive*Shader` references with `*VisionShader` ones */
+  /**
+   * @defaultValue
+   * ```js
+   * {
+   *   background: {
+   *     defaultShader: BackgroundVisionShader,
+   *     blendMode: "MAX_COLOR"
+   *   },
+   *   coloration: {
+   *     defaultShader: ColorationVisionShader,
+   *     blendMode: "SCREEN"
+   *   },
+   *   illumination: {
+   *     defaultShader: IlluminationVisionShader,
+   *     blendMode: "MAX_COLOR"
+   *   }
+   * }
+   * ```
+   */
   protected static get _layers(): Record<string, RenderedEffectSource.LayerConfig>;
 
   /**
    * The vision mode linked to this VisionSource
-   * @remarks Foundry types this as `| null`, and initializes to `= null` in the class body,
-   * but then sets it to `CONFIG.Canvas.visionModes[this.data.visionMode]` during actual
-   * initialization, so it'll either be a defined `VisionMode` or `undefined`
+   * @remarks This is only `null` prior to initialization; its set to {@linkcode CONFIG.Canvas.visionModes}`[this.data.visionMode]`
+   * in {@linkcode PointVisionSource._updateVisionMode | #_updateVisionMode}, and `this.data.visionMode` has a fallback of `"basic"`
+   * applied in `#_initialize`
    */
-  visionMode: VisionMode | undefined;
+  visionMode: VisionMode | null;
 
   /**
    * The vision mode activation flag for handlers
@@ -74,25 +103,30 @@ declare class PointVisionSource<
    */
   protected _visionModeActivated: boolean;
 
+  /** @privateRemarks Fake override to remove `number[]` */
+  override shape: SourceShape | undefined;
+
   /**
    * The unconstrained LOS polygon.
    * @remarks Initialization includes `this.los = this.shape` in `#_createShapes()`
    */
-  los: SourceShape;
+  los: SourceShape | undefined;
 
   /**
    * The polygon of light perception.
    * @remarks Initialization includes `this.light = this._createLightPolygon()` in `#_createShapes()`
    */
-  light: SourceShape;
+  light: SourceShape | undefined;
 
   /**
    * An alias for the shape of the vision source.
+   * @remarks `undefined` prior to initialization
    */
-  get fov(): SourceShape;
+  get fov(): SourceShape | undefined;
 
   /**
    * If this vision source background is rendered into the lighting container.
+   * @remarks `undefined` prior to initialization
    */
   get preferred(): boolean | undefined;
 
@@ -124,6 +158,15 @@ declare class PointVisionSource<
    * @remarks Initialized in the class to `{}`, but filled in during actual initialization (`#_updateVisionMode` via `#_createShapes`)
    */
   visionModeOverrides: PointVisionSource.VisionModeOverrides;
+
+  /** @privateRemarks Fake override to specify Initialized return type */
+  override initialize(
+    data?: InexactPartial<SourceData>,
+    options?: BaseEffectSource.InitializeOptions,
+  ): PointVisionSource.Initialized<SourceData, SourceShape, RenderingLayers>;
+
+  /** @privateRemarks Fake override to reinstate the keyof constraint we lost in the mixin */
+  protected _drawMesh(layerId: keyof RenderingLayers): PointSourceMesh | null;
 
   protected override _initialize(data: IntentionalPartial<SourceData>): void;
 
@@ -176,11 +219,52 @@ declare class PointVisionSource<
     shader: AdaptiveVisionShader,
     vmUniforms: Array<[string, AbstractBaseShader.UniformValue]>,
   ): void;
+
+  #PointVisionSource;
 }
 
 declare namespace PointVisionSource {
   interface Any extends AnyPointVisionSource {}
   interface AnyConstructor extends Identity<typeof AnyPointVisionSource> {}
+
+  /** @remarks See {@linkcode PointVisionSource._layers} */
+  // Interface would require `RenderingLayers extends ... = InterfaceToObject<Layers>` in every subclass signature
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  type Layers = {
+    background: RenderedEffectSource.SourceLayer;
+    coloration: RenderedEffectSource.SourceLayer;
+    illumination: RenderedEffectSource.SourceLayer;
+  };
+
+  type Initialized<
+    SourceData extends PointVisionSource.SourceData = PointVisionSource.SourceData,
+    SourceShape extends PointSourcePolygon = PointVisionSource.ImplementationPolygon,
+    RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = PointVisionSource.Layers,
+  > = Override<
+    PointVisionSource<SourceData, SourceShape, RenderingLayers>,
+    {
+      /**
+       * The geometric shape of the effect source which is generated later.
+       * @remarks This is the initialized type, the shape has been generated if you're accessing this
+       */
+      shape: SourceShape;
+
+      /** The vision mode linked to this VisionSource */
+      visionMode: VisionMode;
+
+      /** The unconstrained LOS polygon. */
+      los: SourceShape;
+
+      /** The polygon of light perception. */
+      light: SourceShape;
+
+      /** An alias for the shape of the vision source. */
+      get fov(): SourceShape;
+
+      /** If this vision source background is rendered into the lighting container. */
+      get preferred(): boolean;
+    }
+  >;
 
   interface SourceData extends RenderedEffectSource.SourceData, PointEffectSourceMixin.SourceData {
     /**
@@ -229,7 +313,10 @@ declare namespace PointVisionSource {
     blinded: boolean;
   }
 
-  /** @privateRemarks Foundry types the property this is for as just `object` */
+  /**
+   * @privateRemarks Foundry types the property this is for as just `object`.
+   * Keys found in {@linkcode PointVisionSource._updateVisionMode | #_updateVisionMode}
+   */
   interface VisionModeOverrides {
     colorRGB: Color.RGBColorVector | null;
     brightness: number;
@@ -240,20 +327,29 @@ declare namespace PointVisionSource {
 
   /** @privateRemarks Foundry types this as just the Record, but only ever checks the one key */
   interface BlindedReasons extends Record<string, boolean | undefined> {
-    darkness?: boolean;
+    /** @remarks See `PointVisionSource##updateBlindedState` */
+    darkness?: boolean | undefined;
+
+    /** @remarks See {@linkcode foundry.canvas.placeables.Token._getVisionBlindedStates | Token#_getVisionBlindedStates} */
+    blind?: boolean | undefined;
+
+    /** @remarks See {@linkcode foundry.canvas.placeables.Token._getVisionBlindedStates | Token#_getVisionBlindedStates} */
+    burrow?: boolean | undefined;
   }
 
-  interface PolygonConfig
-    extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "radius" | "useThreshold" | "includeDarkness"> {}
+  interface PolygonConfig extends RequiredProps<PointEffectSourceMixin.PolygonConfig, "radius" | "useThreshold"> {}
 
-  type ConfiguredClass = CONFIG["Canvas"]["visionSourceClass"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["visionSourceClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
+
+  interface ImplementationPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["sight"]> {}
+  interface ImplementationPolygon extends FixedInstanceType<ImplementationPolygonClass> {}
 }
 
 declare abstract class AnyPointVisionSource extends PointVisionSource<
   PointVisionSource.SourceData,
-  PointSourcePolygon,
-  RenderedEffectSource.Layers
+  PointVisionSource.ImplementationPolygon,
+  PointVisionSource.Layers
 > {
   constructor(...args: never);
 }

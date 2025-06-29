@@ -23,7 +23,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    * You should use {@link FogExploration.implementation | `new FogExploration.implementation(...)`} instead which will give you
    * a system specific implementation of `FogExploration`.
    */
-  constructor(...args: FogExploration.ConstructorArgs);
+  constructor(data: FogExploration.CreateData, context?: FogExploration.ConstructionContext);
 
   /**
    * @defaultValue
@@ -286,6 +286,7 @@ export default BaseFogExploration;
 
 declare namespace BaseFogExploration {
   export import Name = FogExploration.Name;
+  export import ConstructionContext = FogExploration.ConstructionContext;
   export import ConstructorArgs = FogExploration.ConstructorArgs;
   export import Hierarchy = FogExploration.Hierarchy;
   export import Metadata = FogExploration.Metadata;

@@ -27,7 +27,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    * You should use {@link Macro.implementation | `new Macro.implementation(...)`} instead which will give you
    * a system specific implementation of `Macro`.
    */
-  constructor(...args: Macro.ConstructorArgs);
+  constructor(data: Macro.CreateData, context?: Macro.ConstructionContext);
 
   /**
    * @defaultValue
@@ -308,6 +308,7 @@ export default BaseMacro;
 
 declare namespace BaseMacro {
   export import Name = Macro.Name;
+  export import ConstructionContext = Macro.ConstructionContext;
   export import ConstructorArgs = Macro.ConstructorArgs;
   export import Hierarchy = Macro.Hierarchy;
   export import Metadata = Macro.Metadata;

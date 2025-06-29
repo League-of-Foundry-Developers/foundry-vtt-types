@@ -23,7 +23,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    * You should use {@link MeasuredTemplateDocument.implementation | `new MeasuredTemplateDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `MeasuredTemplateDocument`.
    */
-  constructor(...args: MeasuredTemplateDocument.ConstructorArgs);
+  constructor(data?: MeasuredTemplateDocument.CreateData, context?: MeasuredTemplateDocument.ConstructionContext);
 
   /**
    * @defaultValue
@@ -309,6 +309,7 @@ export default BaseMeasuredTemplate;
 
 declare namespace BaseMeasuredTemplate {
   export import Name = MeasuredTemplateDocument.Name;
+  export import ConstructionContext = MeasuredTemplateDocument.ConstructionContext;
   export import ConstructorArgs = MeasuredTemplateDocument.ConstructorArgs;
   export import Hierarchy = MeasuredTemplateDocument.Hierarchy;
   export import Metadata = MeasuredTemplateDocument.Metadata;

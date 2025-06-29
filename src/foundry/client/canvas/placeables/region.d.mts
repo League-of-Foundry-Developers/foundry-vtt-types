@@ -112,19 +112,19 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
   /** Refreshes the border of the Region. */
   protected _refreshBorder(): void;
 
-  protected override _canDrag(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canDrag(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  protected override _canHUD(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canHUD(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   protected override _onControl(options: Region.ControlOptions): void;
 
   protected override _onRelease(options: HandleEmptyObject<Region.ReleaseOptions>): void;
 
   // options: not null (destructured)
-  protected override _onHoverIn(event: PIXI.FederatedEvent, options?: Region.HoverInOptions): void;
+  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: Region.HoverInOptions): void;
 
   // options: not null (destructured)
-  protected override _onHoverOut(event: PIXI.FederatedEvent, options?: Region.HoverOutOptions): void;
+  protected override _onHoverOut(event: Canvas.Event.Pointer, options?: Region.HoverOutOptions): void;
 
   protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
@@ -156,7 +156,7 @@ declare class Region extends PlaceableObject<RegionDocument.Implementation> {
   // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
   // fake override to narrow the type from super, which had to account for this class's misbehaving siblings
-  protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): PlaceableObject.DragLeftDropUpdate[];
+  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): PlaceableObject.DragLeftDropUpdate[];
 }
 
 declare namespace Region {

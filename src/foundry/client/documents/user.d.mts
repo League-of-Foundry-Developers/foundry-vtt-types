@@ -16,9 +16,9 @@ declare namespace User {
   type Name = "User";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `User`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `User`.
@@ -184,7 +184,13 @@ declare namespace User {
     /**
      * The user's name.
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The user's role, see CONST.USER_ROLES.
@@ -247,10 +253,10 @@ declare namespace User {
     hotbar: fields.ObjectField<
       {
         required: true;
-        validate: (bar: AnyObject) => boolean;
+        validate: (bar: AnyObject) => bar is Record<number, string>;
         validationError: "must be a mapping of slots to macro identifiers";
       },
-      Record<number, string>,
+      Record<number, string> | null | undefined,
       Record<number, string>,
       Record<number, string>
     >;
@@ -274,7 +280,7 @@ declare namespace User {
      * An object of optional key/value flags.
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     /**
      * An object of creation and access information
@@ -565,6 +571,15 @@ declare namespace User {
   type QueryName = keyof typeof CONFIG.queries;
   type QueryData<QueryName extends User.QueryName> = Parameters<typeof CONFIG.queries[QueryName]>[0];
   type QueryReturn<QueryName extends User.QueryName> = ReturnType<typeof CONFIG.queries[QueryName]>;
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -579,7 +594,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @param data    - Initial data from which to construct the `User`
    * @param context - Construction context options
    */
-  constructor(...args: User.ConstructorArgs);
+  constructor(data: User.CreateData, context?: User.ConstructionContext);
 
   /**
    * Track whether the user is currently active in the game

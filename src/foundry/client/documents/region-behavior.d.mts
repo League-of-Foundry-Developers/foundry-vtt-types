@@ -13,9 +13,9 @@ declare namespace RegionBehavior {
   type Name = "RegionBehavior";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `RegionBehavior`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `RegionBehavior`.
@@ -250,7 +250,14 @@ declare namespace RegionBehavior {
     /**
      * An RegionBehavior subtype which configures the system data model applied
      */
-    type: fields.DocumentTypeField<typeof BaseRegionBehavior>;
+    type: fields.DocumentTypeField<
+      typeof BaseRegionBehavior,
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      {},
+      RegionBehavior.SubType,
+      RegionBehavior.SubType,
+      RegionBehavior.SubType
+    >;
 
     /**
      * Data for a RegionBehavior subtype, defined by a System or Module
@@ -266,7 +273,7 @@ declare namespace RegionBehavior {
     /**
      * An object of optional key/value flags
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     /**
      * An object of creation and access information
@@ -411,6 +418,15 @@ declare namespace RegionBehavior {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -423,7 +439,7 @@ declare class RegionBehavior<
    * @param data    - Initial data from which to construct the `RegionBehavior`
    * @param context - Construction context options
    */
-  constructor(...args: RegionBehavior.ConstructorArgs);
+  constructor(data: RegionBehavior.CreateData, context?: RegionBehavior.ConstructionContext);
 
   /** A convenience reference to the RegionDocument which contains this RegionBehavior. */
   get region(): RegionDocument.Implementation | null;

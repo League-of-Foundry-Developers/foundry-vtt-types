@@ -23,7 +23,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
    * You should use {@link Playlist.implementation | `new Playlist.implementation(...)`} instead which will give you
    * a system specific implementation of `Playlist`.
    */
-  constructor(...args: Playlist.ConstructorArgs);
+  constructor(data: Playlist.CreateData, context?: Playlist.ConstructionContext);
 
   /**
    * @defaultValue
@@ -330,6 +330,7 @@ export default BasePlaylist;
 
 declare namespace BasePlaylist {
   export import Name = Playlist.Name;
+  export import ConstructionContext = Playlist.ConstructionContext;
   export import ConstructorArgs = Playlist.ConstructorArgs;
   export import Hierarchy = Playlist.Hierarchy;
   export import Metadata = Playlist.Metadata;

@@ -3,7 +3,7 @@ import { expectTypeOf } from "vitest";
 import ContextMenu = foundry.applications.ux.ContextMenu;
 import JournalSheet = foundry.appv1.sheets.JournalSheet;
 
-const myJournal = new JournalEntry.implementation();
+const myJournal = new JournalEntry.implementation({ name: "Journal" });
 
 const testAppV1 = new JournalSheet(myJournal);
 const testAppV2 = new foundry.applications.sheets.journal.JournalEntrySheet({ document: myJournal });
@@ -19,25 +19,25 @@ expectTypeOf(menu.menuItems[0]?.callback(jquery)).toBeVoid();
 // @ts-expect-error Callback for jQuery: true takes JQuery
 menu.menuItems[0]?.callback(htmlElement);
 
+// Deprecated in general.
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 ContextMenu.create(testAppV1, testAppV1.element[0]!, ".foobar", [], { jQuery: true });
-// Deprecated: expects HTML element
+
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 ContextMenu.create(testAppV1, testAppV1.element, ".foobar", [], { jQuery: true });
-// Deprecated: jQuery must be defined
+
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 ContextMenu.create(testAppV1, testAppV1.element[0]!, ".foobar", [], { jQuery: undefined });
-// Deprecated: expects HTML element & jQuery must be defined
+
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 ContextMenu.create(testAppV1, testAppV1.element, ".foobar", [], { fixed: true });
-
-// jQuery param deprecation testing
 
 new ContextMenu(testAppV2.element, ".foobar", [], {
   jQuery: false,
   fixed: true,
 });
 
-// Deprecated: Need to pass options
+// Deprecated: Need to pass explicit `jQuery` param
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 new ContextMenu(testAppV2.element, ".foobar", []);
 

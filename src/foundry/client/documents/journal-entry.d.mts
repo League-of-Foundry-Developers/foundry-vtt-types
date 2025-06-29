@@ -15,9 +15,9 @@ declare namespace JournalEntry {
   type Name = "JournalEntry";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `JournalEntry`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `JournalEntry`.
@@ -142,16 +142,16 @@ declare namespace JournalEntry {
     /**
      * Gets the collection document for an embedded document.
      */
-    // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.DocumentFor<
+      Metadata.Embedded,
+      CollectionName
+    >;
 
     /**
      * Gets the collection for an embedded document.
      */
     type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
-      // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
-      Document.Any,
+      JournalEntry.Implementation,
       Metadata.Embedded,
       CollectionName
     >;
@@ -248,7 +248,13 @@ declare namespace JournalEntry {
     /**
      * The name of this JournalEntry
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The pages contained within this JournalEntry document
@@ -284,7 +290,7 @@ declare namespace JournalEntry {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
+    flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
 
     /**
      * An object of creation and access information
@@ -468,6 +474,15 @@ declare namespace JournalEntry {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -481,7 +496,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    * @param data    - Initial data from which to construct the `JournalEntry`
    * @param context - Construction context options
    */
-  constructor(...args: JournalEntry.ConstructorArgs);
+  constructor(data: JournalEntry.CreateData, context?: JournalEntry.ConstructionContext);
 
   /**
    * A boolean indicator for whether or not the JournalEntry is visible to the current user in the directory sidebar
@@ -658,9 +673,9 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
   ): Promise<JournalEntry.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"JournalEntry">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"JournalEntry">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

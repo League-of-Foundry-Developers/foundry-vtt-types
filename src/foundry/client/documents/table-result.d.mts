@@ -13,9 +13,9 @@ declare namespace TableResult {
   type Name = "TableResult";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `TableResult`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `TableResult`.
@@ -261,9 +261,12 @@ declare namespace TableResult {
       {
         min: 2;
         max: 2;
-        validate: (r: [start: number, end: number]) => boolean;
+        validate: (r: unknown) => r is [start: number, end: number];
         validationError: "must be a length-2 array of ascending integers";
-      }
+      },
+      [start: number, end: number],
+      [start: number, end: number],
+      [start: number, end: number]
     >;
 
     /**
@@ -276,7 +279,7 @@ declare namespace TableResult {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     _stats: fields.DocumentStatsField;
   }
@@ -419,6 +422,15 @@ declare namespace TableResult {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -432,7 +444,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
    * @param data    - Initial data from which to construct the `TableResult`
    * @param context - Construction context options
    */
-  constructor(...args: TableResult.ConstructorArgs);
+  constructor(data: TableResult.CreateData, context?: TableResult.ConstructionContext);
 
   /**
    * A path reference to the icon image used to represent this result
@@ -475,9 +487,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
   // Descendant Document operations have been left out because TableResult does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: TableResult.DefaultNameContext,
-  ): string;
+  static override defaultName(context?: TableResult.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
@@ -487,9 +497,9 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
   ): Promise<TableResult.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"TableResult">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"TableResult">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

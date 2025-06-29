@@ -15,9 +15,9 @@ declare namespace JournalEntryPage {
   type Name = "JournalEntryPage";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `JournalEntryPage`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `JournalEntryPage`.
@@ -235,7 +235,13 @@ declare namespace JournalEntryPage {
     /**
      * The text name of this page.
      */
-    name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The type of this page, in {@linkcode BaseJournalEntryPage.TYPES}.
@@ -394,7 +400,7 @@ declare namespace JournalEntryPage {
      * An object of optional key/value flags.
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     _stats: fields.DocumentStatsField;
   }
@@ -600,6 +606,15 @@ declare namespace JournalEntryPage {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -614,7 +629,7 @@ declare class JournalEntryPage<
    * @param data    - Initial data from which to construct the `JournalEntryPage`
    * @param context - Construction context options
    */
-  constructor(...args: JournalEntryPage.ConstructorArgs);
+  constructor(data: JournalEntryPage.CreateData, context?: JournalEntryPage.ConstructionContext);
 
   /**
    * The cached table of contents for this JournalEntryPage.
@@ -794,9 +809,7 @@ declare class JournalEntryPage<
   // Descendant Document operations have been left out because JournalEntryPage does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: JournalEntryPage.DefaultNameContext,
-  ): string;
+  static override defaultName(context?: JournalEntryPage.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
@@ -806,9 +819,9 @@ declare class JournalEntryPage<
   ): Promise<JournalEntryPage.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"JournalEntryPage">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"JournalEntryPage">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

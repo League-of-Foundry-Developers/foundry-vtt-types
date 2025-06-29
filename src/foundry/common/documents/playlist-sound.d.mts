@@ -23,7 +23,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    * You should use {@link PlaylistSound.implementation | `new PlaylistSound.implementation(...)`} instead which will give you
    * a system specific implementation of `PlaylistSound`.
    */
-  constructor(...args: PlaylistSound.ConstructorArgs);
+  constructor(data: PlaylistSound.CreateData, context?: PlaylistSound.ConstructionContext);
 
   /**
    * @defaultValue
@@ -289,6 +289,7 @@ export default BasePlaylistSound;
 
 declare namespace BasePlaylistSound {
   export import Name = PlaylistSound.Name;
+  export import ConstructionContext = PlaylistSound.ConstructionContext;
   export import ConstructorArgs = PlaylistSound.ConstructorArgs;
   export import Hierarchy = PlaylistSound.Hierarchy;
   export import Metadata = PlaylistSound.Metadata;

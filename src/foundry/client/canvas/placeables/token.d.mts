@@ -17,9 +17,10 @@ import type { TextureTransitionFilter } from "#client/canvas/rendering/filters/_
 import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { TokenRing } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { PrimarySpriteMesh } from "#client/canvas/primary/_module.d.mts";
+import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
+
 import BaseToken = foundry.documents.BaseToken;
 import sources = foundry.canvas.sources;
-import { RenderFlagsMixin, RenderFlags, RenderFlag } from "#client/canvas/interaction/_module.mjs";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -139,7 +140,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * @remarks `undefined` prior to first draw or after {@link Token._destroy | `Token#_destroy`} is called, or
    * {@link Token.initializeVisionSource | `Token#initializeVisionSource`} is called with `{deleted: true}`
    */
-  vision: sources.PointVisionSource.ConfiguredInstance | undefined;
+  vision: sources.PointVisionSource.Implementation | undefined;
 
   /**
    * A reference to the LightSource object which defines this light source area of effect
@@ -149,7 +150,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    *
    * Whether this is a LightSource or a DarknessSource depends on `this.document.light.negative`
    */
-  light: sources.PointLightSource.ConfiguredInstance | sources.PointDarknessSource.ConfiguredInstance | undefined;
+  light: sources.PointLightSource.Implementation | sources.PointDarknessSource.Implementation | undefined;
 
   /**
    * The current animations of this Token.
@@ -747,36 +748,36 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   protected override _overlapsSelection(rectangle: PIXI.Rectangle): boolean;
 
-  protected override _canControl(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canControl(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  protected override _canHUD(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canHUD(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  protected override _canConfigure(user: User.Implementation, event: PIXI.FederatedEvent): true;
+  protected override _canConfigure(user: User.Implementation, event?: Canvas.Event.Pointer): true;
 
-  protected override _canHover(user: User.Implementation, event: PIXI.FederatedEvent): true;
+  protected override _canHover(user: User.Implementation, event?: Canvas.Event.Pointer): true;
 
-  protected override _canView(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canView(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
-  protected override _canDrag(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canDrag(user: User.Implementation, event?: Canvas.Event.Pointer): boolean;
 
   // options: not null (destructured)
-  protected override _onHoverIn(event: PIXI.FederatedEvent, options?: PlaceableObject.HoverInOptions): void;
+  protected override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void;
 
-  protected override _onHoverOut(event: PIXI.FederatedEvent): void;
+  protected override _onHoverOut(event: Canvas.Event.Pointer): void;
 
-  protected override _onClickLeft(event: PIXI.FederatedEvent): void;
+  protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 
-  protected override _propagateLeftClick(event: PIXI.FederatedEvent): boolean;
+  protected override _propagateLeftClick(event: Canvas.Event.Pointer): boolean;
 
-  protected override _onClickLeft2(event?: PIXI.FederatedEvent): void;
+  protected override _onClickLeft2(event: Canvas.Event.Pointer): void;
 
-  protected override _onClickRight2(event: PIXI.FederatedEvent): void;
+  protected override _onClickRight2(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
-  protected override _prepareDragLeftDropUpdates(event: PIXI.FederatedEvent): Token.DragLeftDropUpdate[];
+  protected override _prepareDragLeftDropUpdates(event: Canvas.Event.Pointer): Token.DragLeftDropUpdate[];
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
   protected override _onDragEnd(): void;
 

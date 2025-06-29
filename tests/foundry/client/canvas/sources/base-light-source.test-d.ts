@@ -1,10 +1,9 @@
 import { expectTypeOf } from "vitest";
-import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 import BaseLightSource = foundry.canvas.sources.BaseLightSource;
 import RenderedEffectSource = foundry.canvas.sources.RenderedEffectSource;
 import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackgroundShader;
-import SmoothNoise = foundry.canvas.animation.SmoothNoise;
+import PointSourceMesh = foundry.canvas.containers.PointSourceMesh;
 
 declare class MyLightSource extends foundry.canvas.sources.BaseLightSource {
   protected override _createShapes(): void;
@@ -13,20 +12,29 @@ declare class MyLightSource extends foundry.canvas.sources.BaseLightSource {
 expectTypeOf(MyLightSource.sourceType).toBeString();
 expectTypeOf(MyLightSource["_initializeShaderKeys"]).toEqualTypeOf<string[]>();
 expectTypeOf(MyLightSource["_refreshUniformsKeys"]).toEqualTypeOf<string[]>();
-expectTypeOf(MyLightSource["_dimLightingLevel"]).toEqualTypeOf<foundry.CONST.LIGHTING_LEVELS>();
-expectTypeOf(MyLightSource["_brightLightingLevel"]).toEqualTypeOf<foundry.CONST.LIGHTING_LEVELS>();
+expectTypeOf(MyLightSource["_dimLightingLevel"]).toEqualTypeOf<CONST.LIGHTING_LEVELS>();
+expectTypeOf(MyLightSource["_brightLightingLevel"]).toEqualTypeOf<CONST.LIGHTING_LEVELS>();
 expectTypeOf(MyLightSource["ANIMATIONS"]).toExtend<Record<string, RenderedEffectSource.AnimationConfig>>();
+expectTypeOf(MyLightSource["_layers"]).toEqualTypeOf<Record<string, RenderedEffectSource.LayerConfig>>();
 expectTypeOf(MyLightSource.defaultData).toEqualTypeOf<BaseLightSource.SourceData>();
 
-declare const someToken: Token.Implementation;
-const mySource = new MyLightSource({ object: someToken, sourceId: "asfsdfs" });
+declare const object: foundry.canvas.placeables.Token.Implementation;
+new MyLightSource();
+new MyLightSource({ object: undefined, sourceId: undefined });
+const mySource = new MyLightSource({ object, sourceId: object.sourceId });
+
+// Any matches because we didn't provide any non-default type params
+expectTypeOf(mySource.initialize()).toEqualTypeOf<BaseLightSource.Any>();
 
 expectTypeOf(mySource.ratio).toBeNumber();
+
+expectTypeOf(mySource.background).toEqualTypeOf<PointSourceMesh>();
+expectTypeOf(mySource.coloration).toEqualTypeOf<PointSourceMesh>();
+expectTypeOf(mySource.illumination).toEqualTypeOf<PointSourceMesh>();
 
 // only new SourceData keys tested here, thorough tests are on the final Point*Source classes
 expectTypeOf(
   mySource["_initialize"]({
-    priority: 7,
     alpha: 0.2,
     bright: 50,
     dim: 100,
@@ -46,12 +54,13 @@ expectTypeOf(mySource["_updateCommonUniforms"](someBackgroundShader)).toBeVoid()
 
 expectTypeOf(mySource.cachedAttenuation).toEqualTypeOf<number | undefined>();
 expectTypeOf(mySource.computedAttenuation).toEqualTypeOf<number | undefined>();
-expectTypeOf(mySource._noise).toEqualTypeOf<SmoothNoise | undefined>();
 
+// the LightAnimationFunctions all share an options interface
 expectTypeOf(mySource.animatePulse(7)).toBeVoid();
-expectTypeOf(mySource.animateTorch(23, { intensity: undefined, reverse: null, speed: undefined })).toBeVoid();
+expectTypeOf(mySource.animateTorch(23, { intensity: undefined, reverse: undefined, speed: undefined })).toBeVoid();
 // animateFlickering is the only animation function with an extra option (`amplification`)
 expectTypeOf(mySource.animateFlickering(12, { amplification: -3, intensity: 2, reverse: true, speed: 10 })).toBeVoid();
+expectTypeOf(mySource.animateSoundPulse(15, { intensity: 3, reverse: false, speed: 10 }));
 
 // deprecated since v12, until v14
 // eslint-disable-next-line @typescript-eslint/no-deprecated

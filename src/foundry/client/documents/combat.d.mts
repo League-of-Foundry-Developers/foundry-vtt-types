@@ -15,9 +15,9 @@ declare namespace Combat {
   type Name = "Combat";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Combat`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Combat`.
@@ -192,16 +192,16 @@ declare namespace Combat {
     /**
      * Gets the collection document for an embedded document.
      */
-    // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.DocumentFor<
+      Metadata.Embedded,
+      CollectionName
+    >;
 
     /**
      * Gets the collection for an embedded document.
      */
     type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
-      // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
-      Document.Any,
+      Combat.Implementation,
       Metadata.Embedded,
       CollectionName
     >;
@@ -351,7 +351,7 @@ declare namespace Combat {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     /**
      * An object of creation and access information
@@ -571,6 +571,15 @@ declare namespace Combat {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -586,7 +595,8 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param data    - Initial data from which to construct the `Combat`
    * @param context - Construction context options
    */
-  constructor(...args: Combat.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: Combat.CreateData, context?: Combat.ConstructionContext);
 
   /** Track the sorted turn order of this combat encounter */
   turns: Combatant.Implementation[];
@@ -654,7 +664,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param actorOrId - An Actor ID or an Actor instance.
    */
   getCombatantsByActor(actorOrId: string | Actor.Implementation): Combatant.Implementation[];
-  
+
   /**
    * Calculate the time delta between two turns.
    * @param fromRound - The from-round
@@ -832,7 +842,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * This method only executes for one designated GM user. If no GM users are present this method will not be called.
    * @param combatant - The Combatant that exited the Combat
    */
-  protected _onExit(combatant: Combatant.Implementation): Promise<void>
+  protected _onExit(combatant: Combatant.Implementation): Promise<void>;
 
   /**
    * Called after {@link Combat#_onExit} and takes care of clearing the movement history of the
@@ -915,7 +925,10 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param combatant - The Combatant whose turn just started
    * @param context   - The context of the turn that just started
    */
-  protected _clearMovementHistoryOnStartTurn(combatant: Combatant.Implementation, context: Combat.TurnEventContext): Promise<void>
+  protected _clearMovementHistoryOnStartTurn(
+    combatant: Combatant.Implementation,
+    context: Combat.TurnEventContext,
+  ): Promise<void>;
 
   /**
    * When Tokens are deleted, handle actions to update/delete Combatants of these Tokens.
@@ -923,7 +936,11 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param operation - The operation that deleted the Tokens
    * @param user      - The User that deleted the Tokens
    */
-  protected static _onDeleteTokens(tokens: TokenDocument[], operation: Combat.Database.DeleteOperation, user: User.Implementation): void;
+  protected static _onDeleteTokens(
+    tokens: TokenDocument[],
+    operation: Combat.Database.DeleteOperation,
+    user: User.Implementation,
+  ): void;
 
   /**
    * @deprecated Since v12, no stated end
@@ -1014,9 +1031,9 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   ): Promise<Combat.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"Combat">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Combat">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

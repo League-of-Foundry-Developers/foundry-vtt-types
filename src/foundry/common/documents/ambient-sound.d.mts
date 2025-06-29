@@ -23,7 +23,8 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    * You should use {@link AmbientSoundDocument.implementation | `new AmbientSoundDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `AmbientSoundDocument`.
    */
-  constructor(...args: AmbientSoundDocument.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: AmbientSoundDocument.CreateData, context?: AmbientSoundDocument.ConstructionContext);
 
   /**
    * @defaultValue
@@ -276,6 +277,7 @@ export default BaseAmbientSound;
 
 declare namespace BaseAmbientSound {
   export import Name = AmbientSoundDocument.Name;
+  export import ConstructionContext = AmbientSoundDocument.ConstructionContext;
   export import ConstructorArgs = AmbientSoundDocument.ConstructorArgs;
   export import Hierarchy = AmbientSoundDocument.Hierarchy;
   export import Metadata = AmbientSoundDocument.Metadata;

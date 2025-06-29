@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { Roll } from "#client/dice/_module.d.mts";
 
-const combatant = new Combatant.implementation({}, {});
+const combatant = new Combatant.implementation({}, { parent: new Combat.implementation() });
 
 // properties
 expectTypeOf(combatant.pack).toEqualTypeOf<string | null>();

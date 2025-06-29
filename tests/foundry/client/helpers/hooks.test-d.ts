@@ -5,17 +5,12 @@ import Canvas = foundry.canvas.Canvas;
 import FormApplication = foundry.appv1.api.FormApplication;
 import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 
-expectTypeOf(foundry.helpers.Hooks.events).toEqualTypeOf<Hooks.HookedFunction[]>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(Hooks.on("", () => {})).toEqualTypeOf<number>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(Hooks.once("", () => {})).toEqualTypeOf<number>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(Hooks.off("", () => {})).toEqualTypeOf<void>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(Hooks.callAll("")).toEqualTypeOf<true>();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(Hooks.call("")).toEqualTypeOf<boolean>();
+expectTypeOf(foundry.helpers.Hooks.events).toEqualTypeOf<Record<string, Hooks.HookedFunction[]>>();
+expectTypeOf(Hooks.on("ready", () => {})).toEqualTypeOf<number>();
+expectTypeOf(Hooks.once("ready", () => {})).toEqualTypeOf<number>();
+expectTypeOf(Hooks.off("ready", () => {})).toEqualTypeOf<void>();
+expectTypeOf(Hooks.callAll("ready")).toEqualTypeOf<true>();
+expectTypeOf(Hooks.call("ready")).toEqualTypeOf<boolean>();
 expectTypeOf(Hooks.onError("", new Error(""))).toEqualTypeOf<void>();
 
 Hooks.on("canvasInit", (canvas) => {
@@ -30,7 +25,7 @@ Hooks.on("canvasInit", (canvas) => {
 // });
 
 Hooks.on("closeFormApplication", (app, jq) => {
-  expectTypeOf(app).toEqualTypeOf<FormApplication>();
+  expectTypeOf(app).toEqualTypeOf<FormApplication.Any>();
   expectTypeOf(jq).toEqualTypeOf<JQuery>();
 });
 

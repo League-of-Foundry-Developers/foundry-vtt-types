@@ -25,13 +25,12 @@ expectTypeOf(layer.getSnappedPoint({ x: 2, y: 3 })).toEqualTypeOf<Canvas.Point>(
 
 expectTypeOf(layer["_tearDown"]({})).toEqualTypeOf<Promise<void>>();
 
-declare const someEvent: PIXI.FederatedEvent;
-declare const somePointerEvent: PointerEvent;
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someDragEvent: DragEvent;
-expectTypeOf(layer["_onDragLeftStart"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftMove"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftDrop"](someEvent)).toBeVoid();
-expectTypeOf(layer["_onDragLeftCancel"](somePointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftDrop"](pointerEvent)).toBeVoid();
+expectTypeOf(layer["_onDragLeftCancel"](pointerEvent)).toBeVoid();
 
 expectTypeOf(
   layer["_onDropData"](someDragEvent, {

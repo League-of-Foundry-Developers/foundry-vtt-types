@@ -52,10 +52,10 @@ expectTypeOf(token.mesh).toEqualTypeOf<PrimarySpriteMesh | undefined>();
 expectTypeOf(token.voidMesh).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(token.detectionFilterMesh).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(token.texture).toEqualTypeOf<PIXI.Texture | undefined>();
-expectTypeOf(token.vision).toEqualTypeOf<foundry.canvas.sources.PointVisionSource.ConfiguredInstance | undefined>();
+expectTypeOf(token.vision).toEqualTypeOf<foundry.canvas.sources.PointVisionSource.Implementation | undefined>();
 expectTypeOf(token.light).toEqualTypeOf<
-  | foundry.canvas.sources.PointLightSource.ConfiguredInstance
-  | foundry.canvas.sources.PointDarknessSource.ConfiguredInstance
+  | foundry.canvas.sources.PointLightSource.Implementation
+  | foundry.canvas.sources.PointDarknessSource.Implementation
   | undefined
 >();
 
@@ -487,27 +487,27 @@ expectTypeOf(token["_onRelease"]({})).toBeVoid();
 
 expectTypeOf(token["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
 
-declare const someEvent: PIXI.FederatedEvent;
-expectTypeOf(token["_canControl"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(token["_canHUD"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(token["_canConfigure"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(token["_canHover"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(token["_canView"](someUser, someEvent)).toBeBoolean();
-expectTypeOf(token["_canDrag"](someUser, someEvent)).toBeBoolean();
+declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(token["_canControl"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(token["_canHUD"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(token["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(token["_canHover"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(token["_canView"](someUser, pointerEvent)).toBeBoolean();
+expectTypeOf(token["_canDrag"](someUser, pointerEvent)).toBeBoolean();
 
-expectTypeOf(token["_onHoverIn"](someEvent)).toBeVoid();
-expectTypeOf(token["_onHoverIn"](someEvent, {})).toBeVoid();
-expectTypeOf(token["_onHoverIn"](someEvent, { hoverOutOthers: true })).toBeVoid();
-expectTypeOf(token["_onHoverIn"](someEvent, { hoverOutOthers: null })).toBeVoid();
+expectTypeOf(token["_onHoverIn"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_onHoverIn"](pointerEvent, {})).toBeVoid();
+expectTypeOf(token["_onHoverIn"](pointerEvent, { hoverOutOthers: true })).toBeVoid();
+expectTypeOf(token["_onHoverIn"](pointerEvent, { hoverOutOthers: null })).toBeVoid();
 
-expectTypeOf(token["_onHoverOut"](someEvent)).toBeVoid();
-expectTypeOf(token["_onClickLeft"](someEvent)).toBeVoid();
-expectTypeOf(token["_propagateLeftClick"](someEvent)).toBeBoolean();
-expectTypeOf(token["_onClickLeft2"](someEvent)).toBeVoid();
-expectTypeOf(token["_onClickRight2"](someEvent)).toBeVoid();
-expectTypeOf(token["_onDragLeftStart"](someEvent)).toBeVoid();
-expectTypeOf(token["_prepareDragLeftDropUpdates"](someEvent)).toEqualTypeOf<Token.DragLeftDropUpdate[]>();
-expectTypeOf(token["_onDragLeftMove"](someEvent)).toBeVoid();
+expectTypeOf(token["_onHoverOut"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_onClickLeft"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_propagateLeftClick"](pointerEvent)).toBeBoolean();
+expectTypeOf(token["_onClickLeft2"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_onClickRight2"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_onDragLeftStart"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<Token.DragLeftDropUpdate[]>();
+expectTypeOf(token["_onDragLeftMove"](pointerEvent)).toBeVoid();
 expectTypeOf(token["_onDragEnd"]()).toBeVoid();
 
 // deprecated since v11, until v13

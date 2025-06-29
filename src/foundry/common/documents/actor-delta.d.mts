@@ -27,7 +27,8 @@ declare abstract class BaseActorDelta<
    * You should use {@link ActorDelta.implementation | `new ActorDelta.implementation(...)`} instead which will give you
    * a system specific implementation of `ActorDelta`.
    */
-  constructor(...args: ActorDelta.ConstructorArgs);
+  // Note(LukeAbby): `data` is not actually required but `context.parent` is.
+  constructor(data: ActorDelta.CreateData | undefined, context: ActorDelta.ConstructionContext);
 
   /**
    * @defaultValue
@@ -375,6 +376,7 @@ declare namespace BaseActorDelta {
   interface AnyConstructor extends Identity<typeof AnyBaseActorDelta> {}
 
   export import Name = ActorDelta.Name;
+  export import ConstructionContext = ActorDelta.ConstructionContext;
   export import ConstructorArgs = ActorDelta.ConstructorArgs;
   export import Hierarchy = ActorDelta.Hierarchy;
   export import Metadata = ActorDelta.Metadata;

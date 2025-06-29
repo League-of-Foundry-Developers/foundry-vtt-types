@@ -73,7 +73,7 @@ declare class InternalColor extends PatchedNumber {
   /**
    * The color represented as a linear RGB array.
    * Assumes r, g, and b are contained in the set [0, 1] and returns linear r, g, and b in the set [0, 1].
-   * {@link https://en.wikipedia.org/wiki/SRGB#Transformation}
+   * @see {@link https://en.wikipedia.org/wiki/SRGB#Transformation}
    */
   get linear(): Color.RGBColorVector;
 
@@ -110,6 +110,7 @@ declare class InternalColor extends PatchedNumber {
    * @param other  - Some other Color to mix with
    * @param weight - The mixing weight placed on this color where weight is placed on the other color
    * @returns The resulting mixed Color
+   * @remarks `weight` should be in the range [0, 1]
    */
   mix(other: Color, weight: number): Color;
 
@@ -165,6 +166,7 @@ declare class InternalColor extends PatchedNumber {
    * @param color2 - The second color to mix.
    * @param weight - Weight of the linear interpolation.
    * @returns The resulting mixed color
+   * @remarks `weight` should be in the range [0, 1]
    */
   static mix(color1: number, color2: number, weight: number): number;
 
@@ -308,9 +310,16 @@ declare const Color: typeof InternalColor & (new (...args: any) => number);
 type Color = InternalColor & number;
 
 declare namespace Color {
+  /** @remarks Values between `0` and `1` */
   type RGBColorVector = [r: number, g: number, b: number];
+
+  /** @remarks Values between `0` and `1` */
   type RGBAColorVector = [r: number, g: number, b: number, a: number];
+
+  /** @remarks Values between `0` and `1` */
   type HSVColorVector = [h: number, s: number, v: number];
+
+  /** @remarks Values between `0` and `1` */
   type HSLColorVector = [h: number, s: number, l: number];
 
   type Source = number | RGBColorVector | string | Color;

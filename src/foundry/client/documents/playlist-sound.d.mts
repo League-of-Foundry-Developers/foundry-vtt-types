@@ -13,9 +13,9 @@ declare namespace PlaylistSound {
   type Name = "PlaylistSound";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `PlaylistSound`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `PlaylistSound`.
@@ -183,7 +183,13 @@ declare namespace PlaylistSound {
     /**
      * The name of this sound
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The description of this sound
@@ -243,7 +249,7 @@ declare namespace PlaylistSound {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
   }
 
   namespace Database {
@@ -382,6 +388,15 @@ declare namespace PlaylistSound {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -398,7 +413,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
    * @param data    - Initial data from which to construct the `PlaylistSound`
    * @param context - Construction context options
    */
-  constructor(...args: PlaylistSound.ConstructorArgs);
+  constructor(data: PlaylistSound.CreateData, context?: PlaylistSound.ConstructionContext);
 
   /**
    * The debounce tolerance for processing rapid volume changes into database updates in milliseconds

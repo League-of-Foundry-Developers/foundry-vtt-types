@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "fvtt-types/configuration";
-import type { InexactPartial, Merge } from "#utils";
+import type { InexactPartial, Merge, RequiredProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -14,9 +14,10 @@ declare namespace Combatant {
   type Name = "Combatant";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Combatant`.
+   * @privateRemarks This is off-template, as `Combatant` requires a valid parent to validate.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends RequiredProps<Document.ConstructionContext<Parent>, "parent"> {}
 
   /**
    * The documents embedded within `Combatant`.
@@ -289,7 +290,7 @@ declare namespace Combatant {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     _stats: fields.DocumentStatsField;
   }
@@ -449,6 +450,15 @@ declare namespace Combatant {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -463,7 +473,8 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    * @param data    - Initial data from which to construct the `Combatant`
    * @param context - Construction context options
    */
-  constructor(...args: Combatant.ConstructorArgs);
+  // Note(LukeAbby): `data` is not actually required but `context.parent` is.
+  constructor(data: Combatant.CreateData | undefined, context: Combatant.ConstructionContext);
 
   /**
    * The token video source image (if any)
@@ -563,9 +574,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   // Descendant Document operations have been left out because Combatant does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: Combatant.DefaultNameContext,
-  ): string;
+  static override defaultName(context?: Combatant.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
@@ -575,9 +584,9 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   ): Promise<Combatant.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"Combatant">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Combatant">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

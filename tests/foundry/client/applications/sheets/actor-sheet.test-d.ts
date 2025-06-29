@@ -1,7 +1,7 @@
 import { expectTypeOf, test } from "vitest";
 
 const actorSheet = new foundry.applications.sheets.ActorSheetV2({
-  document: new Actor.implementation({ name: "Test Actor" }),
+  document: new Actor.implementation({ type: "base", name: "Test Actor" }),
 });
 
 // Regression test for `error TS2339: Property 'type' does not exist on type 'this["object"]'.`

@@ -25,7 +25,7 @@ declare abstract class BaseTableResult<
    * You should use {@link TableResult.implementation | `new TableResult.implementation(...)`} instead which will give you
    * a system specific implementation of `TableResult`.
    */
-  constructor(...args: TableResult.ConstructorArgs);
+  constructor(data: TableResult.CreateData, context?: TableResult.ConstructionContext);
 
   /**
    * @defaultValue
@@ -313,6 +313,7 @@ export default BaseTableResult;
 
 declare namespace BaseTableResult {
   export import Name = TableResult.Name;
+  export import ConstructionContext = TableResult.ConstructionContext;
   export import ConstructorArgs = TableResult.ConstructorArgs;
   export import Hierarchy = TableResult.Hierarchy;
   export import Metadata = TableResult.Metadata;

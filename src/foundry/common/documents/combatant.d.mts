@@ -26,7 +26,8 @@ declare abstract class BaseCombatant<
    * You should use {@link Combatant.implementation | `new Combatant.implementation(...)`} instead which will give you
    * a system specific implementation of `Combatant`.
    */
-  constructor(...args: Combatant.ConstructorArgs);
+  // Note(LukeAbby): `data` is not actually required but `context.parent` is.
+  constructor(data: Combatant.CreateData | undefined, context: Combatant.ConstructionContext);
 
   /**
    * @defaultValue
@@ -297,6 +298,7 @@ export default BaseCombatant;
 
 declare namespace BaseCombatant {
   export import Name = Combatant.Name;
+  export import ConstructionContext = Combatant.ConstructionContext;
   export import ConstructorArgs = Combatant.ConstructorArgs;
   export import Hierarchy = Combatant.Hierarchy;
   export import Metadata = Combatant.Metadata;

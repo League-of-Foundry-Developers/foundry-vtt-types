@@ -23,7 +23,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * You should use {@link Scene.implementation | `new Scene.implementation(...)`} instead which will give you
    * a system specific implementation of `Scene`.
    */
-  constructor(...args: Scene.ConstructorArgs);
+  constructor(data: Scene.CreateData, context?: Scene.ConstructionContext);
 
   /**
    * @defaultValue
@@ -431,6 +431,7 @@ export default BaseScene;
 
 declare namespace BaseScene {
   export import Name = Scene.Name;
+  export import ConstructionContext = Scene.ConstructionContext;
   export import ConstructorArgs = Scene.ConstructorArgs;
   export import Hierarchy = Scene.Hierarchy;
   export import Metadata = Scene.Metadata;

@@ -27,7 +27,8 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    * You should use {@link Combat.implementation | `new Combat.implementation(...)`} instead which will give you
    * a system specific implementation of `Combat`.
    */
-  constructor(...args: Combat.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: Combat.CreateData, context?: Combat.ConstructionContext);
 
   /**
    * @defaultValue
@@ -340,6 +341,7 @@ export default BaseCombat;
 
 declare namespace BaseCombat {
   export import Name = Combat.Name;
+  export import ConstructionContext = Combat.ConstructionContext;
   export import ConstructorArgs = Combat.ConstructorArgs;
   export import Hierarchy = Combat.Hierarchy;
   export import Metadata = Combat.Metadata;

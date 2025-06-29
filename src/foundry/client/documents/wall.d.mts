@@ -12,9 +12,9 @@ declare namespace WallDocument {
   type Name = "Wall";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Wall`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `WallDocument`.
@@ -388,7 +388,7 @@ declare namespace WallDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
   }
 
   namespace Database {
@@ -523,6 +523,15 @@ declare namespace WallDocument {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -536,7 +545,7 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
    * @param data    - Initial data from which to construct the `WallDocument`
    * @param context - Construction context options
    */
-  constructor(...args: WallDocument.ConstructorArgs);
+  constructor(data: WallDocument.CreateData, context?: WallDocument.ConstructionContext);
 
   /*
    * After this point these are not really overridden methods.
@@ -563,9 +572,9 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
   ): Promise<WallDocument.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"Wall">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Wall">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

@@ -48,6 +48,10 @@ import type {
   // MustBeValidUuid,
   // Quote,
   SplitString,
+  // DeepReadonly,
+  // MutableDotKeys,
+  // DeletableDotKeys,
+  DotKeys,
 } from "fvtt-types/utils";
 
 expectTypeOf<GetKey<{ abc: string }, "foo">>().toEqualTypeOf<never>();
@@ -190,3 +194,10 @@ expectTypeOf<SplitString<"", ".">>().toEqualTypeOf<[]>();
 expectTypeOf<SplitString<"abc", "">>().toEqualTypeOf<["a", "b", "c"]>();
 expectTypeOf<SplitString<"lorem.ipusm", ".">>().toEqualTypeOf<["lorem", "ipusm"]>();
 expectTypeOf<SplitString<"" | "a" | "b.c" | "d.e.f", ".">>().toEqualTypeOf<[] | ["a"] | ["b", "c"] | ["d", "e", "f"]>();
+
+// TODO: DeepReadonly
+
+type CycleA = { a: { b: { c: CycleX } } };
+type CycleX = { x: { y: { z: CycleA } } };
+
+expectTypeOf<DotKeys<CycleA>>().toEqualTypeOf<"a" | "a.b" | "a.b.c" | "a.b.c.x" | "a.b.c.x.y" | "a.b.c.x.y.z">();

@@ -23,7 +23,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    * You should use {@link TileDocument.implementation | `new TileDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `TileDocument`.
    */
-  constructor(...args: TileDocument.ConstructorArgs);
+  constructor(data: TileDocument.CreateData, context?: TileDocument.ConstructionContext);
 
   /**
    * @defaultValue
@@ -321,6 +321,7 @@ export default BaseTile;
 
 declare namespace BaseTile {
   export import Name = TileDocument.Name;
+  export import ConstructionContext = TileDocument.ConstructionContext;
   export import ConstructorArgs = TileDocument.ConstructorArgs;
   export import Hierarchy = TileDocument.Hierarchy;
   export import Metadata = TileDocument.Metadata;

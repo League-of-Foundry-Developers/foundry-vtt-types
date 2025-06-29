@@ -27,7 +27,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    * You should use {@link Cards.implementation | `new Cards.implementation(...)`} instead which will give you
    * a system specific implementation of `Cards`.
    */
-  constructor(...args: Cards.ConstructorArgs);
+  constructor(data: Cards.CreateData, context?: Cards.ConstructionContext);
 
   /**
    * @defaultValue
@@ -338,6 +338,7 @@ export default BaseCards;
 
 declare namespace BaseCards {
   export import Name = Cards.Name;
+  export import ConstructionContext = Cards.ConstructionContext;
   export import ConstructorArgs = Cards.ConstructorArgs;
   export import Hierarchy = Cards.Hierarchy;
   export import Metadata = Cards.Metadata;

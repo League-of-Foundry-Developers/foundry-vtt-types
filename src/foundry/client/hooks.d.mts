@@ -1,7 +1,7 @@
 import type { EditorState, Plugin } from "prosemirror-state";
 import type { DeepPartial, EmptyObject, ValueOf } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
-import type { ProseMirrorDropDown } from "#common/prosemirror/menu.d.mts";
+import type { ProseMirrorDropDown } from "#common/prosemirror/_module.d.mts";
 import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
 import type PointVisionSource from "#client/canvas/sources/point-vision-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
@@ -324,10 +324,17 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the World time has been updated.
    * @param worldTime - The new canonical World time
    * @param delta     - The time delta
+   * @param options   - Options passed from the requesting client where the change was made
+   * @param userId    - The ID of the User who advanced the time
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@link GameTime.onUpdateWorldTime | `GameTime#onUpdateWorldTime`}
    */
-  updateWorldTime: (worldTime: number, delta: number) => void;
+  updateWorldTime: (
+    worldTime: number,
+    delta: number,
+    options: Setting.Database.UpdateOperation,
+    userId: string,
+  ) => void;
 
   /** CanvasLifecycle */
 
@@ -385,7 +392,7 @@ export interface AllHooks extends DynamicHooks {
    * @param data   - The data that has been dropped onto the Canvas
    * @remarks This is called by {@linkcode Hooks.call}.
    * @remarks An explicit return value of `false` prevents the Document being created.
-   * @see {@link Canvas._onDrop | `Canvas#_onDrop`}
+   * @see `Canvas.#_onDrop`
    */
   dropCanvasData: (canvas: Canvas, data: Hooks.DropData, event: DragEvent) => boolean | void;
 
@@ -971,8 +978,7 @@ declare global {
   /**
    * This namespace contains typescript specific type definitions for the {@linkcode Hooks} callback functions. It contains an
    * interface ({@linkcode Hooks.StaticCallbacks}) for callbacks with static names. There are more function types in the
-   * namespace for the dynamic hooks, whose names are generated at runtime. There is also a union of all of the dynamic
-   * hooks ({@linkcode Hooks.DynamicCallbacks}).
+   * namespace for the dynamic hooks, whose names are generated at runtime.
    *
    * Callback types remarked to be called with {@linkcode Hooks.callAll} do not care about the return value of the callback.
    * Callback types remarked to be called with {@linkcode Hooks.call} do care about the return value and will stop executing
@@ -1007,11 +1013,6 @@ declare global {
    * ```
    */
   namespace Hooks {
-    interface OnOptions {
-      /** Only trigger the hooked function once */
-      once?: boolean;
-    }
-
     interface HotReloadData {
       /** The type of package which was modified */
       packageType: string;
@@ -1026,7 +1027,7 @@ declare global {
       path: string;
 
       /** The file extension which was modified, e.g. "js", "css", "html" */
-      extension: "js" | "css" | "html" | (string & {});
+      extension: "js" | "css" | "html" | "hbs" | (string & {});
     }
 
     /**
@@ -1427,74 +1428,6 @@ declare global {
       app: Application,
       entryOptions: ContextMenu.Entry<HTMLElement | JQuery>[],
     ) => boolean | void;
-
-    /**
-     * A hook event that fires when the context menu for a Sound in the PlaylistDirectory is constructed.
-     * @param app          - The Application instance that the context menu is constructed in
-     * @param entryOptions - The context menu entries
-     * @remarks The name for this hook is dynamically created by joining "get" with the type name of the PlaylistDirectory
-     * and "SoundContext".
-     * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@link PlaylistDirectory._contextMenu | `PlaylistDirectory#_contextMenu`}
-     *
-     * @deprecated - This hook appears to have been deleted
-     */
-    type GetSoundContextPlaylistDirectory = (
-      app: foundry.applications.sidebar.tabs.PlaylistDirectory,
-      entryOptions: ContextMenu.Entry<HTMLElement>[],
-    ) => boolean | void;
-
-    /**
-     * A hook event that fires when the context menu for folders in a SidebarTab
-     * is constructed. Substitute the SidebarTab name in the hook event to target
-     * a specific SidebarTab, for example "getActorDirectoryFolderContext".
-     * @param app          - The Application instance that the context menu is constructed in
-     * @param entryOptions - The context menu entries
-     * @remarks The name for this hook is dynamically created by joining "get" with the type name of the SidebarDirectory
-     * and "FolderContext".
-     * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@link SidebarDirectory._contextMenu | `SidebarDirectory#_contextMenu`}
-     *
-     * @deprecated - This hook appears to have been deleted.
-     */
-    type GetSidebarDirectoryFolderContext = (
-      app: foundry.applications.sidebar.DocumentDirectory,
-      entryOptions: ContextMenu.Entry<HTMLElement>[],
-    ) => boolean | void;
-
-    /**
-     * @deprecated - The purpose of dynamic callbacks was to allow you to manually deal with hooks
-     * that fvtt-types had not automatically included. Since then the feature to automate all hooks
-     * was added.
-     */
-    type DynamicCallbacks =
-      | RenderApplication
-      | GetApplicationHeaderButtons
-      | CloseApplication
-      | DrawGroup
-      | TearDownGroup
-      | DrawLayer
-      | TearDownLayer
-      | PastePlaceableObject
-      | DrawObject
-      | RefreshObject
-      | DestroyObject
-      | ControlObject
-      | HoverObject
-      | PreCreateDocument
-      | PreUpdateDocument
-      | PreDeleteDocument
-      | CreateDocument
-      | UpdateDocument
-      | DeleteDocument
-      | InitializeRenderedEffectSourceShaders
-      | ActivateLayer
-      | DeactivateLayer
-      | GetEntryContext
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      | GetSoundContextPlaylistDirectory
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
-      | GetSidebarDirectoryFolderContext;
 
     interface ErrorCallbackParameters {
       "Canvas#draw": [location: "Canvas#draw", err: Error, data: { layer: layers.CanvasLayer }];

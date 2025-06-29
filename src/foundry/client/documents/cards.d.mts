@@ -14,9 +14,9 @@ declare namespace Cards {
   type Name = "Cards";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Cards`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Cards`.
@@ -185,16 +185,16 @@ declare namespace Cards {
     /**
      * Gets the collection document for an embedded document.
      */
-    // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.DocumentFor<
+      Metadata.Embedded,
+      CollectionName
+    >;
 
     /**
      * Gets the collection for an embedded document.
      */
     type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
-      // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
-      Document.Any,
+      Cards.Implementation,
       Metadata.Embedded,
       CollectionName
     >;
@@ -295,8 +295,8 @@ declare namespace Cards {
      * The type of this stack, in BaseCards.metadata.types
      * @defaultValue `BaseCards.TYPES[0]`
      */
-    // TODO: type is required at construction, no "base" allowed
-    type: fields.DocumentTypeField<typeof BaseCards>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    type: fields.DocumentTypeField<typeof BaseCards, {}, Cards.SubType, Cards.SubType, Cards.SubType>;
 
     /**
      * A text description of this stack
@@ -371,7 +371,7 @@ declare namespace Cards {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     /**
      * An object of creation and access information
@@ -697,6 +697,15 @@ declare namespace Cards {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -712,7 +721,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    * @param data    - Initial data from which to construct the `Cards`
    * @param context - Construction context options
    */
-  constructor(...args: Cards.ConstructorArgs);
+  constructor(data: Cards.CreateData, context?: Cards.ConstructionContext);
 
   /**
    * Provide a thumbnail image path used to represent this document.

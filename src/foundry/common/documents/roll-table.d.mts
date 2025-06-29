@@ -23,7 +23,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    * You should use {@link RollTable.implementation | `new RollTable.implementation(...)`} instead which will give you
    * a system specific implementation of the `RollTable` document.
    */
-  constructor(...args: RollTable.ConstructorArgs);
+  constructor(data: RollTable.CreateData, context?: RollTable.ConstructionContext);
 
   /**
    * @defaultValue
@@ -330,6 +330,7 @@ export default BaseRollTable;
 
 declare namespace BaseRollTable {
   export import Name = RollTable.Name;
+  export import ConstructionContext = RollTable.ConstructionContext;
   export import ConstructorArgs = RollTable.ConstructorArgs;
   export import Hierarchy = RollTable.Hierarchy;
   export import Metadata = RollTable.Metadata;

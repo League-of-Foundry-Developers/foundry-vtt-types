@@ -4,7 +4,7 @@
 import * as fs from "fs/promises";
 
 /**
- * @typedef {ReturnType<import("@actions/github").getOctokit>} GitHub
+ * @typedef {ReturnType<typeof import("@actions/github").getOctokit>} GitHub
  */
 
 /**
@@ -17,7 +17,7 @@ import * as fs from "fs/promises";
  * @typedef ReportArguments
  * @property {GitHub} github
  * @property {Context} context
- * @property {import("@actions/core")} core
+ * @property {typeof import("@actions/core")} core
  */
 
 /**

@@ -415,9 +415,14 @@ declare namespace DialogV2 {
     buttons: Button<Dialog>[];
   }
 
+  /** @internal */
+  interface _PartialButtons<Dialog extends DialogV2 = DialogV2>
+    extends Omit<WaitOptions<Dialog>, "buttons">,
+      InexactPartial<Pick<WaitOptions<Dialog>, "buttons">> {}
+
   // Note(LukeAbby): `IntentionalPartial` is used for all the buttons because `mergeObject` is
   // called. For example `{ action: undefined }` would be a logical bug.
-  interface ConfirmConfig<Dialog extends DialogV2 = DialogV2> extends InexactPartial<WaitOptions<Dialog>, "buttons"> {
+  interface ConfirmConfig<Dialog extends DialogV2 = DialogV2> extends _PartialButtons<Dialog> {
     /** Options to overwrite the default yes button configuration. */
     yes?: IntentionalPartial<Button<Dialog>> | null | undefined;
 
@@ -425,7 +430,7 @@ declare namespace DialogV2 {
     no?: IntentionalPartial<Button<Dialog>> | null | undefined;
   }
 
-  interface PromptConfig<Dialog extends DialogV2 = DialogV2> extends InexactPartial<WaitOptions<Dialog>, "buttons"> {
+  interface PromptConfig<Dialog extends DialogV2 = DialogV2> extends _PartialButtons<Dialog> {
     /** Options to overwrite the default confirmation button configuration. */
     ok?: IntentionalPartial<Button<Dialog>> | null | undefined;
   }

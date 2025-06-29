@@ -184,7 +184,7 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    * @param event  - The event being handled
    * @returns Can the action be performed?
    */
-  can(action: MouseInteractionManager.PermissionAction, event: Event | PIXI.FederatedEvent): boolean;
+  can(action: MouseInteractionManager.PermissionAction, event: MouseInteractionManager.Event): boolean;
 
   /**
    * Execute a callback function associated with a certain action in the workflow
@@ -195,7 +195,7 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    *          Events which do not specify a callback are assumed to have been handled as no-op.
    * @remarks
    */
-  callback(action: MouseInteractionManager.Action, event: Event | PIXI.FederatedEvent, ...args: AnyArray): boolean;
+  callback(action: MouseInteractionManager.Action, event: MouseInteractionManager.Event, ...args: AnyArray): boolean;
 
   /**
    * A reference to the possible interaction states which can be observed
@@ -211,14 +211,20 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    * A public method to handle directly an event into this manager, according to its type.
    * Note: drag events are not handled.
    * @returns Has the event been processed?
+   *
+   * @remarks Note that the event has specific `interactionData` it expects. A valid `event` can be
+   * fairly involved to create from scratch.
    */
-  handleEvent(event: PIXI.FederatedEvent): boolean;
+  handleEvent(event: MouseInteractionManager.Event): boolean;
 
   /**
    * A public method to cancel a current interaction workflow from this manager.
    * @param event - The event that initiates the cancellation
+   *
+   * @remarks Note that the event has specific `interactionData` it expects. A valid `event` can be
+   * fairly involved to create from scratch.
    */
-  cancel(event: PIXI.FederatedEvent): void;
+  cancel(event: MouseInteractionManager.Event): void;
 
   /**
    * Reset the mouse manager.
@@ -275,7 +281,7 @@ declare namespace MouseInteractionManager {
     | "hoverIn"
     | "hoverOut";
 
-  type PermissionFunction = (user: User.Implementation, event: Event | PIXI.FederatedEvent) => boolean;
+  type PermissionFunction = (user: User.Implementation, event: MouseInteractionManager.Event) => boolean;
 
   type Permissions = Partial<Record<PermissionAction, PermissionFunction | boolean>>;
 
@@ -295,7 +301,7 @@ declare namespace MouseInteractionManager {
    *   - For Regions specifically, `hoverOut` takes an `options: { updateLegend: boolean }` object, and that key is also added to Region `hoverIn` options
    * - `longPress` receives `origin: PIXI.Point`
    */
-  type CallbackFunction = (event: Event | PIXI.FederatedEvent, ...args: never) => boolean | null | void;
+  type CallbackFunction = (event: MouseInteractionManager.Event, ...args: never) => boolean | null | void;
 
   type Callbacks = Partial<Record<Action, CallbackFunction>>;
 
@@ -340,11 +346,13 @@ declare namespace MouseInteractionManager {
 
   interface ResetOptions extends _ResetOptions {}
 
-  interface InteractionData<T> {
-    origin?: PIXI.Point;
-    destination?: PIXI.Point;
-    object?: T;
+  interface InteractionData<T extends PIXI.DisplayObject> {
+    origin?: PIXI.Point | undefined;
+    destination?: PIXI.Point | undefined;
+    object?: T | undefined;
   }
+
+  type Event = foundry.canvas.Canvas.Event._Base | globalThis.Event;
 }
 
 export default MouseInteractionManager;

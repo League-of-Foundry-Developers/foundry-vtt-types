@@ -12,9 +12,9 @@ declare namespace Playlist {
   type Name = "Playlist";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Playlist`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Playlist`.
@@ -136,16 +136,16 @@ declare namespace Playlist {
     /**
      * Gets the collection document for an embedded document.
      */
-    // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.DocumentFor<
+      Metadata.Embedded,
+      CollectionName
+    >;
 
     /**
      * Gets the collection for an embedded document.
      */
     type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
-      // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
-      Document.Any,
+      Playlist.Implementation,
       Metadata.Embedded,
       CollectionName
     >;
@@ -242,7 +242,13 @@ declare namespace Playlist {
     /**
      * The name of this playlist
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The description of this playlist
@@ -336,7 +342,7 @@ declare namespace Playlist {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     /**
      * An object of creation and access information
@@ -523,6 +529,15 @@ declare namespace Playlist {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -538,7 +553,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * @param data    - Initial data from which to construct the `Playlist`
    * @param context - Construction context options
    */
-  constructor(...args: Playlist.ConstructorArgs);
+  constructor(data: Playlist.CreateData, context?: Playlist.ConstructionContext);
 
   /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
   protected _playbackOrder: never;
@@ -795,9 +810,9 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   ): Promise<Playlist.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"Playlist">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Playlist">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

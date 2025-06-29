@@ -2,8 +2,9 @@ import type { Identity } from "#utils";
 import type { BaseSamplerShader } from "../_module.mjs";
 
 /**
- * A simple shader which purpose is to make the original texture red channel the alpha channel,
- * and still keeping channel information. Used in conjunction with the {@linkcode foundry.canvas.rendering.filters.AlphaBlurFilterPass} and Fog of War.
+ * A simple shader that makes the original texture's red channel the alpha channel while still keeping channel
+ * information. Used in conjunction with the {@linkcode foundry.canvas.rendering.filters.AlphaBlurFilterPass}
+ * and Fog of War.
  */
 declare class FogSamplerShader extends BaseSamplerShader {
   /**

@@ -76,14 +76,7 @@ type _GetKey<T, K extends PropertyKey, D> = T extends { readonly [_ in K]?: infe
  *   The most common time this shows up is with the pattern
  *   `exampleFunction({ prop = "foo" } = {}) { ... }`.
  */
-export type IntentionalPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
-  {
-    [K2 in keyof T as Extract<K2, K>]?: T[K2];
-  } & {
-    // Note(LukeAbby): This effectively inlines `Omit<T, K>`, hoping for
-    [K2 in keyof T as Exclude<K2, K>]: T[K2];
-  }
->;
+export type IntentionalPartial<T extends object> = Partial<T>;
 
 /**
  * This type is used to make a constraint where `T` must be statically known to overlap with `U`.
@@ -292,8 +285,10 @@ export type MaybeEmpty<T extends AnyObject> =
  * The following uses `extends object` instead of `AnyObject` to allow `O = typeof SomeClass`
  */
 export type PropertiesOfType<O extends object, T> = {
-  [K in keyof O]: [O[K], T] extends [T, O[K]] ? K : never;
+  [K in keyof O]: _KeyOfType<O[K], K, T>;
 }[keyof O];
+
+type _KeyOfType<V, K, T> = V extends T ? K : never;
 
 declare class Branded<in out BrandName extends string> {
   #brand: BrandName;
@@ -540,14 +535,9 @@ export type AllKeysOf<T extends object> = T extends unknown ? keyof T : never;
  *
  * @internal
  */
-export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
-  {
-    [K2 in keyof T as Extract<K2, K>]?: T[K2] | undefined;
-  } & {
-    // Note(LukeAbby): This effectively inlines `Omit<T, K>` hoping for slightly better performance.
-    [K2 in keyof T as Exclude<K2, K>]: T[K2];
-  }
->;
+export type InexactPartial<T extends object> = {
+  [K in keyof T]?: T[K] | undefined;
+};
 
 /**
  * Makes select properties in `T` optional and explicitly allows both `null` and
@@ -581,14 +571,9 @@ export type InexactPartial<T extends object, K extends AllKeysOf<T> = AllKeysOf<
  *
  * @internal
  */
-export type NullishProps<T extends object, K extends AllKeysOf<T> = AllKeysOf<T>> = PrettifyType<
-  {
-    [K2 in keyof T as Extract<K2, K>]?: T[K2] | null | undefined;
-  } & {
-    // Note(LukeAbby): This effectively inlines `Omit<T, K>` hoping for slightly better performance.
-    [K2 in keyof T as Exclude<K2, K>]: T[K2];
-  }
->;
+export type NullishProps<T extends object> = {
+  [K in keyof T]?: T[K] | null | undefined;
+};
 
 /**
  * Expand an object that contains keys in dotted notation
@@ -1326,9 +1311,69 @@ type _SplitString<
 
 export type DeepReadonly<T extends object> = T extends AnyObject | AnyArray
   ? { readonly [K in keyof T]: _DeepReadonly<T[K]> }
-  : T;
+  : DeepReadonlyComplex<T>;
 
 type _DeepReadonly<T> = T extends object ? DeepReadonly<T> : T;
+
+interface DeepReadonlyComplex<T extends object> extends _DeepReadonlyComplex<T> {}
+
+// @ts-expect-error - This pattern is intrinsically an error.
+// Note(LukeAbby): The two levels here, `DeepReadonlyComplex` and `_DeepReadonlyComplex`, could just be one.
+// However it gives a better type display as two levels.
+interface _DeepReadonlyComplex<T extends object, R extends object = { readonly [K in keyof T]: _DeepReadonly<T[K]> }>
+  extends R,
+    T {}
+
+/**
+ * Currently indistinguishable from `DotKeys` but will eventually avoid `readonly` keys.
+ */
+export type MutableDotKeys<T extends object> = DotKeys<T>;
+
+/**
+ * Currently indistinguishable from `DotKeys` but will eventually avoid keys that can't be deleted.
+ */
+export type DeletableDotKeys<T extends object> = DotKeys<T>;
+
+/**
+ * Gets the valid dotkeys for `T`. Currently only gets keys that are in all items in a union. Later
+ * configuration to loosen this will exist.
+ */
+export type DotKeys<T extends object> = {
+  [K in keyof T]: K | (K extends string ? _DotKeys<T[K], `${K}.`, [T]> : never);
+}[keyof T];
+
+type _DotKeys<T, Prefix extends string = "", Stack extends unknown[] = []> = T extends object
+  ? true extends InStack<T, Stack, 10>
+    ? never
+    : {
+        [K in keyof T]: K extends string ? `${Prefix}${K}` | _DotKeys<T[K], `${Prefix}${K}.`, [T, ...Stack]> : never;
+      }[keyof T]
+  : never;
+
+type InStack<T, Stack extends unknown[], MaxDepth extends number = 99> = Stack["length"] extends MaxDepth
+  ? true
+  : {
+      [K in keyof Stack & `${number}`]: IdentityEquals<T, Stack[K]>;
+    }[keyof Stack & `${number}`];
+
+type IdentityEquals<T, U> =
+  (<V>() => V extends T ? true : false) extends <V>() => V extends U ? true : false ? true : false;
+
+/**
+ * Gets a dot property on `T`.
+ */
+export type GetProperty<T extends object, K extends DotKeys<T>> = _GetProperty<T, K>;
+
+/**
+ * This is causing an issue with TS-Go. See https://github.com/microsoft/typescript-go/issues/1278.
+ */
+type _GetProperty<T, K, Depth extends number[] = []> = K extends keyof T
+  ? T[K]
+  : K extends `${infer First}.${infer Rest}`
+    ? First extends keyof T
+      ? _GetProperty<T[First], Rest, [1, ...Depth]>
+      : never
+    : never;
 
 /**
  * @deprecated Replaced by {@linkcode Document.SheetClassFor}

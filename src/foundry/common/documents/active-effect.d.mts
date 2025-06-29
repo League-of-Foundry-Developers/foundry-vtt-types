@@ -24,7 +24,7 @@ declare abstract class BaseActiveEffect<
    * You should use {@link ActiveEffect.implementation | `new ActiveEffect.implementation(...)`} instead which will give you
    * a system specific implementation of `ActiveEffect`.
    */
-  constructor(...args: ActiveEffect.ConstructorArgs);
+  constructor(data: ActiveEffect.CreateData, context?: ActiveEffect.ConstructionContext);
 
   /**
    * @defaultValue
@@ -312,6 +312,7 @@ export default BaseActiveEffect;
 
 declare namespace BaseActiveEffect {
   export import Name = ActiveEffect.Name;
+  export import ConstructionContext = ActiveEffect.ConstructionContext;
   export import ConstructorArgs = ActiveEffect.ConstructorArgs;
   export import Hierarchy = ActiveEffect.Hierarchy;
   export import Metadata = ActiveEffect.Metadata;

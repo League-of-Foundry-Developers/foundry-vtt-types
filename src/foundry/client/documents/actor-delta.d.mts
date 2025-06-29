@@ -14,17 +14,9 @@ declare namespace ActorDelta {
   type Name = "ActorDelta";
 
   /**
-   * The arguments to construct the document.
-   * @privateRemarks This is off-template, as ActorDelta throws if not provided a valid TokenDocument
-   * parent in the construction context for any construction, not just `.create`ion
+   * @privateRemarks This is off-template, as `ActorDelta` requires a valid parent to validate.
    */
-  interface ConstructorArgs
-    extends Identity<
-      [
-        data: CreateData | undefined,
-        context: RequiredProps<Document.ConstructionContext<TokenDocument.Implementation>, "parent">,
-      ]
-    > {}
+  interface ConstructionContext extends RequiredProps<Document.ConstructionContext<Parent>, "parent"> {}
 
   /**
    * The documents embedded within `ActorDelta`.
@@ -187,16 +179,16 @@ declare namespace ActorDelta {
     /**
      * Gets the collection document for an embedded document.
      */
-    // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.DocumentFor<
+      Metadata.Embedded,
+      CollectionName
+    >;
 
     /**
      * Gets the collection for an embedded document.
      */
     type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
-      // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
-      Document.Any,
+      ActorDelta.Implementation,
       Metadata.Embedded,
       CollectionName
     >;
@@ -331,7 +323,7 @@ declare namespace ActorDelta {
     /**
      * An object of actor flag overrides.
      */
-    flags: fields.ObjectField.FlagsField<"Actor">;
+    flags: fields.DocumentFlagsField<"Actor">;
   }
 
   namespace Database {
@@ -522,6 +514,16 @@ declare namespace ActorDelta {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   * @privateRemarks This is off-template, as ActorDelta throws if not provided a valid TokenDocument
+   * parent in the construction context for any construction, not just `.create`ion
+   */
+  interface ConstructorArgs extends Identity<[data: CreateData | undefined, context: ConstructionContext]> {}
 }
 
 /**
@@ -534,7 +536,8 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    * @param data    - Initial data from which to construct the `ActorDelta`
    * @param context - Construction context options
    */
-  constructor(...args: ActorDelta.ConstructorArgs);
+  // Note(LukeAbby): `data` is not actually required but `context.parent` is.
+  constructor(data: ActorDelta.CreateData | undefined, context: ActorDelta.ConstructionContext);
 
   // options: not null (parameter default only, destructured in super)
   protected override _configure(options?: Document.ConfigureOptions): void;

@@ -52,22 +52,22 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
 
   protected override _activate(): void;
 
-  protected override _canDragLeftStart(user: User.Implementation, event: PIXI.FederatedEvent): boolean;
+  protected override _canDragLeftStart(user: User.Implementation, event: Canvas.Event.Pointer): boolean;
 
-  protected override _onDragLeftStart(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftMove(event: PIXI.FederatedEvent): void;
+  protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
-  protected override _onDragLeftCancel(event: PointerEvent): void;
+  protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
   // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to just Promise<AmbientLight>
-  protected _onMouseWheel(event: WheelEvent): Promise<AmbientLight.Implementation>;
+  protected _onMouseWheel(event: Canvas.Event.Wheel): Promise<AmbientLight.Implementation>;
 
   /**
    * Actions to take when the darkness level of the Scene is changed
    * @param event - An event
    */
-  protected _onDarknessChange(event: PIXI.FederatedEvent): void;
+  protected _onDarknessChange(event: Canvas.Event.DarknessChange): void;
 }
 
 declare namespace LightingLayer {

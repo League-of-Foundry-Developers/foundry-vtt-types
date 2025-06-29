@@ -13,9 +13,9 @@ declare namespace MeasuredTemplateDocument {
   type Name = "MeasuredTemplate";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `MeasuredTemplateDocument`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `MeasuredTemplateDocument`.
@@ -182,7 +182,7 @@ declare namespace MeasuredTemplateDocument {
      * The _id of the user who created this measured template
      * @defaultValue `game?.user?.id`
      */
-    author: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string | undefined }>;
+    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
 
     /**
      * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
@@ -282,7 +282,7 @@ declare namespace MeasuredTemplateDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
   }
 
   namespace Database {
@@ -425,6 +425,15 @@ declare namespace MeasuredTemplateDocument {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -438,7 +447,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
    * @param data    - Initial data from which to construct the `MeasuredTemplateDocument`
    * @param context - Construction context options
    */
-  constructor(...args: MeasuredTemplateDocument.ConstructorArgs);
+  constructor(data?: MeasuredTemplateDocument.CreateData, context?: MeasuredTemplateDocument.ConstructionContext);
 
   /**
    * Rotation is an alias for direction

@@ -16,9 +16,9 @@ expectTypeOf(doc.compendium).toEqualTypeOf<undefined>(); // TODO: Determine if e
 
 // Test the inheritance of static members
 expectTypeOf(AmbientLightDocument.documentName).toEqualTypeOf<"AmbientLight">(); // Document
-expectTypeOf(AmbientLightDocument.createDialog({}, { parent: new Scene.implementation() })).toEqualTypeOf<
-  Promise<AmbientLightDocument.Stored | null | undefined>
->(); // ClientDocumentMixin
+expectTypeOf(
+  AmbientLightDocument.createDialog({}, { parent: new Scene.implementation({ name: "Scene" }) }),
+).toEqualTypeOf<Promise<AmbientLightDocument.Stored | null | undefined>>(); // ClientDocumentMixin
 
 // Test the props
 expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Implementation | null>();

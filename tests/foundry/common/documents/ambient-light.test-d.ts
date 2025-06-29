@@ -5,11 +5,11 @@ import Document = foundry.abstract.Document;
 
 class TestBaseAmbientLight extends BaseAmbientLight {}
 
-let myLight;
 // AmbientLight has no hard required fields for construction
-myLight = new TestBaseAmbientLight();
-myLight = new TestBaseAmbientLight({});
-myLight = new TestBaseAmbientLight({
+new TestBaseAmbientLight();
+new TestBaseAmbientLight({});
+
+new TestBaseAmbientLight({
   _id: "XXXXXSomeIDXXXXX",
   x: 10,
   y: 10,
@@ -46,7 +46,8 @@ myLight = new TestBaseAmbientLight({
     },
   },
 });
-myLight = new TestBaseAmbientLight({
+
+new TestBaseAmbientLight({
   _id: null,
   x: null,
   y: null,
@@ -79,17 +80,19 @@ myLight = new TestBaseAmbientLight({
   hidden: null,
   flags: null,
 });
-myLight = new TestBaseAmbientLight({
+
+new TestBaseAmbientLight({
   config: {
     animation: null,
     darkness: null,
   },
 });
-myLight = new TestBaseAmbientLight({
+
+new TestBaseAmbientLight({
   config: null,
 });
 
-myLight = new TestBaseAmbientLight({
+new TestBaseAmbientLight({
   _id: undefined,
   x: undefined,
   y: undefined,
@@ -122,13 +125,15 @@ myLight = new TestBaseAmbientLight({
   hidden: undefined,
   flags: undefined,
 });
-myLight = new TestBaseAmbientLight({
+
+new TestBaseAmbientLight({
   config: {
     animation: undefined,
     darkness: undefined,
   },
 });
-myLight = new TestBaseAmbientLight({
+
+const myLight = new TestBaseAmbientLight({
   config: undefined,
 });
 
@@ -147,7 +152,9 @@ expectTypeOf(myLight.config).toEqualTypeOf<foundry.data.LightData>();
 
 expectTypeOf(myLight.hidden).toBeBoolean();
 expectTypeOf(myLight.flags).toEqualTypeOf<
-  InterfaceToObject<BaseAmbientLight.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  foundry.data.fields.DocumentFlagsField._TwoLevelPartial<
+    InterfaceToObject<BaseAmbientLight.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  >
 >();
 
 // document-specific flag(s)

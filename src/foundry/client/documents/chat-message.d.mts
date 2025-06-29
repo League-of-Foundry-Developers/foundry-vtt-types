@@ -15,9 +15,9 @@ declare namespace ChatMessage {
   type Name = "ChatMessage";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `ChatMessage`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `ChatMessage`.
@@ -254,9 +254,9 @@ declare namespace ChatMessage {
 
     /**
      * The _id of the User document who generated this message
-     * @defaultValue `game?.user?.id`
+     * @defaultValue `game.user?.id`
      */
-    author: fields.ForeignDocumentField<typeof documents.BaseUser, { nullable: false; initial: () => string }>;
+    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
 
     /**
      * The timestamp at which point this message was generated
@@ -323,7 +323,7 @@ declare namespace ChatMessage {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name, InterfaceToObject<CoreFlags>>;
+    flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
 
     _stats: fields.DocumentStatsField;
   }
@@ -513,14 +513,19 @@ declare namespace ChatMessage {
 
   interface GetSpeakerOptions extends NullishProps<_BaseSpeakerOptions> {}
 
-  /** @remarks `token` is required, `alias` falls back to `token.name` */
-  interface GetSpeakerFromTokenOptions extends NullishProps<Pick<_BaseSpeakerOptions, "token" | "alias">, "alias"> {}
+  /**
+   * @deprecated - The associated function was made private without deprecation or direct replacement.
+   */
+  interface GetSpeakerFromTokenOptions extends NullishProps<Pick<_BaseSpeakerOptions, "token" | "alias">> {}
 
-  /** @remarks `actor` is required, `scene` falls back to `canvas.scene`, `alias` falls back to `actor.name` */
-  interface GetSpeakerFromActorOptions
-    extends NullishProps<Pick<_BaseSpeakerOptions, "scene" | "actor" | "alias">, "scene" | "alias"> {}
+  /**
+   * @deprecated - The associated function was made private without deprecation or direct replacement.
+   */
+  interface GetSpeakerFromActorOptions extends NullishProps<Pick<_BaseSpeakerOptions, "scene" | "actor" | "alias">> {}
 
-  /** @remarks `user` is required, `scene` falls back to `canvas.scene`, `alias` falls back to `user.name` */
+  /**
+   *@deprecated - The associated function was made private without deprecation or direct replacement.
+   */
   interface GetSpeakerFromUserOptions extends NullishProps<Pick<_BaseSpeakerOptions, "scene" | "alias">> {
     /** The User who is speaking */
     user: User.Implementation;
@@ -589,6 +594,15 @@ declare namespace ChatMessage {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -604,7 +618,8 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * @param data    - Initial data from which to construct the `ChatMessage`
    * @param context - Construction context options
    */
-  constructor(...args: ChatMessage.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: ChatMessage.CreateData, context?: ChatMessage.ConstructionContext);
 
   /**
    * Is this ChatMessage currently displayed in the sidebar ChatLog?
@@ -723,7 +738,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * @remarks See {@linkcode ChatMessage.WhisperRecipient}
    */
   static getWhisperRecipients(name: ChatMessage.WhisperRecipient): User.Stored[];
-  
+
   /**
    * Render the HTML for the ChatMessage which should be added to the log
    * @param options - Additional options passed to the Handlebars Template.
@@ -739,7 +754,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    */
   export(): string;
 
-  
+
   /**
    * @deprecated since v13 until v15
    */

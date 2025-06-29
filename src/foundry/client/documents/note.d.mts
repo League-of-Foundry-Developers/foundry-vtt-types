@@ -14,9 +14,9 @@ declare namespace NoteDocument {
   type Name = "Note";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Note`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `NoteDocument`.
@@ -298,7 +298,7 @@ declare namespace NoteDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
   }
 
   namespace Database {
@@ -433,6 +433,15 @@ declare namespace NoteDocument {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -447,7 +456,8 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
    * @param data    - Initial data from which to construct the `NoteDocument`
    * @param context - Construction context options
    */
-  constructor(...args: NoteDocument.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: NoteDocument.CreateData, context?: NoteDocument.ConstructionContext);
 
   static override createDialog(
     data: NoteDocument.CreateDialogData | undefined,
@@ -456,9 +466,9 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
   ): Promise<NoteDocument.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"Note">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Note">,
+  ): Promise<this | false | null | undefined>;
 
   /**
    * The associated JournalEntry which is referenced by this Note
@@ -491,7 +501,6 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
 
   // context: not null (destructured)
   static override defaultName(context?: NoteDocument.DefaultNameContext): string;
-
 
   // options: not null (parameter default only)
   static override fromDropData(

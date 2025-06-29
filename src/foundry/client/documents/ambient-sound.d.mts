@@ -12,9 +12,9 @@ declare namespace AmbientSoundDocument {
   type Name = "AmbientSound";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create an `AmbientSoundDocument`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `AmbientSoundDocument`.
@@ -269,7 +269,7 @@ declare namespace AmbientSoundDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
   }
 
   interface EffectsConfigSchema extends DataSchema {
@@ -433,6 +433,15 @@ declare namespace AmbientSoundDocument {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -446,7 +455,11 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
    * @param data    - Initial data from which to construct the `AmbientSoundDocument`
    * @param context - Construction context options
    */
-  constructor(...args: AmbientSoundDocument.ConstructorArgs);
+  constructor(
+    // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+    data?: AmbientSoundDocument.CreateData,
+    context?: AmbientSoundDocument.ConstructionContext,
+  );
 
   /*
    * After this point these are not really overridden methods.

@@ -1,25 +1,37 @@
 import { expectTypeOf } from "vitest";
-import type { IntentionalPartial } from "fvtt-types/utils";
+import type { AnyObject, InexactPartial, IntentionalPartial } from "#utils";
 
 import BaseEffectSource = foundry.canvas.sources.BaseEffectSource;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
-import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
+import EnvironmentCanvasGroup = foundry.canvas.groups.EnvironmentCanvasGroup;
 
-class MyEffectSource<SourceData extends BaseEffectSource.SourceData = BaseEffectSource.SourceData> extends foundry
-  .canvas.sources.BaseEffectSource<SourceData, PIXI.Polygon> {
+class MyEffectSource<
+  SourceData extends BaseEffectSource.SourceData = BaseEffectSource.SourceData,
+> extends BaseEffectSource<SourceData, PIXI.Polygon> {
   static override sourceType = "sight";
 
   static override effectsCollection = "someCollection";
 
-  protected override _initialize(data: IntentionalPartial<SourceData>): void {
+  // testing that initialize knows the keys of `data`
+  override initialize(data?: InexactPartial<SourceData>, options?: BaseEffectSource.InitializeOptions) {
+    if (data) {
+      // @ts-expect-error foo is not a key of BaseEffectSource.SourceData
+      if (data.foo) return this;
+      if (data.disabled && data.x && data.y && data.elevation) return this;
+    }
+    if (options?.reset) return this;
+    return this;
+  }
+
+  protected override _initialize(data: IntentionalPartial<SourceData>) {
     data.disabled = false;
   }
 
-  protected override _createShapes(): void {
+  protected override _createShapes() {
     this.shape = new PIXI.Polygon();
   }
 
-  protected override _configure(changes: IntentionalPartial<SourceData>): void {
+  protected override _configure(changes: AnyObject) {
     if (typeof changes.x === "number" && changes.x > 500) {
       console.warn("too far");
     }
@@ -30,36 +42,36 @@ expectTypeOf(MyEffectSource.sourceType).toBeString();
 expectTypeOf(MyEffectSource.effectsCollection).toBeString();
 expectTypeOf(MyEffectSource.defaultData).toEqualTypeOf<BaseEffectSource.SourceData>();
 
-const mySource = new MyEffectSource();
+declare const object: foundry.canvas.placeables.Token.Implementation;
+new MyEffectSource();
+new MyEffectSource({ object: undefined, sourceId: undefined });
+const mySource = new MyEffectSource({ object, sourceId: object.sourceId });
 
-expectTypeOf(mySource.object).toEqualTypeOf<PlaceableObject.Any | CanvasGroupMixin.AnyMixed | null>();
+expectTypeOf(mySource.object).toEqualTypeOf<PlaceableObject.Any | EnvironmentCanvasGroup.Any | null>();
 expectTypeOf(mySource.sourceId).toEqualTypeOf<string | undefined>();
 expectTypeOf(mySource.data).toEqualTypeOf<BaseEffectSource.SourceData>();
-expectTypeOf(mySource.shape).toEqualTypeOf<PIXI.Polygon | undefined>();
+expectTypeOf(mySource.shape).toEqualTypeOf<PIXI.Polygon | number[] | undefined>();
 
 expectTypeOf(mySource["_flags"]).toEqualTypeOf<BaseEffectSource.Flags>();
-expectTypeOf((mySource["_flags"].foo = true)).toBeBoolean();
-expectTypeOf((mySource["_flags"].bar = 7)).toBeNumber();
 
 expectTypeOf(mySource.x).toBeNumber();
 expectTypeOf(mySource.y).toBeNumber();
 expectTypeOf(mySource.elevation).toBeNumber();
-expectTypeOf(mySource.effectsCollection).toEqualTypeOf<foundry.utils.Collection<MyEffectSource>>();
+expectTypeOf(mySource.effectsCollection).toEqualTypeOf<Collection<MyEffectSource>>();
 expectTypeOf(mySource.updateId).toBeNumber();
 expectTypeOf(mySource.active).toBeBoolean();
 expectTypeOf(mySource.attached).toBeBoolean();
 expectTypeOf(mySource.suppression).toEqualTypeOf<Record<string, boolean>>();
 
 expectTypeOf(mySource.initialize()).toEqualTypeOf<MyEffectSource>();
-expectTypeOf(mySource.initialize(null, { reset: null })).toEqualTypeOf<MyEffectSource>();
 expectTypeOf(mySource.initialize({}, { reset: false })).toEqualTypeOf<MyEffectSource>();
 expectTypeOf(
   mySource.initialize(
     {
-      x: null,
-      y: null,
-      disabled: null,
-      elevation: null,
+      x: undefined,
+      y: undefined,
+      disabled: undefined,
+      elevation: undefined,
     },
     { reset: undefined },
   ),
@@ -90,6 +102,7 @@ expectTypeOf(
     x: 50,
     y: 50,
     elevation: 50,
+    disabled: false,
   }),
 ).toBeVoid();
 
@@ -105,9 +118,10 @@ expectTypeOf(
   }),
 );
 expectTypeOf(
-  // @ts-expect-error data passed to `#_configure` will have had excess keys stripped and default values applied
+  // because _configure is passed flattened data, and subclasses have data properties that are objects,
+  // it takes AnyObject for now until we have a Flatten type
   mySource["_configure"]({
-    y: undefined,
+    foo: 1243464563452n,
   }),
 );
 
@@ -119,13 +133,3 @@ expectTypeOf(mySource["_destroy"]()).toBeVoid();
 
 expectTypeOf(mySource.add()).toBeVoid();
 expectTypeOf(mySource.remove()).toBeVoid();
-
-// deprecated since v11, until v13
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(mySource.sourceType).toBeString();
-
-// deprecated since v12, until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(mySource["_createShape"]()).toBeVoid();
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(mySource.disabled).toBeBoolean();

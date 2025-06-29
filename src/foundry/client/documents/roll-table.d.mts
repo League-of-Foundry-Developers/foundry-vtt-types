@@ -14,9 +14,9 @@ declare namespace RollTable {
   type Name = "RollTable";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `RollTable`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `RollTable`.
@@ -131,16 +131,16 @@ declare namespace RollTable {
     /**
      * Gets the collection document for an embedded document.
      */
-    // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.DocumentFor<
+      Metadata.Embedded,
+      CollectionName
+    >;
 
     /**
      * Gets the collection for an embedded document.
      */
     type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
-      // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
-      Document.Any,
+      RollTable.Implementation,
       Metadata.Embedded,
       CollectionName
     >;
@@ -238,7 +238,13 @@ declare namespace RollTable {
      * The name of this RollTable
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * An image file path which provides the thumbnail artwork for this RollTable
@@ -301,7 +307,7 @@ declare namespace RollTable {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     /**
      * An object of creation and access information
@@ -572,6 +578,15 @@ declare namespace RollTable {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -586,7 +601,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * @param data    - Initial data from which to construct the `RollTable`
    * @param context - Construction context options
    */
-  constructor(...args: RollTable.ConstructorArgs);
+  constructor(data: RollTable.CreateData, context?: RollTable.ConstructionContext);
 
   /**
    * Provide a thumbnail image path used to represent this document.
@@ -879,9 +894,9 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
   ): Promise<RollTable.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"RollTable">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"RollTable">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

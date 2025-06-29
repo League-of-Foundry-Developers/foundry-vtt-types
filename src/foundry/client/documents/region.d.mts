@@ -6,6 +6,226 @@ import type BaseRegion from "#common/documents/region.mjs";
 import type { Region } from "#client/canvas/placeables/_module.d.mts";
 
 import fields = foundry.data.fields;
+import Canvas = foundry.canvas.Canvas;
+
+/**
+ * The client-side Region document which extends the common BaseRegion model.
+ */
+declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
+  /**
+   * @param data    - Initial data from which to construct the `RegionDocument`
+   * @param context - Construction context options
+   */
+  constructor(data: RegionDocument.CreateData, context?: RegionDocument.ConstructionContext);
+
+  /**
+   * Test whether the given point (at the given elevation) is inside this Region.
+   * @param point - The point.
+   * @returns Is the point inside this Region?
+   */
+  testPoint(point: Canvas.ElevatedPoint): boolean;
+
+  /**
+   * Teleport a Token into this Region.
+   * The Token may be in the same Scene as this Region, or in a different Scene.
+   * The current User must be an owner of the Token Document in order to teleport it
+   * For teleportation to a different Scene the current User requires `TOKEN_CREATE` and
+   * `TOKEN_DELETE` permissions. If the Token is teleported to different Scene, it is deleted
+   * and a new Token Document in the other Scene is created.
+   * @param token - An existing Token Document to teleport
+   * @returns The same Token Document if teleported within the same Scene,
+   * or a new Token Document if teleported to a different Scene
+   */
+  teleportToken(token: TokenDocument.Implementation): Promise<TokenDocument.Implementation>;
+
+  /**
+   * Activate the Socket event listeners.
+   * @param socket - The active game socket
+   * @internal
+   */
+  protected static _activateSocketListeners(socket: WebSocket): void;
+
+  /**
+   * Update the tokens of the given regions.
+   *
+   * If called during Region/Scene create/update/delete workflows, the Token documents are always reset and
+   * so never in an animated state, which means the reset option may be false. It is important that the
+   * containment test is not done in an animated state.
+   * @param regions - The regions to update the tokens for
+   * @internal
+   */
+  // options: not null (destructured)
+  protected static _updateTokens(
+    regions: RegionDocument.Implementation[],
+    options?: RegionDocument.UpdateTokensOptions,
+  ): Promise<void>;
+
+  // _onCreateOperation, _onUpdateOperation, and _onDeleteOperation are overridden from BaseRegion without signature changes.
+
+  /** The tokens inside this region. */
+  tokens: Set<TokenDocument.Implementation>;
+
+  /**
+   * Trigger the Region event.
+   * @param eventName - The event name
+   * @param eventData - The event data
+   * @internal
+   */
+  protected _triggerEvent(eventName: string, eventData: RegionDocument.EventData): Promise<void>;
+
+  /**
+   * Handle the Region event.
+   * @param event - The Region event
+   * @internal
+   */
+  protected _handleEvent(event: RegionDocument.RegionEvent): Promise<void>;
+
+  /**
+   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+   * this method must be overridden like so:
+   * ```typescript
+   * class GurpsRegionDocument extends RegionDocument {
+   *   protected override _onCreateDescendantDocuments(...args: RegionDocument.OnCreateDescendantDocumentsArgs) {
+   *     super._onCreateDescendantDocuments(...args);
+   *
+   *     const [parent, collection, documents, data, options, userId] = args;
+   *     if (collection === "behaviors") {
+   *         options; // Will be narrowed.
+   *     }
+   *   }
+   * }
+   * ```
+   */
+  protected override _onCreateDescendantDocuments(...args: RegionDocument.OnCreateDescendantDocumentsArgs): void;
+
+  /**
+   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+   * this method must be overridden like so:
+   * ```typescript
+   * class Ptr2eRegionDocument extends RegionDocument {
+   *   protected override _onUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocumentsArgs) {
+   *     super._onUpdateDescendantDocuments(...args);
+   *
+   *     const [parent, collection, documents, changes, options, userId] = args;
+   *     if (collection === "behaviors") {
+   *         options; // Will be narrowed.
+   *     }
+   *   }
+   * }
+   * ```
+   */
+  protected override _onUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocumentsArgs): void;
+
+  /**
+   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+   * this method must be overridden like so:
+   * ```typescript
+   * class BladesRegionDocument extends RegionDocument {
+   *   protected override _onDeleteDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocuments) {
+   *     super._onDeleteDescendantDocuments(...args);
+   *
+   *     const [parent, collection, documents, ids, options, userId] = args;
+   *     if (collection === "behaviors") {
+   *         options; // Will be narrowed.
+   *     }
+   *   }
+   * }
+   * ```
+   */
+  protected override _onDeleteDescendantDocuments(...args: RegionDocument.OnDeleteDescendantDocumentsArgs): void;
+
+  /*
+   * After this point these are not really overridden methods.
+   * They are here because Foundry's documents are complex and have lots of edge cases.
+   * There are DRY ways of representing this but this ends up being harder to understand
+   * for end users extending these functions, especially for static methods. There are also a
+   * number of methods that don't make sense to call directly on `Document` like `createDocuments`,
+   * as there is no data that can safely construct every possible document. Finally keeping definitions
+   * separate like this helps against circularities.
+   */
+
+  // ClientDocument overrides
+
+  /**
+   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+   * this method must be overridden like so:
+   * ```typescript
+   * class SwadeRegionDocument extends RegionDocument {
+   *   protected override _preCreateDescendantDocuments(...args: RegionDocument.PreCreateDescendantDocumentsArgs) {
+   *     super._preCreateDescendantDocuments(...args);
+   *
+   *     const [parent, collection, data, options, userId] = args;
+   *     if (collection === "behaviors") {
+   *         options; // Will be narrowed.
+   *     }
+   *   }
+   * }
+   * ```
+   */
+  protected override _preCreateDescendantDocuments(...args: RegionDocument.PreCreateDescendantDocumentsArgs): void;
+
+  /**
+   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+   * this method must be overridden like so:
+   * ```typescript
+   * class LancerRegionDocument extends RegionDocument {
+   *   protected override _preUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocuments) {
+   *     super._preUpdateDescendantDocuments(...args);
+   *
+   *     const [parent, collection, changes, options, userId] = args;
+   *     if (collection === "behaviors") {
+   *         options; // Will be narrowed.
+   *     }
+   *   }
+   * }
+   * ```
+   */
+  protected override _preUpdateDescendantDocuments(...args: RegionDocument.PreUpdateDescendantDocumentsArgs): void;
+
+  /**
+   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
+   * this method must be overridden like so:
+   * ```typescript
+   * class KultRegionDocument extends RegionDocument {
+   *   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs) {
+   *     super._preDeleteDescendantDocuments(...args);
+   *
+   *     const [parent, collection, ids, options, userId] = args;
+   *     if (collection === "behaviors") {
+   *         options; // Will be narrowed.
+   *     }
+   *   }
+   * }
+   * ```
+   */
+  protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs): void;
+
+  // context: not null (destructured)
+  static override defaultName(
+    context?: Document.DefaultNameContext<"Region", NonNullable<RegionDocument.Parent>>,
+  ): string;
+
+  /** @remarks `context.parent` is required as creation requires one */
+  static override createDialog(
+    data: Document.CreateDialogData<RegionDocument.CreateData> | undefined,
+    context: Document.CreateDialogContext<"Region", NonNullable<RegionDocument.Parent>>,
+  ): Promise<RegionDocument.Stored | null | undefined>;
+
+  // options: not null (parameter default only)
+  static override fromDropData(
+    data: RegionDocument.DropData,
+    options?: RegionDocument.DropDataOptions,
+  ): Promise<RegionDocument.Implementation | undefined>;
+
+  static override fromImport(
+    source: RegionDocument.Source,
+    context?: Document.FromImportContext<RegionDocument.Parent> | null,
+  ): Promise<RegionDocument.Implementation>;
+
+  override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
+  static #RegionDocument: true;
+}
 
 declare namespace RegionDocument {
   /**
@@ -14,9 +234,9 @@ declare namespace RegionDocument {
   type Name = "Region";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Region`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `RegionDocument`.
@@ -129,16 +349,16 @@ declare namespace RegionDocument {
     /**
      * Gets the collection document for an embedded document.
      */
-    // TODO(LukeAbby): There's a circularity. Should be `Document.Embedded.CollectionDocumentFor<Metadata.Embedded, CollectionName>`
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Any;
+    type DocumentFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.DocumentFor<
+      Metadata.Embedded,
+      CollectionName
+    >;
 
     /**
      * Gets the collection for an embedded document.
      */
     type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
-      // TODO(LukeAbby): This should be `TokenDocument.Implementation` but this causes a circularity.
-      Document.Any,
+      RegionDocument.Implementation,
       Metadata.Embedded,
       CollectionName
     >;
@@ -235,7 +455,13 @@ declare namespace RegionDocument {
     /**
      * The name used to describe the Region
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The color used to highlight the Region
@@ -308,7 +534,7 @@ declare namespace RegionDocument {
     /**
      * An object of optional key/value flags
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
   }
 
   namespace Database {
@@ -591,6 +817,15 @@ declare namespace RegionDocument {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -605,60 +840,60 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
 
   /**
    * The shapes of this Region.
-   * 
+   *
    * The value of this property must not be mutated.
-   * 
+   *
    * This property is updated only by a document update.
    * @remarks marked by foundry as readonly
    */
   get regionShapes(): foundry.data.regionShapes.RegionShape.Any[];
-  
+
     /**
      * The polygons of this Region.
-     * 
+     *
      * The value of this property must not be mutated.
-     * 
+     *
      * This property is updated only by a document update.
      */
     get polygons(): ReadonlyArray<PIXI.Polygon>;
 
   /**
    * The polygon tree of this Region.
-   * 
+   *
    * The value of this property must not be mutated.
-   * 
+   *
    * This property is updated only by a document update.
    */
   get polygonTree(): foundry.data.regionShapes.RegionPolygonTree;
 
   /**
    * The Clipper paths of this Region.
-   * 
+   *
    * The value of this property must not be mutated.
-   * 
+   *
    * This property is updated only by a document update.
    */
   get clipperPaths(): ReadonlyArray<ReadonlyArray<ClipperLib.IntPoint>>;
 
   /**
    * The triangulation of this Region.
-   * 
+   *
    * The value of this property must not be mutated.
-   * 
+   *
    * This property is updated only by a document update.
    */
   get triangulation(): Readonly<{ vertices: Float32Array; indices: Uint16Array | Uint32Array }>;
 
   /**
    * The bounds of this Region.
-   * 
+   *
    * The value of this property must not be mutated.
-   * 
+   *
    * This property is updated only by a document update.
    */
   get bounds(): PIXI.Rectangle;
-  
-  /** 
+
+  /**
    * The tokens inside this region.
    * @remarks marked by foundry as `@readonly`
    */

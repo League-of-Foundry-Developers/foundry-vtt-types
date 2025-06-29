@@ -25,7 +25,8 @@ declare abstract class BaseChatMessage<
    * You should use {@link ChatMessage.implementation | `new ChatMessage.implementation(...)`} instead which will give you
    * a system specific implementation of `ChatMessage`.
    */
-  constructor(...args: ChatMessage.ConstructorArgs);
+  // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+  constructor(data?: ChatMessage.CreateData, context?: ChatMessage.ConstructionContext);
 
   /**
    * @defaultValue
@@ -308,6 +309,7 @@ export default BaseChatMessage;
 
 declare namespace BaseChatMessage {
   export import Name = ChatMessage.Name;
+  export import ConstructionContext = ChatMessage.ConstructionContext;
   export import ConstructorArgs = ChatMessage.ConstructorArgs;
   export import Hierarchy = ChatMessage.Hierarchy;
   export import Metadata = ChatMessage.Metadata;

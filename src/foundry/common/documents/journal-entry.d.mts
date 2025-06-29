@@ -23,7 +23,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    * You should use {@link JournalEntry.implementation | `new JournalEntry.implementation(...)`} instead which will give you
    * a system specific implementation of `JournalEntry`.
    */
-  constructor(...args: JournalEntry.ConstructorArgs);
+  constructor(data: JournalEntry.CreateData, context?: JournalEntry.ConstructionContext);
 
   /**
    * @defaultValue
@@ -333,6 +333,7 @@ export default BaseJournalEntry;
 
 declare namespace BaseJournalEntry {
   export import Name = JournalEntry.Name;
+  export import ConstructionContext = JournalEntry.ConstructionContext;
   export import ConstructorArgs = JournalEntry.ConstructorArgs;
   export import Hierarchy = JournalEntry.Hierarchy;
   export import Metadata = JournalEntry.Metadata;
