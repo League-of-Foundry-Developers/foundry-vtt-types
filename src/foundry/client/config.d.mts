@@ -1,6 +1,6 @@
 import type * as CONST from "#common/constants.d.mts";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise, RemoveIndexSignatures } from "#utils";
+import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise, RemoveIndexSignatures, InexactPartial } from "#utils";
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
 import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
@@ -2677,7 +2677,14 @@ declare global {
         roundPoints: canvasLayers.GridLayer.GridStyle;
       }
 
-      interface LightAnimations extends Record<string, RenderedEffectSource.LightAnimationConfig> {
+      interface LightSourceAnimationConfig
+        extends RenderedEffectSource._AnimationConfigBase,
+          Pick<RenderedEffectSource._AnimationConfigLightingShaders, "colorationShader">,
+          InexactPartial<Omit<RenderedEffectSource._AnimationConfigLightingShaders, "colorationShader">>,
+          RenderedEffectSource._Seed {}
+
+      interface LightAnimations {
+        [animationID: string]: LightSourceAnimationConfig;
         flame: LightAnimations.Flame;
         torch: LightAnimations.Torch;
         revolving: LightAnimations.Revolving;
@@ -2698,9 +2705,8 @@ declare global {
         radialrainbow: LightAnimations.RadialRainbow;
         fairy: LightAnimations.Fairy;
       }
-
       namespace LightAnimations {
-        interface Flame extends RenderedEffectSource.LightAnimationConfig {
+        interface Flame extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationFame"` */
           label: string;
 
@@ -2714,7 +2720,7 @@ declare global {
           colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Torch extends RenderedEffectSource.LightAnimationConfig {
+        interface Torch extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationTorch"` */
           label: string;
 
@@ -2728,7 +2734,7 @@ declare global {
           colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Revolving extends RenderedEffectSource.LightAnimationConfig {
+        interface Revolving extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationRevolving"` */
           label: string;
 
@@ -2739,7 +2745,7 @@ declare global {
           colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Siren extends RenderedEffectSource.LightAnimationConfig {
+        interface Siren extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationSiren"` */
           label: string;
 
@@ -2753,7 +2759,7 @@ declare global {
           colorationShader: foundry.canvas.rendering.shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Pulse extends RenderedEffectSource.LightAnimationConfig {
+        interface Pulse extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationPulse"` */
           label: string;
 
@@ -2767,7 +2773,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Chroma extends RenderedEffectSource.LightAnimationConfig {
+        interface Chroma extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationChroma"` */
           label: string;
 
@@ -2778,7 +2784,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Wave extends RenderedEffectSource.LightAnimationConfig {
+        interface Wave extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationWave"` */
           label: string;
 
@@ -2792,7 +2798,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Fog extends RenderedEffectSource.LightAnimationConfig {
+        interface Fog extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationFog"` */
           label: string;
 
@@ -2803,7 +2809,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Sunburst extends RenderedEffectSource.LightAnimationConfig {
+        interface Sunburst extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationSunburst"` */
           label: string;
 
@@ -2817,7 +2823,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Dome extends RenderedEffectSource.LightAnimationConfig {
+        interface Dome extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationLightDome"` */
           label: string;
 
@@ -2828,7 +2834,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Emanation extends RenderedEffectSource.LightAnimationConfig {
+        interface Emanation extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationEmanation"` */
           label: string;
 
@@ -2839,7 +2845,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Hexa extends RenderedEffectSource.LightAnimationConfig {
+        interface Hexa extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationHexaDome";` */
           label: string;
 
@@ -2850,7 +2856,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Ghost extends RenderedEffectSource.LightAnimationConfig {
+        interface Ghost extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationGhostLight"` */
           label: string;
 
@@ -2864,7 +2870,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Energy extends RenderedEffectSource.LightAnimationConfig {
+        interface Energy extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationEnergyField"` */
           label: string;
 
@@ -2875,7 +2881,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Vortex extends RenderedEffectSource.LightAnimationConfig {
+        interface Vortex extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationVortex"` */
           label: string;
 
@@ -2889,7 +2895,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface WitchWave extends RenderedEffectSource.LightAnimationConfig {
+        interface WitchWave extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationBewitchingWave"` */
           label: string;
 
@@ -2903,7 +2909,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface RainbowSwirl extends RenderedEffectSource.LightAnimationConfig {
+        interface RainbowSwirl extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationSwirlingRainbow"` */
           label: string;
 
@@ -2914,7 +2920,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface RadialRainbow extends RenderedEffectSource.LightAnimationConfig {
+        interface RadialRainbow extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationRadialRainbow"` */
           label: string;
 
@@ -2925,7 +2931,7 @@ declare global {
           colorationShader: shaders.AdaptiveColorationShader.AnyConstructor;
         }
 
-        interface Fairy extends RenderedEffectSource.LightAnimationConfig {
+        interface Fairy extends LightSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationFairyLight"` */
           label: string;
 
@@ -2940,14 +2946,20 @@ declare global {
         }
       }
 
-      interface DarknessAnimations extends Record<string, RenderedEffectSource.DarknessAnimationConfig> {
+      interface DarknessSourceAnimationConfig
+        extends RenderedEffectSource._AnimationConfigBase,
+          RenderedEffectSource._AnimationConfigDarknessShaders,
+          RenderedEffectSource._Seed {}
+
+      interface DarknessAnimations {
+        [animationID: string]: DarknessSourceAnimationConfig;
         magicalGloom: DarknessAnimations.MagicalGloom;
         roiling: DarknessAnimations.Roiling;
         hole: DarknessAnimations.Hole;
       }
 
       namespace DarknessAnimations {
-        interface MagicalGloom extends RenderedEffectSource.DarknessAnimationConfig {
+        interface MagicalGloom extends DarknessSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationMagicalGloom"` */
           label: string;
 
@@ -2958,7 +2970,7 @@ declare global {
           darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
         }
 
-        interface Roiling extends RenderedEffectSource.DarknessAnimationConfig {
+        interface Roiling extends DarknessSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationRoilingMass"` */
           label: string;
 
@@ -2969,7 +2981,7 @@ declare global {
           darknessShader: shaders.AdaptiveDarknessShader.AnyConstructor;
         }
 
-        interface Hole extends RenderedEffectSource.DarknessAnimationConfig {
+        interface Hole extends DarknessSourceAnimationConfig {
           /** @defaultValue `"LIGHT.AnimationBlackHole"` */
           label: string;
 

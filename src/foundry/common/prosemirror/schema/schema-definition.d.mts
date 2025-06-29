@@ -1,6 +1,13 @@
-import { MarkSpec, Node, NodeSpec } from "prosemirror-model";
-
-export default SchemaDefinition;
+import type {
+  MarkSpec,
+  Node,
+  NodeSpec,
+  AttributeSpec,
+  // DOMOutputSpec only used for link
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  DOMOutputSpec,
+  Attrs,
+} from "prosemirror-model";
 
 /**
  * An abstract interface for a ProseMirror schema definition
@@ -13,27 +20,41 @@ declare abstract class SchemaDefinition {
 
   /**
    * Schema attributes
-   * @remarks SchemaDefinition subclasses must implement the attrs getter.
+   * @abstract
+   * @remarks Throws if not overridden
    */
-  static get attrs(): Record<string, unknown>;
+  static get attrs(): Record<string, AttributeSpec>;
 
   /**
    * Check if an HTML element is appropriate to represent as this node, and if so, extract its schema attributes.
    * @param el - The HTML element
    * @returns Returns false if the HTML element is not appropriate for this schema node, otherwise returns its attributes.
-   * @remarks SchemaDefinition subclasses must implement the getAttrs method.
+   * @abstract
+   * @remarks Throws if not overridden
    */
-  static getAttrs(el: HTMLElement): Record<string, unknown> | boolean;
+  static getAttrs(el: HTMLElement): SchemaDefinition.GetAttrsReturn;
 
   /**
    * Convert a ProseMirror Node back into an HTML element.
    * @param node - The ProseMirror node.
-   * @remarks SchemaDefinition subclasses must implement the toDOM method.
+   * @abstract
+   * @remarks Throws if not overridden
    */
-  static toDOM(node: Node): unknown[];
+  static toDOM(node: Node): SchemaDefinition.DOMOutputSpecTuple;
 
   /**
    * Create the ProseMirror schema specification.
+   * @abstract
+   * @remarks Foundry marked `@abstract` but does *not* throw if not overridden, subclasses all `return mergeObject(super.make(), ...)`
    */
   static make(): NodeSpec | MarkSpec;
 }
+
+declare namespace SchemaDefinition {
+  /** @remarks A member of the {@linkcode DOMOutputSpec} union with `any` changed to `unknown` */
+  type DOMOutputSpecTuple = [string, ...unknown[]];
+
+  type GetAttrsReturn = Attrs | false | null;
+}
+
+export default SchemaDefinition;

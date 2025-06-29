@@ -1,7 +1,7 @@
 import type { EditorState, Plugin } from "prosemirror-state";
 import type { DeepPartial, EmptyObject, ValueOf } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
-import type { ProseMirrorDropDown } from "#common/prosemirror/menu.d.mts";
+import type { ProseMirrorDropDown } from "#common/prosemirror/_module.d.mts";
 import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
 import type PointVisionSource from "#client/canvas/sources/point-vision-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
@@ -324,10 +324,17 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the World time has been updated.
    * @param worldTime - The new canonical World time
    * @param delta     - The time delta
+   * @param options   - Options passed from the requesting client where the change was made
+   * @param userId    - The ID of the User who advanced the time
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@link GameTime.onUpdateWorldTime | `GameTime#onUpdateWorldTime`}
    */
-  updateWorldTime: (worldTime: number, delta: number) => void;
+  updateWorldTime: (
+    worldTime: number,
+    delta: number,
+    options: Setting.Database.UpdateOperation,
+    userId: string,
+  ) => void;
 
   /** CanvasLifecycle */
 
@@ -1006,11 +1013,6 @@ declare global {
    * ```
    */
   namespace Hooks {
-    interface OnOptions {
-      /** Only trigger the hooked function once */
-      once?: boolean;
-    }
-
     interface HotReloadData {
       /** The type of package which was modified */
       packageType: string;
@@ -1025,7 +1027,7 @@ declare global {
       path: string;
 
       /** The file extension which was modified, e.g. "js", "css", "html" */
-      extension: "js" | "css" | "html" | (string & {});
+      extension: "js" | "css" | "html" | "hbs" | (string & {});
     }
 
     /**

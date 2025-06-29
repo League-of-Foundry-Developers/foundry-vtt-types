@@ -17,7 +17,7 @@ import * as fs from "fs/promises";
  * @typedef ReportArguments
  * @property {GitHub} github
  * @property {Context} context
- * @property {import("@actions/core")} core
+ * @property {typeof import("@actions/core")} core
  */
 
 /**
@@ -27,8 +27,6 @@ import * as fs from "fs/promises";
 /**
  * @param {ReportArguments} arguments
  */
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - TypeScript-Go does not yet support enough JSDoc to type check this.
 async function postOrUpdateTestsReport({ github, context, core }) {
   const pullRequestNumber = context.payload.pull_request ? context.payload.pull_request.number : null;
 
@@ -201,8 +199,6 @@ async function postOrUpdateTestsReport({ github, context, core }) {
     issue_number: pullRequestNumber,
   });
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore - TypeScript-Go does not yet support enough JSDoc to type check this.
   const existingTestReport = comments.data.find((comment) => comment.body?.includes("<!-- vitest-status -->"));
 
   if (existingTestReport?.body === newReport) {

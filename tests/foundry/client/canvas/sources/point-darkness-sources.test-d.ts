@@ -9,9 +9,7 @@ expectTypeOf(PointDarknessSource.sourceType).toEqualTypeOf<"darkness">();
 expectTypeOf(PointDarknessSource.effectsCollection).toBeString();
 expectTypeOf(PointDarknessSource["_dimLightingLevel"]).toExtend<CONST.LIGHTING_LEVELS>();
 expectTypeOf(PointDarknessSource["_brightLightingLevel"]).toExtend<CONST.LIGHTING_LEVELS>();
-expectTypeOf(PointDarknessSource["ANIMATIONS"]).toExtend<
-  Record<string, RenderedEffectSource.DarknessAnimationConfig>
->();
+expectTypeOf(PointDarknessSource["ANIMATIONS"]).toExtend<Record<string, CONFIG.Canvas.DarknessSourceAnimationConfig>>();
 expectTypeOf(PointDarknessSource["_layers"]).toExtend<Record<string, RenderedEffectSource.LayerConfig>>();
 expectTypeOf(PointDarknessSource.defaultData).toEqualTypeOf<PointDarknessSource.SourceData>();
 

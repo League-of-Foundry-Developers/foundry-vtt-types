@@ -6,11 +6,10 @@ import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackg
 import FairyLightIlluminationShader = foundry.canvas.rendering.shaders.FairyLightIlluminationShader;
 import FairyLightColorationShader = foundry.canvas.rendering.shaders.FairyLightColorationShader;
 import PointSourceMesh = foundry.canvas.containers.PointSourceMesh;
-import RenderedEffectSource = foundry.canvas.sources.RenderedEffectSource;
 
 expectTypeOf(PointLightSource.sourceType).toEqualTypeOf<"light">();
 expectTypeOf(PointLightSource.effectsCollection).toBeString();
-expectTypeOf(PointLightSource["ANIMATIONS"]).toExtend<Record<string, RenderedEffectSource.LightAnimationConfig>>();
+expectTypeOf(PointLightSource["ANIMATIONS"]).toExtend<Record<string, CONFIG.Canvas.LightSourceAnimationConfig>>();
 expectTypeOf(PointLightSource.defaultData).toEqualTypeOf<PointLightSource.SourceData>();
 
 declare const object: foundry.canvas.placeables.AmbientLight.Implementation;

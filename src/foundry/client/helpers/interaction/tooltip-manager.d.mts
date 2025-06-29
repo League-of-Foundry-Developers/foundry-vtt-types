@@ -1,10 +1,10 @@
-import type { Identity, ValueOf } from "#utils";
+import type { Brand, Identity, InexactPartial, IntentionalPartial } from "#utils";
 
 /**
  * A singleton Tooltip Manager class responsible for rendering and positioning a dynamic tooltip element which is
  * accessible as `game.tooltip`.
  *
- * @see {@linkcode Game.tooltip}
+ * @see {@linkcode foundry.Game.tooltip | Game#tooltip}
  *
  * @example API Usage
  * ```typescript
@@ -24,7 +24,14 @@ import type { Identity, ValueOf } from "#utils";
  */
 declare class TooltipManager {
   /**
+   * @remarks
+   * @throws If `game.tooltip` is already initialized
+   */
+  constructor();
+
+  /**
    * A cached reference to the global tooltip element
+   * @defaultValue `document.getElementById("tooltip")`
    */
   tooltip: HTMLElement;
 
@@ -48,13 +55,7 @@ declare class TooltipManager {
   /**
    * The directions in which a tooltip can extend, relative to its tool-tipped element.
    */
-  static TOOLTIP_DIRECTIONS: {
-    UP: "UP";
-    DOWN: "DOWN";
-    LEFT: "LEFT";
-    RIGHT: "RIGHT";
-    CENTER: "CENTER";
-  };
+  static TOOLTIP_DIRECTIONS: TooltipManager.TooltipDirections;
 
   /**
    * The number of pixels buffer around a locked tooltip zone before they should be dismissed.
@@ -71,41 +72,13 @@ declare class TooltipManager {
    * Activate the tooltip for a hovered HTML element which defines a tooltip localization key.
    * @param element - The HTML element being hovered.
    * @param options - Additional options which can override tooltip behavior. (default: `{}`)
+   * @remarks
+   * @throws If both `text` and `html` (or `text` and `content`) are passed
    */
-  activate(
-    element: HTMLElement,
-    options?: {
-      /**
-       * Explicit tooltip text to display. If this is not provided the tooltip text is
-       * acquired from the elements data-tooltip attribute. This text will be
-       * automatically localized
-       */
-      text?: string;
-
-      /**
-       * An explicit tooltip expansion direction. If this is not provided the direction is acquired
-       * from the data-tooltip-direction attribute of the element or one of its parents.
-       */
-      direction?: TooltipManager.TOOLTIP_DIRECTIONS;
-
-      /**
-       * An optional, space-separated list of CSS classes to apply to the activated
-       * tooltip. If this is not provided, the CSS classes are acquired from the
-       * data-tooltip-class attribute of the element or one of its parents.
-       */
-      cssClass?: string;
-
-      /** An optional boolean to lock the tooltip after creation. Defaults to false. */
-      locked?: boolean;
-
-      /** Explicit HTML content to inject into the tooltip rather than using tooltip text. */
-      content?: HTMLElement;
-    },
-  ): void;
+  activate(element: HTMLElement, options?: TooltipManager.ActivateOptions): void;
 
   /**
    * Deactivate the tooltip from a previously hovered HTML element.
-   * @internal
    */
   deactivate(): void;
 
@@ -148,33 +121,20 @@ declare class TooltipManager {
    * @param position - A position object with coordinates for where the tooltip should be placed
    * @param text     - Explicit tooltip text or HTML to display.
    * @param options  - Additional options which can override tooltip behavior.
+   * @remarks Presumably passing at least one of `top` or `bottom` and one of `left` or `right` for
+   * `position` is necessary for proper operation, but this is not enforced
    */
   createLockedTooltip(
-    position: {
-      /** Explicit top position for the tooltip */
-      top?: string;
-
-      /** Explicit right position for the tooltip */
-      right?: string;
-
-      /** Explicit bottom position for the tooltip */
-      bottom?: string;
-
-      /** Explicit left position for the tooltip */
-      left?: string;
-    },
+    position: TooltipManager.Position,
     text: string,
-    options?: {
-      /** An optional, space-separated list of CSS classes to apply to the activated  tooltip. */
-      cssClass: string;
-    },
+    options?: TooltipManager.CreateLockedTooltipOptions,
   ): HTMLElement;
 
   /**
    * If an explicit tooltip expansion direction was not specified, figure out a valid direction based on the bounds
    * of the target element and the screen.
    */
-  protected _determineDirection(): ValueOf<Pick<typeof TooltipManager.TOOLTIP_DIRECTIONS, "UP" | "DOWN">>;
+  protected _determineDirection(): TooltipManager.TOOLTIP_DIRECTIONS;
 
   /**
    * Set tooltip position relative to an HTML element using an explicitly provided data-tooltip-direction.
@@ -186,19 +146,15 @@ declare class TooltipManager {
    * Apply inline styling rules to the tooltip for positioning and text alignment.
    * @param position - An object of positioning data, supporting top, right, bottom, left, and textAlign
    */
-  protected _setStyle(position?: {
-    top?: null | number;
-    right?: null | number;
-    bottom?: null;
-    left?: null;
-    textAlign?: string;
-  }): void;
+  protected _setStyle(position?: TooltipManager.SetStylePosition): void;
 
   /**
    * Retrieve the configured TooltipManager implementation
-   * @privateRemarks TODO: Config.ux handling
    */
+  // TODO: Config.ux handling
   static get implementation(): typeof TooltipManager;
+
+  #TooltipManager: true;
 }
 
 declare namespace TooltipManager {
@@ -208,11 +164,105 @@ declare namespace TooltipManager {
   /**
    * The directions in which a tooltip can extend, relative to its tool-tipped element.
    */
-  type TOOLTIP_DIRECTIONS = ValueOf<typeof TooltipManager.TOOLTIP_DIRECTIONS>;
+  type TOOLTIP_DIRECTIONS = Brand<string, "TooltipManager.TOOLTIP_DIRECTIONS">;
+
+  interface TooltipDirections {
+    UP: "UP" & TOOLTIP_DIRECTIONS;
+    DOWN: "DOWN" & TOOLTIP_DIRECTIONS;
+    LEFT: "LEFT" & TOOLTIP_DIRECTIONS;
+    RIGHT: "RIGHT" & TOOLTIP_DIRECTIONS;
+    CENTER: "CENTER" & TOOLTIP_DIRECTIONS;
+  }
+
+  /** @internal */
+  type _ActivateOptions = InexactPartial<{
+    /**
+     * Explicit tooltip text to display. If this is not provided the tooltip text is acquired from
+     * the element's `data-tooltip-text` attribute if present and otherwise from its `data-tooltip`
+     * attribute. The `data-tooltip` text will be automatically localized. If `data-tooltip` is not
+     * a localization string, the text is rendered as HTML (cleaned). Both `options.text` and
+     * `data-tooltip-text` do not support HTML. It is not recommended to use `data-tooltip` for
+     * plain text and HTML as it could cause an unintentional localization. Instead use
+     * `data-tooltip-text` and `data-tooltip-html`, respectively.
+     */
+    text: string;
+
+    /**
+     * An explicit tooltip expansion direction. If this is not provided, the direction is acquired
+     * from the `data-tooltip-direction` attribute of the element or one of its parents.
+     */
+    direction: TOOLTIP_DIRECTIONS;
+
+    /**
+     * An optional, space-separated list of CSS classes to apply to the activated tooltip. If this
+     * is not provided, the CSS classes are acquired from the `data-tooltip-class` attribute of the
+     * element or one of its parents.
+     */
+    cssClass: string;
+
+    /**
+     * An optional boolean to lock the tooltip after creation. Defaults to false.
+     * @defaultValue `false`
+     */
+    locked: boolean;
+
+    /**
+     * Explicit HTML to inject into the tooltip rather than using tooltip text. If passed as a string,
+     * the HTML string is cleaned with {@linkcode foundry.utils.cleanHTML}. An explicit HTML string may
+     * also be set with the `data-tooltip-html` attribute on the element.
+     */
+    html: HTMLElement | string;
+
+    /**
+     * Explicit HTML content to inject into the tooltip rather than using tooltip text.
+     * @deprecated "The `content` option has been deprecated in favor of the `html` option" (since v13, until v15)
+     * @remarks Ignored if `html` is passed
+     */
+    content: HTMLElement;
+  }>;
+
+  interface ActivateOptions extends _ActivateOptions {}
+
+  /** @internal */
+  interface _BasePosition {
+    /** Explicit top position for the tooltip */
+    top: string;
+
+    /** Explicit right position for the tooltip */
+    right: string;
+
+    /** Explicit bottom position for the tooltip */
+    bottom: string;
+
+    /** Explicit left position for the tooltip */
+    left: string;
+  }
+
+  interface Position extends InexactPartial<_BasePosition> {}
+
+  /** @internal */
+  type _CreateLockedTooltipOptions = InexactPartial<{
+    /**
+     * An optional, space-separated list of CSS classes to apply to the activated tooltip.
+     */
+    cssClass: string;
+  }>;
+
+  interface CreateLockedTooltipOptions extends _CreateLockedTooltipOptions {}
+
+  /**
+   * @privateRemarks This is spread into an object with existing defaults (all `null`s for the `_BasePosition` properties).
+   * Distinguishing that and the `""` defaults in {@link TooltipManager.createLockedTooltip | `TooltipManager#createLockedTooltip`}
+   * is not worth repeating the properties; falsey is falsey in this case.
+   */
+  interface SetStylePosition extends IntentionalPartial<_BasePosition> {
+    /** @defaultValue `left` */
+    textAlign?: string;
+  }
 }
+
+export default TooltipManager;
 
 declare abstract class AnyTooltipManager extends TooltipManager {
   constructor(...args: never);
 }
-
-export default TooltipManager;

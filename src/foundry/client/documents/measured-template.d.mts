@@ -183,7 +183,7 @@ declare namespace MeasuredTemplateDocument {
      * The _id of the user who created this measured template
      * @defaultValue `game?.user?.id`
      */
-    author: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string | undefined }>;
+    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
 
     /**
      * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
@@ -285,7 +285,7 @@ declare namespace MeasuredTemplateDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
   }
 
   namespace Database {

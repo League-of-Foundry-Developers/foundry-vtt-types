@@ -1,8 +1,9 @@
 import { expectTypeOf, test } from "vitest";
 
 import DataField = foundry.data.fields.DataField;
+import fields = foundry.data.fields;
 
-type DataSchema = foundry.data.fields.DataSchema;
+type DataSchema = fields.DataSchema;
 
 // #2554 Null and undefined for SchemaField and EmbeddedDataField
 
@@ -235,3 +236,113 @@ test("circular data model heritage regression test", () => {
 //     ActiveEffect.Schema["description"]
 //   >();
 // });
+
+// const simplestSchema = {
+//   foo: new fields.NumberField({ initial: 5 }),
+// } satisfies DataSchema;
+
+// const schemaFieldsSchema = {
+//   default: new fields.SchemaField(simplestSchema),
+//   optional: new fields.SchemaField(simplestSchema, { required: false }),
+//   required: new fields.SchemaField(simplestSchema, { required: true }),
+//   nullable: new fields.SchemaField(simplestSchema, { nullable: true }),
+//   nonNullable: new fields.SchemaField(simplestSchema, { nullable: false }),
+//   optionalAndNullable: new fields.SchemaField(simplestSchema, { required: false, nullable: true }),
+//   requiredAndNonNullable: new fields.SchemaField(simplestSchema, { required: true, nullable: false }),
+// } satisfies DataSchema;
+
+// const booleanFieldsSchema = {
+//   default: new fields.BooleanField(),
+//   optional: new fields.BooleanField({ required: false }),
+//   required: new fields.BooleanField({ required: true }),
+//   nullable: new fields.BooleanField({ nullable: true }),
+//   nonNullable: new fields.BooleanField({ nullable: false }),
+//   optionalAndNullable: new fields.BooleanField({ required: false, nullable: true }),
+//   requiredAndNonNullable: new fields.BooleanField({ required: true, nullable: false }),
+// } satisfies DataSchema;
+
+// const numberFieldsSchema = {
+//   default: new fields.NumberField(),
+//   optional: new fields.NumberField({ required: false }),
+//   required: new fields.NumberField({ required: true }),
+//   nullable: new fields.NumberField({ nullable: true }),
+//   nonNullable: new fields.NumberField({ nullable: false }),
+//   optionalAndNullable: new fields.NumberField({ required: false, nullable: true }),
+//   requiredAndNonNullable: new fields.NumberField({ required: true, nullable: false }),
+// } satisfies DataSchema;
+
+// const stringFieldsSchema = {
+//   default: new fields.StringField(),
+//   optional: new fields.StringField({ required: false }),
+//   required: new fields.StringField({ required: true }),
+//   nullable: new fields.StringField({ nullable: true }),
+//   nonNullable: new fields.StringField({ nullable: false }),
+//   optionalAndNullable: new fields.StringField({ required: false, nullable: true }),
+//   requiredAndNonNullable: new fields.StringField({ required: true, nullable: false }),
+// } satisfies DataSchema;
+
+// const objectFieldsSchema = {
+//   default: new fields.ObjectField(),
+//   optional: new fields.ObjectField({ required: false }),
+//   required: new fields.ObjectField({ required: true }),
+//   nullable: new fields.ObjectField({ nullable: true }),
+//   nonNullable: new fields.ObjectField({ nullable: false }),
+//   optionalAndNullable: new fields.ObjectField({ required: false, nullable: true }),
+//   requiredAndNonNullable: new fields.ObjectField({ required: true, nullable: false }),
+// } satisfies DataSchema;
+
+// const typedObjectFieldsSchema = {
+//   default: new fields.TypedObjectField(new fields.BooleanField()),
+//   optional: new fields.TypedObjectField(new fields.BooleanField(), { required: false }),
+//   required: new fields.TypedObjectField(new fields.BooleanField(), { required: true }),
+//   nullable: new fields.TypedObjectField(new fields.BooleanField(), { nullable: true }),
+//   nonNullable: new fields.TypedObjectField(new fields.BooleanField(), { nullable: false }),
+//   optionalAndNullable: new fields.TypedObjectField(new fields.BooleanField(), { required: false, nullable: true }),
+//   requiredAndNonNullable: new fields.TypedObjectField(new fields.BooleanField(), { required: true, nullable: false }),
+// } satisfies DataSchema;
+
+// const arrayFieldsSchema = {
+//   default: new fields.ArrayField(new fields.BooleanField()),
+//   optional: new fields.ArrayField(new fields.BooleanField(), { required: false }),
+//   required: new fields.ArrayField(new fields.BooleanField(), { required: true }),
+//   nullable: new fields.ArrayField(new fields.BooleanField(), { nullable: true }),
+//   nonNullable: new fields.ArrayField(new fields.BooleanField(), { nullable: false }),
+//   optionalAndNullable: new fields.ArrayField(new fields.BooleanField(), { required: false, nullable: true }),
+//   requiredAndNonNullable: new fields.ArrayField(new fields.BooleanField(), { required: true, nullable: false }),
+// } satisfies DataSchema;
+
+// const setFieldsSchema = {
+//   default: new fields.SetField(new fields.StringField()),
+//   optional: new fields.SetField(new fields.StringField(), { required: false }),
+//   required: new fields.SetField(new fields.StringField(), { required: true }),
+//   nullable: new fields.SetField(new fields.StringField(), { nullable: true }),
+//   nonNullable: new fields.SetField(new fields.StringField(), { nullable: false }),
+//   optionalAndNullable: new fields.SetField(new fields.StringField(), { required: false, nullable: true }),
+//   requiredAndNonNullable: new fields.SetField(new fields.StringField(), { required: true, nullable: false }),
+// } satisfies DataSchema;
+
+// const oneOfEverythingSchema = {
+//   schemaFields: new fields.SchemaField(schemaFieldsSchema),
+//   booleanFields: new fields.SchemaField(booleanFieldsSchema),
+//   numberFields: new fields.SchemaField(numberFieldsSchema),
+//   stringFields: new fields.SchemaField(stringFieldsSchema),
+//   objectFields: new fields.SchemaField(objectFieldsSchema),
+//   typedObjectFields: new fields.SchemaField(typedObjectFieldsSchema),
+//   arrayFields: new fields.SchemaField(arrayFieldsSchema),
+//   setFields: new fields.SchemaField(setFieldsSchema),
+//   numberFields: new fields.SchemaField(numberFieldsSchema),
+//   numberFields: new fields.SchemaField(numberFieldsSchema),
+//   numberFields: new fields.SchemaField(numberFieldsSchema),
+//   numberFields: new fields.SchemaField(numberFieldsSchema),
+//   numberFields: new fields.SchemaField(numberFieldsSchema),
+//   numberFields: new fields.SchemaField(numberFieldsSchema),
+//   numberFields: new fields.SchemaField(numberFieldsSchema),
+//   numberFields: new fields.SchemaField(numberFieldsSchema),
+//   numberFields: new fields.SchemaField(numberFieldsSchema),
+// } satisfies DataSchema;
+
+// class OneOfEverything extends foundry.abstract.DataModel<typeof oneOfEverythingSchema> {
+//   static override defineSchema() {
+//     return oneOfEverythingSchema;
+//   }
+// }

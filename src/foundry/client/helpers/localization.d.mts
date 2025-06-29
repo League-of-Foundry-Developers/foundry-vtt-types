@@ -1,3 +1,5 @@
+import type { DotKeys, Identity, InexactPartial } from "#utils";
+
 /**
  * A helper class which assists with localization and string translation
  */
@@ -27,6 +29,7 @@ declare class Localization {
 
   /**
    * Fallback translations if the target keys are not found
+   * @internal
    * @defaultValue `{}`
    */
   protected _fallback: Localization.Translations;
@@ -87,46 +90,38 @@ declare class Localization {
   ): void;
 
   /**
+   * Localize the "label" and "hint" properties for all fields in a data schema.
+   */
+  static localizeSchema(
+    schema: foundry.data.fields.SchemaField.Any,
+    /** @defaultValue `[]` */
+    prefixes?: string[],
+    options?: Localization.LocalizeSchemaOptions,
+  ): void;
+
+  /**
    * Set a language as the active translation source for the session
    * @param lang - A language string in CONFIG.supportedLanguages
    * @returns A Promise which resolves once the translations for the requested language are ready
    */
   setLanguage(lang: string): Promise<void>;
 
-  /**
-   * Discover the available supported languages from the set of packages which are provided
-   */
-  protected _discoverSupportedLanguages(): Record<string, string>;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _discoverSupportedLanguages(): never;
 
-  /**
-   * Prepare the dictionary of translation strings for the requested language
-   * @param lang - The language for which to load translations
-   * @returns The retrieved translations object
-   */
-  protected _getTranslations(lang: string): Promise<Localization.Translations>;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _getTranslations(lang: never): never;
 
-  /**
-   * Reduce the languages array provided by a package to an array of file paths of translations to load
-   * @param pkg  - The package data
-   * @param lang - The target language to filter on
-   * @returns An array of translation file paths
-   */
-  protected _filterLanguagePaths(
-    pkg: foundry.packages.World | foundry.packages.Module | foundry.packages.System,
-    lang: string,
-  ): string[];
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _filterLanguagePaths(pkg: never, lang: never): never;
 
-  /**
-   * Load a single translation file and return its contents as processed JSON
-   * @param src - The translation file path to load
-   * @returns The loaded translation dictionary
-   */
-  protected _loadTranslationFile(src: string): Promise<Localization.Translations>;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _loadTranslationFile(src: never): never;
 
   /**
    * Return whether a certain string has a known translation defined.
    * @param stringId - The string key being translated
-   * @param fallback - Allow fallback translations to count?
+   * @param fallback - Allow fallback translations to count? (default: `true`)
    */
   has(stringId: string, fallback?: boolean): boolean;
 
@@ -157,8 +152,7 @@ declare class Localization {
    * Variables can be included in the template enclosed in braces and will be substituted using those named keys.
    *
    * @param stringId - The string ID to translate
-   * @param data     - Provided input data
-   *                   (defaultValue: `{}`)
+   * @param data     - Provided input data (default: `{}`)
    * @returns The translated and formatted string
    *
    * @example <caption>Localizing a formatted string in JavaScript</caption>
@@ -177,7 +171,7 @@ declare class Localization {
   format(stringId: string, data?: Record<string, string>): string;
 
   /**
-   * Retreive list formatter configured to the world's language setting.
+   * Retrieve list formatter configured to the world's language setting.
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/ListFormat/ListFormat | Intl.ListFormat}
    */
   getListFormatter(options?: Localization.GetListFormatterOptions): Intl.ListFormat;
@@ -187,11 +181,15 @@ declare class Localization {
    * @param objects - The objects to sort, this array will be mutated
    * @param key     - The key to sort the objects by. This can be provided in dot-notation.
    */
-  // TODO(LukeAbby): Should be constrainted to dot property keys of `objects`
-  sortObjects<T extends object>(objects: Array<T>, key: string): T[];
+  sortObjects<T extends object>(objects: Array<T>, key: DotKeys<T>): T[];
+
+  #Localization: true;
 }
 
 declare namespace Localization {
+  interface Any extends AnyLocalization {}
+  interface AnyConstructor extends Identity<typeof AnyLocalization> {}
+
   interface Translations {
     [K: string]: string | Translations;
   }
@@ -209,17 +207,33 @@ declare namespace Localization {
     prefixPath?: string | undefined;
   }
 
+  type _LocalizeSchemaOptions = InexactPartial<{
+    /**
+     * @defaultValue `new Set()`
+     * @remarks Used for recursive calls, not intended to be passed externally
+     */
+    seenFields: Set<foundry.data.fields.DataField.Any>;
+  }>;
+
+  interface LocalizeSchemaOptions extends _LocalizeSchemaOptions, Pick<LocalizeDataModelOptions, "prefixPath"> {}
+
   interface GetListFormatterOptions {
     /**
      * The list formatter style, either "long", "short", or "narrow".
+     * @defaultValue `"long"`
      */
     style?: Intl.ListFormatStyle | undefined;
 
     /**
      * The list formatter type, either "conjunction", "disjunction", or "unit".
+     * @defaultValue `"conjunction"`
      */
     type?: Intl.ListFormatType | undefined;
   }
 }
 
 export default Localization;
+
+declare abstract class AnyLocalization extends Localization {
+  constructor(...args: never);
+}

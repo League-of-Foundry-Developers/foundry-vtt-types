@@ -269,7 +269,7 @@ declare namespace AmbientSoundDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
   }
 
   interface EffectsConfigSchema extends DataSchema {

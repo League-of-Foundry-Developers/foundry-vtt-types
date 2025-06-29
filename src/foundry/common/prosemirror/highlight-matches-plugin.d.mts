@@ -1,72 +1,41 @@
 import { Schema } from "prosemirror-model";
 import type ProseMirrorPlugin from "./plugin.d.mts";
-import type { ProseMirrorMenu } from "./menu.d.mts";
 import { EditorState, Plugin } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import type { EmptyObject, InexactPartial } from "#utils";
+import type { AnyObject } from "#utils";
 
-declare namespace ProseMirrorHighlightMatchesPlugin {
+/**
+ * A class responsible for handling the display of automated link recommendations when a user highlights text in a
+ * ProseMirror editor.
+ * @remarks This class is never exported or available directly, {@linkcode ProseMirrorHighlightMatchesPlugin.build} creates a
+ * plugin to return by passing a `view` options property that will instantiate one of these.
+ */
+declare class _PossibleMatchesTooltip {
   /**
-   * A class responsible for handling the display of automated link recommendations when a user highlights text in a
-   * ProseMirror editor.
+   * @param view - The editor view
    */
-  class PossibleMatchesTooltip {
-    /**
-     * @param view - The editor view
-     */
-    constructor(view: EditorView);
+  constructor(view: EditorView);
 
-    /**
-     * A reference to any existing tooltip that has been generated as part of a highlight match.
-     */
-    tooltip: HTMLElement;
+  /**
+   * A reference to any existing tooltip that has been generated as part of a highlight match.
+   */
+  tooltip: HTMLElement | undefined;
 
-    update(view: EditorView, lastState: EditorState): Promise<void>;
+  update(view: EditorView, lastState: EditorState): Promise<void>;
 
-    /**
-     * Create a locked tooltip at the given position
-     * @param position - A position object with coordinates for where the tooltip should be placed
-     * @param text     - Explicit tooltip text or HTML to display.
-     * @param options  - Additional options which can override tooltip behavior.
-     */
-    _createTooltip(
-      position: InexactPartial<{
-        /** Explicit top position for the tooltip */
-        top?: string;
+  /** @remarks Made hard private in v13 (this warning will be removed in v14) */
+  _createTooltip(position: never, text: never, options: never): never;
 
-        /** Explicit right position for the tooltip */
-        right?: string;
+  /** @remarks Made hard private in v13 (this warning will be removed in v14) */
+  _updateTooltip(html: never): never;
 
-        /** Explicit bottom position for the tooltip */
-        bottom?: string;
+  /** @remarks Made hard private in v13 (this warning will be removed in v14) */
+  _deactivateTooltip(): never;
 
-        /** Explicit left position for the tooltip */
-        left?: string;
-      }>,
-      text: string,
-      options?: {
-        /** An optional, space-separated list of CSS classes to apply to the activated tooltip. */
-        cssClass: string;
-      },
-    ): void;
+  /** @remarks Made hard private in v13 (this warning will be removed in v14) */
+  _findMatches(text: never): never;
 
-    /**
-     * Update the tooltip with new HTML
-     * @param html - The HTML to be included in the tooltip
-     */
-    _updateTooltip(html: string): void;
-
-    /**
-     * Dismiss all locked tooltips and set this tooltip to undefined.
-     */
-    _deactivateTooltip(): void;
-
-    /**
-     * Find all Documents in the world/compendia with names that match the selection insensitive to case.
-     * @param text - A string which will be matched against document names
-     */
-    _findMatches(text: string): string;
-  }
+  #PossibleMatchesTooltip;
 }
 
 /**
@@ -76,10 +45,25 @@ declare class ProseMirrorHighlightMatchesPlugin extends ProseMirrorPlugin {
   /**
    * @param schema  - The ProseMirror schema.
    * @param options - Additional options to configure the plugin's behaviour.
+   * @remarks Foundry types the options as {@linkcode ProseMirrorMenu.ConstructionOptions},
+   * but they're unused other than being stored in `this.options`. Suspected copy & paste error.
    */
-  constructor(schema: Schema, options: ProseMirrorMenu.ProseMirrorMenuOptions);
+  constructor(schema: Schema, options?: AnyObject);
 
-  static override build(schema: Schema, options?: EmptyObject): Plugin;
+  /** @remarks `options` is unused */
+  static override build(
+    schema: Schema,
+    options?: AnyObject,
+  ): Plugin<ProseMirrorHighlightMatchesPlugin.HighlightMatchesPluginSpec>;
+}
+
+declare namespace ProseMirrorHighlightMatchesPlugin {
+  interface PossibleMatchesTooltip extends _PossibleMatchesTooltip {}
+
+  interface HighlightMatchesPluginSpec {
+    view(editorView: EditorView): PossibleMatchesTooltip;
+    isHighlightMatchesPlugin: true;
+  }
 }
 
 export default ProseMirrorHighlightMatchesPlugin;

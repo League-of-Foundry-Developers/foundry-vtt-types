@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { InterfaceToObject } from "fvtt-types/utils";
 import { TokenRing } from "#client/canvas/placeables/tokens/_module.mjs";
+
 import BaseToken = foundry.documents.BaseToken;
 import Document = foundry.abstract.Document;
 
@@ -168,7 +169,9 @@ expectTypeOf(myToken.ring.subject.texture).toEqualTypeOf<string | null | undefin
 // TODO: ArrayField<ForeignDocumentField> is returning `never[]`
 expectTypeOf(myToken._regions).toEqualTypeOf<Array<string | null>>();
 expectTypeOf(myToken.flags).toEqualTypeOf<
-  InterfaceToObject<TokenDocument.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  foundry.data.fields.DocumentFlagsField._TwoLevelPartial<
+    InterfaceToObject<TokenDocument.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  >
 >();
 
 // The following fields can't really be `undefined` because they have `initial`s, see https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3055

@@ -2,7 +2,6 @@ import type { IntentionalPartial, AnyObject, Identity, InexactPartial } from "#u
 import type * as placeables from "#client/canvas/placeables/_module.d.mts";
 import type { EnvironmentCanvasGroup } from "#client/canvas/groups/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { PointSoundSource } from "./_module.d.mts";
 
 /**
  * TODO - Re-document after ESM refactor.
@@ -39,9 +38,8 @@ declare abstract class BaseEffectSource<
    * The target collection into the effects canvas group.
    * @abstract
    * @remarks Is `undefined` in `BaseEffectSource`
-   * @privateRemarks Point
    */
-  static effectsCollection: Collection<PointSoundSource> | string | undefined;
+  static effectsCollection: string | undefined;
 
   /**
    * Effect source default data.

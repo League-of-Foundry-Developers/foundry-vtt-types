@@ -1,20 +1,8 @@
-import { Node } from "prosemirror-model";
+import type { NodeSpec } from "prosemirror-model";
 
-export declare const ol: {
-  content: string;
-  managed: Record<string, unknown>;
-  group: string;
-  attrs: Record<string, unknown>;
-  parseDOM: Record<string, unknown>[];
-  toDOM: (node: Node) => [string, number] | [string, Record<string, unknown>, number];
-};
+export declare const ol: NodeSpec;
 
-export declare const ul: {
-  content: string;
-  group: string;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const ul: NodeSpec;
 
 /**
  * ProseMirror enforces a stricter subset of HTML where block and inline content cannot be mixed. For example, the
@@ -42,16 +30,6 @@ export declare const ul: {
  * We can address this by hooking into the DOM parsing and 'tagging' the extra paragraph elements inserted this way so
  * that when the contents are serialized again, they can be removed. This is left as a TODO for now.
  */
-export declare const li: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const li: NodeSpec;
 
-export declare const liText: {
-  content: string;
-  defining: boolean;
-  parseDOM: Record<string, unknown>[];
-  toDOM: () => [string, number];
-};
+export declare const liText: NodeSpec;

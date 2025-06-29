@@ -1,7 +1,14 @@
+import type { Identity } from "#utils";
+
 /**
  * Management class for Mouse events
+ * @see {@linkcode foundry.Game.mouse | Game#mouse}
  */
 declare class MouseManager {
+  /**
+   * @remarks
+   * @throws If `game.mouse` is already initialized
+   */
   constructor();
 
   /**
@@ -17,12 +24,19 @@ declare class MouseManager {
    */
   protected _activateListeners(): void;
 
-  /**
-   * Master mouse-wheel event handler
-   * @param event - The mouse wheel event
-   * @internal
-   */
-  protected _onWheel(event: MouseEvent): void;
+  /** @deprecated Made hard private in v13 (this warning will be removed in v14) */
+  protected _onWheel(event: never): never;
+
+  #MouseManager: true;
+}
+
+declare namespace MouseManager {
+  interface Any extends AnyMouseManager {}
+  interface AnyConstructor extends Identity<typeof AnyMouseManager> {}
 }
 
 export default MouseManager;
+
+declare abstract class AnyMouseManager extends MouseManager {
+  constructor(...args: never);
+}

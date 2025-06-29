@@ -335,7 +335,7 @@ declare namespace Card {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     _stats: fields.DocumentStatsField;
   }
