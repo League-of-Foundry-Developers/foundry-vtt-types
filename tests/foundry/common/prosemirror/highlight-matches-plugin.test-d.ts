@@ -5,7 +5,9 @@ import ProseMirrorHighlightMatchesPlugin = foundry.prosemirror.ProseMirrorHighli
 declare const schema: foundry.prosemirror.Schema;
 
 // options is unused
-expectTypeOf(ProseMirrorHighlightMatchesPlugin.build(schema, {})).toEqualTypeOf<foundry.prosemirror.Plugin>();
+expectTypeOf(ProseMirrorHighlightMatchesPlugin.build(schema, {})).toEqualTypeOf<
+  foundry.prosemirror.Plugin<ProseMirrorHighlightMatchesPlugin.HighlightMatchesPluginSpec>
+>();
 
 // options is unused
 new ProseMirrorHighlightMatchesPlugin(schema);

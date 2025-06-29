@@ -10,23 +10,22 @@ import {
   span,
   font,
 } from "#common/prosemirror/schema/marks.mjs";
-import type { RequiredProps } from "#utils";
 import type { MarkSpec } from "prosemirror-model";
 
-expectTypeOf(em).toEqualTypeOf<RequiredProps<MarkSpec, "parseDOM" | "toDOM">>();
+expectTypeOf(em).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(strong).toEqualTypeOf<RequiredProps<MarkSpec, "parseDOM" | "toDOM">>();
+expectTypeOf(strong).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(code).toEqualTypeOf<RequiredProps<MarkSpec, "parseDOM" | "toDOM">>();
+expectTypeOf(code).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(underline).toEqualTypeOf<RequiredProps<MarkSpec, "parseDOM" | "toDOM">>();
+expectTypeOf(underline).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(strikethrough).toEqualTypeOf<RequiredProps<MarkSpec, "parseDOM" | "toDOM">>();
+expectTypeOf(strikethrough).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(superscript).toEqualTypeOf<RequiredProps<MarkSpec, "parseDOM" | "toDOM">>();
+expectTypeOf(superscript).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(subscript).toEqualTypeOf<RequiredProps<MarkSpec, "parseDOM" | "toDOM">>();
+expectTypeOf(subscript).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(span).toEqualTypeOf<RequiredProps<MarkSpec, "parseDOM" | "toDOM">>();
+expectTypeOf(span).toEqualTypeOf<MarkSpec>();
 
-expectTypeOf(font).toEqualTypeOf<RequiredProps<MarkSpec, "parseDOM" | "toDOM">>();
+expectTypeOf(font).toEqualTypeOf<MarkSpec>();

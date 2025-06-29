@@ -30,7 +30,7 @@ const pmm = new ProseMirrorMenu(schema, view, {
 expectTypeOf(pmm.view).toEqualTypeOf<EditorView>();
 expectTypeOf(pmm.items).toEqualTypeOf<ProseMirrorMenu.Item[]>();
 expectTypeOf(pmm.id).toEqualTypeOf<`prosemirror-menu-${string}`>();
-expectTypeOf(pmm.options).toEqualTypeOf<Required<ProseMirrorMenu.ConstructionOptions>>();
+expectTypeOf(pmm.options).toEqualTypeOf<ProseMirrorMenu.ConstructionOptions>();
 expectTypeOf(pmm.dropdowns).toEqualTypeOf<ProseMirrorDropDown[]>();
 expectTypeOf(pmm.editingSource).toBeBoolean();
 expectTypeOf(pmm.render()).toEqualTypeOf<ProseMirrorMenu>();

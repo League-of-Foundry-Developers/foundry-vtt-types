@@ -1,7 +1,6 @@
 /* eslint-disable import-x/extensions */
 import type { NodeSpec } from "prosemirror-model";
 import { expectTypeOf } from "vitest";
-import type { RequiredProps } from "#utils";
 import {
   builtInTableNodes,
   tableComplex,
@@ -26,38 +25,28 @@ expectTypeOf(builtInTableNodes).toEqualTypeOf<{
   table_row: NodeSpec;
 }>();
 
-expectTypeOf(tableComplex).toEqualTypeOf<
-  RequiredProps<NodeSpec, "content" | "isolating" | "group" | "parseDOM" | "toDOM">
->();
+expectTypeOf(tableComplex).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(colgroup).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">>();
+expectTypeOf(colgroup).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(col).toEqualTypeOf<RequiredProps<NodeSpec, "tableRole" | "parseDOM" | "toDOM">>();
+expectTypeOf(col).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(thead).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">>();
+expectTypeOf(thead).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(tbody).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">>();
+expectTypeOf(tbody).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(tfoot).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">>();
+expectTypeOf(tfoot).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(caption).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">>();
+expectTypeOf(caption).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(captionBlock).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "isolating" | "parseDOM" | "toDOM">>();
+expectTypeOf(captionBlock).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(tableRowComplex).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "parseDOM" | "toDOM">>();
+expectTypeOf(tableRowComplex).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(tableCellComplex).toEqualTypeOf<
-  RequiredProps<NodeSpec, "content" | "attrs" | "managed" | "isolating" | "parseDOM" | "toDOM">
->();
+expectTypeOf(tableCellComplex).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(tableCellComplexBlock).toEqualTypeOf<
-  RequiredProps<NodeSpec, "content" | "attrs" | "managed" | "isolating" | "parseDOM" | "toDOM">
->();
+expectTypeOf(tableCellComplexBlock).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(tableHeaderComplex).toEqualTypeOf<
-  RequiredProps<NodeSpec, "content" | "attrs" | "managed" | "isolating" | "parseDOM" | "toDOM">
->();
+expectTypeOf(tableHeaderComplex).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(tableHeaderComplexBlock).toEqualTypeOf<
-  RequiredProps<NodeSpec, "content" | "attrs" | "managed" | "isolating" | "parseDOM" | "toDOM">
->();
+expectTypeOf(tableHeaderComplexBlock).toEqualTypeOf<NodeSpec>();

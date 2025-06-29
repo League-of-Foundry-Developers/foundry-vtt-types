@@ -1,14 +1,11 @@
 import { expectTypeOf } from "vitest";
 import { ol, ul, li, liText } from "#common/prosemirror/schema/lists.mjs";
-import type { RequiredProps } from "#utils";
 import type { NodeSpec } from "prosemirror-model";
 
-expectTypeOf(ol).toEqualTypeOf<
-  RequiredProps<NodeSpec, "content" | "managed" | "group" | "attrs" | "parseDOM" | "toDOM">
->();
+expectTypeOf(ol).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(ul).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "group" | "parseDOM" | "toDOM">>();
+expectTypeOf(ul).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(li).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">>();
+expectTypeOf(li).toEqualTypeOf<NodeSpec>();
 
-expectTypeOf(liText).toEqualTypeOf<RequiredProps<NodeSpec, "content" | "defining" | "parseDOM" | "toDOM">>();
+expectTypeOf(liText).toEqualTypeOf<NodeSpec>();
