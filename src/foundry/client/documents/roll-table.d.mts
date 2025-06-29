@@ -456,6 +456,11 @@ declare namespace RollTable {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
     RollTable.Stored,
     RollTable.DirectDescendant,
@@ -573,11 +578,6 @@ declare namespace RollTable {
      */
     rollable?: boolean | undefined;
   }
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.

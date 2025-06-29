@@ -434,6 +434,11 @@ declare namespace JournalEntry {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
     JournalEntry.Stored,
     JournalEntry.DirectDescendant,
@@ -469,11 +474,6 @@ declare namespace JournalEntry {
     JournalEntry.DirectDescendant,
     JournalEntry.Metadata.Embedded
   >;
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.

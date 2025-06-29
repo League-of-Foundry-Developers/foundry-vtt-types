@@ -429,6 +429,11 @@ declare namespace Combatant {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   /**
    * @remarks
    * This is typed based on what is reasonable to expect, rather than accurately, as accurately would mean `unknown` (Foundry's type is `object|null`).
@@ -445,11 +450,6 @@ declare namespace Combatant {
    * make us any more wrong than currently.
    */
   type Resource = string | number | null;
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.

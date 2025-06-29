@@ -391,6 +391,22 @@ declare namespace Folder {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @remarks Rather than a simple `Dialog`, {@link Folder.createDialog | `Folder.createDialog`} creates a {@link FolderConfig | `FolderConfig`},
+   * passing along the returned `Promise`'s `resolve` to the app.
+   */
+  // TODO: Generally fix this up to be correct, temp fix here for the appv1 removal
+  // TODO (v13): `options.document` is also force set
+  interface CreateDialogOptions
+    extends InexactPartial<Omit<foundry.applications.sheets.FolderConfig.Configuration, "resolve">> {
+    /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
+    resolve?: never;
+  }
+
   /**
    * Actual document types that go in folders
    */
@@ -468,22 +484,6 @@ declare namespace Folder {
 
   // TODO: Compendium Pack index
   type DocumentClass<SubType extends Folder.SubType> = Document.ImplementationClassFor<Extract<SubType, Document.Type>>;
-
-  /**
-   * @remarks Rather than a simple `Dialog`, {@link Folder.createDialog | `Folder.createDialog`} creates a {@link FolderConfig | `FolderConfig`},
-   * passing along the returned `Promise`'s `resolve` to the app.
-   */
-  // TODO: Generally fix this up to be correct, temp fix here for the appv1 removal
-  // TODO (v13): `options.document` is also force set
-  interface CreateDialogOptions
-    extends InexactPartial<Omit<foundry.applications.sheets.FolderConfig.Configuration, "resolve">> {
-    /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
-    resolve?: never;
-  }
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
 
   interface ChildNode extends foundry.documents.abstract.DirectoryCollectionMixin.TreeNode<Implementation> {}
 

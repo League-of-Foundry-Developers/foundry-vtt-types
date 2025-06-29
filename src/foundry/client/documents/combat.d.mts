@@ -489,6 +489,11 @@ declare namespace Combat {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
     Combat.Stored,
     Combat.DirectDescendant,
@@ -566,11 +571,6 @@ declare namespace Combat {
   interface RoundEventContext extends Omit<TurnEventContext, "turn"> {}
 
   type CONFIG_SETTING = "combatTrackerConfig";
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.

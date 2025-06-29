@@ -496,6 +496,11 @@ declare namespace ChatMessage {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   /** @internal */
   interface _BaseSpeakerOptions {
     /** The Scene in which the speaker resides */

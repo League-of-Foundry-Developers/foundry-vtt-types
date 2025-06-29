@@ -419,6 +419,11 @@ declare namespace AmbientSoundDocument {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   interface Effect {
     type: keyof CONFIG["soundEffects"];
 
@@ -428,11 +433,6 @@ declare namespace AmbientSoundDocument {
      */
     intensity?: number | undefined;
   }
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.

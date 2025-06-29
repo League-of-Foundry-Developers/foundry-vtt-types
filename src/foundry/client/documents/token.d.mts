@@ -959,6 +959,11 @@ declare namespace TokenDocument {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   type PreCreateDescendantDocumentsArgs =
     | Document.PreCreateDescendantDocumentsArgs<
         TokenDocument.Stored,
@@ -1456,11 +1461,6 @@ declare namespace TokenDocument {
         "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped"
       >
     > {}
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.

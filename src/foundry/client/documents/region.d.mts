@@ -732,6 +732,11 @@ declare namespace RegionDocument {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
     RegionDocument.Stored,
     RegionDocument.DirectDescendant,
@@ -875,11 +880,6 @@ declare namespace RegionDocument {
     /** Teleport between the waypoints? */
     teleport: boolean;
   }
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.

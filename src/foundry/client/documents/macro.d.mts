@@ -431,6 +431,11 @@ declare namespace Macro {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   /** @internal */
   type _ScriptScope = NullishProps<{
     /** An Actor who is the protagonist of the executed action. */
@@ -493,11 +498,6 @@ declare namespace Macro {
   type ExecuteReturn<SubType extends Macro.SubType> =
     | (SubType extends "chat" ? Promise<ChatMessage.Implementation | undefined | void> : never)
     | (SubType extends "script" ? Promise<unknown> | void : never);
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.
