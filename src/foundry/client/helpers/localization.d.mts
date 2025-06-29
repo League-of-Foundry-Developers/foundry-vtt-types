@@ -94,7 +94,7 @@ declare class Localization {
    */
   static localizeSchema(
     schema: foundry.data.fields.SchemaField.Any,
-    
+
     /** @defaultValue `[]` */
     prefixes?: string[],
     options?: Localization.LocalizeSchemaOptions,

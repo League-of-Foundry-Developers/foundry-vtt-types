@@ -64,7 +64,7 @@ declare namespace Gridless {
 
   interface MeasurePathResult extends BaseGrid.MeasurePathResult {}
 
-  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction;
+  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
 
   interface Dimensions extends BaseGrid.Dimensions {}
 }

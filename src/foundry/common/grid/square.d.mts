@@ -93,7 +93,7 @@ declare namespace SquareGrid {
     diagonals: number;
   }
 
-  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction;
+  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
 
   interface Dimensions extends BaseGrid.Dimensions {}
 }
