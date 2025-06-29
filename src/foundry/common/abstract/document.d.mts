@@ -2394,9 +2394,7 @@ declare namespace Document {
    * @deprecated This type was used to simplify the logic behind `ConstructorArgs` but that's now being deprecated.
    */
   type ConstructorParameters<CreateData extends object | undefined, Parent extends Document.Any | null> = [
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    {},
-  ] extends [CreateData]
-    ? [data?: CreateData, context?: Document.ConstructionContext<Parent>]
-    : [data: CreateData, context?: Document.ConstructionContext<Parent>];
+    data?: CreateData,
+    context?: Document.ConstructionContext<Parent>,
+  ];
 }
