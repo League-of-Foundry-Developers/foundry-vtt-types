@@ -717,7 +717,6 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
   protected _renderRollHTML(isPrivate?: never): never;
 
-
   /**
    * Obtain an Actor instance which represents the speaker of this message (if any)
    * @param speaker - The speaker data object
@@ -744,7 +743,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * @param options - Additional options passed to the Handlebars Template.
    */
   // TODO: better type `options`
-  renderHTML(options?: { canDelete?: boolean; canClose?: boolean}): Promise<HTMLElement>;
+  renderHTML(options?: { canDelete?: boolean; canClose?: boolean }): Promise<HTMLElement>;
 
   // _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
@@ -753,7 +752,6 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * Export the content of the chat message into a standardized log format
    */
   export(): string;
-
 
   /**
    * @deprecated since v13 until v15
@@ -785,9 +783,9 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   ): Promise<ChatMessage.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"ChatMessage">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"ChatMessage">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

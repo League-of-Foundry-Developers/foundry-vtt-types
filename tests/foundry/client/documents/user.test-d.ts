@@ -31,12 +31,17 @@ expectTypeOf(user.color).toEqualTypeOf<Color>();
 
 const queryConfig = { timeout: 100 };
 
-expectTypeOf(user.query("dialog", { type: "confirm", config: { content: "Do thing?" } }, queryConfig)).toEqualTypeOf<Promise<DialogV2.QueryReturn<"confirm", {}>>>();
+expectTypeOf(user.query("dialog", { type: "confirm", config: { content: "Do thing?" } }, queryConfig)).toEqualTypeOf<
+  Promise<DialogV2.QueryReturn<"confirm", {}>>
+>();
 
 declare module "fvtt-types/configuration" {
   namespace CONFIG {
     interface Queries {
-      "draw-steel.spendHeroToken": (payload: { userId: string, spendType: string, flavor: string }, queryOptions: User.QueryOptions) => void;
+      "draw-steel.spendHeroToken": (
+        payload: { userId: string; spendType: string; flavor: string },
+        queryOptions: User.QueryOptions,
+      ) => void;
     }
   }
 }

@@ -462,9 +462,9 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   ): Promise<FogExploration.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"FogExploration">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"FogExploration">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

@@ -1420,9 +1420,9 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
   ): Promise<Scene.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"Scene">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Scene">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

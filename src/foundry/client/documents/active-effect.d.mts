@@ -1,5 +1,13 @@
 import type { ConfiguredActiveEffect } from "fvtt-types/configuration";
-import type { AnyMutableObject, InexactPartial, IntentionalPartial, InterfaceToObject, JSONValue, Merge, RequiredProps } from "#utils";
+import type {
+  AnyMutableObject,
+  InexactPartial,
+  IntentionalPartial,
+  InterfaceToObject,
+  JSONValue,
+  Merge,
+  RequiredProps,
+} from "#utils";
 import type { DataModel } from "#common/abstract/data.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataField, DataSchema } from "#common/data/fields.d.mts";
@@ -936,9 +944,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
   // Descendant Document operations have been left out because ActiveEffect does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: ActiveEffect.DefaultNameContext,
-  ): string;
+  static override defaultName(context?: ActiveEffect.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
@@ -949,7 +955,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   override deleteDialog(
     options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-    operation?: ActiveEffect.Database.DeleteOperation
+    operation?: ActiveEffect.Database.DeleteOperation,
   ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)

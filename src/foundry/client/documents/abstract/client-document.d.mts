@@ -343,12 +343,15 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * Present a Dialog form to confirm deletion of this Document.
    * @param options   - Additional options passed to `DialogV2.confirm`
    *                    (default: `{}`)
-   * @param operation - Document deletion options. 
+   * @param operation - Document deletion options.
    *                    (default: `{}`)
    * @returns A Promise that resolves to the deleted Document
    */
   // options: not null (parameter default only)
-  deleteDialog(options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>, operation?: never): Promise<this | false | null | undefined>;
+  deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: never,
+  ): Promise<this | false | null | undefined>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.

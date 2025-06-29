@@ -714,7 +714,8 @@ declare namespace TokenDocument {
 
   interface MeasuredMovementWaypoint extends SchemaField.InitializedData<MeasuredMovementWaypointSchema> {}
 
-  interface GetCompleteMovementPathWaypoint extends InexactPartial<Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost">> {}
+  interface GetCompleteMovementPathWaypoint
+    extends InexactPartial<Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost">> {}
 
   interface CompleteMovementWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {}
 
@@ -1130,9 +1131,11 @@ declare namespace TokenDocument {
 
   interface ResizeOptions extends InexactPartial<Omit<TokenDocument.Database.UpdateOperation, "updates">> {}
 
-  interface MovementWaypoint extends Omit<MeasuredMovementWaypoint, "terrain" | "intermediate" | "userId" | "movementId" | "cost"> {}
+  interface MovementWaypoint
+    extends Omit<MeasuredMovementWaypoint, "terrain" | "intermediate" | "userId" | "movementId" | "cost"> {}
 
-  interface MovementSegmentData extends Pick<MeasuredMovementWaypoint, "width" | "height" | "shape" | "action" | "terrain"> {
+  interface MovementSegmentData
+    extends Pick<MeasuredMovementWaypoint, "width" | "height" | "shape" | "action" | "terrain"> {
     actionConfig: CONFIG.Token.MovementActionConfig;
     teleport: boolean;
   }
@@ -1281,8 +1284,8 @@ declare namespace TokenDocument {
      * The movement continuation states
      */
     states: {
-      [movementId: string]: TokenDocument.MovementContinuationState
-    }
+      [movementId: string]: TokenDocument.MovementContinuationState;
+    };
   }
 
   interface ConstrainOptions extends Omit<ConstrainMovementPathOptions, "preview" | "history"> {}
@@ -1378,7 +1381,7 @@ declare namespace TokenDocument {
   }
 
   interface MovementCostFunction extends Omit<foundry.grid.BaseGrid.MeasurePathCostFunction3D, "segment"> {
-    segment: MovementSegmentData
+    segment: MovementSegmentData;
   }
 
   interface MovementCostAggregatorResult {
@@ -1389,7 +1392,6 @@ declare namespace TokenDocument {
 
   /** Returns the aggregated cost */
   type MovementCostAggregator = (
-
     /**
      * The results of the cost function calls.
      * The array may be sorted but otherwise not mutated
@@ -1404,23 +1406,23 @@ declare namespace TokenDocument {
      * The properties of the segment
      * @remarks marked by foundry as readonly
      */
-    segment: MovementSegmentData
+    segment: MovementSegmentData,
   ) => number;
 
-  interface MeasureMovementPathOptions extends InexactPartial<{
+  interface MeasureMovementPathOptions
+    extends InexactPartial<{
+      /**
+       * The function that returns the cost for a given move between grid spaces
+       * (default is the distance travelled along the direct path)
+       */
+      cost: MovementCostFunction;
 
-    /**
-     * The function that returns the cost for a given move between grid spaces
-     * (default is the distance travelled along the direct path)
-     */
-    cost: MovementCostFunction;
-
-    /**
-     * The cost aggregator.
-     * @defaultValue `CONFIG.Token.movement.costAggregator`
-     */
-    aggregator: MovementCostAggregator;
-  }> {}
+      /**
+       * The cost aggregator.
+       * @defaultValue `CONFIG.Token.movement.costAggregator`
+       */
+      aggregator: MovementCostAggregator;
+    }> {}
 
   interface MovementOperation extends Omit<MovementData, "user" | "state" | "updateOptions"> {}
 
@@ -1444,9 +1446,17 @@ declare namespace TokenDocument {
     anchor: foundry.canvas.Canvas.Point;
   }
 
-  interface PreMovementOptions extends DeepReadonly<Omit<MovementOperation, "autoRotate" | "showRuler">>, Pick<MovementOperation, "autoRotate" | "showRuler"> {}
+  interface PreMovementOptions
+    extends DeepReadonly<Omit<MovementOperation, "autoRotate" | "showRuler">>,
+      Pick<MovementOperation, "autoRotate" | "showRuler"> {}
 
-  interface SegmentizeMovementWaypoint extends InexactPartial<Pick<MeasuredMovementWaypoint, "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped">> {}
+  interface SegmentizeMovementWaypoint
+    extends InexactPartial<
+      Pick<
+        MeasuredMovementWaypoint,
+        "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped"
+      >
+    > {}
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
 
@@ -1559,7 +1569,10 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    */
   regions: Set<RegionDocument.Implementation> | null;
 
-  protected override _initializeSource(data: TokenDocument.CreateData, options?: Document.InitializeSourceOptions): TokenDocument.Source;
+  protected override _initializeSource(
+    data: TokenDocument.CreateData,
+    options?: Document.InitializeSourceOptions,
+  ): TokenDocument.Source;
 
   // options: not null (parameter default only)
   protected override _initialize(options?: Document.InitializeOptions): void;
@@ -1610,7 +1623,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    */
   move(
     waypoints: InexactPartial<TokenDocument.MovementWaypoint> | InexactPartial<TokenDocument.MovementWaypoint>[],
-    options?: InexactPartial<TokenDocument.MoveOptions>
+    options?: InexactPartial<TokenDocument.MoveOptions>,
   ): Promise<boolean>;
 
   /**
@@ -1691,14 +1704,19 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param waypoints - The waypoints of movement
    * @param options   - Additional measurement options
    */
-  measureMovementPath(waypoints: TokenDocument.MeasuredMovementWaypoint[], options?: TokenDocument.MeasureMovementPathOptions): foundry.grid.BaseGrid.MeasurePathResult;
+  measureMovementPath(
+    waypoints: TokenDocument.MeasuredMovementWaypoint[],
+    options?: TokenDocument.MeasureMovementPathOptions,
+  ): foundry.grid.BaseGrid.MeasurePathResult;
 
   /**
    * Get the path of movement with the intermediate steps of the direct path between waypoints.
    * @param waypoints - The waypoints of movement
    * @returns The path of movement with all intermediate steps
    */
-  getCompleteMovementPath(waypoints: TokenDocument.GetCompleteMovementPathWaypoint[]): TokenDocument.CompleteMovementWaypoint[];
+  getCompleteMovementPath(
+    waypoints: TokenDocument.GetCompleteMovementPathWaypoint[],
+  ): TokenDocument.CompleteMovementWaypoint[];
 
   /**
    * Add or remove this Token from a Combat encounter.
@@ -1775,7 +1793,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    */
   protected _preUpdateMovement(
     movement: TokenDocument.PreMovementOptions,
-    operation: TokenDocument.Database.UpdateOperation
+    operation: TokenDocument.Database.UpdateOperation,
   ): Promise<boolean | void>;
 
   /**
@@ -1785,7 +1803,11 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param user      - The User that requested the update operation
    * @remarks default implementation does nothing, foundry marked `movement` as readonly
    */
-  protected _onUpdateMovement(movement: TokenDocument.MovementOperation, operation: TokenDocument.Database.UpdateOperation, user: User.Implementation): void;
+  protected _onUpdateMovement(
+    movement: TokenDocument.MovementOperation,
+    operation: TokenDocument.Database.UpdateOperation,
+    user: User.Implementation,
+  ): void;
 
   /**
    * Called when the current movement is stopped.
@@ -1895,7 +1917,10 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param waypoints - The waypoints of movement
    * @returns The movement split into its segments
    */
-  segmentizeRegionMovementPath(region: RegionDocument, waypoints: TokenDocument.SegmentizeMovementWaypoint[]): RegionDocument.MovementSegment[];
+  segmentizeRegionMovementPath(
+    region: RegionDocument,
+    waypoints: TokenDocument.SegmentizeMovementWaypoint[],
+  ): RegionDocument.MovementSegment[];
 
   /**
    * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
@@ -2102,9 +2127,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   // ClientDocument overrides
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: TokenDocument.DefaultNameContext,
-  ): string;
+  static override defaultName(context?: TokenDocument.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
@@ -2114,9 +2137,9 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   ): Promise<TokenDocument.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"Token">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Token">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

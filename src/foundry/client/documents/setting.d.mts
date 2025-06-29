@@ -423,9 +423,9 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
   ): never;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"Setting">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Setting">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

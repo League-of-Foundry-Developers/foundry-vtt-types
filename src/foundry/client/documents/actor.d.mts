@@ -740,7 +740,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
 
   override clone<Save extends boolean | null | undefined = false>(
     data?: Actor.CreateData,
-    context?: Document.CloneContext<Save>
+    context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;
 
   /**
@@ -1017,9 +1017,9 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   ): Promise<Actor.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"Actor">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Actor">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

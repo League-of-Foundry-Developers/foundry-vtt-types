@@ -492,14 +492,12 @@ declare class RegionBehavior<
   // Descendant Document operations have been left out because RegionBehavior does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: RegionBehavior.DefaultNameContext,
-  ): string;
+  static override defaultName(context?: RegionBehavior.DefaultNameContext): string;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"RegionBehavior">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"RegionBehavior">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

@@ -24,7 +24,7 @@ declare class CompendiumCollection<
   index: IndexTypeForMetadata<Type>;
 
   /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
-  _flush: never
+  _flush: never;
 
   /**
    * The amount of time that Document instances within this CompendiumCollection are held in memory.
@@ -232,7 +232,9 @@ declare class CompendiumCollection<
    *          Documents if the "yes" button was pressed, false if the "no" button was pressed, or
    *          null if the dialog was closed without making a choice.
    */
-  importDialog(options?: foundry.applications.api.DialogV2.ConfirmConfig): Promise<Document.StoredForName<Type>[] | null | false>;
+  importDialog(
+    options?: foundry.applications.api.DialogV2.ConfirmConfig,
+  ): Promise<Document.StoredForName<Type>[] | null | false>;
 
   /**
    * Add a Document to the index, capturing it's relevant index attributes

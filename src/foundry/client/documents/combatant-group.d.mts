@@ -453,38 +453,38 @@ declare class CombatantGroup<
    * as there is no data that can safely construct every possible document. Finally keeping definitions
    * separate like this helps against circularities.
    */
-  
-   // ClientDocument overrides
-  
-   // Descendant Document operations have been left out because CombatantGroup does not have any descendant documents.
-  
-   // context: not null (destructured)
-   static override defaultName(context?: CombatantGroup.DefaultNameContext): string;
-  
-   // data: not null (parameter default only), context: not null (destructured)
-   static override createDialog(
+
+  // ClientDocument overrides
+
+  // Descendant Document operations have been left out because CombatantGroup does not have any descendant documents.
+
+  // context: not null (destructured)
+  static override defaultName(context?: CombatantGroup.DefaultNameContext): string;
+
+  // data: not null (parameter default only), context: not null (destructured)
+  static override createDialog(
     data?: CombatantGroup.CreateDialogData,
     createOptions?: CombatantGroup.Database.CreateOptions,
     options?: CombatantGroup.CreateDialogOptions,
-   ): Promise<CombatantGroup.Stored | null | undefined>;
+  ): Promise<CombatantGroup.Stored | null | undefined>;
 
-   override deleteDialog(
-       options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-       operation?: Document.Database.DeleteOperationForName<"CombatantGroup">
-     ): Promise<this | false | null | undefined>;
-  
-   // options: not null (parameter default only)
-   static override fromDropData(
-     data: CombatantGroup.DropData,
-     options?: CombatantGroup.DropDataOptions,
-   ): Promise<CombatantGroup.Implementation | undefined>;
-  
-   static override fromImport(
-     source: CombatantGroup.Source,
-     context?: Document.FromImportContext<CombatantGroup.Parent> | null,
-   ): Promise<CombatantGroup.Implementation>;
-  
-   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"CombatantGroup">,
+  ): Promise<this | false | null | undefined>;
+
+  // options: not null (parameter default only)
+  static override fromDropData(
+    data: CombatantGroup.DropData,
+    options?: CombatantGroup.DropDataOptions,
+  ): Promise<CombatantGroup.Implementation | undefined>;
+
+  static override fromImport(
+    source: CombatantGroup.Source,
+    context?: Document.FromImportContext<CombatantGroup.Parent> | null,
+  ): Promise<CombatantGroup.Implementation>;
+
+  override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 }
 
 export default CombatantGroup;

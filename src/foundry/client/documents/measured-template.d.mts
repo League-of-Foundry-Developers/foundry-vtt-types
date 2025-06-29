@@ -474,9 +474,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
   // Descendant Document operations have been left out because MeasuredTemplate does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: MeasuredTemplateDocument.DefaultNameContext,
-  ): string;
+  static override defaultName(context?: MeasuredTemplateDocument.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
@@ -486,9 +484,9 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
   ): Promise<MeasuredTemplateDocument.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"MeasuredTemplate">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"MeasuredTemplate">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

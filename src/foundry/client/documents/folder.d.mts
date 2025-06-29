@@ -581,9 +581,9 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
   ): Promise<Folder.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"Folder">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Folder">,
+  ): Promise<this | false | null | undefined>;
 
   /**
    * Export all Documents contained in this Folder to a given Compendium pack.

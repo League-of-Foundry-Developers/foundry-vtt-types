@@ -521,9 +521,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
   // Descendant Document operations have been left out because PlaylistSound does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: PlaylistSound.DefaultNameContext,
-  ): string;
+  static override defaultName(context?: PlaylistSound.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
@@ -533,9 +531,9 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
   ): Promise<PlaylistSound.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"PlaylistSound">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"PlaylistSound">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

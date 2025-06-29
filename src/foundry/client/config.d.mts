@@ -1,6 +1,15 @@
 import type * as CONST from "#common/constants.d.mts";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { GetKey, AnyObject, HandleEmptyObject, MaybePromise, ConcreteKeys, InexactPartial, RemoveIndexSignatures, InexactPartial } from "#utils";
+import type {
+  GetKey,
+  AnyObject,
+  HandleEmptyObject,
+  MaybePromise,
+  ConcreteKeys,
+  InexactPartial,
+  RemoveIndexSignatures,
+  InexactPartial,
+} from "#utils";
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
 import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
@@ -2476,8 +2485,8 @@ declare global {
     }
 
     interface Queries {
-      dialog: typeof foundry.applications.api.DialogV2._handleQuery,
-      confirmTeleportToken: typeof foundry.data.regionBehaviors.TeleportTokenRegionBehaviorType._confirmQuery
+      dialog: typeof foundry.applications.api.DialogV2._handleQuery;
+      confirmTeleportToken: typeof foundry.data.regionBehaviors.TeleportTokenRegionBehaviorType._confirmQuery;
     }
 
     interface Canvas {
@@ -3540,10 +3549,14 @@ declare global {
          * The properties of the segment
          * @remarks foundry marked as `readonly`
          */
-        segment: TokenDocument.MovementSegmentData
+        segment: TokenDocument.MovementSegmentData,
       ) => number;
 
-      interface AnimationOptions extends Pick<foundry.canvas.placeables.Token.AnimateOptions, "duration" | "movementSpeed" | "easing" | "ontick"> {}
+      interface AnimationOptions
+        extends Pick<
+          foundry.canvas.placeables.Token.AnimateOptions,
+          "duration" | "movementSpeed" | "easing" | "ontick"
+        > {}
 
       interface _MovementActionConfig {
         /**
@@ -3598,13 +3611,16 @@ declare global {
          * Used by {@linkcode foundry.data.regionBehaviors.ModifyMovementCostRegionBehaviorType}.
          * Derived terrain difficulties are not configurable via the behavior UI.
          */
-        deriveTerrainDifficulty: ((nonDerivedDifficulties: {[action: string]: number}) => number) | null;
+        deriveTerrainDifficulty: ((nonDerivedDifficulties: { [action: string]: number }) => number) | null;
 
         /**
          * The cost modification function.
          * @defaultValue `() => cost => cost`
          */
-        getCostFunction: (token: TokenDocument, options: foundry.canvas.placeables.Token.MeasureMovementPathOptions) => MovementActionCostFunction;
+        getCostFunction: (
+          token: TokenDocument,
+          options: foundry.canvas.placeables.Token.MeasureMovementPathOptions,
+        ) => MovementActionCostFunction;
       }
 
       interface MovementActionOptionalConfig extends InexactPartial<_MovementActionConfig> {}

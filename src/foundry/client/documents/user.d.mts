@@ -569,8 +569,8 @@ declare namespace User {
   }
 
   type QueryName = keyof typeof CONFIG.queries;
-  type QueryData<QueryName extends User.QueryName> = Parameters<typeof CONFIG.queries[QueryName]>[0];
-  type QueryReturn<QueryName extends User.QueryName> = ReturnType<typeof CONFIG.queries[QueryName]>;
+  type QueryData<QueryName extends User.QueryName> = Parameters<(typeof CONFIG.queries)[QueryName]>[0];
+  type QueryReturn<QueryName extends User.QueryName> = ReturnType<(typeof CONFIG.queries)[QueryName]>;
 
   /**
    * The arguments to construct the document.
@@ -734,7 +734,11 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @returns The query result
    */
   // TODO: should this return be `Promise<Awaited<User.QueryReturn<QueryName>>>`? If so, inline into `QueryReturn`?
-  query<QueryName extends User.QueryName>(queryName: QueryName, queryData: User.QueryData<QueryName>, {timeout}?: User.QueryOptions): Promise<User.QueryReturn<QueryName>>;
+  query<QueryName extends User.QueryName>(
+    queryName: QueryName,
+    queryData: User.QueryData<QueryName>,
+    { timeout }?: User.QueryOptions,
+  ): Promise<User.QueryReturn<QueryName>>;
 
   // _onUpdate and _onDelete are overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
@@ -764,9 +768,9 @@ declare class User extends BaseUser.Internal.ClientDocument {
   ): Promise<User.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"User">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"User">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

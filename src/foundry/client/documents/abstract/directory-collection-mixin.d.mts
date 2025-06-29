@@ -94,7 +94,7 @@ declare class DirectoryCollection {
     documents: Document.AnyStored,
     result: readonly AnyObject[] | readonly string[],
     operation: DatabaseOperationMap[A],
-    user: User.Implementation
+    user: User.Implementation,
   ): void;
 }
 

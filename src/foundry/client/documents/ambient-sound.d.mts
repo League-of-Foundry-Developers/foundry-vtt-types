@@ -476,9 +476,7 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
   // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: AmbientSoundDocument.DefaultNameContext,
-  ): string;
+  static override defaultName(context?: AmbientSoundDocument.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
@@ -488,9 +486,9 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
   ): Promise<AmbientSoundDocument.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"AmbientSound">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"AmbientSound">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

@@ -592,7 +592,6 @@ declare namespace BaseGrid {
   }
 
   interface _MeasurePathWaypointData {
-
     /**
      * Teleport to this waypoint?
      * @defaultValue `false`
@@ -621,11 +620,11 @@ declare namespace BaseGrid {
     cost?: number | MeasurePathCostFunction3D;
   }
 
-  type MeasurePathWaypoint2D = InexactPartial<Coordinates2D & MeasurePathWaypointData2D>
+  type MeasurePathWaypoint2D = InexactPartial<Coordinates2D & MeasurePathWaypointData2D>;
 
-  type MeasurePathWaypoint3D = InexactPartial<Coordinates3D & MeasurePathWaypointData3D>
+  type MeasurePathWaypoint3D = InexactPartial<Coordinates3D & MeasurePathWaypointData3D>;
 
-  type MeasurePathWaypoint = MeasurePathWaypoint2D | MeasurePathWaypoint3D
+  type MeasurePathWaypoint = MeasurePathWaypoint2D | MeasurePathWaypoint3D;
 
   /** The measurements of a waypoint. */
   interface MeasurePathResultWaypoint {
@@ -704,7 +703,12 @@ declare namespace BaseGrid {
    * @returns The cost of the move between the grid spaces (nonnegative)
    * @remarks foundry marks `from`, `to`, and `segment` as readonly
    */
-  type MeasurePathCostFunction2D = (from: Offset2D, to: Offset2D, distance: number, segment: foundry.grid.BaseGrid.MeasurePathWaypoint2D) => number;
+  type MeasurePathCostFunction2D = (
+    from: Offset2D,
+    to: Offset2D,
+    distance: number,
+    segment: foundry.grid.BaseGrid.MeasurePathWaypoint2D,
+  ) => number;
 
   /**
    * A function that returns the cost for a given move between grid spaces in 3D.
@@ -717,7 +721,12 @@ declare namespace BaseGrid {
    * @returns The cost of the move between the grid spaces (nonnegative)
    * @remarks foundry marks `from`, `to`, and `segment` as readonly
    */
-  type MeasurePathCostFunction3D = (from: Offset3D, to: Offset3D, distance: number, segment: foundry.grid.BaseGrid.MeasurePathWaypoint3D) => number;
+  type MeasurePathCostFunction3D = (
+    from: Offset3D,
+    to: Offset3D,
+    distance: number,
+    segment: foundry.grid.BaseGrid.MeasurePathWaypoint3D,
+  ) => number;
 
   interface Dimensions {
     width: number;

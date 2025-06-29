@@ -2128,21 +2128,20 @@ declare namespace Document {
     _PossibleSubtypesContext<DocumentName> &
     ParentContext<Parent>;
 
-  type CreateDialogOptions<
-    DocumentName extends Document.Type,
-  > = InexactPartial<foundry.applications.api.DialogV2.PromptConfig> &
-    NullishProps<{
-      /**
-       * A template to use for the dialog contents instead of the default.
-       */
-      template: string;
+  type CreateDialogOptions<DocumentName extends Document.Type> =
+    InexactPartial<foundry.applications.api.DialogV2.PromptConfig> &
+      NullishProps<{
+        /**
+         * A template to use for the dialog contents instead of the default.
+         */
+        template: string;
 
-      /**
-       * Additional render context to provide to the template.
-       */
-      context: AnyObject;
-    }> &
-    _PossibleSubtypesContext<DocumentName>;
+        /**
+         * Additional render context to provide to the template.
+         */
+        context: AnyObject;
+      }> &
+      _PossibleSubtypesContext<DocumentName>;
 
   interface FromImportContext<Parent extends Document.Any | null> extends Omit<ConstructionContext<Parent>, "strict"> {
     /**

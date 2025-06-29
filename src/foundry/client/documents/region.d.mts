@@ -848,14 +848,14 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    */
   get regionShapes(): foundry.data.regionShapes.RegionShape.Any[];
 
-    /**
-     * The polygons of this Region.
-     *
-     * The value of this property must not be mutated.
-     *
-     * This property is updated only by a document update.
-     */
-    get polygons(): ReadonlyArray<PIXI.Polygon>;
+  /**
+   * The polygons of this Region.
+   *
+   * The value of this property must not be mutated.
+   *
+   * This property is updated only by a document update.
+   */
+  get polygons(): ReadonlyArray<PIXI.Polygon>;
 
   /**
    * The polygon tree of this Region.
@@ -916,7 +916,10 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    *                    is considered to be inside the region.
    * @returns The movement split into its segments.
    */
-  segmentizeMovementPath(waypoints: RegionDocument.SegmentizeMovementPathWaypoint[], samples: foundry.canvas.Canvas.Point[]): RegionDocument.MovementSegment[];
+  segmentizeMovementPath(
+    waypoints: RegionDocument.SegmentizeMovementPathWaypoint[],
+    samples: foundry.canvas.Canvas.Point[],
+  ): RegionDocument.MovementSegment[];
 
   /**
    * Teleport a Token into this Region.
@@ -1078,9 +1081,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs): void;
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: RegionDocument.DefaultNameContext,
-  ): string;
+  static override defaultName(context?: RegionDocument.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
@@ -1090,9 +1091,9 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   ): Promise<RegionDocument.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"Region">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Region">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

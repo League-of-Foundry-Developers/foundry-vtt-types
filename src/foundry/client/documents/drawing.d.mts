@@ -487,8 +487,12 @@ declare namespace DrawingDocument {
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
-  interface ValidateVisibleContentData extends IntentionalPartial<Pick<BaseDrawing.InitializedData, "shape">>,
-    Pick<BaseDrawing.InitializedData, "text" | "textAlpha" | "fillType" | "fillAlpha" | "strokeWidth" | "strokeAlpha"> {}
+  interface ValidateVisibleContentData
+    extends IntentionalPartial<Pick<BaseDrawing.InitializedData, "shape">>,
+      Pick<
+        BaseDrawing.InitializedData,
+        "text" | "textAlpha" | "fillType" | "fillAlpha" | "strokeWidth" | "strokeAlpha"
+      > {}
 
   /**
    * The arguments to construct the document.
@@ -541,9 +545,7 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
   // Descendant Document operations have been left out because Drawing does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: DrawingDocument.DefaultNameContext,
-  ): string;
+  static override defaultName(context?: DrawingDocument.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
@@ -553,9 +555,9 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
   ): Promise<DrawingDocument.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"Drawing">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Drawing">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(

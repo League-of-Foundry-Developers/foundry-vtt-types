@@ -102,7 +102,7 @@ declare class DocumentCollection<
   // TODO: Could significantly improve this with type defs
   static getSearchableFields<T extends foundry.abstract.Document.Type>(
     documentName: T,
-    type?: foundry.abstract.Document.SubTypesOf<T>
+    type?: foundry.abstract.Document.SubTypesOf<T>,
   ): Record<string, DocumentCollection.SearchableField>;
 
   /**
@@ -208,9 +208,11 @@ declare namespace DocumentCollection {
 
   interface SearchOptions extends InexactPartial<_SearchOptions> {}
 
-  type SearchableField = foundry.data.fields.DataField | {
-    [K in string]: SearchableField;
-  }
+  type SearchableField =
+    | foundry.data.fields.DataField
+    | {
+        [K in string]: SearchableField;
+      };
 
   interface GetInvalidOptions {
     /**

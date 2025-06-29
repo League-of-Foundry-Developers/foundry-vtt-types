@@ -59,7 +59,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   static MOVEMENT_FIELDS: Readonly<string[]>;
 
   /**
-   * Are the given positions equal? 
+   * Are the given positions equal?
    */
   static arePositionsEqual(position1: TokenDocument.Position, position2: TokenDocument.Position): boolean;
 
@@ -83,27 +83,23 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): TokenDocument.UpdateData;
 
   override clone<Save extends boolean | null | undefined = false>(
-      data?: BaseToken.CreateData,
-      context?: Document.CloneContext<Save>
-    ): Document.Clone<this, Save>;
+    data?: BaseToken.CreateData,
+    context?: Document.CloneContext<Save>,
+  ): Document.Clone<this, Save>;
 
   /**
    * Get the snapped position of the Token.
    * @param data - The position and dimensions
    * @returns The snapped position
    */
-  getSnappedPosition(
-    data?: TokenDocument.Dimensions3D,
-  ): foundry.canvas.Canvas.ElevatedPoint;
+  getSnappedPosition(data?: TokenDocument.Dimensions3D): foundry.canvas.Canvas.ElevatedPoint;
 
   /**
    * Get the top-left offset of the Token
    * @param data - The position and dimensions
    * @returns The top-left grid offset
    */
-  protected _positionToGridOffset(
-    data?: TokenDocument.Dimensions3D,
-  ): foundry.grid.BaseGrid.Offset3D;
+  protected _positionToGridOffset(data?: TokenDocument.Dimensions3D): foundry.grid.BaseGrid.Offset3D;
 
   /**
    * Get the position of the Token from the top-left grid offset.
@@ -128,9 +124,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param data - The position and dimensions
    * @returns The center point
    */
-  getCenterPoint(
-    data?: TokenDocument.Dimensions3D,
-  ): foundry.canvas.Canvas.ElevatedPoint;
+  getCenterPoint(data?: TokenDocument.Dimensions3D): foundry.canvas.Canvas.ElevatedPoint;
 
   /**
    * Get the grid space polygon of the Token.
@@ -138,9 +132,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param data - The dimensions
    * @returns The grid space polygon or undefined if gridless
    */
-  getGridSpacePolygon(
-    data?: TokenDocument.PartialDimensions,
-  ): foundry.canvas.Canvas.Point[] | void;
+  getGridSpacePolygon(data?: TokenDocument.PartialDimensions): foundry.canvas.Canvas.Point[] | void;
 
   /**
    * Get the offsets of grid spaces that are occupied by this Token at the current or given position.
@@ -149,9 +141,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param data - The position and dimensions
    * @returns The offsets of occupied grid spaces
    */
-  getOccupiedGridSpaceOffsets(
-    data?: TokenDocument.Dimensions2D,
-  ): foundry.grid.BaseGrid.Offset2D[];
+  getOccupiedGridSpaceOffsets(data?: TokenDocument.Dimensions2D): foundry.grid.BaseGrid.Offset2D[];
 
   /**
    * Get the hexagonal offsets given the type, width, and height.

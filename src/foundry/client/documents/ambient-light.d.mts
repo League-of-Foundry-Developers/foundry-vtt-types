@@ -422,9 +422,7 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
   // Descendant Document operations have been left out because AmbientLight does not have any descendant documents.
 
   // context: not null (destructured)
-  static override defaultName(
-    context?: AmbientLightDocument.DefaultNameContext,
-  ): string;
+  static override defaultName(context?: AmbientLightDocument.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
   static override createDialog(
@@ -434,9 +432,9 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
   ): Promise<AmbientLightDocument.Stored | null | undefined>;
 
   override deleteDialog(
-      options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-      operation?: Document.Database.DeleteOperationForName<"AmbientLight">
-    ): Promise<this | false | null | undefined>;
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"AmbientLight">,
+  ): Promise<this | false | null | undefined>;
 
   // options: not null (parameter default only)
   static override fromDropData(
