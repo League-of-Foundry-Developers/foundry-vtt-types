@@ -8,7 +8,7 @@ import type {
   Override,
 } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
-import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
+import type { PointSourcePolygon, ClockwiseSweepPolygon, edges } from "#client/canvas/geometry/_module.d.mts";
 import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 
@@ -47,7 +47,7 @@ declare class PointEffectSource {
    * The Edge instances added by this source.
    * @defaultValue `[]`
    */
-  edges: foundry.canvas.geometry.edges.Edge[];
+  edges: edges.Edge[];
 
   /**
    * Whether this Point Effect source can create edges or not.
@@ -142,12 +142,9 @@ declare namespace PointEffectSourceMixin {
   interface MixedSourceData extends SourceData, BaseEffectSource.SourceData {}
 
   /** @remarks This mixin guarantees certain keys in the return type beyond the base required `type` */
-
   interface PolygonConfig
     extends RequiredProps<
-      PointSourcePolygon.Config,
-      // TODO(esheyw): remove the following once canvas.geometry is done
-      // @ts-expect-error edgeOptions is not implemented yet
+      ClockwiseSweepPolygon.Config,
       "radius" | "edgeOptions" | "externalRadius" | "angle" | "rotation" | "priority" | "source"
     > {}
 

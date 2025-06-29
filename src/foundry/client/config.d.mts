@@ -2576,9 +2576,10 @@ declare global {
 
       /**
        * @privateRemarks Foundry types this as `{@enum `{@linkcode geometry.PointSourcePolygon | PointSourcePolygon}`}`,
-       * but all the runtime defaults are {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}. It is not
-       * impossible to add a new type of source with its own, non-CSP class, but this is unlikely to come up in real world
-       * code.
+       * but all the runtime defaults are {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}, and its
+       * types and methods are assumed in other canvas classes, so entries have been constrained to it over `PointSourcePolygon`.
+       * It is not impossible to add a new type of source, so the index signature is included, but this is unlikely to
+       * come up in real world code.
        */
       interface PolygonBackends {
         sight: geometry.ClockwiseSweepPolygon.AnyConstructor;
@@ -2586,7 +2587,7 @@ declare global {
         darkness: geometry.ClockwiseSweepPolygon.AnyConstructor;
         sound: geometry.ClockwiseSweepPolygon.AnyConstructor;
         move: geometry.ClockwiseSweepPolygon.AnyConstructor;
-        [K: string]: geometry.PointSourcePolygon.AnyConstructor;
+        [K: string]: geometry.ClockwiseSweepPolygon.AnyConstructor;
       }
 
       interface GridStyles {

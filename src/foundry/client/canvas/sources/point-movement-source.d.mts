@@ -1,14 +1,14 @@
 import type { FixedInstanceType, Identity, InexactPartial, Override } from "#utils";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
-import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
+import type { ClockwiseSweepPolygon } from "#client/canvas/geometry/_module.d.mts";
 
 /**
  * A specialized subclass of the BaseEffectSource which describes a movement-based source.
  */
 declare class PointMovementSource<
   SourceData extends PointMovementSource.SourceData = PointMovementSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointMovementSource.ImplementationPolygon,
+  SourceShape extends ClockwiseSweepPolygon = PointMovementSource.ImplementationPolygon,
 > extends PointEffectSourceMixin(BaseEffectSource)<SourceData, SourceShape> {
   static override sourceType: "move";
 
@@ -34,7 +34,7 @@ declare namespace PointMovementSource {
 
   type Initialized<
     SourceData extends PointMovementSource.SourceData = PointMovementSource.SourceData,
-    SourceShape extends PointSourcePolygon = PointMovementSource.ImplementationPolygon,
+    SourceShape extends ClockwiseSweepPolygon = PointMovementSource.ImplementationPolygon,
   > = Override<
     PointMovementSource<SourceData, SourceShape>,
     {
@@ -59,7 +59,7 @@ export default PointMovementSource;
 
 declare abstract class AnyPointMovementSource extends PointMovementSource<
   PointMovementSource.SourceData,
-  PointMovementSource.ImplementationPolygon
+  ClockwiseSweepPolygon
 > {
   constructor(...args: never);
 }

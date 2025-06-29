@@ -3,7 +3,7 @@ import type BaseLightSource from "./base-light-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type RenderedEffectSource from "./rendered-effect-source.d.mts";
 import type { PointSourceMesh } from "../containers/_module.d.mts";
-import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
+import type { ClockwiseSweepPolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 
@@ -12,7 +12,7 @@ import type BaseEffectSource from "./base-effect-source.d.mts";
  */
 declare class PointDarknessSource<
   SourceData extends PointDarknessSource.SourceData = PointDarknessSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointDarknessSource.ConfiguredPolygon,
+  SourceShape extends ClockwiseSweepPolygon = PointDarknessSource.ImplementationPolygon,
   RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = PointDarknessSource.Layers,
 > extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, RenderingLayers> {
   static override sourceType: "darkness";
@@ -115,7 +115,7 @@ declare namespace PointDarknessSource {
 
   type Initialized<
     SourceData extends PointDarknessSource.SourceData = PointDarknessSource.SourceData,
-    SourceShape extends PointSourcePolygon = PointDarknessSource.ConfiguredPolygon,
+    SourceShape extends ClockwiseSweepPolygon = PointDarknessSource.ImplementationPolygon,
     RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = PointDarknessSource.Layers,
   > = Override<
     PointDarknessSource<SourceData, SourceShape, RenderingLayers>,
@@ -145,15 +145,15 @@ declare namespace PointDarknessSource {
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["darknessSourceClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  interface ConfiguredPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["darkness"]> {}
-  interface ConfiguredPolygon extends FixedInstanceType<ConfiguredPolygonClass> {}
+  interface ImplementationPolygonClass extends Identity<CONFIG["Canvas"]["polygonBackends"]["darkness"]> {}
+  interface ImplementationPolygon extends FixedInstanceType<ImplementationPolygonClass> {}
 }
 
 export default PointDarknessSource;
 
 declare abstract class AnyPointDarknessSource extends PointDarknessSource<
   PointDarknessSource.SourceData,
-  PointDarknessSource.ConfiguredPolygon,
+  ClockwiseSweepPolygon,
   PointDarknessSource.Layers
 > {
   constructor(...args: never);

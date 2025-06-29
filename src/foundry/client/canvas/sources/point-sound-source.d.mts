@@ -2,14 +2,14 @@ import type { FixedInstanceType, Identity, InexactPartial, Override, RequiredPro
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type PointEffectSourceMixin from "./point-effect-source.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
+import type { ClockwiseSweepPolygon } from "#client/canvas/geometry/_module.d.mts";
 
 /**
  * A specialized subclass of the BaseEffectSource which describes a point-based source of sound.
  */
 declare class PointSoundSource<
   SourceData extends PointSoundSource.SourceData = PointSoundSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointSoundSource.ImplementationPolygon,
+  SourceShape extends ClockwiseSweepPolygon = PointSoundSource.ImplementationPolygon,
 > extends PointEffectSourceMixin(BaseEffectSource)<SourceData, SourceShape> {
   static override sourceType: "sound";
 
@@ -51,7 +51,7 @@ declare namespace PointSoundSource {
 
   type Initialized<
     SourceData extends PointSoundSource.SourceData = PointSoundSource.SourceData,
-    SourceShape extends PointSourcePolygon = PointSoundSource.ImplementationPolygon,
+    SourceShape extends ClockwiseSweepPolygon = PointSoundSource.ImplementationPolygon,
   > = Override<
     PointSoundSource<SourceData, SourceShape>,
     {
@@ -86,7 +86,7 @@ export default PointSoundSource;
 
 declare abstract class AnyPointSoundSource extends PointSoundSource<
   PointSoundSource.SourceData,
-  PointSoundSource.ImplementationPolygon
+  ClockwiseSweepPolygon
 > {
   constructor(...args: never);
 }

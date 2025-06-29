@@ -139,8 +139,9 @@ declare abstract class PointSourcePolygon extends PIXI.Polygon {
 
   /**
    * Determine the set of collisions which occurs for a Ray.
-   * @param ray  - The Ray to test
-   * @param mode - The collision mode being tested
+   * @param ray         - The Ray to test
+   * @param mode        - The collision mode being tested
+   * @param destination - The destination
    * @returns The collision test result
    */
   protected abstract _testCollision<Mode extends PointSourcePolygon.CollisionModes>(
@@ -226,11 +227,17 @@ declare namespace PointSourcePolygon {
      * @remarks Not guaranteed by {@linkcode PointSourcePolygon.initialize | PointSourcePolygon#initialize} but will exist in all configs created by {@linkcode PointEffectSourceMixin} subclasses.
      * @privateRemarks Foundry types this as `PointEffectSource` which is the mixin class name, which isn't exported. The type here matches usage and tracks with what they probably meant.
      */
-    source?: PointEffectSourceMixin.AnyMixed;
+    source: PointEffectSourceMixin.AnyMixed;
+
+    /**
+     * Display debugging visualization and logging for the polygon
+     * @remarks Overridden `true` if `CONFIG.debug.polygons` is truthy
+     */
+    debug: boolean;
   }>;
 
   /**
-   * Properties of the config that have defaults for nullish values in `#initialize`, and thus are guaranteed in the stored config
+   * Properties of the config that have defaults for nullish values in {@linkcode PointSourcePolygon.initialize | PointSourcePolygon#initialize}, and thus are guaranteed in the stored config
    * @internal
    */
   interface _BaseConfig {
@@ -276,18 +283,6 @@ declare namespace PointSourcePolygon {
      * @defaultValue `[]`
      */
     boundaryShapes: Array<BoundaryShapes>;
-
-    /**
-     * Display debugging visualization and logging for the polygon
-     * @remarks Overridden `true` if `CONFIG.debug.polygons` is truthy
-     */
-    debug?: boolean;
-
-    /**
-     * Priority when it comes to ignore edges from darkness sources
-     * @remarks This is listed in the typedef, but is not in use by Foundry in 12.331
-     */
-    priority?: number;
   }
 
   /**
@@ -299,8 +294,14 @@ declare namespace PointSourcePolygon {
     type: PolygonType;
   }
 
+  /**
+   * @remarks The interface stored in {@link PointSourcePolygon.config | PointSourcePolygon#config}, with defaults applied
+   */
   interface StoredConfig extends _RequiredConfig, _BaseConfig, _OptionalOnlyConfig, _InexactConfig, _ComputedConfig {}
 
+  /**
+   * @remarks The interface passed to {@linkcode PointSourcePolygon.create}, etc. All properties are optional other than `type`
+   */
   interface Config extends _RequiredConfig, InexactPartial<_BaseConfig>, _OptionalOnlyConfig, _InexactConfig {}
 
   type BoundaryShapes = PIXI.Rectangle | PIXI.Circle | PIXI.Polygon;
@@ -344,10 +345,10 @@ declare namespace PointSourcePolygon {
     all: PolygonVertex[];
   }
 
-  type TestCollision<Mode extends CollisionModes | undefined = undefined> = _CollisionTypesReturnMap[Coalesce<
-    Mode,
-    "all"
-  >];
+  type TestCollision<
+    Mode extends CollisionModes | undefined = undefined,
+    Default extends keyof _CollisionTypesReturnMap = "all",
+  > = _CollisionTypesReturnMap[Coalesce<Mode, Default>];
 }
 
 export default PointSourcePolygon;

@@ -10,7 +10,7 @@ import type {
   RequiredProps,
 } from "#utils";
 import type { AbstractBaseShader, AdaptiveVisionShader } from "#client/canvas/rendering/shaders/_module.d.mts";
-import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
+import type { ClockwiseSweepPolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
 import type BaseEffectSource from "./base-effect-source.d.mts";
 import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
@@ -20,7 +20,7 @@ import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
  */
 declare class PointVisionSource<
   SourceData extends PointVisionSource.SourceData = PointVisionSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointVisionSource.ImplementationPolygon,
+  SourceShape extends ClockwiseSweepPolygon = PointVisionSource.ImplementationPolygon,
   RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = PointVisionSource.Layers,
 > extends PointEffectSourceMixin(RenderedEffectSource)<SourceData, SourceShape, RenderingLayers> {
   static override sourceType: "sight";
@@ -238,7 +238,7 @@ declare namespace PointVisionSource {
 
   type Initialized<
     SourceData extends PointVisionSource.SourceData = PointVisionSource.SourceData,
-    SourceShape extends PointSourcePolygon = PointVisionSource.ImplementationPolygon,
+    SourceShape extends ClockwiseSweepPolygon = PointVisionSource.ImplementationPolygon,
     RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = PointVisionSource.Layers,
   > = Override<
     PointVisionSource<SourceData, SourceShape, RenderingLayers>,
@@ -348,7 +348,7 @@ declare namespace PointVisionSource {
 
 declare abstract class AnyPointVisionSource extends PointVisionSource<
   PointVisionSource.SourceData,
-  PointVisionSource.ImplementationPolygon,
+  ClockwiseSweepPolygon,
   PointVisionSource.Layers
 > {
   constructor(...args: never);
