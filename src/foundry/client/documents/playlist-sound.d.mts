@@ -233,7 +233,7 @@ declare namespace PlaylistSound {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
   }
 
   namespace Database {

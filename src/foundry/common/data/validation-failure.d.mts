@@ -1,3 +1,5 @@
+import type { InexactPartial } from "#utils";
+
 /**
  * A class responsible for recording information about a validation failure.
  */
@@ -33,6 +35,7 @@ declare class DataModelValidationFailure {
 
   /**
    * If this field contains a list of elements that are validated as part of its validation, their results are recorded here.
+   * @defaultValue `{}`
    */
   elements: DataModelValidationFailure.ElementValidationFailure[];
 
@@ -57,12 +60,14 @@ declare class DataModelValidationFailure {
   /**
    * Return the base properties of this failure, omitting any nested failures.
    */
-  toObject(): DataModelValidationFailure.ToObject;
+  toObject(): DataModelValidationFailure.ToObjectReturn;
 
   /**
    * Represent the DataModelValidationFailure as a string.
    */
   toString(): string;
+
+  static #DataModelValidationFailure: true;
 }
 
 /**
@@ -73,7 +78,7 @@ declare class DataModelValidationError extends Error {
    * @param failure - The failure that triggered this error or an error message
    * @param params  - Additional Error constructor parameters
    */
-  constructor(failure: DataModelValidationFailure | string, options?: { cause?: Error | string });
+  constructor(failure: DataModelValidationFailure | string, options?: ErrorOptions);
 
   /**
    * Retrieve the root failure that caused this error, or a specific sub-failure via a path.
@@ -126,49 +131,57 @@ declare class DataModelValidationError extends Error {
    * Generate a nested tree view of the error as an HTML string.
    */
   asHTML(): string;
+
+  #DataModelValidationError: true;
 }
 
 declare namespace DataModelValidationFailure {
-  interface ConstructorOptions {
+  /** @internal */
+  type _ConstructorOptions = InexactPartial<{
     /** The value that failed validation for this field. */
-    invalidValue?: unknown;
+    invalidValue: unknown;
 
     /**  The value it was replaced by, if any. */
-    fallback?: unknown;
+    fallback: unknown;
 
     /**
      * Whether the value was dropped from some parent collection.
      * @defaultValue `false`
      */
-    dropped?: boolean | undefined;
+    dropped: boolean;
 
     /** The validation error message. */
-    message?: string | undefined;
+    message: string;
 
     /**
      * Whether this failure was unresolved
      * @defaultValue `false`
      */
-    unresolved?: boolean | undefined;
-  }
+    unresolved: boolean;
+  }>;
 
-  interface ElementValidationFailure {
-    /** Either the element's index or some other identifier for it. */
-    id: string | number;
+  interface ConstructorOptions extends _ConstructorOptions {}
 
+  /** @internal */
+  type _ElementValidationFailure = InexactPartial<{
     /** Optionally a user-friendly name for the element. */
     name?: string;
+  }>;
+
+  interface ElementValidationFailure extends _ElementValidationFailure {
+    /** Either the element's index or some other identifier for it. */
+    id: string | number;
 
     /** The element's validation failure. */
     failure: DataModelValidationFailure;
   }
 
-  interface ToObject {
-    invalidValue?: unknown;
-    fallback?: unknown;
-    dropped?: boolean | undefined;
-    message?: string | undefined;
-  }
+  /**
+   * @remarks {@linkcode DataModelValidationFailure.toObject | DataModelValidationFailure#toObject} returns
+   * its instance's properties of the same names
+   */
+  interface ToObjectReturn
+    extends Pick<DataModelValidationFailure, "invalidValue" | "fallback" | "dropped" | "message"> {}
 }
 
 export { DataModelValidationFailure, DataModelValidationError };

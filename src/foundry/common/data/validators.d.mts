@@ -1,12 +1,12 @@
 /**
  * Test whether a string is a valid 16 character UID
  */
-export declare function isValidId(id: string | null): boolean;
+export declare function isValidId(id: string): boolean;
 
 /**
  * Test whether a file path has an extension in a list of provided extensions
  */
-export declare function hasFileExtension(path: string | null, extensions: string[]): boolean;
+export declare function hasFileExtension(path: string, extensions: string[]): boolean;
 
 /**
  * Test whether a string data blob contains base64 data, optionally of a specific type or types

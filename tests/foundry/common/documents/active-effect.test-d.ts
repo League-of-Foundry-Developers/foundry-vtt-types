@@ -172,7 +172,9 @@ expectTypeOf(fullTestAE.transfer).toBeBoolean();
 expectTypeOf(fullTestAE.statuses).toEqualTypeOf<Set<string>>();
 expectTypeOf(fullTestAE.sort).toBeNumber();
 expectTypeOf(fullTestAE.flags).toEqualTypeOf<
-  InterfaceToObject<ActiveEffect.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  foundry.data.fields.DocumentFlagsField._TwoLevelPartial<
+    InterfaceToObject<ActiveEffect.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  >
 >();
 
 // document-specific flags

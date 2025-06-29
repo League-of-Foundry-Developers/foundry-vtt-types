@@ -1789,6 +1789,10 @@ export declare const FILE_CATEGORIES: {
   TEXT: _TEXT_FILE_EXTENSIONS;
   FONT: _FONT_FILE_EXTENSIONS;
   GRAPHICS: _GRAPHICS_FILE_EXTENSIONS;
+
+  /**
+   * @deprecated 'The "MEDIA" file category is deprecated. Use {@linkcode CONST.MEDIA_FILE_CATEGORIES} instead.' (since v13, until v15)
+   */
   MEDIA: MEDIA_MIME_TYPES;
 };
 

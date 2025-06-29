@@ -233,9 +233,9 @@ declare namespace Macro {
 
     /**
      * The _id of a User document which created this Macro *
-     * @defaultValue `game?.user?.id`
+     * @defaultValue `game.user?.id`
      */
-    author: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
+    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
 
     /**
      * An image file path which provides the thumbnail artwork for this Macro
@@ -293,7 +293,7 @@ declare namespace Macro {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.ObjectField.FlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name>;
 
     /**
      * An object of creation and access information

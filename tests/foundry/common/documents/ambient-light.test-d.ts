@@ -147,7 +147,9 @@ expectTypeOf(myLight.config).toEqualTypeOf<foundry.data.LightData>();
 
 expectTypeOf(myLight.hidden).toBeBoolean();
 expectTypeOf(myLight.flags).toEqualTypeOf<
-  InterfaceToObject<BaseAmbientLight.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  foundry.data.fields.DocumentFlagsField._TwoLevelPartial<
+    InterfaceToObject<BaseAmbientLight.CoreFlags> & InterfaceToObject<Document.CoreFlags>
+  >
 >();
 
 // document-specific flag(s)
