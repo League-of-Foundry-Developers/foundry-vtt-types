@@ -317,8 +317,9 @@ declare namespace ClientKeybindings {
 
     /**
      * The Keyboard logical code if universal mode is enable (it is code otherwise)
+     * @remarks Foundry marks this property as required but based upon actual usage it is not.
      */
-    logicalKey: string;
+    logicalKey?: string | undefined;
 
     /**
      * An array of modifiers keys from {@linkcode KeyboardManager.MODIFIER_KEYS} which are required for this binding to be activated
