@@ -1369,7 +1369,6 @@ declare namespace TokenDocument {
     /**
      * The update options of the movement operation
      */
-    // TODO: this can also be given `movement` and `_movementArguments`, I think, see `TokenDocument#continueMovement`
     updateOptions: Database.UpdateOperation;
   }
 
