@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, IntentionalPartial } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Edge, PolygonVertex, CollisionResult } from "#client/canvas/geometry/edges/_module.d.mts";
 import type { PointSourcePolygon, Ray } from "#client/canvas/geometry/_module.d.mts";
@@ -9,10 +9,24 @@ import type { PointSourcePolygon, Ray } from "#client/canvas/geometry/_module.d.
  * This algorithm was created with valuable contributions from https://github.com/caewok
  */
 declare class ClockwiseSweepPolygon extends PointSourcePolygon {
-  // This does not appear in Foundry code, it's a necessary type override
+  /** @privateRemarks Necessary type override */
+  static override benchmark(
+    iterations: number,
+    origin: Canvas.PossiblyElevatedPoint,
+    config: ClockwiseSweepPolygon.Config,
+  ): Promise<void>;
+
+  /** @privateRemarks Necessary type override */
   static override create(origin: Canvas.Point, config: ClockwiseSweepPolygon.Config): ClockwiseSweepPolygon;
 
-  // This does not appear in foundry code, it's a necessary type override
+  /** @privateRemarks Necessary type override */
+  static override testCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
+    origin: Canvas.PossiblyElevatedPoint,
+    destination: Canvas.PossiblyElevatedPoint,
+    { mode, ...config }: ClockwiseSweepPolygon.TestCollisionOptions<Mode>,
+  ): PointSourcePolygon.TestCollision<Mode>;
+
+  /** @privateRemarks Necessary type override */
   override config: ClockwiseSweepPolygon.StoredConfig;
 
   /**
@@ -167,8 +181,6 @@ declare namespace ClockwiseSweepPolygon {
   interface Any extends AnyClockwiseSweepPolygon {}
   interface AnyConstructor extends Identity<typeof AnyClockwiseSweepPolygon> {}
 
-  interface EdgeOptions extends Record<Edge.EdgeTypes, boolean> {}
-
   /**
    * CSP-added properties of the config that have defaults applied in {@linkcode ClockwiseSweepPolygon.initialize | ClockwiseSweepPolygon#initialize}
    * @internal
@@ -226,15 +238,25 @@ declare namespace ClockwiseSweepPolygon {
 
   interface StoredConfig extends PointSourcePolygon.StoredConfig, _Config, _InexactConfig {}
 
+  interface TestCollisionConfig extends PointSourcePolygon._TestCollisionConfig, Omit<Config, "type"> {}
+
+  interface TestCollisionOptions<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>
+    extends PointSourcePolygon._TestCollisionOptions<Mode>,
+      TestCollisionConfig {}
+
   /**
    * @remarks See {@linkcode Config.edgeTypes}
    *
-   * @privateRemarks Foundry types this as `Record<Edge.EdgeTypes, 0 | 1 | 2>`, but no keys are ever set to `0`, they're simply omitted,
-   * then tested for truthiness in {@linkcode ClockwiseSweepPolygon._testEdgeInclusion | #_testEdgeInclusion}.
+   * @privateRemarks Foundry never sets any keys to `0`, they're simply omitted, then tested for truthiness in
+   * {@linkcode ClockwiseSweepPolygon._testEdgeInclusion | #_testEdgeInclusion}.
    */
-  interface EdgeTypesConfiguration extends IntentionalPartial<Record<Edge.EdgeTypes, 1 | 2>> {}
+  interface EdgeTypesConfiguration extends InexactPartial<Record<Edge.EdgeTypes, 0 | 1 | 2>> {}
 
-  interface EdgeOptions extends Record<Edge.EdgeTypes, boolean> {}
+  /**
+   * @privateRemarks Entries are only checked for `===` or `!== false` in {@linkcode ClockwiseSweepPolygon._determineEdgeTypes | ClockwiseSweepPolygon#_determineEdgeTypes},
+   * so `undefined` is fine
+   */
+  interface EdgeOptions extends InexactPartial<Record<Edge.EdgeTypes, boolean>> {}
 
   interface IsVertexBehindActiveEdges {
     isBehind: boolean;
@@ -248,7 +270,7 @@ declare namespace ClockwiseSweepPolygon {
      *
      * Tested for truthiness in `#visualize` before use, so a nullish value is fine but never attains in core
      */
-    result?: CollisionResult | undefined | null;
+    result?: CollisionResult | undefined;
   }
 }
 

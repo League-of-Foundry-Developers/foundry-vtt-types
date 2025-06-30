@@ -6,10 +6,18 @@ import type { PolygonVertex } from "#client/canvas/geometry/edges/_module.d.mts"
 
 /**
  * An extension of the default PIXI.Polygon which is used to represent the line of sight for a point source.
- * @remarks Static methods that need subclass overrides to account for expanded Configs:
+ * @remarks Methods and types that need subclass overrides to account for expanded Configs:
+ * - {@linkcode PointSourcePolygon.Config}
+ * - {@linkcode PointSourcePolygon.StoredConfig}
+ * - {@linkcode PointSourcePolygon.config | PointSourcePolygon#config}
  * - {@linkcode PointSourcePolygon.benchmark}
  * - {@linkcode PointSourcePolygon.create}
  * - {@linkcode PointSourcePolygon.testCollision}
+ * - {@linkcode PointSourcePolygon.TestCollisionOptions}
+ * - {@linkcode PointSourcePolygon.TestCollisionConfig}
+ *
+ * See {@linkcode foundry.canvas.geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon} for examples (and probably
+ * use it as your base class, since Foundry is assuming the availability of its APIs in more places as time goes on)
  */
 declare abstract class PointSourcePolygon extends PIXI.Polygon {
   /**
@@ -316,7 +324,7 @@ declare namespace PointSourcePolygon {
 
   type CollisionModes = "any" | "all" | "closest";
 
-  interface TestCollisionConfig extends Omit<Config, "type"> {
+  interface _TestCollisionConfig {
     /**
      * The type of polygon being computed
      * @remarks {@linkcode PointSourcePolygon.testCollision} supports only those polygon types that are
@@ -324,6 +332,8 @@ declare namespace PointSourcePolygon {
      */
     type: CONST.WALL_RESTRICTION_TYPES;
   }
+
+  interface TestCollisionConfig extends _TestCollisionConfig, Omit<Config, "type"> {}
 
   /** @internal */
   type _TestCollisionOptions<Mode extends CollisionModes | undefined> = InexactPartial<{
