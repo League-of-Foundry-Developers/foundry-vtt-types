@@ -7,8 +7,6 @@ import type { ClockwiseSweepPolygon } from "#client/canvas/geometry/_module.d.mt
  * The shape is defined by a point origin, radius, angle, and rotation.
  * The shape is further customized by a configurable density which informs the approximation.
  * An optional secondary externalRadius can be provided which adds supplementary visibility outside the primary angle.
- * @param origin - The origin point for this polygon
- * @param config - Configuration for the polygon.
  * @remarks Despite `config` being an `={}` parameter, the `radius` key must be passed to avoid `NaN`s
  */
 declare class LimitedAnglePolygon extends PIXI.Polygon {
@@ -38,7 +36,7 @@ declare class LimitedAnglePolygon extends PIXI.Polygon {
 
   /**
    * The density of rays which approximate the cone, defined as rays per PI.
-   * @defaultValue `PIXI.Circle.approximateVertexDensity(this.radius)`
+   * @defaultValue {@linkcode PIXI.Circle.approximateVertexDensity | PIXI.Circle.approximateVertexDensity(this.radius)}
    */
   density: number;
 
@@ -74,9 +72,10 @@ declare class LimitedAnglePolygon extends PIXI.Polygon {
    * @param a - The first edge vertex
    * @param b - The second edge vertex
    * @returns Should the edge be included in the PointSourcePolygon computation?
-   * @remarks Foundry marked `@internal`
+   * @internal
+   * @remarks Only called externally in {@linkcode ClockwiseSweepPolygon._testEdgeInclusion | ClockwiseSweepPolygon#_testEdgeInclusion}
    */
-  _includeEdge(a: Canvas.Point, b: Canvas.Point): boolean;
+  protected _includeEdge(a: Canvas.Point, b: Canvas.Point): boolean;
 
   /**
    * Test whether a vertex lies between two boundary rays.
@@ -105,35 +104,33 @@ declare namespace LimitedAnglePolygon {
     /**
      * The angle of the Polygon in degrees.
      * @defaultValue `360`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     angle: number;
 
     /**
      * The direction of rotation at the center of the emitted angle in degrees.
      * @defaultValue `0`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     rotation: number;
 
     /**
      * The density of rays which approximate the cone, defined as rays per PI.
-     * @defaultValue `PIXI.Circle.approximateVertexDensity(this.radius)`
+     * @defaultValue {@linkcode PIXI.Circle.approximateVertexDensity | PIXI.Circle.approximateVertexDensity(this.radius)}
      */
-    density: number | null;
+    density: number;
 
     /**
      * An optional "external radius" which is included in the polygon for the supplementary area outside the cone.
      * @defaultValue `0`
      * @remarks Only used if truthy
      */
-    externalRadius: number | null;
+    externalRadius: number;
   }>;
 
   interface ConstructorOptions extends _ConstructorOptions {
     /**
      * The radius of the emitted cone.
-     * @privateRemarks This is given no default, but is directly used in multiplication and division, resulting in `NaN` if allowed to be `undefined`
+     * @privateRemarks This is given no default, and is directly used in multiplication and division, resulting in `NaN` if allowed to be `undefined`
      */
     radius: number;
   }

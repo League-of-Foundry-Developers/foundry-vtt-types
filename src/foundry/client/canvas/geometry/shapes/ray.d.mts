@@ -56,18 +56,14 @@ declare class Ray {
   slope: number;
 
   /**
-   * The cached angle, computed lazily in Ray#angle
-   * @defaultValue `undefined`
-   * @privateRemarks Foundry marked `@private` and doesn't type the `| undefined`
+   * @deprecated Made hard private in v13 (this warning will be removed in v14)
    */
-  protected _angle: number | undefined;
+  protected _angle: never;
 
   /**
-   * The cached distance, computed lazily in Ray#distance
-   * @defaultValue `undefined`
-   * @privateRemarks Foundry marked `@private` and doesn't type the `| undefined`
+   * @deprecated Made hard private in v13 (this warning will be removed in v14)
    */
-  protected _distance: number | undefined;
+  protected _distance: never;
 
   /**
    * The normalized angle of the ray in radians on the range (-PI, PI).
@@ -140,24 +136,19 @@ declare class Ray {
   /**
    * Create a new ray which uses the same origin point, but a slightly offset angle and distance
    * @param offset   - An offset in radians which modifies the angle of the original Ray
-   * @param distance - A distance the new ray should project, otherwise uses the same distance.
+   * @param distance - A distance the new ray should project, otherwise uses the same distance. (default: `this.distance`)
    * @returns A new Ray with an offset angle
+   * @remarks `distance` default is provided by `||`, so `0` is effectively `this.distance`
    */
-  shiftAngle(
-    offset: number,
-
-    /**
-     * @defaultValue `this.distance`
-     * @remarks Default provided by `||`, so `0` is effectively `this.distance`
-     */
-    distance?: number | null,
-  ): Ray;
+  shiftAngle(offset: number, distance?: number): Ray;
 
   /**
    * Find the point I[x,y] and distance t* on ray R(t) which intersects another ray
-   * @see {@linkcode foundry.utils.lineLineIntersection}
+   * @see {@linkcode foundry.utils.lineSegmentIntersection}
    */
   intersectSegment(coords: Canvas.PairOfPointsTuple): LineIntersection | null;
+
+  #Ray: true;
 }
 
 declare namespace Ray {

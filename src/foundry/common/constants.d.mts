@@ -2229,6 +2229,11 @@ export declare const REGION_MOVEMENT_SEGMENTS: Readonly<{
 export type REGION_MOVEMENT_SEGMENTS = Brand<number, "constants.REGION_MOVEMENT_SEGMENTS">;
 
 /**
+ * The scaling factor that is used for Clipper polygons/paths consistently everywhere core performs Clipper operations.
+ */
+export const CLIPPER_SCALING_FACTOR = 100;
+
+/**
  * @deprecated since v12
  */
 export type DOCUMENT_TYPES = Exclude<WORLD_DOCUMENT_TYPES, "FogExploration" | "Setting">;

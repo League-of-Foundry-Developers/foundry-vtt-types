@@ -3,9 +3,9 @@ export default function extendPIXIGraphics(): void;
 declare global {
   namespace PIXI {
     namespace Graphics {
-      type Path =
-        | [points: number[] | PIXI.IPointData[] | PIXI.Polygon, smoothingFactor?: number]
-        | Array<number | PIXI.IPointData>;
+      type PointsAndSmoothingTuple = [points: PIXI.Polygon | PIXI.Polygon.Points, smoothingFactor?: number];
+
+      type Path = PointsAndSmoothingTuple | PIXI.Polygon.Points;
     }
   }
 }

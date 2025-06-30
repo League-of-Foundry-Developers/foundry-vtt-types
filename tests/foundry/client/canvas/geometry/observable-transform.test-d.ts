@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import { ObservableTransform } from "#client/canvas/geometry/_module.mjs";
+import ObservableTransform = foundry.canvas.geometry.ObservableTransform;
 
 const someScope = new PIXI.Polygon();
 function someCallback(this: PIXI.Polygon) {
@@ -9,3 +9,5 @@ function someCallback(this: PIXI.Polygon) {
 const myOT = new ObservableTransform(someCallback, someScope);
 expectTypeOf(myOT.cb).toEqualTypeOf<typeof someCallback>();
 expectTypeOf(myOT.scope).toEqualTypeOf<PIXI.Polygon>();
+expectTypeOf(myOT["onChange"]()).toBeVoid();
+expectTypeOf(myOT["updateSkew"]()).toBeVoid();

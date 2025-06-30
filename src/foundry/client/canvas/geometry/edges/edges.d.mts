@@ -1,33 +1,70 @@
-import type { Identity } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type Edge from "./edge.d.mts";
+import type { Quadtree } from "../_module.d.mts";
 
 /**
- * A special class of Map which defines all the edges used to restrict perception in a Scene.
+ * A specialized Map class that manages all edges used to restrict perception in a Scene.
+ * Integrates with a Quadtree for efficient spatial queries.
  */
 declare class CanvasEdges extends Map<string, Edge> {
   /**
-   * Initialize all active edges for the Scene. This workflow occurs once only when the Canvas is first initialized.
-   * Edges are created from the following sources:
-   * 1. Wall documents
-   * 2. Canvas boundaries (inner and outer bounds)
-   * 3. Darkness sources
-   * 4. Programmatically defined in the "initializeEdges" hook
+   * Clear content and initializes the quadtree.
+   * @remarks Calls `"initializeEdges"` hook via `callAll`
    */
   initialize(): void;
 
+  override set(key: string, value: Edge): this;
+
+  override delete(key: string): boolean;
+
+  override clear(): void;
+
   /**
-   * Incrementally refresh Edges by computing intersections between all registered edges.
+   * Incrementally refreshes edges by computing intersections between all registered edges.
+   * Utilizes the Quadtree to optimize the intersection detection process.
    */
   refresh(): void;
+
+  /**
+   * Retrieves edges that intersect with a given rectangle.
+   * Utilizes the Quadtree for efficient spatial querying.
+   * @param rect - The rectangle to query against.
+   * @returns A set of {@linkcode Edge} instances that intersect with the provided rectangle.
+   */
+  getEdges(rect: PIXI.Rectangle, options?: CanvasEdges.GetEdgesOptions): Set<Edge>;
+
+  #CanvasEdges: true;
 }
 
 declare namespace CanvasEdges {
   interface Any extends AnyCanvasEdges {}
   interface AnyConstructor extends Identity<typeof AnyCanvasEdges> {}
+
+  /** @internal */
+  type _GetEdgesOptions = InexactPartial<{
+    /**
+     * Should inner bounds be added?
+     * @defaultValue `false`
+     */
+    includeInnerBounds: boolean;
+
+    /**
+     * Should outer bounds be added?
+     * @defaultValue `true`
+     */
+    includeOuterBounds: boolean;
+
+    /**
+     * Collision function to test edge inclusion.
+     */
+    collisionTest: Quadtree.CollisionTestFunction<Edge>;
+  }>;
+
+  interface GetEdgesOptions extends _GetEdgesOptions {}
 }
+
+export default CanvasEdges;
 
 declare abstract class AnyCanvasEdges extends CanvasEdges {
   constructor(...args: never);
 }
-
-export default CanvasEdges;

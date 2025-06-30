@@ -20,10 +20,10 @@ const mySource = new PointDarknessSource({ object, sourceId: object.sourceId });
 // #initialize param tests are with BaseEffectSource
 const initializedSource = mySource.initialize();
 
-expectTypeOf(mySource.shape).toEqualTypeOf<PointDarknessSource.ConfiguredPolygon | undefined>();
-expectTypeOf(initializedSource.shape).toEqualTypeOf<PointDarknessSource.ConfiguredPolygon>();
+expectTypeOf(mySource.shape).toEqualTypeOf<PointDarknessSource.ImplementationPolygon | undefined>();
+expectTypeOf(initializedSource.shape).toEqualTypeOf<PointDarknessSource.ImplementationPolygon>();
 
-expectTypeOf(mySource["_visualShape"]).toEqualTypeOf<PointDarknessSource.ConfiguredPolygon | undefined | null>();
+expectTypeOf(mySource["_visualShape"]).toEqualTypeOf<PointDarknessSource.ImplementationPolygon | undefined | null>();
 expectTypeOf(mySource["_padding"]).toBeNumber();
 expectTypeOf(mySource.requiresEdges).toBeBoolean();
 

@@ -1,7 +1,8 @@
-import type { Brand, Identity, InexactPartial, NullishProps } from "#utils";
+import type { Brand, Identity, InexactPartial, ToMethod } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PrimaryCanvasObjectMixin } from "#client/canvas/primary/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type Edge from "./edges/edge.d.mts";
 
 /**
  * A Quadtree implementation that supports collision detection for rectangles.
@@ -10,15 +11,13 @@ declare class Quadtree<out T> {
   /**
    * @param bounds  - The outer bounds of the region
    * @param options - Additional options which configure the Quadtree
-   * @remarks `bounds` is NullishProps because `PIXI.Rectangle`'s constructor casts `null`/`undefined` to `0`.
-   * A `width` or `height` of zero is likely undesirable, however.
    */
-  constructor(bounds: NullishProps<Canvas.Rectangle>, options?: Quadtree.Options<T>);
+  constructor(bounds: Canvas.Rectangle, options?: Quadtree.Options<T>);
 
   /**
-   * The bounding rectangle of the region
+   * Bounding rectangle of the quadtree.
    */
-  bounds: PIXI.Rectangle;
+  protected _bounds: PIXI.Rectangle;
 
   /**
    * The maximum number of objects allowed within this node before it must split
@@ -61,9 +60,62 @@ declare class Quadtree<out T> {
   static INDICES: Quadtree.Indices;
 
   /**
+   * The bounding rectangle of the region
+   */
+  get bounds(): PIXI.Rectangle;
+
+  set bounds(newBounds);
+
+  /**
+   * The width of the bounding rectangle
+   */
+  get width(): number;
+
+  set width(w);
+
+  /**
+   * The height of the bounding rectangle
+   */
+  get height(): number;
+
+  set height(h);
+
+  /**
+   * The x-coordinate of the bounding rectangle
+   */
+  get x(): number;
+
+  set x(x);
+
+  /**
+   * The y-coordinate of the bounding rectangle
+   */
+  get y(): number;
+
+  set y(y);
+
+  /**
    * Return an array of all the objects in the Quadtree (recursive)
    */
   get all(): Quadtree.Object<T>[];
+
+  /**
+   * Re-position the bounding rectangle of this Quadtree, clear existing data, and re-insert all objects.
+   * Useful if the Quadtree needs to move.
+   * @param x - The new x-coordinate of the bounding rectangle
+   * @param y - The new y-coordinate of the bounding rectangle
+   * @returns This Quadtree for method chaining
+   */
+  setPosition(x: number, y: number): this;
+
+  /**
+   * Re-dimension the bounding rectangle of this Quadtree, clear existing data, and re-insert all objects.
+   * Useful if the underlying canvas or region is resized.
+   * @param width  - The new width of the bounding rectangle
+   * @param height - The new height of the bounding rectangle
+   * @returns This Quadtree for method chaining
+   */
+  setDimensions(width: number, height: number): this;
 
   /**
    * Split this node into 4 sub-nodes.
@@ -130,7 +182,7 @@ declare class Quadtree<out T> {
   /**
    * Visualize the nodes and objects in the quadtree
    */
-  visualize({ objects }?: Quadtree.VisualizeOptions): void;
+  visualize(options?: Quadtree.VisualizeOptions): void;
 }
 
 declare namespace Quadtree {
@@ -138,7 +190,7 @@ declare namespace Quadtree {
   interface AnyConstructor extends Identity<typeof AnyQuadtree> {}
 
   /** @internal */
-  type _OptionalSet<T> = NullishProps<{
+  type _OptionalSet<T> = InexactPartial<{
     /** @remarks Foundry never passes an object including `n`, which is handled by `obj.n = obj.n || new Set()` in `#insert()` */
     n?: Set<Quadtree<T>>;
   }>;
@@ -165,14 +217,12 @@ declare namespace Quadtree {
     /**
      * The maximum number of objects per node
      * @defaultValue `20`
-     * @remarks Can't be `null` because it only has a parameter default.
      */
     maxObjects: number;
 
     /**
      * The maximum number of levels within the root Quadtree
      * @defaultValue `4`
-     * @remarks Can't be `null` because it only has a parameter default.
      */
     maxDepth: number;
 
@@ -180,13 +230,13 @@ declare namespace Quadtree {
      * The depth level of the sub-tree. For internal use
      * @defaultValue `0`
      * @remarks Can't be `null` because of an `=== 0` check in `#visualize()`, and it only has a parameter default
-     * Foundry marked `@internal`
+     * @internal
      */
     _depth: number;
 
     /**
      * The root of the quadtree. For internal use
-     * Foundry marked `@internal`
+     * @internal
      */
     _root: Quadtree<T> | null;
   }>;
@@ -196,20 +246,22 @@ declare namespace Quadtree {
    */
   interface Options<T> extends _Options<T> {}
 
+  type CollisionTestFunction<T> = ToMethod<(o: Quadtree.Object<T>, rect: PIXI.Rectangle) => boolean>;
+
   /** @internal */
-  type _GetObjectsOptions<T> = NullishProps<{
+  type _GetObjectsOptions<T> = InexactPartial<{
     /**
      * Function to further refine objects to return
      * after a potential collision is found. Parameters are the object and rect, and the
      * function should return true if the object should be added to the result set.
      */
     // Note(LukeAbby): Made a method to preserve covariance.
-    collisionTest(o: Quadtree.Object<T>, rect: Canvas.Rectangle): boolean;
+    collisionTest: CollisionTestFunction<T>;
 
     /**
      * The existing result set, for internal use.
      * @defaultValue `new Set<T>()`
-     * @remarks Foundry marked `@internal`
+     * @internal
      */
     _s: Set<T>;
   }>;
@@ -217,7 +269,7 @@ declare namespace Quadtree {
   interface GetObjectsOptions<T> extends _GetObjectsOptions<T> {}
 
   /** @internal */
-  type _VisualizeOptions = NullishProps<{
+  type _VisualizeOptions = InexactPartial<{
     /**
      * Visualize the rectangular bounds of objects in the Quadtree.
      * @defaultValue `false`
@@ -230,20 +282,35 @@ declare namespace Quadtree {
 
 /**
  * A subclass of Quadtree specifically intended for classifying the location of objects on the game canvas.
- * @remarks Foundry never uses `Quadtree` directly, only this class, and only ever fills it with `PrimaryCanvasObject`s or `PlaceableObject`s
+ * @remarks Foundry never uses `Quadtree` directly, only this class, and only ever fills it with:
+ * - {@linkcode foundry.canvas.groups.PrimaryCanvasGroup.quadtree | canvas.primary.quadtree}: {@linkcode foundry.canvas.primary.PrimaryCanvasObjectMixin.AnyMixed | PrimaryCanvasObject}s (generally if not always {@linkcode foundry.canvas.primary.PrimarySpriteMesh | PrimarySpriteMesh}es)
+ * - Various {@linkcode foundry.canvas.layers.PlaceablesLayer.quadtree | PlaceablesLayer} subclasses: Their associated {@linkcode foundry.canvas.placeables.PlaceableObject.Any | PlaceableObject}s
+ * - {@linkcode foundry.canvas.geometry.edges.CanvasEdges | canvas.edges}: {@linkcode foundry.canvas.geometry.edges.Edge | Edge}s (this quadtree is true private on `CanvasEdges` so can't be linked to)
  */
 declare class CanvasQuadtree<out T extends CanvasQuadtree.CanvasQuadtreeObject> extends Quadtree<T> {
+  /**
+   * Create a CanvasQuadtree which references `canvas.dimensions.rect`.
+   * We pass an empty object to the parent, then override `_bounds`.
+   * @param options - Additional options passed to the parent Quadtree.
+   */
   constructor(options?: Quadtree.Options<T>);
 
-  /** @remarks A getter for `canvas.dimensions.rect` */
-  readonly bounds: PIXI.Rectangle;
+  /**
+   * @remarks This is `defineProperty`'d as an accessor in construction, explicitly `configurable: true, enumerable: true`.
+   *
+   * The getter returns {@linkcode Canvas.Dimensions.rect | canvas.dimensions.rect} if it exists or a new, all-zeroes, PIXI.Rectangle otherwise
+   *
+   * The setter is a no-op that drops a console warning: "`CanvasQuadtree` ignores direct assignment to `_bounds`; it always uses `canvas.dimensions.rect`."
+   */
+  protected _bounds: PIXI.Rectangle;
 }
 
 declare namespace CanvasQuadtree {
   interface Any extends AnyCanvasQuadtree {}
   interface AnyConstructor extends Identity<typeof AnyCanvasQuadtree> {}
 
-  type CanvasQuadtreeObject = PrimaryCanvasObjectMixin.AnyMixed | PlaceableObject.Any;
+  /** @remarks See {@linkcode CanvasQuadtree} class description */
+  type CanvasQuadtreeObject = PrimaryCanvasObjectMixin.AnyMixed | PlaceableObject.Any | Edge;
 }
 
 export { Quadtree as default, CanvasQuadtree };

@@ -9,7 +9,7 @@ import Canvas = foundry.canvas.Canvas;
 
 declare class MyPointEffectSource<
   SourceData extends PointEffectSourceMixin.MixedSourceData = PointEffectSourceMixin.MixedSourceData,
-  SourceShape extends PointSourcePolygon = ClockwiseSweepPolygon,
+  SourceShape extends ClockwiseSweepPolygon = ClockwiseSweepPolygon,
 > extends PointEffectSourceMixin(BaseEffectSource)<SourceData, SourceShape> {
   static defaultData: PointEffectSourceMixin.MixedSourceData;
   shape: SourceShape | undefined;

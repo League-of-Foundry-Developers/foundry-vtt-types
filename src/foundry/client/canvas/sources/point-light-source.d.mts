@@ -13,7 +13,7 @@ import type {
   PointEffectSourceMixin,
   RenderedEffectSource,
 } from "#client/canvas/sources/_module.d.mts";
-import type { PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
+import type { ClockwiseSweepPolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 import type { CanvasVisibility } from "#client/canvas/groups/_module.d.mts";
 import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
@@ -23,7 +23,7 @@ import type { PointSourceMesh } from "#client/canvas/containers/_module.d.mts";
  */
 declare class PointLightSource<
   SourceData extends PointLightSource.SourceData = PointLightSource.SourceData,
-  SourceShape extends PointSourcePolygon = PointLightSource.ImplementationPolygon,
+  SourceShape extends ClockwiseSweepPolygon = PointLightSource.ImplementationPolygon,
   RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = BaseLightSource.Layers,
 > extends PointEffectSourceMixin(BaseLightSource)<SourceData, SourceShape, RenderingLayers> {
   /** @privateRemarks Actually inherited from {@linkcode BaseLightSource} */
@@ -96,7 +96,7 @@ declare namespace PointLightSource {
 
   type Initialized<
     SourceData extends PointLightSource.SourceData = PointLightSource.SourceData,
-    SourceShape extends PointSourcePolygon = PointLightSource.ImplementationPolygon,
+    SourceShape extends ClockwiseSweepPolygon = PointLightSource.ImplementationPolygon,
     RenderingLayers extends Record<string, RenderedEffectSource.LayerConfig> = BaseLightSource.Layers,
   > = Override<
     PointLightSource<SourceData, SourceShape, RenderingLayers>,
@@ -124,7 +124,7 @@ export default PointLightSource;
 
 declare abstract class AnyPointLightSource extends PointLightSource<
   PointLightSource.SourceData,
-  PointSourcePolygon,
+  ClockwiseSweepPolygon,
   BaseLightSource.Layers
 > {
   constructor(...args: never);

@@ -15,14 +15,13 @@ type ClipperPoint = PIXI.Polygon.ClipperPoint;
 
 type EdgeType = Edge.EdgeTypes;
 
-type EdgeOptions = Edge.ConstructorOptions;
+type EdgeOptions = ClockwiseSweepPolygon.EdgeOptions;
 
 type PointSourcePolygonType = PointSourcePolygon.PolygonType;
 
 type PointSourcePolygonConfig = PointSourcePolygon.Config;
 
-// TODO: new in v13
-// type ClockwiseSweepPolygonConfig =
+type ClockwiseSweepPolygonConfig = ClockwiseSweepPolygon.Config;
 
 type RayIntersection = Ray.Intersection;
 

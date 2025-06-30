@@ -1,6 +1,6 @@
-import type { Identity, IntentionalPartial } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type Edge from "#client/canvas/geometry/edges/edge.d.mts";
+import type { Edge, PolygonVertex, CollisionResult } from "#client/canvas/geometry/edges/_module.d.mts";
 import type { PointSourcePolygon, Ray } from "#client/canvas/geometry/_module.d.mts";
 
 /**
@@ -9,16 +9,30 @@ import type { PointSourcePolygon, Ray } from "#client/canvas/geometry/_module.d.
  * This algorithm was created with valuable contributions from https://github.com/caewok
  */
 declare class ClockwiseSweepPolygon extends PointSourcePolygon {
-  // This does not appear in Foundry code, it's a necessary type override
-  static override create(origin: Canvas.Point, config: PointSourcePolygon.Config): ClockwiseSweepPolygon;
+  /** @privateRemarks Necessary type override */
+  static override benchmark(
+    iterations: number,
+    origin: Canvas.PossiblyElevatedPoint,
+    config: ClockwiseSweepPolygon.Config,
+  ): Promise<void>;
 
-  // This does not appear in foundry code, it's a necessary type override
+  /** @privateRemarks Necessary type override */
+  static override create(origin: Canvas.Point, config: ClockwiseSweepPolygon.Config): ClockwiseSweepPolygon;
+
+  /** @privateRemarks Necessary type override */
+  static override testCollision<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>(
+    origin: Canvas.PossiblyElevatedPoint,
+    destination: Canvas.PossiblyElevatedPoint,
+    { mode, ...config }: ClockwiseSweepPolygon.TestCollisionOptions<Mode>,
+  ): PointSourcePolygon.TestCollision<Mode>;
+
+  /** @privateRemarks Necessary type override */
   override config: ClockwiseSweepPolygon.StoredConfig;
 
   /**
    * A mapping of vertices which define potential collision points
    */
-  vertices: Map<number, foundry.canvas.geometry.edges.PolygonVertex>;
+  vertices: Map<number, PolygonVertex>;
 
   /**
    * The set of edges which define potential boundaries of the polygon
@@ -28,38 +42,45 @@ declare class ClockwiseSweepPolygon extends PointSourcePolygon {
   /**
    * A collection of rays which are fired at vertices
    */
-  // @ts-expect-error Getter/setter routine is deprecated functionality as of v11, removed in v13
   rays: ClockwiseSweepPolygon.Ray[];
 
-  override initialize(origin: Canvas.Point, config: PointSourcePolygon.Config): void;
+  /**
+   * Is this polygon using inner bounds?
+   */
+  get useInnerBounds(): boolean;
+
+  override initialize(origin: Canvas.PossiblyElevatedPoint, config: ClockwiseSweepPolygon.Config): void;
+
+  /**
+   * Determine the edge types and their manner of inclusion for this polygon instance.
+   * @param config - Optional polygon config which may include deprecated properties
+   * @remarks The deprecated properties referred to are {@linkcode ClockwiseSweepPolygon.Config.useInnerBounds | useInnerBounds}
+   * and {@linkcode ClockwiseSweepPolygon.Config.includeDarkness | includeDarkness}
+   */
+  protected _determineEdgeTypes(
+    type: Edge.EdgeTypes,
+    priority: number,
+    config?: ClockwiseSweepPolygon.Config,
+  ): ClockwiseSweepPolygon.EdgeTypesConfiguration;
 
   clone(): this;
 
   protected override _compute(): void;
 
   /**
-   * Get the super-set of walls which could potentially apply to this polygon.
-   * Define a custom collision test used by the Quadtree to obtain candidate Walls.
+   * Retrieves the super-set of walls that could potentially apply to this polygon.
+   * Utilizes a custom collision test and the Quadtree to obtain candidate edges efficiently.
    */
   protected _identifyEdges(): void;
-
-  /**
-   * Determine the edge types and their manner of inclusion for this polygon instance
-   */
-  protected _determineEdgeTypes(): ClockwiseSweepPolygon.DetermineEdgesReturn;
 
   /**
    * Test whether a wall should be included in the computed polygon for a given origin and type
    * @param edge      - The Edge being considered
    * @param edgeTypes - Which types of edges are being used? 0=no, 1=maybe, 2=always
-   * @param bounds    - The overall bounding box
    * @returns Should the edge be included?
+   * @remarks See {@linkcode ClockwiseSweepPolygon.Config.edgeTypes}
    */
-  protected _testEdgeInclusion(
-    edge: Edge,
-    edgeTypes: ClockwiseSweepPolygon.DetermineEdgesReturn,
-    bounds: PIXI.Rectangle,
-  ): boolean;
+  protected _testEdgeInclusion(edge: Edge, edgeTypes: ClockwiseSweepPolygon.EdgeTypesConfiguration): boolean;
 
   /**
    * Compute the aggregate bounding box which is the intersection of all boundary shapes.
@@ -79,23 +100,20 @@ declare class ClockwiseSweepPolygon extends PointSourcePolygon {
 
   /**
    * Execute the sweep over wall vertices
-   * @privateRemarks Foundry marked `@private`
    */
   protected _executeSweep(): void;
 
   /**
    * Determine the initial set of active edges as those which intersect with the initial ray
    * @returns A set of initially active edges
-   * @privateRemarks Foundry marked `@private`
    */
   protected _initializeActiveEdges(): Set<Edge>;
 
   /**
    * Sort vertices clockwise from the initial ray (due west).
    * @returns The array of sorted vertices
-   * @privateRemarks Foundry marked `@private`
    */
-  protected _sortVertices(): foundry.canvas.geometry.edges.PolygonVertex[];
+  protected _sortVertices(): PolygonVertex[];
 
   /**
    * Test whether a target vertex is behind some closer active edge.
@@ -105,26 +123,19 @@ declare class ClockwiseSweepPolygon extends PointSourcePolygon {
    * @param vertex      - The target vertex
    * @param activeEdges - The set of active edges
    * @returns Is the target vertex behind some closer edge?
-   * @privateRemarks Foundry marked `@private`
    */
   protected _isVertexBehindActiveEdges(
-    vertex: foundry.canvas.geometry.edges.PolygonVertex,
+    vertex: PolygonVertex,
     activeEdges: Set<Edge>,
-  ): { isBehind: boolean; wasLimited: boolean };
+  ): ClockwiseSweepPolygon.IsVertexBehindActiveEdges;
 
   /**
    * Determine the result for the sweep at a given vertex
    * @param vertex        - The target vertex
    * @param activeEdges   - The set of active edges
-   * @param hasCollinear  - Are there collinear vertices behind the target vertex?
-   *                        default: `false`
-   * @privateRemarks Foundry marked `@private`
+   * @param hasCollinear  - Are there collinear vertices behind the target vertex? (default: `false`)
    */
-  protected _determineSweepResult(
-    vertex: foundry.canvas.geometry.edges.PolygonVertex,
-    activeEdges: Set<Edge>,
-    hasCollinear?: boolean,
-  ): void;
+  protected _determineSweepResult(vertex: PolygonVertex, activeEdges: Set<Edge>, hasCollinear?: boolean): void;
 
   /**
    * Switch to a new active edge.
@@ -138,10 +149,10 @@ declare class ClockwiseSweepPolygon extends PointSourcePolygon {
    *
    * @param result      - The pending collision result
    * @param activeEdges - The set of currently active edges
-   * @privateRemarks Foundry marked `@private`
    */
-  protected _switchEdge(result: foundry.canvas.geometry.edges.CollisionResult, activeEdges: Set<Edge>): void;
+  protected _switchEdge(result: CollisionResult, activeEdges: Set<Edge>): void;
 
+  /** @remarks Does not take the new-as-of-v13 `destination` param from {@linkcode PointSourcePolygon._testCollision | super} (yet?) */
   protected override _testCollision<Mode extends PointSourcePolygon.CollisionModes>(
     ray: Ray,
     mode: Mode,
@@ -151,34 +162,115 @@ declare class ClockwiseSweepPolygon extends PointSourcePolygon {
 
   /**
    * Visualize the polygon, displaying its computed area, rays, and collision points
-   * @privateRemarks Foundry marked `@private`
    */
-  protected _visualizeCollision(ray: Ray, collisions: foundry.canvas.geometry.edges.PolygonVertex[]): void;
+  protected _visualizeCollision(ray: Ray, collisions: PolygonVertex[]): void;
+
+  /**
+   * This function has been adapted from {@linkcode ClipperLib.Clipper.CleanPolygon | Clipper's CleanPolygon function}.
+   * When adding a new point to the polygon, check for collinearity with prior points to cull unnecessary points.
+   * This also removes spikes where we traverse points (a, b, a).
+   * We also enforce a minimum distance between two points, or a minimum perpendicular distance between three almost
+   * collinear points.
+   */
+  override addPoint(point: PIXI.IPointData): this;
+
+  #ClockwiseSweepPolygon: true;
 }
 
 declare namespace ClockwiseSweepPolygon {
   interface Any extends AnyClockwiseSweepPolygon {}
   interface AnyConstructor extends Identity<typeof AnyClockwiseSweepPolygon> {}
 
-  interface StoredConfig extends PointSourcePolygon.StoredConfig {
-    /** The computed bounding box for the polygon */
+  /**
+   * CSP-added properties of the config that have defaults applied in {@linkcode ClockwiseSweepPolygon.initialize | ClockwiseSweepPolygon#initialize}
+   * @internal
+   */
+  interface _Config {
+    /**
+     * Optional priority when it comes to ignore edges from darkness and light sources
+     * @defaultValue `0`
+     */
+    priority: number;
+
+    /**
+     * Edge types configuration object. This is not required by most polygons and will be inferred based on the polygon type and priority.
+     *
+     * How modes are working:
+     * - `0` (no):     The edges of this type are rejected and not processed (equivalent of not having an edgeType.)
+     * - `1` (maybe):  The edges are processed and tested for inclusion.
+     * - `2` (always): The edges are automatically included.
+     * @defaultValue {@linkcode ClockwiseSweepPolygon._determineEdgeTypes | this._determineEdgeTypes(config.type, config.priority, config)}
+     */
+    edgeTypes: EdgeTypesConfiguration;
+
+    /**
+     * The computed bounding box for the polygon
+     * @defaultValue {@linkcode ClockwiseSweepPolygon._defineBoundingBox | this._defineBoundingBox()}
+     * @privateRemarks Foundry includes this in the `PointSourcePolygonConfig` typedef, but it is only used in `ClockwiseSweepPolygon`
+     */
     boundingBox: PIXI.Rectangle;
   }
 
   /**
-   * @remarks Foundry types this as `Record<Edge.EdgeTypes, 0 | 1 | 2>`, but some keys are mutually exclusive,
-   * and none are ever set to `0`, they're simply omitted and then tested for truthiness in `#_testEdgeInclusion`
+   * CSP-added properties of the config that are not guaranteed to exist by {@linkcode ClockwiseSweepPolygon.initialize | ClockwiseSweepPolygon#initialize}
+   * @internal
    */
-  type DetermineEdgesReturn = IntentionalPartial<Record<Edge.EdgeTypes, 1 | 2>>;
+  type _InexactConfig = InexactPartial<{
+    /**
+     * Deactivate/Activate specific edge types behaviors.
+     */
+    edgeOptions: EdgeOptions;
+
+    /**
+     * @deprecated "`config.useInnerBounds` is now deprecated, replaced by {@linkcode ClockwiseSweepPolygon.Config.edgeTypes | edgeTypes}
+     * polygon configuration behaviors." (since v13, until v15)
+     */
+    useInnerBounds: boolean;
+
+    /**
+     * @deprecated "`config.includeDarkness` is now deprecated, replaced by {@linkcode ClockwiseSweepPolygon.Config.edgeTypes | edgeTypes}
+     * polygon configuration behaviors." (since v13, until v15)
+     */
+    includeDarkness: boolean;
+  }>;
+
+  interface Config extends PointSourcePolygon.Config, InexactPartial<_Config>, _InexactConfig {}
+
+  interface StoredConfig extends PointSourcePolygon.StoredConfig, _Config, _InexactConfig {}
+
+  interface TestCollisionConfig extends PointSourcePolygon._TestCollisionConfig, Omit<Config, "type"> {}
+
+  interface TestCollisionOptions<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>
+    extends PointSourcePolygon._TestCollisionOptions<Mode>,
+      TestCollisionConfig {}
+
+  /**
+   * @remarks See {@linkcode Config.edgeTypes}
+   *
+   * @privateRemarks Foundry never sets any keys to `0`, they're simply omitted, then tested for truthiness in
+   * {@linkcode ClockwiseSweepPolygon._testEdgeInclusion | #_testEdgeInclusion}.
+   */
+  interface EdgeTypesConfiguration extends InexactPartial<Record<Edge.EdgeTypes, 0 | 1 | 2>> {}
+
+  /**
+   * @privateRemarks Entries are only checked for `===` or `!== false` in {@linkcode ClockwiseSweepPolygon._determineEdgeTypes | ClockwiseSweepPolygon#_determineEdgeTypes},
+   * so `undefined` is fine
+   */
+  interface EdgeOptions extends InexactPartial<Record<Edge.EdgeTypes, boolean>> {}
+
+  interface IsVertexBehindActiveEdges {
+    isBehind: boolean;
+    wasLimited: boolean;
+  }
 
   interface Ray extends foundry.canvas.geometry.Ray {
     /**
-     * @remarks Only set in `ClockwiseSweepPolygon#_switchEdge` and only consumed in `#visualize`,
-     * despite unrelated method(s) having parameters claiming to want a `PolygonRay`
+     * @remarks Only set in {@linkcode ClockwiseSweepPolygon._switchEdge | ClockwiseSweepPolygon#_switchEdge} and only consumed in
+     * {@linkcode ClockwiseSweepPolygon.visualize | #visualize}, despite unrelated method(s) having parameters claiming to want a `PolygonRay`
      *
      * Tested for truthiness in `#visualize` before use, so a nullish value is fine but never attains in core
      */
-    result?: foundry.canvas.geometry.edges.CollisionResult | undefined | null;
+    result?: CollisionResult | undefined;
   }
 }
 
