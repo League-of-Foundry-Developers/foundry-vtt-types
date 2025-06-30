@@ -164,10 +164,7 @@ declare namespace WeilerAthertonClipper {
     clipOpts: WeilerAthertonClipper.ClipOpts;
   }
 
-  /**
-   *
-   * @internal
-   */
+  /** @internal */
   type _CombineOptions = InexactPartial<{
     /**
      * If the WeilerAtherton constructor could mutate or not the subject polygon points

@@ -2731,7 +2731,7 @@ declare global {
       }
 
       /**
-       * @privateRemarks Foundry types this as `{@enum `{@linkcode geometry.PointSourcePolygon | PointSourcePolygon}`}`,
+       * @privateRemarks Foundry types this as {@linkcode geometry.PointSourcePolygon | @enum PointSourcePolygon},
        * but all the runtime defaults are {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}, and its
        * types and methods are assumed in other canvas classes, so entries have been constrained to it over `PointSourcePolygon`.
        * It is not impossible to add a new type of source, so the index signature is included, but this is unlikely to
