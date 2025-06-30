@@ -32,8 +32,8 @@ export const ASCII = `__________________________________________________________
 ===============================================================`;
 
 /**
- * Define the allowed ActiveEffect application modes
- * @remarks (by Foundry) Other arbitrary mode numbers can be used by systems and modules to identify special behaviors and are ignored
+ * Define the allowed ActiveEffect application modes.
+ * Other arbitrary mode numbers can be used by systems and modules to identify special behaviors and are ignored
  */
 export declare const ACTIVE_EFFECT_MODES: Readonly<{
   /**
@@ -88,34 +88,34 @@ export type ACTIVE_EFFECT_MODES = Brand<number, "constants.ACTIVE_EFFECT_MODES">
  * Define the string name used for the base document type when specific sub-types are not defined by the system
  */
 export declare const BASE_DOCUMENT_TYPE: "base";
-export type BASE_DOCUMENT_TYPE = "base";
+export type BASE_DOCUMENT_TYPE = typeof BASE_DOCUMENT_TYPE;
 
 /**
  * Define the methods by which a Card can be drawn from a Cards stack
- * TOP and FIRST are synonymous, as are BOTTOM and LAST.
+ * @remarks `TOP` and `FIRST` are synonymous, as are `BOTTOM` and `LAST`.
  */
 export declare const CARD_DRAW_MODES: Readonly<{
   /**
    * Draw the first card from the stack
-   * Synonymous with @see {@linkcode CARD_DRAW_MODES.TOP}
+   * Synonymous with {@linkcode CARD_DRAW_MODES.TOP}
    */
   FIRST: 0 & CARD_DRAW_MODES;
 
   /**
    * Draw the top card from the stack
-   * Synonymous with @see {@linkcode CARD_DRAW_MODES.FIRST}
+   * Synonymous with {@linkcode CARD_DRAW_MODES.FIRST}
    */
   TOP: 0 & CARD_DRAW_MODES;
 
   /**
    * Draw the last card from the stack
-   * Synonymous with @see {@linkcode CARD_DRAW_MODES.BOTTOM}
+   * Synonymous with {@linkcode CARD_DRAW_MODES.BOTTOM}
    */
   LAST: 1 & CARD_DRAW_MODES;
 
   /**
    * Draw the bottom card from the stack
-   * Synonymous with @see {@linkcode CARD_DRAW_MODES.LAST}
+   * Synonymous with {@linkcode CARD_DRAW_MODES.LAST}
    */
   BOTTOM: 1 & CARD_DRAW_MODES;
 
@@ -164,16 +164,14 @@ export declare const CHAT_MESSAGE_STYLES: Readonly<{
   EMOTE: 3 & CHAT_MESSAGE_STYLES;
 
   /**
-   * @deprecated since v12
-   *
-   * @remarks Define rolls directly in ChatMessage#rolls instead.
+   * @deprecated "`CONST.CHAT_MESSAGE_STYLES.ROLL` is deprecated in favor of defining rolls directly in {@linkcode ChatMessage.rolls | ChatMessage#rolls}"
+   * (since v12, until v14)
    */
   ROLL: 0 & CHAT_MESSAGE_STYLES;
 
   /**
-   * @deprecated since v12
-   *
-   * @remarks Define whispers directly in ChatMessage#whisper instead.
+   * @deprecated "`CONST.CHAT_MESSAGE_STYLES.Whisper` is deprecated in favor of defining whisper recipients directly in {@linkcode ChatMessage.whisper | ChatMessage#whisper}"
+   * (since v12, until v14)
    */
   WHISPER: 0 & CHAT_MESSAGE_STYLES;
 }>;
@@ -209,6 +207,21 @@ export declare const COMPATIBILITY_MODES: Readonly<{
   FAILURE: 3 & COMPATIBILITY_MODES;
 }>;
 export type COMPATIBILITY_MODES = Brand<number, "constants.COMPATIBILITY_MODES">;
+
+/**
+ * Configure custom cursor images to use when interacting with the application.
+ */
+export declare const CURSOR_STYLES: Readonly<{
+  default: "default";
+  "default-down": "default";
+  pointer: "pointer";
+  "pointer-down": "pointer";
+  grab: "grab";
+  "grab-down": "grabbing";
+  text: "text";
+  "text-down": "text";
+}>;
+export type CURSOR_STYLES = Brand<string, "constants.CURSOR_STYLES">;
 
 /**
  * The lighting illumination levels which are supported.
@@ -290,7 +303,7 @@ export type EMBEDDED_DOCUMENT_TYPES = ValueOf<typeof EMBEDDED_DOCUMENT_TYPES>;
 /**
  * A listing of all valid Document types, both primary and embedded.
  */
-export const ALL_DOCUMENT_TYPES: ALL_DOCUMENT_TYPES[];
+export const ALL_DOCUMENT_TYPES: readonly ALL_DOCUMENT_TYPES[];
 export type ALL_DOCUMENT_TYPES = PRIMARY_DOCUMENT_TYPES | EMBEDDED_DOCUMENT_TYPES;
 
 /**
@@ -396,24 +409,24 @@ export declare const DICE_ROLL_MODES: Readonly<{
   /**
    * This roll is visible to all players.
    */
-  PUBLIC: "publicroll";
+  PUBLIC: "publicroll" & DICE_ROLL_MODES;
 
   /**
    * Rolls of this type are only visible to the player that rolled and any Game Master users.
    */
-  PRIVATE: "gmroll";
+  PRIVATE: "gmroll" & DICE_ROLL_MODES;
 
   /**
-   * A private dice roll only visible to Game Master users. The rolling player will not see the result of their own roll.
+   * A private dice roll only visible to Gamemaster users. The rolling player will not see the result of their own roll.
    */
-  BLIND: "blindroll";
+  BLIND: "blindroll" & DICE_ROLL_MODES;
 
   /**
    * A private dice roll which is only visible to the user who rolled it.
    */
-  SELF: "selfroll";
+  SELF: "selfroll" & DICE_ROLL_MODES;
 }>;
-export type DICE_ROLL_MODES = ValueOf<typeof DICE_ROLL_MODES>;
+export type DICE_ROLL_MODES = Brand<string, "constants.DICE_ROLL_MODES">;
 
 /**
  * The allowed fill types which a Drawing object may display
@@ -457,7 +470,7 @@ export type FOLDER_DOCUMENT_TYPES = ValueOf<typeof FOLDER_DOCUMENT_TYPES>;
 /**
  * The maximum allowed level of depth for Folder nesting
  */
-export declare const FOLDER_MAX_DEPTH: number;
+export declare const FOLDER_MAX_DEPTH: 4;
 
 /**
  * A list of allowed game URL names
@@ -472,9 +485,17 @@ export declare const MOVEMENT_DIRECTIONS: Readonly<{
   DOWN: 0x2 & MOVEMENT_DIRECTIONS;
   LEFT: 0x4 & MOVEMENT_DIRECTIONS;
   RIGHT: 0x8 & MOVEMENT_DIRECTIONS;
+
+  /** @remarks `0x1 | 0x4` */
   UP_LEFT: 0x5 & MOVEMENT_DIRECTIONS;
+
+  /** @remarks `0x1 | 0x8` */
   UP_RIGHT: 0x9 & MOVEMENT_DIRECTIONS;
+
+  /** @remarks `0x2 | 0x4` */
   DOWN_LEFT: 0x6 & MOVEMENT_DIRECTIONS;
+
+  /** @remarks `0x2 | 0x8` */
   DOWN_RIGHT: 0xa & MOVEMENT_DIRECTIONS;
 }>;
 export type MOVEMENT_DIRECTIONS = Brand<number, "constants.MOVEMENT_DIRECTIONS">;
@@ -482,7 +503,7 @@ export type MOVEMENT_DIRECTIONS = Brand<number, "constants.MOVEMENT_DIRECTIONS">
 /**
  * The minimum allowed grid size which is supported by the software
  */
-export declare const GRID_MIN_SIZE: number;
+export declare const GRID_MIN_SIZE: 20;
 
 /**
  * The allowed Grid types which are supported by the software
@@ -523,7 +544,8 @@ export type GRID_TYPES = Brand<number, "constants.GRID_TYPES">;
 
 /**
  * The different rules to define and measure diagonal distance/cost in a square grid.
- * The description of each option refers to the distance/cost of moving diagonally relative to the distance/cost of a horizontal or vertical move.
+ * The description of each option refers to the distance/cost of moving diagonally relative to the distance/cost of a
+ * horizontal or vertical move.
  */
 export declare const GRID_DIAGONALS: Readonly<{
   /**
@@ -667,6 +689,7 @@ export type GRID_SNAPPING_MODES = Brand<number, "constants.GRID_SNAPPING_MODES">
  * A list of supported setup URL names
  */
 export declare const SETUP_VIEWS: readonly ["auth", "license", "setup", "players", "join", "update"];
+export type SETUP_VIEWS = ValueOf<typeof SETUP_VIEWS>;
 
 /**
  * An Array of valid MacroAction scope values
@@ -682,14 +705,14 @@ export declare const MACRO_TYPES: Readonly<{
   /**
    * Complex and powerful macros which leverage the FVTT API through plain JavaScript to perform functions as simple or as advanced as you can imagine.
    */
-  SCRIPT: "script";
+  SCRIPT: "script" & MACRO_TYPES;
 
   /**
    * Simple and easy to use, chat macros post pre-defined chat messages to the chat log when executed. All users can execute chat macros by default.
    */
-  CHAT: "chat";
+  CHAT: "chat" & MACRO_TYPES;
 }>;
-export type MACRO_TYPES = ValueOf<typeof MACRO_TYPES>;
+export type MACRO_TYPES = Brand<string, "constants.MACRO_TYPES">;
 
 /**
  * The allowed channels for audio playback.

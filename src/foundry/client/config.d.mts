@@ -3514,7 +3514,55 @@ declare global {
     }
 
     namespace Dice {
-      interface RollModes extends Record<foundry.CONST.DICE_ROLL_MODES, string> {}
+      interface RollModes {
+        [rollMode: string]: RollModeConfig;
+        publicroll: RollModes.PublicRoll;
+        gmroll: RollModes.GMRoll;
+        blindroll: RollModes.BlindRoll;
+        selfroll: RollModes.SelfRoll;
+      }
+
+      interface RollModeConfig {
+        /** @remarks A localization key */
+        label: string;
+
+        /** @remarks Just the class string, e.g "fa-solid fa-globe" */
+        icon: string;
+      }
+
+      namespace RollModes {
+        interface PublicRoll extends RollModeConfig {
+          /** @defaultValue `"CHAT.RollPublic"` */
+          label: string;
+
+          /** @defaultValue `"fa-solid fa-globe"` */
+          icon: string;
+        }
+
+        interface GMRoll extends RollModeConfig {
+          /** @defaultValue `"CHAT.RollPrivate"` */
+          label: string;
+
+          /** @defaultValue `"fa-solid fa-user-secret"` */
+          icon: string;
+        }
+
+        interface BlindRoll extends RollModeConfig {
+          /** @defaultValue `"CHAT.RollBlind"` */
+          label: string;
+
+          /** @defaultValue `"fa-solid fa-eye-slash"` */
+          icon: string;
+        }
+
+        interface SelfRoll extends RollModeConfig {
+          /** @defaultValue `"CHAT.RollSelf"` */
+          label: string;
+
+          /** @defaultValue `"fa-solid fa-user"` */
+          icon: string;
+        }
+      }
     }
 
     namespace Combat {
