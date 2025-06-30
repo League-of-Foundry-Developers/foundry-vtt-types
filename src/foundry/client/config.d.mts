@@ -3560,6 +3560,16 @@ declare global {
 
       interface _MovementActionConfig {
         /**
+         * The FontAwesome icon class.
+         */
+        icon: string;
+
+        /**
+         * An image filename. Takes precedence over the icon if both are supplied.
+         */
+        img: string;
+
+        /**
          * The number that is used to sort the movement actions / movement action configs.
          * Determines the order in the Token Config/HUD and of cycling.
          * @defaultValue `0`
@@ -3630,11 +3640,6 @@ declare global {
          * The label of the movement action.
          */
         label: string;
-
-        /**
-         * The icon of the movement action.
-         */
-        icon: string;
       }
     }
 

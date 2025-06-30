@@ -9,7 +9,7 @@
 // eslint-disable-next-line import-x/export
 export * from "#common/_types.mjs";
 
-type HotReloadData = unknown;
+type HotReloadData = Hooks.HotReloadData;
 
 type RulerWaypoint = unknown;
 
@@ -29,13 +29,13 @@ type TokenGEtTerrainMovementPathWaypoint = unknown;
 
 type TokenTerrainMovementWaypoint = unknown;
 
-type TokenRulerData = unknown;
+type TokenRulerData = foundry.canvas.placeables.tokens.TokenRuler.Data;
 
 type TokenPlannedMovement = unknown;
 
-type TokenRulerWaypointData = unknown;
+type TokenRulerWaypointData = foundry.canvas.placeables.tokens.TokenRuler.WaypointData;
 
-type TokenRulerWaypoint = unknown;
+type TokenRulerWaypoint = foundry.canvas.placeables.tokens.TokenRuler.Waypoint;
 
 type TokenDragContext = unknown;
 
