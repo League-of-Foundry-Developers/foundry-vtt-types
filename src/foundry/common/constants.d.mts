@@ -1,4 +1,4 @@
-import type { Brand, Unbrand, ValueOf } from "#utils";
+import type { Brand, DeepReadonly, Identity, ValueOf } from "#utils";
 
 /**
  * The shortened software name
@@ -718,11 +718,11 @@ export type MACRO_TYPES = ValueOf<typeof MACRO_TYPES>;
  * The allowed channels for audio playback.
  */
 export declare const AUDIO_CHANNELS: Readonly<{
-  music: "AUDIO.CHANNELS.MUSIC.label" & AUDIO_CHANNELS;
-  environment: "AUDIO.CHANNELS.ENVIRONMENT.label" & AUDIO_CHANNELS;
-  interface: "AUDIO.CHANNELS.INTERFACE.label" & AUDIO_CHANNELS;
+  music: "AUDIO.CHANNELS.MUSIC.label";
+  environment: "AUDIO.CHANNELS.ENVIRONMENT.label";
+  interface: "AUDIO.CHANNELS.INTERFACE.label";
 }>;
-export type AUDIO_CHANNELS = Brand<string, "constants.AUDIO_CHANNELS">;
+export type AUDIO_CHANNELS = ValueOf<typeof AUDIO_CHANNELS>;
 
 /**
  * The allowed playback modes for an audio Playlist
@@ -761,23 +761,23 @@ export declare const PLAYLIST_SORT_MODES: Readonly<{
    * Sort sounds alphabetically.
    * @defaultValue
    */
-  ALPHABETICAL: "a" & PLAYLIST_SORT_MODES;
+  ALPHABETICAL: "a";
 
   /**
    * Sort sounds by manual drag-and-drop.
    */
-  MANUAL: "m" & PLAYLIST_SORT_MODES;
+  MANUAL: "m";
 }>;
-export type PLAYLIST_SORT_MODES = Brand<string, "constants.PLAYLIST_SORT_MODES">;
+export type PLAYLIST_SORT_MODES = ValueOf<typeof PLAYLIST_SORT_MODES>;
 
 /**
  * The available modes for searching within a DirectoryCollection
  */
 export declare const DIRECTORY_SEARCH_MODES: Readonly<{
-  FULL: "full" & DIRECTORY_SEARCH_MODES;
-  NAME: "name" & DIRECTORY_SEARCH_MODES;
+  FULL: "full";
+  NAME: "name";
 }>;
-export type DIRECTORY_SEARCH_MODES = Brand<string, "constants.DIRECTORY_SEARCH_MODES">;
+export type DIRECTORY_SEARCH_MODES = ValueOf<typeof DIRECTORY_SEARCH_MODES>;
 
 /**
  * The allowed package types
@@ -858,24 +858,24 @@ export declare const SOFTWARE_UPDATE_CHANNELS: Readonly<{
   /**
    * The Stable release channel
    */
-  stable: "SETUP.UpdateStable" & SOFTWARE_UPDATE_CHANNELS;
+  stable: "SETUP.UpdateStable";
 
   /**
    * The User Testing release channel
    */
-  testing: "SETUP.UpdateTesting" & SOFTWARE_UPDATE_CHANNELS;
+  testing: "SETUP.UpdateTesting";
 
   /**
    * The Development release channel
    */
-  development: "SETUP.UpdateDevelopment" & SOFTWARE_UPDATE_CHANNELS;
+  development: "SETUP.UpdateDevelopment";
 
   /**
    * The Prototype release channel
    */
-  prototype: "SETUP.UpdatePrototype" & SOFTWARE_UPDATE_CHANNELS;
+  prototype: "SETUP.UpdatePrototype";
 }>;
-export type SOFTWARE_UPDATE_CHANNELS = Brand<string, "constants.SOFTWARE_UPDATE_CHANNELS">;
+export type SOFTWARE_UPDATE_CHANNELS = ValueOf<typeof SOFTWARE_UPDATE_CHANNELS>;
 
 /**
  * The default sorting density for manually ordering child objects within a parent
@@ -904,7 +904,7 @@ export declare const TABLE_RESULT_TYPES: Readonly<{
    */
   COMPENDIUM: "pack";
 }>;
-export type TABLE_RESULT_TYPES = Brand<string, "constants.TABLE_RESULT_TYPES">;
+export type TABLE_RESULT_TYPES = ValueOf<typeof TABLE_RESULT_TYPES>;
 
 /**
  * The allowed formats of a Journal Entry Page.
@@ -988,10 +988,32 @@ export type OCCLUSION_MODES = Brand<number, "constants.OCCLUSION_MODES">;
 
 /**
  * Alias for old tile occlusion modes definition
+ * @privateRemarks Foundry just does `export const TILE_OCCLUSION_MODES = OCCLUSION_MODES` but we have to be un-DRY if we want a different brand
  */
-// TODO: improve this so TILE_OCCLUSION_MODES have their literal part, either by de-branding/re-branding dynamically or simply repeating ourselves
 export declare const TILE_OCCLUSION_MODES: {
-  [K in keyof typeof OCCLUSION_MODES]: Unbrand<(typeof OCCLUSION_MODES)[K]>; //& TILE_OCCLUSION_MODES;
+  /**
+   * Turns off occlusion, making the tile never fade while tokens are under it.
+   */
+  NONE: 0 & TILE_OCCLUSION_MODES;
+
+  /**
+   * Causes the whole tile to fade when an actor token moves under it.
+   * @defaultValue
+   */
+  FADE: 1 & TILE_OCCLUSION_MODES;
+
+  // ROOF: 2;  This mode is no longer supported so we don't use 2 for any other mode
+
+  /**
+   * Causes the tile to reveal the background in the vicinity of an actor token under it. The radius is determined by the token's size.
+   */
+  RADIAL: 3 & TILE_OCCLUSION_MODES;
+
+  /**
+   * Causes the tile to be partially revealed based on the vision of the actor, which does not need to be under the tile to see what's beneath it.
+   * This is useful for roofs on buildings where players could see through a window or door, viewing only a portion of what is obscured by the roof itself.
+   */
+  VISION: 4 & TILE_OCCLUSION_MODES;
 };
 export type TILE_OCCLUSION_MODES = Brand<number, "constants.TILE_OCCLUSION_MODES">;
 
@@ -1217,7 +1239,6 @@ export declare const USER_ROLE_NAMES: Readonly<{
    */
   "4": "GAMEMASTER";
 }>;
-// TODO: decide if this is worth breaking pattern for utility, or if it should be a Brand instead
 export type USER_ROLE_NAMES = ValueOf<typeof USER_ROLE_NAMES>;
 
 /**
@@ -1257,7 +1278,7 @@ export interface UserPermission {
 /**
  * Define the recognized User capabilities which individual Users or role levels may be permitted to perform
  */
-export declare const USER_PERMISSIONS: Readonly<{
+export declare const USER_PERMISSIONS: DeepReadonly<{
   /**
    * @defaultValue
    * ```typescript
@@ -1557,6 +1578,19 @@ export declare const USER_PERMISSIONS: Readonly<{
    * ```
    */
   WALL_DOORS: UserPermission;
+
+  /**
+   * @defaultValue
+   * ```ts
+   * {
+   *   label: "PERMISSION.QueryUser",
+   *   hint: "PERMISSION.QueryUserHint",
+   *   disableGM: false,
+   *   defaultRole: USER_ROLES.PLAYER
+   * }
+   * ```
+   */
+  QUERY_USER: UserPermission;
 }>;
 
 /**
@@ -1628,7 +1662,7 @@ export type WALL_DOOR_STATES = Brand<number, "constants.WALL_DOOR_STATES">;
 /**
  * The possible ways to interact with a door
  */
-export declare const WALL_DOOR_INTERACTIONS: ["open", "close", "lock", "unlock", "test"];
+export declare const WALL_DOOR_INTERACTIONS: readonly ["open", "close", "lock", "unlock", "test"];
 export type WALL_DOOR_INTERACTIONS = ValueOf<typeof WALL_DOOR_INTERACTIONS>;
 
 /**
@@ -1672,19 +1706,20 @@ export type WALL_SENSE_TYPES = Brand<number, "constants.WALL_SENSE_TYPES">;
 /**
  * The types of movement collision which a Wall may impose
  * @see {@link https://foundryvtt.com/article/walls/}
+ * @privateRemarks Foundry just does `NONE: WALL_SENSE_TYPES.NONE` etc but we want to have a separate brand
  */
 export declare const WALL_MOVEMENT_TYPES: Readonly<{
   /**
    * Movement does not collide with this wall.
    */
-  NONE: typeof WALL_SENSE_TYPES.NONE;
+  NONE: 0 & WALL_MOVEMENT_TYPES;
 
   /**
    * Movement collides with this wall.
    */
-  NORMAL: typeof WALL_SENSE_TYPES.NORMAL;
+  NORMAL: 20 & WALL_MOVEMENT_TYPES;
 }>;
-export type WALL_MOVEMENT_TYPES = ValueOf<typeof WALL_MOVEMENT_TYPES>;
+export type WALL_MOVEMENT_TYPES = Brand<number, "constants.WALL_MOVEMENT_TYPES">;
 
 /**
  * The possible precedence values a Keybinding might run in
@@ -1709,44 +1744,53 @@ export declare const KEYBINDING_PRECEDENCE: Readonly<{
 export type KEYBINDING_PRECEDENCE = Brand<number, "constants.KEYBINDING_PRECEDENCE">;
 
 /**
+ * Directories in the public storage path.
+ */
+export const FILE_PICKER_PUBLIC_DIRS: readonly ["cards", "css", "fonts", "icons", "lang", "scripts", "sounds", "ui"];
+export type FILE_PICKER_PUBLIC_DIRS = ValueOf<typeof FILE_PICKER_PUBLIC_DIRS>;
+
+/**
  * The allowed set of HTML template extensions
  */
-export declare const HTML_FILE_EXTENSIONS: readonly ["html", "handlebars", "hbs"];
-export declare type HTML_FILE_EXTENSIONS = ValueOf<typeof HTML_FILE_EXTENSIONS>;
-
-interface _IMAGE_FILE_EXTENSIONS {
-  apng: "image/apng";
-  avif: "image/avif";
-  bmp: "image/bmp";
-  gif: "image/gif";
-  jpg: "image/jpeg";
-  jpeg: "image/jpeg";
-  png: "image/png";
-  svg: "image/svg+xml";
-  tiff: "image/tiff";
-  webp: "image/webp";
-}
+export declare const HTML_FILE_EXTENSIONS: Readonly<{
+  handlebars: "text/x-handlebars-template";
+  hbs: "text/x-handlebars-template";
+  html: "text/html";
+}>;
+export declare type HTML_FILE_EXTENSIONS = keyof typeof HTML_FILE_EXTENSIONS;
 
 /**
  * The supported file extensions for image-type files, and their corresponding mime types.
  */
-export declare const IMAGE_FILE_EXTENSIONS: Readonly<_IMAGE_FILE_EXTENSIONS>;
-export type IMAGE_FILE_EXTENSIONS = ValueOf<_IMAGE_FILE_EXTENSIONS>;
-
-interface _VIDEO_FILE_EXTENSIONS {
-  m4v: "video/mp4";
-  mp4: "video/mp4";
-  ogg: "video/ogg";
-  webm: "video/webm";
-}
+export declare const IMAGE_FILE_EXTENSIONS: Readonly<{
+  apng: "image/apng";
+  avif: "image/avif";
+  bmp: "image/bmp";
+  gif: "image/gif";
+  jpeg: "image/jpeg";
+  jpg: "image/jpeg";
+  png: "image/png";
+  svg: "image/svg+xml";
+  tiff: "image/tiff";
+  webp: "image/webp";
+}>;
+export type IMAGE_FILE_EXTENSIONS = keyof typeof IMAGE_FILE_EXTENSIONS;
 
 /**
  * The supported file extensions for video-type files, and their corresponding mime types.
  */
-export declare const VIDEO_FILE_EXTENSIONS: Readonly<_VIDEO_FILE_EXTENSIONS>;
-export type VIDEO_FILE_EXTENSIONS = ValueOf<_VIDEO_FILE_EXTENSIONS>;
+export declare const VIDEO_FILE_EXTENSIONS: Readonly<{
+  m4v: "video/mp4";
+  mp4: "video/mp4";
+  ogv: "video/ogg";
+  webm: "video/webm";
+}>;
+export type VIDEO_FILE_EXTENSIONS = keyof typeof VIDEO_FILE_EXTENSIONS;
 
-interface _AUDIO_FILE_EXTENSIONS {
+/**
+ * The supported file extensions for audio-type files, and their corresponding mime types.
+ */
+export declare const AUDIO_FILE_EXTENSIONS: Readonly<{
   aac: "audio/aac";
   flac: "audio/flac";
   m4a: "audio/mp4";
@@ -1756,15 +1800,13 @@ interface _AUDIO_FILE_EXTENSIONS {
   opus: "audio/opus";
   wav: "audio/wav";
   webm: "audio/webm";
-}
+}>;
+export type AUDIO_FILE_EXTENSIONS = keyof typeof AUDIO_FILE_EXTENSIONS;
 
 /**
- * The supported file extensions for audio-type files, and their corresponding mime types.
+ * The supported file extensions for text files, and their corresponding mime types.
  */
-export declare const AUDIO_FILE_EXTENSIONS: Readonly<_AUDIO_FILE_EXTENSIONS>;
-export type AUDIO_FILE_EXTENSIONS = ValueOf<_AUDIO_FILE_EXTENSIONS>;
-
-interface _TEXT_FILE_EXTENSIONS {
+export declare const TEXT_FILE_EXTENSIONS: Readonly<{
   csv: "text/csv";
   json: "application/json";
   md: "text/markdown";
@@ -1774,28 +1816,24 @@ interface _TEXT_FILE_EXTENSIONS {
   xml: "application/xml";
   yml: "application/yaml";
   yaml: "application/yaml";
-}
-
-/**
- * The supported file extensions for text files, and their corresponding mime types.
- */
-export declare const TEXT_FILE_EXTENSIONS: Readonly<_TEXT_FILE_EXTENSIONS>;
-export type TEXT_FILE_EXTENSIONS = ValueOf<_TEXT_FILE_EXTENSIONS>;
-
-interface _FONT_FILE_EXTENSIONS {
-  ttf: "font/ttf";
-  otf: "font/otf";
-  woff: "font/woff";
-  woff2: "font/woff2";
-}
+}>;
+export type TEXT_FILE_EXTENSIONS = keyof typeof TEXT_FILE_EXTENSIONS;
 
 /**
  * Supported file extensions for font files, and their corresponding mime types.
  */
-export declare const FONT_FILE_EXTENSIONS: Readonly<_FONT_FILE_EXTENSIONS>;
-export type FONT_FILE_EXTENSIONS = ValueOf<_FONT_FILE_EXTENSIONS>;
+export declare const FONT_FILE_EXTENSIONS: Readonly<{
+  otf: "font/otf";
+  ttf: "font/ttf";
+  woff: "font/woff";
+  woff2: "font/woff2";
+}>;
+export type FONT_FILE_EXTENSIONS = keyof typeof FONT_FILE_EXTENSIONS;
 
-interface _GRAPHICS_FILE_EXTENSIONS {
+/**
+ * Supported file extensions for 3D files, and their corresponding mime types.
+ */
+export declare const GRAPHICS_FILE_EXTENSIONS: Readonly<{
   fbx: "application/octet-stream";
   glb: "model/gltf-binary";
   gltf: "model/gltf+json";
@@ -1803,54 +1841,63 @@ interface _GRAPHICS_FILE_EXTENSIONS {
   obj: "model/obj";
   stl: "model/stl";
   usdz: "model/vnd.usdz+zip";
-}
+}>;
+export type GRAPHICS_FILE_EXTENSIONS = keyof typeof GRAPHICS_FILE_EXTENSIONS;
 
 /**
- * Supported file extensions for 3D files, and their corresponding mime types.
+ * @privateRemarks Video is spread in after audio, so its `ogg` and `webm` keys override
  */
-export declare const GRAPHICS_FILE_EXTENSIONS: Readonly<_GRAPHICS_FILE_EXTENSIONS>;
-export type GRAPHICS_FILE_EXTENSIONS = ValueOf<_GRAPHICS_FILE_EXTENSIONS>;
-
 interface _UPLOADABLE_FILE_EXTENSIONS
-  extends _IMAGE_FILE_EXTENSIONS,
-    Omit<_VIDEO_FILE_EXTENSIONS, "ogg" | "webm">,
-    _AUDIO_FILE_EXTENSIONS,
-    _TEXT_FILE_EXTENSIONS,
-    _FONT_FILE_EXTENSIONS,
-    _GRAPHICS_FILE_EXTENSIONS {}
+  extends Identity<typeof IMAGE_FILE_EXTENSIONS>,
+    Omit<typeof AUDIO_FILE_EXTENSIONS, "ogg" | "webm">,
+    Identity<typeof VIDEO_FILE_EXTENSIONS>,
+    Identity<typeof TEXT_FILE_EXTENSIONS>,
+    Identity<typeof FONT_FILE_EXTENSIONS>,
+    Identity<typeof GRAPHICS_FILE_EXTENSIONS> {}
 
-export declare const UPLOADABLE_FILE_EXTENSIONS: _UPLOADABLE_FILE_EXTENSIONS;
-export type UPLOADABLE_FILE_EXTENSIONS = ValueOf<_UPLOADABLE_FILE_EXTENSIONS>;
-
-/**
- * A list of MIME types which are treated as uploaded "media", which are allowed to overwrite existing files.
- * Any non-media MIME type is not allowed to replace an existing file.
- */
-export declare const MEDIA_MIME_TYPES: ValueOf<_UPLOADABLE_FILE_EXTENSIONS>;
-export type MEDIA_MIME_TYPES = typeof MEDIA_MIME_TYPES;
+export declare const UPLOADABLE_FILE_EXTENSIONS: Readonly<_UPLOADABLE_FILE_EXTENSIONS>;
+export type UPLOADABLE_FILE_EXTENSIONS = keyof typeof UPLOADABLE_FILE_EXTENSIONS;
 
 /**
  * An enumeration of file type categories which can be selected
  */
-export declare const FILE_CATEGORIES: {
-  HTML: HTML_FILE_EXTENSIONS;
-  IMAGE: _IMAGE_FILE_EXTENSIONS;
-  VIDEO: _VIDEO_FILE_EXTENSIONS;
-  AUDIO: _AUDIO_FILE_EXTENSIONS;
-  TEXT: _TEXT_FILE_EXTENSIONS;
-  FONT: _FONT_FILE_EXTENSIONS;
-  GRAPHICS: _GRAPHICS_FILE_EXTENSIONS;
+export declare const FILE_CATEGORIES: Readonly<{
+  HTML: typeof HTML_FILE_EXTENSIONS;
+  IMAGE: typeof IMAGE_FILE_EXTENSIONS;
+  VIDEO: typeof VIDEO_FILE_EXTENSIONS;
+  AUDIO: typeof AUDIO_FILE_EXTENSIONS;
+  TEXT: typeof TEXT_FILE_EXTENSIONS;
+  FONT: typeof FONT_FILE_EXTENSIONS;
+  GRAPHICS: typeof GRAPHICS_FILE_EXTENSIONS;
 
   /**
-   * @deprecated 'The "MEDIA" file category is deprecated. Use {@linkcode CONST.MEDIA_FILE_CATEGORIES} instead.' (since v13, until v15)
+   * @deprecated "`CONST.FILE_CATEGORIES.MEDIA` is deprecated. Use {@linkcode CONST.MEDIA_MIME_TYPES} instead." (since v13, until v15)
+   * @remarks Included in the const body as a getter, *then* `defineProperty`'d to be `enumerable: false` separately
    */
-  MEDIA: MEDIA_MIME_TYPES;
-};
+  get MEDIA(): typeof MEDIA_MIME_TYPES;
+}>;
+
+/**
+ * The list of file categories that are "media".
+ */
+export declare const MEDIA_FILE_CATEGORIES: readonly ["IMAGE", "VIDEO", "AUDIO", "TEXT", "FONT", "GRAPHICS"];
+
+/**
+ * A list of MIME types which are treated as uploaded "media", which are allowed to overwrite existing files.
+ * Any non-media MIME type is not allowed to replace an existing file.
+ * @remarks Not frozen as of 13.346
+ * @privateRemarks The *keys* `ogg` and `webm` conflict when building {@linkcode UPLOADABLE_FILE_EXTENSIONS}, but the values don't, and Foundry
+ * constructs this differently than we are so they keep the values
+ */
+export declare const MEDIA_MIME_TYPES: MEDIA_MIME_TYPES[];
+export type MEDIA_MIME_TYPES =
+  | ValueOf<_UPLOADABLE_FILE_EXTENSIONS>
+  | ValueOf<Pick<typeof AUDIO_FILE_EXTENSIONS, "ogg" | "webm">>;
 
 /**
  * A font weight to name mapping.
  */
-export declare const FONT_WEIGHTS: {
+export declare const FONT_WEIGHTS: Readonly<{
   Thin: 100 & FONT_WEIGHTS;
   ExtraLight: 200 & FONT_WEIGHTS;
   Light: 300 & FONT_WEIGHTS;
@@ -1860,7 +1907,7 @@ export declare const FONT_WEIGHTS: {
   Bold: 700 & FONT_WEIGHTS;
   ExtraBold: 800 & FONT_WEIGHTS;
   Black: 900 & FONT_WEIGHTS;
-};
+}>;
 export type FONT_WEIGHTS = Brand<number, "constants.FONT_WEIGHTS">;
 
 /**
@@ -1875,12 +1922,17 @@ export declare const TIMEOUTS: Readonly<{
   /**
    * The specific timeout for loading the list of packages from the foundryvtt.com API.
    */
-  PACKAGE_REPOSITORY: 5000 & TIMEOUTS;
+  PACKAGE_REPOSITORY: 10000 & TIMEOUTS;
 
   /**
    * The specific timeout for the IP address lookup service.
    */
   IP_DISCOVERY: 5000 & TIMEOUTS;
+
+  /**
+   * A remote package manifest JSON or download ZIP.
+   */
+  REMOTE_PACKAGE: 5000 & TIMEOUTS;
 }>;
 export type TIMEOUTS = Brand<number, "constants.TIMEOUTS">;
 
@@ -1903,9 +1955,119 @@ export declare const SHOWDOWN_OPTIONS: Readonly<{
 }>;
 
 /**
+ * The list of allowed HTML tags.
+ */
+export declare const ALLOWED_HTML_TAGS: readonly [
+  "header",
+  "main",
+  "section",
+  "article",
+  "aside",
+  "nav",
+  "footer",
+  "div",
+  "address", // Structural Elements
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "hr",
+  "br", // Headers and Dividers
+  "p",
+  "blockquote",
+  "summary",
+  "details",
+  "span",
+  "code",
+  "pre",
+  "a",
+  "label",
+  "abbr",
+  "cite",
+  "mark",
+  "q",
+  "ruby",
+  "rp",
+  "rt",
+  "small",
+  "time",
+  "var",
+  "kbd",
+  "samp", // Text Types
+  "dfn",
+  "sub",
+  "sup",
+  "strong",
+  "em",
+  "b",
+  "i",
+  "u",
+  "s",
+  "del",
+  "ins", // Text Styles
+  "ol",
+  "ul",
+  "li",
+  "dl",
+  "dd",
+  "dt",
+  "menu", // Lists
+  "table",
+  "thead",
+  "tbody",
+  "tfoot",
+  "tr",
+  "th",
+  "td",
+  "col",
+  "colgroup", // Tables
+  "form",
+  "input",
+  "select",
+  "option",
+  "button",
+  "datalist",
+  "fieldset",
+  "legend",
+  "meter",
+  "optgroup",
+  "progress",
+  "textarea",
+  "output", // Forms
+  "figure",
+  "figcaption",
+  "caption",
+  "img",
+  "video",
+  "map",
+  "area",
+  "track",
+  "picture",
+  "source",
+  "audio", // Media
+  "iframe", // Embedded content
+  "color-picker",
+  "code-mirror",
+  "document-embed",
+  "document-tags",
+  "enriched-content",
+  "file-picker",
+  "hue-slider",
+  "multi-select",
+  "multi-checkbox",
+  "range-picker",
+  "secret-block",
+  "string-tags",
+  "prose-mirror", // Custom elements
+];
+export type ALLOWED_HTML_TAGS = ValueOf<typeof ALLOWED_HTML_TAGS>;
+
+/**
  * The list of allowed attributes in HTML elements.
  */
-export const ALLOWED_HTML_ATTRIBUTES: Readonly<{
+export const ALLOWED_HTML_ATTRIBUTES: DeepReadonly<{
   "*": [
     "class",
     "data-*",
@@ -1922,6 +2084,12 @@ export const ALLOWED_HTML_ATTRIBUTES: Readonly<{
     "is",
     "lang",
     "popover",
+    "autocapitalize",
+    "autocorrect",
+    "autofocus",
+    "contenteditable",
+    "spellcheck",
+    "translate",
   ];
   a: ["href", "name", "target", "rel"];
   area: ["alt", "coords", "href", "rel", "shape", "target"];
@@ -1930,9 +2098,16 @@ export const ALLOWED_HTML_ATTRIBUTES: Readonly<{
   button: ["disabled", "name", "type", "value"];
   col: ["span"];
   colgroup: ["span"];
+  "code-mirror": ["disabled", "name", "value", "placeholder", "readonly", "required", "language", "indent", "nowrap"];
+  "color-picker": ["disabled", "name", "value", "placeholder", "readonly", "required"];
   details: ["open"];
+  "document-embed": ["uuid"];
+  "document-tags": ["disabled", "name", "value", "placeholder", "readonly", "required", "type", "single", "max"];
+  "enriched-content": ["enricher"];
   fieldset: ["disabled"];
+  "file-picker": ["disabled", "name", "value", "placeholder", "readonly", "required", "type", "noupload"];
   form: ["name"];
+  "hue-slider": ["disabled", "name", "value", "readonly", "required"];
   iframe: ["src", "srcdoc", "name", "height", "width", "loading", "sandbox"];
   img: ["height", "src", "width", "usemap", "sizes", "srcset", "alt"];
   input: [
@@ -1947,32 +2122,50 @@ export const ALLOWED_HTML_ATTRIBUTES: Readonly<{
     "list",
     "max",
     "min",
-    "placeholder",
     "readonly",
     "size",
     "src",
     "step",
     "width",
+    "required",
   ];
   label: ["for"];
   li: ["value"];
   map: ["name"];
   meter: ["value", "min", "max", "low", "high", "optimum"];
+  "multi-checkbox": ["disabled", "name", "required"];
+  "multi-select": ["disabled", "name", "required"];
   ol: ["reversed", "start", "type"];
   optgroup: ["disabled", "label"];
   option: ["disabled", "selected", "label", "value"];
+  output: ["for", "form", "name"];
   progress: ["max", "value"];
-  select: ["name", "disabled", "multiple", "size"];
+  "prose-mirror": ["disabled", "name", "value", "placeholder", "readonly", "required", "toggled", "open"];
+  "range-picker": ["disabled", "name", "value", "placeholder", "readonly", "min", "max", "step"];
+  select: ["name", "disabled", "multiple", "size", "required"];
   source: ["media", "sizes", "src", "srcset", "type"];
+  "string-tags": ["disabled", "name", "value", "placeholder", "readonly", "required"];
   table: ["border"];
   td: ["colspan", "headers", "rowspan"];
-  textarea: ["rows", "cols", "disabled", "name", "readonly", "wrap"];
+  textarea: ["rows", "cols", "disabled", "name", "readonly", "wrap", "required"];
   time: ["datetime"];
   th: ["abbr", "colspan", "headers", "rowspan", "scope", "sorted"];
   track: ["default", "kind", "label", "src", "srclang"];
   video: ["controls", "height", "width", "loop", "muted", "poster", "src", "autoplay"];
 }>;
 export type ALLOWED_HTML_ATTRIBUTES = ValueOf<typeof ALLOWED_HTML_ATTRIBUTES>;
+
+/**
+ * The list of allowed URL schemes.
+ */
+export declare const ALLOWED_URL_SCHEMES: readonly ["http", "https", "data", "mailto", "obsidian", "syrinscape-online"];
+export type ALLOWED_URL_SCHEMES = ValueOf<typeof ALLOWED_URL_SCHEMES>;
+
+/**
+ * The list of attributes validated as URLs.
+ */
+export declare const ALLOWED_URL_SCHEMES_APPLIED_TO_ATTRIBUTES: readonly ["href", "src", "cite"];
+export type ALLOWED_URL_SCHEMES_APPLIED_TO_ATTRIBUTES = ValueOf<typeof ALLOWED_URL_SCHEMES_APPLIED_TO_ATTRIBUTES>;
 
 /**
  * The list of trusted iframe domains.
@@ -1984,15 +2177,15 @@ export type TRUSTED_IFRAME_DOMAINS = ValueOf<typeof TRUSTED_IFRAME_DOMAINS>;
  * Available themes for the world join page.
  */
 export const WORLD_JOIN_THEMES: Readonly<{
-  default: "WORLD.JoinThemeDefault";
-  minimal: "WORLD.JoinThemeMinimal";
+  default: "WORLD.JOIN_THEMES.default";
+  minimal: "WORLD.JOIN_THEMES.minimal";
 }>;
 export type WORLD_JOIN_THEMES = ValueOf<typeof WORLD_JOIN_THEMES>;
 
 /**
  * Setup page package progress protocol.
  */
-export declare const SETUP_PACKAGE_PROGRESS: Readonly<{
+export declare const SETUP_PACKAGE_PROGRESS: DeepReadonly<{
   ACTIONS: {
     CREATE_BACKUP: "createBackup";
     RESTORE_BACKUP: "restoreBackup";
@@ -2005,10 +2198,11 @@ export declare const SETUP_PACKAGE_PROGRESS: Readonly<{
     UPDATE_CORE: "updateCore";
     UPDATE_DOWNLOAD: "updateDownload";
   };
-
   STEPS: {
     ARCHIVE: "archive";
     CHECK_DISK_SPACE: "checkDiskSpace";
+    CLEAN_WORLD: "cleanWorld";
+    EXTRACT_DEMO: "extractDemo";
     CONNECT_WORLD: "connectWorld";
     MIGRATE_WORLD: "migrateWorld";
     CONNECT_PKG: "connectPackage";
@@ -2048,7 +2242,7 @@ export type TEXTURE_DATA_FIT_MODES = ValueOf<typeof TEXTURE_DATA_FIT_MODES>;
 /**
  * The maximum depth to recurse to when embedding enriched text.
  */
-export const TEXT_ENRICH_EMBED_MAX_DEPTH: number;
+export const TEXT_ENRICH_EMBED_MAX_DEPTH: 5;
 
 /**
  * The Region events that are supported by core.
@@ -2201,19 +2395,19 @@ export declare const REGION_EVENTS: Readonly<{
   TOKEN_ROUND_END: "tokenRoundEnd";
 
   /**
-   * @deprecated "CONST.REGION_EVENTS.BEHAVIOR_STATUS is deprecated in favor of BEHAVIOR_ACTIVATED, BEHAVIOR_DEACTIVATED, BEHAVIOR_VIEWED, and BEHAVIOR_UNVIEWED." (since v13 until v15)
+   * @deprecated "`CONST.REGION_EVENTS.BEHAVIOR_STATUS` is deprecated in favor of `BEHAVIOR_ACTIVATED`, `BEHAVIOR_DEACTIVATED`, `BEHAVIOR_VIEWED`, and `BEHAVIOR_UNVIEWED`." (since v13, until v15)
    */
-  BEHAVIOR_STATUS: "behaviorStatus";
+  get BEHAVIOR_STATUS(): "behaviorStatus";
 
   /**
-   * @deprecated "CONST.REGION_EVENTS.TOKEN_PRE_MOVE is deprecated without replacement. The TOKEN_PRE_MOVE event is not longer triggered." (since v13 until v15)
+   * @deprecated "`CONST.REGION_EVENTS.TOKEN_PRE_MOVE` is deprecated without replacement. The `TOKEN_PRE_MOVE` event is not longer triggered." (since v13, until v15)
    */
-  TOKEN_PRE_MOVE: "tokenPreMove";
+  get TOKEN_PRE_MOVE(): "tokenPreMove";
 
   /**
-   * @deprecated "CONST.REGION_EVENTS.TOKEN_PRE_MOVE is deprecated without replacement. The TOKEN_MOVE event is not longer triggered." (since v13 until v15)
+   * @deprecated "`CONST.REGION_EVENTS.TOKEN_PRE_MOVE` is deprecated without replacement. The `TOKEN_MOVE` event is not longer triggered." (since v13, until v15)
    */
-  TOKEN_MOVE: "tokenMove";
+  get TOKEN_MOVE(): "tokenMove";
 }>;
 export type REGION_EVENTS = ValueOf<typeof REGION_EVENTS>;
 
@@ -2257,16 +2451,83 @@ export declare const REGION_MOVEMENT_SEGMENTS: Readonly<{
 export type REGION_MOVEMENT_SEGMENTS = Brand<number, "constants.REGION_MOVEMENT_SEGMENTS">;
 
 /**
+ * Available setting scopes.
+ */
+export declare const SETTING_SCOPES: Readonly<{
+  /**
+   * Settings scoped to the client device. Stored in localStorage.
+   */
+  CLIENT: "client";
+
+  /**
+   * Settings scoped to the game World. Applies to all Users in the World. Stored in the Settings database.
+   */
+  WORLD: "world";
+
+  /**
+   * Settings scoped to an individual User in the World. Stored in the Settings database.
+   */
+  USER: "user";
+}>;
+export type SETTING_SCOPES = ValueOf<typeof SETTING_SCOPES>;
+
+/**
  * The scaling factor that is used for Clipper polygons/paths consistently everywhere core performs Clipper operations.
  */
 export const CLIPPER_SCALING_FACTOR = 100;
 
 /**
- * @deprecated since v12
+ * @deprecated (since v12, until v14)
  */
+export declare const CHAT_MESSAGE_TYPES: Readonly<{
+  /**
+   * @deprecated "`CONST.CHAT_MESSAGE_TYPES` is deprecated in favor of {@linkcode CONST.CHAT_MESSAGE_STYLES} because the {@linkcode ChatMessage.type | ChatMessage#type}
+   * field has been renamed to {@linkcode ChatMessage.style | ChatMessage#style}" (since v12, until v14)
+   */
+  OTHER: typeof CHAT_MESSAGE_STYLES.OTHER;
+
+  /**
+   * @deprecated "`CONST.CHAT_MESSAGE_TYPES` is deprecated in favor of {@linkcode CONST.CHAT_MESSAGE_STYLES} because the {@linkcode ChatMessage.type | ChatMessage#type}
+   * field has been renamed to {@linkcode ChatMessage.style | ChatMessage#style}" (since v12, until v14)
+   */
+  OOC: typeof CHAT_MESSAGE_STYLES.OOC;
+
+  /**
+   * @deprecated "`CONST.CHAT_MESSAGE_TYPES` is deprecated in favor of {@linkcode CONST.CHAT_MESSAGE_STYLES} because the {@linkcode ChatMessage.type | ChatMessage#type}
+   * field has been renamed to {@linkcode ChatMessage.style | ChatMessage#style}" (since v12, until v14)
+   */
+  IC: typeof CHAT_MESSAGE_STYLES.IC;
+
+  /**
+   * @deprecated "`CONST.CHAT_MESSAGE_TYPES` is deprecated in favor of {@linkcode CONST.CHAT_MESSAGE_STYLES} because the {@linkcode ChatMessage.type | ChatMessage#type}
+   * field has been renamed to {@linkcode ChatMessage.style | ChatMessage#style}" (since v12, until v14)
+   */
+  EMOTE: typeof CHAT_MESSAGE_STYLES.EMOTE;
+
+  /**
+   * @deprecated "`CONST.CHAT_MESSAGE_TYPES` is deprecated in favor of {@linkcode CONST.CHAT_MESSAGE_STYLES} because the {@linkcode ChatMessage.type | ChatMessage#type}
+   * field has been renamed to {@linkcode ChatMessage.style | ChatMessage#style}" (since v12, until v14)
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  ROLL: typeof CHAT_MESSAGE_STYLES.ROLL;
+
+  /**
+   * @deprecated "`CONST.CHAT_MESSAGE_TYPES` is deprecated in favor of {@linkcode CONST.CHAT_MESSAGE_STYLES} because the {@linkcode ChatMessage.type | ChatMessage#type}
+   * field has been renamed to {@linkcode ChatMessage.style | ChatMessage#style}" (since v12, until v14)
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  WHISPER: typeof CHAT_MESSAGE_STYLES.WHISPER;
+}>;
+
+/**
+ * @deprecated "`CONST.DOCUMENT_TYPES` is deprecated in favor of either {@linkcode CONST.WORLD_DOCUMENT_TYPES} or {@linkcode CONST.COMPENDIUM_DOCUMENT_TYPES}." (since v12, until 14)
+ */
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+export declare const DOCUMENT_TYPES: DOCUMENT_TYPES[];
 export type DOCUMENT_TYPES = Exclude<WORLD_DOCUMENT_TYPES, "FogExploration" | "Setting">;
 
 /**
- * @deprecated since v13
+ * @deprecated "`CONST.TOKEN_HEXAGONAL_SHAPES` is deprecated in favor of {@linkcode CONST.TOKEN_SHAPES}." (since v13, until v15)
  */
+export declare const TOKEN_HEXAGONAL_SHAPES: typeof TOKEN_SHAPES;
 export type TOKEN_HEXAGONAL_SHAPES = TOKEN_SHAPES;
