@@ -355,12 +355,6 @@ declare class Branded<in out BrandName extends string> {
 export type Brand<BaseType, BrandName extends string> = BaseType & Branded<BrandName>;
 
 /**
- * Removes the brand from a type. Use with care. See {@linkcode Brand}.
- */
-export type Unbrand<Branded extends Brand<unknown, string>> =
-  Branded extends Brand<infer BaseType, infer _1> ? BaseType : never;
-
-/**
  * An at a best effort level expands a type from something complex that shows up like
  * `DeepPartial<{ x: { y: number } }>` in intellisense to `{ x?: { y?: number } }`.
  * This is useful for when you want to see what a type looks like in a more human
