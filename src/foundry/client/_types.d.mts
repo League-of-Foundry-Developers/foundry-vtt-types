@@ -13,8 +13,6 @@ type HotReloadData = Hooks.HotReloadData;
 
 type RulerWaypoint = unknown;
 
-type GridMeasurePathResultWaypoint = unknown;
-
 type TokenFindMovementPathWaypoint = unknown;
 
 type TokenConstrainMovementPathWaypoint = unknown;

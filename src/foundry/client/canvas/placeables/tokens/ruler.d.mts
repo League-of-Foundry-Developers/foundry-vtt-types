@@ -132,7 +132,7 @@ declare namespace TokenRuler {
     ray: foundry.canvas.geometry.Ray | null;
 
     /** The measurements at this waypoint. */
-    measurement: unknown; // TODO: GridMeasurePathResultWaypoint
+    measurement: foundry.grid.BaseGrid.MeasurePathResultWaypoint; // TODO: GridMeasurePathResultWaypoint
 
     /** The previous waypoint, if any. */
     previous: Waypoint | null;
@@ -141,7 +141,7 @@ declare namespace TokenRuler {
     next: Waypoint | null;
   }
 
-  type Waypoint = DeepReadonly<Omit<TokenDocument.MovementWaypoint, "movementId"> & WaypointData>;
+  type Waypoint = DeepReadonly<Omit<TokenDocument.MeasuredMovementWaypoint, "movementId"> & WaypointData>;
 
   /**
    * @remarks Intended to be extended by subclasses that need to track additional info between waypoints
