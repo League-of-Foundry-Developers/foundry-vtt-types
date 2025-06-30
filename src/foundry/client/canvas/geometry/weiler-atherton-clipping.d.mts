@@ -1,4 +1,4 @@
-import type { Brand, Identity, NullishProps } from "#utils";
+import type { Brand, Identity, InexactPartial } from "#utils";
 
 /**
  * An implementation of the Weiler Atherton algorithm for clipping polygons.
@@ -11,33 +11,33 @@ import type { Brand, Identity, NullishProps } from "#utils";
  * instead of relying on the polygon approximation of the circle/ellipse to find the intersection points.
  *
  * For more explanation of the underlying algorithm, see:
- * https://en.wikipedia.org/wiki/Weiler%E2%80%93Atherton_clipping_algorithm
- * https://www.geeksforgeeks.org/weiler-atherton-polygon-clipping-algorithm
- * https://h-educate.in/weiler-atherton-polygon-clipping-algorithm/
+ * {@link https://en.wikipedia.org/wiki/Weiler%E2%80%93Atherton_clipping_algorithm}
+ * {@link https://www.geeksforgeeks.org/weiler-atherton-polygon-clipping-algorithm}
+ * {@link https://h-educate.in/weiler-atherton-polygon-clipping-algorithm/}
  *
- * @throws If `!Polygon.isPositive`
- * @remarks In practice the only thing that uses the constructor is the class's static methods
+ * @throws If `!polygon.isPositive`
+ * @remarks In Foundry usage the only thing that calls `new WeilerAthertonClipper` is the class's static methods
  */
 declare class WeilerAthertonClipper {
   /**
    * Construct a WeilerAthertonClipper instance used to perform the calculation.
-   * @param polygon       - Polygon to clip
-   * @param clipObject    - Object used to clip the polygon
-   * @param clipType      - Type of clip to use
-   *                        (default: `0`)
-   * @param clipOpts      - Object passed to the clippingObject methods toPolygon and pointsBetween
-   *                        (default: `{}`)
+   * @param polygon    - Polygon to clip
+   * @param clipObject - Object used to clip the polygon
+   * @param clipType   - Type of clip to use (default: `0`)
+   * @param clipOpts   - Object passed to the {@linkcode WeilerAthertonClipper.ClipObject | clipObject} methods
+   * {@linkcode WeilerAthertonClipper.ClipObject.toPolygon | toPolygon} and
+   * {@linkcode WeilerAthertonClipper.ClipObject.pointsBetween | pointsBetween} (default: `{}`)
    */
   constructor(
     polygon: PIXI.Polygon,
-    clipObject: PIXI.Rectangle | PIXI.Circle,
+    clipObject: WeilerAthertonClipper.ClipObject,
     clipType?: WeilerAthertonClipper.CLIP_TYPES,
     clipOpts?: WeilerAthertonClipper.ClipOpts,
   );
 
   /**
    * The supported clip types.
-   * Values are equivalent to those in ClipperLib.ClipType.
+   * Values are equivalent to those in {@linkcode ClipperLib.ClipType}.
    */
   static CLIP_TYPES: WeilerAthertonClipper.ClipTypes;
 
@@ -48,7 +48,7 @@ declare class WeilerAthertonClipper {
 
   polygon: PIXI.Polygon;
 
-  clipObject: PIXI.Rectangle | PIXI.Circle;
+  clipObject: WeilerAthertonClipper.ClipObject;
 
   /**
    * Configuration settings
@@ -57,27 +57,29 @@ declare class WeilerAthertonClipper {
 
   /**
    * Union a polygon and clipObject using the Weiler Atherton algorithm.
-   * @param polygon       - Polygon to clip
-   * @param clipObject    - Object to clip against the polygon
-   * @param clipOpts      - Options passed to the clipping object
-   *                        methods toPolygon and pointsBetween
+   * @param polygon    - Polygon to clip
+   * @param clipObject - Object to clip against the polygon
+   * @param clipOpts   - Object passed to the {@linkcode WeilerAthertonClipper.ClipObject | clipObject} methods
+   * {@linkcode WeilerAthertonClipper.ClipObject.toPolygon | toPolygon} and
+   * {@linkcode WeilerAthertonClipper.ClipObject.pointsBetween | pointsBetween} (default: `{}`)
    */
   static union(
     polygon: PIXI.Polygon,
-    clipObject: PIXI.Rectangle | PIXI.Circle,
+    clipObject: WeilerAthertonClipper.ClipObject,
     clipOpts?: WeilerAthertonClipper.ClipOpts,
   ): PIXI.Polygon[];
 
   /**
    * Intersect a polygon and clipObject using the Weiler Atherton algorithm.
-   * @param polygon       - Polygon to clip
-   * @param clipObject    - Object to clip against the polygon
-   * @param clipOpts      - Options passed to the clipping object
-   *                        methods toPolygon and pointsBetween
+   * @param polygon    - Polygon to clip
+   * @param clipObject - Object to clip against the polygon
+   * @param clipOpts   - Object passed to the {@linkcode WeilerAthertonClipper.ClipObject | clipObject} methods
+   * {@linkcode WeilerAthertonClipper.ClipObject.toPolygon | toPolygon} and
+   * {@linkcode WeilerAthertonClipper.ClipObject.pointsBetween | pointsBetween} (default: `{}`)
    */
   static intersect(
     polygon: PIXI.Polygon,
-    clipObject: PIXI.Rectangle | PIXI.Circle,
+    clipObject: WeilerAthertonClipper.ClipObject,
     clipOpts?: WeilerAthertonClipper.ClipOpts,
   ): PIXI.Polygon[];
 
@@ -90,14 +92,14 @@ declare class WeilerAthertonClipper {
    *
    * @param polygon    - Polygon to clip
    * @param clipObject - Object to clip against the polygon
-   * @param options    - Options which configure how the union or intersection is computed
+   * @param options    - Options which configure how the union or intersection is computed. Any additional properties
+   * in `options` (besides `clipType` and `canMutate`) are captured by the rest operator (`...clipOpts`) and passed
+   * to the {@linkcode WeilerAthertonClipper} constructor.
    * @returns Array of polygons and clipObjects
    */
   static combine(
     polygon: PIXI.Polygon,
-    clipObject: PIXI.Rectangle | PIXI.Circle,
-
-    /** @remarks Despite foundry marking this parameter optional, if an object with a valid `clipType` property is not passed, this will throw */
+    clipObject: WeilerAthertonClipper.ClipObject,
     options: WeilerAthertonClipper.CombineOptions,
   ): PIXI.Polygon[];
 
@@ -106,23 +108,27 @@ declare class WeilerAthertonClipper {
    *  1. Polygon is contained within the clip object. Union: clip object; Intersect: polygon
    *  2. Clip object is contained with polygon. Union: polygon; Intersect: clip object
    *  3. Polygon and clip object are outside one another. Union: both; Intersect: null
-   * @param polygon       - Polygon to clip
-   * @param clipObject    - Object to clip against the polygon
-   * @param clipType      - One of CLIP_TYPES
-   * @param clipOpts      - Clip options which are forwarded to toPolygon methods
+   * @param polygon    - Polygon to clip
+   * @param clipObject - Object to clip against the polygon
+   * @param clipType   - One of {@linkcode WeilerAthertonClipper.ClipTypes | CLIP_TYPES}
+   * @param clipOpts   - Clip options which are forwarded to toPolygon methods
    * @returns Returns the polygon, the clipObject.toPolygon(), both, or neither.
    */
   static testForEnvelopment(
     polygon: PIXI.Polygon,
-    clipObject: PIXI.Rectangle | PIXI.Circle,
+    clipObject: WeilerAthertonClipper.ClipObject,
     clipType: WeilerAthertonClipper.CLIP_TYPES,
     clipOpts: WeilerAthertonClipper.ClipOpts,
   ): PIXI.Polygon[];
+
+  #WeilerAthertonClipper: true;
 }
 
 declare namespace WeilerAthertonClipper {
   interface Any extends AnyWeilerAthertonClipper {}
   interface AnyConstructor extends Identity<typeof AnyWeilerAthertonClipper> {}
+
+  type ClipObject = PIXI.Rectangle | PIXI.Circle;
 
   type CLIP_TYPES = Brand<number, "WeilerAthertonClipper.CLIP_TYPES">;
 
@@ -142,44 +148,51 @@ declare namespace WeilerAthertonClipper {
   /** Configuration settings */
   interface Config {
     /**
-     * One of CLIP_TYPES
-     * @defaultValue `WeilerAthertonClipper.CLIP_TYPES.INTERSECT`
-     * @remarks Set to the value of the equivalent constructor parameter. Default provided by `??=` in the constructor body
+     * One of {@linkcode WeilerAthertonClipper.ClipTypes | CLIP_TYPES}
+     * @defaultValue {@linkcode WeilerAthertonClipper.CLIP_TYPES.INTERSECT}
+     * @remarks Set to the value of the equivalent constructor parameter if provided, or the above default
      */
     clipType: WeilerAthertonClipper.CLIP_TYPES;
 
     /**
-     * Object passed to the clippingObject methods `toPolygon` and `pointsBetween`
+     * Object passed to the Object passed to the {@linkcode WeilerAthertonClipper.ClipObject | clipObject} methods
+     * {@linkcode WeilerAthertonClipper.ClipObject.toPolygon | toPolygon} and
+     * {@linkcode WeilerAthertonClipper.ClipObject.pointsBetween | pointsBetween}
      * @defaultValue `{}`
-     * @remarks Set to the value of the equivalent constructor parameter. Default provided by `??=` in the constructor body
+     * @remarks Set to the value of the equivalent constructor parameter if provided, or the above default
      */
     clipOpts: WeilerAthertonClipper.ClipOpts;
   }
 
   /**
+   *
    * @internal
-   * @privateRemarks does *not* contain:
-   * - a `scalingFactor` property, despite one being passed in `PIXI.Rectangle#intersectPolygon` in v12
-   * - a `density` property, despite one being passed in `PIXI.Circle#intersectPolygon` in v12
    */
-  type _CombineOptions = NullishProps<{
+  type _CombineOptions = InexactPartial<{
     /**
      * If the WeilerAtherton constructor could mutate or not the subject polygon points
      */
     canMutate: boolean;
   }>;
 
+  /**
+   * @remarks See {@linkcode WeilerAthertonClipper.combine}'s `options` parameter description
+   * @privateRemarks This interface does *not* contain:
+   * - a `scalingFactor` property, despite one being passed in {@linkcode PIXI.Rectangle.intersectPolygon | PIXI.Rectangle#intersectPolygon} as of 13.1346
+   * - a `density` property, despite one being passed in {@linkcode PIXI.Circle.intersectPolygon | PIXI.Circle#intersectPolygon} as of 13.346
+   * as those are not used by {@linkcode WeilerAthertonClipper.combine}
+   */
   interface CombineOptions extends _CombineOptions, ClipOpts {
     /**
-     * One of CLIP_TYPES
+     * One of {@linkcode WeilerAthertonClipper.ClipTypes | CLIP_TYPES}
      */
     clipType: WeilerAthertonClipper.CLIP_TYPES;
   }
 
   /**
-   * @remarks These are ultimately only consumed by the `#toPolygon` and `#pointsBetween` methods
-   * of `PIXI.Rectangle` or `PIXI.Circle`. Only the `Circle` methods actually take options and those are
-   * only passed on to `#pointsForArc`.
+   * @remarks These are ultimately passed to {@linkcode PIXI.Rectangle.toPolygon | PIXI.Rectangle#toPolygon}, {@linkcode PIXI.Circle.toPolygon | PIXI.Circle#toPolygon},
+   * {@linkcode PIXI.Rectangle.pointsBetween | PIXI.Rectangle#pointsBetween}, or {@linkcode PIXI.Circle.pointsBetween | PIXI.Circle#pointsBetween}. Only the `Circle`
+   * methods actually take options and those are only passed on to {@linkcode PIXI.Circle.pointsForArc | PIXI.Circle#pointsForArc}.
    */
   type ClipOpts = PIXI.Circle.PointsForArcOptions;
 }

@@ -9,22 +9,13 @@ declare global {
   namespace PIXI {
     interface Rectangle {
       /**
-       * Bit code labels splitting a rectangle into zones, based on the Cohen-Sutherland algorithm.
-       * See https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
-       *          left    central   right
-       * top      1001    1000      1010
-       * central  0001    0000      0010
-       * bottom   0101    0100      0110
-       */
-      CS_ZONES: PIXI.Rectangle.CS_Zones;
-
-      /**
        * Calculate center of this rectangle.
+       * @remarks `defineProperty`'d with no explicit options
        */
       get center(): Canvas.Point;
 
       /**
-       * Return the bounding box for a PIXI.Rectangle.
+       * Return the bounding box for a {@linkcode _PIXI.Rectangle | PIXI.Rectangle}.
        * The bounding rectangle is normalized such that the width and height are non-negative.
        */
       getBounds(): PIXI.Rectangle;
@@ -38,8 +29,8 @@ declare global {
 
       /**
        * Calculate the rectangle Zone for a given point located around, on, or in the rectangle.
-       * See https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
-       * This differs from _getZone in how points on the edge are treated: they are not considered inside.
+       * See {@link https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm}
+       * This differs from {@linkcode _getZone} in how points on the edge are treated: they are not considered inside.
        * @param point - A point to test for location relative to the rectangle
        * @returns Which edge zone does the point belong to?
        */
@@ -49,8 +40,9 @@ declare global {
        * Get all the points (corners) for a polygon approximation of a rectangle between two points on the rectangle.
        * The two points can be anywhere in 2d space on or outside the rectangle.
        * The starting and ending side are based on the zone of the corresponding a and b points.
-       * (See PIXI.Rectangle.CS_ZONES.)
-       * This is the rectangular version of PIXI.Circle.prototype.pointsBetween, and is similarly used
+       * (See {@linkcode PIXI.Rectangle.CS_ZONES}.)
+       *
+       * This is the rectangular version of {@linkcode PIXI.Circle.pointsBetween | PIXI.Circle#pointsBetween}, and is similarly used
        * to draw the portion of the shape between two intersection points on that shape.
        * @param a - A point on or outside the rectangle, representing the starting position.
        * @param b - A point on or outside the rectangle, representing the starting position.
@@ -66,10 +58,10 @@ declare global {
        * @returns Array of intersections or empty if no intersection.
        *  If A|B is parallel to an edge of this rectangle, returns the two furthest points on
        *  the segment A|B that are on the edge.
-       *  The return object's t0 property signifies the location of the intersection on segment A|B.
-       *  This will be NaN if the segment is a point.
-       *  The return object's t1 property signifies the location of the intersection on the rectangle edge.
-       *  The t1 value is measured relative to the intersecting edge of the rectangle.
+       *  The return object's `t0` property signifies the location of the intersection on segment A|B.
+       *  This will be `NaN` if the segment is a point.
+       *  The return object's `t1` property signifies the location of the intersection on the rectangle edge.
+       *  The `t1` value is measured relative to the intersecting edge of the rectangle.
        */
       segmentIntersections(a: Canvas.Point, b: Canvas.Point): Canvas.Point[];
 
@@ -81,38 +73,42 @@ declare global {
       intersection(other: PIXI.Rectangle): PIXI.Rectangle;
 
       /**
-       * Convert this PIXI.Rectangle into a PIXI.Polygon
-       * @returns The Rectangle expressed as a PIXI.Polygon
+       * Convert this {@linkcode _PIXI.Rectangle | PIXI.Rectangle} into a {@linkcode _PIXI.Polygon | PIXI.Polygon}
+       * @returns The Rectangle expressed as a `PIXI.Polygon`
        */
       toPolygon(): PIXI.Polygon;
 
       /**
        * Get the left edge of this rectangle.
        * The returned edge endpoints are oriented clockwise around the rectangle.
+       * @remarks `defineProperty`'d with no explicit options
        */
       get leftEdge(): PIXI.Rectangle.Edge;
 
       /**
        * Get the right edge of this rectangle.
        * The returned edge endpoints are oriented clockwise around the rectangle.
+       * @remarks `defineProperty`'d with no explicit options
        */
       get rightEdge(): PIXI.Rectangle.Edge;
 
       /**
        * Get the top edge of this rectangle.
        * The returned edge endpoints are oriented clockwise around the rectangle.
+       * @remarks `defineProperty`'d with no explicit options
        */
       get topEdge(): PIXI.Rectangle.Edge;
 
       /**
        * Get the bottom edge of this rectangle.
        * The returned edge endpoints are oriented clockwise around the rectangle.
+       * @remarks `defineProperty`'d with no explicit options
        */
       get bottomEdge(): PIXI.Rectangle.Edge;
 
       /**
        * Calculate the rectangle Zone for a given point located around or in the rectangle.
-       * https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
+       * {@link https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm}
        *
        * @param p - Point to test for location relative to the rectangle
        */
@@ -132,8 +128,8 @@ declare global {
       ): boolean;
 
       /**
-       * Intersect this PIXI.Rectangle with a PIXI.Polygon.
-       * @param polygon - A PIXI.Polygon
+       * Intersect this {@linkcode _PIXI.Rectangle | PIXI.Rectangle} with a {@linkcode _PIXI.Polygon | PIXI.Polygon}.
+       * @param polygon - A `PIXI.Polygon`
        * @param options - Options which configure how the intersection is computed
        * @returns The intersected polygon
        */
@@ -141,22 +137,22 @@ declare global {
       intersectPolygon(polygon: PIXI.Polygon, options?: PIXI.Rectangle.ClipperLibIntersectPolygonOptions): PIXI.Polygon;
 
       /**
-       * Intersect this PIXI.Rectangle with an array of ClipperPoints. Currently, uses the clipper library.
-       * In the future we may replace this with more specialized logic which uses the line-line intersection formula.
-       * @param clipperPoints - Array of ClipperPoints generated by PIXI.Polygon.toClipperPoints()
+       * Intersect this {@linkcode _PIXI.Rectangle | PIXI.Rectangle} with an array of {@linkcode PIXI.Polygon.ClipperPoint | ClipperPoint}s.
+       * Currently, uses the {@linkcode ClipperLib | clipper} library. In the future we may replace this with more specialized logic which
+       * uses the line-line intersection formula.
+       * @param clipperPoints - Array of `ClipperPoint`s generated by {@linkcode PIXI.Polygon.toClipperPoints | PIXI.Polygon#toClipperPoints()}
        * @param options       - Options which configure how the intersection is computed
-       * @returns The intersected polygon
-       * @remarks Foundry has this typed as returning `PIXI.Polygon | null`, but this method will actually
-       * return an empty array if this rectangle's width or height are 0. This is almost certainly a bug.
+       * @returns The array of intersection points
        */
       intersectClipper(
         clipperPoints: PIXI.Polygon.ClipperPoint[],
         options?: PIXI.Polygon.IntersectClipperOptions,
-      ): PIXI.Polygon | [];
+      ): PIXI.Polygon.ClipperPoint[];
 
       /**
-       * Determine whether some other Rectangle overlaps with this one.
-       * This check differs from the parent class Rectangle#intersects test because it is true for adjacency (zero area).
+       * Determine whether some other {@linkcode _PIXI.Rectangle | Rectangle} overlaps with this one.
+       * This check differs from the parent class {@linkcode _PIXI.Rectangle.intersects | Rectangle#intersects}
+       * test because it is true for adjacency (zero area).
        * @param other - Some other rectangle against which to compare
        * @returns Do the rectangles overlap?
        */
@@ -201,7 +197,6 @@ declare global {
         /**
          * If true, a line contained within the rectangle will return true
          * @defaultValue `false`
-         * @remarks Can't be `null` as it only has a parameter default
          */
         inside: boolean;
       }>;
@@ -209,40 +204,44 @@ declare global {
       /** Options affecting the intersect test. */
       interface LineSegmentIntersectsOptions extends _LineSegmentIntersectsOptions {}
 
-      /** @remarks The options for `intersectPolygon` when `weilerAtherton` is true (or not provided) */
+      /**
+       * @remarks The options for {@linkcode PIXI.Rectangle.intersectPolygon | #intersectPolygon} when `weilerAtherton` is true (or not provided)
+       *
+       * This path does not use the `scalingFactor` property, and borrows `canMutate` from the WAC type
+       */
       interface WACIntersectPolygonOptions extends WeilerAthertonClipper._CombineOptions {
         /**
-         * One of CLIP_TYPES
-         * @defaultValue `WeilerAthertonClipper.CLIP_TYPES.INTERSECT`
-         * @remarks Default provided by `??=` in function body
-         *
-         * The default is actually `ClipperLib.ClipType.ctIntersection`, but that and `.ctUnion` are
-         * equivalent to  `WeilerAthertonClipper.CLIP_TYPES.INTERSECT` and `.UNION` respectively at runtime
+         * One of {@linkcode WeilerAthertonClipper.ClipTypes | CLIP_TYPES}
+         * @defaultValue {@linkcode WeilerAthertonClipper.CLIP_TYPES.INTERSECT}
+         * @remarks The default is actually {@linkcode ClipperLib.ClipType.ctIntersection}, but that and {@linkcode ClipperLib.ClipType.ctUnion | ctUnion} are
+         * equivalent to `WeilerAthertonClipper.CLIP_TYPES.INTERSECT` and {@linkcode WeilerAthertonClipper.CLIP_TYPES.UNION | UNION} respectively at runtime
          */
         clipType?:
           | WeilerAthertonClipper.CLIP_TYPES
           | (typeof ClipperLib.ClipType)["ctIntersection" | "ctUnion"]
-          | undefined
-          | null;
+          | undefined;
 
         /**
          * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
          * @defaultValue `true`
          */
-        weilerAtherton?: true;
+        weilerAtherton?: true | undefined;
       }
 
-      /** @remarks The options for `intersectPolygon` when `weilerAtherton` is false. */
-      interface ClipperLibIntersectPolygonOptions extends PIXI.Polygon.ClipperPointsOptions {
+      /**
+       * @remarks The options for {@linkcode PIXI.Rectangle.intersectPolygon | #intersectPolygon} when `weilerAtherton` is false.
+       *
+       * This path does not use the `canMutate` property, but does include `scalingFactor` with a default of {@linkcode CONST.CLIPPER_SCALING_FACTOR},
+       * borrowed from the `Polygon` interface
+       */
+      interface ClipperLibIntersectPolygonOptions extends Pick<PIXI.Polygon.IntersectPolygonOptions, "scalingFactor"> {
         /**
-         * One of CLIP_TYPES
-         * @defaultValue `ClipperLib.ClipType.ctIntersection`
-         * @remarks Default provided by `??=` in function body
-         *
-         * `WeilerAthertonClipper.CLIP_TYPES.INTERSECT` and `.UNION` are equivalent to
-         * `ClipperLib.ClipType.ctIntersection` and `.ctUnion` respectively at runtime
+         * One of {@linkcode ClipperLib.ClipTypes | CLIP_TYPES}
+         * @defaultValue {@linkcode ClipperLib.ClipType.ctIntersection}
+         * @remarks {@linkcode WeilerAthertonClipper.CLIP_TYPES.INTERSECT} and {@linkcode WeilerAthertonClipper.CLIP_TYPES.UNION | .UNION} are equivalent to
+         * {@linkcode ClipperLib.ClipType.ctIntersection} and {@linkcode ClipperLib.ClipType.ctUnion | ctUnion} respectively at runtime
          */
-        clipType?: ClipperLib.ClipType | WeilerAthertonClipper.CLIP_TYPES | null | undefined;
+        clipType?: ClipperLib.ClipType | WeilerAthertonClipper.CLIP_TYPES | undefined;
 
         /**
          * Use the Weiler-Atherton algorithm. Otherwise, use Clipper.
@@ -253,6 +252,16 @@ declare global {
     }
 
     class Rectangle extends _PIXI.Rectangle {
+      /**
+       * Bit code labels splitting a rectangle into zones, based on the Cohen-Sutherland algorithm.
+       * See {@link https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm}
+       *          left    central   right
+       * top      1001    1000      1010
+       * central  0001    0000      0010
+       * bottom   0101    0100      0110
+       */
+      static CS_ZONES: PIXI.Rectangle.CS_Zones;
+
       /**
        * Create normalized rectangular bounds given a rectangle shape and an angle of central rotation.
        * @param x       - The top-left x-coordinate of the un-rotated rectangle

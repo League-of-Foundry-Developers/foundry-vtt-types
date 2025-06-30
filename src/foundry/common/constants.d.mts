@@ -2188,6 +2188,11 @@ export declare const REGION_VISIBILITY: Readonly<{
 export type REGION_VISIBILITY = Brand<number, "constants.REGION_VISIBILITY">;
 
 /**
+ * The scaling factor that is used for Clipper polygons/paths consistently everywhere core performs Clipper operations.
+ */
+export const CLIPPER_SCALING_FACTOR = 100;
+
+/**
  * @deprecated since v12
  */
 export type DOCUMENT_TYPES = Exclude<WORLD_DOCUMENT_TYPES, "FogExploration" | "Setting">;
