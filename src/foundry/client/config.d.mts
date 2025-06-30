@@ -103,7 +103,7 @@ declare global {
        */
       types: Array<foundry.dice.terms.DiceTerm.AnyConstructor>;
 
-      rollModes: CONFIG.Dice.RollModes;
+      rollModes: RemoveIndexSignatures<CONFIG.Dice.RollModes>;
 
       /**
        * Configured Roll class definitions
