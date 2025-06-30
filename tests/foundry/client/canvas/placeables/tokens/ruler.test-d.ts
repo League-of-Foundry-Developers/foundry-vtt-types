@@ -95,9 +95,9 @@ class DrawSteelTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
     const _points = this.token.document.getCompleteMovementPath(state.segmentWaypoints);
 
     const startedNear = state.endPointEnemies ?? new Set();
-    // Actual code has some Token Document methods to fetch relevant info
-    const endPointEnemies = new Set([]);
-    const passedBy = new Set([]).union(startedNear);
+    // Actual code has some Token Document methods to fetch relevant info, not included in test to reduce scope
+    const endPointEnemies = new Set<TokenDocument.Implementation>();
+    const passedBy = new Set<TokenDocument.Implementation>().union(startedNear);
     const delta = waypoint.actionConfig.teleport ? 0 : passedBy.difference(endPointEnemies).size;
     const strikes = {
       delta,

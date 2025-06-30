@@ -1,4 +1,4 @@
-import type { DeepReadonly, Identity } from "#utils";
+import type { Identity } from "#utils";
 import type { BaseTokenRuler } from "./_module.d.mts";
 
 declare class TokenRuler extends BaseTokenRuler {
@@ -13,14 +13,14 @@ declare class TokenRuler extends BaseTokenRuler {
 
   /**
    * Configure the properties of the outline.
-   * Called in {@link TokenRuler#draw}.
+   * Called in {@linkcode TokenRuler.draw | TokenRuler#draw}.
    * @returns The thickness in pixels and the color
    */
   protected _configureOutline(): TokenRuler.Outline;
 
   /**
    * Configure the properties of the dash line.
-   * Called in {@link TokenRuler#draw}.
+   * Called in {@linkcode TokenRuler.draw | TokenRuler#draw}.
    * @returns The dash in pixels, the gap in pixels, and the speed in pixels per second
    */
   protected _configureDashLine(): TokenRuler.DashLine;
@@ -44,7 +44,7 @@ declare class TokenRuler extends BaseTokenRuler {
   /**
    * Get the style of the waypoint at the given waypoint.
    * @param waypoint - The waypoint
-   * @returns  The radius, color, and alpha of the waypoint. If the radius is 0, no waypoint marker is drawn.
+   * @returns The radius, color, and alpha of the waypoint. If the radius is 0, no waypoint marker is drawn.
    */
   protected _getWaypointStyle(waypoint: TokenRuler.Waypoint): TokenRuler.WaypointStyle;
 
@@ -64,7 +64,7 @@ declare class TokenRuler extends BaseTokenRuler {
    */
   protected _getGridHighlightStyle(
     waypoint: TokenRuler.Waypoint,
-    offset: DeepReadonly<foundry.grid.BaseGrid.Offset3D>,
+    offset: foundry.grid.BaseGrid.Offset3D,
   ): TokenRuler.GridHighlightStyle;
 }
 
@@ -132,7 +132,7 @@ declare namespace TokenRuler {
     ray: foundry.canvas.geometry.Ray | null;
 
     /** The measurements at this waypoint. */
-    measurement: foundry.grid.BaseGrid.MeasurePathResultWaypoint; // TODO: GridMeasurePathResultWaypoint
+    measurement: foundry.grid.BaseGrid.MeasurePathResultWaypoint;
 
     /** The previous waypoint, if any. */
     previous: Waypoint | null;
@@ -141,7 +141,11 @@ declare namespace TokenRuler {
     next: Waypoint | null;
   }
 
-  type Waypoint = DeepReadonly<Omit<TokenDocument.MeasuredMovementWaypoint, "movementId"> & WaypointData>;
+  /**
+   * @remarks This is not intended to be mutated, so foundry has marked it DeepReadonly,
+   * but there's no programmatic block on mutation
+   */
+  type Waypoint = Omit<TokenDocument.MeasuredMovementWaypoint, "movementId"> & WaypointData;
 
   /**
    * @remarks Intended to be extended by subclasses that need to track additional info between waypoints

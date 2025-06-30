@@ -42,25 +42,25 @@ declare abstract class BaseTokenRuler {
 
   /**
    * Draw the ruler.
-   * Called in {@link foundry.canvas.placeables.Token#_draw}.
+   * Called in {@linkcode foundry.canvas.placeables.Token.draw | Token#_draw}.
    */
   abstract draw(): Promise<void>;
 
   /**
    * Clear the ruler.
-   * Called in {@link foundry.canvas.placeables.Token#clear}.
+   * Called in {@linkcode foundry.canvas.placeables.Token.clear | Token#clear}.
    */
   abstract clear(): void;
 
   /**
    * Destroy the ruler.
-   * Called in {@link foundry.canvas.placeables.Token#_destroy}.
+   * Called in {@linkcode foundry.canvas.placeables.Token._destroy | Token#_destroy}.
    */
   abstract destroy(): void;
 
   /**
    * Refresh the ruler.
-   * Called in {@link foundry.canvas.placeables.Token#_refreshRuler}.
+   * Called in {@linkcode foundry.canvas.placeables.Token._refreshRuler | Token#_refreshRuler}.
    */
   abstract refresh(rulerData: unknown): void;
 }
