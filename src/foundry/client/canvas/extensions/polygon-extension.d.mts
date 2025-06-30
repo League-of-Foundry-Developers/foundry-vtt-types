@@ -141,7 +141,7 @@ declare global {
          * A scaling factor passed to {@linkcode PIXI.Polygon.toClipperPoints | Polygon#toClipperPoints} to preserve precision
          * @defaultValue {@linkcode CONST.CLIPPER_SCALING_FACTOR}
          */
-        scalingFactor: number;
+        scalingFactor?: number | undefined;
       }
 
       interface IntersectClipperOptions extends _IntersectCommonOptions {
@@ -149,7 +149,7 @@ declare global {
          * A scaling factor passed to {@linkcode PIXI.Polygon.toClipperPoints | Polygon#toClipperPoints} to preserve precision
          * @defaultValue `1`
          */
-        scalingFactor: number;
+        scalingFactor?: number | undefined;
       }
 
       interface ClipperPointsOptions {
@@ -157,7 +157,7 @@ declare global {
          * A scaling factor used to preserve floating point precision
          * @defaultValue `1`
          */
-        scalingFactor: number;
+        scalingFactor?: number | undefined;
       }
     }
 
