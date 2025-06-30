@@ -182,7 +182,7 @@ declare class Quadtree<out T> {
   /**
    * Visualize the nodes and objects in the quadtree
    */
-  visualize({ objects }?: Quadtree.VisualizeOptions): void;
+  visualize(options?: Quadtree.VisualizeOptions): void;
 }
 
 declare namespace Quadtree {
@@ -283,7 +283,7 @@ declare namespace Quadtree {
 /**
  * A subclass of Quadtree specifically intended for classifying the location of objects on the game canvas.
  * @remarks Foundry never uses `Quadtree` directly, only this class, and only ever fills it with:
- * - {@linkcode foundry.canvas.groups.PrimaryCanvasGroup.quadtree | canvas.primary.quadtree}: {@linkcode foundry.canvas.primary.PrimaryCanvasObjectMixin.AnyMixed | PrimaryCanvasObject}s
+ * - {@linkcode foundry.canvas.groups.PrimaryCanvasGroup.quadtree | canvas.primary.quadtree}: {@linkcode foundry.canvas.primary.PrimaryCanvasObjectMixin.AnyMixed | PrimaryCanvasObject}s (generally if not always {@linkcode foundry.canvas.primary.PrimarySpriteMesh | PrimarySpriteMesh}es)
  * - Various {@linkcode foundry.canvas.layers.PlaceablesLayer.quadtree | PlaceablesLayer} subclasses: Their associated {@linkcode foundry.canvas.placeables.PlaceableObject.Any | PlaceableObject}s
  * - {@linkcode foundry.canvas.geometry.edges.CanvasEdges | canvas.edges}: {@linkcode foundry.canvas.geometry.edges.Edge | Edge}s (this quadtree is true private on `CanvasEdges` so can't be linked to)
  */

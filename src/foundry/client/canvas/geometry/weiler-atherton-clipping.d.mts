@@ -118,7 +118,7 @@ declare class WeilerAthertonClipper {
     polygon: PIXI.Polygon,
     clipObject: WeilerAthertonClipper.ClipObject,
     clipType: WeilerAthertonClipper.CLIP_TYPES,
-    clipOpts: WeilerAthertonClipper.ClipOpts,
+    clipOpts?: WeilerAthertonClipper.ClipOpts,
   ): PIXI.Polygon[];
 
   #WeilerAthertonClipper: true;
@@ -185,6 +185,8 @@ declare namespace WeilerAthertonClipper {
   interface CombineOptions extends _CombineOptions, ClipOpts {
     /**
      * One of {@linkcode WeilerAthertonClipper.ClipTypes | CLIP_TYPES}
+     * @privateRemarks This *could* have been optional, as it gets passed to `new WAC()`, where it has a default, but Foundry has a pair of `!==` checks in
+     * {@linkcode WeilerAthertonClipper.combine} before that happens which make it required
      */
     clipType: WeilerAthertonClipper.CLIP_TYPES;
   }
