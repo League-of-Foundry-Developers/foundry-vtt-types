@@ -1,4 +1,4 @@
-import type { Brand, ValueOf } from "#utils";
+import type { Brand, Unbrand, ValueOf } from "#utils";
 
 /**
  * The shortened software name
@@ -221,7 +221,7 @@ export declare const CURSOR_STYLES: Readonly<{
   text: "text";
   "text-down": "text";
 }>;
-export type CURSOR_STYLES = Brand<string, "constants.CURSOR_STYLES">;
+export type CURSOR_STYLES = ValueOf<typeof CURSOR_STYLES>;
 
 /**
  * The lighting illumination levels which are supported.
@@ -409,24 +409,24 @@ export declare const DICE_ROLL_MODES: Readonly<{
   /**
    * This roll is visible to all players.
    */
-  PUBLIC: "publicroll" & DICE_ROLL_MODES;
+  PUBLIC: "publicroll";
 
   /**
    * Rolls of this type are only visible to the player that rolled and any Game Master users.
    */
-  PRIVATE: "gmroll" & DICE_ROLL_MODES;
+  PRIVATE: "gmroll";
 
   /**
    * A private dice roll only visible to Gamemaster users. The rolling player will not see the result of their own roll.
    */
-  BLIND: "blindroll" & DICE_ROLL_MODES;
+  BLIND: "blindroll";
 
   /**
    * A private dice roll which is only visible to the user who rolled it.
    */
-  SELF: "selfroll" & DICE_ROLL_MODES;
+  SELF: "selfroll";
 }>;
-export type DICE_ROLL_MODES = Brand<string, "constants.DICE_ROLL_MODES">;
+export type DICE_ROLL_MODES = ValueOf<typeof DICE_ROLL_MODES>;
 
 /**
  * The allowed fill types which a Drawing object may display
@@ -705,24 +705,24 @@ export declare const MACRO_TYPES: Readonly<{
   /**
    * Complex and powerful macros which leverage the FVTT API through plain JavaScript to perform functions as simple or as advanced as you can imagine.
    */
-  SCRIPT: "script" & MACRO_TYPES;
+  SCRIPT: "script";
 
   /**
    * Simple and easy to use, chat macros post pre-defined chat messages to the chat log when executed. All users can execute chat macros by default.
    */
-  CHAT: "chat" & MACRO_TYPES;
+  CHAT: "chat";
 }>;
-export type MACRO_TYPES = Brand<string, "constants.MACRO_TYPES">;
+export type MACRO_TYPES = ValueOf<typeof MACRO_TYPES>;
 
 /**
  * The allowed channels for audio playback.
  */
 export declare const AUDIO_CHANNELS: Readonly<{
-  music: "AUDIO.CHANNELS.MUSIC.label";
-  environment: "AUDIO.CHANNELS.ENVIRONMENT.label";
-  interface: "AUDIO.CHANNELS.INTERFACE.label";
+  music: "AUDIO.CHANNELS.MUSIC.label" & AUDIO_CHANNELS;
+  environment: "AUDIO.CHANNELS.ENVIRONMENT.label" & AUDIO_CHANNELS;
+  interface: "AUDIO.CHANNELS.INTERFACE.label" & AUDIO_CHANNELS;
 }>;
-export type AUDIO_CHANNELS = ValueOf<typeof AUDIO_CHANNELS>;
+export type AUDIO_CHANNELS = Brand<string, "constants.AUDIO_CHANNELS">;
 
 /**
  * The allowed playback modes for an audio Playlist
@@ -761,23 +761,23 @@ export declare const PLAYLIST_SORT_MODES: Readonly<{
    * Sort sounds alphabetically.
    * @defaultValue
    */
-  ALPHABETICAL: "a";
+  ALPHABETICAL: "a" & PLAYLIST_SORT_MODES;
 
   /**
    * Sort sounds by manual drag-and-drop.
    */
-  MANUAL: "m";
+  MANUAL: "m" & PLAYLIST_SORT_MODES;
 }>;
-export type PLAYLIST_SORT_MODES = ValueOf<typeof PLAYLIST_SORT_MODES>;
+export type PLAYLIST_SORT_MODES = Brand<string, "constants.PLAYLIST_SORT_MODES">;
 
 /**
  * The available modes for searching within a DirectoryCollection
  */
 export declare const DIRECTORY_SEARCH_MODES: Readonly<{
-  FULL: "full";
-  NAME: "name";
+  FULL: "full" & DIRECTORY_SEARCH_MODES;
+  NAME: "name" & DIRECTORY_SEARCH_MODES;
 }>;
-export type DIRECTORY_SEARCH_MODES = ValueOf<typeof DIRECTORY_SEARCH_MODES>;
+export type DIRECTORY_SEARCH_MODES = Brand<string, "constants.DIRECTORY_SEARCH_MODES">;
 
 /**
  * The allowed package types
@@ -858,29 +858,29 @@ export declare const SOFTWARE_UPDATE_CHANNELS: Readonly<{
   /**
    * The Stable release channel
    */
-  stable: "SETUP.UpdateStable";
+  stable: "SETUP.UpdateStable" & SOFTWARE_UPDATE_CHANNELS;
 
   /**
    * The User Testing release channel
    */
-  testing: "SETUP.UpdateTesting";
+  testing: "SETUP.UpdateTesting" & SOFTWARE_UPDATE_CHANNELS;
 
   /**
    * The Development release channel
    */
-  development: "SETUP.UpdateDevelopment";
+  development: "SETUP.UpdateDevelopment" & SOFTWARE_UPDATE_CHANNELS;
 
   /**
    * The Prototype release channel
    */
-  prototype: "SETUP.UpdatePrototype";
+  prototype: "SETUP.UpdatePrototype" & SOFTWARE_UPDATE_CHANNELS;
 }>;
-export type SOFTWARE_UPDATE_CHANNELS = ValueOf<typeof SOFTWARE_UPDATE_CHANNELS>;
+export type SOFTWARE_UPDATE_CHANNELS = Brand<string, "constants.SOFTWARE_UPDATE_CHANNELS">;
 
 /**
  * The default sorting density for manually ordering child objects within a parent
  */
-export declare const SORT_INTEGER_DENSITY: number;
+export declare const SORT_INTEGER_DENSITY: 100000;
 
 /**
  * The allowed types of a TableResult document
@@ -899,10 +899,12 @@ export declare const TABLE_RESULT_TYPES: Readonly<{
 
   /**
    * A Compendium Pack reference which will be linked to in the chat message.
+   * @deprecated "`CONST.TABLE_RESULT_TYPES.COMPENDIUM` is is deprecated in favor of {@linkcode CONST.TABLE_RESULT_TYPES.DOCUMENT}
+   * due to the "compendium" being merged with the "document" type." (since v13, until v15)
    */
   COMPENDIUM: "pack";
 }>;
-export type TABLE_RESULT_TYPES = ValueOf<typeof TABLE_RESULT_TYPES>;
+export type TABLE_RESULT_TYPES = Brand<string, "constants.TABLE_RESULT_TYPES">;
 
 /**
  * The allowed formats of a Journal Entry Page.
@@ -923,7 +925,7 @@ export type JOURNAL_ENTRY_PAGE_FORMATS = Brand<number, "constants.JOURNAL_ENTRY_
 
 /**
  * Define the valid anchor locations for a Tooltip displayed on a Placeable Object
- * @see {@linkcode TooltipManager}
+ * @see {@linkcode foundry.helpers.interaction.TooltipManager}
  */
 export declare const TEXT_ANCHOR_POINTS: Readonly<{
   /**
@@ -955,7 +957,6 @@ export type TEXT_ANCHOR_POINTS = Brand<number, "constants.TEXT_ANCHOR_POINTS">;
 
 /**
  * Define the valid occlusion modes which a tile can use
- * @defaultValue `1`
  * @see {@link https://foundryvtt.com/article/tiles/}
  */
 export declare const OCCLUSION_MODES: Readonly<{
@@ -979,7 +980,7 @@ export declare const OCCLUSION_MODES: Readonly<{
 
   /**
    * Causes the tile to be partially revealed based on the vision of the actor, which does not need to be under the tile to see what's beneath it.
-   * @remarks (by Foundry) This is useful for rooves on buildings where players could see through a window or door, viewing only a portion of what is obscured by the roof itself.
+   * This is useful for roofs on buildings where players could see through a window or door, viewing only a portion of what is obscured by the roof itself.
    */
   VISION: 4 & OCCLUSION_MODES;
 }>;
@@ -988,10 +989,13 @@ export type OCCLUSION_MODES = Brand<number, "constants.OCCLUSION_MODES">;
 /**
  * Alias for old tile occlusion modes definition
  */
+// TODO: improve this so TILE_OCCLUSION_MODES have their literal part, either by de-branding/re-branding dynamically or simply repeating ourselves
 export declare const TILE_OCCLUSION_MODES: {
-  [K in keyof typeof OCCLUSION_MODES]: TILE_OCCLUSION_MODES;
+  [K in keyof typeof OCCLUSION_MODES]: Unbrand<(typeof OCCLUSION_MODES)[K]>; //& TILE_OCCLUSION_MODES;
 };
 export type TILE_OCCLUSION_MODES = Brand<number, "constants.TILE_OCCLUSION_MODES">;
+
+declare const x: typeof TILE_OCCLUSION_MODES.FADE;
 
 /**
  * The occlusion modes that define the set of tokens that trigger occlusion.
@@ -1213,6 +1217,7 @@ export declare const USER_ROLE_NAMES: Readonly<{
    */
   "4": "GAMEMASTER";
 }>;
+// TODO: decide if this is worth breaking pattern for utility, or if it should be a Brand instead
 export type USER_ROLE_NAMES = ValueOf<typeof USER_ROLE_NAMES>;
 
 /**
