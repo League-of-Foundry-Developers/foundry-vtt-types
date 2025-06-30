@@ -5,11 +5,12 @@ import Document = foundry.abstract.Document;
 
 class TestBaseMeasuredTemplate extends BaseMeasuredTemplate {}
 
-let myTemplate;
 // MeasuredTemplate has no hard required fields for construction
-myTemplate = new TestBaseMeasuredTemplate();
-myTemplate = new TestBaseMeasuredTemplate({});
-myTemplate = new TestBaseMeasuredTemplate({
+new TestBaseMeasuredTemplate();
+
+new TestBaseMeasuredTemplate({});
+
+new TestBaseMeasuredTemplate({
   _id: "XXXXXSomeIDXXXXX",
   author: "YYYYYSomeIDYYYYY",
   t: CONST.MEASURED_TEMPLATE_TYPES.RAY,
@@ -30,7 +31,8 @@ myTemplate = new TestBaseMeasuredTemplate({
     },
   },
 });
-myTemplate = new TestBaseMeasuredTemplate({
+
+new TestBaseMeasuredTemplate({
   _id: null,
   author: null,
   t: null,
@@ -47,7 +49,8 @@ myTemplate = new TestBaseMeasuredTemplate({
   hidden: null,
   flags: null,
 });
-myTemplate = new TestBaseMeasuredTemplate({
+
+const myTemplate = new TestBaseMeasuredTemplate({
   _id: undefined,
   author: undefined,
   t: undefined,

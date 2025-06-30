@@ -41,7 +41,7 @@ type CombatData = Combat.InitializedData;
 
 type CombatantData = Combatant.InitializedData;
 
-type CombatantGroupData = unknown;
+type CombatantGroupData = CombatantGroup.InitializedData;
 
 type DrawingData = DrawingDocument.InitializedData;
 
@@ -53,7 +53,7 @@ type ItemData = Item.InitializedData;
 
 type JournalEntryData = JournalEntry.InitializedData;
 
-type JournalEntryCategoryData = unknown;
+type JournalEntryCategoryData = JournalEntryCategory.InitializedData;
 
 type JournalEntryPageImageData = JournalEntryPage.InitializedData["image"];
 
@@ -124,11 +124,11 @@ type TokenDetectionMode = TokenDocument.DetectionModeData;
 
 type TokenBarData = TokenDocument.InitializedData["bar1"];
 
-type TokenPosition = unknown;
+type TokenPosition = TokenDocument.Position;
 
-type TokenDimensions = unknown;
+type TokenDimensions = TokenDocument.Dimensions;
 
-type TokenHexagonalOffsetsData = unknown;
+type TokenHexagonalOffsetsData = TokenDocument.HexagonalOffsetsData;
 
 type TokenHexagonalShapeData = unknown;
 

@@ -13,21 +13,20 @@ declare class Folders extends foundry.documents.abstract.WorldCollection<"Folder
 
   /**
    * Track which Folders are currently expanded in the UI
+   * @internal
    */
-  _expanded: Partial<Record<string, boolean>>;
+  protected _expanded: Partial<Record<string, boolean>>;
 
   _onModifyContents<A extends DatabaseAction>(
     action: A,
-    documents: readonly Folder.Implementation[],
+    documents: Folder.Stored[],
     result: readonly foundry.documents.BaseFolder.UpdateData[] | readonly string[],
     operation: DatabaseOperationMap[A],
     user: User.Implementation,
   ): void;
 
-  /**
-   * Refresh the display of any active JournalSheet instances where the folder list will change.
-   */
-  protected _refreshJournalEntrySheets(): void;
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _refreshJournalEntrySheets(): never;
 
   render(
     force?: boolean,

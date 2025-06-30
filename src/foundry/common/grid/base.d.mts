@@ -171,7 +171,7 @@ declare abstract class BaseGrid {
        * The function that returns the cost for a given move between
        * grid spaces (default is the distance traveled along the direct path)
        */
-      cost: BaseGrid.MeasurePathCostFunction;
+      cost: BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
     }>,
   ): BaseGrid.MeasurePathResult;
 
@@ -189,7 +189,7 @@ declare abstract class BaseGrid {
        * The function that returns the cost for a given move between
        * grid spaces (default is the distance traveled along the direct path)
        */
-      cost: BaseGrid.MeasurePathCostFunction;
+      cost: BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
     }>,
     result: BaseGrid.MeasurePathResult,
   ): void;
@@ -543,17 +543,36 @@ declare namespace BaseGrid {
     thickness?: number | undefined;
   }
 
-  interface Offset {
-    /** The row coordinate */
+  type Offset = Offset2D | Offset3D;
+
+  /**
+   * 2D offset coordinates of a grid space.
+   */
+  interface Offset2D {
+    /** The row coordinate (an integer) */
     i: number;
 
-    /** The column coordinate */
+    /** The column coordinate (an integer) */
     j: number;
+  }
+
+  /**
+   * 3D offset coordinates of a grid space.
+   */
+  interface Offset3D extends Offset2D {
+    /**
+     * The vertical coordinate (an integer)
+     */
+    k: number;
   }
 
   type OffsetRange = [i0: number, j0: number, i1: number, j1: number];
 
-  type Coordinates = Offset | Canvas.Point;
+  type Coordinates = Coordinates2D | Coordinates3D;
+
+  type Coordinates2D = Offset2D | Canvas.Point;
+
+  type Coordinates3D = Offset3D | Canvas.ElevatedPoint;
 
   interface SnappingBehavior {
     /** The snapping mode (a union of {@linkcode CONST.GRID_SNAPPING_MODES}) */
@@ -566,7 +585,40 @@ declare namespace BaseGrid {
     resolution?: number | undefined;
   }
 
-  type MeasurePathWaypoint = Coordinates | (Configuration & { teleport: boolean });
+  interface _MeasurePathWaypointData {
+    /**
+     * Teleport to this waypoint?
+     * @defaultValue `false`
+     */
+    teleport?: boolean;
+
+    /**
+     * Measure of the segment from the previous to this waypoint? The distance, cost, spaces,
+     * diagonals, and Euclidean length of a segment that is not measured are always 0.
+     * @defaultValue `true`
+     */
+    measure?: boolean;
+  }
+
+  interface MeasurePathWaypointData2D extends _MeasurePathWaypointData {
+    /**
+     * A predetermined cost (nonnegative) or a cost function to be used instead of `options.cost`.
+     */
+    cost?: number | MeasurePathCostFunction2D;
+  }
+
+  interface MeasurePathWaypointData3D extends _MeasurePathWaypointData {
+    /**
+     * A predetermined cost (nonnegative) or a cost function to be used instead of `options.cost`.
+     */
+    cost?: number | MeasurePathCostFunction3D;
+  }
+
+  type MeasurePathWaypoint2D = InexactPartial<Coordinates2D & MeasurePathWaypointData2D>;
+
+  type MeasurePathWaypoint3D = InexactPartial<Coordinates3D & MeasurePathWaypointData3D>;
+
+  type MeasurePathWaypoint = MeasurePathWaypoint2D | MeasurePathWaypoint3D;
 
   /** The measurements of a waypoint. */
   interface MeasurePathResultWaypoint {
@@ -630,15 +682,45 @@ declare namespace BaseGrid {
   }
 
   /**
-   * A function that returns the cost for a given move between grid spaces.
-   * In square and hexagonal grids the grid spaces are always adjacent unless teleported.
-   * The distance is 0 if and only if teleported. The function is never called with the same offsets.
-   * @param from     - The offset that is moved from.
-   * @param to       - The offset that is moved to.
-   * @param distance - The distance between the grid spaces, or 0 if teleported.
-   * @returns The cost of the move between the grid spaces.
+   * @deprecated in favor of {@linkcode MeasurePathCostFunction2D}
    */
-  type MeasurePathCostFunction = (from: Offset, to: Offset, distance: number) => number;
+  type MeasurePathCostFunction = MeasurePathCostFunction2D;
+
+  /**
+   * A function that returns the cost for a given move between grid spaces in 2D.
+   * In square and hexagonal grids the grid spaces are always adjacent unless teleported.
+   * The function is never called with the same offsets.
+   * @param from     - The offset that is moved from
+   * @param to       - The offset that is moved to
+   * @param distance - The distance between the grid spaces
+   * @param segment  - The properties of the segment
+   * @returns The cost of the move between the grid spaces (nonnegative)
+   * @remarks foundry marks `from`, `to`, and `segment` as readonly
+   */
+  type MeasurePathCostFunction2D = (
+    from: Offset2D,
+    to: Offset2D,
+    distance: number,
+    segment: foundry.grid.BaseGrid.MeasurePathWaypoint2D,
+  ) => number;
+
+  /**
+   * A function that returns the cost for a given move between grid spaces in 3D.
+   * In square and hexagonal grids the grid spaces are always adjacent unless teleported.
+   * The function is never called with the same offsets.
+   * @param from     - The offset that is moved from
+   * @param to       - The offset that is moved to
+   * @param distance - The distance between the grid spaces
+   * @param segment  - The properties of the segment
+   * @returns The cost of the move between the grid spaces (nonnegative)
+   * @remarks foundry marks `from`, `to`, and `segment` as readonly
+   */
+  type MeasurePathCostFunction3D = (
+    from: Offset3D,
+    to: Offset3D,
+    distance: number,
+    segment: foundry.grid.BaseGrid.MeasurePathWaypoint3D,
+  ) => number;
 
   interface Dimensions {
     width: number;

@@ -12,9 +12,9 @@ declare namespace Adventure {
   type Name = "Adventure";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create an `Adventure`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Adventure`.
@@ -171,33 +171,35 @@ declare namespace Adventure {
     /**
      * The human-readable name of the Adventure
      */
-    name: fields.StringField<{
-      required: true;
-      blank: false;
-      label: "ADVENTURE.Name";
-      hint: "ADVENTURE.NameHint";
-      textSearch: true;
-    }>;
+    name: fields.StringField<
+      {
+        required: true;
+        blank: false;
+        textSearch: true;
+      },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The file path for the primary image of the adventure
      * @defaultValue `null`
      */
-    img: fields.FilePathField<{ categories: ["IMAGE"]; label: "ADVENTURE.Image"; hint: "ADVENTURE.ImageHint" }>;
+    img: fields.FilePathField<{ categories: ["IMAGE"] }>;
 
     /**
      * A string caption displayed under the primary image banner
      * @defaultValue `""`
      */
-    caption: fields.HTMLField<{ label: "ADVENTURE.Caption"; hint: "ADVENTURE.CaptionHint" }>;
+    caption: fields.HTMLField;
 
     /**
      * An HTML text description for the adventure
      * @defaultValue `""`
      */
     description: fields.HTMLField<{
-      label: "ADVENTURE.Description";
-      hint: "ADVENTURE.DescriptionHint";
       textSearch: true;
     }>;
 
@@ -380,6 +382,11 @@ declare namespace Adventure {
      * and {@link Adventure._onDeleteDescendantDocuments | `Adventure#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Adventure.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Adventure.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -406,6 +413,11 @@ declare namespace Adventure {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   type DocumentDataRecord = {
     [K in ContainedDocumentType]?: Document.CreateDataForName<K>[];
@@ -447,9 +459,28 @@ declare namespace Adventure {
      * @defaultValue `true`
      */
     dialog: boolean;
+
+    /**
+     * An array of awaited pre-import callbacks
+     */
+    preImport?: ((data: Adventure.ImportData, options: Adventure.ImportOptions) => Promise<void>)[];
+
+    /**
+     * An array of awaited post-import callbacks
+     */
+    postImport?: ((result: Adventure.ImportResult, options: Adventure.ImportOptions) => Promise<void>)[];
   }>;
 
   interface ImportOptions extends _ImportOptions, PrepareImportOptions {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -460,13 +491,12 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
    * @param data    - Initial data from which to construct the `Adventure`
    * @param context - Construction context options
    */
-  constructor(...args: Adventure.ConstructorArgs);
+  constructor(data: Adventure.CreateData, context?: Adventure.ConstructionContext);
 
   /**
    * @remarks If this creation is happening in a provided `pack`, and that pack is **not** system-specific,
    * strips `Actor`s, `Item`s, and `Actor` and `Item` `Folders` from `source`s
    */
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: Adventure.CreateData,
     context?: DataModel.FromSourceOptions,
@@ -478,7 +508,6 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
    * @param options - Options which configure and customize the import process
    * @returns The import result
    */
-  // options: not null (destructured)
   import(options?: Adventure.ImportOptions): Promise<Adventure.ImportResult>;
 
   /**
@@ -486,7 +515,6 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
    * @param options - Options passed in from the import dialog to configure the import behavior
    * @returns A subset of adventure fields to import.
    */
-  // options: not null (destructured)
   prepareImport(options?: Adventure.PrepareImportOptions): Promise<Adventure.ImportData>;
 
   /**
@@ -510,16 +538,21 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
 
   // Descendant Document operations have been left out because Adventure does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Adventure", Adventure.Parent>): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: Adventure.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data: Document.CreateDialogData<Adventure.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Adventure", Adventure.Parent>,
+    data: Adventure.CreateDialogData | undefined,
+    createOptions: Adventure.Database.DialogCreateOptions,
+    options?: Adventure.CreateDialogOptions,
   ): Promise<Adventure.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Adventure">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: Adventure.DropData,
     options?: Adventure.DropDataOptions,

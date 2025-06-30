@@ -28,6 +28,31 @@ expectTypeOf(user.sheet).toEqualTypeOf<FormApplication.Any | foundry.application
 
 expectTypeOf(user.color).toEqualTypeOf<Color>();
 
+const queryConfig = { timeout: 100 };
+
+expectTypeOf(user.query("dialog", { type: "confirm", config: { content: "Do thing?" } }, queryConfig)).toEqualTypeOf<
+  Promise<User.QueryReturn<"dialog">>
+>();
+
+declare module "fvtt-types/configuration" {
+  namespace CONFIG {
+    interface Queries {
+      "draw-steel.spendHeroToken": (
+        payload: { userId: string; spendType: string; flavor: string },
+        queryOptions: User.QueryOptions,
+      ) => void;
+    }
+  }
+}
+
+const queryPayload = {
+  userId: "test",
+  spendType: "test",
+  flavor: "test",
+};
+
+expectTypeOf(user.query("draw-steel.spendHeroToken", queryPayload, queryConfig)).toEqualTypeOf<Promise<void>>();
+
 declare class ConfiguredUser extends User {}
 
 declare global {

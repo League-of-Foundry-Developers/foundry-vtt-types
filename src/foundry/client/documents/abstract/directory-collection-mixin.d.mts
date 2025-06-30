@@ -86,6 +86,18 @@ declare class DirectoryCollection {
     a: DirectoryCollectionMixin.StandardSortEntry,
     b: DirectoryCollectionMixin.StandardSortEntry,
   ): number;
+
+  // Note(LukeAbby): This override has been commented out because it was being added as an overload
+  // with `DocumentCollection` and causing problems. The main solution would be to use `this` but
+  // that's awkward. This method really only makes sense on `DocumentCollection` subclasses as well.
+
+  // protected _onModifyContents<A extends DatabaseAction>(
+  //   action: A,
+  //   documents: readonly Document.AnyStored[],
+  //   result: readonly AnyObject[] | readonly string[],
+  //   operation: DatabaseOperationMap[A],
+  //   user: User.Implementation,
+  // ): void;
 }
 
 /**

@@ -1,4 +1,4 @@
-import type { Merge } from "#utils";
+import type { InexactPartial, IntentionalPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -14,9 +14,9 @@ declare namespace DrawingDocument {
   type Name = "Drawing";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `DrawingDocument`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `DrawingDocument`.
@@ -58,9 +58,8 @@ declare namespace DrawingDocument {
      * The permissions for whether a certain user can create, update, or delete this document.
      */
     interface Permissions {
-      create: "DRAWING_CREATE";
-      update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
-      delete(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      create(user: User.Internal.Implementation, doc: Implementation, data: CreateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -196,13 +195,13 @@ declare namespace DrawingDocument {
      * The x-coordinate position of the top-left corner of the drawn shape
      * @defaultValue `0`
      */
-    x: fields.NumberField<{ required: true; nullable: false; initial: 0; label: "XCoord" }>;
+    x: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
     /**
      * The y-coordinate position of the top-left corner of the drawn shape
      * @defaultValue `0`
      */
-    y: fields.NumberField<{ required: true; nullable: false; initial: 0; label: "YCoord" }>;
+    y: fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 
     /**
      * The elevation of the drawing
@@ -220,7 +219,7 @@ declare namespace DrawingDocument {
      * The angle of rotation for the drawing figure
      * @defaultValue `0`
      */
-    rotation: fields.AngleField<{ label: "DRAWING.Rotation" }>;
+    rotation: fields.AngleField;
 
     /**
      * An amount of bezier smoothing applied, between 0 and 1
@@ -242,7 +241,7 @@ declare namespace DrawingDocument {
         required: true;
         nullable: false;
         initial: typeof CONST.DRAWING_FILL_TYPES.NONE;
-        choices: CONST.DRAWING_FILL_TYPES[];
+        choices: Record<CONST.DRAWING_FILL_TYPES, string>;
         label: "DRAWING.FillTypes";
         validationError: "must be a value in CONST.DRAWING_FILL_TYPES";
       },
@@ -348,7 +347,7 @@ declare namespace DrawingDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.DocumentFlagsField<"Drawing">;
+    flags: fields.DocumentFlagsField<Name>;
   }
 
   namespace Database {
@@ -456,6 +455,11 @@ declare namespace DrawingDocument {
      * and {@link DrawingDocument._onDeleteDescendantDocuments | `DrawingDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<DrawingDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode DrawingDocument.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -482,6 +486,27 @@ declare namespace DrawingDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  interface ValidateVisibleContentData
+    extends IntentionalPartial<Pick<BaseDrawing.InitializedData, "shape">>,
+      Pick<
+        BaseDrawing.InitializedData,
+        "text" | "textAlpha" | "fillType" | "fillAlpha" | "strokeWidth" | "strokeAlpha"
+      > {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -495,7 +520,15 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
    * @param data    - Initial data from which to construct the `DrawingDocument`
    * @param context - Construction context options
    */
-  constructor(...args: DrawingDocument.ConstructorArgs);
+  // Note(LukeAbby): Required because while `DrawingDocument` has no directly required schema
+  // properties the `validateJoint` method will fail.
+  constructor(data: DrawingDocument.CreateData, context?: DrawingDocument.ConstructionContext);
+
+  /**
+   * Fields included in the drawing defaults setting
+   * @defaultValue `["strokeWidth", "strokeColor", "strokeAlpha", "bezierFactor", "fillType", "fillColor", "fillAlpha", "texture", "text", "fontFamily", "fontSize", "textColor", "textAlpha"]`
+   */
+  static defaultDrawingFields: (keyof DrawingDocument.InitializedData)[];
 
   /**
    * Is the current User the author of this drawing?
@@ -516,18 +549,21 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Drawing does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(
-    context?: Document.DefaultNameContext<"Drawing", NonNullable<DrawingDocument.Parent>>,
-  ): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: DrawingDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data: Document.CreateDialogData<DrawingDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"Drawing", NonNullable<DrawingDocument.Parent>>,
+    data: DrawingDocument.CreateDialogData | undefined,
+    createOptions: DrawingDocument.Database.DialogCreateOptions,
+    options?: DrawingDocument.CreateDialogOptions,
   ): Promise<DrawingDocument.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Drawing">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: DrawingDocument.DropData,
     options?: DrawingDocument.DropDataOptions,

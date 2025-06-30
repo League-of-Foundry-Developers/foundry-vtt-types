@@ -22,9 +22,7 @@ declare abstract class BaseJournalEntryPage<
    * You should use {@link JournalEntryPage.implementation | `new JournalEntryPage.implementation(...)`} instead which will give you
    * a system specific implementation of `JournalEntryPage`.
    */
-  constructor(...args: JournalEntryPage.ConstructorArgs);
-
-  _source: BaseJournalEntryPage.Source;
+  constructor(data: JournalEntryPage.CreateData, context?: JournalEntryPage.ConstructionContext);
 
   /**
    * @defaultValue
@@ -38,21 +36,17 @@ declare abstract class BaseJournalEntryPage<
    *   labelPlural: "DOCUMENT.JournalEntryPages",
    *   coreTypes: ["text", "image", "pdf", "video"],
    *   compendiumIndexFields: ["name", "type", "sort"],
-   *   schemaVersion: "12.324"
+   *   permissions: {
+   *     create: "OWNER",
+   *     delete: "OWNER"
+   *   },
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
   static override metadata: BaseJournalEntryPage.Metadata;
 
   static override defineSchema(): BaseJournalEntryPage.Schema;
-
-  /**
-   * @remarks Uses `game.user` if `user` is falsey.
-   *
-   * If this page's ownership is `.INHERIT` for this user (specified or default),
-   * forwards to `this.parent.getUserLevel`.
-   */
-  override getUserLevel(user?: User.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /*
    * After this point these are not really overridden methods.
@@ -91,7 +85,7 @@ declare abstract class BaseJournalEntryPage<
 
   override parent: BaseJournalEntryPage.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<JournalEntryPage.Implementation | JournalEntryPage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<JournalEntryPage.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<JournalEntryPage.Implementation, Temporary>>>;
@@ -106,7 +100,7 @@ declare abstract class BaseJournalEntryPage<
     operation?: Document.Database.DeleteDocumentsOperation<JournalEntryPage.Database.Delete>,
   ): Promise<JournalEntryPage.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: JournalEntryPage.CreateData | JournalEntryPage.CreateData[],
     operation?: JournalEntryPage.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<JournalEntryPage.Implementation, Temporary> | undefined>;
@@ -213,8 +207,6 @@ declare abstract class BaseJournalEntryPage<
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): true;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 
@@ -295,6 +287,7 @@ export default BaseJournalEntryPage;
 
 declare namespace BaseJournalEntryPage {
   export import Name = JournalEntryPage.Name;
+  export import ConstructionContext = JournalEntryPage.ConstructionContext;
   export import ConstructorArgs = JournalEntryPage.ConstructorArgs;
   export import Hierarchy = JournalEntryPage.Hierarchy;
   export import Metadata = JournalEntryPage.Metadata;

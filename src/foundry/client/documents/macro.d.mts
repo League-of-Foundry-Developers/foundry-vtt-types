@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "fvtt-types/configuration";
-import type { Merge, NullishProps } from "#utils";
+import type { InexactPartial, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -15,9 +15,9 @@ declare namespace Macro {
   type Name = "Macro";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Macro`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Macro`.
@@ -63,6 +63,7 @@ declare namespace Macro {
     interface Permissions {
       create(user: User.Internal.Implementation, doc: Implementation): boolean;
       update(user: User.Internal.Implementation, doc: Implementation): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -223,13 +224,19 @@ declare namespace Macro {
      * The name of this Macro
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: false; label: "Name"; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * A Macro subtype from CONST.MACRO_TYPES
      * @defaultValue `CONST.MACRO_TYPES.CHAT`
      */
-    type: fields.DocumentTypeField<typeof BaseMacro, { initial: typeof CONST.MACRO_TYPES.CHAT; label: "Type" }>;
+    type: fields.DocumentTypeField<typeof BaseMacro, { initial: typeof CONST.MACRO_TYPES.CHAT }>;
 
     /**
      * The _id of a User document which created this Macro *
@@ -244,7 +251,6 @@ declare namespace Macro {
     img: fields.FilePathField<{
       categories: ["IMAGE"];
       initial: () => typeof BaseMacro.DEFAULT_ICON;
-      label: "Image";
     }>;
 
     /**
@@ -258,7 +264,6 @@ declare namespace Macro {
       choices: CONST.MACRO_SCOPES[];
       initial: (typeof CONST.MACRO_SCOPES)[0];
       validationError: "must be a value in CONST.MACRO_SCOPES";
-      label: "Scope";
     }>;
 
     /**
@@ -268,7 +273,6 @@ declare namespace Macro {
     command: fields.StringField<{
       required: true;
       blank: true;
-      label: "Command";
     }>;
 
     /**
@@ -400,6 +404,11 @@ declare namespace Macro {
      * and {@link Macro._onDeleteDescendantDocuments | `Macro#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Macro.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Macro.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -426,6 +435,11 @@ declare namespace Macro {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /** @internal */
   type _ScriptScope = NullishProps<{
@@ -489,6 +503,15 @@ declare namespace Macro {
   type ExecuteReturn<SubType extends Macro.SubType> =
     | (SubType extends "chat" ? Promise<ChatMessage.Implementation | undefined | void> : never)
     | (SubType extends "script" ? Promise<unknown> | void : never);
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -505,7 +528,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    * @param data    - Initial data from which to construct the `Macro`
    * @param context - Construction context options
    */
-  constructor(...args: Macro.ConstructorArgs);
+  constructor(data: Macro.CreateData, context?: Macro.ConstructionContext);
 
   /**
    * Is the current User the author of this macro?
@@ -532,16 +555,17 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   /**
    * Execute the Macro command.
    * @param scope - Macro execution scope which is passed to script macros
-   * @returns A promising containing a created {@linkcode ChatMessage} (or `undefined`) if a chat
+   * @returns A promise containing a created {@linkcode ChatMessage} (or `undefined`) if a chat
    *          macro or the return value if a script macro. A void return is possible if the user
    *          is not permitted to execute macros or a script macro execution fails.
    * @remarks Forwards to either `#executeChat` or `#executeScript`
    */
-  // scope: not null (parameter default only, destructured where forwarded)
   execute(scope?: Macro.ExecuteScope<SubType>): Macro.ExecuteReturn<SubType>;
 
   /** @remarks Returns `this.execute({event})` */
   override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
+
+  // _onCreate is overridden but with no signature changes from its definition in BaseMacro.
 
   /*
    * After this point these are not really overridden methods.
@@ -557,16 +581,19 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
 
   // Descendant Document operations have been left out because Macro does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Macro", Macro.Parent>): string;
+  static override defaultName(context?: Macro.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
     data?: Macro.CreateData,
-    context?: Document.CreateDialogContext<"Macro", Macro.Parent>,
+    createOptions?: Macro.Database.DialogCreateOptions,
+    options?: Macro.CreateDialogOptions,
   ): Promise<Macro.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Macro">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: Macro.DropData,
     options?: Macro.DropDataOptions,

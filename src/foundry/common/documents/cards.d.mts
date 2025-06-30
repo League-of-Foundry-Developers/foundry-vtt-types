@@ -27,7 +27,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    * You should use {@link Cards.implementation | `new Cards.implementation(...)`} instead which will give you
    * a system specific implementation of `Cards`.
    */
-  constructor(...args: Cards.ConstructorArgs);
+  constructor(data: Cards.CreateData, context?: Cards.ConstructionContext);
 
   /**
    * @defaultValue
@@ -41,9 +41,12 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    *   hasTypeData: true,
    *   label: "DOCUMENT.Cards",
    *   labelPlural: "DOCUMENT.CardsPlural",
-   *   permissions: {create: "CARDS_CREATE"},
+   *   permissions: {
+   *     create: "CARDS_CREATE",
+   *     delete: "OWNER"
+   *   },
    *   coreTypes: ["deck", "hand", "pile"],
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -51,11 +54,17 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   static override defineSchema(): BaseCards.Schema;
 
+  /** @defaultValue `["DOCUMENT", "CARDS"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
   /**
    * The default icon used for a cards stack that does not have a custom image set
    * @defaultValue `"icons/svg/card-hand.svg"`
    */
   static DEFAULT_ICON: string;
+
+  /** @remarks calls `DocumentStatsField._shimDocument(this)` */
+  protected override _initialize(options?: Document.InitializeOptions): void;
 
   /**
    * @remarks
@@ -63,6 +72,9 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.
@@ -101,7 +113,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   override parent: BaseCards.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Cards.Implementation | Cards.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Cards.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Cards.Implementation, Temporary>>>;
@@ -116,7 +128,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
     operation?: Document.Database.DeleteDocumentsOperation<Cards.Database.Delete>,
   ): Promise<Cards.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Cards.CreateData | Cards.CreateData[],
     operation?: Cards.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Cards.Implementation, Temporary> | undefined>;
@@ -249,8 +261,6 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): true;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 
@@ -328,6 +338,7 @@ export default BaseCards;
 
 declare namespace BaseCards {
   export import Name = Cards.Name;
+  export import ConstructionContext = Cards.ConstructionContext;
   export import ConstructorArgs = Cards.ConstructorArgs;
   export import Hierarchy = Cards.Hierarchy;
   export import Metadata = Cards.Metadata;

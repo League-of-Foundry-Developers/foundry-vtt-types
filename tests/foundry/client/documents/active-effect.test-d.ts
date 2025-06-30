@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject, JSONValue } from "../../../../src/utils/index.d.mts";
+import type { AnyMutableObject } from "../../../../src/utils/index.d.mts";
 
 import DataModel = foundry.abstract.DataModel;
 import Document = foundry.abstract.Document;
@@ -49,14 +49,19 @@ expectTypeOf(ActiveEffect.getInitialDuration()).toEqualTypeOf<ActiveEffect.GetIn
 // ClientDocument static overrides
 
 declare const someItem: Item.Implementation;
-expectTypeOf(ActiveEffect.defaultName()).toBeString();
-expectTypeOf(ActiveEffect.defaultName({})).toBeString();
+
+// @ts-expect-error `defaultName` requires a `pack` or `parent`.
+ActiveEffect.defaultName();
+
 expectTypeOf(ActiveEffect.defaultName({ pack: "some.pack", parent: someItem, type: "base" })).toBeString();
 expectTypeOf(ActiveEffect.defaultName({ pack: undefined, parent: undefined, type: undefined })).toBeString();
 expectTypeOf(ActiveEffect.defaultName({ pack: null, parent: null, type: null })).toBeString();
 
-// @ts-expect-error - ActiveEffect.createDialog requires a parent
-await ActiveEffect.createDialog({}, {});
+// Note: this call will fail at runtime but a validator function to require `pack` or `parent` has not yet been written.
+expectTypeOf(ActiveEffect.defaultName({})).toBeString();
+
+// @ts-expect-error - `ActiveEffect.createDialog` requires `createOptions` for pack information.
+await ActiveEffect.createDialog({});
 
 declare const someActor: Actor.Implementation;
 expectTypeOf(
@@ -68,12 +73,17 @@ expectTypeOf(
   ),
 ).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
 expectTypeOf(
-  ActiveEffect.createDialog(createData, {
-    parent: someActor,
-    pack: "some.pack",
-    // TODO: add mock subtypes so this has valid values to test ("base" is excluded)
-    //types: [],
-  }),
+  ActiveEffect.createDialog(
+    createData,
+    {
+      parent: someActor,
+      pack: "some.pack",
+    },
+    {
+      // TODO: add mock subtypes so this has valid values to test ("base" is excluded)
+      //types: [],
+    },
+  ),
 ).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
 expectTypeOf(
   ActiveEffect.createDialog(
@@ -95,12 +105,10 @@ declare const aeSource: ActiveEffect.Source;
 expectTypeOf(
   ActiveEffect.fromDropData({
     data: aeSource,
-    type: "ActiveEffect",
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
 expectTypeOf(
   ActiveEffect.fromDropData({
-    type: "ActiveEffect",
     uuid: "someUUID", // TODO: This should be allowed
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
@@ -108,7 +116,6 @@ expectTypeOf(
   ActiveEffect.fromDropData(
     {
       data: aeSource,
-      type: "ActiveEffect",
     },
     {}, // options is vestigial, this is AnyObject
   ),
@@ -191,10 +198,6 @@ effect.sourceName = "foo";
 expectTypeOf(effect.apply(someActor, change)).toEqualTypeOf<AnyMutableObject>();
 expectTypeOf(effect["_applyLegacy"](someActor, change, {})).toBeVoid();
 
-expectTypeOf(effect["_castDelta"]("7", "number")).toEqualTypeOf<JSONValue>();
-expectTypeOf(effect["_castArray"](`["foo", 7, "bar"]`, "string")).toEqualTypeOf<Array<JSONValue>>();
-expectTypeOf(effect["_parseOrString"](`{ "foo": undefined, "bar": "invalidJSON", }`)).toEqualTypeOf<JSONValue>();
-
 expectTypeOf(effect["_applyAdd"](someActor, change, 5, 1, {})).toBeVoid();
 expectTypeOf(effect["_applyMultiply"](someActor, change, 2, 4, {})).toBeVoid();
 expectTypeOf(effect["_applyOverride"](someActor, change, "foo", "bar", {})).toBeVoid();
@@ -204,10 +207,6 @@ expectTypeOf(effect["_applyCustom"](someActor, change, { baz: 17 }, { fizz: fals
 // getFlag override has no type changes, handled in BaseActiveEffect tests
 
 expectTypeOf(effect["_displayScrollingStatus"](true)).toBeVoid();
-
-// deprecated since v11 until v13
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(effect._getSourceName()).toEqualTypeOf<Promise<string>>();
 
 // ClientDocument instance override(s)
 

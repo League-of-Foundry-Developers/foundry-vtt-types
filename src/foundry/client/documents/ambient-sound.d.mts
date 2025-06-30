@@ -1,4 +1,4 @@
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseAmbientSound from "#common/documents/ambient-sound.mjs";
@@ -12,9 +12,9 @@ declare namespace AmbientSoundDocument {
   type Name = "AmbientSound";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create an `AmbientSoundDocument`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `AmbientSoundDocument`.
@@ -392,6 +392,11 @@ declare namespace AmbientSoundDocument {
      * and {@link AmbientSoundDocument._onDeleteDescendantDocuments | `AmbientSoundDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<AmbientSoundDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode AmbientSoundDocument.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -419,6 +424,11 @@ declare namespace AmbientSoundDocument {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
   interface Effect {
     type: keyof CONFIG["soundEffects"];
 
@@ -428,6 +438,15 @@ declare namespace AmbientSoundDocument {
      */
     intensity?: number | undefined;
   }
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -441,7 +460,11 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
    * @param data    - Initial data from which to construct the `AmbientSoundDocument`
    * @param context - Construction context options
    */
-  constructor(...args: AmbientSoundDocument.ConstructorArgs);
+  constructor(
+    // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
+    data?: AmbientSoundDocument.CreateData,
+    context?: AmbientSoundDocument.ConstructionContext,
+  );
 
   /*
    * After this point these are not really overridden methods.
@@ -457,18 +480,21 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
 
   // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(
-    context?: Document.DefaultNameContext<"AmbientSound", NonNullable<AmbientSoundDocument.Parent>>,
-  ): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: AmbientSoundDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data: Document.CreateDialogData<AmbientSoundDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"AmbientSound", NonNullable<AmbientSoundDocument.Parent>>,
+    data: AmbientSoundDocument.CreateDialogData | undefined,
+    createOptions: AmbientSoundDocument.Database.DialogCreateOptions,
+    options?: AmbientSoundDocument.CreateDialogOptions,
   ): Promise<AmbientSoundDocument.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"AmbientSound">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: AmbientSoundDocument.DropData,
     options?: AmbientSoundDocument.DropDataOptions,

@@ -23,7 +23,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    * You should use {@link JournalEntry.implementation | `new JournalEntry.implementation(...)`} instead which will give you
    * a system specific implementation of `JournalEntry`.
    */
-  constructor(...args: JournalEntry.ConstructorArgs);
+  constructor(data: JournalEntry.CreateData, context?: JournalEntry.ConstructionContext);
 
   /**
    * @defaultValue
@@ -33,13 +33,17 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    *   collection: "journal",
    *   indexed: true,
    *   compendiumIndexFields: ["_id", "name", "sort", "folder"],
-   *   embedded: {JournalEntryPage: "pages"},
+   *   embedded: {
+   *     JournalEntryCategory: "categories",
+   *     JournalEntryPage: "pages"
+   *   },
    *   label: "DOCUMENT.JournalEntry",
    *   labelPlural: "DOCUMENT.JournalEntries",
    *   permissions: {
-   *     create: "JOURNAL_CREATE"
+   *     create: "JOURNAL_CREATE",
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -47,12 +51,17 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override defineSchema(): BaseJournalEntry.Schema;
 
+  protected override _initialize(options?: Document.InitializeOptions): void;
+
   /**
    * @remarks
    * Migrations:
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.
@@ -89,7 +98,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   override parent: JournalEntry.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<JournalEntry.Implementation | JournalEntry.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<JournalEntry.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<JournalEntry.Implementation, Temporary>>>;
@@ -104,7 +113,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     operation?: Document.Database.DeleteDocumentsOperation<JournalEntry.Database.Delete>,
   ): Promise<JournalEntry.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: JournalEntry.CreateData | JournalEntry.CreateData[],
     operation?: JournalEntry.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<JournalEntry.Implementation, Temporary> | undefined>;
@@ -244,8 +253,6 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): undefined;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 
@@ -326,6 +333,7 @@ export default BaseJournalEntry;
 
 declare namespace BaseJournalEntry {
   export import Name = JournalEntry.Name;
+  export import ConstructionContext = JournalEntry.ConstructionContext;
   export import ConstructorArgs = JournalEntry.ConstructorArgs;
   export import Hierarchy = JournalEntry.Hierarchy;
   export import Metadata = JournalEntry.Metadata;

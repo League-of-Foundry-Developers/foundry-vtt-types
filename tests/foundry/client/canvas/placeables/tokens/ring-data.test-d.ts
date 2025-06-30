@@ -10,15 +10,17 @@ declare class MyTokenRingSamplerShader extends PrimaryBaseSamplerShader {
   #differentClass: true;
 }
 
-let myRD = new DynamicRingData({});
-myRD = new DynamicRingData({
+new DynamicRingData();
+new DynamicRingData({});
+new DynamicRingData({
   id: undefined,
   label: undefined,
   spritesheet: null,
   effects: {},
   framework: undefined,
 });
-myRD = new DynamicRingData({
+
+const myRD = new DynamicRingData({
   id: "myRingConfig",
   label: "MYSYSTEM.RingConfigs.myRingConfig.label",
   spritesheet: "path/to/spritesheet.json",

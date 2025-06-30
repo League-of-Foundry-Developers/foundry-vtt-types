@@ -118,14 +118,6 @@ declare abstract class Document<
    */
   static get schema(): SchemaField.Any;
 
-  // options: not null (parameter default only)
-  protected _initialize(options?: Document.InitializeOptions): void;
-
-  /**
-   * A mapping of singleton embedded Documents which exist in this model.
-   */
-  readonly singletons: Record<string, Document.AnyChild<this>>;
-
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   /**
@@ -134,23 +126,30 @@ declare abstract class Document<
    * ```typescript
    * {
    *   name: "Document",
+   *   label: "DOCUMENT.Document"
+   *   coreTypes: [BASE_DOCUMENT_TYPE],
    *   collection: "documents",
+   *   embedded: {},
+   *   hasTypeData: false,
    *   indexed: false,
    *   compendiumIndexFields: [],
-   *   label: "DOCUMENT.Document",
-   *   coreTypes: [],
-   *   embedded: {},
    *   permissions: {
-   *     create: "ASSISTANT",
-   *     update: "ASSISTANT",
-   *     delete: "ASSISTANT"
+   *     view: "LIMITED"       // At least limited permission is required to view the Document
+   *     create: "ASSISTANT",  // Assistants or Gamemasters can create Documents
+   *     update: "ASSISTANT",  // Document owners can update Documents (this includes GM users)
+   *     delete: "ASSISTANT"   // Assistants or Gamemasters can create Documents
    *   },
-   *   preserveOnImport: ["_id", "sort", "ownership"],
+   *   preserveOnImport: ["_id", "sort", "ownership", folder],
    *   schemaVersion: undefined
    * }
    * ```
    */
   static metadata: Document.Metadata.Any;
+
+  /**
+   * @defaultValue `["DOCUMENT"]`
+   */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /**
    * The database backend used to execute operations and handle results
@@ -160,7 +159,7 @@ declare abstract class Document<
   /**
    * Return a reference to the implemented subclass of this base document type.
    */
-  static get implementation(): Document.AnyConstructor;
+  static get implementation(): Document.Internal.Constructor;
 
   /**
    * The base document definition that this document class extends from.
@@ -224,20 +223,35 @@ declare abstract class Document<
   get isEmbedded(): boolean;
 
   /**
+   * Is this document in a compendium?
+   */
+  get inCompendium(): boolean;
+
+  /**
    * A Universally Unique Identifier (uuid) for this Document instance.
    */
   get uuid(): string;
 
   /**
-   * Test whether a given User has a sufficient role in order to create Documents of this type in general.
+   * Test whether a given User has sufficient permissions to create Documents of this type in general. This does not
+   * guarantee that the User is able to create all Documents of this type, as certain document-specific requirements
+   * may also be present.
+   *
+   * Generally speaking, this method is used to verify whether a User should be presented with the option to create
+   * Documents of this type in the UI.
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
    */
   static canUserCreate(user: User.Implementation): boolean;
 
   /**
-   * Get the explicit permission level that a specific User has over this Document, a value in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}.
-   * This method returns the value recorded in Document ownership, regardless of the User's role.
+   * Get the explicit permission level that a User has over this Document, a value in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}.
+   * Compendium content ignores the ownership field in favor of User role-based ownership. Otherwise, Documents use
+   * granular per-User ownership definitions and Embedded Documents defer to their parent ownership.
+   *
+   * This method returns the value recorded in Document ownership, regardless of the User's role, for example a
+   * GAMEMASTER user might still return a result of NONE if they are not explicitly denoted as having a level.
+   *
    * To test whether a user has a certain capability over the document, testUserPermission should be used.
    * @param user - The User being tested (default: `game.user`)
    * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
@@ -818,21 +832,6 @@ declare abstract class Document<
   ): Promise<unknown>;
 
   /**
-   * @deprecated since v10, no specified end
-   * @remarks "You are accessing the "data" field of which was deprecated in v10 and replaced with "system".
-   * Continued usage of pre-v10 ".data" paths is no longer supported"
-   *
-   * @throws An error with the above deprecation warning, if this Document's schema has a `system` field
-   */
-  get data(): never;
-
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "You are accessing `Document.hasSystemData` which is deprecated. Please use `Document.hasTypeData` instead."
-   */
-  static get hasSystemData(): undefined | true;
-
-  /**
    * A reusable helper for adding migration shims.
    */
   // options: not null (parameter default only in _addDataFieldShim)
@@ -960,19 +959,10 @@ declare namespace Document {
     | "ChatMessage"
     | "Combat"
     | "Combatant"
+    | "CombatantGroup"
     | "Item"
     | "JournalEntryPage"
     | "RegionBehavior";
-
-  // The `data` parameter has a default of `{}`. This means it's optional in that scenario.
-  // Note(LukeAbby): Update when `ParameterWithDefaults` is added.
-  // `CreateData` also should be updated to allow `undefined` directly.
-  type ConstructorParameters<CreateData extends object | undefined, Parent extends Document.Any | null> = [
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    {},
-  ] extends [CreateData]
-    ? [data?: CreateData, context?: Document.ConstructionContext<Parent>]
-    : [data: CreateData, context?: Document.ConstructionContext<Parent>];
 
   type CoreTypesForName<Name extends Type> = string &
     GetKey<Document.MetadataFor<Name>, "coreTypes", [CONST.BASE_DOCUMENT_TYPE]>[number];
@@ -1002,6 +992,7 @@ declare namespace Document {
     | (Name extends "ChatMessage" ? ChatMessage.OfType<SubType & ChatMessage.SubType> : never)
     | (Name extends "Combat" ? Combat.OfType<SubType & Combat.SubType> : never)
     | (Name extends "Combatant" ? Combatant.OfType<SubType & Combatant.SubType> : never)
+    | (Name extends "CombatantGroup" ? CombatantGroup.OfType<SubType & CombatantGroup.SubType> : never)
     | (Name extends "Folder" ? Folder.OfType<SubType & Folder.SubType> : never)
     | (Name extends "Item" ? Item.OfType<SubType & Item.SubType> : never)
     | (Name extends "JournalEntryPage" ? JournalEntryPage.OfType<SubType & JournalEntryPage.SubType> : never)
@@ -1035,6 +1026,7 @@ declare namespace Document {
     | "ChatMessage"
     | "Combat"
     | "Combatant"
+    | "CombatantGroup"
     | "Item"
     | "JournalEntryPage"
     | "RegionBehavior";
@@ -1217,9 +1209,11 @@ declare namespace Document {
     | (DocumentType extends "ChatMessage" ? ChatMessage.CreateData : never)
     | (DocumentType extends "Combat" ? Combat.CreateData : never)
     | (DocumentType extends "Combatant" ? Combatant.CreateData : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.CreateData : never)
     | (DocumentType extends "FogExploration" ? FogExploration.CreateData : never)
     | (DocumentType extends "Folder" ? Folder.CreateData : never)
     | (DocumentType extends "Item" ? Item.CreateData : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.CreateData : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.CreateData : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.CreateData : never)
     | (DocumentType extends "Macro" ? Macro.CreateData : never)
@@ -1251,9 +1245,11 @@ declare namespace Document {
     | (DocumentType extends "ChatMessage" ? ChatMessage.UpdateData : never)
     | (DocumentType extends "Combat" ? Combat.UpdateData : never)
     | (DocumentType extends "Combatant" ? Combatant.UpdateData : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.UpdateData : never)
     | (DocumentType extends "FogExploration" ? FogExploration.UpdateData : never)
     | (DocumentType extends "Folder" ? Folder.UpdateData : never)
     | (DocumentType extends "Item" ? Item.UpdateData : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.UpdateData : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.UpdateData : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.UpdateData : never)
     | (DocumentType extends "Macro" ? Macro.UpdateData : never)
@@ -1285,9 +1281,11 @@ declare namespace Document {
     | (DocumentType extends "ChatMessage" ? ChatMessage.Source : never)
     | (DocumentType extends "Combat" ? Combat.Source : never)
     | (DocumentType extends "Combatant" ? Combatant.Source : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.Source : never)
     | (DocumentType extends "FogExploration" ? FogExploration.Source : never)
     | (DocumentType extends "Folder" ? Folder.Source : never)
     | (DocumentType extends "Item" ? Item.Source : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Source : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Source : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Source : never)
     | (DocumentType extends "Macro" ? Macro.Source : never)
@@ -1336,9 +1334,11 @@ declare namespace Document {
     | (DocumentType extends "ChatMessage" ? ChatMessage.Stored : never)
     | (DocumentType extends "Combat" ? Combat.Stored : never)
     | (DocumentType extends "Combatant" ? Combatant.Stored : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.Stored : never)
     | (DocumentType extends "FogExploration" ? FogExploration.Stored : never)
     | (DocumentType extends "Folder" ? Folder.Stored : never)
     | (DocumentType extends "Item" ? Item.Stored : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Stored : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Stored : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Stored : never)
     | (DocumentType extends "Macro" ? Macro.Stored : never)
@@ -1370,9 +1370,11 @@ declare namespace Document {
     | (DocumentType extends "ChatMessage" ? ChatMessage.Invalid : never)
     | (DocumentType extends "Combat" ? Combat.Invalid : never)
     | (DocumentType extends "Combatant" ? Combatant.Invalid : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.Invalid : never)
     | (DocumentType extends "FogExploration" ? FogExploration.Invalid : never)
     | (DocumentType extends "Folder" ? Folder.Invalid : never)
     | (DocumentType extends "Item" ? Item.Invalid : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Invalid : never)
     | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Invalid : never)
     | (DocumentType extends "JournalEntry" ? JournalEntry.Invalid : never)
     | (DocumentType extends "Macro" ? Macro.Invalid : never)
@@ -1635,24 +1637,24 @@ declare namespace Document {
 
   interface Metadata<out ThisType extends Document.Any> {
     readonly name: ThisType["documentName"];
-    readonly collection: string;
-    readonly indexed: boolean;
-    readonly compendiumIndexFields: readonly string[];
     readonly label: string;
     readonly coreTypes: readonly string[];
+    readonly collection: string;
     readonly embedded: {
       [DocumentType in Document.Type]?: string;
     };
     readonly permissions: {
+      view: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
       create: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
       update: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
       delete: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: EmptyObject) => boolean>;
     };
+    readonly hasTypeData?: boolean;
+    readonly indexed: boolean;
+    readonly compendiumIndexFields: readonly string[];
     readonly preserveOnImport: readonly string[];
     readonly schemaVersion?: string | undefined;
     readonly labelPlural?: string; // This is not set for the Document class but every class that implements Document actually provides it.
-    readonly types?: readonly string[];
-    readonly hasSystemData?: boolean;
   }
 
   namespace Metadata {
@@ -1660,18 +1662,20 @@ declare namespace Document {
 
     interface Default {
       readonly name: "Document";
-      readonly collection: "documents";
-      readonly indexed: false;
-      readonly compendiumIndexFields: [];
       readonly label: "DOCUMENT.Document";
       readonly coreTypes: [CONST.BASE_DOCUMENT_TYPE];
+      readonly collection: "documents";
       readonly embedded: EmptyObject;
+      readonly hasTypeData: false;
+      readonly indexed: false;
+      readonly compendiumIndexFields: [];
       readonly permissions: {
+        view: "LIMITED";
         create: "ASSISTANT";
-        update: "ASSISTANT";
+        update: "OWNER";
         delete: "ASSISTANT";
       };
-      readonly preserveOnImport: ["_id", "sort", "ownership"];
+      readonly preserveOnImport: ["_id", "sort", "ownership", "folder"];
     }
 
     interface Embedded extends Identity<{ [K in Document.Type]?: string }> {}
@@ -1784,9 +1788,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.Create : never)
       | (DocumentType extends "Combat" ? Combat.Database.Create : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.Create : never)
+      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.Create : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.Create : never)
       | (DocumentType extends "Folder" ? Folder.Database.Create : never)
       | (DocumentType extends "Item" ? Item.Database.Create : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.Create : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.Create : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.Create : never)
       | (DocumentType extends "Macro" ? Macro.Database.Create : never)
@@ -1808,7 +1814,10 @@ declare namespace Document {
       | (DocumentType extends "Token" ? TokenDocument.Database.Create : never)
       | (DocumentType extends "Wall" ? WallDocument.Database.Create : never);
 
-    type CreateOperationForName<DocumentType extends Document.Type, Temporary extends boolean | undefined = false> =
+    type CreateOperationForName<
+      DocumentType extends Document.Type,
+      Temporary extends boolean | undefined = undefined,
+    > =
       | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "ActorDelta" ? ActorDelta.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Actor" ? Actor.Database.CreateOperation<Temporary> : never)
@@ -1818,9 +1827,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Combat" ? Combat.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.CreateOperation<Temporary> : never)
+      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Folder" ? Folder.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Item" ? Item.Database.CreateOperation<Temporary> : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Macro" ? Macro.Database.CreateOperation<Temporary> : never)
@@ -1852,9 +1863,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.UpdateOperation : never)
       | (DocumentType extends "Combat" ? Combat.Database.UpdateOperation : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.UpdateOperation : never)
+      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.UpdateOperation : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.UpdateOperation : never)
       | (DocumentType extends "Folder" ? Folder.Database.UpdateOperation : never)
       | (DocumentType extends "Item" ? Item.Database.UpdateOperation : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.UpdateOperation : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.UpdateOperation : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.UpdateOperation : never)
       | (DocumentType extends "Macro" ? Macro.Database.UpdateOperation : never)
@@ -1886,9 +1899,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.DeleteOperation : never)
       | (DocumentType extends "Combat" ? Combat.Database.DeleteOperation : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.DeleteOperation : never)
+      | (DocumentType extends "CombatantGround" ? CombatantGroup.Database.DeleteOperation : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.DeleteOperation : never)
       | (DocumentType extends "Folder" ? Folder.Database.DeleteOperation : never)
       | (DocumentType extends "Item" ? Item.Database.DeleteOperation : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.DeleteOperation : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.DeleteOperation : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.DeleteOperation : never)
       | (DocumentType extends "Macro" ? Macro.Database.DeleteOperation : never)
@@ -1920,9 +1935,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.CreateOptions : never)
       | (DocumentType extends "Combat" ? Combat.Database.CreateOptions : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.CreateOptions : never)
+      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.CreateOptions : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.CreateOptions : never)
       | (DocumentType extends "Folder" ? Folder.Database.CreateOptions : never)
       | (DocumentType extends "Item" ? Item.Database.CreateOptions : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.CreateOptions : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.CreateOptions : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.CreateOptions : never)
       | (DocumentType extends "Macro" ? Macro.Database.CreateOptions : never)
@@ -1954,9 +1971,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.UpdateOptions : never)
       | (DocumentType extends "Combat" ? Combat.Database.UpdateOptions : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.UpdateOptions : never)
+      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.UpdateOptions : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.UpdateOptions : never)
       | (DocumentType extends "Folder" ? Folder.Database.UpdateOptions : never)
       | (DocumentType extends "Item" ? Item.Database.UpdateOptions : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.UpdateOptions : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.UpdateOptions : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.UpdateOptions : never)
       | (DocumentType extends "Macro" ? Macro.Database.UpdateOptions : never)
@@ -1988,9 +2007,11 @@ declare namespace Document {
       | (DocumentType extends "ChatMessage" ? ChatMessage.Database.DeleteOptions : never)
       | (DocumentType extends "Combat" ? Combat.Database.DeleteOptions : never)
       | (DocumentType extends "Combatant" ? Combatant.Database.DeleteOptions : never)
+      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.DeleteOptions : never)
       | (DocumentType extends "FogExploration" ? FogExploration.Database.DeleteOptions : never)
       | (DocumentType extends "Folder" ? Folder.Database.DeleteOptions : never)
       | (DocumentType extends "Item" ? Item.Database.DeleteOptions : never)
+      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.DeleteOptions : never)
       | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.DeleteOptions : never)
       | (DocumentType extends "JournalEntry" ? JournalEntry.Database.DeleteOptions : never)
       | (DocumentType extends "Macro" ? Macro.Database.DeleteOptions : never)
@@ -2055,20 +2076,20 @@ declare namespace Document {
           type?: never;
         };
 
-  type DefaultNameContext<DocumentName extends Document.Type, Parent extends Document.Any | null> = NullishProps<{
+  type DefaultNameContext<DocumentName extends Document.Type, Parent extends Document.Any | null> = InexactPartial<{
     /**
      * A compendium pack within which the Document should be created
      * @remarks Only used to generate the list of existing names to check against when incrementing the index for the `(number)` suffix.
      * Ignored if falsey, or if `parent` is provided and truthy.
      */
-    pack: string;
+    pack: string | null;
 
     /**
      * A parent document within which the created Document should belong
      * @remarks Only used to generate the list of existing names to check against when incrementing the index for the `(number)` suffix.
      * Ignored if falsey.
      */
-    parent: Parent;
+    parent: Parent | null;
   }> &
     _PossibleSubtypeContext<DocumentName>;
 
@@ -2095,6 +2116,7 @@ declare namespace Document {
           types: Exclude<Document.SubTypesOf<DocumentName>, "base">[];
         }>;
 
+  /** @deprecated in favor of {@linkcode CreateDialogOptions} */
   type CreateDialogContext<
     DocumentName extends Document.Type,
     Parent extends Document.Any | null,
@@ -2108,6 +2130,21 @@ declare namespace Document {
     }> &
     _PossibleSubtypesContext<DocumentName> &
     ParentContext<Parent>;
+
+  type CreateDialogOptions<DocumentName extends Document.Type> =
+    InexactPartial<foundry.applications.api.DialogV2.PromptConfig> &
+      NullishProps<{
+        /**
+         * A template to use for the dialog contents instead of the default.
+         */
+        template: string;
+
+        /**
+         * Additional render context to provide to the template.
+         */
+        context: AnyObject;
+      }> &
+      _PossibleSubtypesContext<DocumentName>;
 
   interface FromImportContext<Parent extends Document.Any | null> extends Omit<ConstructionContext<Parent>, "strict"> {
     /**
@@ -2273,9 +2310,11 @@ declare namespace Document {
     ChatMessage: ChatMessage.DropData;
     Combat: Combat.DropData;
     Combatant: Combatant.DropData;
+    CombatantGroup: CombatantGroup.DropData;
     FogExploration: FogExploration.DropData;
     Folder: Folder.DropData;
     Item: Item.DropData;
+    JournalEntryCategory: JournalEntryCategory.DropData;
     JournalEntryPage: JournalEntryPage.DropData;
     JournalEntry: JournalEntry.DropData;
     Macro: Macro.DropData;
@@ -2399,4 +2438,12 @@ declare namespace Document {
    * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use {@linkcode Document.ModuleSubType} instead.
    */
   type ModuleSubtype = ModuleSubType;
+
+  /**
+   * @deprecated This type was used to simplify the logic behind `ConstructorArgs` but that's now being deprecated.
+   */
+  type ConstructorParameters<CreateData extends object | undefined, Parent extends Document.Any | null> = [
+    data?: CreateData,
+    context?: Document.ConstructionContext<Parent>,
+  ];
 }

@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
 
-import fields = foundry.data.fields;
 import FormApplication = foundry.appv1.api.FormApplication;
 
 // @ts-expect-error - Adventure requires name.
@@ -18,7 +17,4 @@ expectTypeOf(adventure.importContent()).toEqualTypeOf<Promise<Adventure.ImportRe
 
 expectTypeOf(adventure.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-declare const source: fields.SchemaField.AssignmentData<fields.DataSchema>;
-
-expectTypeOf(Adventure.fromSource(source)).toEqualTypeOf<Adventure.Implementation>();
+expectTypeOf(Adventure.fromSource({ name: "My adventure" })).toEqualTypeOf<Adventure.Implementation>();

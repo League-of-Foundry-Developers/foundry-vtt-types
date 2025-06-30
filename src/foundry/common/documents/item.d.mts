@@ -27,7 +27,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    * You should use {@link Item.implementation | `new Item.implementation(...)`} instead which will give you
    * a system specific implementation of `Item`.
    */
-  constructor(...args: Item.ConstructorArgs);
+  constructor(data: Item.CreateData, context?: Item.ConstructionContext);
 
   /**
    * @defaultValue
@@ -41,8 +41,11 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    *   embedded: {ActiveEffect: "effects"},
    *   label: "DOCUMENT.Item",
    *   labelPlural: "DOCUMENT.Items",
-   *   permissions: {create: "ITEM_CREATE"},
-   *   schemaVersion: "12.324"
+   *   permissions: {
+   *     create: BaseItem.#canCreate,
+   *     delete: "OWNER"
+   *   },
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -64,28 +67,11 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    */
   static getDefaultArtwork(itemData?: BaseItem.CreateData): Item.GetDefaultArtworkReturn;
 
-  /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.canUserModify(user, "update")`, dropping `data` and forcing `action`,
-   * otherwise `super`'s (with all arguments forwarded). Core's `Actor` implementation doesn't override this method, so
-   * without further extension those are both {@link Document.canUserModify | `Document#canUserModify`}
-   */
-  // data: not null (parameter default only)
-  override canUserModify<Action extends "create" | "update" | "delete">(
-    user: User.Implementation,
-    action: Action,
-    data?: Document.CanUserModifyData<Item.Schema, Action>,
-  ): boolean;
+  protected override _initialize(options?: Document.InitializeOptions): void;
 
-  /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Actor` implementation
-   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  static override canUserCreate(user: User.Implementation): boolean;
 
   /**
    * @remarks
@@ -93,6 +79,9 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.
@@ -131,7 +120,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   override parent: BaseItem.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Item.Implementation | Item.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Item.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Item.Implementation, Temporary>>>;
@@ -146,7 +135,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     operation?: Document.Database.DeleteDocumentsOperation<Item.Database.Delete>,
   ): Promise<Item.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Item.CreateData | Item.CreateData[],
     operation?: Item.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Item.Implementation, Temporary> | undefined>;
@@ -279,8 +268,6 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): true;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 
@@ -358,6 +345,7 @@ export default BaseItem;
 
 declare namespace BaseItem {
   export import Name = Item.Name;
+  export import ConstructionContext = Item.ConstructionContext;
   export import ConstructorArgs = Item.ConstructorArgs;
   export import Hierarchy = Item.Hierarchy;
   export import Metadata = Item.Metadata;

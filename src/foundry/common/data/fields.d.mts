@@ -1055,17 +1055,23 @@ declare namespace SchemaField {
    * Get the constructor type for the given DataSchema.
    * @template Fields - the DataSchema fields of the SchemaField
    */
-  // Note(LukeAbby): Currently this is identical to the assignment type. The intent is to make this
-  // More accurate in the future, e.g. requiring some requisite properties instead of always being
-  // optional. This does mean the deprecation of `AssignmentData` is a "lie"
   type CreateData<Fields extends DataSchema> = PrettifyType<
-    RemoveIndexSignatures<{
-      [Key in keyof Fields]?: _FieldType<Fields[Key]>;
-    }>
+    RemoveIndexSignatures<
+      _OptionalIfNullish<{
+        [Key in keyof Fields]: Fields[Key][" __fvtt_types_internal_assignment_data"];
+      }>
+    >
   >;
 
   /** @internal */
-  type _FieldType<Field extends DataField.Any> = Field[" __fvtt_types_internal_assignment_data"];
+  type _OptionalIfNullish<T> = {
+    [K in keyof T as true extends _IsNullish<T[K]> ? K : never]?: T[K] | null | undefined;
+  } & {
+    [K in keyof T as true extends _IsNullish<T[K]> ? never : K]: T[K];
+  };
+
+  /** @internal */
+  type _IsNullish<T> = T extends null | undefined ? true : false;
 
   /**
    * Get the inner assignment type for the given DataSchema.
@@ -1081,7 +1087,7 @@ declare namespace SchemaField {
    */
   type AssignmentData<Fields extends DataSchema> = PrettifyType<
     RemoveIndexSignatures<{
-      [Key in keyof Fields]?: _FieldType<Fields[Key]>;
+      [Key in keyof Fields]?: Fields[Key][" __fvtt_types_internal_assignment_data"];
     }>
   >;
 
@@ -1710,7 +1716,7 @@ declare class StringField<
    * returns the array of choices.
    * @defaultValue `undefined`
    */
-  choices: string[] | Record<string, string> | (() => string[] | Record<string, string>) | undefined;
+  choices: StringField.Choices | undefined;
 
   /** @defaultValue `false` */
   textSearch: boolean;
@@ -1886,7 +1892,7 @@ declare namespace StringField {
 
   type BaseChoices =
     | {
-        readonly [K: string]: string;
+        readonly [K: string]: string | { label: string };
       }
     | readonly string[];
 
@@ -3935,6 +3941,7 @@ declare class AngleField<
 
 declare namespace AngleField {
   interface Options extends NumberField.Options {
+    /** Whether the angle should be normalized to [0,360) before being clamped to [0,360]. The default is true. */
     normalize?: boolean | undefined;
   }
 

@@ -300,7 +300,10 @@ declare namespace DataModel {
    */
   interface ConcreteConstructor extends Identity<typeof ConcreteDataModel> {}
 
-  type CreateData<Schema extends DataSchema> = fields.SchemaField.CreateData<Schema> | DataModel<Schema, any>;
+  // TODO(LukeAbby): see if `| DataModel<Schema, any>` needs to be added back.
+  // Seems rare in practice and causes terrible errors. May not need to be added back if `DataModel`.
+  // is always assignable.
+  type CreateData<Schema extends DataSchema> = fields.SchemaField.CreateData<Schema>;
 
   // TODO(LukeAbby): Make optional only if `{}` is assignable to `CreateData`.
   type ConstructorArgs<

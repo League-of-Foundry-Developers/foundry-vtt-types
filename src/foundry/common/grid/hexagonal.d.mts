@@ -361,8 +361,12 @@ declare namespace HexagonalGrid {
     even: boolean;
   }
 
-  /** Cube coordinates in a hexagonal grid. q + r + s = 0. */
-  interface Cube {
+  type Cube = Cube2D | Cube3D;
+
+  /**
+   * 2D cube coordinates in a hexagonal grid. q + r + s = 0.
+   */
+  interface Cube2D {
     /**
      * The coordinate along the E-W (columns) or SW-NE (rows) axis.
      * Equal to the offset column coordinate if column orientation.
@@ -379,12 +383,32 @@ declare namespace HexagonalGrid {
     s: number;
   }
 
-  interface Offset extends BaseGrid.Offset {}
+  /**
+   * 3D cube coordinates in a hexagonal grid. q + r + s = 0.
+   */
+  interface Cube3D extends Cube2D {
+    /**
+     * The vertical coordinate.
+     */
+    k: number;
+  }
+
+  type Offset = BaseGrid.Offset;
 
   interface OffsetRange extends BaseGrid.OffsetRange {}
 
   /** Cube coordinates in a hexagonal grid. q + r + s = 0. */
   type Coordinates = BaseGrid.Coordinates | Cube;
+
+  /**
+   * 2D hexagonal cube coordinates, a 2D offset of a grid space, or a 2D point with pixel coordinates.
+   */
+  type Coordinates2D = BaseGrid.Coordinates2D | Cube2D;
+
+  /**
+   * 3D hexagonal cube coordinates, a 3D offset of a grid space, or a 3D point with pixel coordinates.
+   */
+  type Coordinates3D = BaseGrid.Coordinates3D | Cube3D;
 
   interface SnappingBehavior extends BaseGrid.SnappingBehavior {}
 
@@ -396,7 +420,7 @@ declare namespace HexagonalGrid {
 
   interface MeasurePathResult extends BaseGrid.MeasurePathResult {}
 
-  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction;
+  type MeasurePathCostFunction = BaseGrid.MeasurePathCostFunction2D | BaseGrid.MeasurePathCostFunction3D;
 
   interface Dimensions extends BaseGrid.Dimensions {}
 }

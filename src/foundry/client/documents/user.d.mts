@@ -16,9 +16,9 @@ declare namespace User {
   type Name = "User";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `User`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `User`.
@@ -184,7 +184,13 @@ declare namespace User {
     /**
      * The user's name.
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The user's role, see CONST.USER_ROLES.
@@ -235,7 +241,7 @@ declare namespace User {
     color: fields.ColorField<{ required: true; nullable: false; initial: () => string }>;
 
     /**
-     * @remarks Omitted from the `UserData` typedef as of 13.342, so no official description; Fairly self-explanatory though.
+     * The user's personal pronouns.
      * @defaultValue `""`
      */
     pronouns: fields.StringField<{ required: true }>;
@@ -247,10 +253,10 @@ declare namespace User {
     hotbar: fields.ObjectField<
       {
         required: true;
-        validate: (bar: AnyObject) => boolean;
+        validate: (bar: AnyObject) => bar is Record<number, string>;
         validationError: "must be a mapping of slots to macro identifiers";
       },
-      Record<number, string>,
+      Record<number, string> | null | undefined,
       Record<number, string>,
       Record<number, string>
     >;
@@ -381,6 +387,11 @@ declare namespace User {
      * and {@link User._onDeleteDescendantDocuments | `User#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<User.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode User.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -407,6 +418,11 @@ declare namespace User {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   // Note(LukeAbby): This namespace exists to break cycles because of extensive usage of `User` in
   // the `Document` class itself.
@@ -549,6 +565,26 @@ declare namespace User {
   }
 
   type ActionPermission = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
+
+  interface QueryOptions {
+    /**
+     * The timeout in milliseconds
+     */
+    timeout?: number | undefined;
+  }
+
+  type QueryName = keyof typeof CONFIG.queries;
+  type QueryData<QueryName extends User.QueryName> = Parameters<(typeof CONFIG.queries)[QueryName]>[0];
+  type QueryReturn<QueryName extends User.QueryName> = Awaited<ReturnType<(typeof CONFIG.queries)[QueryName]>>;
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -563,7 +599,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @param data    - Initial data from which to construct the `User`
    * @param context - Construction context options
    */
-  constructor(...args: User.ConstructorArgs);
+  constructor(data: User.CreateData, context?: User.ConstructionContext);
 
   /**
    * Track whether the user is currently active in the game
@@ -573,6 +609,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   /**
    * Track references to the current set of Tokens which are targeted by the User
+   * @defaultValue `new foundry.canvas.placeables.tokens.UserTargets(this)`
    */
   targets: UserTargets;
 
@@ -581,6 +618,12 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @defaultValue `null`
    */
   viewedScene: string | null;
+
+  /**
+   * Track the Token documents that this User is currently moving.
+   * @remarks foundry marks as `@readonly`
+   */
+  movingTokens: Set<TokenDocument.Implementation>;
 
   /**
    * A flag for whether the current User is a Trusted Player
@@ -592,7 +635,38 @@ declare class User extends BaseUser.Internal.ClientDocument {
    */
   get isSelf(): boolean;
 
+  /**
+   * Is this User the active GM?
+   */
+  get isActiveGM(): boolean;
+
+  /**
+   * A localized label for this User's role.
+   */
+  get roleLabel(): string;
+
+  /**
+   * The timestamp of the lats observed activity for the user.
+   */
+  get lastActivityTime(): number;
+
+  set lastActivityTime(timestamp: number);
+
   override prepareDerivedData(): void;
+
+  /**
+   * Is this User the designated User among the Users that satisfy the given condition?
+   * This function calls {@linkcode foundry.documents.collections.Users.getDesignatedUser | `foundry.documents.collections.Users#getDesignatedUser`} and compares the designated User
+   * to this User.
+   * @example
+   * // Is the current User the designated User to create Tokens?
+   * ```js
+   * const isDesignated = game.user.isDesignated(user => user.active && user.can("TOKEN_CREATE"));
+   * ```
+   * @param condition - The condition the Users must satisfy
+   * @returns Is designated User?
+   */
+  isDesignated(condition: (user: User.Implementation) => boolean): boolean;
 
   /**
    * @remarks Doesn't exist prior to data prep, set in {@link User.prepareDerivedData | `User#prepareDerivedData`}
@@ -611,15 +685,9 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * `slot` defaults to the first unused slot if not provided. Slots are `1`-indexed.
    * @throws If `slot` is provided and either less than `1` or more than `50`, or not provided when there's no open slots
    */
-  // options: not null (destructured)
   assignHotbarMacro(
-    macro: Macro.Implementation,
+    macro: Macro.Implementation | null,
     slot?: `${number}` | number,
-    options?: User.AssignHotbarMacroOptions,
-  ): Promise<this | undefined>;
-  assignHotbarMacro(
-    macro: null,
-    slot: `${number}` | number,
     options?: User.AssignHotbarMacroOptions,
   ): Promise<this | undefined>;
 
@@ -640,7 +708,6 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * Activity data uses a volatile event to prevent unnecessary buffering if the client temporarily loses connection.
    * @param activityData - An object of User activity data to submit to the server for broadcast. (default: `{}`)
    */
-  // activityData: not null (parameter default only), options: not null (destructured)
   broadcastActivity(activityData?: User.ActivityData, options?: User.BroadcastActivityOptions): void;
 
   /**
@@ -648,15 +715,27 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @param page - The hotbar page number (default: `1`)
    * @remarks Core's implementation hardcodes returning 10 results at a time (single page of the hotbar)
    */
-  // page: not null (would produce negative hotbar indices)
   getHotbarMacros(page?: number): User.GetHotbarMacrosData[];
 
   /**
    * Update the set of Token targets for the user given an array of provided Token ids.
+   * This function handles changes made elsewhere and does not broadcast to other connected clients.
    * @param targetIds - An array of Token ids which represents the new target set (default: `[]`)
    */
-  // targetIds: not null (parameter default only)
-  updateTokenTargets(targetIds?: string[]): void;
+  protected _onUpdateTokenTargets(targetIds?: string[]): void;
+
+  /**
+   * Query this user
+   * @param queryName    - The query name (must be registered in `CONFIG.queries`)
+   * @param queryData    - The query data (must be JSON-serializable)
+   * @param queryOptions - The query options
+   * @returns The query result
+   */
+  query<QueryName extends User.QueryName>(
+    queryName: QueryName,
+    queryData: User.QueryData<QueryName>,
+    { timeout }?: User.QueryOptions,
+  ): Promise<User.QueryReturn<QueryName>>;
 
   // _onUpdate and _onDelete are overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
@@ -675,16 +754,19 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   // Descendant Document operations have been left out because User does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"User", User.Parent>): string;
+  static override defaultName(context?: User.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<User.CreateData>,
-    context?: Document.CreateDialogContext<"User", User.Parent>,
+    data?: User.CreateDialogData,
+    createOptions?: User.Database.DialogCreateOptions,
+    options?: User.CreateDialogOptions,
   ): Promise<User.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"User">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: User.DropData,
     options?: User.DropDataOptions,

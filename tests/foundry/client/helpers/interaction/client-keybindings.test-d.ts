@@ -27,7 +27,11 @@ expectTypeOf(keybindings.initialize()).toEqualTypeOf<void>();
 expectTypeOf(
   keybindings.register("core", "someAction", {
     name: "Do the Action",
-    editable: [{ key: "KeyA", logicalKey: "KeyA", modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] }],
+    editable: [
+      { key: "KeyA", logicalKey: "KeyA", modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] },
+      // `logicalKey` is optional in practice.
+      { key: "KeyB", modifiers: [KeyboardManager.MODIFIER_KEYS.ALT] },
+    ],
     uneditable: [{ key: "Numpad7", logicalKey: "Numpad7", modifiers: ["CONTROL"] }],
     hint: "Some description of the action to be done",
     onDown: (context: KeyboardManager.KeyboardEventContext) => (!context.repeat ? true : undefined),

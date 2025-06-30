@@ -1,5 +1,5 @@
 import type { ConfiguredJournalEntryPage } from "fvtt-types/configuration";
-import type { AnyObject, Merge, NullishProps } from "#utils";
+import type { AnyObject, InexactPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseJournalEntryPage from "#common/documents/journal-entry-page.d.mts";
@@ -15,9 +15,9 @@ declare namespace JournalEntryPage {
   type Name = "JournalEntryPage";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `JournalEntryPage`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `JournalEntryPage`.
@@ -52,11 +52,17 @@ declare namespace JournalEntryPage {
         labelPlural: string;
         coreTypes: ["text", "image", "pdf", "video"];
         compendiumIndexFields: ["name", "type", "sort"];
+        permissions: Metadata.Permissions;
         schemaVersion: string;
       }>
     > {}
 
-  // No need for Metadata namespace
+  namespace Metadata {
+    interface Permissions {
+      create: "OWNER";
+      delete: "OWNER";
+    }
+  }
 
   /**
    * Allowed subtypes of `JournalEntryPage`. This is configured through various methods. Modern Foundry
@@ -229,7 +235,13 @@ declare namespace JournalEntryPage {
     /**
      * The text name of this page.
      */
-    name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The type of this page, in {@linkcode BaseJournalEntryPage.TYPES}.
@@ -309,6 +321,7 @@ declare namespace JournalEntryPage {
      */
     video: fields.SchemaField<{
       /**
+       * Show player controls for this video?
        * @defaultValue `true`
        */
       controls: fields.BooleanField<{ initial: true }>;
@@ -362,6 +375,12 @@ declare namespace JournalEntryPage {
       initial: null;
       label: "JOURNALENTRYPAGE.Source";
     }>;
+
+    /**
+     * An optional category that this page belongs to.
+     * @defaultValue `null`
+     */
+    category: fields.DocumentIdField<{ readonly: false }>;
 
     /**
      * The numeric sort value which orders this page relative to its siblings.
@@ -497,6 +516,11 @@ declare namespace JournalEntryPage {
      * and {@link JournalEntryPage._onDeleteDescendantDocuments | `JournalEntryPage#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<JournalEntryPage.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode JournalEntryPage.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -523,6 +547,11 @@ declare namespace JournalEntryPage {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   interface JournalEntryPageHeading {
     /** The heading level, 1-6. */
@@ -582,6 +611,15 @@ declare namespace JournalEntryPage {
   }>;
 
   interface EmbedImagePageConfig extends _EmbedImagePageConfig, TextEditor.DocumentHTMLEmbedConfig {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -596,7 +634,7 @@ declare class JournalEntryPage<
    * @param data    - Initial data from which to construct the `JournalEntryPage`
    * @param context - Construction context options
    */
-  constructor(...args: JournalEntryPage.ConstructorArgs);
+  constructor(data: JournalEntryPage.CreateData, context?: JournalEntryPage.ConstructionContext);
 
   /**
    * The cached table of contents for this JournalEntryPage.
@@ -627,7 +665,6 @@ declare class JournalEntryPage<
    * @param html    - The HTML content to generate a ToC outline for.
    * @param options - Additional options to configure ToC generation.
    */
-  // options: not null (destructured)
   static buildTOC(
     html: HTMLElement[],
     options?: JournalEntryPage.BuildTOCOptions,
@@ -646,14 +683,12 @@ declare class JournalEntryPage<
    * @param heading - The heading element.
    * @param options - Additional options to configure the returned node.
    */
-  // options: not null (destructured)
   protected static _makeHeadingNode(
     heading: HTMLHeadingElement,
     options?: JournalEntryPage.MakeHeadingNodeOptions,
   ): JournalEntryPage.JournalEntryPageHeading;
 
   /** @remarks Uses `eventData`, unlike {@link ClientDocument._createDocumentLink | `ClientDocument#_createDocumentLink`} */
-  // options: not null (destructured)
   override _createDocumentLink(eventData: AnyObject, options?: JournalEntryPage.CreateDocumentLinkOptions): string;
 
   /**
@@ -719,7 +754,6 @@ declare class JournalEntryPage<
    * </section>
    * ```
    */
-  // options: not null (parameter default only)
   protected _embedTextPage(
     config: JournalEntryPage.EmbedTextPageConfig,
     options?: TextEditor.EnrichmentOptions,
@@ -755,7 +789,6 @@ declare class JournalEntryPage<
    *
    * @remarks Core's implementation always returns a {@linkcode HTMLImageElement}, and does not use `options`
    */
-  // config: not null (destructured), options: not null (parameter default only)
   protected _embedImagePage(
     config?: JournalEntryPage.EmbedImagePageConfig,
     options?: TextEditor.EnrichmentOptions,
@@ -775,18 +808,21 @@ declare class JournalEntryPage<
 
   // Descendant Document operations have been left out because JournalEntryPage does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(
-    context?: Document.DefaultNameContext<"JournalEntryPage", NonNullable<JournalEntryPage.Parent>>,
-  ): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: JournalEntryPage.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data: Document.CreateDialogData<JournalEntryPage.CreateData> | undefined,
-    context: Document.CreateDialogContext<"JournalEntryPage", NonNullable<JournalEntryPage.Parent>>,
+    data: JournalEntryPage.CreateDialogData | undefined,
+    createOptions: JournalEntryPage.Database.DialogCreateOptions,
+    options?: JournalEntryPage.CreateDialogOptions,
   ): Promise<JournalEntryPage.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"JournalEntryPage">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: JournalEntryPage.DropData,
     options?: JournalEntryPage.DropDataOptions,

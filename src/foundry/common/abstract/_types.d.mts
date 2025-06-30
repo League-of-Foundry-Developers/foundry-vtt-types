@@ -99,7 +99,7 @@ export interface DatabaseCreateOperation<
   /**
    * A compendium collection ID which contains the Documents
    */
-  pack?: string | undefined;
+  pack?: string | null | undefined;
 
   /**
    * A parent Document UUID provided when the parent instance is unavailable

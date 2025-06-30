@@ -23,16 +23,38 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    * You should use {@link RollTable.implementation | `new RollTable.implementation(...)`} instead which will give you
    * a system specific implementation of the `RollTable` document.
    */
-  constructor(...args: RollTable.ConstructorArgs);
+  constructor(data: RollTable.CreateData, context?: RollTable.ConstructionContext);
 
+  /**
+   * @defaultValue
+   * ```js
+   * mergeObject(super.metadata, {
+   *   name: "RollTable",
+   *   collection: "tables",
+   *   indexed: true,
+   *   compendiumIndexFields: ["_id", "name", "description", "img", "sort", "folder"],
+   *   embedded: {TableResult: "results"},
+   *   label: "DOCUMENT.RollTable",
+   *   labelPlural: "DOCUMENT.RollTables",
+   *   schemaVersion: "13.341"
+   * })
+   * ```
+   */
   static override metadata: BaseRollTable.Metadata;
 
-  static override defineSchema(): BaseRollTable.Schema;
+  /** @defaultValue `["DOCUMENT", "TABLE"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /**
    * The default icon used for newly created Macro documents
+   * @defaultValue `"icons/svg/d20-grey.svg"`
+   * @remarks "Macro" comes from foundry's comment
    */
-  static DEFAULT_ICON: "icons/svg/d20-grey.svg";
+  static DEFAULT_ICON: string;
+
+  static override defineSchema(): BaseRollTable.Schema;
+
+  protected override _initialize(options?: Document.InitializeOptions): void;
 
   /**
    * @remarks
@@ -40,6 +62,9 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.
@@ -76,7 +101,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   override parent: RollTable.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = false>(
+  static createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<RollTable.Implementation | RollTable.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RollTable.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<RollTable.Implementation, Temporary>>>;
@@ -91,7 +116,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
     operation?: Document.Database.DeleteDocumentsOperation<RollTable.Database.Delete>,
   ): Promise<RollTable.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: RollTable.CreateData | RollTable.CreateData[],
     operation?: RollTable.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<RollTable.Implementation, Temporary> | undefined>;
@@ -224,8 +249,6 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
     user: User.Implementation,
   ): Promise<void>;
 
-  static get hasSystemData(): undefined;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 
@@ -307,6 +330,7 @@ export default BaseRollTable;
 
 declare namespace BaseRollTable {
   export import Name = RollTable.Name;
+  export import ConstructionContext = RollTable.ConstructionContext;
   export import ConstructorArgs = RollTable.ConstructorArgs;
   export import Hierarchy = RollTable.Hierarchy;
   export import Metadata = RollTable.Metadata;

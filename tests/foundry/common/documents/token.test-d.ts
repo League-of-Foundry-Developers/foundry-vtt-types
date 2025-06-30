@@ -37,7 +37,7 @@ myToken = new TestBaseToken({
     src: "path/to/file.jpg",
     tint: "#7EBF62",
   },
-  hexagonalShape: CONST.TOKEN_HEXAGONAL_SHAPES.TRAPEZOID_1,
+  shape: CONST.TOKEN_SHAPES.TRAPEZOID_1,
   x: 500,
   y: 737,
   elevation: -50,
@@ -132,6 +132,8 @@ expectTypeOf(myToken.texture).toEqualTypeOf<
   foundry.data.fields.SchemaField.InitializedData<foundry.data.TextureData.Schema>
 >();
 
+// deprecated since v13 until v15
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myToken.hexagonalShape).toEqualTypeOf<CONST.TOKEN_HEXAGONAL_SHAPES>();
 expectTypeOf(myToken.x).toBeNumber();
 expectTypeOf(myToken.y).toBeNumber();
@@ -177,8 +179,8 @@ expectTypeOf(myToken.flags).toEqualTypeOf<
 // The following fields can't really be `undefined` because they have `initial`s, see https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3055
 expectTypeOf(myToken.width).toEqualTypeOf<number | undefined>();
 expectTypeOf(myToken.height).toEqualTypeOf<number | undefined>();
-expectTypeOf(myToken.occludable.radius).toEqualTypeOf<number | undefined>();
+expectTypeOf(myToken.occludable.radius).toEqualTypeOf<number>();
 expectTypeOf(myToken.ring.colors.ring).toEqualTypeOf<Color | null | undefined>();
 expectTypeOf(myToken.ring.colors.background).toEqualTypeOf<Color | null | undefined>();
-expectTypeOf(myToken.ring.effects).toEqualTypeOf<number | null | undefined>();
-expectTypeOf(myToken.ring.subject.scale).toEqualTypeOf<number | null | undefined>();
+expectTypeOf(myToken.ring.effects).toEqualTypeOf<number | null>();
+expectTypeOf(myToken.ring.subject.scale).toEqualTypeOf<number>();

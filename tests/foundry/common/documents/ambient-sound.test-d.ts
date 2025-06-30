@@ -6,12 +6,12 @@ import Document = foundry.abstract.Document;
 
 class TestBaseAmbientSound extends BaseAmbientSound {}
 
-let mySound;
 // AmbientSound has no hard required fields for construction
-mySound = new TestBaseAmbientSound();
-mySound = new TestBaseAmbientSound({});
+new TestBaseAmbientSound();
 
-mySound = new TestBaseAmbientSound({
+new TestBaseAmbientSound({});
+
+new TestBaseAmbientSound({
   _id: "XXXXXSomeIDXXXXX",
   x: 10,
   y: 10,
@@ -41,7 +41,7 @@ mySound = new TestBaseAmbientSound({
   },
 });
 
-mySound = new TestBaseAmbientSound({
+new TestBaseAmbientSound({
   _id: null,
   x: null,
   y: null,
@@ -66,16 +66,18 @@ mySound = new TestBaseAmbientSound({
   },
   flags: null,
 });
-mySound = new TestBaseAmbientSound({
+
+new TestBaseAmbientSound({
   darkness: null,
   effects: {
     base: null,
     muffled: null,
   },
 });
-mySound = new TestBaseAmbientSound({ effects: null });
 
-mySound = new TestBaseAmbientSound({
+new TestBaseAmbientSound({ effects: null });
+
+new TestBaseAmbientSound({
   _id: undefined,
   x: undefined,
   y: undefined,
@@ -100,14 +102,16 @@ mySound = new TestBaseAmbientSound({
   },
   flags: undefined,
 });
-mySound = new TestBaseAmbientSound({
+
+new TestBaseAmbientSound({
   darkness: undefined,
   effects: {
     base: undefined,
     muffled: undefined,
   },
 });
-mySound = new TestBaseAmbientSound({ effects: undefined });
+
+const mySound = new TestBaseAmbientSound({ effects: undefined });
 
 expectTypeOf(mySound).toEqualTypeOf<BaseAmbientSound>();
 

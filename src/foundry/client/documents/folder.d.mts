@@ -13,9 +13,9 @@ declare namespace Folder {
   type Name = "Folder";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Folder`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Folder`.
@@ -211,10 +211,17 @@ declare namespace Folder {
     _id: fields.DocumentIdField;
 
     /** The name of this Folder */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /** The document type which this Folder contains, from {@linkcode CONST.FOLDER_DOCUMENT_TYPES} */
-    type: fields.DocumentTypeField<typeof BaseFolder>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    type: fields.DocumentTypeField<typeof BaseFolder, {}, Folder.SubType, Folder.SubType, Folder.SubType>;
 
     /**
      * An HTML description of the contents of this folder
@@ -357,6 +364,11 @@ declare namespace Folder {
      * and {@link Folder._onDeleteDescendantDocuments | `Folder#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Folder.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Folder.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -383,6 +395,22 @@ declare namespace Folder {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @remarks Rather than a simple `Dialog`, {@link Folder.createDialog | `Folder.createDialog`} creates a {@link FolderConfig | `FolderConfig`},
+   * passing along the returned `Promise`'s `resolve` to the app.
+   */
+  // TODO: Generally fix this up to be correct, temp fix here for the appv1 removal
+  // TODO (v13): `options.document` is also force set
+  interface CreateDialogOptions
+    extends InexactPartial<Omit<foundry.applications.sheets.FolderConfig.Configuration, "resolve">> {
+    /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
+    resolve?: never;
+  }
 
   /**
    * Actual document types that go in folders
@@ -462,17 +490,16 @@ declare namespace Folder {
   // TODO: Compendium Pack index
   type DocumentClass<SubType extends Folder.SubType> = Document.ImplementationClassFor<Extract<SubType, Document.Type>>;
 
+  interface ChildNode extends foundry.documents.abstract.DirectoryCollectionMixin.TreeNode<Implementation> {}
+
   /**
-   * @remarks Rather than a simple `Dialog`, {@link Folder.createDialog | `Folder.createDialog`} creates a {@link FolderConfig | `FolderConfig`},
-   * passing along the returned `Promise`'s `resolve` to the app.
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
    */
-  // TODO: Generally fix this up to be correct, temp fix here for the appv1 removal
-  // TODO (v13): `options.document` is also force set
-  interface CreateDialogOptions
-    extends InexactPartial<Omit<foundry.applications.sheets.FolderConfig.Configuration, "resolve">> {
-    /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
-    resolve?: never;
-  }
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -487,7 +514,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * @param data    - Initial data from which to construct the `Folder`
    * @param context - Construction context options
    */
-  constructor(...args: Folder.ConstructorArgs);
+  constructor(data: Folder.CreateData, context?: Folder.ConstructionContext);
 
   /**
    * The depth of this folder in its sidebar tree
@@ -497,18 +524,18 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
   depth: number | undefined;
 
   /**
-   * An array of other Folders which are the displayed children of this one. This differs from the results of
-   * {@link Folder.getSubfolders | `Folder#getSubfolders`} because reports the subset of child folders which
-   * are displayed to the current User in the UI.
-   * @remarks Despite Foundry's typing, this is not an array of Folder documents.
+   * An array of nodes representing the children of this one. This differs from the results of
+   * {@link Folder.getSubfolders | `Folder#getSubfolders`}, which reports the subset of child Folders
+   * displayed to the current User in the UI.
    *
    * Initialized by {@link DirectoryCollection.initializeTree | `DirectoryCollection#initializeTree`}, so always
    * `undefined` in temporary documents, and prior to first UI render in stored documents
    */
-  children: foundry.documents.abstract.DirectoryCollectionMixin.TreeNode<Folder.Implementation>[] | undefined;
+  children: Folder.ChildNode | undefined;
 
   /**
    * Return whether the folder is displayed in the sidebar to the current User.
+   * @defaultValue `false`
    */
   displayed: boolean;
 
@@ -545,15 +572,22 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    */
   get ancestors(): Folder.Implementation[];
 
+  override get inCompendium(): boolean;
+
   // _preCreate overridden but with no signature changes.
   // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
   /** @remarks Creates and renders a {@link FolderConfig | `FolderConfig`} instead of a simple Dialog */
-  // data, options: not null (parameter defaults only)
   static override createDialog(
-    data?: Document.CreateDialogData<Folder.CreateData>,
-    context?: Folder.CreateDialogOptions,
+    data?: Folder.CreateDialogData,
+    createOptions?: Folder.Database.DialogCreateOptions,
+    options?: Folder.CreateDialogOptions,
   ): Promise<Folder.Stored | null | undefined>;
+
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Folder">,
+  ): Promise<this | false | null | undefined>;
 
   /**
    * Export all Documents contained in this Folder to a given Compendium pack.
@@ -562,7 +596,6 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * @param options - Additional options which customize how content is exported. See {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`} (default: `{}`)
    * @returns The updated Compendium Collection instance
    */
-  // options: not null (parameter default only)
   exportToCompendium<Pack extends foundry.documents.collections.CompendiumCollection.Any>(
     pack: Pack,
     options?: Folder.ExportToCompendiumOptions,
@@ -577,7 +610,6 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * @remarks - Foundry documents `pack` as just being a `string` but it is unused in favor of `options.pack`, and Foundry itself
    * calls `exportDialog` with `null`.
    */
-  // options: not null (parameter default only)
   exportDialog(pack: string | null, options?: Folder.ExportDialogOptions): Promise<void>;
 
   /**
@@ -585,7 +617,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * @param recursive - Identify child folders recursively, if false only direct children are returned (default: `false`)
    * @returns An array of Folder documents which are subfolders of this one
    */
-  getSubfolders(recursive?: boolean | null): Folder.Implementation[];
+  getSubfolders(recursive?: boolean): Folder.Implementation[];
 
   /**
    * Get the Folder documents which are parent folders of the current folder or any if its parents.
@@ -607,10 +639,8 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
 
   // Descendant Document operations have been left out because Folder does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Folder", Folder.Parent>): string;
+  static override defaultName(context?: Folder.DefaultNameContext): string;
 
-  // options: not null (parameter default only)
   static override fromDropData(
     data: Folder.DropData,
     options?: Folder.DropDataOptions,

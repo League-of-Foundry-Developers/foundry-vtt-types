@@ -1,4 +1,4 @@
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type Sound from "#client/audio/sound.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -13,9 +13,9 @@ declare namespace PlaylistSound {
   type Name = "PlaylistSound";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `PlaylistSound`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `PlaylistSound`.
@@ -49,10 +49,20 @@ declare namespace PlaylistSound {
         labelPlural: string;
         compendiumIndexFields: ["name", "sort"];
         schemaVersion: string;
+        permissions: Metadata.Permissions;
       }>
     > {}
 
-  // No need for Metadata namespace
+  namespace Metadata {
+    /**
+     * The permissions for whether a certain user can create, update, or delete this document.
+     */
+    interface Permissions {
+      create: "OWNER";
+      update: "OWNER";
+      delete: "OWNER";
+    }
+  }
 
   /**
    * A document's parent is something that can contain it.
@@ -173,7 +183,13 @@ declare namespace PlaylistSound {
     /**
      * The name of this sound
      */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /**
      * The description of this sound
@@ -189,9 +205,9 @@ declare namespace PlaylistSound {
 
     /**
      * A channel in CONST.AUDIO_CHANNELS where this sound is are played
-     * @defaultValue `"music"`
+     * @defaultValue `""`
      */
-    channel: fields.StringField<{ choices: typeof CONST.AUDIO_CHANNELS; initial: string; blank: true }>;
+    channel: fields.StringField<{ required: true; choices: typeof CONST.AUDIO_CHANNELS; initial: string; blank: true }>;
 
     /**
      * Is this sound currently playing?
@@ -341,6 +357,11 @@ declare namespace PlaylistSound {
      * and {@link PlaylistSound._onDeleteDescendantDocuments | `PlaylistSound#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<PlaylistSound.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode PlaylistSound.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -367,6 +388,20 @@ declare namespace PlaylistSound {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -383,7 +418,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
    * @param data    - Initial data from which to construct the `PlaylistSound`
    * @param context - Construction context options
    */
-  constructor(...args: PlaylistSound.ConstructorArgs);
+  constructor(data: PlaylistSound.CreateData, context?: PlaylistSound.ConstructionContext);
 
   /**
    * The debounce tolerance for processing rapid volume changes into database updates in milliseconds
@@ -409,7 +444,9 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
   protected _createSound(): Sound | null;
 
   /**
-   * Determine the fade duration for this PlaylistSound based on its own configuration and that of its parent.
+   * Determine the fade-in length:
+   * - If the track is not decoded yet, just honor the configured value.
+   * - Once we know the real duration, cap the fade to half duration of the track.
    */
   get fadeDuration(): number;
 
@@ -418,6 +455,17 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
    * This will be undefined if the audio context is not yet active.
    */
   get context(): AudioContext | undefined;
+
+  /**
+   * schedule the fade-out that should occur when repeat is off.
+   * Does nothing if the sound is set to repeat or has no finite duration
+   */
+  protected _scheduleFadeOut(): void;
+
+  /**
+   * Cancel any pending fade-out on the current sound.
+   */
+  protected _cancelFadeOut(): void;
 
   /**
    * Synchronize playback for this particular PlaylistSound instance
@@ -429,7 +477,6 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
    */
   load(): Promise<void>;
 
-  // options: not null (destructured)
   toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
@@ -437,7 +484,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
    */
   override _onClickDocumentLink(event: MouseEvent): Promise<Playlist.Implementation | undefined>;
 
-  // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
+  // _preUpdate, _onUpdate, and _onDelete are all overridden but with no signature changes.
   // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
 
   /**
@@ -477,18 +524,22 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because PlaylistSound does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(
-    context?: Document.DefaultNameContext<"PlaylistSound", NonNullable<PlaylistSound.Parent>>,
-  ): string;
+  // Note: `context` is required because otherwise a `collection` cannot be found.
+  static override defaultName(context: PlaylistSound.DefaultNameContext): string;
 
   /** @remarks `context.parent` is required as creation requires one */
+  // Note: `context` is required because otherwise a `collection` cannot be found.
   static override createDialog(
-    data: Document.CreateDialogData<PlaylistSound.CreateData> | undefined,
-    context: Document.CreateDialogContext<"PlaylistSound", NonNullable<PlaylistSound.Parent>>,
+    data: PlaylistSound.CreateDialogData | undefined,
+    createOptions: PlaylistSound.Database.DialogCreateOptions,
+    options?: PlaylistSound.CreateDialogOptions,
   ): Promise<PlaylistSound.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"PlaylistSound">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: PlaylistSound.DropData,
     options?: PlaylistSound.DropDataOptions,
@@ -500,6 +551,8 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
   ): Promise<PlaylistSound.Implementation>;
 
   // Embedded document operations have been left out because PlaylistSound does not have any embedded documents.
+
+  #PlaylistSound: true;
 }
 
 export default PlaylistSound;

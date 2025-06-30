@@ -27,7 +27,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    * You should use {@link Card.implementation | `new Card.implementation(...)`} instead which will give you
    * a system specific implementation of `Card`.
    */
-  constructor(...args: Card.ConstructorArgs);
+  constructor(data: Card.CreateData, context?: Card.ConstructionContext);
 
   /**
    * @defaultValue
@@ -41,10 +41,11 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    *   labelPlural: "DOCUMENT.Cards",
    *   permissions: {
    *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     update: this.#canUpdate,
+   *     delete: "OWNER"
    *   },
    *   compendiumIndexFields: ["name", "type", "suit", "sort"],
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -58,16 +59,8 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    */
   static DEFAULT_ICON: string;
 
-  /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `Cards` implementation
-   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  /** @defaultValue `["DOCUMENT", "CARD"]` */
+  static override LOCALIZATION_PREFIXES: string[];
 
   /*
    * After this point these are not really overridden methods.
@@ -106,7 +99,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   override parent: BaseCard.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Card.Implementation | Card.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Card.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Card.Implementation, Temporary>>>;
@@ -121,7 +114,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
     operation?: Document.Database.DeleteDocumentsOperation<Card.Database.Delete>,
   ): Promise<Card.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Card.CreateData | Card.CreateData[],
     operation?: Card.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Card.Implementation, Temporary> | undefined>;
@@ -221,8 +214,6 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): true;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 
@@ -302,6 +293,7 @@ export default BaseCard;
 
 declare namespace BaseCard {
   export import Name = Card.Name;
+  export import ConstructionContext = Card.ConstructionContext;
   export import ConstructorArgs = Card.ConstructorArgs;
   export import Hierarchy = Card.Hierarchy;
   export import Metadata = Card.Metadata;

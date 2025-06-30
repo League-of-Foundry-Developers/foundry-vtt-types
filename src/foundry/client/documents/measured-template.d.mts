@@ -1,4 +1,4 @@
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -13,9 +13,9 @@ declare namespace MeasuredTemplateDocument {
   type Name = "MeasuredTemplate";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `MeasuredTemplateDocument`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `MeasuredTemplateDocument`.
@@ -58,8 +58,7 @@ declare namespace MeasuredTemplateDocument {
      */
     interface Permissions {
       create(user: User.Internal.Implementation, doc: Implementation): boolean;
-      update(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
-      delete(user: User.Internal.Implementation, doc: Implementation, data: UpdateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -193,7 +192,6 @@ declare namespace MeasuredTemplateDocument {
       {
         required: true;
         choices: CONST.MEASURED_TEMPLATE_TYPES[];
-        label: "Type";
         initial: typeof CONST.MEASURED_TEMPLATE_TYPES.CIRCLE;
         validationError: "must be a value in CONST.MEASURED_TEMPLATE_TYPES";
       },
@@ -207,13 +205,13 @@ declare namespace MeasuredTemplateDocument {
      * The x-coordinate position of the origin of the template effect
      * @defaultValue `0`
      */
-    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "XCoord" }>;
+    x: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * The y-coordinate position of the origin of the template effect
      * @defaultValue `0`
      */
-    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0; label: "YCoord" }>;
+    y: fields.NumberField<{ required: true; integer: true; nullable: false; initial: 0 }>;
 
     /**
      * The elevation of the template
@@ -236,26 +234,25 @@ declare namespace MeasuredTemplateDocument {
       nullable: false;
       initial: 0;
       min: 0;
-      label: "Distance";
     }>;
 
     /**
      * The angle of rotation for the measured template
      * @defaultValue `0`
      */
-    direction: fields.AngleField<{ label: "Direction" }>;
+    direction: fields.AngleField;
 
     /**
      * The angle of effect of the measured template, applies to cone types
      * @defaultValue `0`
      */
-    angle: fields.AngleField<{ normalize: false; label: "Angle" }>;
+    angle: fields.AngleField<{ normalize: false }>;
 
     /**
      * The width of the measured template, applies to ray types
      * @defaultValue `0`
      */
-    width: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; step: 0.01; label: "Width" }>;
+    width: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; step: 0.01 }>;
 
     /**
      * A color string used to tint the border of the template shape
@@ -279,7 +276,7 @@ declare namespace MeasuredTemplateDocument {
      * Is the template currently hidden?
      * @defaultValue `false`
      */
-    hidden: fields.BooleanField<{ label: "Hidden" }>;
+    hidden: fields.BooleanField;
 
     /**
      * An object of optional key/value flags
@@ -397,6 +394,11 @@ declare namespace MeasuredTemplateDocument {
      * and {@link MeasuredTemplateDocument._onDeleteDescendantDocuments | `MeasuredTemplateDocument#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<MeasuredTemplateDocument.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode MeasuredTemplate.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -423,6 +425,20 @@ declare namespace MeasuredTemplateDocument {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -436,7 +452,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
    * @param data    - Initial data from which to construct the `MeasuredTemplateDocument`
    * @param context - Construction context options
    */
-  constructor(...args: MeasuredTemplateDocument.ConstructorArgs);
+  constructor(data?: MeasuredTemplateDocument.CreateData, context?: MeasuredTemplateDocument.ConstructionContext);
 
   /**
    * Rotation is an alias for direction
@@ -462,18 +478,21 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
 
   // Descendant Document operations have been left out because MeasuredTemplate does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(
-    context?: Document.DefaultNameContext<"MeasuredTemplate", NonNullable<MeasuredTemplateDocument.Parent>>,
-  ): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: MeasuredTemplateDocument.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
+  /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
-    data: Document.CreateDialogData<MeasuredTemplateDocument.CreateData> | undefined,
-    context: Document.CreateDialogContext<"MeasuredTemplate", NonNullable<MeasuredTemplateDocument.Parent>>,
+    data: MeasuredTemplateDocument.CreateDialogData | undefined,
+    createOptions: MeasuredTemplateDocument.Database.DialogCreateOptions,
+    options?: MeasuredTemplateDocument.CreateDialogOptions,
   ): Promise<MeasuredTemplateDocument.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"MeasuredTemplate">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: MeasuredTemplateDocument.DropData,
     options?: MeasuredTemplateDocument.DropDataOptions,

@@ -23,7 +23,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    * You should use {@link Setting.implementation | `new Setting.implementation(...)`} instead which will give you
    * a system specific implementation of `Setting`.
    */
-  constructor(...args: Setting.ConstructorArgs);
+  constructor(data: Setting.CreateData, context?: Setting.ConstructionContext);
 
   /**
    * @defaultValue
@@ -38,7 +38,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    *     update: this.#canModify,
    *     delete: this.#canModify
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * });
    * ```
    */
@@ -84,7 +84,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   override parent: Setting.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Setting.Implementation | Setting.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Setting.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Setting.Implementation, Temporary>>>;
@@ -99,7 +99,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
     operation?: Document.Database.DeleteDocumentsOperation<Setting.Database.Delete>,
   ): Promise<Setting.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Setting.CreateData | Setting.CreateData[],
     operation?: Setting.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Setting.Implementation, Temporary> | undefined>;
@@ -187,8 +187,6 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): undefined;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 
@@ -268,6 +266,7 @@ export default BaseSetting;
 
 declare namespace BaseSetting {
   export import Name = Setting.Name;
+  export import ConstructionContext = Setting.ConstructionContext;
   export import ConstructorArgs = Setting.ConstructorArgs;
   export import Hierarchy = Setting.Hierarchy;
   export import Metadata = Setting.Metadata;

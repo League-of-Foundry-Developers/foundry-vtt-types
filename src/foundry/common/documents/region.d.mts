@@ -20,7 +20,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    * You should use {@link RegionDocument.implementation | `new RegionDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `RegionDocument`.
    */
-  constructor(...args: RegionDocument.ConstructorArgs);
+  constructor(data: RegionDocument.CreateData, context?: RegionDocument.ConstructionContext);
 
   /**
    * @defaultValue
@@ -77,7 +77,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   override parent: BaseRegion.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<RegionDocument.Implementation | RegionDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RegionDocument.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<RegionDocument.Implementation, Temporary>>>;
@@ -92,7 +92,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     operation?: Document.Database.DeleteDocumentsOperation<RegionDocument.Database.Delete>,
   ): Promise<RegionDocument.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: RegionDocument.CreateData | RegionDocument.CreateData[],
     operation?: RegionDocument.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<RegionDocument.Implementation, Temporary> | undefined>;
@@ -232,8 +232,6 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): undefined;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 
@@ -314,6 +312,7 @@ export default BaseRegion;
 
 declare namespace BaseRegion {
   export import Name = RegionDocument.Name;
+  export import ConstructionContext = RegionDocument.ConstructionContext;
   export import ConstructorArgs = RegionDocument.ConstructorArgs;
   export import Hierarchy = RegionDocument.Hierarchy;
   export import Metadata = RegionDocument.Metadata;

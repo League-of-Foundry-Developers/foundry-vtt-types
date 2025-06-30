@@ -2,7 +2,7 @@ import type { ConfiguredItem } from "fvtt-types/configuration";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { AnyObject, Merge } from "#utils";
+import type { AnyObject, InexactPartial, Merge } from "#utils";
 import type BaseItem from "#common/documents/item.mjs";
 
 import fields = foundry.data.fields;
@@ -14,9 +14,9 @@ declare namespace Item {
   type Name = "Item";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `Item`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Item`.
@@ -68,7 +68,8 @@ declare namespace Item {
      * The permissions for whether a certain user can create, update, or delete this document.
      */
     interface Permissions {
-      create: "ITEM_CREATE";
+      create(user: User.Internal.Implementation, doc: Implementation, data: CreateData): boolean;
+      delete: "OWNER";
     }
   }
 
@@ -290,11 +291,17 @@ declare namespace Item {
     _id: fields.DocumentIdField;
 
     /** The name of this Item */
-    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
+    name: fields.StringField<
+      { required: true; blank: false; textSearch: true },
+      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
+      string,
+      string,
+      string
+    >;
 
     /** An Item subtype which configures the system data model applied */
-    // TODO: required with no initial, needs assignment type override
-    type: fields.DocumentTypeField<typeof documents.BaseItem>;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    type: fields.DocumentTypeField<typeof documents.BaseItem, {}, Item.SubType, Item.SubType, Item.SubType>;
 
     /**
      * An image file path which provides the artwork for this Item
@@ -306,7 +313,7 @@ declare namespace Item {
     }>;
 
     /**
-     * The system data object which is defined by the system template.json model
+     * Data for an Item subtype, defined by a System or Module
      * @defaultValue `{}`
      */
     system: fields.TypeDataField<typeof documents.BaseItem>;
@@ -446,6 +453,11 @@ declare namespace Item {
      * and {@link Item._onDeleteDescendantDocuments | `Item#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Item.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode Item.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -472,6 +484,11 @@ declare namespace Item {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
     Item.Stored,
@@ -513,6 +530,15 @@ declare namespace Item {
     /** @defaultValue `Item.DEFAULT_ICON` */
     img: string;
   }
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -530,7 +556,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    * @param data    - Initial data from which to construct the `Item`
    * @param context - Construction context options
    */
-  constructor(...args: Item.ConstructorArgs);
+  constructor(data: Item.CreateData, context?: Item.ConstructionContext);
 
   /**
    * A convenience alias of Item#parent which is more semantically intuitive
@@ -681,16 +707,19 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    */
   protected override _onDeleteDescendantDocuments(...args: Item.OnDeleteDescendantDocumentsArgs): void;
 
-  // context: not null (destructured)
-  static override defaultName(context?: Document.DefaultNameContext<"Item", Item.Parent>): string;
+  static override defaultName(context?: Item.DefaultNameContext): string;
 
-  // data: not null (parameter default only), context: not null (destructured)
   static override createDialog(
-    data?: Document.CreateDialogData<Item.CreateData>,
-    context?: Document.CreateDialogContext<"Item", Item.Parent>,
+    data?: Item.CreateDialogData,
+    createOptions?: Item.Database.DialogCreateOptions,
+    options?: Item.CreateDialogOptions,
   ): Promise<Item.Stored | null | undefined>;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"Item">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: Item.DropData,
     options?: Item.DropDataOptions,

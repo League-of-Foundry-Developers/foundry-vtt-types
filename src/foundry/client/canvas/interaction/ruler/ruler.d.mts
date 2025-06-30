@@ -198,7 +198,7 @@ declare class Ruler extends PIXI.Container {
    * Get the cost function to be used for Ruler measurements.
    * @remarks Just a stub in v12.331
    */
-  protected _getCostFunction(): foundry.grid.BaseGrid.MeasurePathCostFunction | void;
+  protected _getCostFunction(): foundry.grid.BaseGrid.MeasurePathCostFunction2D | void;
 
   /**
    * Compute the distance of each segment and the total distance of the measured path.

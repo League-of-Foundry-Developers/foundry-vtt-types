@@ -25,7 +25,7 @@ declare abstract class BaseTableResult<
    * You should use {@link TableResult.implementation | `new TableResult.implementation(...)`} instead which will give you
    * a system specific implementation of `TableResult`.
    */
-  constructor(...args: TableResult.ConstructorArgs);
+  constructor(data: TableResult.CreateData, context?: TableResult.ConstructionContext);
 
   /**
    * @defaultValue
@@ -37,27 +37,36 @@ declare abstract class BaseTableResult<
    *   labelPlural: "DOCUMENT.TableResults",
    *   coreTypes: Object.values(CONST.TABLE_RESULT_TYPES),
    *   permissions: {
-   *     update: this.#canUpdate
+   *     create: "OWNER",
+   *     update: this.#canUpdate,
+   *     delete: "OWNER"
    *   },
    *   compendiumIndexFields: ["type"],
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * });
    * ```
    */
   static override metadata: BaseTableResult.Metadata;
 
+  /** @defaultValue `["TABLE_RESULT"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
   static override defineSchema(): BaseTableResult.Schema;
 
   /**
-   * @remarks If `this.isEmbedded`, uses `this.parent.testUserPermission`, otherwise `super`'s. Core's `RollTable` implementation
-   * doesn't override this method, so without further extension those are both {@link Document.testUserPermission | `Document#testUserPermission`}
+   * @deprecated since V13 until V15
    */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  get text(): string;
+
+  /**
+   * @deprecated since V13 until V15
+   */
+  get documentId(): string | null;
+
+  /**
+   * @deprecated since v13 until V15
+   */
+  get documentCollection(): string;
 
   /**
    * @remarks
@@ -65,6 +74,8 @@ declare abstract class BaseTableResult<
    * - Numeric `type`s to their new — since v12 — string values
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
    * After this point these are not really overridden methods.
@@ -101,7 +112,7 @@ declare abstract class BaseTableResult<
 
   override parent: BaseTableResult.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<TableResult.Implementation | TableResult.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TableResult.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<TableResult.Implementation, Temporary>>>;
@@ -116,7 +127,7 @@ declare abstract class BaseTableResult<
     operation?: Document.Database.DeleteDocumentsOperation<TableResult.Database.Delete>,
   ): Promise<TableResult.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: TableResult.CreateData | TableResult.CreateData[],
     operation?: TableResult.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<TableResult.Implementation, Temporary> | undefined>;
@@ -220,8 +231,6 @@ declare abstract class BaseTableResult<
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): undefined;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 
@@ -304,6 +313,7 @@ export default BaseTableResult;
 
 declare namespace BaseTableResult {
   export import Name = TableResult.Name;
+  export import ConstructionContext = TableResult.ConstructionContext;
   export import ConstructorArgs = TableResult.ConstructorArgs;
   export import Hierarchy = TableResult.Hierarchy;
   export import Metadata = TableResult.Metadata;

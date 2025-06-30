@@ -23,7 +23,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
    * You should use {@link WallDocument.implementation | `new WallDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `WallDocument`.
    */
-  constructor(...args: WallDocument.ConstructorArgs);
+  constructor(data: WallDocument.CreateData, context?: WallDocument.ConstructionContext);
 
   /**
    * @defaultValue
@@ -36,7 +36,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
    *   permissions: {
    *     update: this.#canUpdate
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -79,7 +79,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   override parent: WallDocument.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<WallDocument.Implementation | WallDocument.CreateData> | undefined,
     operation?: WallDocument.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<Document.TemporaryIf<WallDocument.Implementation, Temporary>>>;
@@ -94,7 +94,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     operation?: WallDocument.Database.DeleteDocumentsOperation,
   ): Promise<WallDocument.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: WallDocument.CreateData | WallDocument.CreateData[],
     operation?: WallDocument.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<WallDocument.Implementation, Temporary> | undefined>;
@@ -201,8 +201,6 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     user: User.Implementation,
   ): Promise<void>;
 
-  static override get hasSystemData(): undefined;
-
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
 
@@ -285,6 +283,7 @@ export default BaseWall;
 
 declare namespace BaseWall {
   export import Name = WallDocument.Name;
+  export import ConstructionContext = WallDocument.ConstructionContext;
   export import ConstructorArgs = WallDocument.ConstructorArgs;
   export import Hierarchy = WallDocument.Hierarchy;
   export import Metadata = WallDocument.Metadata;

@@ -2,7 +2,7 @@ import type { ConfiguredRegionBehavior } from "fvtt-types/configuration";
 import type Document from "#common/abstract/document.d.mts";
 import type BaseRegionBehavior from "#common/documents/region-behavior.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { Merge } from "#utils";
+import type { InexactPartial, Merge } from "#utils";
 
 import fields = foundry.data.fields;
 
@@ -13,9 +13,9 @@ declare namespace RegionBehavior {
   type Name = "RegionBehavior";
 
   /**
-   * The arguments to construct the document.
+   * The context used to create a `RegionBehavior`.
    */
-  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `RegionBehavior`.
@@ -51,6 +51,7 @@ declare namespace RegionBehavior {
           "displayScrollingText",
           "executeMacro",
           "executeScript",
+          "modifyMovementCost",
           "pauseGame",
           "suppressWeather",
           "teleportToken",
@@ -244,15 +245,22 @@ declare namespace RegionBehavior {
      * The name used to describe the RegionBehavior
      * @defaultValue `""`
      */
-    name: fields.StringField<{ required: true; blank: true; label: string; textSearch: true }>;
+    name: fields.StringField<{ required: true; blank: true; textSearch: true }>;
 
     /**
      * An RegionBehavior subtype which configures the system data model applied
      */
-    type: fields.DocumentTypeField<typeof BaseRegionBehavior>;
+    type: fields.DocumentTypeField<
+      typeof BaseRegionBehavior,
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      {},
+      RegionBehavior.SubType,
+      RegionBehavior.SubType,
+      RegionBehavior.SubType
+    >;
 
     /**
-     * The system data object which is defined by the system template.json model
+     * Data for a RegionBehavior subtype, defined by a System or Module
      */
     system: fields.TypeDataField<typeof BaseRegionBehavior>;
 
@@ -260,7 +268,7 @@ declare namespace RegionBehavior {
      * Is the RegionBehavior currently disabled?
      * @defaultValue `false`
      */
-    disabled: fields.BooleanField<{ label: "BEHAVIOR.FIELDS.disabled.label"; hint: "BEHAVIOR.FIELDS.disabled.hint" }>;
+    disabled: fields.BooleanField;
 
     /**
      * An object of optional key/value flags
@@ -379,6 +387,11 @@ declare namespace RegionBehavior {
      * and {@link RegionBehavior._onDeleteDescendantDocuments | `RegionBehavior#_onDeleteDescendantDocuments`}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<RegionBehavior.Database.Delete> {}
+
+    /**
+     * Create options for {@linkcode RegionBehavior.createDialog}.
+     */
+    interface DialogCreateOptions extends InexactPartial<Create> {}
   }
 
   /**
@@ -405,6 +418,20 @@ declare namespace RegionBehavior {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The arguments to construct the document.
+   *
+   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * now recommended.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
 }
 
 /**
@@ -417,7 +444,7 @@ declare class RegionBehavior<
    * @param data    - Initial data from which to construct the `RegionBehavior`
    * @param context - Construction context options
    */
-  constructor(...args: RegionBehavior.ConstructorArgs);
+  constructor(data: RegionBehavior.CreateData, context?: RegionBehavior.ConstructionContext);
 
   /** A convenience reference to the RegionDocument which contains this RegionBehavior. */
   get region(): RegionDocument.Implementation | null;
@@ -447,13 +474,14 @@ declare class RegionBehavior<
   protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
   /**
-   * @remarks No type changes, just removes `executeScript` from `options.types` if the user lacks the `MACRO_SCRIPT` permission
+   * @remarks `createOptions` must contain a `pack` or `parent`.
    *
-   * `context.parent` is required as creation requires one
+   * Also this override removes `executeScript` from `options.types` if the user lacks the `MACRO_SCRIPT` permission
    */
   static override createDialog(
-    data: Document.CreateDialogData<RegionBehavior.CreateData> | undefined,
-    context: Document.CreateDialogContext<"RegionBehavior", NonNullable<RegionBehavior.Parent>>,
+    data: RegionBehavior.CreateDialogData | undefined,
+    createOptions: RegionBehavior.Database.DialogCreateOptions,
+    dialogoptions?: RegionBehavior.CreateDialogOptions,
   ): Promise<RegionBehavior.Stored | null | undefined>;
 
   /*
@@ -470,12 +498,14 @@ declare class RegionBehavior<
 
   // Descendant Document operations have been left out because RegionBehavior does not have any descendant documents.
 
-  // context: not null (destructured)
-  static override defaultName(
-    context?: Document.DefaultNameContext<"RegionBehavior", NonNullable<RegionBehavior.Parent>>,
-  ): string;
+  /** @remarks `context` must contain a `pack` or `parent`. */
+  static override defaultName(context: RegionBehavior.DefaultNameContext): string;
 
-  // options: not null (parameter default only)
+  override deleteDialog(
+    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    operation?: Document.Database.DeleteOperationForName<"RegionBehavior">,
+  ): Promise<this | false | null | undefined>;
+
   static override fromDropData(
     data: RegionBehavior.DropData,
     options?: RegionBehavior.DropDataOptions,

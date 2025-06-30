@@ -9,19 +9,19 @@ export type DocumentTypesConfiguration = Record<string, Record<string, AnyObject
  * provided by the package.
  */
 declare class AdditionalTypesField<
-  Options extends AdditionalTypesField.DefaultOptions = AdditionalTypesField.DefaultOptions,
+  Options extends DataField.Options<AnyObject> = AdditionalTypesField.DefaultOptions,
 > extends ObjectField<
   Options,
-  AdditionalTypesField.ServerTypeDeclarations,
+  // Note(LukeAbby): `{}` is a valid initial so `| null | undefined` is added. Needs to respect overriden `initial` in the future.
+  AdditionalTypesField.ServerTypeDeclarations | null | undefined,
   AdditionalTypesField.ServerTypeDeclarations,
   AdditionalTypesField.ServerTypeDeclarations
 > {
   static get _defaults(): AdditionalTypesField.DefaultOptions;
 
-  // options: not null (parameter default only, despite being unused)
   protected _validateType(
-    value: ObjectField.InitializedType<Options>,
-    options?: DataField.ValidateOptions<AdditionalTypesField>,
+    value: AdditionalTypesField.ServerTypeDeclarations,
+    options?: DataField.ValidateOptions<this>,
   ): boolean | void;
 }
 

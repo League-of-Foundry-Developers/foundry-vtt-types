@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import SchemaField = foundry.data.fields.SchemaField;
 
 import ImageHelper = foundry.helpers.media.ImageHelper;
 
@@ -11,7 +10,7 @@ new Scene.implementation({});
 const scene = new Scene.implementation({ name: "My scene" });
 
 expectTypeOf(scene).toEqualTypeOf<Scene.Implementation>();
-expectTypeOf(scene.grid).toEqualTypeOf<SchemaField.InitializedData<Scene.Schema>["grid"]>();
+expectTypeOf(scene.grid).toEqualTypeOf<foundry.grid.BaseGrid>();
 expectTypeOf(scene.dimensions).toEqualTypeOf<Scene.Dimensions>();
 expectTypeOf(scene.active).toEqualTypeOf<boolean>();
 expectTypeOf(scene.background.src).toEqualTypeOf<string | null | undefined>();
@@ -54,7 +53,7 @@ class MySceneDocumentSubclass extends Scene {
       case "tokens":
         expectTypeOf(options.animate).toEqualTypeOf<boolean | undefined>();
         for (const d of changes) {
-          expectTypeOf(d.name).toEqualTypeOf<string>();
+          expectTypeOf(d.name).toEqualTypeOf<string | null | undefined>();
         }
         break;
       // @ts-expect-error "foobar" is not a valid collection

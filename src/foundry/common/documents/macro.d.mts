@@ -27,7 +27,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    * You should use {@link Macro.implementation | `new Macro.implementation(...)`} instead which will give you
    * a system specific implementation of `Macro`.
    */
-  constructor(...args: Macro.ConstructorArgs);
+  constructor(data: Macro.CreateData, context?: Macro.ConstructionContext);
 
   /**
    * @defaultValue
@@ -42,9 +42,10 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    *   coreTypes: Object.values(CONST.MACRO_TYPES),
    *   permissions: {
    *     create: this.#canCreate,
-   *     update: this.#canUpdate
+   *     update: this.#canUpdate,
+   *     delete: "OWNER"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -52,11 +53,16 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
 
   static override defineSchema(): BaseMacro.Schema;
 
+  /** @defaultValue `["DOCUMENT", "MACRO"]` */
+  static override LOCALIZATION_PREFIXES: string[];
+
   /**
    * The default icon used for newly created Macro documents.
    * @defaultValue `"icons/svg/dice-target.svg"`
    */
   static DEFAULT_ICON: string;
+
+  protected override _initialize(options?: Document.InitializeOptions): void;
 
   /**
    * @remarks
@@ -64,6 +70,9 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
+
+  /** @remarks `source` instead of the parent's `data` here */
+  static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
    * @remarks
@@ -74,18 +83,13 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
   /** @remarks Returns `user.hasRole("PLAYER")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
-  /**
-   * @remarks Returns `true` if `user` is the `author` of the `Macro` and `options.exact` is falsey.
-   * Otherwise, forwards to {@link Document.testUserPermission | `Document#testUserPermission`}
-   */
-  // options: not null (destructured)
-  override testUserPermission(
-    user: User.Implementation,
-    permission: Document.ActionPermission,
-    options?: Document.TestUserPermissionOptions,
-  ): boolean;
+  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
-  // _preCreate is overridden with no type changes
+  protected override _preCreate(
+    data: Macro.CreateData,
+    options: Macro.Database.PreCreateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void>;
 
   /*
    * After this point these are not really overridden methods.
@@ -119,7 +123,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
 
   override parent: BaseMacro.Parent;
 
-  static override createDocuments<Temporary extends boolean | undefined = false>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Macro.Implementation | Macro.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Macro.Database.Create<Temporary>>,
   ): Promise<Array<Document.TemporaryIf<Macro.Implementation, Temporary>>>;
@@ -134,7 +138,7 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
     operation?: Document.Database.DeleteDocumentsOperation<Macro.Database.Delete>,
   ): Promise<Macro.Implementation[]>;
 
-  static override create<Temporary extends boolean | undefined = false>(
+  static override create<Temporary extends boolean | undefined = undefined>(
     data: Macro.CreateData | Macro.CreateData[],
     operation?: Macro.Database.CreateOperation<Temporary>,
   ): Promise<Document.TemporaryIf<Macro.Implementation, Temporary> | undefined>;
@@ -170,12 +174,6 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
     scope: Scope,
     key: Key,
   ): Promise<this>;
-
-  protected override _preCreate(
-    data: Macro.CreateData,
-    options: Macro.Database.PreCreateOptions,
-    user: User.Implementation,
-  ): Promise<boolean | void>;
 
   protected override _onCreate(data: Macro.CreateData, options: Macro.Database.OnCreateOperation, userId: string): void;
 
@@ -233,8 +231,6 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
     operation: Macro.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  static override get hasSystemData(): true;
 
   // These data field things have been ticketed but will probably go into backlog hell for a while.
   // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
@@ -312,6 +308,7 @@ export default BaseMacro;
 
 declare namespace BaseMacro {
   export import Name = Macro.Name;
+  export import ConstructionContext = Macro.ConstructionContext;
   export import ConstructorArgs = Macro.ConstructorArgs;
   export import Hierarchy = Macro.Hierarchy;
   export import Metadata = Macro.Metadata;
