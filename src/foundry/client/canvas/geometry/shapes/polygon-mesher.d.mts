@@ -9,7 +9,7 @@ declare class PolygonMesher {
    * @param poly    - Closed polygon to be processed and converted to a mesh (array of points or PIXI Polygon)
    * @param options - Various options : normalizing, offsetting, add depth, ...
    */
-  constructor(poly: PIXI.Polygon.OrPointsFlat, options?: PolygonMesher.ConstructorOptions);
+  constructor(poly: PIXI.Polygon | PIXI.Polygon.PointsFlat, options?: PolygonMesher.ConstructorOptions);
 
   /** Default options values */
   static _defaultOptions: PolygonMesher.Options;
@@ -37,7 +37,7 @@ declare class PolygonMesher {
    * @privateRemarks Foundry types this return as `| undefined`, but it will only ever throw
    * or return a (possibly empty) {@linkcode ClipperLib.Path}
    */
-  static getClipperPathFromPoints(poly: PIXI.Polygon.OrPointsFlat, dimension?: number): ClipperLib.Path;
+  static getClipperPathFromPoints(poly: PIXI.Polygon | PIXI.Polygon.PointsFlat, dimension?: number): ClipperLib.Path;
 
   /**
    * Execute the triangulation to create indices

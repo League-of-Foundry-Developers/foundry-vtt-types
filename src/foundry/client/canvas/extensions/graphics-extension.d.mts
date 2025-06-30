@@ -3,7 +3,7 @@ export default function extendPIXIGraphics(): void;
 declare global {
   namespace PIXI {
     namespace Graphics {
-      type PointsAndSmoothingTuple = [points: PIXI.Polygon.OrPoints, smoothingFactor?: number];
+      type PointsAndSmoothingTuple = [points: PIXI.Polygon | PIXI.Polygon.Points, smoothingFactor?: number];
 
       type Path = PointsAndSmoothingTuple | PIXI.Polygon.Points;
     }
