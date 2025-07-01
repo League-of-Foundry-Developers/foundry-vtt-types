@@ -485,7 +485,7 @@ declare namespace Folder {
   interface ExportDialogOptions extends _ExportDialogOptions, IntentionalPartial<foundry.appv1.api.Dialog.Options> {}
 
   // TODO: Handle compendium. This requires the index to be configured.
-  type Contents<SubType extends Folder.SubType> = Document.ImplementationFor<Extract<SubType, Document.Type>>[];
+  type Contents<SubType extends Folder.SubType> = Document.StoredForName<Extract<SubType, Document.Type>>[];
 
   // TODO: Compendium Pack index
   type DocumentClass<SubType extends Folder.SubType> = Document.ImplementationClassFor<Extract<SubType, Document.Type>>;
