@@ -13,7 +13,7 @@ import DocumentSheetConfig = foundry.applications.apps.DocumentSheetConfig;
  * @see {@link Game.collections | `Game#collections`}
  */
 declare abstract class WorldCollection<
-  DocumentName extends Document.Type,
+  DocumentName extends Document.WorldType,
   Name extends string,
 > extends foundry.documents.abstract.DirectoryCollectionMixin(
   foundry.documents.abstract.DocumentCollection,
@@ -24,7 +24,7 @@ declare abstract class WorldCollection<
   /**
    * Reference the set of Folders which contain documents in this collection
    */
-  get folders(): Collection<Folder.Stored>;
+  get folders(): WorldCollection.Folders<DocumentName>;
 
   /**
    * Return a reference to the SidebarDirectory application for this WorldCollection.
@@ -45,7 +45,7 @@ declare abstract class WorldCollection<
   /**
    * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
    */
-  static get instance(): WorldCollection<Document.Type, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
+  static get instance(): WorldCollection<Document.WorldType, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
   // Note(LukeAbby): Due to the usage of `this["contents"]` in the parent class the override has
   // to stay like this.
@@ -135,6 +135,10 @@ declare namespace WorldCollection {
   interface Any extends AnyWorldCollection {}
   interface AnyConstructor extends Identity<typeof AnyWorldCollection> {}
 
+  type Folders<DocumentName extends Document.WorldType> = Collection<
+    DocumentName extends Folder.DocumentType ? Folder.Stored<DocumentName> : never
+  >;
+
   interface FromCompendiumOptions {
     /**
      * Clear the currently assigned folder
@@ -165,7 +169,7 @@ declare namespace WorldCollection {
   }
 
   type FromCompendiumReturnType<
-    DocumentType extends Document.Type,
+    DocumentType extends Document.WorldType,
     Options extends FromCompendiumOptions | undefined,
   > = Omit<
     Document.SourceForName<DocumentType>,
@@ -175,13 +179,13 @@ declare namespace WorldCollection {
     | (GetKey<Options, "keepId", undefined> extends true ? never : never)
   >;
 
-  type Pack<DocumentName extends Document.Type> =
+  type Pack<DocumentName extends Document.WorldType> =
     DocumentName extends foundry.documents.collections.CompendiumCollection.DocumentName
       ? foundry.documents.collections.CompendiumCollection<DocumentName>
       : never;
 }
 
-declare abstract class AnyWorldCollection extends WorldCollection<Document.Type, string> {
+declare abstract class AnyWorldCollection extends WorldCollection<Document.WorldType, string> {
   constructor(...args: never[]);
 }
 
