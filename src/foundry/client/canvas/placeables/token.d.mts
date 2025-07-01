@@ -950,6 +950,12 @@ declare namespace Token {
     bar2: PIXI.Graphics;
   }
 
+  // TODO: Convert to interface with appropriate properties
+  type MeasuredMovementWaypoint = unknown;
+
+  // TODO: Convert to interface with appropriate properties
+  type PlannedMovement = unknown;
+
   /** @internal */
   type _GetMovementAdjustedPointOffsets = NullishProps<{
     /** @defaultValue `this.#priorMovement.ox` */

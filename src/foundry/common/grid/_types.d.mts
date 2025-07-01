@@ -31,15 +31,15 @@ type HexagonalGridCoordinates3D = HexagonalGrid.Coordinates3D;
 
 type GridSnappingBehavior = BaseGrid.SnappingBehavior;
 
-type GridMeasurePathWaypointData2D = unknown;
+type GridMeasurePathWaypointData2D = foundry.grid.BaseGrid.MeasurePathWaypoint2D;
 
-type GridMeasurePathWaypointData3D = unknown;
+type GridMeasurePathWaypointData3D = foundry.grid.BaseGrid.MeasurePathWaypoint3D;
 
-type GridMeasurePathResultWaypoint = unknown;
+type GridMeasurePathResultWaypoint = foundry.grid.BaseGrid.MeasurePathResultWaypoint;
 
-type GridMeasurePathResultSegment = unknown;
+type GridMeasurePathResultSegment = foundry.grid.BaseGrid.MeasurePathResultSegment;
 
-type GridMeasurePathResult = unknown;
+type GridMeasurePathResult = foundry.grid.BaseGrid.MeasurePathResult;
 
 type GridMeasurePathCostFunction2D = BaseGrid.MeasurePathCostFunction2D;
 
