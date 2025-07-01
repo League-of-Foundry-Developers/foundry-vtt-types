@@ -398,7 +398,7 @@ declare namespace DialogV2 {
   type Content<Data extends AnyObject, BaseType extends string | HTMLDivElement = string | HTMLDivElement> = BaseType &
     Internal.FormContent<Data>;
 
-  type RenderCallback = (event: Event, dialog: HTMLDialogElement) => void;
+  type RenderCallback = (event: Event, dialog: DialogV2) => void;
 
   type CloseCallback = (event: Event, dialog: DialogV2) => unknown;
 
