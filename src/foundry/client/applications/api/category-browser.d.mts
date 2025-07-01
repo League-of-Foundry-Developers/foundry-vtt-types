@@ -65,8 +65,6 @@ declare abstract class CategoryBrowser<
    */
   protected _sortCategories(a: CategoryBrowser.CategoryData<Entry>, b: CategoryBrowser.CategoryData<Entry>): number;
 
-  protected override _getTabsConfig(group: string): ApplicationV2.TabsConfiguration | null;
-
   protected _tearDown(options: DeepPartial<ApplicationV2.ClosingOptions>): void;
 
   protected _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
