@@ -305,7 +305,7 @@ export interface SettingConfig {
     required: true;
     blank: false;
     initial: typeof CONST.DICE_ROLL_MODES.PUBLIC;
-    choices: typeof CONFIG.Dice.rollModes;
+    choices: foundry.dice.Roll.ConfiguredRollModes[];
   }>;
   "core.rtcClientSettings": typeof AVSettings.schemaFields.client;
   "core.rtcWorldSettings": typeof AVSettings.schemaFields.world;
