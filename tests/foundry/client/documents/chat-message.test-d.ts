@@ -27,6 +27,14 @@ declare module "fvtt-types/configuration" {
   }
 }
 
+test("Regression test for CONFIG.Dice.rollModes as choices", () => {
+  new StringField({
+    blank: true,
+    required: true,
+    choices: CONFIG.Dice.rollModes,
+  });
+});
+
 expectTypeOf(
   ChatMessage.applyRollMode({}, "custom-roll-mode"),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage.CreateData>();

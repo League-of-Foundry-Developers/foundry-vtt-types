@@ -9,6 +9,7 @@ import type {
   RemoveIndexSignatures,
   InexactPartial,
   Brand,
+  InterfaceToObject,
 } from "#utils";
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
@@ -104,7 +105,8 @@ declare global {
        */
       types: Array<foundry.dice.terms.DiceTerm.AnyConstructor>;
 
-      rollModes: CONFIG.Dice.RollModes;
+      // Note(LukeAbby): `InterfaceToObject` is used to ensure that it's valid when used with `choices`.
+      rollModes: InterfaceToObject<CONFIG.Dice.RollModes>;
 
       /**
        * Configured Roll class definitions
