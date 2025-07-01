@@ -20,7 +20,7 @@ expectTypeOf(
 // schema fields
 expectTypeOf(baseWorld.system).toEqualTypeOf<string>();
 expectTypeOf(baseWorld.background).toEqualTypeOf<string | undefined>();
-expectTypeOf(baseWorld.joinTheme).toEqualTypeOf<typeof foundry.CONST.WORLD_JOIN_THEMES | undefined>();
+expectTypeOf(baseWorld.joinTheme).toEqualTypeOf<keyof typeof foundry.CONST.WORLD_JOIN_THEMES | undefined>();
 expectTypeOf(baseWorld.coreVersion).toEqualTypeOf<string>();
 expectTypeOf(baseWorld.systemVersion).toEqualTypeOf<string>();
 expectTypeOf(baseWorld.lastPlayed).toEqualTypeOf<string | undefined>();

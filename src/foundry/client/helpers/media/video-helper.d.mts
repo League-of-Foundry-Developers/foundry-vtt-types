@@ -1,6 +1,6 @@
 import "youtube";
 import type { SpriteMesh } from "#client/canvas/containers/_module.d.mts";
-import type { Identity, InexactPartial } from "#utils";
+import type { Identity, InexactPartial, ValueOf } from "#utils";
 import type { ImageHelper } from "./_module.d.mts";
 
 /**
@@ -125,6 +125,8 @@ declare class VideoHelper {
 declare namespace VideoHelper {
   interface Any extends AnyVideoHelper {}
   interface AnyConstructor extends Identity<typeof AnyVideoHelper> {}
+
+  type VIDEO_MIME_TYPES = ValueOf<typeof CONST.VIDEO_FILE_EXTENSIONS>;
 
   type _PlayOptions = InexactPartial<{
     /**

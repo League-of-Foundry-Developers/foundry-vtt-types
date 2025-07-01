@@ -1,6 +1,6 @@
 import type Sound from "./sound.d.mts";
 import type AudioBufferCache from "./cache.d.mts";
-import type { Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
+import type { Identity, InexactPartial, IntentionalPartial, NullishProps, ValueOf } from "#utils";
 
 /**
  * A helper class to provide common functionality for working with the Web Audio API.
@@ -260,6 +260,8 @@ declare class AudioHelper {
 declare namespace AudioHelper {
   interface Any extends AnyAudioHelper {}
   interface AnyConstructor extends Identity<typeof AnyAudioHelper> {}
+
+  type AUDIO_MIME_TYPES = ValueOf<typeof CONST.AUDIO_FILE_EXTENSIONS>;
 
   /** @internal */
   type _SoundCreationOptions = InexactPartial<{

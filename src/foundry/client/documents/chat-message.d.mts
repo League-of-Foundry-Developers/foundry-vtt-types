@@ -363,7 +363,7 @@ declare namespace ChatMessage {
     /** Options passed along in Create operations for ChatMessages */
     interface Create<Temporary extends boolean | undefined = boolean | undefined>
       extends foundry.abstract.types.DatabaseCreateOperation<ChatMessage.CreateData, ChatMessage.Parent, Temporary> {
-      rollMode?: foundry.CONST.DICE_ROLL_MODES;
+      rollMode?: foundry.dice.Roll.ConfiguredRollModes;
       chatBubble?: boolean;
     }
 
@@ -598,10 +598,11 @@ declare namespace ChatMessage {
     whisperTo: string;
   }
 
-  type PassableRollMode = CONST.DICE_ROLL_MODES | "roll";
+  /** @remarks `"roll"` means "use the current rollMode" */
+  type PassableRollMode = foundry.dice.Roll.ConfiguredRollModes | "roll";
 
   /**
-   * These keys are overriden in `ChatMessage#renderHTML`
+   * These keys are overridden in `ChatMessage#renderHTML`
    *
    * @internal
    */

@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial } from "#utils";
+import type { Identity, InexactPartial, ValueOf } from "#utils";
 import type FilePicker from "#client/applications/apps/file-picker.mjs";
 
 /**
@@ -49,7 +49,7 @@ declare class ImageHelper {
    */
   static pixiToBase64(
     target: PIXI.DisplayObject,
-    type?: CONST.IMAGE_FILE_EXTENSIONS,
+    type?: ImageHelper.IMAGE_MIME_TYPES,
     quality?: number,
   ): Promise<string>;
 
@@ -61,7 +61,7 @@ declare class ImageHelper {
    */
   static canvasToBase64(
     canvas: HTMLCanvasElement,
-    type?: CONST.IMAGE_FILE_EXTENSIONS,
+    type?: ImageHelper.IMAGE_MIME_TYPES,
     quality?: number,
   ): Promise<string>;
 
@@ -97,6 +97,8 @@ declare class ImageHelper {
 declare namespace ImageHelper {
   interface Any extends AnyImageHelper {}
   interface AnyConstructor extends Identity<typeof AnyImageHelper> {}
+
+  type IMAGE_MIME_TYPES = ValueOf<typeof CONST.IMAGE_FILE_EXTENSIONS>;
 
   /** @internal */
   type _CompositeOptions = InexactPartial<{
@@ -145,7 +147,7 @@ declare namespace ImageHelper {
      * Image format, e.g. "image/jpeg" or "image/webp".
      * @defaultValue `"image/png"`
      */
-    format: CONST.IMAGE_FILE_EXTENSIONS;
+    format: IMAGE_MIME_TYPES;
 
     /**
      * JPEG or WEBP compression from 0 to 1. Default is 0.92.
@@ -168,7 +170,7 @@ declare namespace ImageHelper {
      * The MIME type of the file being uploaded
      * @remarks Will be extracted from the base64 data, if not provided.
      */
-    type: CONST.IMAGE_FILE_EXTENSIONS;
+    type: IMAGE_MIME_TYPES;
 
     /**
      * Display a UI notification when the upload is processed.
