@@ -542,7 +542,11 @@ declare namespace DialogV2 {
       readonly rejectClose: true;
     }
       ? never
-      : null;
+      : "close" extends keyof Options
+        ? Options["close"] extends (...args: never) => infer Return
+          ? Return | null
+          : null
+        : null;
 
     type ButtonReturnType<Options> =
       GetKey<Options, "buttons", undefined> extends ReadonlyArray<infer B extends Button<never>>
