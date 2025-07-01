@@ -109,13 +109,15 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
   /**
    * Closes the menu and removes it from the DOM.
    * @param options - Options to configure the closing behavior.
+   *                  (default: `{}`)
    */
   close(options?: ContextMenu.CloseOptions): Promise<void>;
 
   /**
    * Close the menu and remove it from the DOM.
+   * @param options - (default: `{}`)
    */
-  protected _close(): void;
+  protected _close({ target }: ContextMenu.CloseOptions): void;
 
   /**
    * Called before the context menu begins rendering.
@@ -264,6 +266,11 @@ declare namespace ContextMenu {
      * @remarks `null` equivalent to `false`
      */
     animate?: boolean | null;
+
+    /**
+     * The target element to close on.
+     */
+    target: HTMLElement;
   }
 
   type ContextMenuCallback =

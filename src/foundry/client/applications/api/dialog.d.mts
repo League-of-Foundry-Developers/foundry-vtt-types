@@ -330,6 +330,18 @@ declare namespace DialogV2 {
     class?: string | undefined;
 
     /**
+     * CSS style to apply to the button.
+     * @defaultValue `{}`
+     */
+    style?: Record<string, string> | undefined;
+
+    /**
+     * The button type.
+     * @defaultValue `"submit"`
+     */
+    type?: HTMLButtonElement["type"] | undefined;
+
+    /**
      * Whether this button represents the default action to take if the user
      * submits the form without pressing a button, i.e. with an Enter
      * keypress.
@@ -386,9 +398,9 @@ declare namespace DialogV2 {
   type Content<Data extends AnyObject, BaseType extends string | HTMLDivElement = string | HTMLDivElement> = BaseType &
     Internal.FormContent<Data>;
 
-  type RenderCallback = (event: Event, dialog: HTMLDialogElement) => void;
+  type RenderCallback = (event: Event, dialog: DialogV2) => void;
 
-  type CloseCallback = (event: Event, dialog: DialogV2) => void;
+  type CloseCallback = (event: Event, dialog: DialogV2) => unknown;
 
   type SubmitCallback<Result, Dialog extends DialogV2 = DialogV2> = (result: Result, dialog: Dialog) => Promise<void>;
 
