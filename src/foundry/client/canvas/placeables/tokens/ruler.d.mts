@@ -58,7 +58,7 @@ declare class TokenRuler extends BaseTokenRuler {
   /**
    * Get the style to be used to highlight the grid offset.
    * @param waypoint - The waypoint
-   * @param offset - An occupied grid offset at the given waypoint that is to be highlighted
+   * @param offset   - An occupied grid offset at the given waypoint that is to be highlighted
    * @returns The color, alpha, texture, and texture matrix to be used to draw the grid space.
    *          If the alpha is 0, the grid space is not highlighted.
    */
@@ -87,17 +87,17 @@ declare namespace TokenRuler {
     /**
      * The waypoints that were already passed by the Token
      */
-    passedWaypoints: unknown[]; // TODO: Token.MeasuredMovementWaypoint
+    passedWaypoints: foundry.canvas.placeables.Token.MeasuredMovementWaypoint[];
 
     /**
      * The waypoints that the Token will try move to next
      */
-    pendingWaypoints: unknown[]; // TODO: Token.MeasuredMovementWaypoint
+    pendingWaypoints: foundry.canvas.placeables.Token.MeasuredMovementWaypoint[];
 
     /**
      * Movement planned by Users
      */
-    plannedMovement: Record<string, unknown>; // TODO: Token.PlannedMovement
+    plannedMovement: Record<string, foundry.canvas.placeables.Token.PlannedMovement>;
   }
 
   interface WaypointData {
@@ -176,39 +176,39 @@ declare namespace TokenRuler {
 
   interface SegmentDistance {
     total: string;
-    delta?: string;
+    delta?: string | undefined;
   }
 
   interface SegmentCost {
     total: string;
     units: string;
-    delta?: string;
+    delta?: string | undefined;
   }
 
   interface ElevationContext {
     total: number;
     icon: string;
     hidden: boolean;
-    delta?: string;
+    delta?: string | undefined;
   }
 
   interface WaypointStyle {
     radius: number;
-    color?: PIXI.ColorSource;
-    alpha?: number;
+    color?: PIXI.ColorSource | undefined;
+    alpha?: number | undefined;
   }
 
   interface SegmentStyle {
     width: number;
-    color?: PIXI.ColorSource;
-    alpha?: number;
+    color?: PIXI.ColorSource | undefined;
+    alpha?: number | undefined;
   }
 
   interface GridHighlightStyle {
-    color?: PIXI.ColorSource;
-    alpha?: number;
-    texture?: PIXI.Texture;
-    matrix?: PIXI.Matrix | null;
+    color?: PIXI.ColorSource | undefined;
+    alpha?: number | undefined;
+    texture?: PIXI.Texture | undefined;
+    matrix?: PIXI.Matrix | null | undefined;
   }
 }
 
