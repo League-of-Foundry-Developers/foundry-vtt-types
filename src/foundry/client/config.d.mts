@@ -8,6 +8,7 @@ import type {
   ConcreteKeys,
   RemoveIndexSignatures,
   InexactPartial,
+  Brand,
 } from "#utils";
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
@@ -3514,8 +3515,10 @@ declare global {
     }
 
     namespace Dice {
+      type RollMode = Brand<string, "CONFIG.Dice.RollMode">;
+
       interface RollModes {
-        [rollMode: string]: RollModeConfig;
+        [rollMode: RollMode]: RollModeConfig;
         publicroll: RollModes.PublicRoll;
         gmroll: RollModes.GMRoll;
         blindroll: RollModes.BlindRoll;

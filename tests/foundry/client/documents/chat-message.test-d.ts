@@ -17,7 +17,7 @@ expectTypeOf(
   ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.SELF),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage.CreateData>();
 
-declare global {
+declare module "fvtt-types/configuration" {
   namespace CONFIG {
     namespace Dice {
       interface RollModes {
@@ -71,6 +71,11 @@ expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.PUBLIC)).toEqualTypeOf<voi
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.SELF)).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode("roll")).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode("custom-roll-mode")).toEqualTypeOf<void>();
+
+// Ensure that each usage of `rollModes` is compatible.
+declare const key: keyof typeof CONFIG.Dice.rollModes;
+expectTypeOf(chat.applyRollMode(key)).toEqualTypeOf<void>();
+expectTypeOf(chat.applyRollMode(game.settings!.get("core", "rollMode")!)).toEqualTypeOf<void>();
 
 // @ts-expect-error - "unknown-roll-mode" is not a valid roll mode
 chat.applyRollMode("unknown-roll-mode");

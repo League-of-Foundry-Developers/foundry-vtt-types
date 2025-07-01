@@ -15,6 +15,7 @@
     "verbatimModuleSyntax": true,
     "noUncheckedSideEffectImports": true,
     "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
     "incremental": true,
     "rootDir": ".",
     "allowJs": true,
