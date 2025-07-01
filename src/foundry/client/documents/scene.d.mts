@@ -1110,10 +1110,10 @@ declare namespace Scene {
      * Which image format should be used? image/png, image/jpeg, or image/webp
      * @defaultValue `"image/webp"`
      *
-     * @remarks Foundry writes `image/jpg` but this functions the same as `image/png  `.
+     * @remarks Foundry writes `image/jpg` but this functions the same as `image/png`.
      * The correct MIME type is `image/jpeg`.
      */
-    format: CONST.IMAGE_FILE_EXTENSIONS;
+    format: foundry.helpers.media.ImageHelper.IMAGE_MIME_TYPES;
 
     /**
      * What compression quality should be used for jpeg or webp, between 0 and 1

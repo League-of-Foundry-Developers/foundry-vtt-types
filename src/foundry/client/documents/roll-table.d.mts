@@ -532,7 +532,7 @@ declare namespace RollTable {
     /**
      * The chat roll mode to use when displaying the result
      */
-    rollMode: keyof CONFIG.Dice.RollModes | "roll";
+    rollMode: ChatMessage.PassableRollMode;
   }
 
   /**

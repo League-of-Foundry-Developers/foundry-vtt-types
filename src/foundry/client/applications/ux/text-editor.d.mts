@@ -1,3 +1,4 @@
+import type { ValueOf } from "type-fest";
 import type { AnyObject, Identity, JSONValue, MaybePromise } from "../../../../utils/index.d.mts";
 import type { HTMLEnrichedContentElement } from "../elements/_module.d.mts";
 import type ProseMirrorEditor from "./prosemirror-editor.mjs";
@@ -261,6 +262,8 @@ declare class TextEditor {
 declare namespace TextEditor {
   interface Any extends AnyTextEditor {}
   interface AnyConstructor extends Identity<typeof AnyTextEditor> {}
+
+  type TEXT_MIME_TYPES = ValueOf<typeof CONST.TEXT_FILE_EXTENSIONS>;
 
   type Options = ProseMirrorOptions | TinyMCEOptions;
 

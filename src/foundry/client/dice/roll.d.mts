@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, FixedInstanceType, EmptyObject, Identity } from "#utils";
+import type { AnyObject, InexactPartial, FixedInstanceType, EmptyObject, Identity, ConcreteKeys } from "#utils";
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
 import type PoolTerm from "./terms/pool.d.mts";
@@ -535,9 +535,11 @@ declare namespace Roll {
   interface Any extends AnyRoll {}
   interface AnyConstructor extends Identity<typeof AnyRoll> {}
 
+  type ConfiguredRollModes = ConcreteKeys<typeof CONFIG.Dice.rollModes>;
+
   // TODO: Make this actually configurable
-  interface ConfiguredClass extends Identity<CONFIG["Dice"]["rolls"][0]> {}
-  interface ConfiguredInstance extends FixedInstanceType<ConfiguredClass> {}
+  interface ImplementationClass extends Identity<CONFIG["Dice"]["rolls"][0]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface _Options extends RollTerm.EvaluationOptions {
     /**
@@ -640,7 +642,7 @@ declare namespace Roll {
      * The template roll mode to use for the message from CONFIG.Dice.rollModes
      * @remarks "roll" equivalent to explicit undefined
      */
-    rollMode?: keyof CONFIG.Dice.RollModes | "roll" | null | undefined;
+    rollMode?: ChatMessage.PassableRollMode | null | undefined;
 
     /**
      * Whether to automatically create the chat message, or only return the prepared chatData object.

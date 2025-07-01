@@ -164,13 +164,14 @@ export declare const CHAT_MESSAGE_STYLES: Readonly<{
   EMOTE: 3 & CHAT_MESSAGE_STYLES;
 
   /**
-   * @deprecated "`CONST.CHAT_MESSAGE_STYLES.ROLL` is deprecated in favor of defining rolls directly in {@linkcode ChatMessage.rolls | ChatMessage#rolls}"
-   * (since v12, until v14)
+   * @deprecated "`CONST.CHAT_MESSAGE_STYLES.ROLL` is deprecated in favor of defining rolls directly in
+   * {@linkcode ChatMessage.rolls | ChatMessage#rolls}" (since v12, until v14)
    */
   ROLL: 0 & CHAT_MESSAGE_STYLES;
 
   /**
-   * @deprecated "`CONST.CHAT_MESSAGE_STYLES.Whisper` is deprecated in favor of defining whisper recipients directly in {@linkcode ChatMessage.whisper | ChatMessage#whisper}"
+   * @deprecated "`CONST.CHAT_MESSAGE_STYLES.Whisper` is deprecated in favor of defining whisper recipients
+   * directly in {@linkcode ChatMessage.whisper | ChatMessage#whisper}"
    * (since v12, until v14)
    */
   WHISPER: 0 & CHAT_MESSAGE_STYLES;
@@ -181,6 +182,7 @@ export type CHAT_MESSAGE_STYLES = Brand<number, "constants.CHAT_MESSAGE_STYLES">
  * Define the set of languages which have built-in support in the core software
  */
 export declare const CORE_SUPPORTED_LANGUAGES: readonly ["en"];
+export type CORE_SUPPORTED_LANGUAGES = ValueOf<typeof CORE_SUPPORTED_LANGUAGES>;
 
 /**
  * Configure the severity of compatibility warnings.
@@ -221,7 +223,7 @@ export declare const CURSOR_STYLES: Readonly<{
   text: "text";
   "text-down": "text";
 }>;
-export type CURSOR_STYLES = ValueOf<typeof CURSOR_STYLES>;
+export type CURSOR_STYLES = keyof typeof CURSOR_STYLES;
 
 /**
  * The lighting illumination levels which are supported.
@@ -250,6 +252,7 @@ export type CSS_THEMES = ValueOf<typeof CSS_THEMES>;
  * The default artwork used for Token images if none is provided
  */
 export declare const DEFAULT_TOKEN: "icons/svg/mystery-man.svg";
+export type DEFAULT_TOKEN = typeof DEFAULT_TOKEN;
 
 /**
  * Define the allowed Document class types.
@@ -361,7 +364,8 @@ export declare const DOCUMENT_OWNERSHIP_LEVELS: Readonly<{
   NONE: 0 & DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
-   * Allows the User to interact with the Document in basic ways, allowing them to see it in sidebars and see only limited aspects of its contents. The limits of this interaction are defined by the game system being used.
+   * Allows the User to interact with the Document in basic ways, allowing them to see it in sidebars and see only limited aspects of its contents.
+   * The limits of this interaction are defined by the game system being used.
    */
   LIMITED: 1 & DOCUMENT_OWNERSHIP_LEVELS;
 
@@ -469,13 +473,15 @@ export type FOLDER_DOCUMENT_TYPES = ValueOf<typeof FOLDER_DOCUMENT_TYPES>;
 
 /**
  * The maximum allowed level of depth for Folder nesting
+ * @defaultValue `4`
  */
-export declare const FOLDER_MAX_DEPTH: 4;
+export declare const FOLDER_MAX_DEPTH: number;
 
 /**
  * A list of allowed game URL names
  */
 export declare const GAME_VIEWS: readonly ["game", "stream"];
+export type GAME_VIEWS = ValueOf<typeof GAME_VIEWS>;
 
 /**
  * The directions of movement.
@@ -502,8 +508,9 @@ export type MOVEMENT_DIRECTIONS = Brand<number, "constants.MOVEMENT_DIRECTIONS">
 
 /**
  * The minimum allowed grid size which is supported by the software
+ * @defaultValue `20`
  */
-export declare const GRID_MIN_SIZE: 20;
+export declare const GRID_MIN_SIZE: number;
 
 /**
  * The allowed Grid types which are supported by the software
@@ -879,8 +886,9 @@ export type SOFTWARE_UPDATE_CHANNELS = ValueOf<typeof SOFTWARE_UPDATE_CHANNELS>;
 
 /**
  * The default sorting density for manually ordering child objects within a parent
+ * @defaultValue `100000`
  */
-export declare const SORT_INTEGER_DENSITY: 100000;
+export declare const SORT_INTEGER_DENSITY: number;
 
 /**
  * The allowed types of a TableResult document
@@ -902,7 +910,7 @@ export declare const TABLE_RESULT_TYPES: Readonly<{
    * @deprecated "`CONST.TABLE_RESULT_TYPES.COMPENDIUM` is is deprecated in favor of {@linkcode CONST.TABLE_RESULT_TYPES.DOCUMENT}
    * due to the "compendium" being merged with the "document" type." (since v13, until v15)
    */
-  COMPENDIUM: "pack";
+  get COMPENDIUM(): "pack";
 }>;
 export type TABLE_RESULT_TYPES = ValueOf<typeof TABLE_RESULT_TYPES>;
 
@@ -957,6 +965,7 @@ export type TEXT_ANCHOR_POINTS = Brand<number, "constants.TEXT_ANCHOR_POINTS">;
 
 /**
  * Define the valid occlusion modes which a tile can use
+ * @remarks Foundry leaves a comment in the middle of the object: "// ROOF: 2;  This mode is no longer supported so we don't use 2 for any other mode"
  * @see {@link https://foundryvtt.com/article/tiles/}
  */
 export declare const OCCLUSION_MODES: Readonly<{
@@ -970,8 +979,6 @@ export declare const OCCLUSION_MODES: Readonly<{
    * @defaultValue
    */
   FADE: 1 & OCCLUSION_MODES;
-
-  // ROOF: 2;  This mode is no longer supported so we don't use 2 for any other mode
 
   /**
    * Causes the tile to reveal the background in the vicinity of an actor token under it. The radius is determined by the token's size.
@@ -988,6 +995,7 @@ export type OCCLUSION_MODES = Brand<number, "constants.OCCLUSION_MODES">;
 
 /**
  * Alias for old tile occlusion modes definition
+ * @remarks Foundry leaves a comment in the middle of the object: "// ROOF: 2;  This mode is no longer supported so we don't use 2 for any other mode"
  * @privateRemarks Foundry just does `export const TILE_OCCLUSION_MODES = OCCLUSION_MODES` but we have to be un-DRY if we want a different brand
  */
 export declare const TILE_OCCLUSION_MODES: {
@@ -1002,8 +1010,6 @@ export declare const TILE_OCCLUSION_MODES: {
    */
   FADE: 1 & TILE_OCCLUSION_MODES;
 
-  // ROOF: 2;  This mode is no longer supported so we don't use 2 for any other mode
-
   /**
    * Causes the tile to reveal the background in the vicinity of an actor token under it. The radius is determined by the token's size.
    */
@@ -1016,8 +1022,6 @@ export declare const TILE_OCCLUSION_MODES: {
   VISION: 4 & TILE_OCCLUSION_MODES;
 };
 export type TILE_OCCLUSION_MODES = Brand<number, "constants.TILE_OCCLUSION_MODES">;
-
-declare const x: typeof TILE_OCCLUSION_MODES.FADE;
 
 /**
  * The occlusion modes that define the set of tokens that trigger occlusion.
@@ -1185,23 +1189,27 @@ export declare const USER_ROLES: Readonly<{
 
   /**
    * The User is able to join the game with permissions available to a standard player.
-   * They cannot take some more advanced actions which require Trusted permissions, but they have the basic functionalities needed to operate in the virtual tabletop.
+   * They cannot take some more advanced actions which require Trusted permissions, but they have the basic
+   * functionalities needed to operate in the virtual tabletop.
    */
   PLAYER: 1 & USER_ROLES;
 
   /**
-   * Similar to the Player role, except a Trusted User has the ability to perform some more advanced actions like create drawings, measured templates, or even to (optionally) upload media files to the server.
+   * Similar to the Player role, except a Trusted User has the ability to perform some more advanced actions
+   * like create drawings, measured templates, or even to (optionally) upload media files to the server.
    */
   TRUSTED: 2 & USER_ROLES;
 
   /**
-   * A special User who has many of the same in-game controls as a Game Master User, but does not have the ability to perform administrative actions like changing User roles or modifying World-level settings.
+   * A special User who has many of the same in-game controls as a Game Master User, but does not have the ability
+   * to perform administrative actions like changing User roles or modifying World-level settings.
    */
   ASSISTANT: 3 & USER_ROLES;
 
   /**
    * A special User who has administrative control over this specific World.
-   * Game Masters behave quite differently than Players in that they have the ability to see all Documents and Objects within the world as well as the capability to configure World settings.
+   * Game Masters behave quite differently than Players in that they have the ability to see all Documents and
+   * Objects within the world as well as the capability to configure World settings.
    */
   GAMEMASTER: 4 & USER_ROLES;
 }>;
@@ -1219,23 +1227,27 @@ export declare const USER_ROLE_NAMES: Readonly<{
 
   /**
    * The User is able to join the game with permissions available to a standard player.
-   * They cannot take some more advanced actions which require Trusted permissions, but they have the basic functionalities needed to operate in the virtual tabletop.
+   * They cannot take some more advanced actions which require Trusted permissions, but they have the basic
+   * functionalities needed to operate in the virtual tabletop.
    */
   "1": "PLAYER";
 
   /**
-   * Similar to the Player role, except a Trusted User has the ability to perform some more advanced actions like create drawings, measured templates, or even to (optionally) upload media files to the server.
+   * Similar to the Player role, except a Trusted User has the ability to perform some more advanced actions
+   * like create drawings, measured templates, or even to (optionally) upload media files to the server.
    */
   "2": "TRUSTED";
 
   /**
-   * A special User who has many of the same in-game controls as a Game Master User, but does not have the ability to perform administrative actions like changing User roles or modifying World-level settings.
+   * A special User who has many of the same in-game controls as a Game Master User, but does not have the
+   * ability to perform administrative actions like changing User roles or modifying World-level settings.
    */
   "3": "ASSISTANT";
 
   /**
    * A special User who has administrative control over this specific World.
-   * Game Masters behave quite differently than Players in that they have the ability to see all Documents and Objects within the world as well as the capability to configure World settings.
+   * Game Masters behave quite differently than Players in that they have the ability to see all Documents
+   * and Objects within the world as well as the capability to configure World settings.
    */
   "4": "GAMEMASTER";
 }>;
@@ -1592,6 +1604,7 @@ export declare const USER_PERMISSIONS: DeepReadonly<{
    */
   QUERY_USER: UserPermission;
 }>;
+export type USER_PERMISSIONS = keyof typeof USER_PERMISSIONS;
 
 /**
  * The allowed directions of effect that a Wall can have
@@ -1876,11 +1889,13 @@ export declare const FILE_CATEGORIES: Readonly<{
    */
   get MEDIA(): typeof MEDIA_MIME_TYPES;
 }>;
+export type FILE_CATEGORIES = keyof typeof FILE_CATEGORIES;
 
 /**
  * The list of file categories that are "media".
  */
 export declare const MEDIA_FILE_CATEGORIES: readonly ["IMAGE", "VIDEO", "AUDIO", "TEXT", "FONT", "GRAPHICS"];
+export type MEDIA_FILE_CATEGORIES = ValueOf<typeof MEDIA_FILE_CATEGORIES>;
 
 /**
  * A list of MIME types which are treated as uploaded "media", which are allowed to overwrite existing files.
@@ -1917,24 +1932,23 @@ export declare const TIMEOUTS: Readonly<{
   /**
    * The default timeout for interacting with the foundryvtt.com API.
    */
-  FOUNDRY_WEBSITE: 10000 & TIMEOUTS;
+  FOUNDRY_WEBSITE: 10000;
 
   /**
    * The specific timeout for loading the list of packages from the foundryvtt.com API.
    */
-  PACKAGE_REPOSITORY: 10000 & TIMEOUTS;
+  PACKAGE_REPOSITORY: 10000;
 
   /**
    * The specific timeout for the IP address lookup service.
    */
-  IP_DISCOVERY: 5000 & TIMEOUTS;
+  IP_DISCOVERY: 5000;
 
   /**
    * A remote package manifest JSON or download ZIP.
    */
-  REMOTE_PACKAGE: 5000 & TIMEOUTS;
+  REMOTE_PACKAGE: 5000;
 }>;
-export type TIMEOUTS = Brand<number, "constants.TIMEOUTS">;
 
 /**
  * A subset of Compendium types which require a specific system to be designated
@@ -2153,7 +2167,7 @@ export const ALLOWED_HTML_ATTRIBUTES: DeepReadonly<{
   track: ["default", "kind", "label", "src", "srclang"];
   video: ["controls", "height", "width", "loop", "muted", "poster", "src", "autoplay"];
 }>;
-export type ALLOWED_HTML_ATTRIBUTES = ValueOf<typeof ALLOWED_HTML_ATTRIBUTES>;
+export type ALLOWED_HTML_ATTRIBUTES = typeof ALLOWED_HTML_ATTRIBUTES;
 
 /**
  * The list of allowed URL schemes.
@@ -2241,8 +2255,9 @@ export type TEXTURE_DATA_FIT_MODES = ValueOf<typeof TEXTURE_DATA_FIT_MODES>;
 
 /**
  * The maximum depth to recurse to when embedding enriched text.
+ * @defaultValue `5`
  */
-export const TEXT_ENRICH_EMBED_MAX_DEPTH: 5;
+export const TEXT_ENRICH_EMBED_MAX_DEPTH: number;
 
 /**
  * The Region events that are supported by core.
@@ -2395,17 +2410,20 @@ export declare const REGION_EVENTS: Readonly<{
   TOKEN_ROUND_END: "tokenRoundEnd";
 
   /**
-   * @deprecated "`CONST.REGION_EVENTS.BEHAVIOR_STATUS` is deprecated in favor of `BEHAVIOR_ACTIVATED`, `BEHAVIOR_DEACTIVATED`, `BEHAVIOR_VIEWED`, and `BEHAVIOR_UNVIEWED`." (since v13, until v15)
+   * @deprecated "`CONST.REGION_EVENTS.BEHAVIOR_STATUS` is deprecated in favor of `BEHAVIOR_ACTIVATED`,
+   * `BEHAVIOR_DEACTIVATED`, `BEHAVIOR_VIEWED`, and `BEHAVIOR_UNVIEWED`." (since v13, until v15)
    */
   get BEHAVIOR_STATUS(): "behaviorStatus";
 
   /**
-   * @deprecated "`CONST.REGION_EVENTS.TOKEN_PRE_MOVE` is deprecated without replacement. The `TOKEN_PRE_MOVE` event is not longer triggered." (since v13, until v15)
+   * @deprecated "`CONST.REGION_EVENTS.TOKEN_PRE_MOVE` is deprecated without replacement. The `TOKEN_PRE_MOVE`
+   * event is not longer triggered." (since v13, until v15)
    */
   get TOKEN_PRE_MOVE(): "tokenPreMove";
 
   /**
-   * @deprecated "`CONST.REGION_EVENTS.TOKEN_PRE_MOVE` is deprecated without replacement. The `TOKEN_MOVE` event is not longer triggered." (since v13, until v15)
+   * @deprecated "`CONST.REGION_EVENTS.TOKEN_PRE_MOVE` is deprecated without replacement. The `TOKEN_MOVE`
+   * event is not longer triggered." (since v13, until v15)
    */
   get TOKEN_MOVE(): "tokenMove";
 }>;
@@ -2473,8 +2491,9 @@ export type SETTING_SCOPES = ValueOf<typeof SETTING_SCOPES>;
 
 /**
  * The scaling factor that is used for Clipper polygons/paths consistently everywhere core performs Clipper operations.
+ * @defaultValue `100`
  */
-export const CLIPPER_SCALING_FACTOR = 100;
+export declare const CLIPPER_SCALING_FACTOR: number;
 
 /**
  * @deprecated (since v12, until v14)
@@ -2518,6 +2537,7 @@ export declare const CHAT_MESSAGE_TYPES: Readonly<{
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   WHISPER: typeof CHAT_MESSAGE_STYLES.WHISPER;
 }>;
+export type CHAT_MESSAGE_TYPES = CHAT_MESSAGE_STYLES;
 
 /**
  * @deprecated "`CONST.DOCUMENT_TYPES` is deprecated in favor of either {@linkcode CONST.WORLD_DOCUMENT_TYPES} or {@linkcode CONST.COMPENDIUM_DOCUMENT_TYPES}." (since v12, until 14)

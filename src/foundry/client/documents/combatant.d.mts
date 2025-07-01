@@ -525,7 +525,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    * @param formula -  An explicit Roll formula to use for the combatant.
    * @returns The Roll instance to use for the combatant.
    */
-  getInitiativeRoll(formula?: string): Roll.ConfiguredInstance;
+  getInitiativeRoll(formula?: string): Roll.Implementation;
 
   /**
    * Roll initiative for this particular combatant.

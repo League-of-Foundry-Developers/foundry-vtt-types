@@ -17,7 +17,7 @@ expectTypeOf(
   combatant.testUserPermission(user, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.INHERIT),
 ).toEqualTypeOf<boolean>();
 
-expectTypeOf(combatant.getInitiativeRoll()).toEqualTypeOf<Roll.ConfiguredInstance>();
+expectTypeOf(combatant.getInitiativeRoll()).toEqualTypeOf<Roll.Implementation>();
 expectTypeOf(combatant.rollInitiative("")).toEqualTypeOf<Promise<Combatant.Implementation | undefined>>();
 
 expectTypeOf(combatant.prepareDerivedData()).toEqualTypeOf<void>();

@@ -17,20 +17,6 @@ expectTypeOf(
   ChatMessage.applyRollMode({}, CONST.DICE_ROLL_MODES.SELF),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage.CreateData>();
 
-declare global {
-  namespace CONFIG {
-    namespace Dice {
-      interface RollModes {
-        "custom-roll-mode": "Some Custom Roll Mode";
-      }
-    }
-  }
-}
-
-expectTypeOf(
-  ChatMessage.applyRollMode({}, "custom-roll-mode"),
-).toEqualTypeOf<foundry.documents.BaseChatMessage.CreateData>();
-
 // @ts-expect-error - "unknown-roll-mode" is not a valid roll mode
 ChatMessage.applyRollMode({}, "unknown-roll-mode");
 
@@ -70,7 +56,6 @@ expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.PRIVATE)).toEqualTypeOf<vo
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.PUBLIC)).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.SELF)).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode("roll")).toEqualTypeOf<void>();
-expectTypeOf(chat.applyRollMode("custom-roll-mode")).toEqualTypeOf<void>();
 
 // @ts-expect-error - "unknown-roll-mode" is not a valid roll mode
 chat.applyRollMode("unknown-roll-mode");
