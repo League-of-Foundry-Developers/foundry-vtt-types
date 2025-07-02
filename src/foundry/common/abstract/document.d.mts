@@ -1518,7 +1518,9 @@ declare namespace Document {
    * Without an override, this is handled by the `& ExtraConstructorOptions` in the `DataModel` signature, but with one,
    * a manually combined interface is needed.
    */
-  interface InitializeSourceOptions extends DataModel.InitializeSourceOptions, Omit<ConstructionContext, "parent"> {}
+  interface InitializeSourceOptions
+    extends DataModel.InitializeSourceOptions,
+      Omit<ConstructionContext, "parent" | "strict"> {}
 
   interface ModificationContext<Parent extends Document.Any | null> {
     /**

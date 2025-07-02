@@ -731,7 +731,7 @@ declare namespace DataField {
     fallback: boolean;
 
     /**
-     * If true, invalid embedded documents will emit a warning and be placed in the `invalidDocuments`
+     * If true, invalid embedded documents will emit a warning and be placed in the invalidDocuments
      * collection rather than causing the parent to be considered invalid.
      */
     dropInvalidEmbedded: boolean;
