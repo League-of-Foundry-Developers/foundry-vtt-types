@@ -1,5 +1,4 @@
-import type { AnyObject, DeepPartial, Identity } from "#utils";
-import type { EmptyObject } from "type-fest";
+import type { EmptyObject, AnyObject, DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 import type { FormSelectOption } from "../forms/fields.d.mts";

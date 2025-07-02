@@ -319,6 +319,17 @@ const rules = [
         },
       ],
       "@typescript-eslint/no-unnecessary-type-parameters": "off",
+      "@typescript-eslint/no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "type-fest",
+              message: "You probably meant to import fvtt-types/utils",
+            },
+          ],
+        },
+      ],
       "@typescript-eslint/prefer-namespace-keyword": "error",
       "@typescript-eslint/unified-signatures": "off",
 

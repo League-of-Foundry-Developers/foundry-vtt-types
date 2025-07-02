@@ -1,5 +1,4 @@
-import type { ValueOf } from "type-fest";
-import type { AnyObject, Identity, JSONValue, MaybePromise } from "../../../../utils/index.d.mts";
+import type { ValueOf, AnyObject, Identity, JSONValue, MaybePromise } from "#utils";
 import type { HTMLEnrichedContentElement } from "../elements/_module.d.mts";
 import type ProseMirrorEditor from "./prosemirror-editor.mjs";
 
