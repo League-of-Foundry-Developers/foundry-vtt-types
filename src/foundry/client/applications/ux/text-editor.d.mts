@@ -1,5 +1,4 @@
-import type { ValueOf } from "type-fest";
-import type { AnyObject, Identity, JSONValue, MaybePromise } from "../../../../utils/index.d.mts";
+import type { ValueOf, AnyObject, Identity, JSONValue, MaybePromise } from "#utils";
 import type { HTMLEnrichedContentElement } from "../elements/_module.d.mts";
 import type ProseMirrorEditor from "./prosemirror-editor.mjs";
 
@@ -94,11 +93,21 @@ declare class TextEditor {
    * @param options - Options provided to customize text enrichment
    * @returns Whether any replacements were made, requiring the text nodes to be updated.
    */
-  static _applyCustomEnrichers(
+  protected static _applyCustomEnrichers(
     config: TextEditor.EnricherConfig,
     text: Text[],
     options?: TextEditor.EnrichmentOptions,
   ): Promise<boolean>;
+
+  /**
+   * A method that can be extended by subclasses to perform final post-enrichment operations on an HTML fragment.
+   * Final changes should be made in-place, mutating the provided HTML element.
+   * Note: This API is experimental and may be removed in later versions without deprecation.
+   * @param html    - A div element containing the enriched HTML
+   * @param options - Provided enrichment options
+   * @returns A promise which resolves once finalization has completed
+   */
+  protected static _finalizeEnrichedHTML(html: HTMLDivElement, options: TextEditor.EnrichmentOptions): Promise<void>;
 
   /**
    * Preview an HTML fragment by constructing a substring of a given length from its inner text.

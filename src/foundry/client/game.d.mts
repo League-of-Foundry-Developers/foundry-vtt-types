@@ -119,8 +119,9 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * A mapping of WorldCollection instances, one per primary Document type.
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
+  // TODO(LukeAbby): Ideally this would be actually vary based upon `CollectionDocument`.
   readonly collections: SimpleInitializedOn<
-    foundry.utils.Collection<foundry.documents.abstract.WorldCollection<Document.Type, string>>,
+    foundry.utils.Collection<foundry.documents.abstract.WorldCollection<Game.CollectionDocument, string>>,
     "setup",
     RunEvents
   >;
@@ -779,6 +780,21 @@ declare namespace Game {
      */
     userId?: string | undefined;
   }
+
+  // Note(LukeAbby): See `Game#initializeDocuments`'s `initOrder`.
+  type CollectionDocument =
+    | "User"
+    | "Folder"
+    | "Actor"
+    | "Item"
+    | "Scene"
+    | "Combat"
+    | "JournalEntry"
+    | "Macro"
+    | "Playlist"
+    | "RollTable"
+    | "Cards"
+    | "ChatMessage";
 }
 
 declare global {

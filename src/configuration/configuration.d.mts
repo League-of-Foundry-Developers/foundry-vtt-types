@@ -1,4 +1,4 @@
-import type { DeepPartial, MaybeEmpty } from "#utils";
+import type { DeepPartial, InterfaceToObject, MaybeEmpty } from "#utils";
 import type { fields } from "../foundry/common/data/_module.d.mts";
 import type Document from "../foundry/common/abstract/document.d.mts";
 
@@ -306,12 +306,18 @@ export interface SettingConfig {
    * @remarks `choices` is a type with the index signature of {@linkcode CONFIG.Dice.rollModes} removed.
    * If you want to use a custom `rollMode`, you must register it in `CONFIG`.
    */
-  "core.rollMode": fields.StringField<{
-    required: true;
-    blank: false;
-    initial: typeof CONST.DICE_ROLL_MODES.PUBLIC;
-    choices: foundry.dice.Roll.ConfiguredRollModes[];
-  }>;
+  "core.rollMode": fields.StringField<
+    {
+      required: true;
+      blank: false;
+      initial: typeof CONST.DICE_ROLL_MODES.PUBLIC;
+      choices: InterfaceToObject<typeof CONFIG.Dice.rollModes>;
+    },
+    // Note(LukeAbby): This override is necessary because the `initial` wasn't removing `null`.
+    (string & keyof typeof CONFIG.Dice.rollModes) | null | undefined,
+    string & keyof typeof CONFIG.Dice.rollModes,
+    string & keyof typeof CONFIG.Dice.rollModes
+  >;
   "core.rtcClientSettings": typeof AVSettings.schemaFields.client;
   "core.rtcWorldSettings": typeof AVSettings.schemaFields.world;
   "core.scrollingStatusText": fields.BooleanField<{ initial: true }>;

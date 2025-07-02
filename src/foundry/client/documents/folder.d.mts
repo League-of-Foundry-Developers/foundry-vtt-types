@@ -485,7 +485,7 @@ declare namespace Folder {
   interface ExportDialogOptions extends _ExportDialogOptions, IntentionalPartial<foundry.appv1.api.Dialog.Options> {}
 
   // TODO: Handle compendium. This requires the index to be configured.
-  type Contents<SubType extends Folder.SubType> = Document.ImplementationFor<Extract<SubType, Document.Type>>[];
+  type Contents<SubType extends Folder.SubType> = Document.StoredForName<Extract<SubType, Document.Type>>[];
 
   // TODO: Compendium Pack index
   type DocumentClass<SubType extends Folder.SubType> = Document.ImplementationClassFor<Extract<SubType, Document.Type>>;
@@ -617,13 +617,13 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * @param recursive - Identify child folders recursively, if false only direct children are returned (default: `false`)
    * @returns An array of Folder documents which are subfolders of this one
    */
-  getSubfolders(recursive?: boolean): Folder.Implementation[];
+  getSubfolders(recursive?: boolean): Folder.Stored<SubType>[];
 
   /**
    * Get the Folder documents which are parent folders of the current folder or any if its parents.
    * @returns An array of Folder documents which are parent folders of this one
    */
-  getParentFolders(): Folder.Implementation[];
+  getParentFolders(): Folder.Stored<SubType>[];
 
   /*
    * After this point these are not really overridden methods.

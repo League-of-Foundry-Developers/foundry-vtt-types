@@ -126,7 +126,7 @@ declare class DialogV2<
    * @param target - The button that was clicked or the default button.
    * @param event - The triggering event.
    */
-  protected _onSubmit(target: HTMLButtonElement, event: PointerEvent | SubmitEvent): Promise<DialogV2>;
+  protected _onSubmit(target: HTMLButtonElement, event: PointerEvent | SubmitEvent): Promise<this>;
 
   protected override _onFirstRender(
     _context: DeepPartial<RenderContext>,
@@ -149,7 +149,7 @@ declare class DialogV2<
    * @param event - The originating click event.
    * @param target - The button element that was clicked.
    */
-  protected static _onClickButton(this: DialogV2, event: PointerEvent, target: HTMLButtonElement): void;
+  protected static _onClickButton(this: DialogV2.Any, event: PointerEvent, target: HTMLButtonElement): void;
 
   /**
    * A utility helper to generate a dialog with yes and no buttons.
@@ -308,7 +308,7 @@ declare namespace DialogV2 {
   interface Any extends AnyDialogV2 {}
   interface AnyConstructor extends Identity<typeof AnyDialogV2> {}
 
-  interface Button<Dialog extends DialogV2 = DialogV2> {
+  interface Button<Dialog extends DialogV2.Any = DialogV2.Any> {
     /**
      * The button action identifier.
      */
@@ -330,6 +330,18 @@ declare namespace DialogV2 {
     class?: string | undefined;
 
     /**
+     * CSS style to apply to the button.
+     * @defaultValue `{}`
+     */
+    style?: Record<string, string> | undefined;
+
+    /**
+     * The button type.
+     * @defaultValue `"submit"`
+     */
+    type?: HTMLButtonElement["type"] | undefined;
+
+    /**
      * Whether this button represents the default action to take if the user
      * submits the form without pressing a button, i.e. with an Enter
      * keypress.
@@ -344,7 +356,7 @@ declare namespace DialogV2 {
     callback?: ButtonCallback<Dialog> | undefined;
   }
 
-  type ButtonCallback<Dialog extends DialogV2 = DialogV2> = (
+  type ButtonCallback<Dialog extends DialogV2.Any = DialogV2.Any> = (
     event: PointerEvent | SubmitEvent,
     button: HTMLButtonElement,
     dialog: Dialog,
@@ -352,7 +364,7 @@ declare namespace DialogV2 {
 
   interface RenderContext extends ApplicationV2.RenderContext {}
 
-  interface Configuration<Dialog extends DialogV2 = DialogV2> extends ApplicationV2.Configuration {
+  interface Configuration<Dialog extends DialogV2.Any = DialogV2.Any> extends ApplicationV2.Configuration {
     /**
      * Modal dialogs prevent interaction with the rest of the UI until they are dismissed or submitted.
      */
@@ -386,13 +398,16 @@ declare namespace DialogV2 {
   type Content<Data extends AnyObject, BaseType extends string | HTMLDivElement = string | HTMLDivElement> = BaseType &
     Internal.FormContent<Data>;
 
-  type RenderCallback = (event: Event, dialog: HTMLDialogElement) => void;
+  type RenderCallback = (event: Event, dialog: DialogV2) => void;
 
-  type CloseCallback = (event: Event, dialog: DialogV2) => void;
+  type CloseCallback = (event: Event, dialog: DialogV2.Any) => unknown;
 
-  type SubmitCallback<Result, Dialog extends DialogV2 = DialogV2> = (result: Result, dialog: Dialog) => Promise<void>;
+  type SubmitCallback<Result, Dialog extends DialogV2.Any = DialogV2.Any> = (
+    result: Result,
+    dialog: Dialog,
+  ) => Promise<void>;
 
-  interface WaitOptions<Dialog extends DialogV2 = DialogV2> extends DeepInexactPartial<Configuration<Dialog>> {
+  interface WaitOptions<Dialog extends DialogV2.Any = DialogV2.Any> extends DeepInexactPartial<Configuration<Dialog>> {
     /**
      * A synchronous function to invoke whenever the dialog is rendered.
      */
@@ -416,13 +431,13 @@ declare namespace DialogV2 {
   }
 
   /** @internal */
-  interface _PartialButtons<Dialog extends DialogV2 = DialogV2>
+  interface _PartialButtons<Dialog extends DialogV2.Any = DialogV2.Any>
     extends Omit<WaitOptions<Dialog>, "buttons">,
       InexactPartial<Pick<WaitOptions<Dialog>, "buttons">> {}
 
   // Note(LukeAbby): `IntentionalPartial` is used for all the buttons because `mergeObject` is
   // called. For example `{ action: undefined }` would be a logical bug.
-  interface ConfirmConfig<Dialog extends DialogV2 = DialogV2> extends _PartialButtons<Dialog> {
+  interface ConfirmConfig<Dialog extends DialogV2.Any = DialogV2.Any> extends _PartialButtons<Dialog> {
     /** Options to overwrite the default yes button configuration. */
     yes?: IntentionalPartial<Button<Dialog>> | null | undefined;
 
@@ -430,7 +445,7 @@ declare namespace DialogV2 {
     no?: IntentionalPartial<Button<Dialog>> | null | undefined;
   }
 
-  interface PromptConfig<Dialog extends DialogV2 = DialogV2> extends _PartialButtons<Dialog> {
+  interface PromptConfig<Dialog extends DialogV2.Any = DialogV2.Any> extends _PartialButtons<Dialog> {
     /** Options to overwrite the default confirmation button configuration. */
     ok?: IntentionalPartial<Button<Dialog>> | null | undefined;
   }
@@ -438,14 +453,14 @@ declare namespace DialogV2 {
   type FormContent<FormData extends object> = (string | HTMLDivElement) & { " __fvtt_types_form_data": FormData };
 
   /** @typeParam FD - The form data */
-  interface InputConfig<Dialog extends DialogV2 = DialogV2> extends PromptConfig<Dialog> {}
+  interface InputConfig<Dialog extends DialogV2.Any = DialogV2.Any> extends PromptConfig<Dialog> {}
 
   type Type = "prompt" | "confirm" | "wait" | "input";
 
   /**
    * @remarks Query gets passed through a socket which means it can't take a callback function on its buttons
    */
-  type QueryConfig<T extends Type, Dialog extends DialogV2 = DialogV2> =
+  type QueryConfig<T extends Type, Dialog extends DialogV2.Any = DialogV2.Any> =
     | (T extends "wait" ? Internal.QueryWaitOptions<Dialog> : never)
     | (T extends "prompt" ? Internal.QueryPromptConfig<Dialog> : never)
     | (T extends "confirm" ? Internal.QueryConfirmConfig<Dialog> : never)
@@ -542,7 +557,11 @@ declare namespace DialogV2 {
       readonly rejectClose: true;
     }
       ? never
-      : null;
+      : "close" extends keyof Options
+        ? Options["close"] extends (...args: never) => infer Return
+          ? Return | null
+          : null
+        : null;
 
     type ButtonReturnType<Options> =
       GetKey<Options, "buttons", undefined> extends ReadonlyArray<infer B extends Button<never>>
@@ -577,19 +596,19 @@ declare namespace DialogV2 {
       callback?: never;
     }
 
-    interface QueryWaitOptions<Dialog extends DialogV2> extends WaitOptions<Dialog> {
+    interface QueryWaitOptions<Dialog extends DialogV2.Any> extends WaitOptions<Dialog> {
       buttons: NoCallbackButton[];
     }
 
-    interface QueryPromptConfig<Dialog extends DialogV2> extends PromptConfig<Dialog> {
+    interface QueryPromptConfig<Dialog extends DialogV2.Any> extends PromptConfig<Dialog> {
       buttons?: NoCallbackButton[];
     }
 
-    interface QueryConfirmConfig<Dialog extends DialogV2> extends ConfirmConfig<Dialog> {
+    interface QueryConfirmConfig<Dialog extends DialogV2.Any> extends ConfirmConfig<Dialog> {
       buttons?: NoCallbackButton[];
     }
 
-    interface QueryInputConfig<Dialog extends DialogV2> extends InputConfig<Dialog> {
+    interface QueryInputConfig<Dialog extends DialogV2.Any> extends InputConfig<Dialog> {
       buttons?: NoCallbackButton[];
     }
 

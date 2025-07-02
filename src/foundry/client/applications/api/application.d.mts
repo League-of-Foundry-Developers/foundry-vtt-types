@@ -292,6 +292,12 @@ declare namespace ApplicationV2 {
 
     /** Is this render the first one for the application? This property is populated automatically. */
     isFirstRender: boolean;
+
+    /**
+     * A tab to activate. Either the tab's ID for applications with only one tab group, or an object of tab groups to tab IDs.
+     * Re-rendering an Application with this option will not trigger changeTab.
+     */
+    tab: string | Record<string, string>;
   }
 
   interface WindowRenderOptions {

@@ -8,6 +8,8 @@ import type {
   ConcreteKeys,
   RemoveIndexSignatures,
   InexactPartial,
+  Brand,
+  InterfaceToObject,
 } from "#utils";
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
@@ -103,7 +105,8 @@ declare global {
        */
       types: Array<foundry.dice.terms.DiceTerm.AnyConstructor>;
 
-      rollModes: CONFIG.Dice.RollModes;
+      // Note(LukeAbby): `InterfaceToObject` is used to ensure that it's valid when used with `choices`.
+      rollModes: InterfaceToObject<CONFIG.Dice.RollModes>;
 
       /**
        * Configured Roll class definitions
@@ -3514,8 +3517,10 @@ declare global {
     }
 
     namespace Dice {
+      type RollMode = Brand<string, "CONFIG.Dice.RollMode">;
+
       interface RollModes {
-        [rollMode: string]: RollModeConfig;
+        [rollMode: RollMode]: RollModeConfig;
         publicroll: RollModes.PublicRoll;
         gmroll: RollModes.GMRoll;
         blindroll: RollModes.BlindRoll;
@@ -3608,6 +3613,16 @@ declare global {
 
       interface _MovementActionConfig {
         /**
+         * The FontAwesome icon class.
+         */
+        icon: string;
+
+        /**
+         * An image filename. Takes precedence over the icon if both are supplied.
+         */
+        img: string;
+
+        /**
          * The number that is used to sort the movement actions / movement action configs.
          * Determines the order in the Token Config/HUD and of cycling.
          * @defaultValue `0`
@@ -3678,11 +3693,6 @@ declare global {
          * The label of the movement action.
          */
         label: string;
-
-        /**
-         * The icon of the movement action.
-         */
-        icon: string;
       }
     }
 

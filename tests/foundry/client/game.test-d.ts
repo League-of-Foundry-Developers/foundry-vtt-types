@@ -111,3 +111,5 @@ if (game instanceof Game) {
   journalEntryPageModel.base;
   expectTypeOf(journalEntryPageModel.text).toEqualTypeOf<EmptyObject>();
 }
+
+expectTypeOf(game.scenes!.folders).toEqualTypeOf<Collection<Folder.Stored<"Scene">>>();

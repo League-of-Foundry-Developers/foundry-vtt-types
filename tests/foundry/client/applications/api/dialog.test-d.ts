@@ -49,6 +49,23 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<number | null>();
 
+// Testing close handling
+declare const closeCallback: () => string;
+expectTypeOf(
+  await DialogV2.prompt({
+    ok: okButton,
+    rejectClose: false,
+    close: closeCallback,
+  }),
+).toEqualTypeOf<number | string | null>();
+expectTypeOf(
+  await DialogV2.prompt({
+    ok: okButton,
+    rejectClose: true,
+    close: closeCallback,
+  }),
+).toEqualTypeOf<number>();
+
 expectTypeOf(
   await DialogV2.prompt({
     ok: okButton,

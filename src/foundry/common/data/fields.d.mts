@@ -2127,7 +2127,8 @@ declare namespace TypedObjectField {
   type ValidKey<Options extends TypedObjectField.Options<unknown>> = _ValidKey<Options["validateKey"]>;
 
   /** @internal */
-  type _ValidKey<V> = V extends ValidateKey<infer Key> ? Key : never;
+  // Note(LukeAbby): Arguably this should be the intersection of all possibilities, not the union.
+  type _ValidKey<V> = V extends ValidateKey<infer Key> ? Key : string;
 
   /**
    * A helper type for the given options type merged into the default options of the ObjectField class.
