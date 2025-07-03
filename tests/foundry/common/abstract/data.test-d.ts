@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject, InterfaceToObject } from "#utils";
+import type { AnyMutableObject } from "#utils";
 
 import fields = foundry.data.fields;
 import DataModel = foundry.abstract.DataModel;
@@ -126,7 +126,7 @@ class ExampleModel<Parent extends ExampleModel.Parent = ExampleModel.Parent> ext
 
   static override shimData(data: ExampleModel.SourceData, _options?: DataModel.ShimDataOptions) {
     // have to cast the output of DataModel.shimData
-    data = super.shimData(data, _options) as InterfaceToObject<ExampleModel.SourceData>;
+    data = super.shimData(data, _options) as ExampleModel.SourceData;
     Document["_addDataFieldShim"](data, "bar", "foo");
     return data; // as ExampleModel.ShimmedData;
   }
