@@ -1,4 +1,4 @@
-import type { AnyMutableObject, EmptyObject, Identity, InexactPartial, NullishProps } from "#utils";
+import type { AnyMutableObject, Identity, InexactPartial, LazyUnknown, NullishProps } from "#utils";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
 import type { DataModelValidationFailure } from "../data/validation-failure.d.mts";
@@ -18,16 +18,20 @@ export default DataModel;
 
 /**
  * The abstract base class which defines the data schema contained within a Document.
- * @privateRemarks List of methods and types that subclasses may want to override beyond the required {@linkcode DataModel.defineSchema} to get narrower types
- * (check each for notes and caveats):
+ * @remarks List of methods and types that subclasses may want to override beyond the
+ * required {@linkcode DataModel.defineSchema} to get narrower types:
  * - {@linkcode DataModel.schema}
  * - {@linkcode DataModel.cleanData}
+ * - {@linkcode DataModel._initializeSource | DataModel#_initializeSource}
+ * - {@linkcode DataModel.clone | DataModel#clone}
  * - {@linkcode DataModel.validateJoint}
- * - {@linkcode DataModel.updateSource | DataModel#updateSource}
  * - {@linkcode DataModel.fromSource}
  * - {@linkcode DataModel.fromJSON}
  * - {@linkcode DataModel.migrateData}
  * - {@linkcode DataModel.shimData}
+ *
+ * See the `ExampleModel` in `fvtt-types/tests/foundry/common/abstract/data.test-d.ts` for
+ * examples of all of these.
  */
 declare abstract class DataModel<
   Schema extends DataSchema,
@@ -92,15 +96,14 @@ declare abstract class DataModel<
 
   /**
    * Define the data schema for documents of this type.
-   * @remarks To override, copy {@link DataModel#schema}, providing your schema directly instead of the type param
+   * @remarks Overriding notes: Copy {@link DataModel#schema}'s type, providing your schema directly instead of the type param
    */
   static get schema(): SchemaField.Any;
 
   /**
    * Define the data schema for this document instance.
-   * @remarks `EmptyObject` because {@linkcode DataModel.schema} initializes this with no options passed
    */
-  get schema(): SchemaField<Schema, EmptyObject>;
+  get schema(): SchemaField<Schema>;
 
   /**
    * Is the current state of this `DataModel` invalid?
@@ -129,11 +132,12 @@ declare abstract class DataModel<
    * which is the same object as the `data` argument
    * @remarks `options` is unused in `DataModel`
    *
-   * Passing arbitrary non-object values to the `constructor -> #_initializeSource -> .migrateData` chain is not supported
-   * by FVTT-Types at this time. If you need this for your project, come talk to us {@link https://discord.gg/52DNPzqm2Z | on Discord}
+   * Overriding notes: As of v13 this is no longer guaranteed to be passed an object, so `| LazyUnknown` has been
+   * included in the type of `data` at the `DataModel` level. Specific model classes may want to type `data`
+   * without it, if they don't expect to have to migrate non-objects. If shims are being typed
    */
   protected _initializeSource(
-    data: fields.SchemaField.CreateData<Schema> | this,
+    data: fields.SchemaField.CreateData<Schema> | this | LazyUnknown,
     options?: DataModel.InitializeSourceOptions & ExtraConstructorOptions,
   ): fields.SchemaField.SourceData<Schema>;
 
@@ -145,8 +149,8 @@ declare abstract class DataModel<
    * @remarks Passes `source` and `options` on to {@linkcode SchemaField.clean | this.schema.clean}, and since the model's root `SchemaField`
    * is always constructed with no specified options, the default options will prevent `| null | undefined`
    *
-   * Overriding notes: Typing `source` as the {@linkcode SchemaField.UpdateData} and the return as the {@linkcode SchemaField.SourceData} for your
-   * schema should be fine.
+   * Overriding notes: Type `source` as the {@linkcode SchemaField.CreateData} and the return as the {@linkcode SchemaField.SourceData} for your
+   * schema.
    */
   static cleanData(source?: AnyMutableObject, options?: DataField.CleanOptions): AnyMutableObject;
 
@@ -159,7 +163,7 @@ declare abstract class DataModel<
    * Initialize the instance by copying data from the source object to instance attributes.
    * This mirrors the workflow of {@linkcode SchemaField.initialize | SchemaField#initialize} but with some added functionality.
    * @param options - Options provided to the model constructor
-   * @remarks `options` gets passed on to each field in the schema's `#initialize`
+   * @remarks `options` gets passed on to each field in the schema's {@linkcode DataField.initialize | #initialize}
    */
   protected _initialize(options?: DataModel.InitializeOptions & ExtraConstructorOptions): void;
 
@@ -294,9 +298,9 @@ declare abstract class DataModel<
    * by FVTT-Types at this time. If you need this for your project, come talk to us {@link https://discord.gg/52DNPzqm2Z | on Discord}
    *
    * Overriding notes: Typing `source` as `CreateData` and return as `SourceData` should be accurate. See `ExampleModel` and
-   * `ExampleModelParent` in `fvtt-types/tests/foundry/common/abstract/data.test-d.ts`.
+   * `ExampleModelParent` in
    */
-  static migrateData(source: AnyMutableObject): AnyMutableObject;
+  static migrateData(source: unknown): AnyMutableObject;
 
   /**
    * Wrap data migration in a try/catch which attempts it safely
@@ -309,7 +313,7 @@ declare abstract class DataModel<
    * Overriding notes: Generally not worth overriding; Input and return types must be identical as, if {@linkcode migrateData}
    * throws, `source` is just passed through.
    */
-  static migrateDataSafe(source: AnyMutableObject): AnyMutableObject;
+  static migrateDataSafe(source: unknown): unknown;
 
   /**
    * Take data which conforms to the current data schema and add backwards-compatible accessors to it in order to
