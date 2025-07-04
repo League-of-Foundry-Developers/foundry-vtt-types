@@ -23,7 +23,7 @@ AI cannot be provided the source of Foundry VTT Types. This is because Foundry V
 
 ## V13 Installation
 
-Currently v13 is still in beta. There are known bugs, issues in the ergonomics, and major unfinished work in the current implementation. To get a direct line of communication about the current status of development as well as to help us understand what areas need to be prioritized first, join the [League of Extraordinary FoundryVTT Developers Discord](https://discord.gg/73HTMuK7dT) or file an issue.
+Currently v13 is still in beta. There are known bugs, issues in the ergonomics, and unfinished work in the current implementation. To get a direct line of communication about the current status of development as well as to help us understand what areas need to be prioritized first, join the [League of Extraordinary FoundryVTT Developers Discord](https://discord.gg/73HTMuK7dT) or file an issue.
 
 The recommended way to install for v13 is this command:
 
@@ -31,15 +31,15 @@ The recommended way to install for v13 is this command:
 npm add -D fvtt-types@github:League-of-Foundry-Developers/foundry-vtt-types#main
 ```
 
-Alternatively, if you're using yarn you'll need to use the command `yarn add --dev fvtt-types@github:League-of-Foundry-Developers/foundry-vtt-types#main`.
+The command for other package managers is similar, for example with yarn you'll need to use the command `yarn add --dev fvtt-types@github:League-of-Foundry-Developers/foundry-vtt-types#main`.
 
-This will add the current commit on `main` as a dependency. Both npm and yarn's lockfile will store the commit you initially installed this command and so updates to your dependency will not happen automatically or even after a fresh install. To update you will need to be rerun the prior command periodically to update as improvements are added frequently.
+This will add the current commit on `main` as a dependency. Every popular package manager has a lockfile which will store the commit you initially installed this command and so updates to your dependency will not happen automatically or even after a fresh install. To update you will need to be rerun the prior command periodically to update as improvements are added frequently.
 
 ## Installation
 
 You can install historical versions of foundry-vtt-types from the [npm registry](https://npmjs.org/).
 
-In order to install the latest stable version (v9), run
+In order to install the latest stable version, run
 
 ```sh
 npm add --save-dev fvtt-types@npm:@league-of-foundry-developers/foundry-vtt-types
@@ -125,34 +125,6 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for more details on how to contri
 
 If you have any specific questions, feel free to contact us in the
 [League of Extraordinary Foundry Developers Discord](https://discord.gg/52DNPzqm2Z).
-
-## Type-Checking, Linting, Testing
-
-When contributing, make sure that the type checks pass, the linter is green and the tests are green. We _do_ have
-checks in the CI but running this locally also helps you while developing and saves you time as you don't have to wait
-for the CI.
-
-You can run type checking and linting with the following command:
-
-```shell
-npm run lint
-```
-
-You can run the tests with
-
-```shell
-npm run test
-```
-
-## Creating a release
-
-To create a release, you have to create a new release commit, tag it and create a GitHub release from that. The CI will
-handle the rest.
-
-```shell
-npm version <release-type>
-git push --follow-tags
-```
 
 ## License
 
