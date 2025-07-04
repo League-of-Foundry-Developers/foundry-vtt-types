@@ -115,15 +115,15 @@ class BoilerplateActorBase<
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema: DataSchema = {};
 
-    schema.health = new fields.SchemaField({
+    schema["health"] = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: 10, min: 0 }),
       max: new fields.NumberField({ ...requiredInteger, initial: 10 }),
     });
-    schema.power = new fields.SchemaField({
+    schema["power"] = new fields.SchemaField({
       value: new fields.NumberField({ ...requiredInteger, initial: 5, min: 0 }),
       max: new fields.NumberField({ ...requiredInteger, initial: 5 }),
     });
-    schema.biography = new fields.HTMLField();
+    schema["biography"] = new fields.HTMLField();
 
     return schema as BoilerplateActorBase.Schema;
   }
@@ -191,14 +191,14 @@ class BoilerplateCharacter extends BoilerplateActorBase<
     const requiredInteger = { required: true, nullable: false, integer: true };
     const schema = super.defineSchema();
 
-    schema.attributes = new fields.SchemaField({
+    schema["attributes"] = new fields.SchemaField({
       level: new fields.SchemaField({
         value: new fields.NumberField({ ...requiredInteger, initial: 1 }),
       }),
     });
 
     // Iterate over ability names and create a new SchemaField for each.
-    schema.abilities = new fields.SchemaField(
+    schema["abilities"] = new fields.SchemaField(
       Object.keys(CONFIG.BOILERPLATE.abilities).reduce((obj: DataSchema, ability) => {
         obj[ability] = new fields.SchemaField({
           value: new fields.NumberField({ ...requiredInteger, initial: 10, min: 0 }),
@@ -235,7 +235,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
       data[k] = foundry.utils.deepClone(v);
     }
 
-    data.lvl = this.attributes.level.value;
+    data["lvl"] = this.attributes.level.value;
 
     return data;
   }

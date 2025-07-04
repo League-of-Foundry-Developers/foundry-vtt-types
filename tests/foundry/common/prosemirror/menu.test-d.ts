@@ -79,7 +79,7 @@ const toggleBlockWrapCommand = (node: NodeType, attrs?: Attrs) => {
   const t = new Transaction(pmNode);
   return (state: EditorState, dispatch: ProseMirrorKeyMaps.DispatchFunction, view: EditorView) => {
     dispatch(t);
-    return state.selection && view.dragging && node.isInline && attrs?.foo;
+    return state.selection && view.dragging && node.isInline && attrs?.["foo"];
   };
 };
 

@@ -116,8 +116,8 @@ declare const someApp: Application.Any;
 declare const someAppV2: ApplicationV2.Any;
 
 expectTypeOf(item.apps).toEqualTypeOf<Record<string, Application.Any | ApplicationV2.Any>>();
-item.apps.foo = someApp;
-item.apps.bar = someAppV2;
+item.apps["foo"] = someApp;
+item.apps["bar"] = someAppV2;
 // @ts-expect-error apps is readonly
 item.apps = { foo: someApp, bar: someAppV2 };
 

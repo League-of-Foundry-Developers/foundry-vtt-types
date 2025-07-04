@@ -7,4 +7,4 @@ interface Schema extends fields.DataSchema {
 
 class RegionBehaviorSubType extends RegionBehaviorType<Schema> {}
 
-CONFIG.RegionBehavior.dataModels.subType = RegionBehaviorSubType;
+CONFIG.RegionBehavior.dataModels["subType"] = RegionBehaviorSubType;

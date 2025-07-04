@@ -16,7 +16,7 @@ class DrawSteelTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
    */
   static applyDSMovementConfig() {
     // Adjusting `Blink (Teleport)` to just be Teleport and maintain its use elsewhere
-    const teleport = { ...CONFIG.Token.movement.actions.blink, label: "TOKEN.MOVEMENT.ACTIONS.teleport.label" };
+    const teleport = { ...CONFIG.Token.movement.actions["blink"], label: "TOKEN.MOVEMENT.ACTIONS.teleport.label" };
     foundry.utils.mergeObject(
       CONFIG.Token.movement.actions,
       {

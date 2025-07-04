@@ -13,7 +13,9 @@ expectTypeOf(adventure).toEqualTypeOf<Adventure.Implementation>();
 
 expectTypeOf(adventure.import()).toEqualTypeOf<Promise<Adventure.ImportResult>>();
 expectTypeOf(adventure.prepareImport()).toEqualTypeOf<Promise<Adventure.ImportData>>();
-expectTypeOf(adventure.importContent()).toEqualTypeOf<Promise<Adventure.ImportResult>>();
+expectTypeOf(adventure.importContent({ toCreate: {}, toUpdate: {}, documentCount: 10 })).toEqualTypeOf<
+  Promise<Adventure.ImportResult>
+>();
 
 expectTypeOf(adventure.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
 

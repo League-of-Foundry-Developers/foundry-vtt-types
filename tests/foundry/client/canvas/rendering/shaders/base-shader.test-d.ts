@@ -39,8 +39,8 @@ expectTypeOf(TestShader.GLSL1_COMPATIBILITY_FRAGMENT).toBeString();
 
 // AbstractBaseShader tests
 
-expectTypeOf(TestShader.defaultUniforms.foo).toEqualTypeOf<AbstractBaseShader.UniformValue | undefined>();
-expectTypeOf(TestShader.defaultUniforms.bar).toEqualTypeOf<AbstractBaseShader.UniformValue | undefined>();
+expectTypeOf(TestShader.defaultUniforms["foo"]).toEqualTypeOf<AbstractBaseShader.UniformValue | undefined>();
+expectTypeOf(TestShader.defaultUniforms["bar"]).toEqualTypeOf<AbstractBaseShader.UniformValue | undefined>();
 
 const testShaderInstance = TestShader.create({
   alpha: 1.0,
@@ -50,7 +50,7 @@ const testShaderInstance = TestShader.create({
   time: 0,
   intensity: 5,
 });
-testShaderInstance.uniforms.darkness = false;
+testShaderInstance.uniforms["darkness"] = false;
 
 // @ts-expect-error - string is not a valid UniformValue
 TestShader.create({ foo: "bar" });

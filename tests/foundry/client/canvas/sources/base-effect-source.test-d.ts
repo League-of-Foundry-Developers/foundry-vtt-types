@@ -32,7 +32,7 @@ class MyEffectSource<
   }
 
   protected override _configure(changes: AnyObject) {
-    if (typeof changes.x === "number" && changes.x > 500) {
+    if (typeof changes["x"] === "number" && changes["x"] > 500) {
       console.warn("too far");
     }
   }
