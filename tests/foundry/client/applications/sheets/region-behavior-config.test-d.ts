@@ -6,9 +6,9 @@ const regionSheet = new foundry.applications.sheets.RegionBehaviorConfig({ docum
 
 expectTypeOf(regionSheet._getButtons()).toEqualTypeOf<FormFooterButton[]>();
 
-expectTypeOf(foundry.applications.sheets.RegionBehaviorConfig.DEFAULT_OPTIONS).toEqualTypeOf<
-  foundry.applications.api.DocumentSheetV2.Configuration<RegionBehavior.Implementation>
->();
+expectTypeOf(
+  foundry.applications.sheets.RegionBehaviorConfig.DEFAULT_OPTIONS,
+).toEqualTypeOf<foundry.applications.api.DocumentSheetV2.DefaultOptions>();
 expectTypeOf(foundry.applications.sheets.RegionBehaviorConfig.PARTS).toEqualTypeOf<
   Record<string, foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart>
 >();

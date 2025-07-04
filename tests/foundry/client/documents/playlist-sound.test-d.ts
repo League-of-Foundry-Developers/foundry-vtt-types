@@ -8,11 +8,11 @@ new PlaylistSound.implementation({});
 
 const sound = new PlaylistSound.implementation({ name: "my sound" });
 
-expectTypeOf(sound.sound).toEqualTypeOf<foundry.audio.Sound | null>();
+expectTypeOf(sound.sound).toEqualTypeOf<foundry.audio.Sound | null | undefined>();
 expectTypeOf(sound.debounceVolume).toEqualTypeOf<(volume: number) => void>();
 expectTypeOf(sound.fadeDuration).toEqualTypeOf<number>();
 expectTypeOf(sound.context).toEqualTypeOf<AudioContext | undefined>();
-expectTypeOf(sound.sync()).toEqualTypeOf<void | Promise<void> | Promise<foundry.audio.Sound>>();
+expectTypeOf(sound.sync()).toEqualTypeOf<void>();
 expectTypeOf(sound.load()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(sound.toAnchor()).toEqualTypeOf<HTMLAnchorElement>();
 

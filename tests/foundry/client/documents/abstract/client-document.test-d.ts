@@ -318,9 +318,7 @@ expectTypeOf(item.importFromJSON(`{"foo":true}`)).toEqualTypeOf<Promise<typeof i
 expectTypeOf(item.importFromJSONDialog()).toEqualTypeOf<Promise<void>>();
 
 // TODO: more thorough tests after `ToCompendiumReturnType` is rewritten or the v13 pass, whichever comes first
-expectTypeOf(item.toCompendium()).toEqualTypeOf<
-  ClientDocument.ToCompendiumReturnType<foundry.documents.BaseItem, undefined>
->();
+expectTypeOf(item.toCompendium()).toEqualTypeOf<ClientDocument.ToCompendiumReturnType<"Item", undefined>>();
 
 declare const enrichmentAnchorOptions: TextEditor.EnrichmentAnchorOptions;
 expectTypeOf(item.toAnchor()).toEqualTypeOf<HTMLAnchorElement>();

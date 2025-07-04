@@ -6,4 +6,4 @@ import CombatTracker = foundry.applications.sidebar.tabs.CombatTracker;
 const combatEncounters = new CombatEncounters([]);
 expectTypeOf(combatEncounters.get("", { strict: true })).toEqualTypeOf<Combat.Stored>();
 expectTypeOf(combatEncounters.toJSON()).toEqualTypeOf<Combat.Stored["_source"][]>();
-expectTypeOf(combatEncounters.directory).toEqualTypeOf<CombatTracker>();
+expectTypeOf(combatEncounters.directory).toEqualTypeOf<CombatTracker.Any | undefined>();

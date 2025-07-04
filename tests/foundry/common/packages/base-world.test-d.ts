@@ -4,7 +4,7 @@ import type { AnyMutableObject } from "fvtt-types/utils";
 // @ts-expect-error - Missing required properties
 new foundry.packages.BaseWorld({});
 
-const baseWorld = new foundry.packages.BaseWorld({ id: "foo", title: "foo", system: {}, coreVersion: "13.345" });
+const baseWorld = new foundry.packages.BaseWorld({ id: "foo", title: "foo", system: "", coreVersion: "13.345" });
 
 expectTypeOf(foundry.packages.BaseWorld.type).toEqualTypeOf<"world">();
 expectTypeOf(foundry.packages.BaseWorld.icon).toEqualTypeOf<string>();

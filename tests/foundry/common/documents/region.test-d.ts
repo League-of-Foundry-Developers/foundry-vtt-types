@@ -4,7 +4,6 @@ import type EmbeddedCollection from "../../../../src/foundry/common/abstract/emb
 import BaseRegion = foundry.documents.BaseRegion;
 import Document = foundry.abstract.Document;
 import type { BaseShapeData } from "../../../../src/foundry/common/data/data.d.mts";
-import type { Region } from "#client/canvas/placeables/_module.d.mts";
 
 class TestRegion extends BaseRegion {}
 
@@ -100,8 +99,7 @@ expectTypeOf(myRegion.elevation.bottom).toEqualTypeOf<number | null>();
 expectTypeOf(myRegion.elevation.top).toEqualTypeOf<number | null>();
 
 expectTypeOf(myRegion.behaviors).toEqualTypeOf<
-  // TODO: why is this is resolving as EmbeddedCollection<any, ...
-  EmbeddedCollection<typeof foundry.documents.BaseRegionBehavior, Region.Implementation>
+  EmbeddedCollection<RegionBehavior.Implementation, RegionDocument.Implementation>
 >();
 
 expectTypeOf(myRegion.visibility).toEqualTypeOf<CONST.REGION_VISIBILITY | null>();

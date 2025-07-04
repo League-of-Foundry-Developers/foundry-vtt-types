@@ -35,7 +35,7 @@ expectTypeOf(combat.rollAll()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.rollNPC()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.setInitiative("", 1)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(combat.setupTurns()).toEqualTypeOf<Combat.Implementation["turns"]>();
-expectTypeOf(combat.debounceSetup()).toEqualTypeOf<() => void>();
+expectTypeOf(combat.debounceSetup()).toEqualTypeOf<void>();
 expectTypeOf(combat.updateCombatantActors()).toEqualTypeOf<void>();
 
 // @LukeAbby The actual implementation here is nonsense for the available document types,

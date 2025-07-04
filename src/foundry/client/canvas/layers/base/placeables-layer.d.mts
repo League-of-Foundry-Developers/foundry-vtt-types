@@ -308,19 +308,8 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
     options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
   ): Promise<Document.ImplementationFor<DocumentName>[]>;
 
-  /**
-   * Get the data of the copied object pasted at the position given by the offset.
-   * Called by {@link PlaceablesLayer.pasteObjects | `PlaceablesLayer#pasteObjects`} for each copied object.
-   * @param copy    - The copied object that is pasted
-   * @param offset  - The offset relative from the current position to the destination
-   * @param options - Options of {@link PlaceablesLayer.pasteObjects | `PlaceablesLayer#pasteObjects`}
-   * @returns The update data
-   */
-  protected _pasteObject(
-    copy: Document.ObjectFor<DocumentName>,
-    offset: Canvas.Point,
-    options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
-  ): Omit<Document.ImplementationFor<DocumentName>["_source"], "_id">;
+  /** @deprecated Foundry deleted this method in v13 (this warning will be removed in v14) */
+  protected _pasteObject(copy: never, offset: never, options?: never): never;
 
   /**
    * Select all PlaceableObject instances which fall within a coordinate rectangle.

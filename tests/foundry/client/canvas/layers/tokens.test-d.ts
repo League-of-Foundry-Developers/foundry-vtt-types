@@ -31,12 +31,6 @@ expectTypeOf(layer["_activate"]()).toBeVoid();
 expectTypeOf(layer["_deactivate"]()).toBeVoid();
 
 declare const someToken: Token.Implementation;
-declare const somePoint: PIXI.Point;
-expectTypeOf(layer["_pasteObject"](someToken, somePoint)).toEqualTypeOf<Token.Source>();
-expectTypeOf(layer["_pasteObject"](someToken, somePoint, { hidden: true, snap: false })).toEqualTypeOf<Token.Source>();
-expectTypeOf(
-  layer["_pasteObject"](someToken, somePoint, { hidden: undefined, snap: null }),
-).toEqualTypeOf<Token.Source>();
 
 expectTypeOf(layer["_getMovableObjects"]()).toEqualTypeOf<Token.Implementation[]>();
 expectTypeOf(layer["_getMovableObjects"](null, null)).toEqualTypeOf<Token.Implementation[]>();
@@ -67,7 +61,11 @@ expectTypeOf(
     x: 20,
     y: 30000,
   }),
-).toEqualTypeOf<Promise<number | false | TokenDocument.Implementation>>();
+).toEqualTypeOf<
+  Promise<
+    Readonly<foundry.applications.ui.Notifications.Notification<"warning">> | false | TokenDocument.Implementation
+  >
+>();
 expectTypeOf(layer["_onClickLeft"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token.Implementation[] | void>>();
 

@@ -78,12 +78,6 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
 
   protected override _deactivate(): void;
 
-  protected override _pasteObject(
-    copy: Token.Implementation,
-    offset: Canvas.Point,
-    options?: PlaceablesLayer.PasteOptions, // not:null (destructured)
-  ): Omit<TokenDocument.Source, "_id">;
-
   /** @remarks Returns `[]` if the ruler is currently measuring */
   protected override _getMovableObjects(ids?: string[] | null, includeLocked?: boolean | null): Token.Implementation[];
 

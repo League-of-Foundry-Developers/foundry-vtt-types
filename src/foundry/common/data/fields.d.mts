@@ -1305,10 +1305,10 @@ declare namespace SchemaField {
 declare class BooleanField<
   const Options extends BooleanField.Options = BooleanField.DefaultOptions,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  const AssignmentType = BooleanField.AssignmentType<SimpleMerge<Options, BooleanField.DefaultOptions>>,
-  const InitializedType = BooleanField.InitializedType<SimpleMerge<Options, BooleanField.DefaultOptions>>,
+  const AssignmentType = BooleanField.AssignmentType<SimpleMerge<BooleanField.DefaultOptions, Options>>,
+  const InitializedType = BooleanField.InitializedType<SimpleMerge<BooleanField.DefaultOptions, Options>>,
   const PersistedType extends boolean | null | undefined = BooleanField.InitializedType<
-    SimpleMerge<Options, BooleanField.DefaultOptions>
+    SimpleMerge<BooleanField.DefaultOptions, Options>
   >,
 > extends DataField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `true` */

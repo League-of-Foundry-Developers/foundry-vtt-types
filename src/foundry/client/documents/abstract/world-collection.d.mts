@@ -32,15 +32,7 @@ declare abstract class WorldCollection<
    * In the case where `Lowercase<Name>` is not a property of {@linkcode ui}, this actually always returns `undefined`,
    * but {@linkcode RollTables} overrides this, so we need to allow a wider return type.
    */
-  get directory(): Lowercase<Name> extends keyof typeof ui
-    ? (typeof ui)[Lowercase<Name>]
-    :
-        | (DocumentName extends foundry.CONST.FOLDER_DOCUMENT_TYPES
-            ? DocumentDirectory<Document.ImplementationClassFor<DocumentName>>
-            : never)
-        | AbstractSidebarTab.Any
-        | undefined
-        | null;
+  get directory(): WorldCollection.Directory<DocumentName, Name>;
 
   /**
    * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
@@ -138,6 +130,17 @@ declare namespace WorldCollection {
   type Folders<DocumentName extends Document.WorldType> = Collection<
     DocumentName extends Folder.DocumentType ? Folder.Stored<DocumentName> : never
   >;
+
+  type Directory<DocumentName extends Document.WorldType, Name extends string> =
+    Lowercase<Name> extends keyof typeof ui
+      ? (typeof ui)[Lowercase<Name>]
+      :
+          | (DocumentName extends foundry.CONST.FOLDER_DOCUMENT_TYPES
+              ? DocumentDirectory<Document.ImplementationClassFor<DocumentName>>
+              : never)
+          | AbstractSidebarTab.Any
+          | undefined
+          | null;
 
   interface FromCompendiumOptions {
     /**

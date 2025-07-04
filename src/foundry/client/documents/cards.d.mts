@@ -686,7 +686,13 @@ declare namespace Cards {
    * which wouldn't make sense to change, then passes that to {@link Cards.pass | `Cards#pass`}
    * @privateRemarks `action` omitted as it's already provided.
    */
-  interface DrawOptions extends _HowOption, Omit<PassOptions, "action"> {}
+  interface DrawOptions extends _HowOption, Omit<PassOptions, "action"> {
+    /**
+     * @deprecated While passing `action` is technically valid, it's unclear why this would ever be done.
+     * If you need to do this call `this.parent.pass` directly.
+     */
+    action?: never;
+  }
 
   interface ShuffleOptions extends _UpdateDataOption, _ChatNotificationOption {}
 

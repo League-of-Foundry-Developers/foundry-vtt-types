@@ -90,13 +90,6 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
 
   override releaseAll(options?: PlaceableObject.ReleaseOptions): number;
 
-  /** @remarks `options` is unused */
-  protected override _pasteObject(
-    copy: Wall.Implementation,
-    offset: Canvas.Point,
-    options?: PlaceablesLayer.PasteOptions | null,
-  ): Omit<WallDocument.Source, "_id">;
-
   /**
    * Pan the canvas view when the cursor position gets close to the edge of the frame
    * @param event - The originating mouse movement event

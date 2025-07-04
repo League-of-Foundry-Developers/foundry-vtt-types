@@ -1158,12 +1158,14 @@ declare namespace Document {
       | (SubType extends ModuleSubType | "base" ? UnknownSystem : never);
 
     // TODO(LukeAbby): Improve the type display with a helper here.
+    // TODO(LukeAbby): Add `StoredSource` for a better type display there.
     type Stored<D extends Document.Any> = Override<
       D,
       {
         id: string;
         _id: string;
         _source: Override<D["_source"], { _id: string }>;
+        toJSON(): Override<D["_source"], { _id: string }>;
       }
     >;
 
@@ -1419,7 +1421,9 @@ declare namespace Document {
   type MetadataFor<Name extends Document.Type> = ConfiguredMetadata[Name];
 
   type CollectionRecord<Schema extends DataSchema> = {
-    [Key in keyof Schema]: Schema[Key] extends EmbeddedCollectionField.Any ? Schema[Key] : never;
+    [Key in keyof Schema]: Schema[Key] extends EmbeddedCollectionField.Any
+      ? NonNullable<Schema[Key][" __fvtt_types_internal_initialized_data"]>
+      : never;
   };
 
   type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;

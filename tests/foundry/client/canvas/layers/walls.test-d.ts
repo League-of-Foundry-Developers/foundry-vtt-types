@@ -32,14 +32,6 @@ expectTypeOf(layer["_deactivate"]()).toBeVoid();
 
 expectTypeOf(layer.releaseAll()).toBeNumber();
 
-expectTypeOf(layer["_pasteObject"](someWall, somePoint)).toEqualTypeOf<Omit<WallDocument.Source, "_id">>();
-expectTypeOf(layer["_pasteObject"](someWall, somePoint, { hidden: true, snap: false })).toEqualTypeOf<
-  Omit<WallDocument.Source, "_id">
->();
-expectTypeOf(layer["_pasteObject"](someWall, somePoint, { hidden: null, snap: undefined })).toEqualTypeOf<
-  Omit<WallDocument.Source, "_id">
->();
-
 declare const _x: Document.ConfiguredSourceForName<"Wall">;
 
 expectTypeOf(layer["_getWallEndpointCoordinates"](somePoint)).toEqualTypeOf<Canvas.PointTuple>();

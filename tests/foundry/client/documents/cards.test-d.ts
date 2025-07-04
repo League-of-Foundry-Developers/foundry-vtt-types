@@ -1,6 +1,5 @@
 import { expectTypeOf } from "vitest";
 
-import FilePathField = foundry.data.fields.FilePathField;
 import FormApplication = foundry.appv1.api.FormApplication;
 
 // @ts-expect-error - Cards requires name.
@@ -15,7 +14,7 @@ new Cards.implementation({ name: "Just a deck of cards", type: "german" });
 const cards = new Cards.implementation({ name: "Just a deck of cards", type: "deck" });
 expectTypeOf(cards).toEqualTypeOf<Cards.Implementation>();
 
-expectTypeOf(cards.thumbnail).toEqualTypeOf<FilePathField.InitializedType<any>>();
+expectTypeOf(cards.thumbnail).toEqualTypeOf<string | null>();
 expectTypeOf(cards.availableCards).toEqualTypeOf<Card.Implementation[]>();
 expectTypeOf(cards.drawnCards).toEqualTypeOf<Card.Implementation[]>();
 
@@ -51,7 +50,7 @@ cards.pass(cards);
 expectTypeOf(cards.pass(cards, ["foo"])).toEqualTypeOf<Promise<Card.Implementation[]>>();
 expectTypeOf(
   cards.pass(cards, ["foo"], {
-    action: "some custom action",
+    action: "discard",
     updateData: { value: 3 },
     chatNotification: true,
   }),
@@ -69,14 +68,12 @@ expectTypeOf(cards.draw(cards, 2)).toEqualTypeOf<Promise<Card.Implementation[]>>
 expectTypeOf(
   cards.draw(cards, 2, {
     how: foundry.CONST.CARD_DRAW_MODES.RANDOM,
-    action: "some custom action",
     updateData: { value: 3 },
   }),
 ).toEqualTypeOf<Promise<Card.Implementation[]>>();
 expectTypeOf(
   cards.draw(cards, undefined, {
     how: foundry.CONST.CARD_DRAW_MODES.RANDOM,
-    action: "some custom action",
     updateData: { value: 3 },
   }),
 ).toEqualTypeOf<Promise<Card.Implementation[]>>();
@@ -104,10 +101,10 @@ cards.shuffle({ unknownProp: 0 });
 // @ts-expect-error - "unknownProp" is not a valid option
 cards.shuffle({ updateData: { unknownProp: 3 } });
 
-// reset
-expectTypeOf(cards.reset()).toEqualTypeOf<Promise<Cards.Implementation>>();
+// recall
+expectTypeOf(cards.recall()).toEqualTypeOf<Promise<Cards.Implementation>>();
 expectTypeOf(
-  cards.reset({
+  cards.recall({
     updateData: {
       value: 1,
     },

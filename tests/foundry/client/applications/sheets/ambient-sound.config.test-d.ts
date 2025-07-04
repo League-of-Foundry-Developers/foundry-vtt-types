@@ -2,13 +2,12 @@ import { expectTypeOf } from "vitest";
 
 import AmbientSoundConfig = foundry.applications.sheets.AmbientSoundConfig;
 import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
-import DocumentSheet = foundry.appv1.api.DocumentSheet;
 
 declare const doc: AmbientSoundDocument.Implementation;
 const soundSheet = new AmbientSoundConfig({ document: doc });
 
 expectTypeOf(soundSheet.document).toEqualTypeOf<AmbientSoundDocument.Implementation>();
-expectTypeOf(soundSheet.options).toEqualTypeOf<DocumentSheet.Options<AmbientSoundDocument.Implementation>>();
+expectTypeOf(soundSheet.options).toEqualTypeOf<Readonly<AmbientSoundConfig.Configuration>>();
 expectTypeOf(soundSheet.title).toEqualTypeOf<string>();
 
 declare const formConfig: foundry.applications.api.ApplicationV2.FormConfiguration;

@@ -708,7 +708,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   /**
    * Provide a thumbnail image path used to represent this document.
    */
-  get thumbnail(): string;
+  get thumbnail(): string | null;
 
   /**
    * A convenience getter to an object that organizes all embedded Item instances by subtype. The object is cached and
