@@ -11,7 +11,7 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMacro.SubType> extends Document<
+declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMacro.SubType> extends Document<
   "Macro",
   BaseMacro.Schema,
   any
@@ -100,6 +100,8 @@ declare abstract class BaseMacro<out _SubType extends BaseMacro.SubType = BaseMa
    * as there is no data that can safely construct every possible document. Finally keeping definitions
    * separate like this helps against circularities.
    */
+
+  type: SubType;
 
   /* Document overrides */
 

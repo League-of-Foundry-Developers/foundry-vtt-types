@@ -110,6 +110,8 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
    * separate like this helps against circularities.
    */
 
+  type: SubType;
+
   /* Document overrides */
 
   // Same as Document for now

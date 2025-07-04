@@ -11,7 +11,7 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = BaseFolder.SubType> extends Document<
+declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseFolder.SubType> extends Document<
   "Folder",
   BaseFolder.Schema,
   any
@@ -75,6 +75,8 @@ declare abstract class BaseFolder<out _SubType extends BaseFolder.SubType = Base
    * as there is no data that can safely construct every possible document. Finally keeping definitions
    * separate like this helps against circularities.
    */
+
+  type: SubType;
 
   /* Document overrides */
 

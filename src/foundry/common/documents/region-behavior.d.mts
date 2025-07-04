@@ -73,6 +73,8 @@ declare abstract class BaseRegionBehavior<
    * separate like this helps against circularities.
    */
 
+  type: SubType;
+
   /* Document overrides */
 
   // Same as Document for now

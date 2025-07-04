@@ -12,7 +12,7 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
 declare abstract class BaseTableResult<
-  out _SubType extends BaseTableResult.SubType = BaseTableResult.SubType,
+  out SubType extends BaseTableResult.SubType = BaseTableResult.SubType,
 > extends Document<"TableResult", BaseTableResult.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the `BaseTableResult`
@@ -86,6 +86,8 @@ declare abstract class BaseTableResult<
    * as there is no data that can safely construct every possible document. Finally keeping definitions
    * separate like this helps against circularities.
    */
+
+  type: SubType;
 
   /* Document overrides */
 

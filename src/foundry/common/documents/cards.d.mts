@@ -86,6 +86,8 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    * separate like this helps against circularities.
    */
 
+  type: SubType;
+
   /* Document overrides */
 
   // Same as Document for now

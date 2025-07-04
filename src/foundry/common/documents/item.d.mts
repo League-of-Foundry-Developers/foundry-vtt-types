@@ -93,6 +93,8 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    * separate like this helps against circularities.
    */
 
+  type: SubType;
+
   /* Document overrides */
 
   // Same as Document for now

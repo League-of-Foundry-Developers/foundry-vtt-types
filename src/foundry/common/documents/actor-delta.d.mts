@@ -112,6 +112,12 @@ declare abstract class BaseActorDelta<
    * separate like this helps against circularities.
    */
 
+  // This is technically a property in this class but in the interest of avoiding an error it's been
+  // made a getter/setter pair.
+  get type(): SubType;
+
+  set type(type);
+
   /* Document overrides */
 
   // Same as Document for now

@@ -549,9 +549,9 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   protected override _initialize(options?: ActorDelta.InitializeOptions): void;
 
   /** Pass-through the type from the synthetic Actor, if it exists. */
-  get type(): string;
+  get type(): SubType;
 
-  set type(type: string);
+  set type(type);
 
   protected _type: string;
 

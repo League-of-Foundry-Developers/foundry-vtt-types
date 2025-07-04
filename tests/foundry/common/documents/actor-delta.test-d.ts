@@ -94,7 +94,7 @@ expectTypeOf(myDelta).toEqualTypeOf<BaseActorDelta>();
 
 expectTypeOf(myDelta._id).toEqualTypeOf<string | null>();
 expectTypeOf(myDelta.name).toEqualTypeOf<string | null>();
-expectTypeOf(myDelta.type).toEqualTypeOf<string | null>();
+expectTypeOf(myDelta.type).toEqualTypeOf<ActorDelta.SubType>();
 expectTypeOf(myDelta.img).toEqualTypeOf<string | null>();
 // overridden in template, ActorDelta's `system` field is just an ObjectField
 expectTypeOf(myDelta.system).toEqualTypeOf<BaseActorDelta.SystemOfType<BaseActorDelta.SubType>>();
@@ -102,7 +102,7 @@ expectTypeOf(myDelta.items).toEqualTypeOf<EmbeddedCollectionDelta<Item.Implement
 expectTypeOf(myDelta.effects).toEqualTypeOf<
   EmbeddedCollectionDelta<ActiveEffect.Implementation, ActorDelta.Implementation>
 >();
-expectTypeOf(myDelta.ownership).toEqualTypeOf<Record<string, CONST.DOCUMENT_OWNERSHIP_LEVELS> | null | undefined>();
+expectTypeOf(myDelta.ownership).toEqualTypeOf<Record<string, CONST.DOCUMENT_OWNERSHIP_LEVELS> | null>();
 expectTypeOf(myDelta.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();
 
 // non-schema:

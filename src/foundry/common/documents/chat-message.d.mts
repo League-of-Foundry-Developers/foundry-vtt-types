@@ -84,6 +84,8 @@ declare abstract class BaseChatMessage<
    * separate like this helps against circularities.
    */
 
+  type: SubType;
+
   /* Document overrides */
 
   override readonly parentCollection: ChatMessage.ParentCollectionName | null;
