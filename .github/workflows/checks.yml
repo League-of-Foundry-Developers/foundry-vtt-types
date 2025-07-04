@@ -201,7 +201,7 @@ jobs:
       - run: npm ci --cache .npm --prefer-offline
       - name: Set version
         run: |-
-          echo "VERSION=$(npm pkg get version | tr -d '"')-beta.$(date +%Y%m%d.%H%M%S)" >>"$GITHUB_ENV"
+          echo "VERSION=$(npm pkg get version | tr -d '"')-beta.$(date +%Y%m%d%H%M%S)" >>"$GITHUB_ENV"
       - name: Publish @league-of-foundry-developers/foundry-vtt-types
         run: |-
           npm version --git-tag-version false "$VERSION"
