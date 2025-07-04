@@ -232,8 +232,16 @@ jobs:
             ${{ runner.OS }}-
       - run: npm ci --cache .npm --prefer-offline
       - name: Set version
-        run: npm version --git-tag-version false "$(npm pkg get version | tr -d '"')-beta.$(date +%Y%m%d.%H%M%S)"
-      - name: Publish
-        run: npm publish --ignore-scripts
+        run: |-
+          echo "VERSION=$(npm pkg get version | tr -d '"')-beta.$(date +%Y%m%d.%H%M%S)" >>"$GITHUB_ENV"
+      - name: Publish @league-of-foundry-developers/foundry-vtt-types
+        run: |-
+          npm version --git-tag-version false "$VERSION"
+          npm publish --ignore-scripts
+      - name: Publish fvtt-types
+        run: |-
+          jq '.name = "fvtt-types"' package.json > temp.json && mv temp.json package.json
+          npm version --git-tag-version false "$VERSION"
+          npm publish --ignore-scripts
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.FVTT_NPM_TOKEN }}
