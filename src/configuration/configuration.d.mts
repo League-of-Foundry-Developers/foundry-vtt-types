@@ -314,9 +314,9 @@ export interface SettingConfig {
       choices: InterfaceToObject<typeof CONFIG.Dice.rollModes>;
     },
     // Note(LukeAbby): This override is necessary because the `initial` wasn't removing `null`.
-    (string & keyof typeof CONFIG.Dice.rollModes) | null | undefined,
-    string & keyof typeof CONFIG.Dice.rollModes,
-    string & keyof typeof CONFIG.Dice.rollModes
+    CONFIG.Dice.RollMode | null | undefined,
+    CONFIG.Dice.RollMode,
+    CONFIG.Dice.RollMode
   >;
   "core.rtcClientSettings": typeof AVSettings.schemaFields.client;
   "core.rtcWorldSettings": typeof AVSettings.schemaFields.world;

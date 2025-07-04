@@ -105,4 +105,4 @@ expectTypeOf(clientSettings.get("core", "compendiumConfiguration")).toEqualTypeO
   Partial<Record<string, foundry.documents.collections.CompendiumCollection.Configuration>>
 >();
 
-expectTypeOf(clientSettings.get("core", "rollMode")).toEqualTypeOf<foundry.dice.Roll.ConfiguredRollModes | null>();
+expectTypeOf(clientSettings.get("core", "rollMode")).toEqualTypeOf<CONFIG.Dice.RollMode | null>();
