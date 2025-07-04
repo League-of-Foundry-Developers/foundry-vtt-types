@@ -8,9 +8,10 @@ import Document = foundry.abstract.Document;
 class TestBaseToken extends foundry.documents.BaseToken {}
 
 // Token has no hard required fields for construction
-let myToken = new TestBaseToken();
-myToken = new TestBaseToken({});
-myToken = new TestBaseToken({
+new TestBaseToken();
+new TestBaseToken({});
+
+const myToken = new TestBaseToken({
   _id: "XXXXXSomeIDXXXXX",
   name: "Foo the Barbazian",
   displayName: CONST.TOKEN_DISPLAY_MODES.OWNER,
@@ -156,7 +157,7 @@ expectTypeOf(myToken.sight.enabled).toBeBoolean();
 expectTypeOf(myToken.sight.range).toEqualTypeOf<number | null>();
 expectTypeOf(myToken.sight.angle).toBeNumber();
 expectTypeOf(myToken.sight.visionMode).toBeString();
-expectTypeOf(myToken.sight.color).toEqualTypeOf<Color | null | undefined>;
+expectTypeOf(myToken.sight.color).toEqualTypeOf<Color | null>;
 expectTypeOf(myToken.sight.attenuation).toBeNumber();
 expectTypeOf(myToken.sight.brightness).toBeNumber();
 expectTypeOf(myToken.sight.saturation).toBeNumber();
@@ -167,7 +168,7 @@ if (myToken.detectionModes[0]) {
   expectTypeOf(myToken.detectionModes[0].range).toEqualTypeOf<number | null>();
 }
 expectTypeOf(myToken.ring.enabled).toBeBoolean();
-expectTypeOf(myToken.ring.subject.texture).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(myToken.ring.subject.texture).toEqualTypeOf<string | null>();
 // TODO: ArrayField<ForeignDocumentField> is returning `never[]`
 expectTypeOf(myToken._regions).toEqualTypeOf<Array<string | null>>();
 expectTypeOf(myToken.flags).toEqualTypeOf<
@@ -175,12 +176,10 @@ expectTypeOf(myToken.flags).toEqualTypeOf<
     InterfaceToObject<TokenDocument.CoreFlags> & InterfaceToObject<Document.CoreFlags>
   >
 >();
-
-// The following fields can't really be `undefined` because they have `initial`s, see https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3055
-expectTypeOf(myToken.width).toEqualTypeOf<number | undefined>();
-expectTypeOf(myToken.height).toEqualTypeOf<number | undefined>();
+expectTypeOf(myToken.width).toEqualTypeOf<number>();
+expectTypeOf(myToken.height).toEqualTypeOf<number>();
 expectTypeOf(myToken.occludable.radius).toEqualTypeOf<number>();
-expectTypeOf(myToken.ring.colors.ring).toEqualTypeOf<Color | null | undefined>();
-expectTypeOf(myToken.ring.colors.background).toEqualTypeOf<Color | null | undefined>();
+expectTypeOf(myToken.ring.colors.ring).toEqualTypeOf<Color | null>();
+expectTypeOf(myToken.ring.colors.background).toEqualTypeOf<Color | null>();
 expectTypeOf(myToken.ring.effects).toEqualTypeOf<number | null>();
 expectTypeOf(myToken.ring.subject.scale).toEqualTypeOf<number>();

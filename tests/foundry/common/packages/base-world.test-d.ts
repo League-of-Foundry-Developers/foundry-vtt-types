@@ -1,7 +1,10 @@
 import { expectTypeOf } from "vitest";
 import type { AnyMutableObject } from "fvtt-types/utils";
 
-const baseWorld = new foundry.packages.BaseWorld({});
+// @ts-expect-error - Missing required properties
+new foundry.packages.BaseWorld({});
+
+const baseWorld = new foundry.packages.BaseWorld({ id: "foo", title: "foo", system: {}, coreVersion: "13.345" });
 
 expectTypeOf(foundry.packages.BaseWorld.type).toEqualTypeOf<"world">();
 expectTypeOf(foundry.packages.BaseWorld.icon).toEqualTypeOf<string>();
@@ -24,7 +27,7 @@ expectTypeOf(baseWorld.joinTheme).toEqualTypeOf<keyof typeof foundry.CONST.WORLD
 expectTypeOf(baseWorld.coreVersion).toEqualTypeOf<string>();
 expectTypeOf(baseWorld.systemVersion).toEqualTypeOf<string>();
 expectTypeOf(baseWorld.lastPlayed).toEqualTypeOf<string | undefined>();
-expectTypeOf(baseWorld.playtime).toEqualTypeOf<number>();
+expectTypeOf(baseWorld.playtime).toEqualTypeOf<number | null>();
 expectTypeOf(baseWorld.nextSession).toEqualTypeOf<string | null>();
 expectTypeOf(baseWorld.resetKeys).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(baseWorld.safeMode).toEqualTypeOf<boolean | undefined>();

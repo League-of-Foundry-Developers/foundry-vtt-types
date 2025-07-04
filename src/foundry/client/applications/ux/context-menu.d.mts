@@ -48,7 +48,7 @@ declare class ContextMenu<UsesJQuery extends boolean = true> {
     html: HTMLElement | JQuery,
     selector: string,
     menuItems: ContextMenu.Entry<ContextMenu.JQueryOrHTML<UsesJQuery>>[],
-    options: Omit<ContextMenu.CreateOptions<never>, "jQuery"> & { jQuery?: false | undefined },
+    options?: Omit<ContextMenu.CreateOptions<boolean>, "jQuery"> & { jQuery?: boolean | undefined },
   ): ContextMenu<Coalesce<UsesJQuery, true>>;
 
   /**

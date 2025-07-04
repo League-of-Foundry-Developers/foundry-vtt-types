@@ -17,7 +17,7 @@ await ActorDelta.createDialog({});
 
 expectTypeOf(actorDelta).toEqualTypeOf<ActorDelta.Implementation>();
 
-expectTypeOf(actorDelta.apply("")).toEqualTypeOf<Actor.Implementation>();
+expectTypeOf(actorDelta.apply({})).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(actorDelta.prepareEmbeddedDocuments()).toEqualTypeOf<void>();
 expectTypeOf(actorDelta.updateSource()).toEqualTypeOf<object>();
 expectTypeOf(actorDelta.reset()).toEqualTypeOf<void>();

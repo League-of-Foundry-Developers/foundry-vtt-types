@@ -120,7 +120,7 @@ expectTypeOf(mySound.x).toBeNumber();
 expectTypeOf(mySound.y).toBeNumber();
 expectTypeOf(mySound.elevation).toBeNumber();
 expectTypeOf(mySound.radius).toBeNumber();
-expectTypeOf(mySound.path).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(mySound.path).toEqualTypeOf<string | null>();
 expectTypeOf(mySound.repeat).toBeBoolean();
 expectTypeOf(mySound.volume).toBeNumber();
 expectTypeOf(mySound.walls).toBeBoolean();

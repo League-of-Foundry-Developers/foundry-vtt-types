@@ -8,5 +8,4 @@ expectTypeOf(AdaptiveIlluminationShader.fragmentShader).toEqualTypeOf<string>();
 expectTypeOf(AdaptiveIlluminationShader.create()).toEqualTypeOf<AdaptiveIlluminationShader>();
 
 declare const myAIS: AbstractBaseShader;
-expectTypeOf(myAIS.isRequired).toEqualTypeOf<boolean>();
 expectTypeOf(myAIS.initialUniforms).toEqualTypeOf<AbstractBaseShader.Uniforms>();

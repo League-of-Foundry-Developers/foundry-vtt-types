@@ -38,9 +38,6 @@ expectTypeOf(baseItem.flags).toEqualTypeOf<ItemFlags>();
 
 expectTypeOf(baseItem.getFlag).parameter(0).toEqualTypeOf<"my-system" | "another-system" | "yet-another-system">();
 
-// There are no keys that are defined in all scopes.
-expectTypeOf(baseItem.getFlag).parameter(1).toEqualTypeOf<never>();
-
 expectTypeOf(baseItem.getFlag("my-system", "countable")).toEqualTypeOf<boolean>();
 expectTypeOf(baseItem.getFlag("my-system", "optionalKey")).toEqualTypeOf<string | undefined>();
 

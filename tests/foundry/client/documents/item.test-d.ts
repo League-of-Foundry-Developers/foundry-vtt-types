@@ -46,7 +46,7 @@ const item = new Item.implementation({ name: "Mighty Axe of Killing", type: "wea
 await Item.create({ name: "Mighty Axe of Killing", type: "weapon" });
 
 expectTypeOf(item.actor).toEqualTypeOf<Actor.Implementation | null>();
-expectTypeOf(item.img).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(item.img).toEqualTypeOf<string | null>();
 expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
 expectTypeOf(item.type).toEqualTypeOf<"base" | "armor" | "weapon" | Document.ModuleSubType>();

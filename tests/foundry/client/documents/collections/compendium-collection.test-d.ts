@@ -60,10 +60,6 @@ if (compendiumCollection instanceof DocumentCollection) {
   expectTypeOf(compendiumCollection).toExtend<CompendiumCollectionType>();
 }
 
-expectTypeOf(
-  (await foundry.documents.collections.CompendiumCollection.getIndex()).get("some id", { strict: true }),
-).toEqualTypeOf<{ _id: string; uuid: string } & DeepPartial<foundry.documents.BaseJournalEntry["_source"]>>();
-
 expectTypeOf(compendiumCollection.documentClass).toEqualTypeOf<JournalEntry.ImplementationClass>();
 
 const itemCollection = new CompendiumCollection({

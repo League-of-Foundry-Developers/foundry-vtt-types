@@ -72,7 +72,7 @@ if (item) {
   expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
   expectTypeOf(Item.updateDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Implementation[]>>();
   expectTypeOf(item.update(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
-  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item.Implementation>();
+  expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item.Stored>();
 }
 
 declare global {

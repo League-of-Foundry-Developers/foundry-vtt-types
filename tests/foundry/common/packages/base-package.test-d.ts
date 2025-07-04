@@ -123,7 +123,7 @@ expectTypeOf(basePackage.packFolders.first()!.name).toEqualTypeOf<string>();
 expectTypeOf(basePackage.packFolders.first()!.sorting).toEqualTypeOf<
   (typeof BaseFolder.SORTING_MODES)[number] | undefined
 >();
-expectTypeOf(basePackage.packFolders.first()!.color).toEqualTypeOf<Color | undefined | null>();
+expectTypeOf(basePackage.packFolders.first()!.color).toEqualTypeOf<Color | null>();
 
 expectTypeOf(basePackage.packFolders.first()!.packs).toEqualTypeOf<Set<string>>();
 

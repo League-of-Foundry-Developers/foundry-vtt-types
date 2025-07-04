@@ -14,7 +14,7 @@ new TestAD();
 // @ts-expect-error ActorDeltas require a valid `parent` to be passed in its `context`
 new TestAD(undefined, { strict: false });
 
-let myDelta = new TestAD({}, { parent: someToken });
+const myDelta = new TestAD({}, { parent: someToken });
 
 declare const someActor: Actor.Implementation;
 expectTypeOf(TestAD.applyDelta(myDelta, someActor)).toEqualTypeOf<Actor.Implementation | null>();
@@ -29,7 +29,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Actor.Implementation | null>();
 
-myDelta = new TestAD(
+new TestAD(
   {
     _id: "XXXXXSomeIDXXXXX",
     name: "Foo the Specific Bandit",
@@ -61,7 +61,7 @@ myDelta = new TestAD(
   },
   { parent: someToken },
 );
-myDelta = new TestAD(
+new TestAD(
   {
     _id: null,
     name: null,
@@ -75,7 +75,7 @@ myDelta = new TestAD(
   },
   { parent: someToken },
 );
-myDelta = new TestAD(
+new TestAD(
   {
     _id: undefined,
     name: undefined,

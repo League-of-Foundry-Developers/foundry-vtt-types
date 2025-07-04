@@ -23,7 +23,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    * You should use {@link FogExploration.implementation | `new FogExploration.implementation(...)`} instead which will give you
    * a system specific implementation of `FogExploration`.
    */
-  constructor(data: FogExploration.CreateData, context?: FogExploration.ConstructionContext);
+  constructor(data?: FogExploration.CreateData, context?: FogExploration.ConstructionContext);
 
   /**
    * @defaultValue

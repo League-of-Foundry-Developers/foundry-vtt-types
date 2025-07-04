@@ -452,7 +452,9 @@ declare namespace TextureData {
   /** The parameter defaults for `srcOptions` in the {@link TextureData} constructor */
   interface DefaultOptions {
     categories: ["IMAGE", "VIDEO"];
-    initial: EmptyObject;
+    // Avoid using `EmptyObject` as that creates a broken index signature.
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    initial: {};
     wildcard: false;
     label: "";
   }

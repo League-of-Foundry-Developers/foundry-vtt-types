@@ -132,7 +132,7 @@ expectTypeOf(layer.pasteObjects({ x: 10, y: 10 }, { hidden: true, snap: false })
 expectTypeOf(layer.pasteObjects({ x: 10, y: 10 }, { hidden: false })).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.pasteObjects({ x: 10, y: 10 }, { snap: true })).toEqualTypeOf<Promise<CALDoc[]>>();
 
-expectTypeOf(layer.selectObjects({ width: 200, height: 500 })).toEqualTypeOf<boolean>();
+expectTypeOf(layer.selectObjects({ x: 0, y: 0, width: 200, height: 500 })).toEqualTypeOf<boolean>();
 expectTypeOf(
   layer.selectObjects(
     {

@@ -13,7 +13,9 @@ const testEffect = new ActiveEffect.implementation({ name: "Test Effect" });
 const myMacro = new Macro.implementation({ name: "my macro", scope: "global", type: "script" });
 
 // properties and functions added by the concrete `Macro` class
-expectTypeOf(myMacro.execute()).toEqualTypeOf<void | Promise<unknown>>();
+expectTypeOf(myMacro.execute()).toEqualTypeOf<
+  Promise<ChatMessage.Implementation | undefined | void> | Promise<unknown> | void
+>();
 if (myMacro.type === "script") {
   expectTypeOf(myMacro.type).toEqualTypeOf<"script">();
   expectTypeOf(myMacro.isAuthor).toEqualTypeOf<boolean>();

@@ -11,7 +11,7 @@ new TestBaseAdventure({});
 
 const myAdventure = new TestBaseAdventure({ name: "foo" });
 
-expectTypeOf(myAdventure.img).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(myAdventure.img).toEqualTypeOf<string | null>();
 expectTypeOf(myAdventure.macros.first()!.command).toEqualTypeOf<string>();
 
 // Static Methods

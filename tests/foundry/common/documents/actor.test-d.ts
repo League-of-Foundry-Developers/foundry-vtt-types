@@ -25,7 +25,7 @@ expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect.Implementatio
 expectTypeOf(baseActor.effects.get("")!.name).toEqualTypeOf<string>();
 expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item.Implementation, Actor.Implementation>>();
 expectTypeOf(baseActor.items.get("")).toEqualTypeOf<Item.Implementation | undefined>();
-expectTypeOf(baseActor.items.get("")!.img).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(baseActor.items.get("")!.img).toEqualTypeOf<string | null>();
 expectTypeOf(baseActor._source.effects[0]!.duration.seconds).toEqualTypeOf<number | null | undefined>();
 
 /**

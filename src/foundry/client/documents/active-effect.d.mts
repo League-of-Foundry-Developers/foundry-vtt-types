@@ -625,14 +625,12 @@ declare namespace ActiveEffect {
     /**
      * The modification mode with which the change is applied
      * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
-     * @privateRemarks `undefined` is not actually a possible value, included here due to fvtt-types handling of `initial` values
      */
-    mode: CONST.ACTIVE_EFFECT_MODES | null | undefined;
+    mode: CONST.ACTIVE_EFFECT_MODES;
 
     /**
      * The priority level with which this change is applied
      * @defaultValue `null`
-     * @privateRemarks `undefined` is not actually a possible value, included here due to fvtt-types handling of `initial` values
      */
     priority: number | null | undefined;
   }

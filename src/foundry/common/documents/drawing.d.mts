@@ -24,6 +24,8 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * You should use {@link DrawingDocument.implementation | `new DrawingDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `DrawingDocument`.
    */
+  // Note(LukeAbby): Required because while `DrawingDocument` has no directly required schema
+  // properties the `validateJoint` method will fail.
   constructor(data: DrawingDocument.CreateData, context?: DrawingDocument.ConstructionContext);
 
   /**

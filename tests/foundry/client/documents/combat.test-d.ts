@@ -11,7 +11,7 @@ expectTypeOf(Combat.CONFIG_SETTING).toEqualTypeOf<"combatTrackerConfig">();
 
 expectTypeOf(combat.combatant).toEqualTypeOf<Combat.Implementation["turns"][number] | null | undefined>();
 expectTypeOf(combat.started).toEqualTypeOf<boolean>();
-expectTypeOf(combat.visible).toEqualTypeOf<true>();
+expectTypeOf(combat.visible).toEqualTypeOf<boolean>();
 expectTypeOf(combat.isActive).toEqualTypeOf<boolean>();
 
 expectTypeOf(combat.activate()).toEqualTypeOf<Promise<Combat.Implementation[]>>();
@@ -35,7 +35,7 @@ expectTypeOf(combat.rollAll()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.rollNPC()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.setInitiative("", 1)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(combat.setupTurns()).toEqualTypeOf<Combat.Implementation["turns"]>();
-expectTypeOf(combat.debounceSetup()).toEqualTypeOf<ReturnType<typeof foundry.utils.debounce>>();
+expectTypeOf(combat.debounceSetup()).toEqualTypeOf<() => void>();
 expectTypeOf(combat.updateCombatantActors()).toEqualTypeOf<void>();
 
 // @LukeAbby The actual implementation here is nonsense for the available document types,

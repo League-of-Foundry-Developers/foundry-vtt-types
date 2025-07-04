@@ -110,7 +110,7 @@ class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementat
 
   method() {
     expectTypeOf(this.description).toEqualTypeOf<HTMLElement>();
-    expectTypeOf(this._source.description).toEqualTypeOf<string | undefined>();
+    expectTypeOf(this._source.description).toEqualTypeOf<string>();
     // Note(LukeAbby): Currently not working but should.
     expectTypeOf(this.some.deep!.baseProp).toEqualTypeOf<string>();
     expectTypeOf(this.some.deep!.derivedProp).toEqualTypeOf<number>();

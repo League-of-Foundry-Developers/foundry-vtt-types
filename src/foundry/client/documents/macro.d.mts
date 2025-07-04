@@ -502,6 +502,7 @@ declare namespace Macro {
   // just to return `undefined`.
   type ExecuteReturn<SubType extends Macro.SubType> =
     | (SubType extends "chat" ? Promise<ChatMessage.Implementation | undefined | void> : never)
+    // Note(LukeAbby): As of 13.346 this `| void` is only possible if there's a syntax error in the function.
     | (SubType extends "script" ? Promise<unknown> | void : never);
 
   /**

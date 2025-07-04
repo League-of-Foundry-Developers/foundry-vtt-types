@@ -6,9 +6,13 @@ class TestBaseFogExploration extends foundry.documents.BaseFogExploration {}
 expectTypeOf(new TestBaseFogExploration()).toEqualTypeOf<TestBaseFogExploration>();
 expectTypeOf(new TestBaseFogExploration({})).toEqualTypeOf<TestBaseFogExploration>();
 expectTypeOf(TestBaseFogExploration.create({})).toEqualTypeOf<Promise<FogExploration.Stored | undefined>>();
-expectTypeOf(TestBaseFogExploration.createDocuments()).toEqualTypeOf<Promise<FogExploration.Stored[]>>();
-expectTypeOf(TestBaseFogExploration.updateDocuments()).toEqualTypeOf<Promise<FogExploration.Implementation[]>>();
-expectTypeOf(TestBaseFogExploration.deleteDocuments()).toEqualTypeOf<Promise<FogExploration.Implementation[]>>();
+expectTypeOf(TestBaseFogExploration.createDocuments(undefined)).toEqualTypeOf<Promise<FogExploration.Stored[]>>();
+expectTypeOf(TestBaseFogExploration.updateDocuments(undefined)).toEqualTypeOf<
+  Promise<FogExploration.Implementation[]>
+>();
+expectTypeOf(TestBaseFogExploration.deleteDocuments(undefined)).toEqualTypeOf<
+  Promise<FogExploration.Implementation[]>
+>();
 
 const fog = new TestBaseFogExploration();
 expectTypeOf(fog.explored).toEqualTypeOf<string | null>();

@@ -22,7 +22,7 @@ expectTypeOf(user.getHotbarMacros().map((each) => each.macro)).toEqualTypeOf<Arr
 user.assignHotbarMacro(new Macro.implementation({ name: "Foo" }), 1);
 
 expectTypeOf(user._id).toEqualTypeOf<string | null>();
-expectTypeOf(user.avatar).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(user.avatar).toEqualTypeOf<string | null>();
 
 expectTypeOf(user.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
 

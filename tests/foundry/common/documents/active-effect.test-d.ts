@@ -183,24 +183,22 @@ expectTypeOf(fullTestAE.flags.core?.overlay).toEqualTypeOf<boolean | undefined>(
 expectTypeOf(fullTestAE._stats).toEqualTypeOf<
   foundry.data.fields.SchemaField.InitializedData<foundry.data.fields.DocumentStatsField.Schema>
 >();
-
-// The following fields can't really be `undefined` because they have `initial`s, see https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3055
-expectTypeOf(fullTestAE.img).toEqualTypeOf<string | null | undefined>();
-expectTypeOf(fullTestAE.duration.startTime).toEqualTypeOf<number | null | undefined>();
+expectTypeOf(fullTestAE.img).toEqualTypeOf<string | null>();
+expectTypeOf(fullTestAE.duration.startTime).toEqualTypeOf<number | null>();
 expectTypeOf(fullTestAE.duration.seconds).toEqualTypeOf<number | null | undefined>();
 expectTypeOf(fullTestAE.duration.rounds).toEqualTypeOf<number | null | undefined>();
 expectTypeOf(fullTestAE.duration.turns).toEqualTypeOf<number | null | undefined>();
 expectTypeOf(fullTestAE.duration.startRound).toEqualTypeOf<number | null | undefined>();
 expectTypeOf(fullTestAE.duration.startTurn).toEqualTypeOf<number | null | undefined>();
-expectTypeOf(fullTestAE.origin).toEqualTypeOf<string | null | undefined>();
-expectTypeOf(fullTestAE.tint).toEqualTypeOf<Color | undefined>();
+expectTypeOf(fullTestAE.origin).toEqualTypeOf<string | null>();
+expectTypeOf(fullTestAE.tint).toEqualTypeOf<Color>();
 
 // non-schema:
 declare const someUser: User.Implementation;
 expectTypeOf(fullTestAE.canUserModify(someUser, "create")).toBeBoolean();
 expectTypeOf(fullTestAE.canUserModify(someUser, "delete")).toBeBoolean();
 expectTypeOf(fullTestAE.canUserModify(someUser, "update")).toBeBoolean();
-expectTypeOf(fullTestAE.canUserModify(someUser, "create", {})).toBeBoolean();
+expectTypeOf(fullTestAE.canUserModify(someUser, "create", { name: "Test Active Effect" })).toBeBoolean();
 expectTypeOf(fullTestAE.canUserModify(someUser, "create", fullTestAE.toObject())).toBeBoolean();
 
 expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER")).toBeBoolean();
@@ -213,7 +211,7 @@ expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: null }
 
 // deprecated since v12 until v14
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(fullTestAE.icon).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(fullTestAE.icon).toEqualTypeOf<string | null>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 fullTestAE.icon = "path/to/tex.png";
 
@@ -351,6 +349,13 @@ expectTypeOf(
       modifiedTime: 7,
       systemId: "dnd5e",
       systemVersion: "4.4",
+      exportSource: {
+        coreVersion: "13.346",
+        systemId: "dnd5e",
+        systemVersion: "4.4",
+        uuid: "UUUUUSomeIDUUUUU",
+        worldId: "UUUUUSomeIDUUUUU",
+      },
     },
     description: "bar",
     disabled: false,

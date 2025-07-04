@@ -13,7 +13,7 @@ expectTypeOf(scene).toEqualTypeOf<Scene.Implementation>();
 expectTypeOf(scene.grid).toEqualTypeOf<foundry.grid.BaseGrid>();
 expectTypeOf(scene.dimensions).toEqualTypeOf<Scene.Dimensions>();
 expectTypeOf(scene.active).toEqualTypeOf<boolean>();
-expectTypeOf(scene.background.src).toEqualTypeOf<string | null | undefined>();
+expectTypeOf(scene.background.src).toEqualTypeOf<string | null>();
 expectTypeOf(scene.isView).toEqualTypeOf<boolean>();
 expectTypeOf(scene.journal).toEqualTypeOf<JournalEntry.Implementation | null>();
 expectTypeOf(scene.playlist).toEqualTypeOf<Playlist.Implementation | null>();

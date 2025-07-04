@@ -508,19 +508,37 @@ declare namespace Card {
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
-   * @remarks {@link Card.pass | `Card#pass`} calls {@link Cards.pass | `this.parent.pass`} with `action: "pass"` provided
+   * @remarks {@link Card.pass | `Card#pass`} calls {@link Cards.pass | `this.parent.pass`} with `action: "pass"` provided by default.
    */
-  interface PassOptions extends Omit<Cards.PassOptions, "action"> {}
+  interface PassOptions extends Cards.PassOptions {
+    /**
+     * @deprecated While passing `action` is technically valid, it's unclear why this would ever be done.
+     * If you need to do this call `this.parent.pass` directly.
+     */
+    action?: never;
+  }
 
   /**
-   * @remarks {@link Card.play | `Card#play`} calls {@link Cards.pass | `this.parent.pass`} with `action: "play"` provided
+   * @remarks {@link Card.play | `Card#play`} calls {@link Cards.pass | `this.parent.pass`} with `action: "play"` provided by default.
    */
-  interface PlayOptions extends PassOptions {}
+  interface PlayOptions extends Cards.PassOptions {
+    /**
+     * @deprecated While passing `action` is technically valid, it's unclear why this would ever be done.
+     * If you need to do this call `this.parent.pass` directly.
+     */
+    action?: never;
+  }
 
   /**
-   * @remarks {@link Card.discard | `Card#discard`} calls {@link Cards.pass | `this.parent.pass`} with `action: "discard"` provided
+   * @remarks {@link Card.discard | `Card#discard`} calls {@link Cards.pass | `this.parent.pass`} with `action: "discard"` provided by default.
    */
-  interface DiscardOptions extends PassOptions {}
+  interface DiscardOptions extends Cards.PassOptions {
+    /**
+     * @deprecated While passing `action` is technically valid, it's unclear why this would ever be done.
+     * If you need to do this call `this.parent.pass` directly.
+     */
+    action?: never;
+  }
 
   /**
    * The arguments to construct the document.

@@ -658,7 +658,7 @@ declare namespace DataField {
         : // when not required, undefined can safely be passed
           undefined)
     | ("initial" extends keyof Options
-        ? _Has<Options["initial"], null | undefined> extends true
+        ? _Has<Options["initial"], null | undefined | ((...args: never) => null | undefined)> extends true
           ? never
           : null | undefined // when initial is not `undefined` then `null | undefined` are valid.
         : never);
@@ -673,8 +673,19 @@ declare namespace DataField {
    */
   type DerivedInitializedType<BaseInitializedType, Options extends DataField.Options.Any> =
     | Exclude<BaseInitializedType, null | undefined>
-    | (Options["nullable"] extends true ? null : never)
-    | (Options["required"] extends true ? never : undefined);
+    | _DerivedUndefined<GetKey<Options, "initial", undefined>, GetKey<Options, "required", undefined>>
+    | (Options["nullable"] extends true ? null : never);
+
+  /** @internal */
+  type _DerivedUndefined<Initial, Required extends boolean | undefined> = Required extends true
+    ? never // If `required: true` then `undefined` is not possible.
+    : Initial extends undefined
+      ? undefined // If `required: false` and `initial: undefined` then it passes through.
+      : Initial extends (...args: never) => infer Result
+        ? Result extends undefined
+          ? undefined // Passes through `undefined` if the function returns `undefined`. Should this match the case of `() => unknown`?
+          : never
+        : never;
 
   /**
    * A shorthand for the assignment type of a DataField class.
@@ -1828,7 +1839,10 @@ declare namespace StringField {
    * A helper type for the given options type merged into the default options of the StringField class.
    * @template Options - the options that override the default options
    */
-  type MergedOptions<Options extends StringField.Options<unknown>> = SimpleMerge<
+  type MergedOptions<Options extends StringField.Options<unknown>> = SimpleMerge<DefaultOptions, Options>;
+
+  /** @internal */
+  type _EffectiveOptions<Options extends StringField.Options<unknown>> = SimpleMerge<
     _OptionsForInitial<_OptionsForChoices<Options["choices"]>>,
     Options
   >;
@@ -1877,7 +1891,7 @@ declare namespace StringField {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type AssignmentType<Options extends StringField.Options<unknown>> = DataField.DerivedAssignmentType<
     ValidChoice<Options>,
-    MergedOptions<Options>
+    _EffectiveOptions<Options>
   >;
 
   /**
@@ -1887,7 +1901,7 @@ declare namespace StringField {
   type InitializedType<Options extends StringField.Options<unknown>> = DataField.DerivedInitializedType<
     // TODO(LukeAbby): This is a workaround for how `ValidChoice` is defined ignorant of the `StringField`/`NumberField` divide.
     ValidChoice<Options> & (string | null | undefined),
-    MergedOptions<Options>
+    _EffectiveOptions<Options>
   >;
 
   type BaseChoices =

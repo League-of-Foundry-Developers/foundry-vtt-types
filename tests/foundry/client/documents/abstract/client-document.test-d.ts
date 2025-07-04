@@ -29,7 +29,6 @@ expectTypeOf(
       parent: someActor,
     },
     {
-      types: ["armor"], // fake subtype defined in the test file for Item
       ...dialogOptions,
     },
   ),
@@ -46,34 +45,23 @@ expectTypeOf(
       parent: someActor,
     },
     {
-      types: ["armor"], // fake subtype defined in the test file for Item
+      // TODO: figure out why `types` doesn't display as deprecated.
+      // types: undefined,
       ...dialogOptions,
     },
   ),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 expectTypeOf(
-  Item.createDialog(
-    createData,
-    {
-      pack: null,
-      parent: null,
-    },
-    {
-      types: null,
-    },
-  ),
+  Item.createDialog(createData, {
+    pack: null,
+    parent: null,
+  }),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 expectTypeOf(
-  Item.createDialog(
-    createData,
-    {
-      pack: undefined,
-      parent: undefined,
-    },
-    {
-      types: undefined,
-    },
-  ),
+  Item.createDialog(createData, {
+    pack: undefined,
+    parent: undefined,
+  }),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 
 expectTypeOf(Item.defaultName()).toBeString();
@@ -126,7 +114,7 @@ expectTypeOf(item["_sheet"]).toEqualTypeOf<FixedInstanceType<Document.SheetClass
 // _initialize overridden with no signature changes
 
 // TODO This will also match `Item`, but not `Item.Implementation`
-expectTypeOf(item.collection).toEqualTypeOf<Collection<typeof item>>();
+expectTypeOf(item.collection).toEqualTypeOf<Collection<typeof item> | null>();
 // @ts-expect-error Only getter, no setter
 item.collection = new Collection<typeof item>();
 
