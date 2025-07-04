@@ -75,6 +75,24 @@ When creating a pull request, please provide the following information:
 
 ## Style guides, General Guidelines, and Common Patterns
 
+### Type-Checking, Linting, Testing
+
+When contributing, make sure that the type checks pass, the linter is green and the tests are green. We _do_ have
+checks in the CI but running this locally also helps you while developing and saves you time as you don't have to wait
+for the CI.
+
+You can run type checking and linting with the following command:
+
+```shell
+npm run lint
+```
+
+You can run the tests with
+
+```shell
+npm run test
+```
+
 ### Style
 
 We use [prettier](https://prettier.io/) to automatically format the code and have ESlint check for the correct
