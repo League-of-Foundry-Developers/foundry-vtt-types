@@ -1,6 +1,8 @@
-import type { DeepPartial, EmptyObject, Identity, InexactPartial } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+
+import DiceTerm = foundry.dice.terms.DiceTerm;
 
 declare module "#configuration" {
   namespace Hooks {
@@ -14,7 +16,7 @@ declare module "#configuration" {
  * An application responsible for handling unfulfilled dice terms in a roll.
  */
 declare class RollResolver<
-  RenderContext extends RollResolver.RenderContext = EmptyObject,
+  RenderContext extends RollResolver.RenderContext = RollResolver.RenderContext,
   Configuration extends RollResolver.Configuration = RollResolver.Configuration,
   RenderOptions extends RollResolver.RenderOptions = RollResolver.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
@@ -58,13 +60,7 @@ declare class RollResolver<
   resolveResult(
     term: foundry.dice.terms.DiceTerm,
     method: string,
-    options?: InexactPartial<{
-      /** @defaultValue `false` */
-      reroll: boolean;
-
-      /** @defaultValue `false` */
-      explode: boolean;
-    }>,
+    options?: RollResolver.ResolveResultOptions,
   ): Promise<number | void>;
 
   /**
@@ -102,15 +98,49 @@ declare namespace RollResolver {
   interface Any extends AnyRollResolver {}
   interface AnyConstructor extends Identity<typeof AnyRollResolver> {}
 
-  interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
+  interface RenderContext {
+    formula: string;
+    groups: Record<string, Group>;
+  }
+
   interface Configuration extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration {}
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
 
+  interface Group {
+    results: Result[];
+    label: string;
+    icon: string;
+    tooltip: string;
+  }
+
+  interface Result {
+    denomination: DiceTerm.Any;
+    faces: DiceTerm.Any;
+    id: string;
+    method: string;
+    icon: string;
+    exploded: boolean | undefined;
+    rerolled: boolean | undefined;
+    isNew: boolean | undefined;
+    // Note(LukeAbby): The logic here is a bit suspicious.
+    value: string | number;
+    readonly: boolean;
+    disabled: boolean;
+  }
+
   interface DiceTermFulfillmentDescriptor {
     id: string;
-    term: foundry.dice.terms.DiceTerm;
+    term: DiceTerm;
     method: string;
     isNew?: boolean | undefined;
+  }
+
+  interface ResolveResultOptions {
+    /** @defaultValue `false` */
+    reroll?: boolean | undefined;
+
+    /** @defaultValue `false` */
+    explode?: boolean | undefined;
   }
 }
 
