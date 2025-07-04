@@ -114,8 +114,8 @@ declare namespace RollResolver {
   }
 
   interface Result {
-    denomination: DiceTerm.Any;
-    faces: DiceTerm.Any;
+    denomination: string;
+    faces: number | undefined;
     id: string;
     method: string;
     icon: string;
