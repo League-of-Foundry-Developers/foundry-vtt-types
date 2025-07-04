@@ -19,7 +19,7 @@ expectTypeOf(actor.itemTypes).toEqualTypeOf<Actor.ItemTypes>();
 
 expectTypeOf(actor.isToken).toEqualTypeOf<boolean>();
 expectTypeOf(actor.appliedEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
-expectTypeOf(actor.temporaryEffects).toEqualTypeOf<ReturnType<(typeof actor)["effects"]["filter"]>>();
+expectTypeOf(actor.temporaryEffects).toEqualTypeOf<ReturnType<typeof actor.effects.filter>>();
 expectTypeOf(actor.token).toEqualTypeOf<TokenDocument.Implementation | null>();
 expectTypeOf(actor.inCombat).toEqualTypeOf<boolean>();
 
