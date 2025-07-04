@@ -211,7 +211,7 @@ jobs:
       - name: Publish fvtt-types
         run: |-
           jq '.name = "fvtt-types"' package.json > temp.json && mv temp.json package.json
-          npm version --git-tag-version false "$VERSION"
+          npm version --allow-same-version --git-tag-version false "$VERSION"
           npm publish --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.FVTT_NPM_TOKEN }}
