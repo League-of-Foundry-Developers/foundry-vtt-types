@@ -208,12 +208,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  prerelease:
-    if: github.ref == 'refs/heads/main'
+  publishPrerelease:
+    name: Publish prerelease
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs:
       - typecheck
       - lint
-      - test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
