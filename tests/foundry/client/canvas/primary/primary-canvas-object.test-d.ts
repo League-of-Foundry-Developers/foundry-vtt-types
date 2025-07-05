@@ -16,7 +16,6 @@ expectTypeOf(myCT.containsCanvasPoint({ x: 1000, y: 1000 })).toEqualTypeOf<boole
 const myPCO = new (PrimaryCanvasObjectMixin(PIXI.Container))();
 declare const someRenderer: PIXI.Renderer;
 
-expectTypeOf(myPCO.cullable).toBeBoolean();
 expectTypeOf(myPCO.object).toEqualTypeOf<PrimaryCanvasObjectMixin.OwningObject | null>();
 
 expectTypeOf(myPCO.elevation).toBeNumber();

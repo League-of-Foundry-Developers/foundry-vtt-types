@@ -9,12 +9,6 @@ declare class PrimaryCanvasObject {
   constructor(...args: any[]);
 
   /**
-   * @defaultValue `true`
-   * @privateRemarks Actually an override of {@linkcode PIXI.DisplayObject.cullable | PIXI.DisplayObject#cullable}
-   */
-  cullable: boolean;
-
-  /**
    * An optional reference to the object that owns this PCO.
    * This property does not affect the behavior of the PCO itself.
    * @defaultValue `null`
