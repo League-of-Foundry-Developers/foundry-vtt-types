@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { FixedInstanceType, Mixin } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
-import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
-import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type { CanvasGroupMixin, PrimaryCanvasGroup } from "#client/canvas/groups/_module.d.mts";
+import type { placeables, primary } from "#client/canvas/_module.d.mts";
 
 declare class PrimaryCanvasObject {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
@@ -10,7 +10,7 @@ declare class PrimaryCanvasObject {
 
   /**
    * @defaultValue `true`
-   * @privateRemarks Actually an override of the property on `PIXI.DisplayObject`
+   * @privateRemarks Actually an override of {@linkcode PIXI.DisplayObject.cullable | PIXI.DisplayObject#cullable}
    */
   cullable: boolean;
 
@@ -18,11 +18,14 @@ declare class PrimaryCanvasObject {
    * An optional reference to the object that owns this PCO.
    * This property does not affect the behavior of the PCO itself.
    * @defaultValue `null`
-   * @privateRemarks Foundry types as `*`, but in practice, it will only ever be a `Drawing` (via `PrimaryGraphics`),
-   * or a `Token`, `Tile`, or the `PrimaryCanvasGroup` (via `PrimarySpriteMesh`), or its default value `null`
+   * @remarks Foundry types as `*`, but in core usage, it is only ever:
+   * - {@linkcode placeables.Drawing | Drawing} ({@linkcode PrimaryCanvasGroup.addDrawing | PrimaryCanvasGroup#addDrawing} creates a {@linkcode primary.PrimaryGraphics | PrimaryGraphics})
+   * - {@linkcode placeables.Token | Token} (`Token##handleTransitionChanges` and {@linkcode PrimaryCanvasGroup.addToken | PrimaryCanvasGroup#addToken} create {@linkcode primary.PrimarySpriteMesh | PrimarySpriteMesh}es)
+   * - {@linkcode placeables.Tile | Tile} ({@linkcode PrimaryCanvasGroup.addTile | PrimaryCanvasGroup#addTile} creates a `PrimarySpriteMesh`)
+   * - {@linkcode PrimaryCanvasGroup} (`PrimaryCanvasGroup##drawBackground` and `##drawForeground` create `PrimarySpriteMesh`es)
+   * - `null`
    */
-  // TODO: (esheyw) Revisit the "any canvas group" type when groups are done
-  object: PlaceableObject.Any | CanvasGroupMixin.AnyMixed | null;
+  object: PrimaryCanvasObjectMixin.OwningObject | null;
 
   /**
    * The elevation of this object.
@@ -56,20 +59,21 @@ declare class PrimaryCanvasObject {
   /**
    * Event fired when this display object is added to a parent.
    * @param parent - The new parent container.
-   * @throws If `parent` is not `=== canvas.primary`
+   * @remarks Foundry types this as taking a {@linkcode PIXI.Container} but then is more specific internally
+   * @throws Unless `parent` is either `=== canvas.primary` or a {@linkcode foundry.canvas.primary.PrimaryCanvasContainer | PrimaryCanvasContainer}
    */
-  protected _onAdded(parent: PIXI.Container): void;
+  protected _onAdded(parent: PrimaryCanvasObjectMixin.Parent): void;
 
   /**
    * Event fired when this display object is removed from its parent.
    * @param parent - Parent from which the PCO is removed.
    */
-  protected _onRemoved(parent: PIXI.Container): void;
+  protected _onRemoved(parent: PrimaryCanvasObjectMixin.Parent): void;
 
-  /** @see {@link CanvasTransformMixinClass.updateCanvasTransform | `CanvasTransformMixinClass#updateCanvasTransform`} */
+  /** @remarks See {@linkcode CanvasTransformMixinClass.updateCanvasTransform | CanvasTransformMixinClass#updateCanvasTransform} */
   updateCanvasTransform(): void;
 
-  /** @see {@link CanvasTransformMixinClass._onCanvasBoundsUpdate | `CanvasTransformMixinClass#_onCanvasBoundsUpdate`} */
+  /** @remarks See {@linkcode CanvasTransformMixinClass._onCanvasBoundsUpdate | CanvasTransformMixinClass#_onCanvasBoundsUpdate} */
   protected _onCanvasBoundsUpdate(): void;
 
   /**
@@ -88,26 +92,18 @@ declare class PrimaryCanvasObject {
   renderDepthData(renderer: PIXI.Renderer): void;
 
   /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks `"PrimaryCanvasObject#renderOcclusion is deprecated in favor of PrimaryCanvasObject#renderDepthData"`
+   * @deprecated "`PrimaryCanvasObject#document` is deprecated." (since v12, until v14)
    */
-  renderOcclusion(renderer: PIXI.Renderer): void;
+  get document(): placeables.PlaceableObject.AnyCanvasDocument | null;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks `"PrimaryCanvasObject#document is deprecated."`
-   */
-  get document(): Document.Any | null;
-
-  /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks `"PrimaryCanvasObject#updateBounds is deprecated and has no effect."`
+   * @deprecated "`PrimaryCanvasObject#updateBounds` is deprecated and has no effect." (since v12, until v14)
    */
   updateBounds(): void;
 }
 
 declare class CanvasTransformMixinClass {
-  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**
@@ -117,7 +113,8 @@ declare class CanvasTransformMixinClass {
 
   /**
    * The update ID of canvas transform matrix.
-   * @privateRemarks Foundry marked `@internal`, technically accessed externally via `this.parent._convasTranformID` in `updateCanvasTransform`
+   * @internal
+   * @remarks Accessed externally via `this.parent._canvasTransformID` in {@linkcode updateCanvasTransform}
    */
   protected _canvasTransformID: number;
 
@@ -165,10 +162,9 @@ declare class CanvasTransformMixinClass {
 }
 
 /**
- * A mixin which decorates a DisplayObject with additional properties expected for rendering in the PrimaryCanvasGroup.
- * @param DisplayObject - The parent DisplayObject class being mixed
- * @returns A DisplayObject subclass mixed with PrimaryCanvasObject features
- * @privateRemarks Despite naming the argument "DisplayObject", it's typed as only taking `PIXI.Container`s, which matches core's usage
+ * A mixin which decorates a {@linkcode PIXI.DisplayObject | DisplayObject} with additional properties expected for rendering in the {@linkcode PrimaryCanvasGroup}.
+ * @param  DisplayObject - The parent `DisplayObject` class being mixed
+ * @privateRemarks Despite naming the argument `DisplayObject`, it's typed as only taking `PIXI.Container`s, which matches core's usage
  */
 declare function PrimaryCanvasObjectMixin<BaseClass extends PrimaryCanvasObjectMixin.BaseClass>(
   DisplayObject: BaseClass,
@@ -180,13 +176,21 @@ declare namespace PrimaryCanvasObjectMixin {
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = PIXI.Container.AnyConstructor;
+
+  /**
+   * @remarks {@linkcode PrimaryCanvasObject._onAdded | PrimaryCanvasObject#_onAdded} throws if not passed a {@linkcode PrimaryCanvasContainer}
+   * or whatever {@linkcode canvas.primary} currently is, which presumably will be a {@linkcode PrimaryCanvasGroup}
+   */
+  type Parent = PrimaryCanvasGroup.Any | primary.PrimaryCanvasContainer.Any;
+
+  /** @remarks See {@linkcode PrimaryCanvasObject.object | PrimaryCanvasObject#object} remarks */
+  type OwningObject = placeables.PlaceableObject.Any | CanvasGroupMixin.AnyMixed;
 }
 
 /**
- * A mixin which decorates a DisplayObject with additional properties for canvas transforms and bounds.
- * @param DisplayObject - The parent DisplayObject class being mixed
- * @returns A DisplayObject subclass mixed with CanvasTransformMixin features
- * @privateRemarks Despite naming the argument "DisplayObject", it's typed as only taking `PIXI.Container`s, which matches core's usage
+ * A mixin which decorates a {@linkcode PIXI.DisplayObject | DisplayObject} with additional properties for canvas transforms and bounds.
+ * @param DisplayObject - The parent `DisplayObject` class being mixed
+ * @privateRemarks Despite naming the argument `DisplayObject`, it's typed as only taking `PIXI.Container`s, which matches core's usage
  */
 declare function CanvasTransformMixin<BaseClass extends CanvasTransformMixin.BaseClass>(
   DisplayObject: BaseClass,
