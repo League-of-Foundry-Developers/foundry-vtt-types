@@ -8,7 +8,7 @@ class TestBaseCards extends foundry.documents.BaseCards {}
 // @ts-expect-error data argument is non-optional
 new TestBaseCards();
 
-const baseCards = new TestBaseCards({ type: "deck" });
+const baseCards = new TestBaseCards({ type: "deck", name: "Test Cards" });
 
 expectTypeOf(baseCards.cards).toEqualTypeOf<EmbeddedCollection<Card.Implementation, Cards.Implementation>>();
 
