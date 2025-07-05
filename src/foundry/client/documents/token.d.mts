@@ -1562,7 +1562,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   /**
    * The movement history
    */
-  get movementHistory(): TokenDocument.MeasuredMovementWaypoint;
+  get movementHistory(): TokenDocument.MeasuredMovementWaypoint[];
 
   /**
    * Check if the document has a distinct subject texture (inferred or explicit).
