@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Mixin, NullishProps } from "#utils";
+import type { FixedInstanceType, InexactPartial, Mixin } from "#utils";
 import type { PrimaryCanvasObjectMixin } from "./_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
@@ -21,7 +21,7 @@ declare class PrimaryOccludableObject {
 
   /**
    * The occlusion mode of this occludable object.
-   * @defaultValue `CONST.OCCLUSION_MODES.NONE`
+   * @defaultValue {@linkcode CONST.OCCLUSION_MODES.NONE}
    */
   occlusionMode: CONST.OCCLUSION_MODES;
 
@@ -39,7 +39,6 @@ declare class PrimaryOccludableObject {
 
   /**
    * Fade this object on hover?
-   * @defaultValue `true`
    */
   get hoverFade(): boolean;
 
@@ -55,9 +54,11 @@ declare class PrimaryOccludableObject {
    *   vision: 0.0
    * }
    * ```
-   * @privateRemarks Foundry marked `@internal`
+   * @internal
+   * @remarks Accessed externally in {@linkcode foundry.canvas.rendering.shaders.DepthSamplerShader._preRender | DepthSamplerShader#_preRender}
+   * and {@linkcode foundry.canvas.rendering.shaders.OccludableSamplerShader._preRender | OccludableSamplerShader#_preRender}
    */
-  _occlusionState: PrimaryOccludableObjectMixin.OcclusionState;
+  protected _occlusionState: PrimaryOccludableObjectMixin.OcclusionState;
 
   /**
    * The state of hover-fading.
@@ -66,21 +67,24 @@ declare class PrimaryOccludableObject {
    * {
    *   hovered: false,
    *   hoveredTime: 0,
+   *   _hoveredTime: 0,
    *   faded: false,
    *   fading: false,
    *   fadingTime: 0,
    *   occlusion: 0.0
    * }
    * ```
-   * @privateRemarks Foundry marked `@internal`
+   * @internal
+   * @remarks Properties accessed and set remotely in {@linkcode foundry.canvas.groups.PrimaryCanvasGroup._onMouseMove | PrimaryCanvasGroup#_onMouseMove}
+   * and `##updateHoveredObjects`
    */
-  _hoverFadeState: PrimaryOccludableObjectMixin.HoverFadeState;
+  protected _hoverFadeState: PrimaryOccludableObjectMixin.HoverFadeState;
 
   /**
    * Get the blocking option bitmask value.
-   * @privateRemarks Foundry marked `@internal`
+   * @internal
    */
-  get _restrictionState(): number;
+  protected get _restrictionState(): number;
 
   /**
    * Is this object blocking light?
@@ -106,13 +110,19 @@ declare class PrimaryOccludableObject {
    * change PCO appearance.
    * Uses a 50ms debounce threshold.
    * Objects which are in the hovered state remain occluded until their hovered state ends.
-   * @remarks Actually the return value of an arrow function passed to `foundry.utils.debounce` with a timeout of 50ms
+   * @remarks Actually the return value of an arrow function passed to {@linkcode foundry.utils.debounce} with a timeout of 50ms
    */
   debounceSetOcclusion: (occluded: boolean) => boolean;
 
+  /**
+   * @remarks Actually an override of {@linkcode foundry.canvas.primary.CanvasTransformMixin.AnyMixed.updateCanvasTransform | CanvasTransformMixin#updateCanvasTransform}
+   */
   updateCanvasTransform(): void;
 
-  _shouldRenderDepth(): boolean;
+  /**
+   * @remarks Actually an override of {@linkcode foundry.canvas.primary.PrimaryCanvasObjectMixin.AnyMixed._shouldRenderDepth | PrimaryCanvasObjectMixin#_shouldRenderDepth}
+   */
+  protected _shouldRenderDepth(): boolean;
 
   /**
    * Test whether a specific Token occludes this PCO.
@@ -124,28 +134,24 @@ declare class PrimaryOccludableObject {
   testOcclusion(token: Token.Implementation, options?: PrimaryOccludableObjectMixin.TestOcclusionOptions): boolean;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "`#roof` is deprecated in favor of more granular options: `#restrictsLight` and `#restrictsWeather`"
+   * @deprecated "`#roof` is deprecated in favor of more granular options: {@linkcode PrimaryOccludableObject.restrictsLight | #restrictsLight}
+   * and {@linkcode PrimaryOccludableObject.restrictsWeather | #restrictsWeather}" (since v12, until v14)
    */
   get roof(): boolean;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "#roof is deprecated in favor of more granular options: #restrictsLight and #restrictsWeather"
+   * @deprecated "`#roof` is deprecated in favor of more granular options: {@linkcode PrimaryOccludableObject.restrictsLight | #restrictsLight}
+   * and {@linkcode PrimaryOccludableObject.restrictsWeather | #restrictsWeather}" (since v12, until v14)
    */
   set roof(enabled);
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "#containsPixel is deprecated. Use #containsCanvasPoint instead."
+   * @remarks "`#containsPixel` is deprecated. Use {@linkcode PrimaryOccludableObject.containsCanvasPoint | #containsCanvasPoint} instead."
    */
   containsPixel(x: number, y: number, alphaThreshold?: number): boolean;
 
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "PrimaryCanvasObject#renderOcclusion is deprecated in favor of PrimaryCanvasObject#renderDepth"
-   */
-  renderOcclusion(renderer: PIXI.Renderer): void;
+  #PrimaryOccludableObject: true;
 }
 
 declare function PrimaryOccludableObjectMixin<BaseClass extends PrimaryOccludableObjectMixin.BaseClass>(
@@ -159,10 +165,10 @@ declare namespace PrimaryOccludableObjectMixin {
   type BaseClass = PIXI.Container.AnyConstructor;
 
   /** @internal */
-  type _TestOcclusionOptions = NullishProps<{
+  type _TestOcclusionOptions = InexactPartial<{
     /**
      * Test corners of the hit-box in addition to the token center?
-     * @defaultValue `0`
+     * @defaultValue `true`
      */
     corners: boolean;
   }>;
@@ -182,22 +188,46 @@ declare namespace PrimaryOccludableObjectMixin {
   }
 
   interface HoverFadeState {
-    /** The hovered state */
+    /**
+     * The hovered state
+     * @defaultValue `false`
+     */
     hovered: boolean;
 
-    /** The last time when a mouse event was hovering this object */
+    /**
+     * The last time when a mouse event was hovering this object
+     * @defaultValue `0`
+     */
     hoveredTime: number;
 
-    /** The faded state */
+    /**
+     * @defaultValue `0`
+     * @remarks Gets set to the previous `hoveredTime` in {@linkcode foundry.canvas.groups.PrimaryCanvasGroup._onMouseMove | PrimaryCanvasGroup#_onMouseMove}
+     */
+    _hoveredTime: number;
+
+    /**
+     * The faded state
+     * @defaultValue `false`
+     */
     faded: boolean;
 
-    /** The fading state */
+    /**
+     * The fading state
+     * @defaultValue `false`
+     */
     fading: boolean;
 
-    /** The time the fade animation started */
+    /**
+     * The time the fade animation started
+     * @defaultValue `0`
+     */
     fadingTime: number;
 
-    /** The amount of occlusion */
+    /**
+     * The amount of occlusion
+     * @defaultValue `0`
+     */
     occlusion: number;
   }
 }
