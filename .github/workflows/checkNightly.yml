@@ -37,6 +37,4 @@ jobs:
       - name: Type Check (TS Go)
         run: npx tsgo
 
-      # Note(LukeAbby): Currently the beta releases doesn't pass the tests.
-      # This will be enabled again once tests are passing.
-      # - run: npm run test
+      - run: npm run test

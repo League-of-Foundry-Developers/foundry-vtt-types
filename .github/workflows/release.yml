@@ -27,12 +27,15 @@ jobs:
             ${{ runner.OS }}-
       - run: npm ci --cache .npm --prefer-offline
       - run: npm run lint
+
+      - name: Type Check (exactOptionalPropertyTypes = false)
+        run: npx tsc --exactOptionalPropertyTypes false
+
       - name: Type Check (TS Go)
         run: npx tsgo
 
-      # Note(LukeAbby): Currently the beta releases doesn't pass the tests.
-      # This will be enabled again once tests are passing.
-      # - run: npm test
+      - name: Tests
+        run: npm run test -- --run
 
   publish:
     # needs: verify

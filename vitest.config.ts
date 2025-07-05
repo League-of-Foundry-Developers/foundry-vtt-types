@@ -5,6 +5,7 @@ export default defineConfig({
   test: {
     typecheck: {
       tsconfig: "./tests/tsconfig.json",
+      checker: "tsgo",
     },
   },
 });
