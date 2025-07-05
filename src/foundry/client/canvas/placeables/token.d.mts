@@ -693,7 +693,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * @returns The job of the movement pathfinder
    */
   findMovementPath(
-    waypoints: Token.FindMovementPathWaypoint,
+    waypoints: Token.FindMovementPathWaypoint[],
     options?: Token.FindMovementPathOptions,
   ): Token.FindMovementPathJob;
 
