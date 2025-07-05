@@ -125,7 +125,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<User.Implementation | User.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<User.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<User.Implementation, Temporary>>>;
+  ): Promise<Array<User.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: User.UpdateData[] | undefined,
@@ -140,7 +140,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   static override create<Temporary extends boolean | undefined = undefined>(
     data: User.CreateData | User.CreateData[],
     operation?: User.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<User.Implementation, Temporary> | undefined>;
+  ): Promise<User.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: User.UpdateData | undefined,
@@ -161,12 +161,12 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   override getFlag<Scope extends User.Flags.Scope, Key extends User.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<User.Name, Scope, Key>;
+  ): User.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends User.Flags.Scope,
     Key extends User.Flags.Key<Scope>,
-    Value extends Document.GetFlag<User.Name, Scope, Key>,
+    Value extends User.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends User.Flags.Scope, Key extends User.Flags.Key<Scope>>(
@@ -334,7 +334,8 @@ declare namespace BaseUser {
   export import InitializedData = User.InitializedData;
   export import UpdateData = User.UpdateData;
   export import Schema = User.Schema;
-  export import DatabaseOperation = User.Database;
+  export import Database = User.Database;
+  export import TemporaryIf = User.TemporaryIf;
   export import Flags = User.Flags;
   export import PingData = User.PingData;
   export import ActivityData = User.ActivityData;

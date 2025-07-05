@@ -731,7 +731,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
   getFlag<Scope extends TokenDocument.Flags.Scope, Key extends TokenDocument.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<TokenDocument.Name, Scope, Key>;
+  ): TokenDocument.Flags.Get<Scope, Key>;
 
   /**
    * @see {@link foundry.abstract.Document.setFlag | `foundry.abstract.Document#setFlag`}
@@ -739,7 +739,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
   setFlag<
     Scope extends TokenDocument.Flags.Scope,
     Key extends TokenDocument.Flags.Key<Scope>,
-    Value extends Document.GetFlag<TokenDocument.Name, Scope, Key>,
+    Value extends TokenDocument.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   /**

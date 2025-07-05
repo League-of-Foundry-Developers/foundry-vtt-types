@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-declare global {
+declare module "fvtt-types/configuration" {
   interface FlagConfig {
     WallDocument: {
       foobar?: boolean;

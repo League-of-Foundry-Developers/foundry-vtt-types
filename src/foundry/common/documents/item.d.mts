@@ -125,7 +125,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Item.Implementation | Item.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Item.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<Item.Implementation, Temporary>>>;
+  ): Promise<Array<Item.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: Item.UpdateData[] | undefined,
@@ -140,7 +140,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   static override create<Temporary extends boolean | undefined = undefined>(
     data: Item.CreateData | Item.CreateData[],
     operation?: Item.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<Item.Implementation, Temporary> | undefined>;
+  ): Promise<Item.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: Item.UpdateData | undefined,
@@ -194,12 +194,12 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   override getFlag<Scope extends Item.Flags.Scope, Key extends Item.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<Item.Name, Scope, Key>;
+  ): Item.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends Item.Flags.Scope,
     Key extends Item.Flags.Key<Scope>,
-    Value extends Document.GetFlag<Item.Name, Scope, Key>,
+    Value extends Item.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends Item.Flags.Scope, Key extends Item.Flags.Key<Scope>>(
@@ -371,7 +371,8 @@ declare namespace BaseItem {
   export import InitializedData = Item.InitializedData;
   export import UpdateData = Item.UpdateData;
   export import Schema = Item.Schema;
-  export import DatabaseOperation = Item.Database;
+  export import Database = Item.Database;
+  export import TemporaryIf = Item.TemporaryIf;
   export import Flags = Item.Flags;
   export import GetDefaultArtworkReturn = Item.GetDefaultArtworkReturn;
 

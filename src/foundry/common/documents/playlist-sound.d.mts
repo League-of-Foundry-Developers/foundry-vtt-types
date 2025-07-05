@@ -90,7 +90,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<PlaylistSound.Implementation | PlaylistSound.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<PlaylistSound.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<PlaylistSound.Implementation, Temporary>>>;
+  ): Promise<Array<PlaylistSound.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: PlaylistSound.UpdateData[] | undefined,
@@ -105,7 +105,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   static override create<Temporary extends boolean | undefined = undefined>(
     data: PlaylistSound.CreateData | PlaylistSound.CreateData[],
     operation?: PlaylistSound.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<PlaylistSound.Implementation, Temporary> | undefined>;
+  ): Promise<PlaylistSound.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: PlaylistSound.UpdateData | undefined,
@@ -129,12 +129,12 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   override getFlag<Scope extends PlaylistSound.Flags.Scope, Key extends PlaylistSound.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<PlaylistSound.Name, Scope, Key>;
+  ): PlaylistSound.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends PlaylistSound.Flags.Scope,
     Key extends PlaylistSound.Flags.Key<Scope>,
-    Value extends Document.GetFlag<PlaylistSound.Name, Scope, Key>,
+    Value extends PlaylistSound.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends PlaylistSound.Flags.Scope, Key extends PlaylistSound.Flags.Key<Scope>>(
@@ -308,7 +308,8 @@ declare namespace BasePlaylistSound {
   export import InitializedData = PlaylistSound.InitializedData;
   export import UpdateData = PlaylistSound.UpdateData;
   export import Schema = PlaylistSound.Schema;
-  export import DatabaseOperation = PlaylistSound.Database;
+  export import Database = PlaylistSound.Database;
+  export import TemporaryIf = PlaylistSound.TemporaryIf;
   export import Flags = PlaylistSound.Flags;
 
   namespace Internal {

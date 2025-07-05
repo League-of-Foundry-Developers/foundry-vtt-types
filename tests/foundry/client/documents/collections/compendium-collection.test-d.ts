@@ -69,11 +69,11 @@ const itemCollection = new CompendiumCollection({
   folders: [],
 });
 expectTypeOf((await itemCollection.getIndex()).get("some id", { strict: true })).toEqualTypeOf<
-  { _id: string; uuid: string } & DeepPartial<foundry.documents.BaseItem["_source"]>
+  { _id: string; uuid: string } & DeepPartial<Item.Source>
 >();
 expectTypeOf(
   (await itemCollection.getIndex({ fields: ["name", "effects", "system"] })).get("some id", { strict: true }),
-).toEqualTypeOf<{ _id: string; uuid: string } & DeepPartial<foundry.documents.BaseItem["_source"]>>();
+).toEqualTypeOf<{ _id: string; uuid: string } & DeepPartial<Item.Source>>();
 
 expectTypeOf(await itemCollection.getDocuments()).toEqualTypeOf<Item.Implementation[]>(); // get all items
 expectTypeOf(await itemCollection.getDocuments({})).toEqualTypeOf<Item.Implementation[]>(); // get all items

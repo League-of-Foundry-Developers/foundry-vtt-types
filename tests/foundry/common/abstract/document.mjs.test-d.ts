@@ -58,7 +58,7 @@ if (user) {
 // test creation of embedded documents
 declare const scene: Scene.Implementation;
 expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: true })).toEqualTypeOf<
-  Promise<NoteDocument.Implementation[] | undefined> // See #3271
+  Promise<NoteDocument.Stored[] | undefined> // Should be `.Implementation` as it can be temporary. See #3271
 >();
 expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: false })).toEqualTypeOf<
   Promise<NoteDocument.Stored[] | undefined>
@@ -75,7 +75,7 @@ if (item) {
   expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item.Stored>();
 }
 
-declare global {
+declare module "fvtt-types/configuration" {
   interface FlagConfig {
     Combatant: {
       "my-system": {

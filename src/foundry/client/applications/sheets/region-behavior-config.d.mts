@@ -24,7 +24,7 @@ declare class RegionBehaviorConfig<
   Configuration,
   RenderOptions
 > {
-  constructor(options: DeepPartial<Configuration> & { document: Document });
+  constructor(options: DocumentSheetV2.InputOptions<Configuration>);
 
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;

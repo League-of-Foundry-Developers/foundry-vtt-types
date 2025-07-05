@@ -492,25 +492,32 @@ declare namespace Cards {
   }
 
   /**
+   * If `Temporary` is true then `Cards.Implementation`, otherwise `Cards.Stored`.
+   */
+  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
+    ? Cards.Implementation
+    : Cards.Stored;
+
+  /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
-  interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+  interface Flags extends Document.Internal.ConfiguredFlagsForName<Name> {}
 
   namespace Flags {
     /**
      * The valid scopes for the flags on this document e.g. `"core"` or `"dnd5e"`.
      */
-    type Scope = Document.FlagKeyOf<Flags>;
+    type Scope = Document.Internal.FlagKeyOf<Flags>;
 
     /**
      * The valid keys for a certain scope for example if the scope is "core" then a valid key may be `"sheetLock"` or `"viewMode"`.
      */
-    type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+    type Key<Scope extends Flags.Scope> = Document.Internal.FlagKeyOf<Document.Internal.FlagGetKey<Flags, Scope>>;
 
     /**
      * Gets the type of a particular flag given a `Scope` and a `Key`.
      */
-    type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
+    type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
   type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
@@ -712,7 +719,7 @@ declare namespace Cards {
   /**
    * The arguments to construct the document.
    *
-   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * @deprecated Writing the signature directly has helped reduce circularities and therefore is
    * now recommended.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -765,7 +772,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Cards.Implementation | Cards.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Cards.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<Cards.Implementation, Temporary>>>;
+  ): Promise<Array<Cards.TemporaryIf<Temporary>>>;
 
   /**
    * Deal one or more cards from this Cards document to each of a provided array of Cards destinations.

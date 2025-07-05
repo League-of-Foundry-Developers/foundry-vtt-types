@@ -15,4 +15,4 @@ expectTypeOf((await table.roll()).results).toEqualTypeOf<TableResult.Implementat
 expectTypeOf(table.displayRoll).toEqualTypeOf<boolean>();
 
 declare const folder: Folder.Implementation;
-expectTypeOf(await RollTable.fromFolder(folder)).toEqualTypeOf<RollTable.Implementation | undefined>();
+expectTypeOf(await RollTable.fromFolder(folder)).toEqualTypeOf<RollTable.Stored | undefined>();

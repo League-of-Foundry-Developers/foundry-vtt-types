@@ -117,7 +117,7 @@ declare abstract class BaseTableResult<
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<TableResult.Implementation | TableResult.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TableResult.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<TableResult.Implementation, Temporary>>>;
+  ): Promise<Array<TableResult.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: TableResult.UpdateData[] | undefined,
@@ -132,7 +132,7 @@ declare abstract class BaseTableResult<
   static override create<Temporary extends boolean | undefined = undefined>(
     data: TableResult.CreateData | TableResult.CreateData[],
     operation?: TableResult.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<TableResult.Implementation, Temporary> | undefined>;
+  ): Promise<TableResult.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: TableResult.UpdateData | undefined,
@@ -153,12 +153,12 @@ declare abstract class BaseTableResult<
   override getFlag<Scope extends TableResult.Flags.Scope, Key extends TableResult.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<TableResult.Name, Scope, Key>;
+  ): TableResult.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends TableResult.Flags.Scope,
     Key extends TableResult.Flags.Key<Scope>,
-    Value extends Document.GetFlag<TableResult.Name, Scope, Key>,
+    Value extends TableResult.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends TableResult.Flags.Scope, Key extends TableResult.Flags.Key<Scope>>(
@@ -338,7 +338,8 @@ declare namespace BaseTableResult {
   export import InitializedData = TableResult.InitializedData;
   export import UpdateData = TableResult.UpdateData;
   export import Schema = TableResult.Schema;
-  export import DatabaseOperation = TableResult.Database;
+  export import Database = TableResult.Database;
+  export import TemporaryIf = TableResult.TemporaryIf;
   export import Flags = TableResult.Flags;
 
   namespace Internal {

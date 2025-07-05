@@ -1,9 +1,9 @@
 import { expectTypeOf } from "vitest";
-import type { FixedInstanceType, InterfaceToObject, RemoveIndexSignatures, ValueOf } from "fvtt-types/utils";
+import type { InterfaceToObject } from "fvtt-types/utils";
 import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
+
 import BaseRegion = foundry.documents.BaseRegion;
 import Document = foundry.abstract.Document;
-import type { BaseShapeData } from "../../../../src/foundry/common/data/data.d.mts";
 
 class TestRegion extends BaseRegion {}
 
@@ -91,10 +91,15 @@ expectTypeOf(myRegion).toEqualTypeOf<BaseRegion>();
 expectTypeOf(myRegion._id).toEqualTypeOf<string | null>();
 expectTypeOf(myRegion.name).toBeString();
 expectTypeOf(myRegion.color).toEqualTypeOf<Color>();
-
-// TODO: why is this wrong
-expectTypeOf(myRegion.shapes).toEqualTypeOf<FixedInstanceType<ValueOf<RemoveIndexSignatures<BaseShapeData.Types>>>>();
-
+expectTypeOf(myRegion.shapes).toEqualTypeOf<
+  Array<
+    // TODO(LukeAbby): Arguably these merges shouldn't be being done as they're already a class instance.
+    | ({ type: "rectangle" } & foundry.data.RectangleShapeData)
+    | ({ type: "circle" } & foundry.data.CircleShapeData)
+    | ({ type: "ellipse" } & foundry.data.EllipseShapeData)
+    | ({ type: "polygon" } & foundry.data.PolygonShapeData)
+  >
+>();
 expectTypeOf(myRegion.elevation.bottom).toEqualTypeOf<number | null>();
 expectTypeOf(myRegion.elevation.top).toEqualTypeOf<number | null>();
 

@@ -78,7 +78,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<AmbientSoundDocument.Implementation | AmbientSoundDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<AmbientSoundDocument.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<AmbientSoundDocument.Implementation, Temporary>>>;
+  ): Promise<Array<AmbientSoundDocument.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: AmbientSoundDocument.UpdateData[] | undefined,
@@ -93,7 +93,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   static override create<Temporary extends boolean | undefined = undefined>(
     data: AmbientSoundDocument.CreateData | AmbientSoundDocument.CreateData[],
     operation?: AmbientSoundDocument.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<AmbientSoundDocument.Implementation, Temporary> | undefined>;
+  ): Promise<AmbientSoundDocument.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: AmbientSoundDocument.UpdateData | undefined,
@@ -117,12 +117,12 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   override getFlag<Scope extends AmbientSoundDocument.Flags.Scope, Key extends AmbientSoundDocument.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<AmbientSoundDocument.Name, Scope, Key>;
+  ): AmbientSoundDocument.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends AmbientSoundDocument.Flags.Scope,
     Key extends AmbientSoundDocument.Flags.Key<Scope>,
-    Value extends Document.GetFlag<AmbientSoundDocument.Name, Scope, Key>,
+    Value extends AmbientSoundDocument.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends AmbientSoundDocument.Flags.Scope, Key extends AmbientSoundDocument.Flags.Key<Scope>>(
@@ -296,7 +296,8 @@ declare namespace BaseAmbientSound {
   export import InitializedData = AmbientSoundDocument.InitializedData;
   export import UpdateData = AmbientSoundDocument.UpdateData;
   export import Schema = AmbientSoundDocument.Schema;
-  export import DatabaseOperation = AmbientSoundDocument.Database;
+  export import Database = AmbientSoundDocument.Database;
+  export import TemporaryIf = AmbientSoundDocument.TemporaryIf;
   export import Flags = AmbientSoundDocument.Flags;
 
   namespace Internal {

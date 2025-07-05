@@ -3,7 +3,7 @@ import type FormApplication from "#client/appv1/api/form-application-v1.mjs";
 import type ApplicationV2 from "#client/applications/api/application.d.mts";
 import type { CustomFormInput } from "#client/applications/forms/fields.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
-import type { DataField } from "#common/data/fields.d.mts";
+import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * A class responsible for managing defined game settings or settings menus.
@@ -235,14 +235,18 @@ declare namespace ClientSettings {
     | (T extends symbol ? typeof Symbol : never)
     | (T extends bigint ? typeof BigInt : never)
     | (T extends readonly (infer V)[] ? typeof Array<V> : never)
-    | (T extends AnyObject ? typeof Object : never);
+    | (T extends AnyObject ? typeof Object : never)
+    // TODO(LukeAbby): If `DataModel.AnyConstructor` can be used in `RuntimeType` this can be switched to `...args: never`
+    | (T extends DataModel.Any ? new (...args: any[]) => T : never);
 
   type SettingCreateData<N extends Namespace, K extends KeyFor<N>> = ToSettingCreateData<ConfiguredType<N, K>>;
 
   type ToSettingCreateData<T extends Type> = ReplaceUndefinedWithNull<
     | SettingType<T>
     // TODO(LukeAbby): The `fromSource` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
-    | (T extends (abstract new (...args: infer _1) => infer Instance extends DataModel.Any) ? Instance : never)
+    | (T extends (abstract new (...args: infer _1) => infer Instance extends DataModel.Any)
+        ? SchemaField.CreateData<DataModel.SchemaOf<Instance>>
+        : never)
   >;
 
   type SettingInitializedType<N extends Namespace, K extends KeyFor<N>> = ToSettingInitializedType<

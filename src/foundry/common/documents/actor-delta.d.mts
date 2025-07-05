@@ -148,7 +148,7 @@ declare abstract class BaseActorDelta<
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<ActorDelta.Implementation | ActorDelta.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ActorDelta.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<ActorDelta.Implementation, Temporary>>>;
+  ): Promise<Array<ActorDelta.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: ActorDelta.UpdateData[] | undefined,
@@ -163,7 +163,7 @@ declare abstract class BaseActorDelta<
   static override create<Temporary extends boolean | undefined = undefined>(
     data: ActorDelta.CreateData | ActorDelta.CreateData[],
     operation?: ActorDelta.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<ActorDelta.Implementation, Temporary> | undefined>;
+  ): Promise<ActorDelta.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: ActorDelta.UpdateData | undefined,
@@ -217,12 +217,12 @@ declare abstract class BaseActorDelta<
   override getFlag<Scope extends ActorDelta.Flags.Scope, Key extends ActorDelta.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<ActorDelta.Name, Scope, Key>;
+  ): ActorDelta.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends ActorDelta.Flags.Scope,
     Key extends ActorDelta.Flags.Key<Scope>,
-    Value extends Document.GetFlag<ActorDelta.Name, Scope, Key>,
+    Value extends ActorDelta.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends ActorDelta.Flags.Scope, Key extends ActorDelta.Flags.Key<Scope>>(
@@ -406,7 +406,8 @@ declare namespace BaseActorDelta {
   export import InitializedData = ActorDelta.InitializedData;
   export import UpdateData = ActorDelta.UpdateData;
   export import Schema = ActorDelta.Schema;
-  export import DatabaseOperation = ActorDelta.Database;
+  export import Database = ActorDelta.Database;
+  export import TemporaryIf = ActorDelta.TemporaryIf;
   export import Flags = ActorDelta.Flags;
 
   /**

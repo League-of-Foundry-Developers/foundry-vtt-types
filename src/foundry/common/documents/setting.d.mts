@@ -87,7 +87,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Setting.Implementation | Setting.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Setting.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<Setting.Implementation, Temporary>>>;
+  ): Promise<Array<Setting.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: Setting.UpdateData[] | undefined,
@@ -102,7 +102,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   static override create<Temporary extends boolean | undefined = undefined>(
     data: Setting.CreateData | Setting.CreateData[],
     operation?: Setting.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<Setting.Implementation, Temporary> | undefined>;
+  ): Promise<Setting.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: Setting.UpdateData | undefined,
@@ -285,7 +285,8 @@ declare namespace BaseSetting {
   export import InitializedData = Setting.InitializedData;
   export import UpdateData = Setting.UpdateData;
   export import Schema = Setting.Schema;
-  export import DatabaseOperation = Setting.Database;
+  export import Database = Setting.Database;
+  export import TemporaryIf = Setting.TemporaryIf;
 
   namespace Internal {
     // Note(LukeAbby): The point of this is to give the base class of `Setting` a name.

@@ -229,15 +229,17 @@ declare namespace DocumentCollection {
     invalid?: boolean | undefined;
   }
 
-  type GetReturnType<DocumentType extends Document.Type, Options extends GetOptions | undefined> = _ApplyInvalid<
-    DocumentType,
-    GetKey<Options, "invalid", false>
-  >;
+  type GetReturnType<DocumentType extends Document.Type, Options extends GetOptions | undefined> =
+    | _ApplyInvalid<DocumentType, GetKey<Options, "invalid", false>>
+    | _ApplyStrict<GetKey<Options, "strict", undefined>>;
 
   /** @internal */
   type _ApplyInvalid<DocumentType extends Document.Type, Invalid extends boolean | undefined> = Invalid extends true
     ? Document.InvalidForName<DocumentType> | Document.StoredForName<DocumentType>
     : Document.StoredForName<DocumentType>;
+
+  /** @internal */
+  type _ApplyStrict<Strict extends boolean | undefined> = Strict extends true ? never : undefined;
 }
 
 export default DocumentCollection;

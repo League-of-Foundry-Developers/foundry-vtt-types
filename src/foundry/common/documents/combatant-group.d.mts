@@ -87,7 +87,7 @@ declare abstract class BaseCombatantGroup<
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<CombatantGroup.Implementation | CombatantGroup.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<CombatantGroup.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<CombatantGroup.Implementation, Temporary>>>;
+  ): Promise<Array<CombatantGroup.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: CombatantGroup.UpdateData[] | undefined,
@@ -102,7 +102,7 @@ declare abstract class BaseCombatantGroup<
   static override create<Temporary extends boolean | undefined = undefined>(
     data: CombatantGroup.CreateData | CombatantGroup.CreateData[],
     operation?: CombatantGroup.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<CombatantGroup.Implementation, Temporary> | undefined>;
+  ): Promise<CombatantGroup.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: CombatantGroup.UpdateData | undefined,
@@ -124,12 +124,12 @@ declare abstract class BaseCombatantGroup<
   override getFlag<Scope extends CombatantGroup.Flags.Scope, Key extends CombatantGroup.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<CombatantGroup.Name, Scope, Key>;
+  ): CombatantGroup.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends CombatantGroup.Flags.Scope,
     Key extends CombatantGroup.Flags.Key<Scope>,
-    Value extends Document.GetFlag<CombatantGroup.Name, Scope, Key>,
+    Value extends CombatantGroup.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends CombatantGroup.Flags.Scope, Key extends CombatantGroup.Flags.Key<Scope>>(
@@ -306,7 +306,8 @@ declare namespace BaseCombatantGroup {
   export import InitializedData = CombatantGroup.InitializedData;
   export import UpdateData = CombatantGroup.UpdateData;
   export import Schema = CombatantGroup.Schema;
-  export import DatabaseOperation = CombatantGroup.Database;
+  export import Database = CombatantGroup.Database;
+  export import TemporaryIf = CombatantGroup.TemporaryIf;
   export import Flags = CombatantGroup.Flags;
 
   namespace Internal {

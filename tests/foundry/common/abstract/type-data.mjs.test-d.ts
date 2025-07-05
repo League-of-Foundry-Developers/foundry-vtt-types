@@ -12,6 +12,8 @@ import fields = foundry.data.fields;
 
 /* attempting to use the example as a test */
 
+// TODO(LukeAbby): This file has some terrible type display that should be cleaned up.
+
 export interface QuestSchema extends JournalEntryPage.Schema {
   description: fields.HTMLField<{ required: false; blank: true; initial: "" }>;
   steps: fields.ArrayField<fields.StringField<{ required: true }>>;
@@ -66,6 +68,8 @@ class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementat
     // `some` is partial because of being new in `prepareBaseData`.
     // `deep` is optional due to the type definition.
     expectTypeOf(this.some!.deep!.baseProp).toEqualTypeOf<string>();
+
+    // `prop` is not optional to prevent broken assignments.
     expectTypeOf(this.some!.deep!.prop).toEqualTypeOf<string>();
 
     // Should match the schema type, not the type after derived data.

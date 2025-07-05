@@ -167,7 +167,7 @@ expectTypeOf(firstChange.mode).toEqualTypeOf<CONST.ACTIVE_EFFECT_MODES>();
 expectTypeOf(firstChange.priority).toEqualTypeOf<number | null | undefined>();
 
 expectTypeOf(fullTestAE.disabled).toBeBoolean();
-expectTypeOf(fullTestAE.duration.combat).toEqualTypeOf<Combat.Implementation | null>();
+expectTypeOf(fullTestAE.duration.combat).toEqualTypeOf<Combat.Stored | null>();
 expectTypeOf(fullTestAE.transfer).toBeBoolean();
 expectTypeOf(fullTestAE.statuses).toEqualTypeOf<Set<string>>();
 expectTypeOf(fullTestAE.sort).toBeNumber();

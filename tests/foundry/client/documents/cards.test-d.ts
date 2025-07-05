@@ -129,7 +129,7 @@ expectTypeOf(cards.passDialog()).toEqualTypeOf<Promise<Cards.Implementation | nu
 
 // playDialog
 expectTypeOf(cards.playDialog(new Card.implementation({ name: "Some Card" }))).toEqualTypeOf<
-  Promise<Card.Implementation[] | void | null>
+  Promise<Card.Implementation[] | null>
 >();
 
 // resetDialog

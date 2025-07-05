@@ -121,7 +121,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Combat.Implementation | Combat.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Combat.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<Combat.Implementation, Temporary>>>;
+  ): Promise<Array<Combat.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: Combat.UpdateData[] | undefined,
@@ -136,7 +136,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   static override create<Temporary extends boolean | undefined = undefined>(
     data: Combat.CreateData | Combat.CreateData[],
     operation?: Combat.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<Combat.Implementation, Temporary> | undefined>;
+  ): Promise<Combat.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: Combat.UpdateData | undefined,
@@ -190,12 +190,12 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   override getFlag<Scope extends Combat.Flags.Scope, Key extends Combat.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<Combat.Name, Scope, Key>;
+  ): Combat.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends Combat.Flags.Scope,
     Key extends Combat.Flags.Key<Scope>,
-    Value extends Document.GetFlag<Combat.Name, Scope, Key>,
+    Value extends Combat.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends Combat.Flags.Scope, Key extends Combat.Flags.Key<Scope>>(
@@ -367,7 +367,8 @@ declare namespace BaseCombat {
   export import InitializedData = Combat.InitializedData;
   export import UpdateData = Combat.UpdateData;
   export import Schema = Combat.Schema;
-  export import DatabaseOperation = Combat.Database;
+  export import Database = Combat.Database;
+  export import TemporaryIf = Combat.TemporaryIf;
   export import Flags = Combat.Flags;
 
   namespace Internal {

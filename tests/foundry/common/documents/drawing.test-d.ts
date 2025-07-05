@@ -121,7 +121,7 @@ const myDrawing = new TestBaseDrawing({ shape: undefined });
 expectTypeOf(myDrawing).toEqualTypeOf<BaseDrawing>();
 
 expectTypeOf(myDrawing._id).toEqualTypeOf<string | null>();
-expectTypeOf(myDrawing.author).toEqualTypeOf<User.Implementation>();
+expectTypeOf(myDrawing.author).toEqualTypeOf<User.Stored | null>();
 
 // ShapeData schema tests are in `tests/foundry/common/data/data.test-d.ts`
 expectTypeOf(myDrawing.shape).toEqualTypeOf<foundry.data.ShapeData>();

@@ -102,7 +102,7 @@ declare abstract class BaseCombatant<
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Combatant.Implementation | Combatant.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Combatant.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<Combatant.Implementation, Temporary>>>;
+  ): Promise<Array<Combatant.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: Combatant.UpdateData[] | undefined,
@@ -117,7 +117,7 @@ declare abstract class BaseCombatant<
   static override create<Temporary extends boolean | undefined = undefined>(
     data: Combatant.CreateData | Combatant.CreateData[],
     operation?: Combatant.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<Combatant.Implementation, Temporary> | undefined>;
+  ): Promise<Combatant.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: Combatant.UpdateData | undefined,
@@ -138,12 +138,12 @@ declare abstract class BaseCombatant<
   override getFlag<Scope extends Combatant.Flags.Scope, Key extends Combatant.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<Combatant.Name, Scope, Key>;
+  ): Combatant.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends Combatant.Flags.Scope,
     Key extends Combatant.Flags.Key<Scope>,
-    Value extends Document.GetFlag<Combatant.Name, Scope, Key>,
+    Value extends Combatant.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends Combatant.Flags.Scope, Key extends Combatant.Flags.Key<Scope>>(
@@ -324,7 +324,8 @@ declare namespace BaseCombatant {
   export import InitializedData = Combatant.InitializedData;
   export import UpdateData = Combatant.UpdateData;
   export import Schema = Combatant.Schema;
-  export import DatabaseOperation = Combatant.Database;
+  export import Database = Combatant.Database;
+  export import TemporaryIf = Combatant.TemporaryIf;
   export import Flags = Combatant.Flags;
 
   namespace Internal {

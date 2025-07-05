@@ -55,20 +55,37 @@ type UnmergePartial<
   [K in keyof Initialized as K extends keyof BaseData ? never : K]: Initialized[K];
 };
 
-type MergePartial<BaseData, DerivedData> = {
+type MergePartial<BaseThis, BaseData, DerivedData> = {
+  [K in keyof BaseThis as K extends keyof BaseData | keyof DerivedData ? never : K]: BaseThis[K];
+} & {
   [K in keyof BaseData as K extends keyof DerivedData ? never : K]: BaseData[K];
 } & {
-  [K in keyof DerivedData as K extends PartialKey<BaseData, DerivedData> ? K : never]?: K extends keyof BaseData
-    ? _MergePartial<BaseData[K], DerivedData[K]>
-    : DerivedData[K];
+  [K in keyof DerivedData as K extends PartialKey<BaseData, DerivedData> ? K : never]?: _MergePartial<
+    K,
+    BaseThis,
+    BaseData,
+    DerivedData[K]
+  >;
 } & {
-  [K in keyof DerivedData as K extends PartialKey<BaseData, DerivedData> ? never : K]: K extends keyof BaseData
-    ? _MergePartial<BaseData[K], DerivedData[K]>
-    : DerivedData[K];
+  [K in keyof DerivedData as K extends PartialKey<BaseData, DerivedData> ? never : K]: _MergePartial<
+    K,
+    BaseThis,
+    BaseData,
+    DerivedData[K]
+  >;
 };
 
 // TODO(LukeAbby): The logic here is over-simplified.
-type _MergePartial<Base, Derived> = [Base, Derived] extends [object, object] ? MergePartial<Base, Derived> : Derived;
+type _MergePartial<K extends PropertyKey, BaseThis, BaseData, Derived> =
+  IsObject<Derived> extends true ? MergePartial<GetObject<BaseThis, K>, GetObject<BaseData, K>, Derived> : Derived;
+
+type GetObject<T, K extends PropertyKey> = T extends { readonly [_ in K]?: infer Result }
+  ? IsObject<Result> extends true
+    ? Result
+    : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      {}
+  : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    {};
 
 type PartialKey<BaseData, DerivedData> = {
   [K in keyof MetadataFor<DerivedData>]: _PartialKey<K, GetKey<MetadataFor<BaseData>, K>, MetadataFor<DerivedData>[K]>;
@@ -162,8 +179,16 @@ declare namespace TypeDataModel {
       : never;
 
   type PrepareDerivedDataThis<BaseThis extends Internal.Instance.Any> =
-    BaseThis extends Internal.Instance<infer _1, infer _2, infer _3, infer BaseData, infer DerivedData>
-      ? Override<BaseThis, MergePartial<RemoveIndexSignatures<BaseData>, RemoveIndexSignatures<DerivedData>>>
+    BaseThis extends Internal.Instance<infer Schema, infer _1, infer _2, infer BaseData, infer DerivedData>
+      ? Override<
+          BaseThis,
+          MergePartial<
+            // TODO: Put back in `BaseThis` and write as yet another unmerge
+            SchemaField.InitializedData<Schema>,
+            RemoveIndexSignatures<BaseData>,
+            RemoveIndexSignatures<DerivedData>
+          >
+        >
       : never;
 
   type ParentAssignmentType<Schema extends DataSchema, Parent extends Document.Internal.Instance.Any> = SimpleMerge<

@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
 
-declare const scene: foundry.documents.BaseScene;
+declare const scene: foundry.documents.Scene;
 const doc = new TokenDocument.implementation({}, { parent: scene });
 expectTypeOf(doc.actor).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(doc.isOwner).toEqualTypeOf<boolean>();

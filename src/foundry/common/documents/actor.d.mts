@@ -142,7 +142,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Actor.Implementation | Actor.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Actor.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<Actor.Implementation, Temporary>>>;
+  ): Promise<Array<Actor.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: Actor.UpdateData[] | undefined,
@@ -157,7 +157,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   static override create<Temporary extends boolean | undefined = undefined>(
     data: Actor.CreateData | Actor.CreateData[],
     operation?: Actor.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<Actor.Implementation, Temporary> | undefined>;
+  ): Promise<Actor.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: Actor.UpdateData | undefined,
@@ -211,12 +211,12 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   override getFlag<Scope extends Actor.Flags.Scope, Key extends Actor.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<Actor.Name, Scope, Key>;
+  ): Actor.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends Actor.Flags.Scope,
     Key extends Actor.Flags.Key<Scope>,
-    Value extends Document.GetFlag<Actor.Name, Scope, Key>,
+    Value extends Actor.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends Actor.Flags.Scope, Key extends Actor.Flags.Key<Scope>>(
@@ -376,7 +376,8 @@ declare namespace BaseActor {
   export import InitializedData = Actor.InitializedData;
   export import UpdateData = Actor.UpdateData;
   export import Schema = Actor.Schema;
-  export import DatabaseOperation = Actor.Database;
+  export import Database = Actor.Database;
+  export import TemporaryIf = Actor.TemporaryIf;
   export import Flags = Actor.Flags;
   export import GetDefaultArtworkReturn = Actor.GetDefaultArtworkReturn;
   export import GetDefaultArtworkTextureReturn = Actor.GetDefaultArtworkTextureReturn;

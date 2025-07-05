@@ -106,7 +106,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Folder.Implementation | Folder.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Folder.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<Folder.Implementation, Temporary>>>;
+  ): Promise<Array<Folder.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: Folder.UpdateData[] | undefined,
@@ -121,7 +121,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   static override create<Temporary extends boolean | undefined = undefined>(
     data: Folder.CreateData | Folder.CreateData[],
     operation?: Folder.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<Folder.Implementation, Temporary> | undefined>;
+  ): Promise<Folder.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: Folder.UpdateData | undefined,
@@ -140,12 +140,12 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   override getFlag<Scope extends Folder.Flags.Scope, Key extends Folder.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<Folder.Name, Scope, Key>;
+  ): Folder.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends Folder.Flags.Scope,
     Key extends Folder.Flags.Key<Scope>,
-    Value extends Document.GetFlag<Folder.Name, Scope, Key>,
+    Value extends Folder.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends Folder.Flags.Scope, Key extends Folder.Flags.Key<Scope>>(
@@ -315,7 +315,8 @@ declare namespace BaseFolder {
   export import InitializedData = Folder.InitializedData;
   export import UpdateData = Folder.UpdateData;
   export import Schema = Folder.Schema;
-  export import DatabaseOperation = Folder.Database;
+  export import Database = Folder.Database;
+  export import TemporaryIf = Folder.TemporaryIf;
   export import Flags = Folder.Flags;
 
   namespace Internal {

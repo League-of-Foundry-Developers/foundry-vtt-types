@@ -55,7 +55,7 @@ expectTypeOf(user.query("draw-steel.spendHeroToken", queryPayload, queryConfig))
 
 declare class ConfiguredUser extends User {}
 
-declare global {
+declare module "fvtt-types/configuration" {
   interface DocumentClassConfig {
     User: typeof ConfiguredUser;
   }

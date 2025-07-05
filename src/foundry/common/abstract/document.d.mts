@@ -1193,6 +1193,40 @@ declare namespace Document {
       // TODO: Handle as part of the UUID update.
       uuid?: string;
     }
+
+    // Like `keyof` but handles properties desirable for flags:
+    // - `never` returns `never` (instead of `PropertyKey`).
+    // - `unknown` returns `string` (instead of `never`).
+    // - Allows any key in a union of objects (instead of just the common keys).
+    // - Strips out non string keys.
+    type FlagKeyOf<T> = unknown extends T
+      ? string
+      : [T] extends [never]
+        ? never
+        : T extends unknown
+          ? // Note(LukeAbby): This is a quick hack to get core flags on all documents.
+            // This should definitely be improved.
+            keyof (T & CoreFlags) & string
+          : never;
+
+    type FlagGetKey<T, K extends PropertyKey> = T extends unknown
+      ? K extends keyof (T & CoreFlags)
+        ? (T & CoreFlags)[K]
+        : never
+      : never;
+
+    // Note(LukeAbby): It's at times been very important for `GetFlag` to be covariant over `ConcreteSchema`.
+    // If it isn't then issues arise where the `Document` type ends up becoming invariant.
+    // Currently it is actually contravariant over `ConcreteSchema` and this may cause issues (because of the usage of `keyof`).
+    // Unfortunately it's not easy to avoid because the typical `GetKey` trick has issues between `never`, not defined at all, and `unknown` etc.
+    type GetFlag<Flags extends object, S extends string, K extends string> = FlagGetKey<
+      FlagGetKey<Flags & CoreFlags, S>,
+      K
+    >;
+
+    // The type `{}` is useful here because in an intersection it reduces down to nothing unlike `EmptyObject`.
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    type ConfiguredFlagsForName<Name extends Type> = GetKey<FlagConfig, Name, {}>;
   }
 
   /** Any Document, that is a child of the given parent Document. */
@@ -1322,11 +1356,6 @@ declare namespace Document {
     NameFor<ConcreteDocument>
   >;
 
-  type TemporaryIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true
-    ? D
-    : // eslint-disable-next-line @typescript-eslint/no-deprecated
-      Stored<D>;
-
   type StoredForName<DocumentType extends Document.Type> =
     | (DocumentType extends "ActiveEffect" ? ActiveEffect.Stored : never)
     | (DocumentType extends "ActorDelta" ? ActorDelta.Stored : never)
@@ -1411,10 +1440,6 @@ declare namespace Document {
 
   type ConfiguredSourceForName<Name extends Type> = GetKey<SourceConfig, Name, EmptyObject>;
 
-  // The type `{}` is useful here because in an intersection it reduces down to nothing unlike `EmptyObject`.
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  type ConfiguredFlagsForName<Name extends Type> = GetKey<FlagConfig, Name, {}>;
-
   type SchemaFor<ConcreteDocument extends Internal.Instance.Any> =
     ConcreteDocument extends Internal.Instance<infer _1, infer Schema, infer _2> ? Schema : never;
 
@@ -1425,44 +1450,6 @@ declare namespace Document {
       ? NonNullable<Schema[Key][" __fvtt_types_internal_initialized_data"]>
       : never;
   };
-
-  type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
-
-  /** @internal */
-  interface OptionsInFlags<Options extends DataField.Options.Any> {
-    readonly flags?: DataField<Options, any>;
-  }
-
-  // These types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
-  // This is much more complex than proving the constraint for `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
-
-  // TODO: This needs to use the derived flags not just how they're initialized.
-  type OptionsForSchema<Schema extends DataSchema> =
-    RemoveIndexSignatures<Schema> extends OptionsInFlags<infer Options> ? DataField.InitializedType<Options> : never;
-
-  // Like `keyof` but handles properties desirable for flags:
-  // - `never` returns `never` (instead of `PropertyKey`).
-  // - `unknown` returns `string` (instead of `never`).
-  // - Allows any key in a union of objects (instead of just the common keys).
-  // - Strips out non string keys.
-  type FlagKeyOf<T> = unknown extends T
-    ? string
-    : [T] extends [never]
-      ? never
-      : T extends unknown
-        ? keyof T & string
-        : never;
-
-  type FlagGetKey<T, K extends PropertyKey> = T extends unknown ? (K extends keyof T ? T[K] : never) : never;
-
-  // Note(LukeAbby): It's at times been very important for `GetFlag` to be covariant over `ConcreteSchema`.
-  // If it isn't then issues arise where the `Document` type ends up becoming invariant.
-  // Currently it is actually contravariant over `ConcreteSchema` and this may cause issues (because of the usage of `keyof`).
-  // Unfortunately it's not easy to avoid because the typical `GetKey` trick has issues between `never`, not defined at all, and `unknown` etc.
-  type GetFlag<Name extends Document.Type, S extends string, K extends string> = FlagGetKey<
-    FlagGetKey<Document.ConfiguredFlagsForName<Name>, S>,
-    K
-  >;
 
   interface CoreFlags {
     core?: {
@@ -2416,13 +2403,13 @@ declare namespace Document {
 
   namespace DropData {
     /**
-     * @deprecated - This type is likely too broad to be useful. Deprecated without replacement.
+     * @deprecated This type is likely too broad to be useful. Deprecated without replacement.
      */
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     type Any = DropData<any>;
 
     /**
-     * @deprecated - This type is a part of the drop data which is now gotten through
+     * @deprecated This type is a part of the drop data which is now gotten through
      * `[Document].DropData`. Use that instead.
      */
     interface Data<T extends Document.Any> {
@@ -2431,7 +2418,7 @@ declare namespace Document {
     }
 
     /**
-     * @deprecated - This type is a part of the drop data which is now gotten through
+     * @deprecated This type is a part of the drop data which is now gotten through
      * `[Document].DropData`. Use that instead.
      */
     interface UUID {
@@ -2451,4 +2438,65 @@ declare namespace Document {
     data?: CreateData,
     context?: Document.ConstructionContext<Parent>,
   ];
+
+  /**
+   * @deprecated This type has been moved to be internal. If you have a need for this type please
+   * let us know.
+   */
+  type ConfiguredFlagsForName<Name extends Type> = Internal.ConfiguredFlagsForName<Name>;
+
+  /**
+   * @deprecated This type is no longer used and will be removed.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type Flags<ConcreteDocument extends Internal.Instance.Any> = OptionsForSchema<SchemaFor<ConcreteDocument>>;
+
+  /**
+   * @internal
+   * @deprecated This type is no longer used and will be removed.
+   */
+  interface OptionsInFlags<Options extends DataField.Options.Any> {
+    readonly flags?: DataField<Options, any>;
+  }
+
+  // These types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
+  // This is much more complex than proving the constraint for `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
+
+  /**
+   * @deprecated This type is being made internal.
+   */
+  type OptionsForSchema<Schema extends DataSchema> =
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    RemoveIndexSignatures<Schema> extends OptionsInFlags<infer Options> ? DataField.InitializedType<Options> : never;
+
+  /**
+   * @deprecated `FlagKeyOf` is being made internal. If you need this for some reason please let
+   * us know.
+   */
+  type FlagKeyOf<T> = Internal.FlagKeyOf<T>;
+
+  /**
+   * @deprecated `FlagGetKey` is being made internal. If you need this for some reason please let
+   * us know.
+   */
+  type FlagGetKey<T, K extends PropertyKey> = Internal.FlagGetKey<T, K>;
+
+  /**
+   * @deprecated `GetFlag` has been moved to be internal. Use `[Document].Flag.Get` instead.
+   * If you need this for some reason please let us know.
+   */
+  type GetFlag<Name extends Document.Type, S extends string, K extends string> = Internal.GetFlag<
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    Extract<Document.ConfiguredFlagsForName<Name>, object>,
+    S,
+    K
+  >;
+
+  /**
+   * @deprecated Use the `TemporaryIf` available on each sub-document.
+   */
+  type TemporaryIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true
+    ? D
+    : // eslint-disable-next-line @typescript-eslint/no-deprecated
+      Stored<D>;
 }

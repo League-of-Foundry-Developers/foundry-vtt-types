@@ -113,7 +113,7 @@ declare abstract class BaseChatMessage<
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<ChatMessage.Implementation | ChatMessage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ChatMessage.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<ChatMessage.Implementation, Temporary>>>;
+  ): Promise<Array<ChatMessage.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: ChatMessage.UpdateData[] | undefined,
@@ -128,7 +128,7 @@ declare abstract class BaseChatMessage<
   static override create<Temporary extends boolean | undefined = undefined>(
     data: ChatMessage.CreateData | ChatMessage.CreateData[],
     operation?: ChatMessage.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<ChatMessage.Implementation, Temporary> | undefined>;
+  ): Promise<ChatMessage.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: ChatMessage.UpdateData | undefined,
@@ -149,12 +149,12 @@ declare abstract class BaseChatMessage<
   override getFlag<Scope extends ChatMessage.Flags.Scope, Key extends ChatMessage.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<ChatMessage.Name, Scope, Key>;
+  ): ChatMessage.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends ChatMessage.Flags.Scope,
     Key extends ChatMessage.Flags.Key<Scope>,
-    Value extends Document.GetFlag<ChatMessage.Name, Scope, Key>,
+    Value extends ChatMessage.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends ChatMessage.Flags.Scope, Key extends ChatMessage.Flags.Key<Scope>>(
@@ -335,7 +335,8 @@ declare namespace BaseChatMessage {
   export import InitializedData = ChatMessage.InitializedData;
   export import UpdateData = ChatMessage.UpdateData;
   export import Schema = ChatMessage.Schema;
-  export import DatabaseOperation = ChatMessage.Database;
+  export import Database = ChatMessage.Database;
+  export import TemporaryIf = ChatMessage.TemporaryIf;
   export import Flags = ChatMessage.Flags;
   export import CoreFlags = ChatMessage.CoreFlags;
   export import GetSpeakerOptions = ChatMessage.GetSpeakerOptions;

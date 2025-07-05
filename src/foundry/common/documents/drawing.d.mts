@@ -121,7 +121,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<DrawingDocument.Implementation | DrawingDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<DrawingDocument.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<DrawingDocument.Implementation, Temporary>>>;
+  ): Promise<Array<DrawingDocument.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: DrawingDocument.UpdateData[] | undefined,
@@ -136,7 +136,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   static override create<Temporary extends boolean | undefined = undefined>(
     data: DrawingDocument.CreateData | DrawingDocument.CreateData[],
     operation?: DrawingDocument.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<DrawingDocument.Implementation, Temporary> | undefined>;
+  ): Promise<DrawingDocument.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: DrawingDocument.UpdateData | undefined,
@@ -160,12 +160,12 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   override getFlag<Scope extends DrawingDocument.Flags.Scope, Key extends DrawingDocument.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<DrawingDocument.Name, Scope, Key>;
+  ): DrawingDocument.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends DrawingDocument.Flags.Scope,
     Key extends DrawingDocument.Flags.Key<Scope>,
-    Value extends Document.GetFlag<DrawingDocument.Name, Scope, Key>,
+    Value extends DrawingDocument.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends DrawingDocument.Flags.Scope, Key extends DrawingDocument.Flags.Key<Scope>>(
@@ -339,7 +339,8 @@ declare namespace BaseDrawing {
   export import InitializedData = DrawingDocument.InitializedData;
   export import UpdateData = DrawingDocument.UpdateData;
   export import Schema = DrawingDocument.Schema;
-  export import DatabaseOperation = DrawingDocument.Database;
+  export import Database = DrawingDocument.Database;
+  export import TemporaryIf = DrawingDocument.TemporaryIf;
   export import Flags = DrawingDocument.Flags;
 
   namespace Internal {

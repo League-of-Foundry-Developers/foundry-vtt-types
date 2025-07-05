@@ -71,7 +71,7 @@ const myTemplate = new TestBaseMeasuredTemplate({
 expectTypeOf(myTemplate).toEqualTypeOf<TestBaseMeasuredTemplate>();
 
 expectTypeOf(myTemplate._id).toEqualTypeOf<string | null>();
-expectTypeOf(myTemplate.author).toEqualTypeOf<User.Implementation>();
+expectTypeOf(myTemplate.author).toEqualTypeOf<User.Stored | null>();
 expectTypeOf(myTemplate.t).toEqualTypeOf<CONST.MEASURED_TEMPLATE_TYPES>();
 expectTypeOf(myTemplate.x).toBeNumber();
 expectTypeOf(myTemplate.y).toBeNumber();
@@ -88,4 +88,4 @@ expectTypeOf(myTemplate.fillColor).toEqualTypeOf<Color>();
 
 // non-schema
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myTemplate.user).toEqualTypeOf<User.Implementation>();
+expectTypeOf(myTemplate.user).toEqualTypeOf<User.Stored | null>();

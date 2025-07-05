@@ -1086,6 +1086,10 @@ declare module "pixi.js" {
   }
 }
 
+declare module "@pixi/utils" {
+  function detectVideoAlphaMode(): Promise<PIXI.ALPHA_MODES>;
+}
+
 declare abstract class AnyPIXIBatchGeometry extends PIXI.BatchGeometry {
   constructor(...args: never);
 }

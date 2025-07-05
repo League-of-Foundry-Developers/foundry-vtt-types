@@ -40,7 +40,7 @@ export interface DeprecatedHookConfig {
   ) => boolean | void;
 
   /**
-   * @deprecated - This hook appears to have been deleted.
+   * @deprecated This hook appears to have been deleted.
    */
   getSceneNavigationContext: (
     app: foundry.applications.ui.SceneNavigation,

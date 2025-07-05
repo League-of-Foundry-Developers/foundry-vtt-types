@@ -82,7 +82,7 @@ declare namespace AmbientLightConfig {
     source: foundry.documents.BaseAmbientLight.Source;
 
     /**
-     * @deprecated - Foundry deleted this with no deprecation in v13.
+     * @deprecated Foundry deleted this with no deprecation in v13.
      */
     fields: foundry.documents.BaseAmbientLight.Schema;
     colorationTechniques: typeof AdaptiveLightingShader.SHADER_TECHNIQUES;
@@ -91,7 +91,7 @@ declare namespace AmbientLightConfig {
     lightAnimations: unknown; // TODO: Update after CONFIG updated
 
     /**
-     * @deprecated - Foundry deleted this with no deprecation in v13.
+     * @deprecated Foundry deleted this with no deprecation in v13.
      */
     tabs: Record<string, ApplicationV2.Tab>;
     buttons: ApplicationV2.FormFooterButton[];

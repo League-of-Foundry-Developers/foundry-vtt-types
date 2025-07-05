@@ -94,7 +94,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Adventure.Implementation | Adventure.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Adventure.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<Adventure.Implementation, Temporary>>>;
+  ): Promise<Array<Adventure.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: Adventure.UpdateData[] | undefined,
@@ -109,7 +109,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   static override create<Temporary extends boolean | undefined = undefined>(
     data: Adventure.CreateData | Adventure.CreateData[],
     operation?: Adventure.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<Adventure.Implementation, Temporary> | undefined>;
+  ): Promise<Adventure.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: Adventure.UpdateData | undefined,
@@ -130,12 +130,12 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   override getFlag<Scope extends Adventure.Flags.Scope, Key extends Adventure.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<Adventure.Name, Scope, Key>;
+  ): Adventure.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends Adventure.Flags.Scope,
     Key extends Adventure.Flags.Key<Scope>,
-    Value extends Document.GetFlag<Adventure.Name, Scope, Key>,
+    Value extends Adventure.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends Adventure.Flags.Scope, Key extends Adventure.Flags.Key<Scope>>(
@@ -309,7 +309,8 @@ declare namespace BaseAdventure {
   export import InitializedData = Adventure.InitializedData;
   export import UpdateData = Adventure.UpdateData;
   export import Schema = Adventure.Schema;
-  export import DatabaseOperation = Adventure.Database;
+  export import Database = Adventure.Database;
+  export import TemporaryIf = Adventure.TemporaryIf;
   export import Flags = Adventure.Flags;
 
   namespace Internal {

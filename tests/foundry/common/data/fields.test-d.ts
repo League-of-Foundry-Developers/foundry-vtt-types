@@ -28,7 +28,7 @@ await foundry.documents.BaseNote.create({
 // @ts-expect-error - A textAnchor cannot be an arbitrary number.
 await foundry.documents.BaseNote.create({ textAnchor: 999 });
 // Should be correct
-await foundry.documents.BaseNote.create({ textAnchor: 2 });
+await foundry.documents.BaseNote.create({ textAnchor: CONST.TEXT_ANCHOR_POINTS.BOTTOM });
 
 // @ts-expect-error - t cannot be an arbitrary string.
 await foundry.documents.BaseMeasuredTemplate.create({ t: "foobar" });
@@ -48,19 +48,24 @@ expectTypeOf(myEffect.flags.core!.overlay).toEqualTypeOf<boolean | undefined>();
 declare const JEPCoreTypes: JournalEntryPage.SubType;
 declare const JEPSystemTypes: Game.Model.TypeNames<"JournalEntryPage">;
 
-declare global {
+// Note(LukeAbby): Inlining this causes some circularities.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+class HeadquartersModel extends foundry.abstract.TypeDataModel<DataSchema, JournalEntryPage.Implementation> {}
+
+declare module "fvtt-types/configuration" {
   interface DataModelConfig {
     JournalEntryPage: {
-      headquarters: typeof foundry.abstract.TypeDataModel<DataSchema, JournalEntryPage.Implementation>;
+      headquarters: typeof HeadquartersModel;
     };
   }
 }
 
 expectTypeOf(JEPCoreTypes).toEqualTypeOf<
-  "base",
-  "image" | "pdf" | "text" | "video" | foundry.abstract.Document.ModuleSubType
+  "image" | "pdf" | "text" | "video" | "headquarters" | foundry.abstract.Document.ModuleSubType
 >();
-expectTypeOf(JEPSystemTypes).toEqualTypeOf<"headquarters" | foundry.abstract.Document.ModuleSubType>();
+expectTypeOf(JEPSystemTypes).toEqualTypeOf<
+  "image" | "pdf" | "text" | "video" | "headquarters" | foundry.abstract.Document.ModuleSubType
+>();
 
 declare const myJournalEntryPage: JournalEntryPage.Implementation;
 if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
@@ -69,28 +74,22 @@ if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
 
 /** EmbeddedDataField */
 
-declare const embeddedModel: typeof foundry.data.LightData;
-declare type embeddedOptions = foundry.data.fields.EmbeddedDataField.Options<typeof embeddedModel>;
+type EmbeddedModel = typeof foundry.data.LightData;
+declare type embeddedOptions = foundry.data.fields.EmbeddedDataField.Options<EmbeddedModel>;
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-declare const embeddedAssignment: foundry.data.fields.EmbeddedDataField.AssignmentType<
-  typeof embeddedModel,
-  embeddedOptions
->;
+declare const embeddedAssignment: foundry.data.fields.EmbeddedDataField.AssignmentType<EmbeddedModel, embeddedOptions>;
 declare const embeddedInitialized: foundry.data.fields.EmbeddedDataField.InitializedType<
-  typeof embeddedModel,
+  EmbeddedModel,
   embeddedOptions
 >;
-declare const embeddedPersisted: foundry.data.fields.EmbeddedDataField.PersistedType<
-  typeof embeddedModel,
-  embeddedOptions
->;
+declare const embeddedPersisted: foundry.data.fields.EmbeddedDataField.PersistedType<EmbeddedModel, embeddedOptions>;
+
+declare const lightModel: foundry.data.LightData;
 
 expectTypeOf(embeddedAssignment?.alpha).toEqualTypeOf<number | undefined | null>();
 expectTypeOf(embeddedInitialized?.alpha).toEqualTypeOf<number | undefined>();
 expectTypeOf(embeddedPersisted?.alpha).toEqualTypeOf<number | undefined>();
-expectTypeOf(embeddedModel.schema.fields.color).toEqualTypeOf<
-  foundry.data.fields.ColorField<{ label: "LIGHT.Color" }>
->();
+expectTypeOf(lightModel.schema.fields.color).toEqualTypeOf<foundry.data.fields.ColorField>();
 
 declare const embeddedLightField: foundry.data.fields.EmbeddedDataField<typeof foundry.data.LightData>;
 expectTypeOf(embeddedLightField.model).toEqualTypeOf<typeof foundry.data.LightData>();
@@ -117,9 +116,7 @@ declare const AssignmentElementType: foundry.data.fields.EmbeddedCollectionField
 declare const InitializedElementType: foundry.data.fields.EmbeddedCollectionField.InitializedElementType<
   typeof ElementFieldType
 >;
-declare type EmbeddedCollectionOptions = foundry.data.fields.EmbeddedCollectionField.DefaultOptions<
-  typeof AssignmentElementType
->;
+declare type EmbeddedCollectionOptions = foundry.data.fields.EmbeddedCollectionField.DefaultOptions;
 declare const InitializedType: foundry.data.fields.EmbeddedCollectionField.InitializedType<
   typeof AssignmentElementType,
   typeof InitializedElementType,
@@ -127,7 +124,7 @@ declare const InitializedType: foundry.data.fields.EmbeddedCollectionField.Initi
   EmbeddedCollectionOptions
 >;
 
-expectTypeOf(ElementFieldType.hasTypeData).toEqualTypeOf<boolean>();
+expectTypeOf(ElementFieldType.hasTypeData).toEqualTypeOf<true>();
 expectTypeOf(ParentDataModel.name).toEqualTypeOf<string>();
 expectTypeOf(AssignmentElementType.documentName).toEqualTypeOf<"ActiveEffect">();
 expectTypeOf(InitializedElementType.collectionName).toEqualTypeOf<"effects">();
@@ -137,7 +134,6 @@ const stringField = new foundry.data.fields.StringField();
 
 const withChoices = new foundry.data.fields.StringField({ choices: ["a", "b", "c"] });
 
-// @ts-expect-error - A string field is not `nullable` by default and validate does not accept null.
 stringField.validate(null);
 
 // A string field can effectively cast anything. It's a very unsound method.
@@ -146,12 +142,9 @@ stringField["_cast"](null);
 // `null` gets handled by `DataField.clean` and gets turned into `undefined` and then the default initial value.
 stringField.clean(null);
 
-stringField.initialize(null);
+stringField.initialize("", new Actor.implementation({ type: "base", name: "Test Actor" }));
 
-// @ts-expect-error - Options cannot accept null.
 type _NullOptions = DataField.Options<null>;
-
-// @ts-expect-error - Options cannot accept undefined.
 type _UndefinedOptions = DataField.Options<undefined>;
 
 // Regression test for issue where label was being constrained to `""`.

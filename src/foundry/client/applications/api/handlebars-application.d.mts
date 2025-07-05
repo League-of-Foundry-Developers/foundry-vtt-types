@@ -158,12 +158,12 @@ declare namespace HandlebarsApplicationMixin {
   }
 
   /**
-   * @deprecated - Merge {@linkcode ApplicationV2.RenderOptions} and {@linkcode HandlebarsApplicationMixin.RenderOptions} individually.
+   * @deprecated Merge {@linkcode ApplicationV2.RenderOptions} and {@linkcode HandlebarsApplicationMixin.RenderOptions} individually.
    */
   interface ApplicationV2RenderOptions extends RenderOptions, ApplicationV2.RenderOptions {}
 
   /**
-   * @deprecated - Merge {@linkcode DocumentSheetV2.RenderOptions} and {@linkcode HandlebarsApplicationMixin.RenderOptions} individually.
+   * @deprecated Merge {@linkcode DocumentSheetV2.RenderOptions} and {@linkcode HandlebarsApplicationMixin.RenderOptions} individually.
    */
   interface DocumentSheetV2RenderOptions extends RenderOptions, DocumentSheetV2.RenderOptions {}
 

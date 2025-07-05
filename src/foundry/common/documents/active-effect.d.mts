@@ -121,7 +121,7 @@ declare abstract class BaseActiveEffect<
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<ActiveEffect.Implementation | ActiveEffect.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ActiveEffect.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<ActiveEffect.Implementation, Temporary>>>;
+  ): Promise<Array<ActiveEffect.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: ActiveEffect.UpdateData[] | undefined,
@@ -136,7 +136,7 @@ declare abstract class BaseActiveEffect<
   static override create<Temporary extends boolean | undefined = false>(
     data: ActiveEffect.CreateData | ActiveEffect.CreateData[],
     operation?: ActiveEffect.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<ActiveEffect.Implementation, Temporary> | undefined>;
+  ): Promise<ActiveEffect.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: ActiveEffect.UpdateData | undefined,
@@ -160,12 +160,12 @@ declare abstract class BaseActiveEffect<
   override getFlag<Scope extends ActiveEffect.Flags.Scope, Key extends ActiveEffect.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<ActiveEffect.Name, Scope, Key>;
+  ): ActiveEffect.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends ActiveEffect.Flags.Scope,
     Key extends ActiveEffect.Flags.Key<Scope>,
-    Value extends Document.GetFlag<ActiveEffect.Name, Scope, Key>,
+    Value extends ActiveEffect.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends ActiveEffect.Flags.Scope, Key extends ActiveEffect.Flags.Key<Scope>>(
@@ -338,7 +338,8 @@ declare namespace BaseActiveEffect {
   export import InitializedData = ActiveEffect.InitializedData;
   export import UpdateData = ActiveEffect.UpdateData;
   export import Schema = ActiveEffect.Schema;
-  export import DatabaseOperation = ActiveEffect.Database;
+  export import Database = ActiveEffect.Database;
+  export import TemporaryIf = ActiveEffect.TemporaryIf;
   export import Flags = ActiveEffect.Flags;
   export import CoreFlags = ActiveEffect.CoreFlags;
   export import DurationData = ActiveEffect.DurationData;

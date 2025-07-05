@@ -31,6 +31,12 @@ declare namespace DocumentSheetV2 {
     document: ConcreteDocument;
   }
 
+  type InputOptions<Configuration extends DocumentSheetV2.Configuration<Document.Any>> = DeepPartial<
+    Omit<Configuration, "document">
+  > & {
+    document: Configuration["document"];
+  };
+
   /** @internal */
   interface _Configuration extends ApplicationV2.Configuration {
     /**
@@ -87,7 +93,7 @@ declare class DocumentSheetV2<
   Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
-  constructor(options?: DeepPartial<Configuration>);
+  constructor(options?: DocumentSheetV2.InputOptions<Configuration>);
 
   static DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
@@ -107,6 +113,7 @@ declare class DocumentSheetV2<
    */
   get isEditable(): boolean;
 
+  // TODO(LukeAbby): This needs to be updated to use `DocumentSheetV2.InputOptions` but that breaks subclassing right now
   protected _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
 
   protected override _headerControlsButtons(): Generator<ApplicationV2.HeaderControlsEntry, void, undefined>;

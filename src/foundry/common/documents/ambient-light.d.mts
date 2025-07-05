@@ -77,7 +77,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<AmbientLightDocument.Implementation | AmbientLightDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<AmbientLightDocument.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<AmbientLightDocument.Implementation, Temporary>>>;
+  ): Promise<Array<AmbientLightDocument.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: AmbientLightDocument.UpdateData[] | undefined,
@@ -92,7 +92,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   static override create<Temporary extends boolean | undefined = undefined>(
     data: AmbientLightDocument.CreateData | AmbientLightDocument.CreateData[],
     operation?: AmbientLightDocument.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<AmbientLightDocument.Implementation, Temporary> | undefined>;
+  ): Promise<AmbientLightDocument.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: AmbientLightDocument.UpdateData | undefined,
@@ -116,12 +116,12 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   override getFlag<Scope extends AmbientLightDocument.Flags.Scope, Key extends AmbientLightDocument.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<AmbientLightDocument.Name, Scope, Key>;
+  ): AmbientLightDocument.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends AmbientLightDocument.Flags.Scope,
     Key extends AmbientLightDocument.Flags.Key<Scope>,
-    Value extends Document.GetFlag<AmbientLightDocument.Name, Scope, Key>,
+    Value extends AmbientLightDocument.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends AmbientLightDocument.Flags.Scope, Key extends AmbientLightDocument.Flags.Key<Scope>>(
@@ -295,7 +295,8 @@ declare namespace BaseAmbientLight {
   export import InitializedData = AmbientLightDocument.InitializedData;
   export import UpdateData = AmbientLightDocument.UpdateData;
   export import Schema = AmbientLightDocument.Schema;
-  export import DatabaseOperation = AmbientLightDocument.Database;
+  export import Database = AmbientLightDocument.Database;
+  export import TemporaryIf = AmbientLightDocument.TemporaryIf;
   export import Flags = AmbientLightDocument.Flags;
   export import CoreFlags = AmbientLightDocument.CoreFlags;
 

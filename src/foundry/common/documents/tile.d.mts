@@ -122,7 +122,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<TileDocument.Implementation | TileDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<TileDocument.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<TileDocument.Implementation, Temporary>>>;
+  ): Promise<Array<TileDocument.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: TileDocument.UpdateData[] | undefined,
@@ -137,7 +137,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   static override create<Temporary extends boolean | undefined = undefined>(
     data: TileDocument.CreateData | TileDocument.CreateData[],
     operation?: TileDocument.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<TileDocument.Implementation, Temporary> | undefined>;
+  ): Promise<TileDocument.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: TileDocument.UpdateData | undefined,
@@ -161,12 +161,12 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   override getFlag<Scope extends TileDocument.Flags.Scope, Key extends TileDocument.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<TileDocument.Name, Scope, Key>;
+  ): TileDocument.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends TileDocument.Flags.Scope,
     Key extends TileDocument.Flags.Key<Scope>,
-    Value extends Document.GetFlag<TileDocument.Name, Scope, Key>,
+    Value extends TileDocument.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends TileDocument.Flags.Scope, Key extends TileDocument.Flags.Key<Scope>>(
@@ -340,7 +340,8 @@ declare namespace BaseTile {
   export import InitializedData = TileDocument.InitializedData;
   export import UpdateData = TileDocument.UpdateData;
   export import Schema = TileDocument.Schema;
-  export import DatabaseOperation = TileDocument.Database;
+  export import Database = TileDocument.Database;
+  export import TemporaryIf = TileDocument.TemporaryIf;
   export import Flags = TileDocument.Flags;
   export import CoreFlags = TileDocument.CoreFlags;
 

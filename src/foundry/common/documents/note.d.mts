@@ -97,7 +97,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<NoteDocument.Implementation | NoteDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<NoteDocument.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<NoteDocument.Implementation, Temporary>>>;
+  ): Promise<Array<NoteDocument.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: NoteDocument.UpdateData[] | undefined,
@@ -112,7 +112,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   static override create<Temporary extends boolean | undefined = undefined>(
     data: NoteDocument.CreateData | NoteDocument.CreateData[],
     operation?: NoteDocument.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<NoteDocument.Implementation, Temporary> | undefined>;
+  ): Promise<NoteDocument.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: NoteDocument.UpdateData | undefined,
@@ -136,12 +136,12 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   override getFlag<Scope extends NoteDocument.Flags.Scope, Key extends NoteDocument.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<NoteDocument.Name, Scope, Key>;
+  ): NoteDocument.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends NoteDocument.Flags.Scope,
     Key extends NoteDocument.Flags.Key<Scope>,
-    Value extends Document.GetFlag<NoteDocument.Name, Scope, Key>,
+    Value extends NoteDocument.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends NoteDocument.Flags.Scope, Key extends NoteDocument.Flags.Key<Scope>>(
@@ -315,7 +315,8 @@ declare namespace BaseNote {
   export import InitializedData = NoteDocument.InitializedData;
   export import UpdateData = NoteDocument.UpdateData;
   export import Schema = NoteDocument.Schema;
-  export import DatabaseOperation = NoteDocument.Database;
+  export import Database = NoteDocument.Database;
+  export import TemporaryIf = NoteDocument.TemporaryIf;
   export import Flags = NoteDocument.Flags;
 
   namespace Internal {

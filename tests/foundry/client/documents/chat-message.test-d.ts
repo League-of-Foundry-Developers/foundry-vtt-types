@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
 expectTypeOf(new ChatMessage.implementation()).toEqualTypeOf<ChatMessage.Implementation>();
@@ -28,7 +28,7 @@ declare module "fvtt-types/configuration" {
 }
 
 test("Regression test for CONFIG.Dice.rollModes as choices", () => {
-  new StringField({
+  new foundry.data.fields.StringField({
     blank: true,
     required: true,
     choices: CONFIG.Dice.rollModes,
@@ -71,7 +71,7 @@ expectTypeOf(chat.isContentVisible).toEqualTypeOf<boolean>();
 expectTypeOf(chat.isRoll).toEqualTypeOf<boolean>();
 expectTypeOf(chat.rolls).toEqualTypeOf<Roll[]>();
 expectTypeOf(chat.visible).toEqualTypeOf<boolean>();
-expectTypeOf(chat.author).toEqualTypeOf<User.Implementation>(); // TODO: This seems off? Possible issue with ForeignDocumentField
+expectTypeOf(chat.author).toEqualTypeOf<User.Stored | null>();
 expectTypeOf(chat.prepareData()).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.BLIND)).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode(CONST.DICE_ROLL_MODES.PRIVATE)).toEqualTypeOf<void>();

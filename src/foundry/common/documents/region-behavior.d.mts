@@ -105,7 +105,7 @@ declare abstract class BaseRegionBehavior<
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<RegionBehavior.Implementation | RegionBehavior.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RegionBehavior.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<RegionBehavior.Implementation, Temporary>>>;
+  ): Promise<Array<RegionBehavior.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: RegionBehavior.UpdateData[] | undefined,
@@ -120,7 +120,7 @@ declare abstract class BaseRegionBehavior<
   static override create<Temporary extends boolean | undefined = undefined>(
     data: RegionBehavior.CreateData | RegionBehavior.CreateData[],
     operation?: RegionBehavior.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<RegionBehavior.Implementation, Temporary> | undefined>;
+  ): Promise<RegionBehavior.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: RegionBehavior.UpdateData | undefined,
@@ -144,12 +144,12 @@ declare abstract class BaseRegionBehavior<
   override getFlag<Scope extends RegionBehavior.Flags.Scope, Key extends RegionBehavior.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<RegionBehavior.Name, Scope, Key>;
+  ): RegionBehavior.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends RegionBehavior.Flags.Scope,
     Key extends RegionBehavior.Flags.Key<Scope>,
-    Value extends Document.GetFlag<RegionBehavior.Name, Scope, Key>,
+    Value extends RegionBehavior.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends RegionBehavior.Flags.Scope, Key extends RegionBehavior.Flags.Key<Scope>>(
@@ -330,7 +330,8 @@ declare namespace BaseRegionBehavior {
   export import InitializedData = RegionBehavior.InitializedData;
   export import UpdateData = RegionBehavior.UpdateData;
   export import Schema = RegionBehavior.Schema;
-  export import DatabaseOperation = RegionBehavior.Database;
+  export import Database = RegionBehavior.Database;
+  export import TemporaryIf = RegionBehavior.TemporaryIf;
   export import Flags = RegionBehavior.Flags;
 
   namespace Internal {

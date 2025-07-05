@@ -12,6 +12,7 @@ expectTypeOf(avSettings.users).toEqualTypeOf<Record<string, AVSettings.UserSetti
 expectTypeOf(avSettings.verticalDock).toEqualTypeOf<boolean>();
 
 interface CustomVoiceModes {
+  PTT: "ptt"; // TODO(LukeAbby): This appears to be required due to `Settings#mode`'s initial. Check if this is accurate.
   SOME_CUSTOM_MODE: "custom";
 }
 
@@ -24,10 +25,11 @@ declare global {
 }
 
 AVSettings.VOICE_MODES = {
+  PTT: "ptt",
   SOME_CUSTOM_MODE: "custom",
 };
 
 expectTypeOf(AVSettings.VOICE_MODES).toEqualTypeOf<CustomVoiceModes>();
 
 const avMaster = new AVMaster();
-expectTypeOf(avMaster.settings.client.voice.mode).toEqualTypeOf<"custom">();
+expectTypeOf(avMaster.settings.client.voice.mode).toEqualTypeOf<"ptt" | "custom">();

@@ -207,7 +207,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Scene.Implementation | Scene.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Scene.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<Scene.Implementation, Temporary>>>;
+  ): Promise<Array<Scene.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: Scene.UpdateData[] | undefined,
@@ -222,7 +222,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   static override create<Temporary extends boolean | undefined = undefined>(
     data: Scene.CreateData | Scene.CreateData[],
     operation?: Scene.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<Scene.Implementation, Temporary> | undefined>;
+  ): Promise<Scene.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: Scene.UpdateData | undefined,
@@ -276,12 +276,12 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   override getFlag<Scope extends Scene.Flags.Scope, Key extends Scene.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<Scene.Name, Scope, Key>;
+  ): Scene.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends Scene.Flags.Scope,
     Key extends Scene.Flags.Key<Scope>,
-    Value extends Document.GetFlag<Scene.Name, Scope, Key>,
+    Value extends Scene.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends Scene.Flags.Scope, Key extends Scene.Flags.Key<Scope>>(
@@ -450,7 +450,8 @@ declare namespace BaseScene {
   export import InitializedData = Scene.InitializedData;
   export import UpdateData = Scene.UpdateData;
   export import Schema = Scene.Schema;
-  export import DatabaseOperation = Scene.Database;
+  export import Database = Scene.Database;
+  export import TemporaryIf = Scene.TemporaryIf;
   export import Flags = Scene.Flags;
 
   namespace Internal {

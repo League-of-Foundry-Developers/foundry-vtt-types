@@ -82,7 +82,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<WallDocument.Implementation | WallDocument.CreateData> | undefined,
     operation?: WallDocument.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<Document.TemporaryIf<WallDocument.Implementation, Temporary>>>;
+  ): Promise<Array<WallDocument.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: WallDocument.UpdateData[] | undefined,
@@ -97,7 +97,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
   static override create<Temporary extends boolean | undefined = undefined>(
     data: WallDocument.CreateData | WallDocument.CreateData[],
     operation?: WallDocument.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<WallDocument.Implementation, Temporary> | undefined>;
+  ): Promise<WallDocument.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: WallDocument.UpdateData | undefined,
@@ -121,12 +121,12 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
   override getFlag<Scope extends WallDocument.Flags.Scope, Key extends WallDocument.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<WallDocument.Name, Scope, Key>;
+  ): WallDocument.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends WallDocument.Flags.Scope,
     Key extends WallDocument.Flags.Key<Scope>,
-    Value extends Document.GetFlag<WallDocument.Name, Scope, Key>,
+    Value extends WallDocument.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends WallDocument.Flags.Scope, Key extends WallDocument.Flags.Key<Scope>>(
@@ -302,7 +302,8 @@ declare namespace BaseWall {
   export import InitializedData = WallDocument.InitializedData;
   export import UpdateData = WallDocument.UpdateData;
   export import Schema = WallDocument.Schema;
-  export import DatabaseOperation = WallDocument.Database;
+  export import Database = WallDocument.Database;
+  export import TemporaryIf = WallDocument.TemporaryIf;
   export import Flags = WallDocument.Flags;
 
   namespace Internal {

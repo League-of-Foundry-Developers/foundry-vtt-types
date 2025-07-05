@@ -28,15 +28,33 @@ type ItemFlags = {
 
 // Flags for Actor, Item, Card, and Cards documents can be configured via the FlagConfig. This is tested here.
 // For configuring flags for actors and items via SourceConfig please have a look into baseActor.test-d.ts.
-declare global {
+declare module "fvtt-types/configuration" {
   interface FlagConfig {
     Item: ItemFlags;
   }
 }
 
-expectTypeOf(baseItem.flags).toEqualTypeOf<ItemFlags>();
+expectTypeOf(baseItem.flags).toEqualTypeOf<{
+  core?: {
+    sheetLock?: boolean;
+    sheetClass?: string;
+  };
 
-expectTypeOf(baseItem.getFlag).parameter(0).toEqualTypeOf<"my-system" | "another-system" | "yet-another-system">();
+  "my-system"?: {
+    countable?: boolean;
+    optionalKey?: string;
+  };
+
+  "another-system"?: Partial<AnyObject>;
+
+  "yet-another-system"?: {
+    randomKey?: string;
+  };
+}>();
+
+expectTypeOf(baseItem.getFlag)
+  .parameter(0)
+  .toEqualTypeOf<"core" | "my-system" | "another-system" | "yet-another-system">();
 
 expectTypeOf(baseItem.getFlag("my-system", "countable")).toEqualTypeOf<boolean>();
 expectTypeOf(baseItem.getFlag("my-system", "optionalKey")).toEqualTypeOf<string | undefined>();

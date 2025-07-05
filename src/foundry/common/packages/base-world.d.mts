@@ -8,6 +8,36 @@ declare namespace BaseWorld {
   export import InitializedData = World.InitializedData;
   export import UpdateData = World.UpdateData;
   export import Schema = World.Schema;
+
+  interface TestAvailabilityOptions {
+    /**
+     * A specific software release for which to test availability.
+     * Tests against the current release by default.
+     */
+    release?: ReleaseData | undefined;
+
+    /**
+     * A specific collection of modules to test availability
+     * against. Tests against the currently installed modules by
+     * default.
+     */
+    modules?: Collection<foundry.packages.Module> | undefined;
+
+    /**
+     * A specific collection of modules to test availability
+     * against. Tests against the currently installed modules by
+     * default.
+     */
+    systems?: Collection<foundry.packages.System> | undefined;
+
+    /**
+     * Ignore the world's own core software compatibility and
+     * instead defer entirely to the system's core software
+     * compatibility, if the world's availability is less than
+     * this.
+     */
+    systemAvailabilityThreshold?: foundry.CONST.PACKAGE_AVAILABILITY_CODES | undefined;
+  }
 }
 
 /**
@@ -37,35 +67,7 @@ declare class BaseWorld extends BasePackage<BaseWorld.Schema> {
 
   static testAvailability(
     data: InexactPartial<PackageManifestData>,
-    options: InexactPartial<{
-      /**
-       * A specific software release for which to test availability.
-       * Tests against the current release by default.
-       */
-      release: ReleaseData;
-
-      /**
-       * A specific collection of modules to test availability
-       * against. Tests against the currently installed modules by
-       * default.
-       */
-      modules: Collection<foundry.packages.Module>;
-
-      /**
-       * A specific collection of modules to test availability
-       * against. Tests against the currently installed modules by
-       * default.
-       */
-      systems: Collection<foundry.packages.System>;
-
-      /**
-       * Ignore the world's own core software compatibility and
-       * instead defer entirely to the system's core software
-       * compatibility, if the world's availability is less than
-       * this.
-       */
-      systemAvailabilityThreshold: foundry.CONST.PACKAGE_AVAILABILITY_CODES;
-    }>,
+    options: BaseWorld.TestAvailabilityOptions,
   ): foundry.CONST.PACKAGE_AVAILABILITY_CODES;
 }
 

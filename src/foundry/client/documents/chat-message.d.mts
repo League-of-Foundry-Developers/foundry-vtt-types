@@ -468,25 +468,32 @@ declare namespace ChatMessage {
   }
 
   /**
+   * If `Temporary` is true then `ChatMessage.Implementation`, otherwise `ChatMessage.Stored`.
+   */
+  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
+    ? ChatMessage.Implementation
+    : ChatMessage.Stored;
+
+  /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
-  interface Flags extends Document.ConfiguredFlagsForName<Name> {}
+  interface Flags extends Document.Internal.ConfiguredFlagsForName<Name>, CoreFlags {}
 
   namespace Flags {
     /**
      * The valid scopes for the flags on this document e.g. `"core"` or `"dnd5e"`.
      */
-    type Scope = Document.FlagKeyOf<Flags>;
+    type Scope = Document.Internal.FlagKeyOf<Flags>;
 
     /**
      * The valid keys for a certain scope for example if the scope is "core" then a valid key may be `"sheetLock"` or `"viewMode"`.
      */
-    type Key<Scope extends Flags.Scope> = Document.FlagKeyOf<Document.FlagGetKey<Flags, Scope>>;
+    type Key<Scope extends Flags.Scope> = Document.Internal.FlagKeyOf<Document.Internal.FlagGetKey<Flags, Scope>>;
 
     /**
      * Gets the type of a particular flag given a `Scope` and a `Key`.
      */
-    type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.GetFlag<Name, Scope, Key>;
+    type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
   interface CoreFlags {
@@ -524,17 +531,17 @@ declare namespace ChatMessage {
   interface GetSpeakerOptions extends NullishProps<_BaseSpeakerOptions> {}
 
   /**
-   * @deprecated - The associated function was made private without deprecation or direct replacement.
+   * @deprecated The associated function was made private without deprecation or direct replacement.
    */
   interface GetSpeakerFromTokenOptions extends NullishProps<Pick<_BaseSpeakerOptions, "token" | "alias">> {}
 
   /**
-   * @deprecated - The associated function was made private without deprecation or direct replacement.
+   * @deprecated The associated function was made private without deprecation or direct replacement.
    */
   interface GetSpeakerFromActorOptions extends NullishProps<Pick<_BaseSpeakerOptions, "scene" | "actor" | "alias">> {}
 
   /**
-   *@deprecated - The associated function was made private without deprecation or direct replacement.
+   *@deprecated The associated function was made private without deprecation or direct replacement.
    */
   interface GetSpeakerFromUserOptions extends NullishProps<Pick<_BaseSpeakerOptions, "scene" | "alias">> {
     /** The User who is speaking */
@@ -630,7 +637,7 @@ declare namespace ChatMessage {
   /**
    * The arguments to construct the document.
    *
-   * @deprecated - Writing the signature directly has helped reduce circularities and therefore is
+   * @deprecated Writing the signature directly has helped reduce circularities and therefore is
    * now recommended.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated

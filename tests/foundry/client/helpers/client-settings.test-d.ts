@@ -22,7 +22,7 @@ declare global {
     "some.numberSetting": number;
     "some.stringSetting": string;
 
-    "data-model.setting": Actor.Implementation;
+    "data-model.setting": Actor.ImplementationClass;
   }
 }
 
@@ -81,7 +81,7 @@ clientSettings.register("data-model", "setting", {
   type: Actor,
 });
 
-expectTypeOf(clientSettings.set("data-model", "setting", { name: "Test Actor" })).toEqualTypeOf<
+expectTypeOf(clientSettings.set("data-model", "setting", { type: "base", name: "Test Actor" })).toEqualTypeOf<
   Promise<Actor.Implementation>
 >();
 expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<Actor.Implementation>();
@@ -91,7 +91,7 @@ clientSettings.register("data-model", "setting", {
   type: Actor,
 });
 
-expectTypeOf(clientSettings.set("data-model", "setting", { name: "Test Actor" })).toEqualTypeOf<
+expectTypeOf(clientSettings.set("data-model", "setting", { type: "base", name: "Test Actor" })).toEqualTypeOf<
   Promise<Actor.Implementation>
 >();
 expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<Actor.Implementation>();

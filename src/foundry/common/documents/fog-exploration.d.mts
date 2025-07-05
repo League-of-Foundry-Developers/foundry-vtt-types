@@ -91,7 +91,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<FogExploration.Implementation | FogExploration.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<FogExploration.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<FogExploration.Implementation, Temporary>>>;
+  ): Promise<Array<FogExploration.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: FogExploration.UpdateData[] | undefined,
@@ -106,7 +106,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   static override create<Temporary extends boolean | undefined = undefined>(
     data: FogExploration.CreateData | FogExploration.CreateData[],
     operation?: FogExploration.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<FogExploration.Implementation, Temporary> | undefined>;
+  ): Promise<FogExploration.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: FogExploration.UpdateData | undefined,
@@ -130,12 +130,12 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   override getFlag<Scope extends FogExploration.Flags.Scope, Key extends FogExploration.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<FogExploration.Name, Scope, Key>;
+  ): FogExploration.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends FogExploration.Flags.Scope,
     Key extends FogExploration.Flags.Key<Scope>,
-    Value extends Document.GetFlag<FogExploration.Name, Scope, Key>,
+    Value extends FogExploration.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends FogExploration.Flags.Scope, Key extends FogExploration.Flags.Key<Scope>>(
@@ -305,7 +305,8 @@ declare namespace BaseFogExploration {
   export import InitializedData = FogExploration.InitializedData;
   export import UpdateData = FogExploration.UpdateData;
   export import Schema = FogExploration.Schema;
-  export import DatabaseOperation = FogExploration.Database;
+  export import Database = FogExploration.Database;
+  export import TemporaryIf = FogExploration.TemporaryIf;
   export import Flags = FogExploration.Flags;
 
   namespace Internal {

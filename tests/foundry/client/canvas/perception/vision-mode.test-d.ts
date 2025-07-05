@@ -61,8 +61,10 @@ expectTypeOf(ShaderInitType).toEqualTypeOf<typeof AbstractBaseShader | undefined
 
 declare const myVisionSource: foundry.canvas.sources.PointVisionSource.Any;
 
-// Next line could possibly be a `never` instead, but not sure the generic usage is worth the headache
-expectTypeOf(monochromatic.schema.fields.canvas.fields.shader._cast("foo")).toEqualTypeOf<typeof AbstractBaseShader>;
+// TODO(LukeAbby): The semantics of `_cast` are such that `null` and `undefined` probably shouldn't be here.
+expectTypeOf(monochromatic.schema.fields.canvas.fields.shader._cast("foo")).toEqualTypeOf<
+  typeof AbstractBaseShader | null | undefined
+>();
 expectTypeOf(monochromatic.activate(myVisionSource)).toEqualTypeOf<void>();
 expectTypeOf(monochromatic.id).toEqualTypeOf<string | undefined>();
 expectTypeOf(monochromatic.canvas.shader).toEqualTypeOf<typeof AbstractBaseShader | undefined | null>();

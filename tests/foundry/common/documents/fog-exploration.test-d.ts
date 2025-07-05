@@ -17,7 +17,7 @@ expectTypeOf(TestBaseFogExploration.deleteDocuments(undefined)).toEqualTypeOf<
 const fog = new TestBaseFogExploration();
 expectTypeOf(fog.explored).toEqualTypeOf<string | null>();
 
-declare const scene: Scene.Implementation;
+declare const scene: Scene.Stored;
 declare const user: User.Implementation;
 
 new TestBaseFogExploration({});
@@ -58,7 +58,7 @@ declare const data: TestBaseFogExploration;
 
 expectTypeOf(data.explored).toEqualTypeOf<string | null>();
 expectTypeOf(data.positions).toEqualTypeOf<AnyObject>();
-expectTypeOf(data.scene).toEqualTypeOf<Scene.Implementation | null>();
+expectTypeOf(data.scene).toEqualTypeOf<Scene.Stored | null>();
 expectTypeOf(data.timestamp).toEqualTypeOf<number>();
-expectTypeOf(data.user).toEqualTypeOf<User.Implementation | null>();
+expectTypeOf(data.user).toEqualTypeOf<User.Stored | null>();
 expectTypeOf(data._id).toEqualTypeOf<string | null>();

@@ -38,7 +38,7 @@ if (myMacro.type === "script") {
 }
 if (myMacro.type === "chat") {
   expectTypeOf(myMacro.type).toEqualTypeOf<"chat">();
-  // Unable to successfully narrow the type here, *should* be void
+  // @ts-expect-error - Unable to successfully narrow the type here, *should* be `void | Promies<unknown>`
   expectTypeOf(myMacro.execute()).toEqualTypeOf<void | Promise<unknown>>();
 }
 
@@ -47,7 +47,7 @@ expectTypeOf(myMacro.apps).toEqualTypeOf<
   Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>
 >();
 expectTypeOf(myMacro.collection).toEqualTypeOf<Collection<Macro.Implementation> | null>();
-expectTypeOf(myMacro.folder).toEqualTypeOf<Folder.Implementation | null>();
+expectTypeOf(myMacro.folder).toEqualTypeOf<Folder.Stored | null>();
 expectTypeOf(myMacro.isOwner).toEqualTypeOf<boolean>();
 
 // static properties and functions of `ClientDocumentMixin`

@@ -80,7 +80,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<RegionDocument.Implementation | RegionDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RegionDocument.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<RegionDocument.Implementation, Temporary>>>;
+  ): Promise<Array<RegionDocument.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: RegionDocument.UpdateData[] | undefined,
@@ -95,7 +95,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: RegionDocument.CreateData | RegionDocument.CreateData[],
     operation?: RegionDocument.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<RegionDocument.Implementation, Temporary> | undefined>;
+  ): Promise<RegionDocument.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: RegionDocument.UpdateData | undefined,
@@ -152,12 +152,12 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   override getFlag<Scope extends RegionDocument.Flags.Scope, Key extends RegionDocument.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<RegionDocument.Name, Scope, Key>;
+  ): RegionDocument.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends RegionDocument.Flags.Scope,
     Key extends RegionDocument.Flags.Key<Scope>,
-    Value extends Document.GetFlag<RegionDocument.Name, Scope, Key>,
+    Value extends RegionDocument.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends RegionDocument.Flags.Scope, Key extends RegionDocument.Flags.Key<Scope>>(
@@ -331,7 +331,8 @@ declare namespace BaseRegion {
   export import InitializedData = RegionDocument.InitializedData;
   export import UpdateData = RegionDocument.UpdateData;
   export import Schema = RegionDocument.Schema;
-  export import DatabaseOperation = RegionDocument.Database;
+  export import Database = RegionDocument.Database;
+  export import TemporaryIf = RegionDocument.TemporaryIf;
   export import Flags = RegionDocument.Flags;
 
   namespace Internal {

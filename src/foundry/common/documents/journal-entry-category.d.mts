@@ -85,7 +85,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<JournalEntryCategory.Implementation | JournalEntryCategory.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<JournalEntryCategory.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<JournalEntryCategory.Implementation, Temporary>>>;
+  ): Promise<Array<JournalEntryCategory.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: JournalEntryCategory.UpdateData[] | undefined,
@@ -100,7 +100,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
   static override create<Temporary extends boolean | undefined = undefined>(
     data: JournalEntryCategory.CreateData | JournalEntryCategory.CreateData[],
     operation?: JournalEntryCategory.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<JournalEntryCategory.Implementation, Temporary> | undefined>;
+  ): Promise<JournalEntryCategory.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: JournalEntryCategory.UpdateData | undefined,
@@ -122,12 +122,12 @@ declare abstract class BaseJournalEntryCategory extends Document<
   override getFlag<Scope extends JournalEntryCategory.Flags.Scope, Key extends JournalEntryCategory.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<JournalEntryCategory.Name, Scope, Key>;
+  ): JournalEntryCategory.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends JournalEntryCategory.Flags.Scope,
     Key extends JournalEntryCategory.Flags.Key<Scope>,
-    Value extends Document.GetFlag<JournalEntryCategory.Name, Scope, Key>,
+    Value extends JournalEntryCategory.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends JournalEntryCategory.Flags.Scope, Key extends JournalEntryCategory.Flags.Key<Scope>>(
@@ -299,7 +299,8 @@ declare namespace BaseJournalEntryCategory {
   export import InitializedData = JournalEntry.InitializedData;
   export import UpdateData = JournalEntry.UpdateData;
   export import Schema = JournalEntry.Schema;
-  export import DatabaseOperation = JournalEntry.Database;
+  export import Database = JournalEntry.Database;
+  export import TemporaryIf = JournalEntry.TemporaryIf;
   export import Flags = JournalEntry.Flags;
 
   namespace Internal {

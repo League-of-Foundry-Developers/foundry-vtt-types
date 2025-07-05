@@ -118,7 +118,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Cards.Implementation | Cards.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Cards.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<Cards.Implementation, Temporary>>>;
+  ): Promise<Array<Cards.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: Cards.UpdateData[] | undefined,
@@ -133,7 +133,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   static override create<Temporary extends boolean | undefined = undefined>(
     data: Cards.CreateData | Cards.CreateData[],
     operation?: Cards.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<Cards.Implementation, Temporary> | undefined>;
+  ): Promise<Cards.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: Cards.UpdateData | undefined,
@@ -187,12 +187,12 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   override getFlag<Scope extends Cards.Flags.Scope, Key extends Cards.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<Cards.Name, Scope, Key>;
+  ): Cards.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends Cards.Flags.Scope,
     Key extends Cards.Flags.Key<Scope>,
-    Value extends Document.GetFlag<Cards.Name, Scope, Key>,
+    Value extends Cards.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends Cards.Flags.Scope, Key extends Cards.Flags.Key<Scope>>(
@@ -364,7 +364,8 @@ declare namespace BaseCards {
   export import InitializedData = Cards.InitializedData;
   export import UpdateData = Cards.UpdateData;
   export import Schema = Cards.Schema;
-  export import DatabaseOperation = Cards.Database;
+  export import Database = Cards.Database;
+  export import TemporaryIf = Cards.TemporaryIf;
   export import Flags = Cards.Flags;
 
   namespace Internal {

@@ -90,7 +90,7 @@ declare abstract class BaseJournalEntryPage<
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<JournalEntryPage.Implementation | JournalEntryPage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<JournalEntryPage.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<JournalEntryPage.Implementation, Temporary>>>;
+  ): Promise<Array<JournalEntryPage.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: JournalEntryPage.UpdateData[] | undefined,
@@ -105,7 +105,7 @@ declare abstract class BaseJournalEntryPage<
   static override create<Temporary extends boolean | undefined = undefined>(
     data: JournalEntryPage.CreateData | JournalEntryPage.CreateData[],
     operation?: JournalEntryPage.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<JournalEntryPage.Implementation, Temporary> | undefined>;
+  ): Promise<JournalEntryPage.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: JournalEntryPage.UpdateData | undefined,
@@ -129,12 +129,12 @@ declare abstract class BaseJournalEntryPage<
   override getFlag<Scope extends JournalEntryPage.Flags.Scope, Key extends JournalEntryPage.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Document.GetFlag<JournalEntryPage.Name, Scope, Key>;
+  ): JournalEntryPage.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends JournalEntryPage.Flags.Scope,
     Key extends JournalEntryPage.Flags.Key<Scope>,
-    Value extends Document.GetFlag<JournalEntryPage.Name, Scope, Key>,
+    Value extends JournalEntryPage.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<Scope extends JournalEntryPage.Flags.Scope, Key extends JournalEntryPage.Flags.Key<Scope>>(
@@ -313,7 +313,8 @@ declare namespace BaseJournalEntryPage {
   export import InitializedData = JournalEntryPage.InitializedData;
   export import UpdateData = JournalEntryPage.UpdateData;
   export import Schema = JournalEntryPage.Schema;
-  export import DatabaseOperation = JournalEntryPage.Database;
+  export import Database = JournalEntryPage.Database;
+  export import TemporaryIf = JournalEntryPage.TemporaryIf;
   export import Flags = JournalEntryPage.Flags;
 
   namespace Internal {

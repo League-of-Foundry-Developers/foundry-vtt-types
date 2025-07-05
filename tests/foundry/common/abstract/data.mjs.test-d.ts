@@ -16,6 +16,7 @@ type SchemaWithIndexSignatures = {
 
 class _GenericDataModel<Schema extends SchemaWithIndexSignatures> extends foundry.abstract.DataModel<Schema, null> {
   method() {
+    // @ts-expect-error - While this shouldn't error it's a current known limitation of the current approach that a generic data model can't resolve properties fully.
     expectTypeOf(this.genericProperty).toEqualTypeOf<string | undefined>();
 
     // @ts-expect-error - string index signatures should be stripped so accessing an arbitrary string should fail.

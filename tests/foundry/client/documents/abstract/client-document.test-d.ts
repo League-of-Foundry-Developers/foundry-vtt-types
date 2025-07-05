@@ -166,6 +166,7 @@ expectTypeOf(item.render(true)).toBeVoid();
 expectTypeOf(item.render(true, {})).toBeVoid();
 expectTypeOf(item.render(true, { title: "foo" })).toBeVoid();
 // TODO: This will error as long as ApplicationV2.RenderOptions isn't inherently DeepPartialed
+// @ts-expect-error - Render options not partial yet.
 expectTypeOf(item.render(true, { window: { title: "foo" } })).toBeVoid();
 
 declare const sortOptions: foundry.utils.SortOptions<typeof item>;

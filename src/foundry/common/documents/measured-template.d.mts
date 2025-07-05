@@ -110,7 +110,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<MeasuredTemplateDocument.Implementation | MeasuredTemplateDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<MeasuredTemplateDocument.Database.Create<Temporary>>,
-  ): Promise<Array<Document.TemporaryIf<MeasuredTemplateDocument.Implementation, Temporary>>>;
+  ): Promise<Array<MeasuredTemplateDocument.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: MeasuredTemplateDocument.UpdateData[] | undefined,
@@ -125,7 +125,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   static override create<Temporary extends boolean | undefined = undefined>(
     data: MeasuredTemplateDocument.CreateData | MeasuredTemplateDocument.CreateData[],
     operation?: MeasuredTemplateDocument.Database.CreateOperation<Temporary>,
-  ): Promise<Document.TemporaryIf<MeasuredTemplateDocument.Implementation, Temporary> | undefined>;
+  ): Promise<MeasuredTemplateDocument.TemporaryIf<Temporary> | undefined>;
 
   override update(
     data: MeasuredTemplateDocument.UpdateData | undefined,
@@ -149,12 +149,12 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   override getFlag<
     Scope extends MeasuredTemplateDocument.Flags.Scope,
     Key extends MeasuredTemplateDocument.Flags.Key<Scope>,
-  >(scope: Scope, key: Key): Document.GetFlag<MeasuredTemplateDocument.Name, Scope, Key>;
+  >(scope: Scope, key: Key): MeasuredTemplateDocument.Flags.Get<Scope, Key>;
 
   override setFlag<
     Scope extends MeasuredTemplateDocument.Flags.Scope,
     Key extends MeasuredTemplateDocument.Flags.Key<Scope>,
-    Value extends Document.GetFlag<MeasuredTemplateDocument.Name, Scope, Key>,
+    Value extends MeasuredTemplateDocument.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
   override unsetFlag<
@@ -328,7 +328,8 @@ declare namespace BaseMeasuredTemplate {
   export import InitializedData = MeasuredTemplateDocument.InitializedData;
   export import UpdateData = MeasuredTemplateDocument.UpdateData;
   export import Schema = MeasuredTemplateDocument.Schema;
-  export import DatabaseOperation = MeasuredTemplateDocument.Database;
+  export import Database = MeasuredTemplateDocument.Database;
+  export import TemporaryIf = MeasuredTemplateDocument.TemporaryIf;
   export import Flags = MeasuredTemplateDocument.Flags;
 
   namespace Internal {

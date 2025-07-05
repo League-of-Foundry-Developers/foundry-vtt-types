@@ -369,6 +369,8 @@ declare namespace CompendiumCollection {
   }
 
   // TODO: Improve automatic index properties based on document type
+  // TODO(LukeAbby): Switch to `Document.StoredSourceForName`.
+  // Investigate why the `DeepPartial` too
   type IndexEntry<Type extends DocumentName> = { _id: string; uuid: string } & DeepPartial<
     Document.SourceForName<Type>
   >;
