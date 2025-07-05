@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, InterfaceToObject } from "#utils";
 
 import fields = foundry.data.fields;
 import DataModel = foundry.abstract.DataModel;
@@ -53,6 +53,23 @@ const mySchema = {
   foobar: new fields.TypedObjectField(new fields.SchemaField(innerSchema())),
 };
 
+const simpleSchema = {
+  foo: new fields.BooleanField(),
+};
+
+/**
+ * The simplest possible `DataModel` subclass
+ */
+class _SimpleModel extends DataModel<SimpleModel.Schema> {
+  static override defineSchema() {
+    return simpleSchema;
+  }
+}
+
+declare namespace SimpleModel {
+  type Schema = typeof simpleSchema;
+}
+
 /**
  * A DataModel subclass containing recommendations, notes, and examples for overriding various methods.
  *
@@ -93,7 +110,7 @@ class ExampleModel<Parent extends ExampleModel.Parent = ExampleModel.Parent> ext
   // Necessary type override
   static override cleanData(source?: ExampleModel.CreateData, options: DataField.CleanOptions = {}) {
     // Since this is called after `migrateData` but before `shimData`, the cast should be to un-shimmed SourceData
-    return super.cleanData(source, options) as ExampleModel.SourceData;
+    return super.cleanData(source as AnyMutableObject, options) as ExampleModel.UnshimmedSourceData;
   }
 
   // Because `DataModel#clone` returns `this`, an override cannot sufficiently cast its return from the inside,
@@ -121,15 +138,17 @@ class ExampleModel<Parent extends ExampleModel.Parent = ExampleModel.Parent> ext
       );
     }
     source = super.migrateData(source) ?? source;
-    return source as ExampleModel.SourceData;
+    return source as InterfaceToObject<ExampleModel.SourceData>;
   }
 
-  static override shimData(data: ExampleModel.SourceData, _options?: DataModel.ShimDataOptions) {
-    // have to cast the output of DataModel.shimData
-    data = super.shimData(data, _options) as ExampleModel.SourceData;
-    Document["_addDataFieldShim"](data, "bar", "foo");
-    return data; // as ExampleModel.ShimmedData;
-  }
+  // static override shimData(data: ExampleModel.SourceData, _options?: DataModel.ShimDataOptions) {
+  //   // have to cast the output of DataModel.shimData
+  //   data = super.shimData(data, _options) as ExampleModel.UnshimmedSourceData;
+  //   // protected static so need index access syntax
+  //   Document["_addDataFieldShim"](data as AnyMutableObject, "bar", "foo");
+  //   // our SourceData includes our shims
+  //   return data as ExampleModel.SourceData;
+  // }
 
   // This is a a no-op in `DataModel`,
   static override validateJoint(data: ExampleModel.SourceData) {
@@ -176,6 +195,8 @@ declare namespace ExampleModel {
     bar?: DataField.AssignmentTypeFor<Schema["foo"]>;
   }
 
+  interface UnshimmedSourceData extends SchemaField.SourceData<Schema> {}
+
   interface SourceData extends SchemaField.SourceData<Schema> {
     /**
      * @deprecated `ExampleModel#bar` is deprecated in favour of {@linkcode ExampleModel.foo | ExampleModel#foo} (since v13, until v25)
@@ -190,6 +211,9 @@ declare namespace ExampleModel {
 }
 declare const lightData: LightData;
 declare const prototypeToken: PrototypeToken;
+// declare const createData: ExampleModel.CreateData;
+// declare const updateData: ExampleModel.UpdateData;
+// declare const sourceData: ExampleModel.SourceData;
 
 const fromSourceLightData = ExampleModel.fromSource({ foo: true }, { parent: lightData });
 const fromSourcePrototypeToken = ExampleModel.fromSource({ foo: undefined }, { parent: prototypeToken });
