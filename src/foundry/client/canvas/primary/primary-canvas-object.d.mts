@@ -100,6 +100,8 @@ declare class PrimaryCanvasObject {
    * @deprecated "`PrimaryCanvasObject#updateBounds` is deprecated and has no effect." (since v12, until v14)
    */
   updateBounds(): void;
+
+  #PrimaryCanvasObject: true;
 }
 
 declare class CanvasTransformMixinClass {
