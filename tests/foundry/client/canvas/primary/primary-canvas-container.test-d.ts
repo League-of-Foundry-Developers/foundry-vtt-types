@@ -1,4 +1,18 @@
-// import { expectTypeOf } from "vitest";
-// import { PrimaryCanvasContainer } from "#client/canvas/primary/_module.mjs";
+import { expectTypeOf } from "vitest";
 
-// TODO: new in v13
+import PrimaryCanvasContainer = foundry.canvas.primary.PrimaryCanvasContainer;
+
+const myPCC = new PrimaryCanvasContainer();
+
+expectTypeOf(myPCC.sort).toBeNumber();
+myPCC.sort = 5; // Setter
+
+expectTypeOf(myPCC.elevation).toBeNumber();
+myPCC.elevation = 5; // Setter
+
+expectTypeOf(myPCC.shouldRenderDepth).toBeBoolean();
+expectTypeOf(myPCC.sortChildren()).toBeVoid();
+expectTypeOf(myPCC.updateCanvasTransform()).toBeVoid();
+
+declare const someRenderer: PIXI.Renderer;
+expectTypeOf(myPCC.renderDepthData(someRenderer)).toBeVoid();
