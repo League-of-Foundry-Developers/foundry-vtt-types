@@ -1453,93 +1453,94 @@ declare namespace Token {
      * The top-left x-coordinate in pixels (integer).
      * @defaultValue the previous or source x-coordinate.
      */
-    x: number;
+    x?: number | undefined;
 
     /**
      * The top-left y-coordinate in pixels (integer).
      * @defaultValue the previous or source y-coordinate.
      */
-    y: number;
+    y?: number | undefined;
 
     /**
      * The elevation in grid units.
      * @defaultValue the previous or source elevation.
      */
-    elevation: number;
+    elevation?: number | undefined;
 
     /**
      * The width in grid spaces (positive).
      * @defaultValue the previous or source width.
      */
-    width: number;
+    width?: number | undefined;
 
     /**
      * The height in grid spaces (positive).
      * @defaultValue the previous or source height.
      */
-    height: number;
+    height?: number | undefined;
 
     /**
      * The shape type (see {@link CONST.TOKEN_SHAPES}).
      * @defaultValue the previous or source shape.
      */
-    shape: CONST.TOKEN_SHAPES;
+    shape?: CONST.TOKEN_SHAPES | undefined;
 
     /**
      * The movement action from the previous to this waypoint.
      */
-    action: string;
+    action?: string | undefined;
 
     /**
      * Was this waypoint snapped to the grid?
      * @defaultValue `false`.
      */
-    snapped: boolean;
+    snapped?: boolean | undefined;
 
     /**
      * Was this waypoint explicitly placed by the user?
      * @defaultValue `false`.
      */
-    explicit: boolean;
+    explicit?: boolean | undefined;
 
     /**
      * Is this waypoint a checkpoint?
      * @defaultValue `false`.
      */
-    checkpoint: boolean;
+    checkpoint?: boolean | undefined;
   }
 
   interface FindMovementPathOptions {
     /**
      * Find a preview path?
-     * @defaultValue `false`.
+     * @defaultValue `false`
      */
-    preview: boolean;
+    preview?: boolean | undefined;
 
     /**
      * Ignore walls?
-     * @defaultValue `false`.
+     * @defaultValue `false`
      */
-    ignoreWalls: boolean;
+    ignoreWalls?: boolean | undefined;
 
     /**
      * Ignore cost?
-     * @defaultValue `false`.
+     * @defaultValue `false`
      */
-    ignoreCost: boolean;
+    ignoreCost?: boolean | undefined;
 
     /**
      * Consider movement history? If true, uses the current movement history.
      * If waypoints are passed, use those as the history.
-     * @defaultValue `false`.
+     * @defaultValue `false`
      */
-    history: boolean | TokenDocument.MeasuredMovementWaypoint[];
+    history?: boolean | TokenDocument.MeasuredMovementWaypoint[] | undefined;
 
     /**
      * Unless the path can be found instantly, delay the start of the pathfinding
-     * computation by this number of milliseconds. Default: `0`.
+     * computation by this number of milliseconds.
+     * @defaultValue `0`
      */
-    delay: number;
+    delay?: number | undefined;
   }
 
   interface FindMovementPathJob {
