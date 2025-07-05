@@ -637,6 +637,66 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
 
   override getSnappedPosition(position?: Canvas.Point | null): Canvas.Point;
 
+  override _pasteObject(
+    offset: Canvas.Point,
+    { hidden, snap }?: PlaceableObject.PasteObjectOptions,
+  ): PlaceableObject.PasteObjectReturn<TokenDocument.Implementation>;
+
+  /**
+   * Measure the movement path for this Token.
+   * @param waypoints - The waypoints of movement
+   * @param options   - Additional options that affect cost calculations
+   * (passed to {@link Token#_getMovementCostFunction})
+   */
+  measureMovementPath(
+    waypoints: Token.MeasuredMovementWaypoint[],
+    options?: TokenDocument.MeasureMovementPathOptions,
+  ): foundry.grid.BaseGrid.MeasurePathResult;
+
+  /**
+   * Create the movement cost function for this Token.
+   * In square and hexagonal grids it calculates the cost for single grid space move between two grid space offsets.
+   * For tokens that occupy more than one grid space the cost of movement is calculated as the median of all individual
+   * grid space moves unless the cost of any of these is infinite, in which case total cost is always infinite.
+   * In gridless grids the `from` and `to` parameters of the cost function are top-left offsets.
+   * If the movement cost function is undefined, the cost equals the distance moved.
+   * @param options - Additional options that affect cost calculations
+   */
+  protected _getMovementCostFunction(
+    options?: TokenDocument.MeasureMovementPathOptions,
+  ): TokenDocument.MovementCostFunction | void;
+
+  /**
+   * Constrain the given movement path.
+   *
+   * The result of this function must not be affected by the animation of this Token.
+   * @param waypoints - The waypoints of movement
+   * @param options   - Additional options
+   * @returns The (constrained) path of movement and a boolean that is true if and only if the path was constrained.
+   * If it wasn't constrained, then a copy of the path of all given waypoints with all default values filled in
+   * is returned.
+   */
+  constrainMovementPath(
+    waypoints: Token.ConstrainMovementPathWaypoint[],
+    { preview, ignoreWalls, ignoreCost, history }?: Token.ConstrainMovementPathOptions,
+  ): Token.ConstrainMovementPathReturn;
+
+  /**
+   * Find a movement path through the waypoints.
+   * The path may not necessarily be one with the least cost.
+   * The path returned may be partial, i.e. it doesn't go through all waypoints, but must always start with the first
+   * waypoints unless the waypoints are empty, in which case an empty path is returned.
+   *
+   * The result of this function must not be affected by the animation of this Token.
+   * @param waypoints - The waypoints of movement
+   * @param options   - Additional options
+   * @returns The job of the movement pathfinder
+   */
+  findMovementPath(
+    waypoints: Token.FindMovementPathWaypoint,
+    options?: Token.FindMovementPathOptions,
+  ): Token.FindMovementPathJob;
+
   /**
    * Test whether the Token is inside the Region.
    * This function determines the state of {@link TokenDocument.regions | `TokenDocument#regions`} and {@link RegionDocument.tokens | `RegionDocument#tokens`}.
@@ -1289,6 +1349,218 @@ declare namespace Token {
      * @defaultValue `false`
      */
     preview?: boolean | undefined;
+  }
+
+  interface ConstrainMovementPathWaypoint {
+    /**
+     * The top-left x-coordinate in pixels (integer).
+     * @defaultValue the previous or source x-coordinate.
+     */
+    x: number;
+
+    /**
+     * The top-left y-coordinate in pixels (integer).
+     * @defaultValue the previous or source y-coordinate.
+     */
+    y: number;
+
+    /**
+     * The elevation in grid units.
+     * @defaultValue the previous or source elevation.
+     */
+    elevation: number;
+
+    /**
+     * The width in grid spaces (positive).
+     * @defaultValue the previous or source width.
+     */
+    width: number;
+
+    /**
+     * The height in grid spaces (positive).
+     * @defaultValue the previous or source height.
+     */
+    height: number;
+
+    /**
+     * The shape type (see {@link CONST.TOKEN_SHAPES}).
+     * @defaultValue the previous or source shape.
+     */
+    shape: CONST.TOKEN_SHAPES;
+
+    /**
+     * The movement action from the previous to this waypoint.
+     * @defaultValue the previous or prepared movement action.
+     */
+    action: string;
+
+    /**
+     * The terrain data of this segment.
+     * @defaultValue `null`.
+     */
+    terrain: foundry.abstract.DataModel.Any | null;
+
+    /**
+     * Was this waypoint snapped to the grid?
+     * @defaultValue `false`.
+     */
+    snapped: boolean;
+
+    /**
+     * Was this waypoint explicitly placed by the user?
+     * @defaultValue `false`.
+     */
+    explicit: boolean;
+
+    /**
+     * Is this waypoint a checkpoint?
+     * @defaultValue `false`.
+     */
+    checkpoint: boolean;
+  }
+
+  interface ConstrainMovementPathOptions {
+    /**
+     * Constrain a preview path?
+     * @defaultValue `false`
+     */
+    preview: boolean;
+
+    /**
+     * Ignore walls?
+     * @defaultValue `false`
+     */
+    ignoreWalls: boolean;
+
+    /**
+     * Ignore cost?
+     * @defaultValue `false`
+     */
+    ignoreCost: boolean;
+
+    /**
+     * Consider movement history? If true, uses the current movement history. If waypoints are passed, uses those as the history.
+     * @defaultValue `false`
+     * @remarks marked by foundry as readonly
+     */
+    history: boolean | TokenDocument.MeasuredMovementWaypoint[];
+  }
+
+  type ConstrainMovementPathReturn = [constrainedPath: TokenDocument.MovementWaypoint[], wasConstrained: boolean];
+
+  interface FindMovementPathWaypoint {
+    /**
+     * The top-left x-coordinate in pixels (integer).
+     * @defaultValue the previous or source x-coordinate.
+     */
+    x: number;
+
+    /**
+     * The top-left y-coordinate in pixels (integer).
+     * @defaultValue the previous or source y-coordinate.
+     */
+    y: number;
+
+    /**
+     * The elevation in grid units.
+     * @defaultValue the previous or source elevation.
+     */
+    elevation: number;
+
+    /**
+     * The width in grid spaces (positive).
+     * @defaultValue the previous or source width.
+     */
+    width: number;
+
+    /**
+     * The height in grid spaces (positive).
+     * @defaultValue the previous or source height.
+     */
+    height: number;
+
+    /**
+     * The shape type (see {@link CONST.TOKEN_SHAPES}).
+     * @defaultValue the previous or source shape.
+     */
+    shape: CONST.TOKEN_SHAPES;
+
+    /**
+     * The movement action from the previous to this waypoint.
+     */
+    action: string;
+
+    /**
+     * Was this waypoint snapped to the grid?
+     * @defaultValue `false`.
+     */
+    snapped: boolean;
+
+    /**
+     * Was this waypoint explicitly placed by the user?
+     * @defaultValue `false`.
+     */
+    explicit: boolean;
+
+    /**
+     * Is this waypoint a checkpoint?
+     * @defaultValue `false`.
+     */
+    checkpoint: boolean;
+  }
+
+  interface FindMovementPathOptions {
+    /**
+     * Find a preview path?
+     * @defaultValue `false`.
+     */
+    preview: boolean;
+
+    /**
+     * Ignore walls?
+     * @defaultValue `false`.
+     */
+    ignoreWalls: boolean;
+
+    /**
+     * Ignore cost?
+     * @defaultValue `false`.
+     */
+    ignoreCost: boolean;
+
+    /**
+     * Consider movement history? If true, uses the current movement history.
+     * If waypoints are passed, use those as the history.
+     * @defaultValue `false`.
+     */
+    history: boolean | TokenDocument.MeasuredMovementWaypoint[];
+
+    /**
+     * Unless the path can be found instantly, delay the start of the pathfinding
+     * computation by this number of milliseconds. Default: `0`.
+     */
+    delay: number;
+  }
+
+  interface FindMovementPathJob {
+    /**
+     * The result of the pathfinding job. Undefined while the
+     * search is in progress, null if the job was cancelled,
+     * and the (partial) path if the job completed.
+     */
+    result: TokenDocument.MovementWaypoint[] | null | undefined;
+
+    /**
+     * The promise returning the (partial) path that as found
+     * or null if cancelled.
+     */
+    promise: Promise<TokenDocument.MovementWaypoint[] | null>;
+
+    /**
+     * If this function is called and the job hasn't completed
+     * yet, the job is cancelled.
+     */
+    cancel: () => void;
   }
 }
 

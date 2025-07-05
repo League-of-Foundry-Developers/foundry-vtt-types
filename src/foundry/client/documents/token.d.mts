@@ -10,6 +10,7 @@ import type DataModel from "#common/abstract/data.mjs";
 import type { TerrainData } from "#client/data/terrain-data.mjs";
 
 import fields = foundry.data.fields;
+import Token = foundry.canvas.placeables.Token;
 
 declare namespace TokenDocument {
   /**
@@ -1209,33 +1210,6 @@ declare namespace TokenDocument {
     diagonals: number;
   }
 
-  interface ConstrainMovementPathOptions {
-    /**
-     * Constrain a preview path?
-     * @defaultValue `false`
-     */
-    preview: boolean;
-
-    /**
-     * Ignore walls?
-     * @defaultValue `false`
-     */
-    ignoreWalls: boolean;
-
-    /**
-     * Ignore cost?
-     * @defaultValue `false`
-     */
-    ignoreCost: boolean;
-
-    /**
-     * Consider movement history? If true, uses the current movement history. If waypoints are passed, uses those as the history.
-     * @defaultValue `false`
-     * @remarks marked by foundry as readonly
-     */
-    history: boolean | TokenDocument.MeasuredMovementWaypoint[];
-  }
-
   interface MovementContinuationHandle {
     /**
      * The movement ID
@@ -1298,7 +1272,7 @@ declare namespace TokenDocument {
     };
   }
 
-  interface ConstrainOptions extends Omit<ConstrainMovementPathOptions, "preview" | "history"> {}
+  interface ConstrainOptions extends Omit<Token.ConstrainMovementPathOptions, "preview" | "history"> {}
 
   interface MovementData {
     /**
@@ -1475,6 +1449,11 @@ declare namespace TokenDocument {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced by {@linkcode Token.ConstrainMovementPathOptions}.
+   */
+  type ConstrainMovementPathOptions = Token.ConstrainMovementPathOptions;
 }
 
 /**
