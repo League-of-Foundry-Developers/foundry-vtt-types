@@ -1941,7 +1941,7 @@ declare global {
       hudClass: foundry.applications.hud.TokenHUD.AnyConstructor;
 
       /** @defaultValue `typeof TokenRuler` */
-      rulerClass: foundry.canvas.placeables.tokens.TokenRuler;
+      rulerClass: foundry.canvas.placeables.tokens.TokenRuler.AnyConstructor;
 
       movement: {
         /** @defaultValue `data.TerrainData` */
