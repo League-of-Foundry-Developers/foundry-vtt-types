@@ -1,31 +1,64 @@
 import { expectTypeOf } from "vitest";
-import { PrimarySpriteMesh } from "#client/canvas/primary/_module.mjs";
 
+import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
 import TokenRingSamplerShader = foundry.canvas.rendering.shaders.TokenRingSamplerShader;
 import TextureLoader = foundry.canvas.TextureLoader;
 import PrimaryBaseSamplerShader = foundry.canvas.rendering.shaders.PrimaryBaseSamplerShader;
+import Token = foundry.canvas.placeables.Token;
 
 declare const someTex: PIXI.Texture;
+declare const nullish: null | undefined;
+declare const someToken: Token.Implementation;
+declare const someRenderer: PIXI.Renderer;
 
-let myPSM = new PrimarySpriteMesh(someTex, TokenRingSamplerShader);
-myPSM = new PrimarySpriteMesh({
+new PrimarySpriteMesh();
+new PrimarySpriteMesh(someTex);
+new PrimarySpriteMesh(undefined, PrimaryBaseSamplerShader);
+new PrimarySpriteMesh(someTex, TokenRingSamplerShader);
+new PrimarySpriteMesh({
+  texture: undefined,
+  name: nullish,
+  object: nullish,
+  shaderClass: undefined,
+});
+const myPSM = new PrimarySpriteMesh({
   texture: someTex,
-  shaderClass: TokenRingSamplerShader,
   name: "doug",
+  object: someToken,
+  shaderClass: TokenRingSamplerShader,
 });
 
-expectTypeOf(myPSM["_textureAlphaData"]).toEqualTypeOf<TextureLoader.TextureAlphaData | null>();
+expectTypeOf(myPSM["_textureAlphaData"]).toEqualTypeOf<TextureLoader.TextureAlphaData | null | undefined>();
+expectTypeOf(myPSM.textureAlphaThreshold).toBeNumber();
 expectTypeOf(myPSM.setShaderClass(PrimaryBaseSamplerShader)).toEqualTypeOf<void>();
+
+expectTypeOf(myPSM.resize(500, 500)).toBeVoid();
+expectTypeOf(
+  myPSM.resize(500, 500, {
+    fit: undefined,
+    scaleX: undefined,
+    scaleY: undefined,
+  }),
+).toBeVoid();
 expectTypeOf(
   myPSM.resize(500, 500, {
     fit: "cover",
     scaleX: 2,
     scaleY: 0.5,
   }),
-).toEqualTypeOf<void>();
+).toBeVoid();
+
+expectTypeOf(myPSM.containsCanvasPoint({ x: 500, y: 500 })).toEqualTypeOf<boolean>();
 expectTypeOf(myPSM.containsCanvasPoint({ x: 500, y: 500 }, 0.5)).toEqualTypeOf<boolean>();
+
+expectTypeOf(myPSM.containsPoint({ x: 500, y: 500 })).toEqualTypeOf<boolean>();
 expectTypeOf(myPSM.containsPoint({ x: 500, y: 500 }, 0.2)).toEqualTypeOf<boolean>();
-// deprecated until v14
+
+expectTypeOf(myPSM.renderDepthData(someRenderer)).toBeVoid();
+expectTypeOf(myPSM["_renderVoid"](someRenderer)).toBeVoid();
+
+// deprecated since v12, until v14
+
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myPSM.getPixelAlpha(500, 500)).toEqualTypeOf<number>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
