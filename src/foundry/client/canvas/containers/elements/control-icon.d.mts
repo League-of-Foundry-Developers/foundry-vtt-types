@@ -25,18 +25,15 @@ declare class ControlIcon extends PIXI.Container {
    */
   tintColor: number | null;
 
-  /**
-   * @defaultValue `static`
-   */
+  /** @defaultValue `"static"` */
   override eventMode: PIXI.EventMode;
 
-  /**
-   * @defaultValue `false`
-   */
+  /** @defaultValue `false` */
   override interactiveChildren: boolean;
 
   override hitArea: PIXI.Rectangle;
 
+  /** @defaultValue `"pointer"` */
   override cursor: string;
 
   bg: PIXI.Graphics;
@@ -48,22 +45,23 @@ declare class ControlIcon extends PIXI.Container {
   tooltip: PreciseText;
 
   /**
-   * The elevation of the ControlIcon, which is displayed in its tooltip text.
-   * @throws If a set is attempted with anything but a finite number
+   * The elevation of the `ControlIcon`, which is displayed in its tooltip text.
+   * @remarks
+   * @throws If passed `NaN` or `+`/`-Infinity`
    */
   get elevation(): number;
 
   set elevation(value);
 
   /**
-   * Initial drawing of the ControlIcon
+   * Initial drawing of the `ControlIcon`
    */
   draw(): Promise<this>;
 
   /**
-   * Incremental refresh for ControlIcon appearance.
+   * Incremental refresh for `ControlIcon` appearance.
    */
-  refresh({ visible, iconColor, borderColor, borderVisible }?: ControlIcon.RefreshOptions): this;
+  refresh(options?: ControlIcon.RefreshOptions): this;
 }
 
 declare namespace ControlIcon {
@@ -72,17 +70,10 @@ declare namespace ControlIcon {
 
   /** @internal */
   type _Options = InexactPartial<{
-    /**
-     * @defaultValue `40`
-     * @remarks Can't be `null` as it only has a parameter default, and `null` coerced to `0` is a nonsensical size value
-     */
+    /** @defaultValue `40` */
     size: number;
 
-    /**
-     * @defaultValue `0xFF5500`
-     * @remarks Can't be `null` as that's not a valid value for the `PIXI.Color` constructor,
-     * and it only has a parameter default
-     */
+    /** @defaultValue `0xFF5500` */
     borderColor: number;
 
     /**
@@ -91,11 +82,7 @@ declare namespace ControlIcon {
      */
     tint: number | null;
 
-    /**
-     * @defaultValue `number`
-     * @remarks Can't be null as the `ControlIcon#elevation` setter throws if passed anything but a finite number,
-     * and it only has a parameter default
-     */
+    /** @defaultValue `number` */
     elevation: number;
   }>;
 
@@ -106,16 +93,9 @@ declare namespace ControlIcon {
 
   /** @internal */
   type _RefreshOptions = InexactPartial<{
-    /** @remarks Can't be `null` because of an explicit `!== undefined` check */
     visible: boolean;
-
-    /** @remarks Can't be `null` because of an explicit `!== undefined` check */
     iconColor: number;
-
-    /** @remarks Can't be `null` because of an explicit `!== undefined` check */
     borderColor: number;
-
-    /** @remarks Can't be `null` because of an explicit `!== undefined` check */
     borderVisible: boolean;
   }>;
 
