@@ -1,4 +1,5 @@
 import { expectTypeOf } from "vitest";
+import type { AnyObject } from "#utils";
 
 import CanvasAnimation = foundry.canvas.animation.CanvasAnimation;
 
@@ -52,12 +53,48 @@ expectTypeOf(
     name: "darknessShift",
     wait: somePromise,
     ontick: (dt, data) => {
+      const firstAttribute = data.attributes?.[0];
+      if (firstAttribute && firstAttribute.attribute !== "color") {
+        expectTypeOf(firstAttribute.attribute).toEqualTypeOf<"darkness">();
+      }
       console.warn(
         `We are ${dt}ms into animating the ${data.attributes.map((a) => a.attribute).join(", ")} attributes`,
       );
     },
   }),
 ).toEqualTypeOf<CanvasAnimation.AnimateReturn>();
+const animationParent1 = { foo: 7, bar: 10 };
+const animationParent2 = { fizz: new Color(0), buzz: 33 };
+
+// Animating more than one AnimationParent per call requires specifying the least-common-denominator type,
+// often requiring something with a `string` index signature
+CanvasAnimation.animate<AnyObject>(
+  [
+    {
+      parent: animationParent1,
+      attribute: "bar",
+      to: 0,
+    },
+    {
+      parent: animationParent2,
+      attribute: "baz", // Because we're passing `AnyObject` we lose useful `keyof` and can't prevent this
+      to: 0,
+    },
+    {
+      parent: animationParent2,
+      attribute: "fizz",
+      to: new Color(0x505050),
+    },
+  ],
+  {
+    ontick: (dt, data) => {
+      // we've lost specific knowledge of the possible values of `.attribute`
+      console.warn(
+        `We are ${dt}ms into animating the ${data.attributes.map((a) => a.attribute).join(", ")} attributes`,
+      );
+    },
+  },
+);
 
 declare const animationSymbol: unique symbol;
 expectTypeOf(CanvasAnimation.getAnimation("darknessShift")).toEqualTypeOf<CanvasAnimation.AnimationData | undefined>;
