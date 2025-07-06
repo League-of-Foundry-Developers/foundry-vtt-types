@@ -40,7 +40,7 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
    * @defaultValue `undefined`
    * @remarks Only `undefined` prior to first draw. {@link Wall.clearDoorControl | `Wall#clearDoorControl`} sets it `null`.
    */
-  doorControl: DoorControl.ConfiguredInstance | null | undefined;
+  doorControl: DoorControl.Implementation | null | undefined;
 
   /**
    * The line segment that represents the Wall.
@@ -132,7 +132,7 @@ declare class Wall extends PlaceableObject<WallDocument.Implementation> {
   /**
    * Draw a control icon that is used to manipulate the door's open/closed state
    */
-  createDoorControl(): DoorControl.ConfiguredInstance;
+  createDoorControl(): DoorControl.Implementation;
 
   /**
    * Clear the door control if it exists.

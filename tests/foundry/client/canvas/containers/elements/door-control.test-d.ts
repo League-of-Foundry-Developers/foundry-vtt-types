@@ -9,10 +9,10 @@ new DoorControl();
 const control = new DoorControl(wall);
 
 expectTypeOf(control.wall).toEqualTypeOf<Wall.Implementation>();
+expectTypeOf(control.visible).toEqualTypeOf<boolean>();
 expectTypeOf(control.center).toEqualTypeOf<PIXI.Point>();
-expectTypeOf(control.isVisible).toEqualTypeOf<boolean>();
 
-expectTypeOf(control.draw()).toEqualTypeOf<Promise<DoorControl.ConfiguredInstance>>();
+expectTypeOf(control.draw()).toEqualTypeOf<Promise<DoorControl.Implementation>>();
 
 expectTypeOf(control.bg).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(control.icon).toEqualTypeOf<PIXI.Sprite | undefined>();
@@ -21,6 +21,7 @@ expectTypeOf(control.border).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(control["_getTexture"]()).toEqualTypeOf<foundry.canvas.loadTexture.Return>();
 
 expectTypeOf(control.reposition()).toEqualTypeOf<void>();
+expectTypeOf(control.isVisible).toEqualTypeOf<boolean>();
 
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 expectTypeOf(control["_onMouseOver"](pointerEvent)).toEqualTypeOf<false | void>();

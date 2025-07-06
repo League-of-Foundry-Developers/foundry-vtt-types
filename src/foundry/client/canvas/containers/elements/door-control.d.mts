@@ -11,7 +11,7 @@ declare class DoorControl extends PIXI.Container {
 
   /**
    * @defaultValue `false`
-   * @remarks "Door controls are not visible by default"
+   * @remarks Foundry comments "Door controls are not visible by default"
    */
   override visible: boolean;
 
@@ -44,7 +44,7 @@ declare class DoorControl extends PIXI.Container {
   /**
    * Determine whether the DoorControl is visible to the calling user's perspective.
    * The control is always visible if the user is a GM and no Tokens are controlled.
-   * @see {@link foundry.canvas.groups.CanvasVisibility.testVisibility | `CanvasVisibility#testVisibility`}
+   * @see {@linkcode foundry.canvas.groups.CanvasVisibility.testVisibility | CanvasVisibility#testVisibility}
    */
   get isVisible(): boolean;
 
@@ -79,8 +79,8 @@ declare namespace DoorControl {
   interface Any extends AnyDoorControl {}
   interface AnyConstructor extends Identity<typeof AnyDoorControl> {}
 
-  type ConfiguredClass = CONFIG["Canvas"]["doorControlClass"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  type ImplementationClass = CONFIG["Canvas"]["doorControlClass"];
+  type Implementation = FixedInstanceType<ImplementationClass>;
 }
 
 export default DoorControl;
