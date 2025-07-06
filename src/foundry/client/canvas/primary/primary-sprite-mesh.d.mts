@@ -20,6 +20,9 @@ declare class PrimarySpriteMesh extends PrimaryOccludableObjectMixin(SpriteMesh)
     shaderClass?: PrimaryBaseSamplerShader.AnyConstructor,
   );
 
+  /** @privateRemarks Fake type override, {@linkcode _updateBatchData} dumps a bunch of extra properties in with no documentation */
+  protected override _batchData: PrimarySpriteMesh.BatchData;
+
   /**
    * The texture alpha data.
    * @defaultValue `null`
@@ -170,6 +173,35 @@ declare namespace PrimarySpriteMesh {
   }>;
 
   interface ResizeOptions extends _ResizeOptions {}
+
+  /** @internal */
+  type _BatchData = InexactPartial<{
+    /** @remarks Doesn't exist prior to first render, set in {@linkcode PrimarySpriteMesh._updateBatchData | PrimarySpriteMesh#_updateBatchData} */
+    elevation: PrimarySpriteMesh["elevation"];
+
+    /** @remarks Doesn't exist prior to first render, set in {@linkcode PrimarySpriteMesh._updateBatchData | PrimarySpriteMesh#_updateBatchData} */
+    textureAlphaThreshold: PrimarySpriteMesh["textureAlphaThreshold"];
+
+    /** @remarks Doesn't exist prior to first render, set in {@linkcode PrimarySpriteMesh._updateBatchData | PrimarySpriteMesh#_updateBatchData} */
+    unoccludedAlpha: PrimarySpriteMesh["unoccludedAlpha"];
+
+    /** @remarks Doesn't exist prior to first render, set in {@linkcode PrimarySpriteMesh._updateBatchData | PrimarySpriteMesh#_updateBatchData} */
+    occludedAlpha: PrimarySpriteMesh["occludedAlpha"];
+
+    /** @remarks Doesn't exist prior to first render, set in {@linkcode PrimarySpriteMesh._updateBatchData | PrimarySpriteMesh#_updateBatchData} */
+    fadeOcclusion: PrimaryOccludableObjectMixin.OcclusionState["fade"];
+
+    /** @remarks Doesn't exist prior to first render, set in {@linkcode PrimarySpriteMesh._updateBatchData | PrimarySpriteMesh#_updateBatchData} */
+    radialOcclusion: PrimaryOccludableObjectMixin.OcclusionState["radial"];
+
+    /** @remarks Doesn't exist prior to first render, set in {@linkcode PrimarySpriteMesh._updateBatchData | PrimarySpriteMesh#_updateBatchData} */
+    visionOcclusion: PrimaryOccludableObjectMixin.OcclusionState["vision"];
+
+    /** @remarks Doesn't exist prior to first render, set in {@linkcode PrimarySpriteMesh._updateBatchData | PrimarySpriteMesh#_updateBatchData} */
+    restrictionState: PrimarySpriteMesh["_restrictionState"];
+  }>;
+
+  interface BatchData extends SpriteMesh.BatchData, _BatchData {}
 }
 
 export default PrimarySpriteMesh;

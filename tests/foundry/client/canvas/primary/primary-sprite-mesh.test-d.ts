@@ -28,6 +28,7 @@ const myPSM = new PrimarySpriteMesh({
   shaderClass: TokenRingSamplerShader,
 });
 
+expectTypeOf(myPSM["_batchData"]).toEqualTypeOf<PrimarySpriteMesh.BatchData>();
 expectTypeOf(myPSM["_textureAlphaData"]).toEqualTypeOf<TextureLoader.TextureAlphaData | null | undefined>();
 expectTypeOf(myPSM.textureAlphaThreshold).toBeNumber();
 expectTypeOf(myPSM.setShaderClass(PrimaryBaseSamplerShader)).toEqualTypeOf<void>();

@@ -6,12 +6,10 @@ import type { BaseSamplerShader } from "#client/canvas/rendering/shaders/_module
  */
 declare class SpriteMesh extends PIXI.Container {
   /**
-   * @param texture   - Texture bound to this sprite mesh.
-   *                    (default: `PIXI.Texture.EMPTY`)
-   * @param shaderCls - Shader class used by this sprite mesh.
-   *                    (default: `BaseSamplerShader`)
+   * @param texture   - Texture bound to this sprite mesh. (default: {@linkcode PIXI.Texture.EMPTY})
+   * @param shaderCls - Shader class used by this sprite mesh. (default: {@linkcode foundry.canvas.rendering.shaders.BaseSamplerShader | BaseSamplerShader})
    */
-  constructor(texture?: PIXI.Texture | null, shaderClass?: BaseSamplerShader.AnyConstructor);
+  constructor(texture?: PIXI.Texture, shaderClass?: BaseSamplerShader.AnyConstructor);
 
   /** @defaultValue `true` */
   override isSprite: boolean;
@@ -40,6 +38,7 @@ declare class SpriteMesh extends PIXI.Container {
 
   /**
    * The texture that the sprite is using.
+   * @remarks Set `null` in {@linkcode destroy | #destroy}, or if this mesh was constructed with no texture
    */
   protected _texture: PIXI.Texture | null;
 
@@ -81,7 +80,7 @@ declare class SpriteMesh extends PIXI.Container {
    *
    * {@link https://docs.cocos2d-x.org/cocos2d-x/en/sprites/manipulation.html}
    */
-  protected _anchor: PIXI.ObservablePoint;
+  protected _anchor: PIXI.ObservablePoint<SpriteMesh>;
 
   /**
    * This is used to store the vertex data of the sprite (basically a quad).
@@ -160,7 +159,10 @@ declare class SpriteMesh extends PIXI.Container {
    */
   get padding(): number;
 
-  /** @throws If `value < 0` */
+  /**
+   * @remarks
+   * @throws If `value < 0`
+   */
   set padding(value);
 
   /**
@@ -175,7 +177,7 @@ declare class SpriteMesh extends PIXI.Container {
 
   /**
    * The blend mode applied to the SpriteMesh.
-   * @defaultValue `PIXI.BLEND_MODES.NORMAL`
+   * @defaultValue {@linkcode PIXI.BLEND_MODES.NORMAL}
    */
   set blendMode(value: PIXI.BLEND_MODES);
 
@@ -185,7 +187,7 @@ declare class SpriteMesh extends PIXI.Container {
    * If true PixiJS will Math.round() x/y values when rendering, stopping pixel interpolation.
    * Advantages can include sharper image quality (like text) and faster rendering on canvas.
    * The main disadvantage is movement of objects may appear less smooth.
-   * To set the global default, change PIXI.settings.ROUND_PIXELS
+   * To set the global default, change {@linkcode PIXI.settings.ROUND_PIXELS}
    * @defaultValue `PIXI.settings.ROUND_PIXELS`
    */
   set roundPixels(value: boolean);
@@ -195,18 +197,19 @@ declare class SpriteMesh extends PIXI.Container {
   /**
    * Used to force an alpha mode on this sprite mesh.
    * If this property is non null, this value will replace the texture alphaMode when computing color channels.
-   * Affects how tint, worldAlpha and alpha are computed each others.
+   * Affects how `tint`, `worldAlpha` and `alpha` are computed each others.
    */
   get alphaMode(): PIXI.ALPHA_MODES;
 
   set alphaMode(mode);
 
   /**
-   * Returns the SpriteMesh associated batch plugin. By default the returned plugin is that of the associated shader.
-   * If a plugin is forced, it will returns the forced plugin.
-   * @defaultValue `this._shader.pluginName`
+   * Returns the {@linkcode SpriteMesh} associated batch plugin. By default the returned plugin is that of the associated shader.
+   * If a plugin is forced, it will returns the forced plugin. A null value means that this `SpriteMesh` has no associated
+   * plugin.
+   * @defaultValue {@linkcode BaseSamplerShader.pluginName | this._shader.pluginName}
    */
-  get pluginName(): string;
+  get pluginName(): string | null;
 
   set pluginName(name);
 
@@ -222,7 +225,7 @@ declare class SpriteMesh extends PIXI.Container {
   set texture(texture);
 
   /**
-   * The anchor sets the origin point of the sprite. The default value is taken from the {@linkcode PIXI.Texture}
+   * The anchor sets the origin point of the sprite. The default value is taken from the texture
    * and passed to the constructor.
    *
    * The default is `(0,0)`, this means the sprite's origin is the top left.
@@ -234,14 +237,14 @@ declare class SpriteMesh extends PIXI.Container {
    * If you pass only single parameter, it will set both x and y to the same value as shown in the example below.
    * @privateRemarks Technically should be `ObservablePoint<this>` but this breaks `PrimarySpriteMesh`
    */
-  get anchor(): PIXI.ObservablePoint<SpriteMesh.Any>;
+  get anchor(): PIXI.ObservablePoint<SpriteMesh>;
 
   set anchor(anchor);
 
   /**
    * The tint applied to the sprite. This is a hex value.
    *
-   * A value of 0xFFFFFF will remove any tint effect.
+   * A value of `0xFFFFFF` will remove any tint effect.
    * @defaultValue `0xFFFFFF`
    */
   get tint(): number;
@@ -249,10 +252,9 @@ declare class SpriteMesh extends PIXI.Container {
   set tint(tint);
 
   /**
-   * The HTML source element for this SpriteMesh texture.
-   * @privateRemarks This could possibly be `PIXI.ImageSource | null`, but the below is Foundry's typing, which I think is accurate in practice
+   * The HTML source element for this `SpriteMesh` texture.
    */
-  get sourceElement(): HTMLImageElement | HTMLVideoElement | null;
+  get sourceElement(): PIXI.ImageSource | null;
 
   /**
    * Is this SpriteMesh rendering a video texture?
@@ -270,7 +272,7 @@ declare class SpriteMesh extends PIXI.Container {
   protected _onAnchorUpdate(): void;
 
   /**
-   * Update uvs and push vertices and uv buffers on GPU if necessary.
+   * Update `uvs` and push `vertices` and uv buffers on GPU if necessary.
    */
   updateUvs(): void;
 
@@ -283,29 +285,33 @@ declare class SpriteMesh extends PIXI.Container {
   override updateTransform(): void;
 
   /**
-   * Calculates the worldTransform * vertices, store it in vertexData
+   * Calculates the `worldTransform * vertices`, store it in `vertexData`
    */
   calculateVertices(): void;
 
   /**
-   * Calculates worldTransform * vertices for a non texture with a trim. store it in vertexTrimmedData.
+   * Calculates `worldTransform * vertices` for a non texture with a trim. store it in `vertexTrimmedData`.
    *
    * This is used to ensure that the true width and height of a trimmed texture is respected.
    */
   calculateTrimmedVertices(): void;
 
-  override _render(renderer: PIXI.Renderer): void;
+  protected override _render(renderer: PIXI.Renderer): void;
 
   /**
    * Update the batch data object.
    */
   protected _updateBatchData(): void;
 
-  override _calculateBounds(): void;
+  protected override _calculateBounds(): void;
 
   override getLocalBounds(rect: PIXI.Rectangle): PIXI.Rectangle;
 
-  /** @privateRemarks Foundry still marks this `@override` from when this class used to extend `PIXI.Mesh` */
+  /**
+   * Check to see if a point is contained within this SpriteMesh Quad.
+   * @param point - Point to check if it's contained.
+   * @returns `true` if the point is contained within geometry.
+   */
   containsPoint(point: PIXI.IPointData): boolean;
 
   override destroy(options?: PIXI.IDestroyOptions | boolean): void;
@@ -322,6 +328,8 @@ declare class SpriteMesh extends PIXI.Container {
     textureOptions?: PIXI.IBaseTextureOptions,
     shaderClass?: BaseSamplerShader.AnyConstructor,
   ): SpriteMesh;
+
+  #SpriteMesh: true;
 }
 
 declare namespace SpriteMesh {
