@@ -252,7 +252,8 @@ declare class InternalColor extends PatchedNumber {
   /**
    * Create a Color instance from an RGB array.
    * @param color - A color input
-   * @returns The hex color instance or NaN
+   * @returns The hex color instance or `NaN`
+   * @remarks Nullish values return `Color(NaN)`
    */
   static from(color: Color.Source | null | undefined): Color;
 

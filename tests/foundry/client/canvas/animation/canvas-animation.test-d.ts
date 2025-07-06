@@ -1,25 +1,72 @@
 import { expectTypeOf } from "vitest";
-import { CanvasAnimation } from "#client/canvas/animation/_module.mjs";
+
+import CanvasAnimation = foundry.canvas.animation.CanvasAnimation;
+
+expectTypeOf(CanvasAnimation.STATES).toExtend<Record<keyof CanvasAnimation.States, CanvasAnimation.STATES>>();
+expectTypeOf(CanvasAnimation.ticker).toEqualTypeOf<PIXI.Ticker>();
+expectTypeOf(CanvasAnimation.animations).toEqualTypeOf<Record<PropertyKey, CanvasAnimation.AnimationData>>();
 
 declare function someEasing(pt: number): number;
-declare const somePromise: Promise<unknown>;
-expectTypeOf(CanvasAnimation.easeOutCircle(3)).toEqualTypeOf<number>();
+declare const somePromise: Promise<void>;
+
+const animatedState = {
+  darkness: 0,
+  color: Color.from(0x123345),
+};
+
+const attributes = [
+  {
+    parent: animatedState,
+    attribute: "darkness",
+    to: 5,
+  },
+  {
+    parent: animatedState,
+    attribute: "color",
+    to: Color.from(0x543321),
+  },
+] satisfies CanvasAnimation.Attribute<typeof animatedState>[];
+
+// @ts-expect-error foo is not a key of animatedState
+CanvasAnimation.animate([{ parent: animatedState, attribute: "foo", to: 10 }]);
+
+declare const somePing: foundry.canvas.interaction.PulsePing;
+expectTypeOf(CanvasAnimation.animate(attributes)).toEqualTypeOf<CanvasAnimation.AnimateReturn>();
 expectTypeOf(
-  CanvasAnimation.animate(
-    [
-      {
-        parent: { darkness: 0 },
-        attribute: "darkness",
-        to: 0.8,
-      },
-    ],
-    {
-      duration: 2000,
-      priority: 27 as PIXI.UPDATE_PRIORITY,
-      easing: someEasing,
-      name: "darknessShift",
-      wait: somePromise,
+  CanvasAnimation.animate(attributes, {
+    context: undefined,
+    duration: undefined,
+    easing: undefined,
+    name: undefined,
+    ontick: undefined,
+    priority: undefined,
+    wait: undefined,
+  }),
+).toEqualTypeOf<CanvasAnimation.AnimateReturn>();
+expectTypeOf(
+  CanvasAnimation.animate(attributes, {
+    context: somePing,
+    duration: 2000,
+    priority: 27 as PIXI.UPDATE_PRIORITY,
+    easing: someEasing,
+    name: "darknessShift",
+    wait: somePromise,
+    ontick: (dt, data) => {
+      console.warn(
+        `We are ${dt}ms into animating the ${data.attributes.map((a) => a.attribute).join(", ")} attributes`,
+      );
     },
-  ),
-).toEqualTypeOf<Promise<boolean | void>>();
+  }),
+).toEqualTypeOf<CanvasAnimation.AnimateReturn>();
+
+declare const animationSymbol: unique symbol;
 expectTypeOf(CanvasAnimation.getAnimation("darknessShift")).toEqualTypeOf<CanvasAnimation.AnimationData | undefined>;
+expectTypeOf(CanvasAnimation.getAnimation(animationSymbol)).toEqualTypeOf<CanvasAnimation.AnimationData | undefined>;
+
+expectTypeOf(CanvasAnimation.terminateAnimation("foo")).toBeVoid();
+expectTypeOf(CanvasAnimation.terminateAnimation(animationSymbol)).toBeVoid();
+expectTypeOf(CanvasAnimation.terminateAll()).toEqualTypeOf<Promise<void>>();
+
+expectTypeOf(CanvasAnimation.easeOutCircle(0.75)).toBeNumber();
+expectTypeOf(CanvasAnimation.easeInCircle(0.333)).toBeNumber();
+expectTypeOf(CanvasAnimation.easeInOutCosine(0.1)).toBeNumber();

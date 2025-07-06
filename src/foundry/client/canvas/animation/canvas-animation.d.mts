@@ -1,4 +1,4 @@
-import type { PropertiesOfType, Brand, NullishProps, AnyObject, Identity } from "#utils";
+import type { PropertiesOfType, Brand, AnyObject, Identity, InexactPartial } from "#utils";
 
 /**
  * A helper class providing utility methods for PIXI Canvas animation
@@ -15,8 +15,6 @@ declare class CanvasAnimation {
   /**
    * Track an object of active animations by name, context, and function
    * This allows a currently playing animation to be referenced and terminated
-   * @privateRemarks Foundry does not account for the possibility of Symbol animation names and types the keys as simply `string`,
-   * despite typing `CanvasAnimationOptions.name` as `string | symbol`
    */
   static animations: Record<PropertyKey, CanvasAnimation.AnimationData>;
 
@@ -47,9 +45,9 @@ declare class CanvasAnimation {
    * CanvasAnimation.animate(attributes, {duration:500});
    * ```
    */
-  static animate(
-    attributes: CanvasAnimation.Attribute[],
-    options?: CanvasAnimation.AnimateOptions,
+  static animate<AnimationParent extends AnyObject = AnyObject>(
+    attributes: CanvasAnimation.Attribute<AnimationParent>[],
+    options?: CanvasAnimation.AnimateOptions<AnimationParent>,
   ): CanvasAnimation.AnimateReturn;
 
   /**
@@ -64,6 +62,13 @@ declare class CanvasAnimation {
    * @param name - The animation name to terminate
    */
   static terminateAnimation(name: PropertyKey): void;
+
+  /**
+   * Terminate all active animations in progress, forcibly resolving each one with `false`.
+   * This method returns a Promise that resolves once all animations have been terminated and removed.
+   * @returns A promise that resolves when all animations have been forcibly terminated.
+   */
+  static terminateAll(): Promise<void>;
 
   /**
    * Cosine based easing with smooth in-out.
@@ -85,6 +90,8 @@ declare class CanvasAnimation {
    * @returns The eased animation progress on [0,1]
    */
   static easeInCircle(pt: number): number;
+
+  static #CanvasAnimation: true;
 }
 
 declare namespace CanvasAnimation {
@@ -116,28 +123,36 @@ declare namespace CanvasAnimation {
     readonly COMPLETED: 2 & CanvasAnimation.STATES;
   }
 
-  type OnTickFunction = (dt: number, animation: CanvasAnimation.AnimationData) => void;
+  type OnTickFunction<AnimationParent extends AnyObject = AnyObject> = (
+    dt: number,
+    animation: CanvasAnimation.AnimationData<AnimationParent>,
+  ) => void;
 
   /** @internal */
-  type _AnimateOptions = NullishProps<{
+  type _AnimateOptions<AnimationParent extends AnyObject = AnyObject> = InexactPartial<{
     /**
      * A DisplayObject which defines context to the PIXI.Ticker function
-     * @defaultValue `canvas.stage`
-     * @remarks `null` is allowed here because despite only having a parameter default,
-     * the (afaict, unexported) PIXI class `TickerListener`'s constructor (where this prop
-     * ends up) accepts `null` for context. This is likely never actually desireable, however.
+     * @defaultValue {@linkcode foundry.canvas.Canvas.stage | canvas.stage}
      */
     context: PIXI.DisplayObject;
 
-    /** A unique name which can be used to reference the in-progress animation */
+    /**
+     * A unique name which can be used to reference the in-progress animation
+     * @defaultValue `Symbol("CanvasAnimation")`
+     */
     name: PropertyKey;
 
     /**
-     * A priority in PIXI.UPDATE_PRIORITY which defines when the animation
+     * A duration in milliseconds over which the animation should occur
+     * @defaultValue `1000`
+     */
+    duration: number;
+
+    /**
+     * A priority in {@linkcode PIXI.UPDATE_PRIORITY} which defines when the animation
      * should be evaluated related to others
-     * @defaultValue `PIXI.UPDATE_PRIORITY.LOW + 1`
-     * @remarks Default provided by `??=` in function body. Numerical values between `UPDATE_PRIORITY`
-     * levels are valid but must be cast `as PIXI.UPDATE_PRIORITY` due to the Branded enum
+     * @defaultValue {@linkcode PIXI.UPDATE_PRIORITY.LOW}`+ 1`
+     * @remarks Numerical values between `UPDATE_PRIORITY` levels are valid but must be cast `as PIXI.UPDATE_PRIORITY` due to the Branded enum
      */
     priority: PIXI.UPDATE_PRIORITY;
 
@@ -148,51 +163,49 @@ declare namespace CanvasAnimation {
     easing: CanvasAnimation.EasingFunction;
 
     /** A callback function which fires after every frame */
-    ontick: OnTickFunction;
+    ontick: OnTickFunction<AnimationParent>;
 
     /** The animation isn't started until this promise resolves */
-    wait: Promise<unknown>;
+    wait: Promise<void>;
   }>;
 
+  interface AnimateOptions<AnimationParent extends AnyObject = AnyObject>
+    extends CanvasAnimation._AnimateOptions<AnimationParent> {}
+
   /** @internal */
-  type _AnimationAttribute = NullishProps<{
+  type _AnimationAttribute = InexactPartial<{
     /**
-     * An initial value of the attribute, otherwise parent[attribute] is used
-     * @remarks Will be replaced inside `.animate` with `Color.from(from)` if `to` is a `Color`
+     * An initial value of the attribute, otherwise `parent[attribute]` is used
+     * @remarks Will be replaced inside {@linkcode CanvasAnimation.animate} with {@linkcode Color.from | Color.from(from)} if `to` is a `Color`
      */
     from: number | Color;
   }>;
 
-  interface Attribute {
-    /** The attribute name being animated */
-    attribute: string;
+  interface Attribute<AnimationParent extends AnyObject = AnyObject> extends _AnimationAttribute {
+    /**
+     * The attribute name being animated
+     * @remarks Does not support dotkeys
+     */
+    attribute: keyof AnimationParent;
 
     /** The object within which the attribute is stored */
-    parent: AnyObject;
+    parent: AnimationParent;
 
     /** The destination value of the attribute */
     to: number | Color;
   }
 
-  interface AnimateOptions extends CanvasAnimation._AnimateOptions {
-    /**
-     * A duration in milliseconds over which the animation should occur
-     * @defaultValue `1000`
-     * @remarks Can't be `null` because it only has a parameter default, and is used as a divisor in `CanvasAnimation.#animateFrame`
-     */
-    duration?: number | undefined;
-  }
-
-  interface CanvasAnimationAttribute extends CanvasAnimation.Attribute {
+  interface CanvasAnimationAttribute<AnimationParent extends AnyObject = AnyObject>
+    extends CanvasAnimation.Attribute<AnimationParent> {
     /**
      * The computed delta between to and from
-     * @remarks This key is always overwritten inside `.animate`, its passed value is irrelevant
+     * @remarks This key is always overwritten inside {@linkcode CanvasAnimation.animate}, its passed value is irrelevant
      */
     delta: number;
 
     /**
      * The amount of the total delta which has been animated
-     * @remarks This key is always overwritten inside `.animate`, its passed value is irrelevant
+     * @remarks This key is always overwritten inside {@linkcode CanvasAnimation.animate}, its passed value is irrelevant
      */
     done: number;
 
@@ -205,7 +218,7 @@ declare namespace CanvasAnimation {
     color?: boolean;
   }
 
-  interface AnimationData extends CanvasAnimation.AnimateOptions {
+  interface AnimationData<AnimationParent extends AnyObject = AnyObject> extends CanvasAnimation.AnimateOptions {
     /** The animation function being executed each frame */
     fn: (dt: number) => void;
 
@@ -213,7 +226,7 @@ declare namespace CanvasAnimation {
     time: number;
 
     /** The attributes being animated */
-    attributes: CanvasAnimationAttribute[];
+    attributes: CanvasAnimationAttribute<AnimationParent>[];
 
     /** The current state of the animation */
     state: CanvasAnimation.STATES;

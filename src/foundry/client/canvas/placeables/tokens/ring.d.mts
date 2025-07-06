@@ -213,10 +213,10 @@ declare namespace TokenRing {
     duration?: number;
 
     /** @defaultValue `PIXI.UPDATE_PRIORITY.HIGH` */
-    priority?: PIXI.UPDATE_PRIORITY | null | undefined;
+    priority?: PIXI.UPDATE_PRIORITY | undefined;
 
     /** @defaultValue `TokenRing.createSpikeEasing(0.15)` */
-    easing?: CanvasAnimation.EasingFunction | null | undefined;
+    easing?: CanvasAnimation.EasingFunction | undefined;
   }
 
   interface TextureData {
