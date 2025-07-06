@@ -60,7 +60,7 @@ declare class ResizeHandle extends PIXI.smooth.SmoothGraphics {
   protected _onHoverOut(event: PIXI.FederatedEvent<PointerEvent>): void;
 
   /**
-   * When we start a drag event - create a preview copy of the Tile for re-positioning
+   * When we start a drag event - create a preview copy of the `Tile` for re-positioning
    * @param event - The mousedown event
    */
   protected _onMouseDown(event: PIXI.FederatedEvent<PointerEvent>): void;
