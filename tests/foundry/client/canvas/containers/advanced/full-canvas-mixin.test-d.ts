@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { FullCanvasObjectMixin } from "#client/canvas/containers/_module.mjs";
+
+import FullCanvasObjectMixin = foundry.canvas.containers.FullCanvasObjectMixin;
 
 class MyFullCanvasContainer extends FullCanvasObjectMixin(PIXI.Container) {}
 
