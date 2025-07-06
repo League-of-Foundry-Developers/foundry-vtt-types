@@ -12,40 +12,36 @@ declare class PointSourceMesh<Shader extends PIXI.Shader = AdaptiveLightingShade
   constructor(geometry: PIXI.Geometry, shader: Shader, state?: PIXI.State, drawMode?: PIXI.DRAW_MODES);
 
   /**
-   * To store the previous blend mode of the last renderer PointSourceMesh.
-   * @privateRemarks Despite being `protected`, this is accessed externally in `CanvasIlluminationEffects#render`
+   * @deprecated Removed without replacement in v13 (this warning will be removed in v14)
    */
-  protected static _priorBlendMode: PIXI.BLEND_MODES | undefined;
+  protected static _priorBlendMode: never;
+
+  protected static _currentTexture: never;
 
   /**
-   * The current texture used by the mesh.
-   * @privateRemarks Despite being `protected`, this is accessed externally in `CanvasIlluminationEffects#render`
+   * @deprecated Made hard private in v13 (this warning will be removed in v14)
    */
-  protected static _currentTexture: PIXI.Texture | undefined;
+  _worldID: never;
 
   /**
-   * The transform world ID of the bounds.
-   * @defaultValue `-1`
+   * @deprecated Made hard private in v13 (this warning will be removed in v14)
    */
-  _worldID: number;
-
-  /**
-   * The geometry update ID of the bounds.
-   * @defaultValue `-1`
-   */
-  _updateID: number;
+  _updateID: never;
 
   override get geometry(): PIXI.Geometry;
 
-  set geometry(value: PIXI.Geometry);
+  override set geometry(value: PIXI.Geometry);
 
-  /** @throws You can't add children to a PointSourceMesh. */
+  /** @throws You can't add children to a {@linkcode PointSourceMesh}. */
   override addChild(): never;
 
-  /** @throws You can't add children to a PointSourceMesh. */
+  /** @throws You can't add children to a {@linkcode PointSourceMesh}. */
   override addChildAt(): never;
 
-  protected override _render(renderer: PIXI.Renderer): void;
+  /**
+   * @deprecated Removed without replacement in v13 (this warning will be removed in v14)
+   */
+  protected override _render(renderer: never): never;
 
   override calculateBounds(): void;
 
@@ -53,12 +49,11 @@ declare class PointSourceMesh<Shader extends PIXI.Shader = AdaptiveLightingShade
 
   /** The local bounds need to be drawn from the underlying geometry. */
   override getLocalBounds(
-    /**
-     * @defaultValue `new PIXI.Rectangle()`
-     * @remarks Default provided by `??=` in function body. `null` would be allowable here but breaks inheritance
-     */
+    /** @defaultValue `new PIXI.Rectangle()` */
     rect?: PIXI.Rectangle,
   ): PIXI.Rectangle;
+
+  #PointSourceMesh: true;
 }
 
 declare namespace PointSourceMesh {
