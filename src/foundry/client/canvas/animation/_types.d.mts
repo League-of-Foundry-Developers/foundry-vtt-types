@@ -11,7 +11,7 @@ import type { CanvasAnimation } from "./_module.mjs";
 
 export {};
 
-type CanvasAnimationAttribute = CanvasAnimation.Attribute;
+type CanvasAnimationAttribute = CanvasAnimation.CanvasAnimationAttribute;
 
 type CanvasAnimationEasingFunction = CanvasAnimation.EasingFunction;
 
