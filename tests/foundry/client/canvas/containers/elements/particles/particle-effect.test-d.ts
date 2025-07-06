@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { ParticleEffect } from "#client/canvas/containers/_module.mjs";
+
+import ParticleEffect = foundry.canvas.containers.ParticleEffect;
 
 const emitterConfig = {
   lifetime: { max: 5, min: 5 },
@@ -17,8 +18,10 @@ const emitterConfig = {
 };
 const myEffect = new ParticleEffect(emitterConfig);
 
+expectTypeOf(myEffect.emitters).toEqualTypeOf<PIXI.particles.Emitter[]>();
+
 expectTypeOf(myEffect.createEmitter(emitterConfig)).toEqualTypeOf<PIXI.particles.Emitter>();
 expectTypeOf(myEffect.getParticleEmitters(emitterConfig)).toEqualTypeOf<PIXI.particles.Emitter[]>();
-
+expectTypeOf(myEffect.destroy()).toBeVoid();
 expectTypeOf(myEffect.play()).toBeVoid();
 expectTypeOf(myEffect.stop()).toBeVoid();
