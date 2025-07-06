@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { AutumnLeavesWeatherEffect } from "#client/canvas/containers/_module.mjs";
+
+import AutumnLeavesWeatherEffect = foundry.canvas.containers.AutumnLeavesWeatherEffect;
 
 const myLeaves = new AutumnLeavesWeatherEffect();
 
