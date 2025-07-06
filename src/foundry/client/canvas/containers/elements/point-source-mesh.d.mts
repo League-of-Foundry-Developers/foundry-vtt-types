@@ -2,7 +2,7 @@ import type { Identity } from "#utils";
 import type { AdaptiveLightingShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 
 /**
- * Extension of a PIXI.Mesh, with the capabilities to provide a snapshot of the framebuffer.
+ * Extension of a PIXI.Mesh for PointEffectSources.
  * @remarks Foundry only uses this with `AdaptiveLightingShader` subclasses, thus the type param default
  */
 declare class PointSourceMesh<Shader extends PIXI.Shader = AdaptiveLightingShader> extends PIXI.Mesh<Shader> {
