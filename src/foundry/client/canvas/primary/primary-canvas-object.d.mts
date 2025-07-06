@@ -16,8 +16,9 @@ declare class PrimaryCanvasObject {
    * - {@linkcode placeables.Drawing | Drawing} ({@linkcode PrimaryCanvasGroup.addDrawing | PrimaryCanvasGroup#addDrawing} creates a {@linkcode primary.PrimaryGraphics | PrimaryGraphics})
    * - {@linkcode placeables.Token | Token} (`Token##handleTransitionChanges` and {@linkcode PrimaryCanvasGroup.addToken | PrimaryCanvasGroup#addToken} create {@linkcode primary.PrimarySpriteMesh | PrimarySpriteMesh}es)
    * - {@linkcode placeables.Tile | Tile} ({@linkcode PrimaryCanvasGroup.addTile | PrimaryCanvasGroup#addTile} creates a `PrimarySpriteMesh`)
+   * - {@linkcode placeables.Wall | Wall} ({@linkcode placeables.Wall.createDoorMeshes | Wall#createDoorMeshes} creates various {@linkcode foundry.canvas.containers.DoorMesh | DoorMesh}es)
    * - {@linkcode PrimaryCanvasGroup} (`PrimaryCanvasGroup##drawBackground` and `##drawForeground` create `PrimarySpriteMesh`es)
-   * - `null`
+   * - `null`, its default
    */
   object: PrimaryCanvasObjectMixin.OwningObject | null;
 

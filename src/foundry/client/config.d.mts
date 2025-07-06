@@ -18,8 +18,9 @@ import type * as canvasLayers from "#client/canvas/layers/_module.d.mts";
 import type * as canvasGroups from "#client/canvas/groups/_module.d.mts";
 import type * as perception from "#client/canvas/perception/_module.d.mts";
 import type * as placeables from "#client/canvas/placeables/_module.d.mts";
-import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
+import type { DoorControl, DoorMesh } from "#client/canvas/containers/_module.d.mts";
 import type * as geometry from "#client/canvas/geometry/_module.d.mts";
+import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 
 import SimplePeerAVClient = foundry.av.clients.SimplePeerAVClient;
 
@@ -2068,279 +2069,9 @@ declare global {
       /** @defaultValue `1` */
       thresholdAttenuationMultiplier: number;
 
-      doorSounds: {
-        [sound: string]: CONFIG.WallDoorSound;
+      doorSounds: CONFIG.Wall.DoorSounds;
 
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.FuturisticFast",
-         *   close: "sounds/doors/futuristic/close-fast.ogg",
-         *   lock: "sounds/doors/futuristic/lock.ogg",
-         *   open: "sounds/doors/futuristic/open-fast.ogg",
-         *   test: "sounds/doors/futuristic/test.ogg",
-         *   unlock: "sounds/doors/futuristic/unlock.ogg"
-         * }
-         * ```
-         */
-        futuristicFast: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.FuturisticHydraulic",
-         *   close: "sounds/doors/futuristic/close-hydraulic.ogg",
-         *   lock: "sounds/doors/futuristic/lock.ogg",
-         *   open: "sounds/doors/futuristic/open-hydraulic.ogg",
-         *   test: "sounds/doors/futuristic/test.ogg",
-         *   unlock: "sounds/doors/futuristic/unlock.ogg"
-         * }
-         * ```
-         */
-        futuristicHydraulic: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.FuturisticForcefield",
-         *   close: "sounds/doors/futuristic/close-forcefield.ogg",
-         *   lock: "sounds/doors/futuristic/lock.ogg",
-         *   open: "sounds/doors/futuristic/open-forcefield.ogg",
-         *   test: "sounds/doors/futuristic/test-forcefield.ogg",
-         *   unlock: "sounds/doors/futuristic/unlock.ogg"
-         * }
-         * ```
-         */
-        futuristicForcefield: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.Industrial",
-         *   close: "sounds/doors/industrial/close.ogg",
-         *   lock: "sounds/doors/industrial/lock.ogg",
-         *   open: "sounds/doors/industrial/open.ogg",
-         *   test: "sounds/doors/industrial/test.ogg",
-         *   unlock: "sounds/doors/industrial/unlock.ogg"
-         * }
-         * ```
-         */
-        industrial: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.IndustrialCreaky",
-         *   close: "sounds/doors/industrial/close-creaky.ogg",
-         *   lock: "sounds/doors/industrial/lock.ogg",
-         *   open: "sounds/doors/industrial/open-creaky.ogg",
-         *   test: "sounds/doors/industrial/test.ogg",
-         *   unlock: "sounds/doors/industrial/unlock.ogg"
-         * }
-         * ```
-         */
-        industrialCreaky: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.Jail",
-         *   close: "sounds/doors/jail/close.ogg",
-         *   lock: "sounds/doors/jail/lock.ogg",
-         *   open: "sounds/doors/jail/open.ogg",
-         *   test: "sounds/doors/jail/test.ogg",
-         *   unlock: "sounds/doors/jail/unlock.ogg"
-         * }
-         * ```
-         */
-        jail: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.MagicDoor",
-         *   close: "sounds/doors/magic/door-close.ogg",
-         *   lock: "sounds/doors/magic/lock.ogg",
-         *   open: "sounds/doors/magic/door-open.ogg",
-         *   test: "sounds/doors/magic/test.ogg",
-         *   unlock: "sounds/doors/magic/unlock.ogg"
-         * }
-         * ```
-         */
-        magicDoor: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.MagicWall",
-         *   close: "sounds/doors/magic/wall-close.ogg",
-         *   lock: "sounds/doors/magic/lock.ogg",
-         *   open: "sounds/doors/magic/wall-open.ogg",
-         *   test: "sounds/doors/magic/test.ogg",
-         *   unlock: "sounds/doors/magic/unlock.ogg"
-         * }
-         * ```
-         */
-        magicWall: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.Metal",
-         *   close: "sounds/doors/metal/close.ogg",
-         *   lock: "sounds/doors/metal/lock.ogg",
-         *   open: "sounds/doors/metal/open.ogg",
-         *   test: "sounds/doors/metal/test.ogg",
-         *   unlock: "sounds/doors/metal/unlock.ogg"
-         * }
-         * ```
-         */
-        metal: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.SlidingMetal",
-         *   close: "sounds/doors/shutter/close.ogg",
-         *   lock: "sounds/doors/shutter/lock.ogg",
-         *   open: "sounds/doors/shutter/open.ogg",
-         *   test: "sounds/doors/shutter/test.ogg",
-         *   unlock: "sounds/doors/shutter/unlock.ogg"
-         * }
-         * ```
-         */
-        slidingMetal: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.SlidingModern",
-         *   close: "sounds/doors/sliding/close.ogg",
-         *   lock: "sounds/doors/sliding/lock.ogg",
-         *   open: "sounds/doors/sliding/open.ogg",
-         *   test: "sounds/doors/sliding/test.ogg",
-         *   unlock: "sounds/doors/sliding/unlock.ogg"
-         * }
-         * ```
-         */
-        slidingModern: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.SlidingWood",
-         *   close: "sounds/doors/sliding/close-wood.ogg",
-         *   lock: "sounds/doors/sliding/lock.ogg",
-         *   open: "sounds/doors/sliding/open-wood.ogg",
-         *   test: "sounds/doors/sliding/test.ogg",
-         *   unlock: "sounds/doors/sliding/unlock.ogg"
-         * }
-         * ```
-         */
-        slidingWood: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.StoneBasic",
-         *   close: "sounds/doors/stone/close.ogg",
-         *   lock: "sounds/doors/stone/lock.ogg",
-         *   open: "sounds/doors/stone/open.ogg",
-         *   test: "sounds/doors/stone/test.ogg",
-         *   unlock: "sounds/doors/stone/unlock.ogg"
-         * }
-         * ```
-         */
-        stoneBasic: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.StoneRocky",
-         *   close: "sounds/doors/stone/close-rocky.ogg",
-         *   lock: "sounds/doors/stone/lock.ogg",
-         *   open: "sounds/doors/stone/open-rocky.ogg",
-         *   test: "sounds/doors/stone/test.ogg",
-         *   unlock: "sounds/doors/stone/unlock.ogg"
-         * }
-         * ```
-         */
-        stoneRocky: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.StoneSandy",
-         *   close: "sounds/doors/stone/close-sandy.ogg",
-         *   lock: "sounds/doors/stone/lock.ogg",
-         *   open: "sounds/doors/stone/open-sandy.ogg",
-         *   test: "sounds/doors/stone/test.ogg",
-         *   unlock: "sounds/doors/stone/unlock.ogg"
-         * }
-         * ```
-         */
-        stoneSandy: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.WoodBasic",
-         *   close: "sounds/doors/wood/close.ogg",
-         *   lock: "sounds/doors/wood/lock.ogg",
-         *   open: "sounds/doors/wood/open.ogg",
-         *   test: "sounds/doors/wood/test.ogg",
-         *   unlock: "sounds/doors/wood/unlock.ogg"
-         * }
-         * ```
-         */
-        woodBasic: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.WoodCreaky",
-         *   close: "sounds/doors/wood/close-creaky.ogg",
-         *   lock: "sounds/doors/wood/lock.ogg",
-         *   open: "sounds/doors/wood/open-creaky.ogg",
-         *   test: "sounds/doors/wood/test.ogg",
-         *   unlock: "sounds/doors/wood/unlock.ogg"
-         * }
-         * ```
-         */
-        woodCreaky: CONFIG.WallDoorSound;
-
-        /**
-         * @defaultValue
-         * ```ts
-         * {
-         *   label: "WALLS.DoorSound.WoodHeavy",
-         *   close: "sounds/doors/wood/close-heavy.ogg",
-         *   lock: "sounds/doors/wood/lock.ogg",
-         *   open: "sounds/doors/wood/open-heavy.ogg",
-         *   test: "sounds/doors/wood/test.ogg",
-         *   unlock: "sounds/doors/wood/unlock.ogg"
-         * }
-         * ```
-         */
-        woodHeavy: CONFIG.WallDoorSound;
-      };
+      animationTypes: CONFIG.Wall.DoorAnimations;
     };
 
     /**
@@ -3480,42 +3211,6 @@ declare global {
       }
     }
 
-    /** @privateRemarks Foundry does not document the array options */
-    interface WallDoorSound {
-      /** A localization string label */
-      label: string;
-
-      /**
-       * A sound path when the door is closed
-       * @remarks If an array is provided, a random entry is chosen
-       */
-      close?: string | string[];
-
-      /**
-       * A sound path when the door becomes locked
-       * @remarks If an array is provided, a random entry is chosen
-       */
-      lock?: string | string[];
-
-      /**
-       * A sound path when opening the door
-       * @remarks If an array is provided, a random entry is chosen
-       */
-      open?: string | string[];
-
-      /**
-       * A sound path when attempting to open a locked door
-       * @remarks If an array is provided, a random entry is chosen
-       */
-      test?: string | string[];
-
-      /**
-       * A sound path when the door becomes unlocked
-       * @remarks If an array is provided, a random entry is chosen
-       */
-      unlock?: string | string[];
-    }
-
     namespace Dice {
       type RollMode = Brand<string, "CONFIG.Dice.RollMode">;
 
@@ -3729,6 +3424,440 @@ declare global {
       interface formatters {
         timestamp: typeof foundry.data.CalendarData.formatTimestamp;
         ago: typeof foundry.data.CalendarData.formatAgo;
+      }
+    }
+
+    namespace Wall {
+      /** @internal */
+      type _DoorSound = InexactPartial<{
+        /**
+         * One or more sound paths for when the door is closed
+         * @remarks If an array is provided, a random entry is chosen
+         */
+        close: string | string[];
+
+        /**
+         * One or more sound paths for when the door becomes locked
+         * @remarks If an array is provided, a random entry is chosen
+         */
+        lock: string | string[];
+
+        /**
+         * One or more sound paths for when opening the door
+         * @remarks If an array is provided, a random entry is chosen
+         */
+        open: string | string[];
+
+        /**
+         * One or more sound paths for when attempting to open a locked door
+         * @remarks If an array is provided, a random entry is chosen
+         */
+        test: string | string[];
+
+        /**
+         * One or more sound paths for when the door becomes unlocked
+         * @remarks If an array is provided, a random entry is chosen
+         */
+        unlock: string | string[];
+      }>;
+
+      interface DoorSound extends _DoorSound {
+        /** A localization string label */
+        label: string;
+      }
+
+      interface DoorSounds {
+        [sound: string]: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.FuturisticFast",
+         *   close: "sounds/doors/futuristic/close-fast.ogg",
+         *   lock: "sounds/doors/futuristic/lock.ogg",
+         *   open: "sounds/doors/futuristic/open-fast.ogg",
+         *   test: "sounds/doors/futuristic/test.ogg",
+         *   unlock: "sounds/doors/futuristic/unlock.ogg"
+         * }
+         * ```
+         */
+        futuristicFast: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.FuturisticHydraulic",
+         *   close: "sounds/doors/futuristic/close-hydraulic.ogg",
+         *   lock: "sounds/doors/futuristic/lock.ogg",
+         *   open: "sounds/doors/futuristic/open-hydraulic.ogg",
+         *   test: "sounds/doors/futuristic/test.ogg",
+         *   unlock: "sounds/doors/futuristic/unlock.ogg"
+         * }
+         * ```
+         */
+        futuristicHydraulic: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.FuturisticForcefield",
+         *   close: "sounds/doors/futuristic/close-forcefield.ogg",
+         *   lock: "sounds/doors/futuristic/lock.ogg",
+         *   open: "sounds/doors/futuristic/open-forcefield.ogg",
+         *   test: "sounds/doors/futuristic/test-forcefield.ogg",
+         *   unlock: "sounds/doors/futuristic/unlock.ogg"
+         * }
+         * ```
+         */
+        futuristicForcefield: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.Industrial",
+         *   close: "sounds/doors/industrial/close.ogg",
+         *   lock: "sounds/doors/industrial/lock.ogg",
+         *   open: "sounds/doors/industrial/open.ogg",
+         *   test: "sounds/doors/industrial/test.ogg",
+         *   unlock: "sounds/doors/industrial/unlock.ogg"
+         * }
+         * ```
+         */
+        industrial: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.IndustrialCreaky",
+         *   close: "sounds/doors/industrial/close-creaky.ogg",
+         *   lock: "sounds/doors/industrial/lock.ogg",
+         *   open: "sounds/doors/industrial/open-creaky.ogg",
+         *   test: "sounds/doors/industrial/test.ogg",
+         *   unlock: "sounds/doors/industrial/unlock.ogg"
+         * }
+         * ```
+         */
+        industrialCreaky: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.Jail",
+         *   close: "sounds/doors/jail/close.ogg",
+         *   lock: "sounds/doors/jail/lock.ogg",
+         *   open: "sounds/doors/jail/open.ogg",
+         *   test: "sounds/doors/jail/test.ogg",
+         *   unlock: "sounds/doors/jail/unlock.ogg"
+         * }
+         * ```
+         */
+        jail: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.MagicDoor",
+         *   close: "sounds/doors/magic/door-close.ogg",
+         *   lock: "sounds/doors/magic/lock.ogg",
+         *   open: "sounds/doors/magic/door-open.ogg",
+         *   test: "sounds/doors/magic/test.ogg",
+         *   unlock: "sounds/doors/magic/unlock.ogg"
+         * }
+         * ```
+         */
+        magicDoor: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.MagicWall",
+         *   close: "sounds/doors/magic/wall-close.ogg",
+         *   lock: "sounds/doors/magic/lock.ogg",
+         *   open: "sounds/doors/magic/wall-open.ogg",
+         *   test: "sounds/doors/magic/test.ogg",
+         *   unlock: "sounds/doors/magic/unlock.ogg"
+         * }
+         * ```
+         */
+        magicWall: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.Metal",
+         *   close: "sounds/doors/metal/close.ogg",
+         *   lock: "sounds/doors/metal/lock.ogg",
+         *   open: "sounds/doors/metal/open.ogg",
+         *   test: "sounds/doors/metal/test.ogg",
+         *   unlock: "sounds/doors/metal/unlock.ogg"
+         * }
+         * ```
+         */
+        metal: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.SlidingMetal",
+         *   close: "sounds/doors/shutter/close.ogg",
+         *   lock: "sounds/doors/shutter/lock.ogg",
+         *   open: "sounds/doors/shutter/open.ogg",
+         *   test: "sounds/doors/shutter/test.ogg",
+         *   unlock: "sounds/doors/shutter/unlock.ogg"
+         * }
+         * ```
+         */
+        slidingMetal: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "WALL.DoorSounds.SlidingMetalHeavy";
+         *   close: "sounds/doors/metal/heavy-sliding-close.ogg";
+         *   lock: "sounds/doors/metal/heavy-sliding-lock.ogg";
+         *   open: "sounds/doors/metal/heavy-sliding-open.ogg";
+         *   test: "sounds/doors/metal/heavy-sliding-test.ogg";
+         *   unlock: "sounds/doors/metal/heavy-sliding-unlock.ogg";
+         * }
+         * ```
+         */
+        slidingMetalHeavy: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.SlidingModern",
+         *   close: "sounds/doors/sliding/close.ogg",
+         *   lock: "sounds/doors/sliding/lock.ogg",
+         *   open: "sounds/doors/sliding/open.ogg",
+         *   test: "sounds/doors/sliding/test.ogg",
+         *   unlock: "sounds/doors/sliding/unlock.ogg"
+         * }
+         * ```
+         */
+        slidingModern: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.SlidingWood",
+         *   close: "sounds/doors/sliding/close-wood.ogg",
+         *   lock: "sounds/doors/sliding/lock.ogg",
+         *   open: "sounds/doors/sliding/open-wood.ogg",
+         *   test: "sounds/doors/sliding/test.ogg",
+         *   unlock: "sounds/doors/sliding/unlock.ogg"
+         * }
+         * ```
+         */
+        slidingWood: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.StoneBasic",
+         *   close: "sounds/doors/stone/close.ogg",
+         *   lock: "sounds/doors/stone/lock.ogg",
+         *   open: "sounds/doors/stone/open.ogg",
+         *   test: "sounds/doors/stone/test.ogg",
+         *   unlock: "sounds/doors/stone/unlock.ogg"
+         * }
+         * ```
+         */
+        stoneBasic: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.StoneRocky",
+         *   close: "sounds/doors/stone/close-rocky.ogg",
+         *   lock: "sounds/doors/stone/lock.ogg",
+         *   open: "sounds/doors/stone/open-rocky.ogg",
+         *   test: "sounds/doors/stone/test.ogg",
+         *   unlock: "sounds/doors/stone/unlock.ogg"
+         * }
+         * ```
+         */
+        stoneRocky: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.StoneSandy",
+         *   close: "sounds/doors/stone/close-sandy.ogg",
+         *   lock: "sounds/doors/stone/lock.ogg",
+         *   open: "sounds/doors/stone/open-sandy.ogg",
+         *   test: "sounds/doors/stone/test.ogg",
+         *   unlock: "sounds/doors/stone/unlock.ogg"
+         * }
+         * ```
+         */
+        stoneSandy: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.WoodBasic",
+         *   close: "sounds/doors/wood/close.ogg",
+         *   lock: "sounds/doors/wood/lock.ogg",
+         *   open: "sounds/doors/wood/open.ogg",
+         *   test: "sounds/doors/wood/test.ogg",
+         *   unlock: "sounds/doors/wood/unlock.ogg"
+         * }
+         * ```
+         */
+        woodBasic: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.WoodCreaky",
+         *   close: "sounds/doors/wood/close-creaky.ogg",
+         *   lock: "sounds/doors/wood/lock.ogg",
+         *   open: "sounds/doors/wood/open-creaky.ogg",
+         *   test: "sounds/doors/wood/test.ogg",
+         *   unlock: "sounds/doors/wood/unlock.ogg"
+         * }
+         * ```
+         */
+        woodCreaky: DoorSound;
+
+        /**
+         * @defaultValue
+         * ```ts
+         * {
+         *   label: "WALLS.DoorSound.WoodHeavy",
+         *   close: "sounds/doors/wood/close-heavy.ogg",
+         *   lock: "sounds/doors/wood/lock.ogg",
+         *   open: "sounds/doors/wood/open-heavy.ogg",
+         *   test: "sounds/doors/wood/test.ogg",
+         *   unlock: "sounds/doors/wood/unlock.ogg"
+         * }
+         * ```
+         */
+        woodHeavy: DoorSound;
+      }
+
+      type DoorAnimationFunction = (this: DoorMesh, open: boolean) => CanvasAnimation.Attribute[];
+
+      type DoorAnimationHook = (this: DoorMesh, open: boolean) => MaybePromise<void>;
+
+      /** @internal */
+      type _DoorAnimationConfig = InexactPartial<{
+        /**
+         * @defaultValue `false`
+         * @remarks Pivot about the midpoint, instead of the {@linkcode geometry.edges.Edge.a | a} endpoint of the Wall's Edge?
+         */
+        midpoint: boolean;
+
+        /** @defaultValue {@linkcode CanvasAnimation.easeInOutCosine | "easeInOutCosine"} */
+        easing: CanvasAnimation.EasingFunction;
+
+        /** @remarks `initialize` hooks are not awaited */
+        initialize: DoorAnimationHook;
+
+        /** @remarks `preAnimate` hooks **are** awaited */
+        preAnimate: DoorAnimationHook;
+
+        /** @remarks `postAnimate` hooks **are** awaited */
+        postAnimate: DoorAnimationHook;
+      }>;
+
+      interface DoorAnimationConfig extends _DoorAnimationConfig {
+        /** @remarks Label (or localization key) for the animation select in {@linkcode foundry.applications.sheets.WallConfig | WallConfig}*/
+        label: string;
+
+        animate: DoorAnimationFunction;
+
+        /** @remarks Time to animate over in milliseconds */
+        duration: number;
+      }
+
+      interface DoorAnimations {
+        [animationName: string]: DoorAnimationConfig;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "WALL.ANIMATION_TYPES.ASCEND",
+         *   midpoint: true,
+         *   animate: canvas.containers.DoorMesh.animateAscend,
+         *   duration: 1000
+         * }
+         * ```
+         */
+        ascend: DoorAnimationConfig;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "WALL.ANIMATION_TYPES.DESCEND",
+         *   midpoint: true,
+         *   initialize: canvas.containers.DoorMesh.initializeDescend,
+         *   animate: canvas.containers.DoorMesh.animateDescend,
+         *   preAnimate: canvas.containers.DoorMesh.preAnimateDescend,
+         *   postAnimate: canvas.containers.DoorMesh.postAnimateDescend,
+         *   duration: 1000
+         * }
+         * ```
+         */
+        descend: DoorAnimationConfig;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "WALL.ANIMATION_TYPES.SLIDE",
+         *   animate: canvas.containers.DoorMesh.animateSlide,
+         *   duration: 500
+         * }
+         * ```
+         */
+        slide: DoorAnimationConfig;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "WALL.ANIMATION_TYPES.SWING",
+         *   animate: canvas.containers.DoorMesh.animateSwing,
+         *   duration: 500
+         * }
+         * ```
+         */
+        swing: DoorAnimationConfig;
+
+        /**
+         * @defaultValue
+         * ```js
+         * {
+         *   label: "WALL.ANIMATION_TYPES.SWIVEL",
+         *   midpoint: true,
+         *   animate: canvas.containers.DoorMesh.animateSwing,
+         *   duration: 500
+         * }
+         * ```
+         */
+        swivel: DoorAnimationConfig;
       }
     }
   }

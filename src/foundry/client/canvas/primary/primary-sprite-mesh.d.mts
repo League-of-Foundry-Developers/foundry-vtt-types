@@ -124,8 +124,6 @@ declare namespace PrimarySpriteMesh {
   type _ConstructorOptions = InexactPartial<{
     /**
      * Texture passed to the SpriteMesh.
-     * @defaultValue {@linkcode PIXI.Texture.EMPTY}
-     * @remarks Default ultimately provided by the {@linkcode foundry.canvas.containers.SpriteMesh.texture | SpriteMesh#texture} setter
      */
     texture: PIXI.Texture;
 
