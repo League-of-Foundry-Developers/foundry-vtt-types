@@ -715,16 +715,6 @@ declare namespace Canvas {
     elevation: number;
   }
 
-  /**
-   * A 3D point, expressed as `{x, y, elevation}`.
-   * @remarks Copied from `common/_types.mjs`
-   */
-  interface ElevatedPoint {
-    x: number;
-    y: number;
-    elevation: number;
-  }
-
   type PossiblyElevatedPoint = Point | ElevatedPoint;
 
   /**

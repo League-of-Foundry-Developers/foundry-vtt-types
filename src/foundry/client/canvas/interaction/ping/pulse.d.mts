@@ -50,7 +50,7 @@ declare class PulsePing extends Ping {
 
   override animate(): Promise<boolean>;
 
-  override _animateFrame(dt: number, animation: CanvasAnimation.AnimationData): void;
+  override _animateFrame(dt: number, animation: CanvasAnimation.AnimationData<this>): void;
 
   /**
    * Transition linearly from one color to another.

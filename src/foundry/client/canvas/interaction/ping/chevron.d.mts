@@ -9,15 +9,9 @@ import type { Ping } from "#client/canvas/interaction/_module.d.mts";
 declare class ChevronPing extends Ping {
   /**
    * @param origin  - The canvas coordinates of the origin of the ping.
-   * @param options - Additional options to configure the ping animation.
-   *                  (default: `{duration: 900, size: 128, color: "#ff6400"}`)
+   * @param options - Additional options to configure the ping animation. (default: see {@linkcode Ping.ConstructorOptions})
    */
-  constructor(
-    origin: Canvas.Point,
-
-    /** @privateRemarks Can't be `null` as it's directly assigned to  `Ping#options` which has properties accessed null-unsafely */
-    options?: Ping.ConstructorOptions,
-  );
+  constructor(origin: Canvas.Point, options?: Ping.ConstructorOptions);
 
   /** @defaultValue `(this.options.size / 2) * .75` */
   _r: number;
@@ -64,7 +58,7 @@ declare class ChevronPing extends Ping {
 
   override animate(): Promise<boolean>;
 
-  override _animateFrame(dt: number, animation: CanvasAnimation.AnimationData): void;
+  override _animateFrame(dt: number, animation: CanvasAnimation.AnimationData<this>): void;
 
   /**
    * Draw the outer and inner rings.
