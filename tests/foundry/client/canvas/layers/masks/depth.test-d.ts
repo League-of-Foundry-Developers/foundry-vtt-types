@@ -14,4 +14,4 @@ expectTypeOf(myDepthMask.clearColor).toEqualTypeOf<Color.RGBAColorVector>();
 expectTypeOf(myDepthMask["_elevationDirty"]).toBeBoolean();
 expectTypeOf(myDepthMask.mapElevation(5)).toBeNumber();
 expectTypeOf(myDepthMask["_update"]()).toBeVoid();
-expectTypeOf(myDepthMask.clear()).toBeVoid();
+expectTypeOf(myDepthMask.clear()).toEqualTypeOf<typeof myDepthMask>();
