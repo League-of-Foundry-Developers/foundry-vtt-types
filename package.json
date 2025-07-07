@@ -171,7 +171,7 @@
     "vitest": "^4.0.0-beta.1"
   },
   "overrides": {
-    "expect-type": "https://pkg.pr.new/mmkal/expect-type@7d6fa42"
+    "expect-type": "^1.2.2"
   },
   "peerDependencies": {
     "typescript": "^5.4"
