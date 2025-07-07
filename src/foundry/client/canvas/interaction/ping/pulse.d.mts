@@ -40,7 +40,6 @@ declare class PulsePing extends Ping {
    * @param color - The color of the shape.
    * @param alpha - The alpha of the shape.
    * @param size  - The size of the shape to draw.
-   * @remarks `size` is only passed to {@linkcode PIXI.Graphics.drawCircle | PIXI.Graphics#drawCircle} as a radius
    */
   protected _drawShape(g: PIXI.Graphics, color: number, alpha: number, size: number): void;
 
