@@ -1,4 +1,4 @@
-import type { AnyArray, Brand, Identity, NullishProps } from "#utils";
+import type { AnyArray, Brand, Identity, InexactPartial, IntentionalPartial, PropertiesOfType } from "#utils";
 import type { ControlIcon } from "#client/canvas/containers/_module.d.mts";
 
 /**
@@ -6,49 +6,50 @@ import type { ControlIcon } from "#client/canvas/containers/_module.d.mts";
  * There are three phases of events: hover, click, and drag
  *
  * Hover Events:
- * _handlePointerOver
- *  action: hoverIn
- * _handlePointerOut
- *  action: hoverOut
+ * - _handlePointerOver
+ *   - action: hoverIn
+ * - _handlePointerOut
+ *   - action: hoverOut
  *
  * Left Click and Double-Click
- * _handlePointerDown
- *  action: clickLeft
- *  action: clickLeft2
- *  action: unclickLeft
+ * - _handlePointerDown
+ *   - action: clickLeft
+ *   - action: clickLeft2
+ *   - action: unclickLeft
  *
  * Right Click and Double-Click
- * _handleRightDown
- *  action: clickRight
- *  action: clickRight2
- *  action: unclickRight
+ * - _handleRightDown
+ *   - action: clickRight
+ *   - action: clickRight2
+ *   - action: unclickRight
  *
  * Drag and Drop
- * _handlePointerMove
- *  action: dragLeftStart
- *  action: dragRightStart
- *  action: dragLeftMove
- *  action: dragRightMove
- * _handlePointerUp
- *  action: dragLeftDrop
- *  action: dragRightDrop
- * _handleDragCancel
- *  action: dragLeftCancel
- *  action: dragRightCancel
+ * - _handlePointerMove
+ *   - action: dragLeftStart
+ *   - action: dragRightStart
+ *   - action: dragLeftMove
+ *   - action: dragRightMove
+ * - _handlePointerUp
+ *   - action: dragLeftDrop
+ *   - action: dragRightDrop
+ * - _handleDragCancel
+ *   - action: dragLeftCancel
+ *   - action: dragRightCancel
  */
 declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Container> {
   /**
-   * @param permissions - (default: `{}`)
-   * @param callbacks   - (default: `{}`)
-   * @param options     - (default: `{}`)
-   * @remarks Foundry does not provide type information for the constructor, everything here is inferred from usage
+   * @param object       - The Canvas object (e.g., a Token, Tile, or Drawing) to which mouse events should be bound.
+   * @param layer        - The Canvas Layer that contains the object.
+   * @param permissions  - An object of permission checks, keyed by action name, which return a boolean or invoke a function for whether the action is allowed. (default: `{}`)
+   * @param callbacks    - An object of callback functions, keyed by action name, which will be executed during the event workflow (e.g., `hoverIn`, `clickLeft`). (default: `{}`)
+   * @param options      - Additional options that configure interaction behavior. (default: `{}`)
    */
   constructor(
     object: ObjectFor,
     layer: PIXI.Container,
     permissions?: MouseInteractionManager.Permissions,
     callbacks?: MouseInteractionManager.Callbacks,
-    options?: MouseInteractionManager.Options,
+    options?: MouseInteractionManager.Options<ObjectFor>,
   );
 
   object: ObjectFor;
@@ -56,23 +57,26 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
   layer: PIXI.Container;
 
   /**
+   * An object of permission checks, keyed by action name, which return a boolean or invoke a function for whether the action is allowed.
    * @defaultValue `{}`
    */
   permissions: MouseInteractionManager.Permissions;
 
   /**
+   * An object of callback functions, keyed by action name, which will be executed during the event workflow (e.g., `hoverIn`, `clickLeft`).
    * @defaultValue `{}`
    */
   callbacks: MouseInteractionManager.Callbacks;
 
   /**
+   * Interaction options which configure handling workflows
    * @defaultValue `{}`
    */
-  options: MouseInteractionManager.Options;
+  options: MouseInteractionManager.Options<ObjectFor>;
 
   /**
    * The current interaction state
-   * @defaultValue `MouseInteractionManager.INTERACTION_STATES.NONE`
+   * @defaultValue {@linkcode MouseInteractionManager.INTERACTION_STATES.NONE}
    */
   state: MouseInteractionManager.INTERACTION_STATES;
 
@@ -103,17 +107,19 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
   /**
    * A flag for whether we are right-click dragging
    * @defaultValue `false`
+   * @internal
    */
-  _dragRight: boolean;
+  protected _dragRight: boolean;
 
   /**
    * An optional ControlIcon instance for the object
    */
-  controlIcon: ControlIcon | null;
+  controlIcon: MouseInteractionManager.HasControlIcon<ObjectFor>;
 
   /**
    * The view id pertaining to the PIXI Application.
-   * If not provided, default to canvas.app.view.id
+   * If not provided, default to `canvas.app.view.id`
+   * @remarks Despite the above there is actually no opportunity to pass any other value
    */
   viewId: string;
 
@@ -132,6 +138,13 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    * 5: DROP - the object is being dropped
    */
   static INTERACTION_STATES: MouseInteractionManager.InteractionStates;
+
+  /**
+   * The minimum distance, measured in screen-coordinate pixels, that a pointer must move to initiate a drag operation.
+   * This default value can be overridden by specifying the `dragResistance` option when invoking the constructor.
+   * @defaultValue `10`
+   */
+  static DEFAULT_DRAG_RESISTANCE_PX: number;
 
   /**
    * The maximum number of milliseconds between two clicks to be considered a double-click.
@@ -154,12 +167,14 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
   /**
    * Global timeout for the long-press event.
    * @defaultValue `null`
+   * @remarks Set in `##handleLeftDown` to the return from a `setTimeout` call, which gets cleared by that and various other handlers
    */
   static longPressTimeout: number | null;
 
   /**
-   * Emulate a pointermove event. Needs to be called when an object with the static event mode
-   * or any of its parents is transformed or its visibility is changed.
+   * Emulate a pointermove event on the main game canvas.
+   * This method must be called when an object with the static event mode or any of its parents is transformed
+   * or its visibility is changed.
    */
   static emulateMoveEvent(): void;
 
@@ -192,7 +207,7 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    * @param event  - The event being handled
    * @param args   - Additional callback arguments.
    * @returns A boolean which may indicate that the event was handled by the callback.
-   *          Events which do not specify a callback are assumed to have been handled as no-op.
+   * Events which do not specify a callback are assumed to have been handled as no-op.
    * @remarks
    */
   callback(action: MouseInteractionManager.Action, event: MouseInteractionManager.Event, ...args: AnyArray): boolean;
@@ -243,7 +258,7 @@ declare namespace MouseInteractionManager {
     /** -2: SKIPPED - the handler has been skipped by previous logic */
     SKIPPED: -2 & MouseInteractionManager.HANDLER_OUTCOMES;
 
-    /** -1: DISALLOWED - the handler has dissallowed further process */
+    /** -1: DISALLOWED - the handler has disallowed further process */
     DISALLOWED: -1 & MouseInteractionManager.HANDLER_OUTCOMES;
 
     /** 1: REFUSED - the handler callback has been processed and is refusing further process */
@@ -263,6 +278,9 @@ declare namespace MouseInteractionManager {
     DRAG: 4 & MouseInteractionManager.INTERACTION_STATES;
     DROP: 5 & MouseInteractionManager.INTERACTION_STATES;
   }
+
+  type HasControlIcon<ObjectFor extends PIXI.Container = PIXI.Container> =
+    PropertiesOfType<ObjectFor, ControlIcon> extends undefined ? null : ControlIcon;
 
   /**
    * @remarks The list of actions provided by foundry, minus `dragXCancel`, `unclickX`, and `longPress`, which do not check permissions
@@ -303,23 +321,27 @@ declare namespace MouseInteractionManager {
    */
   type CallbackFunction = (event: MouseInteractionManager.Event, ...args: never) => boolean | null | void;
 
-  type Callbacks = Partial<Record<Action, CallbackFunction>>;
+  type Callbacks = IntentionalPartial<Record<Action, CallbackFunction>>;
 
   /** @internal */
-  type _Options = NullishProps<{
+  type _Options<ObjectFor extends PIXI.Container> = InexactPartial<{
     /**
-     * @remarks If passed, will set `this.controlIcon` to `Object[target]`; in practice, this should only be `null` or `"controlIcon"`
-     * @privateRemarks Despite Foundry typing this as `PIXI.DisplayObject` its one use in practice is as `string | null`
+     * If provided, the property name on `object` which references a {@linkcode foundry.canvas.containers.ControlIcon | ControlIcon}.
+     * This is used to set {@linkcode MouseInteractionManager.controlIcon | MouseInteractionManager#controlIcon}.
+     * @remarks In practice, this should only be `"controlIcon"` or omitted
      */
-    target: string | null;
+    target: PropertiesOfType<ObjectFor, ControlIcon>;
 
     /**
-     * @remarks If falsey, gets replaced with `(canvas.dimensions.size / 4)`
+     * A minimum number of pixels the mouse must move before a drag is initiated.
+     * @defaultValue {@linkcode MouseInteractionManager.DEFAULT_DRAG_RESISTANCE_PX}
+     * @remarks Gets replaced with the above default if falsey when read in `MouseInteractionManager##handlePointerMove`
      */
     dragResistance: number;
 
     /**
-     * @remarks Undocumented. Used in the constructor as `this.viewId = (this.options.application ?? canvas.app).view.id`, never passed in practice
+     * A specific PIXI {@linkcode PIXI.Application | Application} to use for pointer event handling. Defaults to
+     * {@linkcode foundry.canvas.Canvas.app | canvas.app} if not provided.
      */
     application: PIXI.Application;
   }>;
@@ -327,10 +349,10 @@ declare namespace MouseInteractionManager {
   /**
    * Interaction options which configure handling workflows
    */
-  interface Options extends _Options {}
+  interface Options<ObjectFor extends PIXI.Container = PIXI.Container> extends _Options<ObjectFor> {}
 
   /** @internal */
-  type _ResetOptions = NullishProps<{
+  type _ResetOptions = IntentionalPartial<{
     /**
      * Reset the interaction data?
      * @defaultValue `true`
