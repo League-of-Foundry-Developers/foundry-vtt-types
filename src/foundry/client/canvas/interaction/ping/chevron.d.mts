@@ -38,7 +38,8 @@ declare class ChevronPing extends Ping {
    * The path to the chevron texture.
    * @defaultValue `"icons/pings/chevron.webp"`
    * @remarks Unusually for Foundry, this is referred to by `ChevronPing.`, not `this.constructor.`, in
-   * `##loadChevron`, so subclasses *cannot* specify other values without affecting *all* chevrons.
+   * `##loadChevron`, so subclasses *cannot* specify other values, and changing this value affects *all*
+   * chevrons.
    */
   static CHEVRON_PATH: string;
 
