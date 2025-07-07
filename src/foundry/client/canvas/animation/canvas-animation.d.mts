@@ -45,9 +45,9 @@ declare class CanvasAnimation {
    * CanvasAnimation.animate(attributes, {duration:500});
    * ```
    */
-  static animate<AnimationParent extends AnyObject = AnyObject>(
-    attributes: CanvasAnimation.Attribute<AnimationParent>[],
-    options?: CanvasAnimation.AnimateOptions<AnimationParent>,
+  static animate<Parents extends AnyObject[] = AnyObject[]>(
+    attributes: CanvasAnimation.Attributes<Parents>,
+    options?: CanvasAnimation.AnimateOptions<Parents>,
   ): CanvasAnimation.AnimateReturn;
 
   /**
@@ -169,8 +169,8 @@ declare namespace CanvasAnimation {
     wait: Promise<void>;
   }>;
 
-  interface AnimateOptions<AnimationParent extends AnyObject = AnyObject>
-    extends CanvasAnimation._AnimateOptions<AnimationParent> {}
+  interface AnimateOptions<Parents extends AnyObject[] = AnyObject[]>
+    extends CanvasAnimation._AnimateOptions<Parents[number]> {}
 
   /** @internal */
   type _AnimationAttribute = InexactPartial<{
@@ -180,6 +180,10 @@ declare namespace CanvasAnimation {
      */
     from: number | Color;
   }>;
+
+  type Attributes<Parents extends AnyObject[]> = {
+    [K in keyof Parents]: Attribute<Parents[K]>;
+  };
 
   interface Attribute<AnimationParent extends AnyObject = AnyObject> extends _AnimationAttribute {
     /**

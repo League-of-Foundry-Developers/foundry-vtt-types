@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject } from "#utils";
 
 import CanvasAnimation = foundry.canvas.animation.CanvasAnimation;
 
@@ -68,7 +67,7 @@ const animationParent2 = { fizz: new Color(0), buzz: 33 };
 
 // Animating more than one AnimationParent per call requires specifying the least-common-denominator type,
 // often requiring something with a `string` index signature
-CanvasAnimation.animate<AnyObject>(
+CanvasAnimation.animate(
   [
     {
       parent: animationParent1,
@@ -88,7 +87,6 @@ CanvasAnimation.animate<AnyObject>(
   ],
   {
     ontick: (dt, data) => {
-      // we've lost specific knowledge of the possible values of `.attribute`
       console.warn(
         `We are ${dt}ms into animating the ${data.attributes.map((a) => a.attribute).join(", ")} attributes`,
       );
