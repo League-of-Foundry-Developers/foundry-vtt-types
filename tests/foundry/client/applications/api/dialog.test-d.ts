@@ -57,7 +57,7 @@ expectTypeOf(
     rejectClose: false,
     close: closeCallback,
   }),
-).toEqualTypeOf<number | string | null>();
+).toEqualTypeOf<number | string>();
 expectTypeOf(
   await DialogV2.prompt({
     ok: okButton,

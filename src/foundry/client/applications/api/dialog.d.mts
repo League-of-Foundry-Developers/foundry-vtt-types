@@ -559,7 +559,7 @@ declare namespace DialogV2 {
       ? never
       : "close" extends keyof Options
         ? Options["close"] extends (...args: never) => infer Return
-          ? Return | null
+          ? NullishCoalesce<Return, null>
           : null
         : null;
 
