@@ -248,13 +248,7 @@ declare namespace JournalEntry {
     /**
      * The name of this JournalEntry
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The pages contained within this JournalEntry document

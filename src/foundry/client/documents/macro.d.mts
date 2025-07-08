@@ -224,13 +224,7 @@ declare namespace Macro {
      * The name of this Macro
      * @defaultValue `""`
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * A Macro subtype from CONST.MACRO_TYPES

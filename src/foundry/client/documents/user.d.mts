@@ -184,13 +184,7 @@ declare namespace User {
     /**
      * The user's name.
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The user's role, see CONST.USER_ROLES.

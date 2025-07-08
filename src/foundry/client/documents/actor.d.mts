@@ -294,13 +294,7 @@ declare namespace Actor {
     _id: fields.DocumentIdField;
 
     /** The name of this Actor */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Actor subtype which configures the system data model applied */
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type

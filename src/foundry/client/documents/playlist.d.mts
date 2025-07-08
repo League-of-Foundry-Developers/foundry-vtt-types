@@ -242,13 +242,7 @@ declare namespace Playlist {
     /**
      * The name of this playlist
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The description of this playlist

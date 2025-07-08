@@ -171,17 +171,11 @@ declare namespace Adventure {
     /**
      * The human-readable name of the Adventure
      */
-    name: fields.StringField<
-      {
-        required: true;
-        blank: false;
-        textSearch: true;
-      },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{
+      required: true;
+      blank: false;
+      textSearch: true;
+    }>;
 
     /**
      * The file path for the primary image of the adventure

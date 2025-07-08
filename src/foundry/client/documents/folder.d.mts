@@ -211,13 +211,7 @@ declare namespace Folder {
     _id: fields.DocumentIdField;
 
     /** The name of this Folder */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** The document type which this Folder contains, from {@linkcode CONST.FOLDER_DOCUMENT_TYPES} */
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type

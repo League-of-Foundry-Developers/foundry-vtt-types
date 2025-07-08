@@ -229,13 +229,7 @@ declare namespace Card {
     _id: fields.DocumentIdField;
 
     /** The text name of this card */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * A text description of this card which applies to all faces

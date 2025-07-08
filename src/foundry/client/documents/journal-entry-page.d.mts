@@ -235,13 +235,7 @@ declare namespace JournalEntryPage {
     /**
      * The text name of this page.
      */
-    name: fields.StringField<
-      { required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true }>;
 
     /**
      * The type of this page, in {@linkcode BaseJournalEntryPage.TYPES}.

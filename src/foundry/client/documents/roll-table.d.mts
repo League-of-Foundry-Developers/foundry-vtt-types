@@ -238,13 +238,7 @@ declare namespace RollTable {
      * The name of this RollTable
      * @defaultValue `""`
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * An image file path which provides the thumbnail artwork for this RollTable

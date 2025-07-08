@@ -413,13 +413,7 @@ declare namespace Scene {
      * The name of this scene
      * @defaultValue `""`
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * Is this scene currently active? Only one scene may be active at a given time

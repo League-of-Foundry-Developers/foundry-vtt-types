@@ -291,13 +291,7 @@ declare namespace Item {
     _id: fields.DocumentIdField;
 
     /** The name of this Item */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Item subtype which configures the system data model applied */
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type

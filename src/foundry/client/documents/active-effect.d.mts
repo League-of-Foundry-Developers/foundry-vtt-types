@@ -236,13 +236,7 @@ declare namespace ActiveEffect {
      * The name of the ActiveEffect
      * @defaultValue `""`
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * An image path used to depict the ActiveEffect as an icon
@@ -340,8 +334,7 @@ declare namespace ActiveEffect {
         integer: true;
         initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
       },
-      // TODO: (LukeAbby): fix this when redoing DataField
-      // FIXME: Overrides required to enforce the branded type
+      // Note(LukeAbby): This will always need an override since there's no validation.
       CONST.ACTIVE_EFFECT_MODES | null | undefined,
       CONST.ACTIVE_EFFECT_MODES,
       CONST.ACTIVE_EFFECT_MODES
