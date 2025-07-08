@@ -1,4 +1,4 @@
-import type { AnyArray, Brand, Identity, InexactPartial, IntentionalPartial, PropertiesOfType } from "#utils";
+import type { AnyArray, Brand, Identity, InexactPartial, IntentionalPartial } from "#utils";
 import type { ControlIcon } from "#client/canvas/containers/_module.d.mts";
 
 /**
@@ -49,7 +49,7 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
     layer: PIXI.Container,
     permissions?: MouseInteractionManager.Permissions,
     callbacks?: MouseInteractionManager.Callbacks,
-    options?: MouseInteractionManager.Options<ObjectFor>,
+    options?: MouseInteractionManager.Options,
   );
 
   object: ObjectFor;
@@ -72,7 +72,7 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    * Interaction options which configure handling workflows
    * @defaultValue `{}`
    */
-  options: MouseInteractionManager.Options<ObjectFor>;
+  options: MouseInteractionManager.Options;
 
   /**
    * The current interaction state
@@ -114,7 +114,7 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
   /**
    * An optional ControlIcon instance for the object
    */
-  controlIcon: MouseInteractionManager.HasControlIcon<ObjectFor>;
+  controlIcon: ControlIcon | null;
 
   /**
    * The view id pertaining to the PIXI Application.
@@ -279,9 +279,6 @@ declare namespace MouseInteractionManager {
     DROP: 5 & MouseInteractionManager.INTERACTION_STATES;
   }
 
-  type HasControlIcon<ObjectFor extends PIXI.Container = PIXI.Container> =
-    PropertiesOfType<ObjectFor, ControlIcon> extends undefined ? null : ControlIcon;
-
   /**
    * @remarks The list of actions provided by foundry, minus `dragXCancel`, `unclickX`, and `longPress`, which do not check permissions
    */
@@ -324,13 +321,13 @@ declare namespace MouseInteractionManager {
   type Callbacks = IntentionalPartial<Record<Action, CallbackFunction>>;
 
   /** @internal */
-  type _Options<ObjectFor extends PIXI.Container> = InexactPartial<{
+  type _Options = InexactPartial<{
     /**
      * If provided, the property name on `object` which references a {@linkcode foundry.canvas.containers.ControlIcon | ControlIcon}.
      * This is used to set {@linkcode MouseInteractionManager.controlIcon | MouseInteractionManager#controlIcon}.
      * @remarks In practice, this should only be `"controlIcon"` or omitted
      */
-    target: PropertiesOfType<ObjectFor, ControlIcon>;
+    target: string;
 
     /**
      * A minimum number of pixels the mouse must move before a drag is initiated.
@@ -349,7 +346,7 @@ declare namespace MouseInteractionManager {
   /**
    * Interaction options which configure handling workflows
    */
-  interface Options<ObjectFor extends PIXI.Container = PIXI.Container> extends _Options<ObjectFor> {}
+  interface Options extends _Options {}
 
   /** @internal */
   type _ResetOptions = IntentionalPartial<{

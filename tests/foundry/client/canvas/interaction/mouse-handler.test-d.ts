@@ -1,19 +1,16 @@
 import { expectTypeOf } from "vitest";
 
 import MouseInteractionManager = foundry.canvas.interaction.MouseInteractionManager;
-import ControlIcon = foundry.canvas.containers.ControlIcon;
+// import ControlIcon = foundry.canvas.containers.ControlIcon;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
-import Region = foundry.canvas.placeables.Region;
+// import Region = foundry.canvas.placeables.Region;
 import Note = foundry.canvas.placeables.Note;
 
 expectTypeOf(MouseInteractionManager.INTERACTION_STATES.CLICKED).toExtend<MouseInteractionManager.INTERACTION_STATES>();
 
 declare const someEvent: PIXI.FederatedEvent;
-declare const someRegion: Region.Implementation;
+// declare const someRegion: Region.Implementation;
 declare const someNote: Note.Implementation;
-
-expectTypeOf(someRegion.mouseInteractionManager!.controlIcon).toEqualTypeOf<null>();
-expectTypeOf(someNote.mouseInteractionManager!.controlIcon).toEqualTypeOf<ControlIcon>();
 
 const permissions = {
   dragLeftStart: (_user: User.Implementation, _e: Event | PIXI.FederatedEvent) => true,
@@ -28,11 +25,6 @@ const callbacks = {
     return origin.x > 500;
   },
 };
-
-new MouseInteractionManager(someRegion, new PIXI.Container(), permissions, callbacks, {
-  // @ts-expect-error Regions don't have control icons
-  target: "controlIcon",
-});
 
 const myMouseHandler = new MouseInteractionManager(someNote, new PIXI.Container(), permissions, callbacks, {
   target: "controlIcon",
