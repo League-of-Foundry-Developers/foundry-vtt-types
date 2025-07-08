@@ -1,6 +1,7 @@
 import type { ConfiguredActiveEffect } from "fvtt-types/configuration";
 import type {
   AnyMutableObject,
+  Identity,
   InexactPartial,
   IntentionalPartial,
   InterfaceToObject,
@@ -100,11 +101,18 @@ declare namespace ActiveEffect {
    * builtin `ActiveEffect` class or a custom subclass if that is set up in
    * {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`}.
    */
-  type OfType<Type extends SubType> = Document.Internal.OfType<
-    ConfiguredActiveEffect<Type>,
-    // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    () => ActiveEffect<Type>
-  >;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredActiveEffect<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            ActiveEffect<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `ActiveEffect` subtype.
@@ -177,7 +185,7 @@ declare namespace ActiveEffect {
    * An instance of `ActiveEffect` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `ActiveEffect` that comes from the database.

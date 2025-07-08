@@ -1,5 +1,5 @@
 import type { ConfiguredTableResult } from "fvtt-types/configuration";
-import type { InexactPartial, Merge } from "#utils";
+import type { Identity, InexactPartial, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseTableResult from "#common/documents/table-result.d.mts";
@@ -95,8 +95,18 @@ declare namespace TableResult {
    * Note that `TableResult` does not have a `system` property and therefore there is no way for a user
    * to configure custom subtypes. See {@linkcode TableResult.SubType} for more information.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredTableResult<Type>, () => TableResult<Type>>;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredTableResult<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            TableResult<Type>
+        : never;
+    }> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -153,8 +163,7 @@ declare namespace TableResult {
    * An instance of `TableResult` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends TableResult.SubType = TableResult.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  type Invalid<SubType extends TableResult.SubType = TableResult.SubType> = Document.Internal.Invalid<OfType<SubType>>;
 
   /**
    * An instance of `TableResult` that comes from the database.

@@ -1,5 +1,5 @@
 import type { ConfiguredChatMessage } from "fvtt-types/configuration";
-import type { AnyObject, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
+import type { AnyObject, Identity, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
@@ -98,8 +98,18 @@ declare namespace ChatMessage {
    * builtin `ChatMessage` class or a custom subclass if that is set up in
    * {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`}.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredChatMessage<Type>, () => ChatMessage<Type>>;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredChatMessage<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            ChatMessage<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `ChatMessage` subtype.
@@ -172,7 +182,7 @@ declare namespace ChatMessage {
    * An instance of `ChatMessage` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `ChatMessage` that comes from the database.

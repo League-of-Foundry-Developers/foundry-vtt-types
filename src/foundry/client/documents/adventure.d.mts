@@ -108,7 +108,7 @@ declare namespace Adventure {
    * An instance of `Adventure` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Adventure.Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Adventure` that comes from the database.

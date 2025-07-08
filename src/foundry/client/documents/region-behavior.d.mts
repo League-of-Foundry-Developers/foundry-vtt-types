@@ -2,7 +2,7 @@ import type { ConfiguredRegionBehavior } from "fvtt-types/configuration";
 import type Document from "#common/abstract/document.d.mts";
 import type BaseRegionBehavior from "#common/documents/region-behavior.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { InexactPartial, Merge } from "#utils";
+import type { Identity, InexactPartial, Merge } from "#utils";
 
 import fields = foundry.data.fields;
 
@@ -107,11 +107,18 @@ declare namespace RegionBehavior {
    * builtin `RegionBehavior` class or a custom subclass if that is set up in
    * {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`}.
    */
-  type OfType<Type extends SubType> = Document.Internal.OfType<
-    ConfiguredRegionBehavior<Type>,
-    // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    () => RegionBehavior<Type>
-  >;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredRegionBehavior<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            RegionBehavior<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `RegionBehavior` subtype.
@@ -184,7 +191,7 @@ declare namespace RegionBehavior {
    * An instance of `RegionBehavior` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `RegionBehavior` that comes from the database.

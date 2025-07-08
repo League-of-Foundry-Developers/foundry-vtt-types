@@ -1,5 +1,5 @@
 import type { ConfiguredCards } from "fvtt-types/configuration";
-import type { InexactPartial, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseCards from "#common/documents/cards.d.mts";
@@ -104,8 +104,18 @@ declare namespace Cards {
    * builtin `Cards` class or a custom subclass if that is set up in
    * {@link ConfiguredCards | `fvtt-types/configuration/ConfiguredCards`}.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCards<Type>, () => Cards<Type>>;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredCards<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            Cards<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Cards` subtype.
@@ -233,7 +243,7 @@ declare namespace Cards {
    * An instance of `Cards` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Cards` that comes from the database.

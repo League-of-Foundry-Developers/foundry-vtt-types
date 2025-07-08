@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "fvtt-types/configuration";
-import type { InexactPartial, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -101,8 +101,18 @@ declare namespace Macro {
    * Note that `Macro` does not have a `system` property and therefore there is no way for a user
    * to configure custom subtypes. See {@linkcode Macro.SubType} for more information.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredMacro<Type>, () => Macro<Type>>;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredMacro<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            Macro<Type>
+        : never;
+    }> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -160,7 +170,7 @@ declare namespace Macro {
    * An instance of `Macro` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<OfType<SubType>> {}
+  type Invalid = Document.Internal.Invalid<OfType<SubType>>;
 
   /**
    * An instance of `Macro` that comes from the database.

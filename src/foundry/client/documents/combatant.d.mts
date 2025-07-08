@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "fvtt-types/configuration";
-import type { InexactPartial, Merge, RequiredProps } from "#utils";
+import type { Identity, InexactPartial, Merge, RequiredProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -99,8 +99,18 @@ declare namespace Combatant {
    * builtin `Combatant` class or a custom subclass if that is set up in
    * {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`}.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombatant<Type>, () => Combatant<Type>>;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredCombatant<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            Combatant<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Combatant` subtype.
@@ -173,7 +183,7 @@ declare namespace Combatant {
    * An instance of `Combatant` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Combatant` that comes from the database.

@@ -1,5 +1,5 @@
 import type { ConfiguredFolder } from "fvtt-types/configuration";
-import type { InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseFolder from "#common/documents/folder.d.mts";
@@ -91,8 +91,18 @@ declare namespace Folder {
    * Note that `Folder` does not have a `system` property and therefore there is no way for a user
    * to configure custom subtypes. See {@linkcode Folder.SubType} for more information.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredFolder<Type>, () => Folder<Type>>;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredFolder<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            Folder<Type>
+        : never;
+    }> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -150,7 +160,7 @@ declare namespace Folder {
    * An instance of `Folder` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Folder` that comes from the database.

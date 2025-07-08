@@ -1,5 +1,5 @@
 import type { ConfiguredJournalEntryPage } from "fvtt-types/configuration";
-import type { AnyObject, InexactPartial, Merge, NullishProps } from "#utils";
+import type { AnyObject, Identity, InexactPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseJournalEntryPage from "#common/documents/journal-entry-page.d.mts";
@@ -98,11 +98,18 @@ declare namespace JournalEntryPage {
    * {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`}.
    * up.
    */
-  type OfType<Type extends SubType> = Document.Internal.OfType<
-    ConfiguredJournalEntryPage<Type>,
-    // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    () => JournalEntryPage<Type>
-  >;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredJournalEntryPage<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            JournalEntryPage<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `JournalEntryPage` subtype.
@@ -175,7 +182,7 @@ declare namespace JournalEntryPage {
    * An instance of `JournalEntryPage` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `JournalEntryPage` that comes from the database.

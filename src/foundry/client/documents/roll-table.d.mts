@@ -174,7 +174,7 @@ declare namespace RollTable {
    * An instance of `RollTable` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<RollTable.Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `RollTable` that comes from the database.

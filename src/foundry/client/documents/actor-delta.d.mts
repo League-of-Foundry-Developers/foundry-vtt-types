@@ -98,8 +98,18 @@ declare namespace ActorDelta {
    * builtin `ActorDelta` class or a custom subclass if that is set up in
    * {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`}.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActorDelta<Type>, () => ActorDelta<Type>>;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredActorDelta<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            ActorDelta<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `ActorDelta` subtype.
@@ -229,7 +239,7 @@ declare namespace ActorDelta {
    * An instance of `ActorDelta` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<ActorDelta.Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `ActorDelta` that comes from the database.

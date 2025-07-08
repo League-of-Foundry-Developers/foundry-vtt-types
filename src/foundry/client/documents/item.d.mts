@@ -2,7 +2,7 @@ import type { ConfiguredItem } from "fvtt-types/configuration";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { AnyObject, InexactPartial, Merge } from "#utils";
+import type { AnyObject, Identity, InexactPartial, Merge } from "#utils";
 import type BaseItem from "#common/documents/item.mjs";
 
 import fields = foundry.data.fields;
@@ -106,8 +106,18 @@ declare namespace Item {
    * builtin `Item` class or a custom subclass if that is set up in
    * {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`}.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredItem<Type>, () => Item<Type>>;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredItem<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            Item<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Item` subtype.
@@ -235,7 +245,7 @@ declare namespace Item {
    * An instance of `Item` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Item` that comes from the database.

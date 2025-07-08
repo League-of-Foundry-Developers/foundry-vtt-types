@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, NullishProps, Merge } from "#utils";
+import type { AnyObject, InexactPartial, NullishProps, Merge, Identity } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type BaseActor from "#common/documents/actor.d.mts";
@@ -109,8 +109,18 @@ declare namespace Actor {
    * builtin `Actor` class or a custom subclass if that is set up in
    * {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`}.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActor<Type>, () => Actor<Type>>;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredActor<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            Actor<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Actor` subtype.
@@ -238,7 +248,7 @@ declare namespace Actor {
    * An instance of `Actor` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Actor` that comes from the database.

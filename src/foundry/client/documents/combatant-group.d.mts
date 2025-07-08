@@ -1,5 +1,5 @@
 import type { ConfiguredCombatantGroup } from "fvtt-types/configuration";
-import type { InexactPartial, Merge } from "#utils";
+import type { Identity, InexactPartial, Merge } from "#utils";
 import type Document from "#common/abstract/document.mjs";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseCombatantGroup from "#common/documents/combatant-group.d.mts";
@@ -81,11 +81,18 @@ declare namespace CombatantGroup {
    * builtin `CombatantGroup` class or a custom subclass if that is set up in
    * {@link ConfiguredCombatantGroup | `fvtt-types/configuration/ConfiguredCombatantGroup`}.
    */
-  type OfType<Type extends SubType> = Document.Internal.OfType<
-    ConfiguredCombatantGroup<Type>,
-    // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    () => CombatantGroup<Type>
-  >;
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredCombatantGroup<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            CombatantGroup<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `CombatantGroup` subtype.
@@ -158,14 +165,16 @@ declare namespace CombatantGroup {
    * An instance of `CombatantGroup` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends CombatantGroup.SubType = CombatantGroup.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  type Invalid<SubType extends CombatantGroup.SubType = CombatantGroup.SubType> = Document.Internal.Invalid<
+    OfType<SubType>
+  >;
 
   /**
    * An instance of `CombatantGroup` that comes from the database.
    */
-  interface Stored<out SubType extends CombatantGroup.SubType = CombatantGroup.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends CombatantGroup.SubType = CombatantGroup.SubType> = Document.Internal.Stored<
+    OfType<SubType>
+  >;
 
   /**
    * The data put in {@link CombatantGroup._source | `CombatantGroup#_source`}. This data is what was
