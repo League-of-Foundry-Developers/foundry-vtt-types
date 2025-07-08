@@ -1077,7 +1077,7 @@ declare namespace Token {
     | "disabled"
   >;
 
-  // TODO: (LukeAbby) possible candidate for `-=` key handling
+  // TODO(LukeAbby) possible candidate for `-=` key handling
   interface BlindedStates extends Record<string, boolean> {
     blind: boolean;
     burrow: boolean;
