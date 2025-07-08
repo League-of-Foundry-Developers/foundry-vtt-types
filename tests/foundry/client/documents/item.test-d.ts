@@ -21,11 +21,15 @@ export class ArmorData extends foundry.abstract.TypeDataModel<ArmorData.Schema, 
 
 export class WeaponData extends foundry.abstract.TypeDataModel<WeaponData.Schema, Item.Implementation> {}
 
+test("optional subtype", () => {
+  delete game.model?.Item.weapon;
+});
+
 declare global {
   interface DataModelConfig {
     Item: {
       armor: typeof ArmorData;
-      weapon: typeof WeaponData;
+      weapon?: typeof WeaponData;
     };
   }
 }

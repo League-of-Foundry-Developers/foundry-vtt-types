@@ -109,7 +109,12 @@ declare namespace ChatMessage {
   /**
    * @internal
    */
-  interface _SystemMap extends Document.Internal.SystemMap<"ChatMessage"> {}
+  interface _ModelMap extends Document.Internal.ModelMap<Name> {}
+
+  /**
+   * @internal
+   */
+  interface _SystemMap extends Document.Internal.SystemMap<Name> {}
 
   /**
    * A document's parent is something that can contain it.

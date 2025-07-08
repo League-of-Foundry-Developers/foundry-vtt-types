@@ -120,7 +120,12 @@ declare namespace Actor {
   /**
    * @internal
    */
-  interface _SystemMap extends Document.Internal.SystemMap<"Actor"> {}
+  interface _ModelMap extends Document.Internal.ModelMap<Name> {}
+
+  /**
+   * @internal
+   */
+  interface _SystemMap extends Document.Internal.SystemMap<Name> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -537,7 +542,8 @@ declare namespace Actor {
   }
 
   type ItemTypes = {
-    [SubType in Item.SubType]: Array<Item.OfType<SubType>>;
+    // Note(LukeAbby): `keyof Item._SystemMap` is used to preserve optional modifiers
+    [SubType in keyof Item._SystemMap]: Array<Item.OfType<SubType>>;
   };
 
   type GetActiveTokensReturn<Document extends boolean | undefined> = Document extends true

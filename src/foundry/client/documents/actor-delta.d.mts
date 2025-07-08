@@ -109,7 +109,14 @@ declare namespace ActorDelta {
   /**
    * @internal
    */
-  interface _SystemMap extends Document.Internal.SystemMap<"ActorDelta"> {}
+  // Actor and ActorDelta have the same subtype setup.
+  interface _ModelMap extends Actor._ModelMap {}
+
+  /**
+   * @internal
+   */
+  // Actor and ActorDelta have the same subtype setup.
+  interface _SystemMap extends Actor._SystemMap {}
 
   /**
    * A document's parent is something that can contain it.

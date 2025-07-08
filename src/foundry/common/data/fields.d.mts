@@ -5158,9 +5158,10 @@ declare namespace TypeDataField {
 
   /** @internal */
   type _Schemas<T> = {
-    [K in keyof T]: T[K] extends (abstract new (...args: never) => infer U extends DataModel.Any)
+    // This `NonNullable` is necessary because a subtype can be optional.
+    [K in keyof T]-?: T[K] extends (abstract new (...args: never) => infer U extends DataModel.Any) | undefined
       ? // eslint-disable-next-line @typescript-eslint/no-deprecated
-        U | SchemaField.AssignmentData<U["schema"]["fields"]>
+        SchemaField.AssignmentData<U["schema"]["fields"]>
       : never;
   }[keyof T];
 
@@ -5179,7 +5180,9 @@ declare namespace TypeDataField {
 
   /** @internal */
   type _Instances<T> = {
-    [K in keyof T]: T[K] extends (abstract new (...args: never) => infer U extends DataModel.Any) ? U : never;
+    [K in keyof T]-?: T[K] extends (abstract new (...args: never) => infer U extends DataModel.Any) | undefined
+      ? U
+      : never;
   }[keyof T];
 
   /**
@@ -5207,7 +5210,7 @@ declare namespace TypeDataField {
 
   /** @internal */
   type _Source<T> = {
-    [K in keyof T]: T[K] extends (abstract new (...args: never) => infer U extends DataModel.Any)
+    [K in keyof T]-?: T[K] extends (abstract new (...args: never) => infer U extends DataModel.Any) | undefined
       ? U["_source"]
       : never;
   }[keyof T];

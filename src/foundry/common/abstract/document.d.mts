@@ -22,6 +22,8 @@ import type {
   AnyMutableObject,
   MaybePromise,
   Override,
+  SimpleMerge,
+  PrettifyType,
 } from "#utils";
 import type * as CONST from "../constants.mts";
 import type {
@@ -1132,30 +1134,65 @@ declare namespace Document {
       ? Configured["document"]
       : ReturnType<LazyDocument>;
 
-    type SystemMap<Name extends Document.WithSystem> = _SystemMap<
+    type ModelMap<Name extends Document.WithSubTypes> = _ModelMap<
       Name,
-      GetKey<DataModelConfig, Name>,
-      GetKey<SourceConfig, Name>
+      // `{}` is used to avoid `keyof never` issues.
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      GetKey<DataModelConfig, Name, {}>,
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      GetKey<SourceConfig, Name, {}>
+    > &
+      // `Document.ModuleSubType` has to be accounted for specially because of its perculiar nature.
+      Record<Document.ModuleSubType, UnknownSystem>;
+
+    // Note(LukeAbby): This is written this way to preserve any optional modifiers.
+    type _ModelMap<Name extends Document.WithSubTypes, DataModel, Config> = PrettifyType<
+      SimpleMerge<
+        {
+          [SubType in keyof DataModel]: EmptyObject;
+        } & {
+          [SubType in Document.CoreTypesForName<Name>]: EmptyObject;
+        },
+        {
+          [SubType in keyof Config]: EmptyObject;
+        }
+      >
     >;
 
-    type _SystemMap<Name extends Document.WithSystem, DataModel, SourceData> = {
-      [SubType in SubTypesOf<Name>]: DataModel extends {
-        [K in SubType]: abstract new (...args: infer _) => infer Model;
-      }
-        ? Model
-        : SourceData extends {
-              [K in SubType]: infer Source;
-            }
-          ? Source
-          : SubType extends Document.ModuleSubType
-            ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-              {}
-            : UnknownSystem;
-    };
+    type SystemMap<Name extends Document.WithSubTypes> = _SystemMap<
+      Name,
+      // `{}` is used to avoid `keyof never` issues.
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      GetKey<DataModelConfig, Name, {}>,
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      GetKey<DataConfig, Name, {}>
+    > &
+      // `Document.ModuleSubType` has to be accounted for specially because of its perculiar nature.
+      Record<Document.ModuleSubType, UnknownSystem>;
 
-    type SystemOfType<SystemMap extends Record<SubType, object>, SubType extends string> =
-      | DiscriminatedUnion<SystemMap[SubType]>
-      | (SubType extends ModuleSubType | "base" ? UnknownSystem : never);
+    // Note(LukeAbby): This is written this way to preserve any optional modifiers.
+    type _SystemMap<Name extends Document.WithSubTypes, DataModel, Config> = PrettifyType<
+      SimpleMerge<
+        {
+          [SubType in keyof DataModel]: DataModel[SubType] extends
+            | (abstract new (...args: never) => infer Model extends DataModel.Any)
+            | undefined
+            ? Model
+            : never;
+        } & {
+          [SubType in Document.CoreTypesForName<Name>]: EmptyObject;
+        },
+        {
+          [SubType in keyof Config]: Config[SubType];
+        }
+      >
+    >;
+
+    type SystemOfType<SystemMap extends Record<SubType, object | undefined>, SubType extends string> = SubType extends
+      | ModuleSubType
+      | "base"
+      ? UnknownSystem
+      : DiscriminatedUnion<NonNullable<SystemMap[SubType]>>;
 
     // TODO(LukeAbby): Improve the type display with a helper here.
     // TODO(LukeAbby): Add `StoredSource` for a better type display there.

@@ -104,7 +104,9 @@ if (game instanceof Game) {
 
   const itemModel = game.model.Item;
   expectTypeOf(itemModel.base).toEqualTypeOf<EmptyObject>();
-  expectTypeOf(itemModel.weapon).toEqualTypeOf<EmptyObject>();
+
+  // The `weapon` subtype is optional.
+  expectTypeOf(itemModel.weapon).toEqualTypeOf<EmptyObject | undefined>();
 
   const journalEntryPageModel = game.model.JournalEntryPage;
   // @ts-expect-error base is not a valid subtype for JournalEntryPage

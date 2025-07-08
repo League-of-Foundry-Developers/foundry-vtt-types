@@ -95,7 +95,12 @@ declare namespace CombatantGroup {
   /**
    * @internal
    */
-  interface _SystemMap extends Document.Internal.SystemMap<"CombatantGroup"> {}
+  interface _ModelMap extends Document.Internal.ModelMap<Name> {}
+
+  /**
+   * @internal
+   */
+  interface _SystemMap extends Document.Internal.SystemMap<Name> {}
 
   /**
    * A document's parent is something that can contain it.
