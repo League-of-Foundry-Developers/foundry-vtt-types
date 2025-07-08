@@ -72,6 +72,7 @@ export function fromUuidSync<
 >(
   uuid: FromUuidValidate<ConcreteDocument, Uuid> | null | undefined,
   options?: FromUuidSyncOptions,
+  // TODO(LukeAbby): `AnyObject` is actually a stand in for a compendium index entry which should be typed.
 ): (__UnsetDocument extends ConcreteDocument ? FromUuid<Uuid> : ConcreteDocument) | AnyObject | null;
 
 declare const __Unset: unique symbol;
@@ -88,15 +89,9 @@ type FromUuid<Uuid extends string> = Uuid extends `${string}.${string}.${infer R
     ? Document.ImplementationFor<DocumentType>
     : InvalidUuid;
 
-// TODO(LukeAbby): The usage of `Document.Type` when it's unset will not be necessary once `Document.Any` is more type safe.
-type FromUuidValidate<
-  ConcreteDocument extends Document.Any,
-  Uuid extends string,
-> = __UnsetDocument extends ConcreteDocument
-  ? MustBeValidUuid<Uuid, Document.Type>
-  : string extends Uuid
-    ? string
-    : MustBeValidUuid<Uuid, ConcreteDocument["documentName"]>;
+type FromUuidValidate<ConcreteDocument extends Document.Any, Uuid extends string> = string extends Uuid
+  ? string
+  : MustBeValidUuid<Uuid, ConcreteDocument["documentName"]>;
 
 /**
  * Return a reference to the Document class implementation which is configured for use.
