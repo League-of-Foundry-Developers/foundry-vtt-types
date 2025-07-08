@@ -310,7 +310,7 @@ declare namespace Item {
 
     /** An Item subtype which configures the system data model applied */
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof documents.BaseItem, {}, Item.SubType, Item.SubType, Item.SubType>;
+    type: fields.DocumentTypeField<typeof documents.BaseItem, {}>;
 
     /**
      * An image file path which provides the artwork for this Item

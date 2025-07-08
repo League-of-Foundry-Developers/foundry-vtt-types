@@ -225,7 +225,7 @@ declare namespace Folder {
 
     /** The document type which this Folder contains, from {@linkcode CONST.FOLDER_DOCUMENT_TYPES} */
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof BaseFolder, {}, Folder.SubType, Folder.SubType, Folder.SubType>;
+    type: fields.DocumentTypeField<typeof BaseFolder, {}>;
 
     /**
      * An HTML description of the contents of this folder

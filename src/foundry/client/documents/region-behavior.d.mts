@@ -262,14 +262,8 @@ declare namespace RegionBehavior {
     /**
      * An RegionBehavior subtype which configures the system data model applied
      */
-    type: fields.DocumentTypeField<
-      typeof BaseRegionBehavior,
-      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-      {},
-      RegionBehavior.SubType,
-      RegionBehavior.SubType,
-      RegionBehavior.SubType
-    >;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    type: fields.DocumentTypeField<typeof BaseRegionBehavior, {}>;
 
     /**
      * Data for a RegionBehavior subtype, defined by a System or Module

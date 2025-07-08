@@ -311,7 +311,7 @@ declare namespace Cards {
      * @defaultValue `BaseCards.TYPES[0]`
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof BaseCards, {}, Cards.SubType, Cards.SubType, Cards.SubType>;
+    type: fields.DocumentTypeField<typeof BaseCards, {}>;
 
     /**
      * A text description of this stack

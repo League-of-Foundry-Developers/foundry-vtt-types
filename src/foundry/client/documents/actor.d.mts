@@ -313,7 +313,7 @@ declare namespace Actor {
 
     /** An Actor subtype which configures the system data model applied */
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof BaseActor, {}, Actor.SubType, Actor.SubType, Actor.SubType>;
+    type: fields.DocumentTypeField<typeof BaseActor, {}>;
 
     /**
      * An image file path which provides the artwork for this Actor
