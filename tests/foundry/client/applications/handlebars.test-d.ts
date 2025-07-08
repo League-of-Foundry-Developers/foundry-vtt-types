@@ -7,7 +7,7 @@ const myNumField = new foundry.data.fields.NumberField({});
 expectTypeOf(handlebars.checked("")).toEqualTypeOf<string>();
 expectTypeOf(handlebars.disabled("")).toEqualTypeOf<string>();
 expectTypeOf(handlebars.editor("", { hash: { target: "" } })).toEqualTypeOf<Handlebars.SafeString>();
-expectTypeOf(handlebars.ifThen({ hash: { criteria: true, ifTrue: "", ifFalse: "" } })).toEqualTypeOf<string>();
+expectTypeOf(handlebars.ifThen(true, "", "")).toEqualTypeOf<string>();
 expectTypeOf(handlebars.localize("", { hash: {} })).toEqualTypeOf<string>();
 expectTypeOf(handlebars.numberFormat("", { hash: {} })).toEqualTypeOf<string>();
 expectTypeOf(handlebars.numberInput("", { hash: {} })).toEqualTypeOf<Handlebars.SafeString>();

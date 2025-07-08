@@ -52,7 +52,13 @@ export function loadTemplates(paths: string[] | Record<string, string>): Promise
 export function renderTemplate(path: string, data: AnyObject): Promise<string>;
 
 /**
+ * Initialize Handlebars extensions and helpers.
+ */
+export function initialize(): void;
+
+/**
  * For checkboxes, if the value of the checkbox is true, add the "checked" property, otherwise add nothing.
+ * @param value - A value with a truthiness indicative of whether the checkbox is checked
  *
  * @example
  * ```hbs
@@ -64,6 +70,7 @@ export function checked(value: unknown): string;
 
 /**
  * For use in form inputs. If the supplied value is truthy, add the "disabled" property, otherwise add nothing.
+ * @param value - A value with a truthiness indicative of whether the input is disabled
  *
  * @example
  * ```hbs
@@ -97,7 +104,9 @@ export function editor(content: string, options: TextEditorOptions): Handlebars.
 
 /**
  * A ternary expression that allows inserting A or B depending on the value of C.
- * @param options - Helper options
+ * @param criteria - The test criteria
+ * @param ifTrue   - The string to output if true
+ * @param ifFalse  - The string to output if false
  * @returns The ternary result
  *
  * @example Ternary if-then template usage
@@ -105,10 +114,11 @@ export function editor(content: string, options: TextEditorOptions): Handlebars.
  * {{ifThen true "It is true" "It is false"}}
  * ```
  */
-export function ifThen(options: IfThenOptions): string;
+export function ifThen(criteria: boolean, ifTrue: string, ifFalse: string): string;
 
 /**
  * Translate a provided string key by using the loaded dictionary of localization strings.
+ * @param value   - value The path to a localized string
  *
  * @example Translate a provided localization string, optionally including formatting parameters
  * ```handlebars
@@ -144,6 +154,11 @@ export function numberFormat(value: string | number, options: NumberFormatOption
  * ```
  */
 export function numberInput(value: string, options: NumberInputOptions): Handlebars.SafeString;
+
+/**
+ * Create an object from a sequence of `key=value` pairs.
+ */
+export function object(options: Handlebars.HelperOptions): Record<string, unknown>;
 
 /**
  * A helper to create a set of radio checkbox input elements in a named set.
@@ -365,26 +380,8 @@ interface FilePickerOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-interface IfThenOptions extends Partial<Handlebars.HelperOptions> {
-  hash: {
-    /**
-     * The test criteria
-     */
-    criteria: boolean;
-
-    /**
-     * The string to output if true
-     */
-    ifTrue: string;
-
-    /**
-     * The string to output if false
-     */
-    ifFalse: string;
-  };
-}
-
 interface LocalizeOptions extends Partial<Handlebars.HelperOptions> {
+  /** Interpolation data passed to Localization#format */
   hash: Record<string, unknown>;
 }
 
