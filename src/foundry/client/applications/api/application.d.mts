@@ -746,7 +746,7 @@ declare class ApplicationV2<
    * Update the Application element position using provided data which is merged with the prior position.
    * @param position - New Application positioning data
    */
-  setPosition(position: DeepPartial<ApplicationV2.Position>): ApplicationV2.Position | void;
+  setPosition(position?: DeepPartial<ApplicationV2.Position>): ApplicationV2.Position | void;
 
   /**
    * Translate a requested application position updated into a resolved allowed position for the Application.
@@ -856,6 +856,13 @@ declare class ApplicationV2<
    * @param options - Provided render options
    */
   protected _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+
+  /**
+   * Perform post-render finalization actions.
+   * @param context - Prepared context data
+   * @param options - Provided render options
+   */
+  protected _postRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
 
   /**
    * Actions performed before closing the Application.
