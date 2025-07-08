@@ -101,15 +101,15 @@ declare module "fvtt-types/configuration" {
 
 // expectTypeOf(combatant.setFlag("my-system", "value", true)).toEqualTypeOf<Promise<Combatant>>();
 
-// // @ts-expect-error - the flag my-system.value is a boolean and not a number
+// // @ts-expect-error the flag my-system.value is a boolean and not a number
 // combatant.setFlag("my-system", "value", 2);
 
-// // @ts-expect-error - the flag my-system.unknown-key doesn't exist
+// // @ts-expect-error the flag my-system.unknown-key doesn't exist
 // combatant.setFlag("my-system", "unknown-key", 2);
 
 // expectTypeOf(combatant.setFlag("my-optional-system", "value", true)).toEqualTypeOf<Promise<Combatant>>();
 
-// // @ts-expect-error - an optional system with a required flag can't be assigned an undefined value
+// // @ts-expect-error an optional system with a required flag can't be assigned an undefined value
 // combatant.setFlag("my-optional-system", "value", undefined);
 
 // expectTypeOf(combatant.setFlag("another-system", "value", true)).toEqualTypeOf<Promise<Combatant>>();

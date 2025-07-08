@@ -1198,7 +1198,7 @@ declare namespace Document {
       }
     >;
 
-    // @ts-expect-error - This pattern is inherently an error.
+    // @ts-expect-error This pattern is inherently an error.
     interface Invalid<D extends Document.Any> extends _Invalid, D {}
 
     /** @internal */

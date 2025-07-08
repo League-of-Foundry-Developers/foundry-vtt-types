@@ -34,16 +34,16 @@ declare global {
   }
 }
 
-// @ts-expect-error - Item requires name and type.
+// @ts-expect-error Item requires name and type.
 new Item.implementation();
 
-// @ts-expect-error - Item requires name and type.
+// @ts-expect-error Item requires name and type.
 await Item.create();
 
-// @ts-expect-error - Item requires name and type.
+// @ts-expect-error Item requires name and type.
 new Item.implementation({});
 
-// @ts-expect-error - Item requires name and type.
+// @ts-expect-error Item requires name and type.
 await Item.create({});
 
 const item = new Item.implementation({ name: "Mighty Axe of Killing", type: "weapon" });

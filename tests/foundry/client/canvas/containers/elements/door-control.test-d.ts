@@ -4,7 +4,7 @@ import type { Wall } from "#client/canvas/placeables/_module.d.mts";
 
 declare const wall: Wall.Implementation;
 
-// @ts-expect-error - A DoorControl requires a wall.
+// @ts-expect-error A DoorControl requires a wall.
 new DoorControl();
 const control = new DoorControl(wall);
 

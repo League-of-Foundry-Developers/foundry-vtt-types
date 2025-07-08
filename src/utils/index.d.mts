@@ -682,7 +682,7 @@ interface _MergeComplexObject<T extends object, U extends object> extends _Overr
  */
 export type Override<T extends object, U extends object> = T extends unknown ? _Override<T, U> : never;
 
-// @ts-expect-error - This pattern is inherently an error.
+// @ts-expect-error This pattern is inherently an error.
 interface _Override<T extends object, U extends object> extends U, T {}
 
 /**
@@ -1317,7 +1317,7 @@ type _DeepReadonly<T> = T extends object ? DeepReadonly<T> : T;
 
 interface DeepReadonlyComplex<T extends object> extends _DeepReadonlyComplex<T> {}
 
-// @ts-expect-error - This pattern is intrinsically an error.
+// @ts-expect-error This pattern is intrinsically an error.
 // Note(LukeAbby): The two levels here, `DeepReadonlyComplex` and `_DeepReadonlyComplex`, could just be one.
 // However it gives a better type display as two levels.
 interface _DeepReadonlyComplex<T extends object, R extends object = { readonly [K in keyof T]: _DeepReadonly<T[K]> }>

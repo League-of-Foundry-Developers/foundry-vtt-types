@@ -64,10 +64,10 @@ expectTypeOf(layer.draw()).toEqualTypeOf<Promise<SomeLightLayer>>();
 declare const someLight: CALDoc;
 expectTypeOf(layer.createObject(someLight)).toEqualTypeOf<CAL>();
 
-// @ts-expect-error - A LightLayer needs an AmbientLightDocument.
+// @ts-expect-error A LightLayer needs an AmbientLightDocument.
 layer.createObject({});
 
-// @ts-expect-error - A LightLayer needs an AmbientLightDocument.
+// @ts-expect-error A LightLayer needs an AmbientLightDocument.
 layer.createObject();
 
 expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<SomeLightLayer>>();
@@ -121,7 +121,7 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<void>();
 
-// @ts-expect-error - "new" is not a valid history type.
+// @ts-expect-error "new" is not a valid history type.
 layer.storeHistory("new", new AmbientLightDocument.implementation());
 
 expectTypeOf(layer.copyObjects()).toEqualTypeOf<CAL[]>();
@@ -160,6 +160,6 @@ expectTypeOf(layer.updateAll(transformer, null, {})).toEqualTypeOf<Promise<CALDo
 expectTypeOf(layer.updateAll(transformer, filter)).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.updateAll(transformer, filter, { diff: true, noHook: true })).toEqualTypeOf<Promise<CALDoc[]>>();
 
-// @ts-expect-error - An x and y coordinate is required
+// @ts-expect-error An x and y coordinate is required
 // This actually currently errors just on unknown key, not x/y requiredness
 layer.updateAll({ no_light_data: 0 });

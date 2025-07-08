@@ -59,7 +59,7 @@ if (moduleOptionalProps) {
   if (moduleOptionalProps.active) {
     expectTypeOf(moduleOptionalProps.always).toEqualTypeOf<string>();
     expectTypeOf(moduleOptionalProps.maybe).toEqualTypeOf<undefined | number>();
-    // @ts-expect-error - number would the entirely wrong type.
+    // @ts-expect-error number would the entirely wrong type.
     expectTypeOf(moduleOptionalProps.maybe).toEqualTypeOf<number>();
   }
 }
@@ -83,7 +83,7 @@ expectTypeOf(game.declarationMergingWorks).toEqualTypeOf<number | undefined>();
 if (game instanceof Game) {
   expectTypeOf(game.declarationMergingWorks).toEqualTypeOf<number>();
 
-  // @ts-expect-error - game is not guaranteed to be ready yet.
+  // @ts-expect-error game is not guaranteed to be ready yet.
   // Arguably it shouldn't be a hard error, just undefined.
   game.onlyInReady;
 }

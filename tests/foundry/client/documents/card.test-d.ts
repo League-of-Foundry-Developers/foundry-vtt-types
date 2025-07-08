@@ -1,9 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-// @ts-expect-error - Card requires name.
+// @ts-expect-error Card requires name.
 new Card.implementation();
 
-// @ts-expect-error - Card requires name.
+// @ts-expect-error Card requires name.
 new Card.implementation({});
 
 // TODO: Investigate why this isn't complaining about specific types
@@ -34,10 +34,10 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<Card.Implementation | undefined>>();
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 card.pass(cards, { unknownProp: 0 });
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 card.pass(cards, { updateData: { unknownProp: 0 } });
 
 // play
@@ -49,10 +49,10 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<Card.Implementation | undefined>>();
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 card.play(cards, { unknownProp: 0 });
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 card.play(cards, { updateData: { unknownProp: 0 } });
 
 // discard
@@ -64,10 +64,10 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<Card.Implementation | undefined>>();
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 card.discard(cards, { unknownProp: 0 });
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 card.discard(cards, { updateData: { unknownProp: 0 } });
 
 // recall
@@ -94,8 +94,8 @@ expectTypeOf(
   ),
 ).toEqualTypeOf<Promise<ChatMessage.Stored | undefined>>();
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 card.reset({ unknownProp: 0 });
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 card.reset({ updateData: { unknownProp: 0 } });

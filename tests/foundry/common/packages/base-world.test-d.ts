@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { AnyMutableObject } from "fvtt-types/utils";
 
-// @ts-expect-error - Missing required properties.
+// @ts-expect-error Missing required properties.
 new foundry.packages.BaseWorld({});
 
 const baseWorld = new foundry.packages.BaseWorld({ id: "foo", title: "foo", system: "", coreVersion: "13.345" });

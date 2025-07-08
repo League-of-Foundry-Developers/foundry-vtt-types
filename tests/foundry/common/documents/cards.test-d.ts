@@ -72,12 +72,12 @@ expectTypeOf(card.faces).toEqualTypeOf<Card.FaceData[]>();
 // if (baseCards._source.type === "french") {
 //   expectTypeOf(baseCards._source.coolUse).toEqualTypeOf<"throwing cards">();
 
-//   // @ts-expect-error - "possibleInjuries" is not a property of FrenchDeckDataSourceData.
+//   // @ts-expect-error "possibleInjuries" is not a property of FrenchDeckDataSourceData.
 //   baseCards._source.possibleInjuries;
 // } else {
 //   expectTypeOf(baseCards._source.mostUsedGame).toEqualTypeOf<"Skat">();
 
-//   // @ts-expect-error - "mostUsedBy" is not a property of GermanDeckDataSourceData.
+//   // @ts-expect-error "mostUsedBy" is not a property of GermanDeckDataSourceData.
 //   baseCards._source.mostUsedBy;
 // }
 

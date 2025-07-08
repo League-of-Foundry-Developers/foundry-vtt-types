@@ -2,10 +2,10 @@ import { expectTypeOf } from "vitest";
 
 import FormApplication = foundry.appv1.api.FormApplication;
 
-// @ts-expect-error - A Playlist requires name.
+// @ts-expect-error A Playlist requires name.
 new Playlist.implementation();
 
-// @ts-expect-error - A Playlist requires name.
+// @ts-expect-error A Playlist requires name.
 new Playlist.implementation({});
 
 const playlist = new Playlist.implementation({ name: "Some Playlist" });

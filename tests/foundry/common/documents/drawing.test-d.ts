@@ -5,7 +5,7 @@ import Document = foundry.abstract.Document;
 
 class TestBaseDrawing extends foundry.documents.BaseDrawing {}
 
-// @ts-expect-error - validateJoint requires the shape be visible
+// @ts-expect-error validateJoint requires the shape be visible
 new TestBaseDrawing();
 
 // Arguably this line should error but validation hasn't been written for that yet.

@@ -2,10 +2,10 @@ import { expectTypeOf } from "vitest";
 
 import Tabs = foundry.applications.ux.Tabs;
 
-// @ts-expect-error - Tabs requires data.
+// @ts-expect-error Tabs requires data.
 new Tabs();
 
-// @ts-expect-error - Tabs requires a navSelector.
+// @ts-expect-error Tabs requires a navSelector.
 new Tabs({});
 
 expectTypeOf(new Tabs({ navSelector: ".tabs" })).toEqualTypeOf<Tabs>();

@@ -3,10 +3,10 @@ import type { AnyObject } from "fvtt-types/utils";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { ArmorData, WeaponData } from "./item.test-d";
 
-// @ts-expect-error - Actor requires name.
+// @ts-expect-error Actor requires name.
 new Actor.implementation();
 
-// @ts-expect-error - Actor requires name.
+// @ts-expect-error Actor requires name.
 new Actor.implementation({});
 
 const actor = new Actor.implementation({ name: "Beren", type: "base" });

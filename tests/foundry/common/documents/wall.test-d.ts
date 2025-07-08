@@ -12,51 +12,51 @@ new TestBaseWall();
 // @ts-expect-error Wall requires `c` for creation
 new TestBaseWall({});
 
-// @ts-expect-error - c must be a length-4 array of integer coordinates
+// @ts-expect-error c must be a length-4 array of integer coordinates
 new TestBaseWall({ c: [10, 20] });
 
-// @ts-expect-error - c must be a length-4 array of integer coordinates
+// @ts-expect-error c must be a length-4 array of integer coordinates
 new TestBaseWall({ c: [10, 20, 30, 40, 50] });
 
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - light can't be an arbitrary number
+  // @ts-expect-error light can't be an arbitrary number
   light: 9999,
 });
 
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - move can't be an arbitrary number
+  // @ts-expect-error move can't be an arbitrary number
   move: 9999,
 });
 
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - sight can't be an arbitrary number
+  // @ts-expect-error sight can't be an arbitrary number
   sight: 9999,
 });
 
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - sound can't be an arbitrary number
+  // @ts-expect-error sound can't be an arbitrary number
   sound: 9999,
 });
 
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - dir can't be an arbitrary number
+  // @ts-expect-error dir can't be an arbitrary number
   dir: 9999,
 });
 
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - door can't be an arbitrary number
+  // @ts-expect-error door can't be an arbitrary number
   door: 9999,
 });
 
 new TestBaseWall({
   c: [10, 20, 30, 40],
-  // @ts-expect-error - ds can't be an arbitrary number
+  // @ts-expect-error ds can't be an arbitrary number
   ds: 9999,
 });
 

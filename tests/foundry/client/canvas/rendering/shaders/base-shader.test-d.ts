@@ -52,5 +52,5 @@ const testShaderInstance = TestShader.create({
 });
 testShaderInstance.uniforms["darkness"] = false;
 
-// @ts-expect-error - string is not a valid UniformValue
+// @ts-expect-error string is not a valid UniformValue
 TestShader.create({ foo: "bar" });

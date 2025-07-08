@@ -1,9 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-// @ts-expect-error - A RollTable requires data.
+// @ts-expect-error A RollTable requires data.
 new RollTable.implementation();
 
-// @ts-expect-error - A RollTable requires a name.
+// @ts-expect-error A RollTable requires a name.
 new RollTable.implementation({});
 
 const table = new RollTable.implementation({ name: "" });

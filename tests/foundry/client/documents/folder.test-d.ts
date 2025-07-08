@@ -1,9 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-// @ts-expect-error - A Folder requires name.
+// @ts-expect-error A Folder requires name.
 new Folder.implementation();
 
-// @ts-expect-error - A Folder requires name.
+// @ts-expect-error A Folder requires name.
 new Folder.implementation({});
 
 const folder = new Folder.implementation({ name: "foo", type: "JournalEntry" });

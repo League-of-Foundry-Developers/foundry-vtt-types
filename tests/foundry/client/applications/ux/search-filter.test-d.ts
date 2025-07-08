@@ -2,10 +2,10 @@ import { expectTypeOf } from "vitest";
 
 import SearchFilter = foundry.applications.ux.SearchFilter;
 
-// @ts-expect-error - A SearchFilter requires data.
+// @ts-expect-error A SearchFilter requires data.
 new SearchFilter();
 
-// @ts-expect-error - A SearchFilter requires an `inputSelector` and a `contentSelector`.
+// @ts-expect-error A SearchFilter requires an `inputSelector` and a `contentSelector`.
 new SearchFilter({});
 
 expectTypeOf(

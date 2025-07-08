@@ -25,12 +25,12 @@ await foundry.documents.BaseNote.create({
 
 // #2555 NumberField Choices
 
-// @ts-expect-error - A textAnchor cannot be an arbitrary number.
+// @ts-expect-error A textAnchor cannot be an arbitrary number.
 await foundry.documents.BaseNote.create({ textAnchor: 999 });
 // Should be correct
 await foundry.documents.BaseNote.create({ textAnchor: CONST.TEXT_ANCHOR_POINTS.BOTTOM });
 
-// @ts-expect-error - t cannot be an arbitrary string.
+// @ts-expect-error t cannot be an arbitrary string.
 await foundry.documents.BaseMeasuredTemplate.create({ t: "foobar" });
 
 // Flags
@@ -164,7 +164,7 @@ stringField.toInput({ value: 200 });
 stringField.toInput({ blank: "blank option", choices: ["option1"] });
 stringField.toInput({ blank: "blank option", options: [{ value: "option2", label: "Option 2" }] });
 
-// @ts-expect-error - `blank` is not valid by itself when the field doesn't have choices set.
+// @ts-expect-error `blank` is not valid by itself when the field doesn't have choices set.
 stringField.toInput({ blank: "blank option" });
 
 // Because this `StringField` has options it doesn't need to be passed in to `toInput` anymore.

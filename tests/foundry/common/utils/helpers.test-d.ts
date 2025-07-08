@@ -12,16 +12,16 @@ declare function functionWithReturnTypeOtherThanVoid(): number;
 
 expectTypeOf(utils.benchmark(functionWithoutParameters, 42)).toEqualTypeOf<Promise<void>>();
 
-// @ts-expect-error - the function takes no arguments
+// @ts-expect-error the function takes no arguments
 utils.benchmark(functionWithoutParameters, 42, "unknown argument");
 
 expectTypeOf(utils.benchmark(functionWithParameters, 42, 1, "", false)).toEqualTypeOf<Promise<void>>();
 expectTypeOf(utils.benchmark(functionWithParameters, 42, 1, "")).toEqualTypeOf<Promise<void>>();
 
-// @ts-expect-error - the function takes a number and a string
+// @ts-expect-error the function takes a number and a string
 utils.benchmark(functionWithParameters, 42, 1);
 
-// @ts-expect-error - the function takes doesn't take three arguments
+// @ts-expect-error the function takes doesn't take three arguments
 utils.benchmark(functionWithParameters, 42, 1, "", "unknown argument");
 
 expectTypeOf(utils.benchmark(functionWithReturnTypeOtherThanVoid, 42)).toEqualTypeOf<Promise<void>>();
@@ -423,7 +423,7 @@ expectTypeOf(utils.setProperty({}, "baz", 4)).toEqualTypeOf<boolean>();
 
 // deleteProperty
 
-// @ts-expect-error - TODO(LukeAbby): `deleteProperty` only allows deleting keys that exist.
+// @ts-expect-error TODO(LukeAbby): `deleteProperty` only allows deleting keys that exist.
 utils.deleteProperty({}, "fizz");
 
 // invertObject
@@ -476,12 +476,12 @@ assertType<{ k1: number; k2: string }>(utils.mergeObject({ k1: "" }, { k1: 2, k2
 assertType<{ k1: number }>(utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { insertKeys: false }));
 assertType<{ k1: number; k2: string }>(utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { insertKeys: true }));
 
-// @ts-expect-error - TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
+// @ts-expect-error TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
 assertType<never>(utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { enforceTypes: true }));
 assertType<{ k1: number; k2: string }>(utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { enforceTypes: false }));
-// @ts-expect-error - TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
+// @ts-expect-error TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
 assertType<never>(utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { enforceTypes: true, insertKeys: false }));
-// @ts-expect-error - TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
+// @ts-expect-error TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
 assertType<never>(utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { enforceTypes: true, insertKeys: true }));
 
 assertType<{ k1: string; k2: string }>(utils.mergeObject({ k1: "" }, { k1: 2, k2: "" }, { overwrite: false }));
@@ -512,7 +512,7 @@ expectTypeOf(
     { k1: { i2: "bar", i3: 2 }, k3: 3 },
     { recursive: false },
   ).k1,
-  // @ts-expect-error - TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
+  // @ts-expect-error TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
 ).toEqualTypeOf<{ i2: string; i3: number }>();
 assertType<{
   k1: { i1: string; i2: string; i3: { j1: string; j2: number; j3: string } };
@@ -552,12 +552,12 @@ assertType<{ a: number[] }>(utils.mergeObject({ a: ["foo"] }, { a: [0] }, { inse
 assertType<{ a: number[] }>(utils.mergeObject({ a: ["foo"] }, { a: [0] }, { insertKeys: false }));
 assertType<{ a: number[] }>(utils.mergeObject({ a: ["foo"] }, { a: [0] }, { insertValues: false }));
 assertType<{ a: number[] }>(utils.mergeObject({ a: ["foo"] }, { a: [0] }, { enforceTypes: true }));
-// @ts-expect-error - TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
+// @ts-expect-error TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
 assertType<never>(utils.mergeObject({ a: ["foo"] }, { a: { b: "foo" } }, { enforceTypes: true }));
 assertType<{ a: { b: string } }>(utils.mergeObject({ a: ["foo"] }, { a: { b: "foo" } }, { enforceTypes: false }));
-// @ts-expect-error - TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
+// @ts-expect-error TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
 assertType<never>(utils.mergeObject({ a: { b: "foo" } }, { a: ["foo"] }, { enforceTypes: true }));
-// @ts-expect-error - TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
+// @ts-expect-error TODO(LukeAbby): `mergeObject` has not yet been fully implemented.
 assertType<{ a: string[] }>(utils.mergeObject({ a: { b: "foo" } }, { a: ["foo"] }, { enforceTypes: false }));
 
 // performDeletions
@@ -626,10 +626,10 @@ assertType<never>(
   utils.mergeObject({ a: { a: 1 }, c: 1 }, { b: { a: 2 }, c: 1 }, { enforceTypes: true }),
 );
 
-// @ts-expect-error - A number isn't a valid object to merge.
+// @ts-expect-error A number isn't a valid object to merge.
 utils.mergeObject(1, 2);
 
-// @ts-expect-error - A string isn't a valid object to merge.
+// @ts-expect-error A string isn't a valid object to merge.
 utils.mergeObject("foo", "bar");
 
 // parseS3URL
