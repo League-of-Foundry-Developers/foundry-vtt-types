@@ -1257,39 +1257,33 @@ declare namespace Document {
       SubType extends string,
       ConfiguredSubTypes extends string,
     > = SystemConfig extends { readonly [_ in Name]: { readonly discriminate: "all" } }
-      ? _DiscriminateSystem<SubType, TypeMap>
+      ? DiscriminateSubType<SubType, TypeMap>
       :
-          | _DiscriminateSystem<Extract<SubType, ConfiguredSubTypes>, TypeMap>
+          | DiscriminateSubType<Extract<SubType, ConfiguredSubTypes>, TypeMap>
           | ([Exclude<SubType, ConfiguredSubTypes>] extends [never]
               ? never
               : TypeMap[Exclude<SubType, ConfiguredSubTypes>]);
 
-    type _DiscriminateSystem<
+    type DiscriminateSubType<
       SubType extends AllSubType,
       TypeMap extends Record<AllSubType, { system: object | undefined }>,
       AllSubType extends string = SubType,
     > = SubType extends unknown
       ? [AllSubType] extends [SubType]
         ? TypeMap[SubType] // There's only one subtype so avoid the worse type display of `OfType`.
-        : OfType<SubType, TypeMap, AllSubType>
+        : _DiscriminateSubType<SubType, TypeMap, AllSubType>
       : never;
 
-    // Note(LukeAbby): This is named `OfType` to display as `Document.Internal.OfType` in quick info.
-    interface OfType<
+    type _DiscriminateSubType<
       OneSubType extends AllSubType,
       TypeMap extends Record<AllSubType, { system: object | undefined }>,
       AllSubType extends string,
-    > extends _DynamicBase<
-        TypeMap[OneSubType] & {
-          system: SystemDiscriminant<
-            Exclude<TypeMap[OneSubType]["system"], undefined>,
-            Exclude<TypeMap[AllSubType]["system"], undefined>
-          >;
-        }
-      > {}
-
-    // @ts-expect-error This pattern is intrinsically an error.
-    interface _DynamicBase<Base extends object> extends Base {}
+    > = TypeMap[OneSubType] & {
+      system: SystemDiscriminant<
+        Exclude<TypeMap[OneSubType]["system"], undefined>,
+        Exclude<TypeMap[AllSubType]["system"], undefined>
+      >;
+    };
 
     /** @internal */
     type SystemDiscriminant<System extends object, AllSystem extends object> = Omit<
