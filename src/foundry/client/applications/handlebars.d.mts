@@ -454,7 +454,7 @@ export interface RangePickerOptions extends Partial<Handlebars.HelperOptions> {
      * The allowed step size
      */
     step?: number | undefined;
-  }
+  };
 }
 
 export interface SelectOptions extends Partial<Handlebars.HelperOptions> {}
