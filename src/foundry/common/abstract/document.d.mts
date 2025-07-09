@@ -1268,17 +1268,20 @@ declare namespace Document {
       SubType extends AllSubType,
       TypeMap extends Record<AllSubType, { system: object | undefined }>,
       AllSubType extends string = SubType,
-    > = SubType extends unknown ? OfType<SubType, TypeMap, AllSubType> : never;
+    > = SubType extends unknown
+      ? [AllSubType] extends [SubType]
+        ? TypeMap[SubType] // There's only one subtype so avoid the worse type display of `OfType`.
+        : OfType<SubType, TypeMap, AllSubType>
+      : never;
 
     // Note(LukeAbby): This is named `OfType` to display as `Document.Internal.OfType` in quick info.
     interface OfType<
       OneSubType extends AllSubType,
       TypeMap extends Record<AllSubType, { system: object | undefined }>,
       AllSubType extends string,
-    > extends _Override<
-        TypeMap[OneSubType],
-        {
-          system: DiscriminatedSystem<
+    > extends _DynamicBase<
+        TypeMap[OneSubType] & {
+          system: SystemDiscriminant<
             Exclude<TypeMap[OneSubType]["system"], undefined>,
             Exclude<TypeMap[AllSubType]["system"], undefined>
           >;
@@ -1286,16 +1289,15 @@ declare namespace Document {
       > {}
 
     // @ts-expect-error This pattern is intrinsically an error.
-    interface _Override<Base extends object, OverrideWith extends object> extends OverrideWith, Base {}
+    interface _DynamicBase<Base extends object> extends Base {}
 
     /** @internal */
-    interface DiscriminatedSystem<System extends object, AllSystem extends object>
-      extends _Override<
-        {
-          [K in AllKeysOf<AllSystem>]?: never;
-        },
-        System
-      > {}
+    type SystemDiscriminant<System extends object, AllSystem extends object> = Omit<
+      {
+        [K in AllKeysOf<AllSystem>]?: never;
+      },
+      keyof System
+    >;
 
     interface DropData<DocumentType extends Document.Type> {
       /**
