@@ -1,4 +1,4 @@
-import type { PropertiesOfType, Brand, AnyObject, Identity, InexactPartial } from "#utils";
+import type { PropertiesOfType, Brand, AnyObject, Identity, InexactPartial, AllKeysOf } from "#utils";
 
 /**
  * A helper class providing utility methods for PIXI Canvas animation
@@ -190,7 +190,7 @@ declare namespace CanvasAnimation {
      * The attribute name being animated
      * @remarks Does not support dotkeys
      */
-    attribute: keyof AnimationParent;
+    attribute: AllKeysOf<AnimationParent>;
 
     /** The object within which the attribute is stored */
     parent: AnimationParent;
@@ -199,7 +199,7 @@ declare namespace CanvasAnimation {
     to: number | Color;
   }
 
-  interface CanvasAnimationAttribute<AnimationParent extends AnyObject = AnyObject>
+  interface ProcessedAttribute<AnimationParent extends AnyObject = AnyObject>
     extends CanvasAnimation.Attribute<AnimationParent> {
     /**
      * The computed delta between to and from
@@ -230,7 +230,7 @@ declare namespace CanvasAnimation {
     time: number;
 
     /** The attributes being animated */
-    attributes: CanvasAnimationAttribute<AnimationParent>[];
+    attributes: ProcessedAttribute<AnimationParent>[];
 
     /** The current state of the animation */
     state: CanvasAnimation.STATES;

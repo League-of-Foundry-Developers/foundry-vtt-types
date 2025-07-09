@@ -65,8 +65,6 @@ expectTypeOf(
 const animationParent1 = { foo: 7, bar: 10 };
 const animationParent2 = { fizz: new Color(0), buzz: 33 };
 
-// Animating more than one AnimationParent per call requires specifying the least-common-denominator type,
-// often requiring something with a `string` index signature
 CanvasAnimation.animate(
   [
     {
@@ -76,7 +74,8 @@ CanvasAnimation.animate(
     },
     {
       parent: animationParent2,
-      attribute: "baz", // Because we're passing `AnyObject` we lose useful `keyof` and can't prevent this
+      // @ts-expect-error baz is not a property of animationParent2
+      attribute: "baz",
       to: 0,
     },
     {
@@ -87,6 +86,12 @@ CanvasAnimation.animate(
   ],
   {
     ontick: (dt, data) => {
+      const firstAttribute = data.attributes[0]!;
+      if (firstAttribute && /** firstAttribute.parent === animationParent2 && */ firstAttribute.attribute !== "fizz") {
+        // @ts-expect-error we currently do not have a way to narrow by parent
+        expectTypeOf(firstAttribute.attribute).toEqualTypeOf<"buzz">();
+        expectTypeOf(firstAttribute.attribute).toEqualTypeOf<"foo" | "bar" | "buzz">();
+      }
       console.warn(
         `We are ${dt}ms into animating the ${data.attributes.map((a) => a.attribute).join(", ")} attributes`,
       );

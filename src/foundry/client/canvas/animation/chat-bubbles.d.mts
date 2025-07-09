@@ -27,9 +27,9 @@ declare class ChatBubbles {
 
   /**
    * Create a chat bubble message for a certain token which is synchronized for display across all connected clients.
-   * @param token    - The speaking Token Document
-   * @param message  - The spoken message text
-   * @param options  - Options which affect the bubble appearance
+   * @param token   - The speaking Token Document
+   * @param message - The spoken message text
+   * @param options - Options which affect the bubble appearance
    * @returns A promise which resolves with the created bubble HTML, or `null`
    */
   broadcast(
@@ -40,9 +40,9 @@ declare class ChatBubbles {
 
   /**
    * Create a chat bubble message for a certain token which is synchronized for display across all connected clients.
-   * @param token    - The speaking Token Document
-   * @param message  - The spoken message text
-   * @param options  - Options which affect the bubble appearance
+   * @param token   - The speaking Token Document
+   * @param message - The spoken message text
+   * @param options - Options which affect the bubble appearance
    * @returns A promise which resolves with the created bubble HTML, or `null`
    * @remarks While {@linkcode broadcast} will take either a placeable or a document, `say` requires a placeable
    */
