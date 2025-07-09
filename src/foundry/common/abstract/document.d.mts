@@ -1928,7 +1928,7 @@ declare namespace Document {
 
     type CreateOperationForName<
       DocumentType extends Document.Type,
-      Temporary extends boolean | undefined = undefined,
+      Temporary extends boolean | undefined = boolean | undefined,
     > =
       | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "ActorDelta" ? ActorDelta.Database.CreateOperation<Temporary> : never)

@@ -411,18 +411,18 @@ declare namespace ActiveEffect {
     /** Options passed along in Create operations for ActiveEffects */
     interface Create<Temporary extends boolean | undefined = boolean | undefined>
       extends foundry.abstract.types.DatabaseCreateOperation<ActiveEffect.CreateData, ActiveEffect.Parent, Temporary> {
-      animate?: boolean;
+      animate?: boolean | undefined;
     }
 
     /** Options passed along in Delete operations for ActiveEffects */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ActiveEffect.Parent> {
-      animate?: boolean;
+      animate?: boolean | undefined;
     }
 
     /** Options passed along in Update operations for ActiveEffects */
     interface Update
       extends foundry.abstract.types.DatabaseUpdateOperation<ActiveEffect.UpdateData, ActiveEffect.Parent> {
-      animate?: boolean;
+      animate?: boolean | undefined;
     }
 
     /** Operation for {@linkcode ActiveEffect.createDocuments} */

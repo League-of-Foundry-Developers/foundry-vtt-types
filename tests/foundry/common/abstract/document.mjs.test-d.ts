@@ -58,12 +58,12 @@ if (user) {
 // test creation of embedded documents
 declare const scene: Scene.Implementation;
 expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: true })).toEqualTypeOf<
-  Promise<NoteDocument.Stored[] | undefined> // Should be `.Implementation` as it can be temporary. See #3271
+  Promise<NoteDocument.Stored[]> // Should be `.Implementation` as it can be temporary. See #3271
 >();
 expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: false })).toEqualTypeOf<
-  Promise<NoteDocument.Stored[] | undefined>
+  Promise<NoteDocument.Stored[]>
 >();
-expectTypeOf(scene.createEmbeddedDocuments("Note", [])).toEqualTypeOf<Promise<NoteDocument.Stored[] | undefined>>();
+expectTypeOf(scene.createEmbeddedDocuments("Note", [])).toEqualTypeOf<Promise<NoteDocument.Stored[]>>();
 
 // verify that document lifecycle methods work with source data is possible
 
