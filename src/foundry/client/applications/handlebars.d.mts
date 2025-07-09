@@ -310,7 +310,7 @@ export function select(selected: string, options: SelectOptions): string;
  */
 export function rangePicker(options: RangePickerOptions): Handlebars.SafeString;
 
-interface ColorPickerOptions extends Partial<Handlebars.HelperOptions> {
+export interface ColorPickerOptions extends Partial<Handlebars.HelperOptions> {
   hash: {
     /**
      * The name of the field to create
@@ -329,7 +329,7 @@ interface ColorPickerOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-interface TextEditorOptions extends Partial<Handlebars.HelperOptions> {
+export interface TextEditorOptions extends Partial<Handlebars.HelperOptions> {
   hash: {
     /**
      * The named target data element
@@ -366,12 +366,12 @@ interface TextEditorOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-interface FilePickerOptions extends Partial<Handlebars.HelperOptions> {
+export interface FilePickerOptions extends Partial<Handlebars.HelperOptions> {
   hash: {
     /**
      * The type of FilePicker instance to display
      */
-    type?: foundry.applications.apps.FilePicker.Type;
+    type?: foundry.applications.apps.FilePicker.Type | undefined;
 
     /**
      * The field name in the target data
@@ -380,12 +380,12 @@ interface FilePickerOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-interface LocalizeOptions extends Partial<Handlebars.HelperOptions> {
+export interface LocalizeOptions extends Partial<Handlebars.HelperOptions> {
   /** Interpolation data passed to Localization#format */
   hash: Record<string, unknown>;
 }
 
-interface NumberFormatOptions extends Partial<Handlebars.HelperOptions> {
+export interface NumberFormatOptions extends Partial<Handlebars.HelperOptions> {
   hash: {
     /**
      * The number of decimal places to include in the resulting string
@@ -401,7 +401,7 @@ interface NumberFormatOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-interface NumberInputOptions extends Partial<Handlebars.HelperOptions> {
+export interface NumberInputOptions extends Partial<Handlebars.HelperOptions> {
   hash: FormInputConfig<number> &
     NumberInputConfig & {
       /**
@@ -411,7 +411,7 @@ interface NumberInputOptions extends Partial<Handlebars.HelperOptions> {
     };
 }
 
-interface RadioBoxesOptions extends Partial<Handlebars.HelperOptions> {
+export interface RadioBoxesOptions extends Partial<Handlebars.HelperOptions> {
   hash: {
     /**
      * Which key is currently checked?
@@ -427,37 +427,39 @@ interface RadioBoxesOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-interface RangePickerOptions extends Partial<Handlebars.HelperOptions> {
-  /**
-   * The name of the field to create
-   * @defaultValue `"range"`
-   */
-  name?: string;
+export interface RangePickerOptions extends Partial<Handlebars.HelperOptions> {
+  hash?: {
+    /**
+     * The name of the field to create
+     * @defaultValue `"range"`
+     */
+    name?: string | undefined;
 
-  /**
-   * The current range value
-   */
-  value?: number;
+    /**
+     * The current range value
+     */
+    value?: number | undefined;
 
-  /**
-   * The minimum allowed value
-   */
-  min?: number;
+    /**
+     * The minimum allowed value
+     */
+    min?: number | undefined;
 
-  /**
-   * The maximum allowed value
-   */
-  max?: number;
+    /**
+     * The maximum allowed value
+     */
+    max?: number | undefined;
 
-  /**
-   * The allowed step size
-   */
-  step?: number;
+    /**
+     * The allowed step size
+     */
+    step?: number | undefined;
+  }
 }
 
-interface SelectOptions extends Handlebars.HelperOptions {}
+export interface SelectOptions extends Partial<Handlebars.HelperOptions> {}
 
-interface SelectOptionsOptions extends Partial<Handlebars.HelperOptions> {
+export interface SelectOptionsOptions extends Partial<Handlebars.HelperOptions> {
   hash: SelectInputConfig & {
     /**
      * The currently selected value or values
