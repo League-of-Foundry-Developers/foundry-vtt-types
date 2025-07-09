@@ -331,6 +331,10 @@ export type DataType =
   | "undefined"
   | "Unknown";
 
+export type ExpandKey<K extends PropertyKey> = K extends `${infer First}.${infer Rest}`
+  ? { [_ in First]: ExpandKey<Rest> }
+  : { [_ in K]: unknown };
+
 /**
  * A helper function which tests whether an object has a property or nested property given a string key.
  * The string key supports the notation a.b.c which would return true if object[a][b][c] exists
@@ -338,7 +342,7 @@ export type DataType =
  * @param key    - An object property with notation a.b.c
  * @returns An indicator for whether the property exists
  */
-export function hasProperty(object: object, key: string): boolean;
+export function hasProperty<K extends PropertyKey>(object: object, key: K): object is ExpandKey<K>;
 
 /**
  * A helper function which searches through an object to retrieve a value by a string key.
