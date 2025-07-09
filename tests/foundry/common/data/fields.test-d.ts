@@ -183,6 +183,41 @@ test("circular data model heritage regression test", () => {
   class MyActorSystem extends foundry.abstract.TypeDataModel<typeof schema, Actor.Implementation> {}
 });
 
+test("choices", () => {
+  const schema = () => ({
+    choices: new foundry.data.fields.StringField({ choices: ["a", "b"] }),
+  });
+
+  class StringModel extends foundry.abstract.DataModel<ReturnType<typeof schema>> {
+    static override defineSchema() {
+      return schema();
+    }
+  }
+
+  // @ts-expect-error `blank` is `false` by default when `choices` is set.
+  new StringModel({ choices: "" });
+
+  const model = new StringModel({ choices: "a" });
+  expectTypeOf(model.choices).toEqualTypeOf<"a" | "b" | undefined>();
+});
+
+test("blank choices", () => {
+  const schema = () => ({
+    blankChoices: new foundry.data.fields.StringField({ blank: true, choices: ["a", "b"] }),
+  });
+
+  class BlankModel extends foundry.abstract.DataModel<ReturnType<typeof schema>> {
+    static override defineSchema() {
+      return schema();
+    }
+  }
+
+  new BlankModel({ blankChoices: "a" });
+
+  const model = new BlankModel({ blankChoices: "" });
+  expectTypeOf(model.blankChoices).toEqualTypeOf<"a" | "b" | "" | undefined>();
+});
+
 // TODO(LukeAbby): Relevant once requisite circularities are fixed.
 // type ActorSchema = foundry.data.fields.SchemaField<Actor.Schema>;
 

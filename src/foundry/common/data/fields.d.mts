@@ -1862,10 +1862,12 @@ declare namespace StringField {
     SimpleMerge<_OptionsForChoices<Options["choices"]>, MergedOptions<Options>>
   >;
 
+  /** @internal */
   type _OptionsForChoices<Choices extends StringField.Options["choices"]> = undefined extends Choices
     ? DefaultOptions
     : DefaultOptionsWhenChoicesProvided;
 
+  /** @internal */
   type _OptionsForInitial<Options extends StringField.Options<unknown>> = Options["initial"] extends undefined
     ? SimpleMerge<
         Options,
@@ -1890,6 +1892,8 @@ declare namespace StringField {
   /** @internal */
   type _ValidChoice<Choices> = Choices extends (...args: infer _1) => infer C ? FixedChoice<C> : FixedChoice<Choices>;
 
+  type _ApplyBlank<Choices, Result> = Choices extends { readonly blank: true } ? Result | "" : Result;
+
   type FixedChoice<Choices> =
     Choices extends ReadonlyArray<infer U>
       ? U
@@ -1904,20 +1908,23 @@ declare namespace StringField {
    * @deprecated AssignmentData is being phased out. See {@linkcode SchemaField.AssignmentData}
    * for more details.
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type AssignmentType<Options extends StringField.Options<unknown>> = DataField.DerivedAssignmentType<
-    ValidChoice<Options>,
-    _EffectiveOptions<Options>
+  type AssignmentType<Options extends StringField.Options<unknown>> = _ApplyBlank<
+    Options,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    DataField.DerivedAssignmentType<ValidChoice<Options>, _EffectiveOptions<Options>>
   >;
 
   /**
    * A shorthand for the initialized type of a StringField class.
    * @template Options - the options that override the default options
    */
-  type InitializedType<Options extends StringField.Options<unknown>> = DataField.DerivedInitializedType<
-    // TODO(LukeAbby): This is a workaround for how `ValidChoice` is defined ignorant of the `StringField`/`NumberField` divide.
-    ValidChoice<Options> & (string | null | undefined),
-    _EffectiveOptions<Options>
+  type InitializedType<Options extends StringField.Options<unknown>> = _ApplyBlank<
+    Options,
+    DataField.DerivedInitializedType<
+      // TODO(LukeAbby): This is a workaround for how `ValidChoice` is defined ignorant of the `StringField`/`NumberField` divide.
+      ValidChoice<Options> & (string | null | undefined),
+      _EffectiveOptions<Options>
+    >
   >;
 
   type BaseChoices =
