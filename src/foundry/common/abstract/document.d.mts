@@ -21,9 +21,10 @@ import type {
   Brand,
   AnyMutableObject,
   MaybePromise,
-  Override,
   SimpleMerge,
   PrettifyType,
+  AllKeysOf,
+  Override,
 } from "#utils";
 import type * as CONST from "../constants.mts";
 import type {
@@ -47,6 +48,7 @@ import type {
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
+import type { SystemConfig } from "#configuration";
 
 export default Document;
 
@@ -966,8 +968,15 @@ declare namespace Document {
     | "JournalEntryPage"
     | "RegionBehavior";
 
-  type CoreTypesForName<Name extends Type> = string &
-    GetKey<Document.MetadataFor<Name>, "coreTypes", [CONST.BASE_DOCUMENT_TYPE]>[number];
+  type CoreTypesForName<Name extends Type> = _CoreTypes<
+    Name,
+    string & GetKey<Document.MetadataFor<Name>, "coreTypes", [CONST.BASE_DOCUMENT_TYPE]>[number]
+  >;
+
+  /** @internal */
+  type _CoreTypes<Name extends Type, Types> = SystemConfig extends { [_ in Name]: { readonly base: "ignore" } }
+    ? Exclude<Types, "base">
+    : Types;
 
   type ConfiguredSubTypesOf<Name extends Type> = Name extends "ActorDelta"
     ? ConfiguredSubTypesOf<"Actor">
@@ -976,12 +985,18 @@ declare namespace Document {
       // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-duplicate-type-constituents
       string & (keyof GetKey<DataModelConfig, Name, unknown> | keyof GetKey<SourceConfig, Name, unknown>);
 
-  type SubTypesOf<Name extends Type> = Name extends "ActorDelta"
+  type SubTypesOf<Name extends Document.Type> = Name extends "ActorDelta"
     ? SubTypesOf<"Actor">
-    :
-        | Document.CoreTypesForName<Name>
-        | ConfiguredSubTypesOf<Name>
-        | (Document.MetadataFor<Name> extends { readonly hasTypeData: true } ? Document.ModuleSubType : never);
+    : Document.CoreTypesForName<Name> | ConfiguredSubTypesOf<Name> | _ModuleSubType<Name>;
+
+  /** @internal */
+  type _ModuleSubType<Name extends Type> = SystemConfig extends {
+    [_ in Name]: { readonly moduleSubType: "ignore" };
+  }
+    ? never
+    : Document.MetadataFor<Name> extends { readonly hasTypeData: true }
+      ? Document.ModuleSubType
+      : never;
 
   type ModuleSubType = Brand<`${string}.${string}`, "Document.ModuleSubtype">;
 
@@ -1135,19 +1150,31 @@ declare namespace Document {
       GetKey<SourceConfig, Name, {}>
     > &
       // `Document.ModuleSubType` has to be accounted for specially because of its perculiar nature.
-      Record<Document.ModuleSubType, UnknownSystem>;
+      Record<Document.ModuleSubType, _ModuleSubTypeFor<Name>>;
+
+    type _ModuleSubTypeFor<Name extends Document.WithSubTypes> = SystemConfig extends {
+      readonly [_ in Name]: { readonly moduleSubtype: "ignore" };
+    }
+      ? never
+      : // The `Extract<..., object>` serves a dual purpose:
+        // 1) Get rid of `| undefined` for optional subtypes.
+        // 2) Make sure it's obvious to TypeScript `system` is always an object.
+        Extract<GetKey<GetKey<DataModelConfig, Name, object>, Document.ModuleSubType, Document.UnknownSystem>, object>;
 
     // Note(LukeAbby): This is written this way to preserve any optional modifiers.
     type _ModelMap<Name extends Document.WithSubTypes, DataModel, Config> = PrettifyType<
       SimpleMerge<
         {
-          [SubType in keyof DataModel]: EmptyObject;
-        } & {
           [SubType in Document.CoreTypesForName<Name>]: EmptyObject;
         },
-        {
-          [SubType in keyof Config]: EmptyObject;
-        }
+        SimpleMerge<
+          {
+            [SubType in keyof DataModel]: EmptyObject;
+          },
+          {
+            [SubType in keyof Config]: EmptyObject;
+          }
+        >
       >
     >;
 
@@ -1160,31 +1187,47 @@ declare namespace Document {
       GetKey<DataConfig, Name, {}>
     > &
       // `Document.ModuleSubType` has to be accounted for specially because of its perculiar nature.
-      Record<Document.ModuleSubType, UnknownSystem>;
+      Record<Document.ModuleSubType, _ModuleSubTypeFor<Name>>;
 
     // Note(LukeAbby): This is written this way to preserve any optional modifiers.
-    type _SystemMap<Name extends Document.WithSubTypes, DataModel, Config> = PrettifyType<
+    type _SystemMap<Name extends Document.WithSubTypes, DataModel, DataConfig> = PrettifyType<
       SimpleMerge<
         {
-          [SubType in keyof DataModel]: DataModel[SubType] extends
-            | (abstract new (...args: never) => infer Model extends DataModel.Any)
-            | undefined
-            ? Model
-            : never;
-        } & {
           [SubType in Document.CoreTypesForName<Name>]: EmptyObject;
         },
-        {
-          [SubType in keyof Config]: Config[SubType];
-        }
+        SimpleMerge<
+          {
+            [SubType in keyof DataModel]: DataModel[SubType] extends
+              | (abstract new (...args: never) => infer Model extends DataModel.Any)
+              | undefined
+              ? Model
+              : never;
+          },
+          {
+            [SubType in keyof DataConfig]: DataConfig[SubType];
+          }
+        >
       >
     >;
 
-    type SystemOfType<SystemMap extends Record<SubType, object | undefined>, SubType extends string> = SubType extends
-      | ModuleSubType
-      | "base"
-      ? UnknownSystem
-      : DiscriminatedUnion<NonNullable<SystemMap[SubType]>>;
+    type SystemOfType<
+      Name extends Document.WithSystem,
+      SystemMap extends Record<SubType, object | undefined>,
+      SubType extends string,
+      ConfiguredSubTypes extends string,
+    > =
+      GetKey<SystemConfig, Name, "none"> extends "discriminateAll"
+        ? _DiscriminateUndefined<SystemMap[SubType]>
+        :
+            | ([Extract<SubType, ConfiguredSubTypes>] extends [never]
+                ? never
+                : _DiscriminateUndefined<SystemMap[Extract<SubType, ConfiguredSubTypes>]>)
+            | ([Exclude<SubType, ConfiguredSubTypes>] extends [never]
+                ? never
+                : SystemMap[Exclude<SubType, ConfiguredSubTypes>]);
+
+    /** @internal */
+    type _DiscriminateUndefined<T extends object | undefined> = DiscriminatedUnion<Exclude<T, undefined>>;
 
     // TODO(LukeAbby): Improve the type display with a helper here.
     // TODO(LukeAbby): Add `StoredSource` for a better type display there.
@@ -1207,6 +1250,52 @@ declare namespace Document {
       system?: object | undefined;
       get invalid(): true;
     }
+
+    type DiscriminateSystem<
+      Name extends Document.WithSystem,
+      TypeMap extends Record<SubType, { system: object | undefined }>,
+      SubType extends string,
+      ConfiguredSubTypes extends string,
+    > = SystemConfig extends { readonly [_ in Name]: { readonly discriminate: "all" } }
+      ? _DiscriminateSystem<SubType, TypeMap>
+      :
+          | _DiscriminateSystem<Extract<SubType, ConfiguredSubTypes>, TypeMap>
+          | ([Exclude<SubType, ConfiguredSubTypes>] extends [never]
+              ? never
+              : TypeMap[Exclude<SubType, ConfiguredSubTypes>]);
+
+    type _DiscriminateSystem<
+      SubType extends AllSubType,
+      TypeMap extends Record<AllSubType, { system: object | undefined }>,
+      AllSubType extends string = SubType,
+    > = SubType extends unknown ? OfType<SubType, TypeMap, AllSubType> : never;
+
+    // Note(LukeAbby): This is named `OfType` to display as `Document.Internal.OfType` in quick info.
+    interface OfType<
+      OneSubType extends AllSubType,
+      TypeMap extends Record<AllSubType, { system: object | undefined }>,
+      AllSubType extends string,
+    > extends _Override<
+        TypeMap[OneSubType],
+        {
+          system: DiscriminatedSystem<
+            Exclude<TypeMap[OneSubType]["system"], undefined>,
+            Exclude<TypeMap[AllSubType]["system"], undefined>
+          >;
+        }
+      > {}
+
+    // @ts-expect-error This pattern is intrinsically an error.
+    interface _Override<Base extends object, OverrideWith extends object> extends OverrideWith, Base {}
+
+    /** @internal */
+    interface DiscriminatedSystem<System extends object, AllSystem extends object>
+      extends _Override<
+        {
+          [K in AllKeysOf<AllSystem>]?: never;
+        },
+        System
+      > {}
 
     interface DropData<DocumentType extends Document.Type> {
       /**

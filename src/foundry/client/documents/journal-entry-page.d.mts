@@ -98,7 +98,7 @@ declare namespace JournalEntryPage {
    * {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`}.
    * up.
    */
-  type OfType<Type extends SubType> = _OfType[Type];
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubTypes>;
 
   /** @internal */
   interface _OfType
@@ -114,7 +114,7 @@ declare namespace JournalEntryPage {
   /**
    * `SystemOfType` returns the system property for a specific `JournalEntryPage` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubTypes>;
 
   /**
    * @internal

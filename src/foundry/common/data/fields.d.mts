@@ -5181,7 +5181,8 @@ declare namespace TypeDataField {
     SystemDocumentConstructor extends Document.SystemConstructor,
     Opts extends Options<SystemDocumentConstructor>,
   > = DataField.DerivedInitializedType<
-    _Instances<DataModelsFor<SystemDocumentConstructor["metadata"]["name"]>> | Document.UnknownSystem,
+    | _Instances<DataModelsFor<SystemDocumentConstructor["metadata"]["name"]>>
+    | Document.Internal._ModuleSubTypeFor<SystemDocumentConstructor["metadata"]["name"]>,
     MergedOptions<SystemDocumentConstructor, Opts>
   >;
 

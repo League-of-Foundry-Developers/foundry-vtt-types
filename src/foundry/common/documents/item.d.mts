@@ -95,6 +95,8 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   type: SubType;
 
+  aaaaa: SubType;
+
   /* Document overrides */
 
   // Same as Document for now

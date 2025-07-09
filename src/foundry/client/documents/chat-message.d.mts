@@ -98,7 +98,7 @@ declare namespace ChatMessage {
    * builtin `ChatMessage` class or a custom subclass if that is set up in
    * {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`}.
    */
-  type OfType<Type extends SubType> = _OfType[Type];
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubTypes>;
 
   /** @internal */
   interface _OfType
@@ -114,7 +114,7 @@ declare namespace ChatMessage {
   /**
    * `SystemOfType` returns the system property for a specific `ChatMessage` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubTypes>;
 
   /**
    * @internal

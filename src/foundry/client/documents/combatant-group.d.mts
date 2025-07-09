@@ -81,7 +81,7 @@ declare namespace CombatantGroup {
    * builtin `CombatantGroup` class or a custom subclass if that is set up in
    * {@link ConfiguredCombatantGroup | `fvtt-types/configuration/ConfiguredCombatantGroup`}.
    */
-  type OfType<Type extends SubType> = _OfType[Type];
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubTypes>;
 
   /** @internal */
   interface _OfType
@@ -97,7 +97,7 @@ declare namespace CombatantGroup {
   /**
    * `SystemOfType` returns the system property for a specific `CombatantGroup` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubTypes>;
 
   /**
    * @internal

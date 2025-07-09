@@ -99,7 +99,7 @@ declare namespace Card {
    * builtin `Card` class or a custom subclass if that is set up in
    * {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`}.
    */
-  type OfType<Type extends SubType> = _OfType[Type];
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubTypes>;
 
   /** @internal */
   interface _OfType
@@ -115,7 +115,7 @@ declare namespace Card {
   /**
    * `SystemOfType` returns the system property for a specific `Card` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubTypes>;
 
   /**
    * @internal

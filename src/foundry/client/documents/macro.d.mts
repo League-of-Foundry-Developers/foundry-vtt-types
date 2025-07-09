@@ -101,6 +101,7 @@ declare namespace Macro {
    * Note that `Macro` does not have a `system` property and therefore there is no way for a user
    * to configure custom subtypes. See {@linkcode Macro.SubType} for more information.
    */
+  // Note(LukeAbby): The lack of a `system` is why `Document.Internal.DiscriminateSystem` isn't applied.
   type OfType<Type extends SubType> = _OfType[Type];
 
   /** @internal */

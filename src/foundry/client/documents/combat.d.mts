@@ -105,7 +105,7 @@ declare namespace Combat {
    * builtin `Combat` class or a custom subclass if that is set up in
    * {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`}.
    */
-  type OfType<Type extends SubType> = _OfType[Type];
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubTypes>;
 
   /** @internal */
   interface _OfType
@@ -121,7 +121,7 @@ declare namespace Combat {
   /**
    * `SystemOfType` returns the system property for a specific `Combat` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubTypes>;
 
   /**
    * @internal
