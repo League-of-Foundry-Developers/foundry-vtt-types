@@ -47,7 +47,7 @@ declare class DoorMesh extends PrimarySpriteMesh {
    * Configure and initialize the DoorMesh.
    * This is called automatically upon construction, but may be called manually later to update the DoorMesh.
    * @remarks Despite all properties of {@linkcode DoorMesh.AnimationConfiguration} being optional, `options`
-   * lacks a `={}` default, so you must pass at last an empty object
+   * lacks a `={}` default, so you must pass at least an empty object
    */
   initialize(animation: DoorMesh.AnimationConfiguration): void;
 

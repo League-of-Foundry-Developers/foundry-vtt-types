@@ -175,7 +175,7 @@ declare namespace PrimaryCanvasObjectMixin {
   type BaseClass = PIXI.Container.AnyConstructor;
 
   /**
-   * @remarks {@linkcode PrimaryCanvasObject._onAdded | PrimaryCanvasObject#_onAdded} throws if not passed a {@linkcode PrimaryCanvasContainer}
+   * @remarks {@linkcode PrimaryCanvasObject._onAdded | PrimaryCanvasObject#_onAdded} throws if not passed a either {@linkcode PrimaryCanvasContainer}
    * or whatever {@linkcode canvas.primary} currently is, which presumably will be a {@linkcode PrimaryCanvasGroup}
    */
   type Parent = PrimaryCanvasGroup.Any | primary.PrimaryCanvasContainer.Any;
