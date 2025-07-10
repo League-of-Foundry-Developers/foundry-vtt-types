@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../utils/index.d.mts";
+import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
 import type { FormInputConfig, NumberInputConfig, SelectInputConfig } from "#client/applications/forms/fields.d.mts";
 
 /**
@@ -310,7 +310,10 @@ export function select(selected: string, options: SelectOptions): string;
  */
 export function rangePicker(options: RangePickerOptions): Handlebars.SafeString;
 
-export interface ColorPickerOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface ColorPickerOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: {
     /**
      * The name of the field to create
@@ -329,7 +332,10 @@ export interface ColorPickerOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-export interface TextEditorOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface TextEditorOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: {
     /**
      * The named target data element
@@ -366,7 +372,10 @@ export interface TextEditorOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-export interface FilePickerOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface FilePickerOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: {
     /**
      * The type of FilePicker instance to display
@@ -380,12 +389,18 @@ export interface FilePickerOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-export interface LocalizeOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface LocalizeOptions extends InexactPartial<Handlebars.HelperOptions> {
   /** Interpolation data passed to Localization#format */
   hash: Record<string, unknown>;
 }
 
-export interface NumberFormatOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface NumberFormatOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: {
     /**
      * The number of decimal places to include in the resulting string
@@ -401,7 +416,10 @@ export interface NumberFormatOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-export interface NumberInputOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface NumberInputOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: FormInputConfig<number> &
     NumberInputConfig & {
       /**
@@ -411,7 +429,10 @@ export interface NumberInputOptions extends Partial<Handlebars.HelperOptions> {
     };
 }
 
-export interface RadioBoxesOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface RadioBoxesOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: {
     /**
      * Which key is currently checked?
@@ -427,7 +448,10 @@ export interface RadioBoxesOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-export interface RangePickerOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface RangePickerOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash?: {
     /**
      * The name of the field to create
@@ -457,9 +481,15 @@ export interface RangePickerOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-export interface SelectOptions extends Partial<Handlebars.HelperOptions> {}
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface SelectOptions extends InexactPartial<Handlebars.HelperOptions> {}
 
-export interface SelectOptionsOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface SelectOptionsOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: SelectInputConfig & {
     /**
      * The currently selected value or values
