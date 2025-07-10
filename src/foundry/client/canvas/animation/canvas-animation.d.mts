@@ -185,6 +185,11 @@ declare namespace CanvasAnimation {
     [K in keyof Parents]: Attribute<Parents[K]>;
   };
 
+  /**
+   * @remarks The portion of Foundry's `CanvasAnimationAttribute` typedef that gets respected if passed.
+   *
+   * See {@linkcode ProcessedAttribute}
+   */
   interface Attribute<AnimationParent extends AnyObject = AnyObject> extends _AnimationAttribute {
     /**
      * The attribute name being animated
@@ -199,25 +204,32 @@ declare namespace CanvasAnimation {
     to: number | Color;
   }
 
+  /**
+   * @remarks This is the type after {@linkcode CanvasAnimation.animate} provides the computed `delta` and a `0` value
+   * for `done`, which gets bundled into a {@linkcode CanvasAnimation.AnimationData} and put into {@linkcode CanvasAnimation.animations}
+   *
+   * See {@linkcode CanvasAnimation.Attribute}
+   */
   interface ProcessedAttribute<AnimationParent extends AnyObject = AnyObject>
     extends CanvasAnimation.Attribute<AnimationParent> {
     /**
      * The computed delta between to and from
-     * @remarks This key is always overwritten inside {@linkcode CanvasAnimation.animate}, its passed value is irrelevant
+     * @remarks This key is always computed inside {@linkcode CanvasAnimation.animate}, its passed value is irrelevant
      */
     delta: number;
 
     /**
      * The amount of the total delta which has been animated
-     * @remarks This key is always overwritten inside {@linkcode CanvasAnimation.animate}, its passed value is irrelevant
+     * @remarks This key is always computed inside {@linkcode CanvasAnimation.animate}, its passed value is irrelevant
      */
     done: number;
 
     /**
      * Is this a color animation that applies to RGB channels
-     * @remarks When true, `CanvasAnimation.#animateFrame` assumes `to` *and* `from` are
-     * both `Color`s. It's automatically set `true` if `to` is passed as a `Color`, so it
-     * should be unnecessary to set manually.
+     * @remarks When true, `CanvasAnimation.#animateFrame` assumes `to` *and* `from` are both `Color`s. It's automatically set `true`
+     * if `to` is passed as a `Color` regardless of its own passed value, and is irrelevant if `to` isn't a `Color`, so it should be
+     * unnecessary to set manually and has been omitted from the passable interface. It is read by `CanvasAnimation##updateAttribute`
+     * to determine update behaviour.
      */
     color?: boolean;
   }
