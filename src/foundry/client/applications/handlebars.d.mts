@@ -1,4 +1,4 @@
-import type { AnyObject } from "../../../utils/index.d.mts";
+import type { AnyObject, InexactPartial } from "../../../utils/index.d.mts";
 import type { FormInputConfig, NumberInputConfig, SelectInputConfig } from "#client/applications/forms/fields.d.mts";
 
 /**
@@ -52,7 +52,13 @@ export function loadTemplates(paths: string[] | Record<string, string>): Promise
 export function renderTemplate(path: string, data: AnyObject): Promise<string>;
 
 /**
+ * Initialize Handlebars extensions and helpers.
+ */
+export function initialize(): void;
+
+/**
  * For checkboxes, if the value of the checkbox is true, add the "checked" property, otherwise add nothing.
+ * @param value - A value with a truthiness indicative of whether the checkbox is checked
  *
  * @example
  * ```hbs
@@ -64,6 +70,7 @@ export function checked(value: unknown): string;
 
 /**
  * For use in form inputs. If the supplied value is truthy, add the "disabled" property, otherwise add nothing.
+ * @param value - A value with a truthiness indicative of whether the input is disabled
  *
  * @example
  * ```hbs
@@ -97,7 +104,9 @@ export function editor(content: string, options: TextEditorOptions): Handlebars.
 
 /**
  * A ternary expression that allows inserting A or B depending on the value of C.
- * @param options - Helper options
+ * @param criteria - The test criteria
+ * @param ifTrue   - The string to output if true
+ * @param ifFalse  - The string to output if false
  * @returns The ternary result
  *
  * @example Ternary if-then template usage
@@ -105,10 +114,11 @@ export function editor(content: string, options: TextEditorOptions): Handlebars.
  * {{ifThen true "It is true" "It is false"}}
  * ```
  */
-export function ifThen(options: IfThenOptions): string;
+export function ifThen(criteria: boolean, ifTrue: string, ifFalse: string): string;
 
 /**
  * Translate a provided string key by using the loaded dictionary of localization strings.
+ * @param value   - value The path to a localized string
  *
  * @example Translate a provided localization string, optionally including formatting parameters
  * ```handlebars
@@ -144,6 +154,11 @@ export function numberFormat(value: string | number, options: NumberFormatOption
  * ```
  */
 export function numberInput(value: string, options: NumberInputOptions): Handlebars.SafeString;
+
+/**
+ * Create an object from a sequence of `key=value` pairs.
+ */
+export function object(options: Handlebars.HelperOptions): Record<string, unknown>;
 
 /**
  * A helper to create a set of radio checkbox input elements in a named set.
@@ -295,7 +310,10 @@ export function select(selected: string, options: SelectOptions): string;
  */
 export function rangePicker(options: RangePickerOptions): Handlebars.SafeString;
 
-interface ColorPickerOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface ColorPickerOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: {
     /**
      * The name of the field to create
@@ -314,7 +332,10 @@ interface ColorPickerOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-interface TextEditorOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface TextEditorOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: {
     /**
      * The named target data element
@@ -351,12 +372,15 @@ interface TextEditorOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-interface FilePickerOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface FilePickerOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: {
     /**
      * The type of FilePicker instance to display
      */
-    type?: foundry.applications.apps.FilePicker.Type;
+    type?: foundry.applications.apps.FilePicker.Type | undefined;
 
     /**
      * The field name in the target data
@@ -365,30 +389,18 @@ interface FilePickerOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-interface IfThenOptions extends Partial<Handlebars.HelperOptions> {
-  hash: {
-    /**
-     * The test criteria
-     */
-    criteria: boolean;
-
-    /**
-     * The string to output if true
-     */
-    ifTrue: string;
-
-    /**
-     * The string to output if false
-     */
-    ifFalse: string;
-  };
-}
-
-interface LocalizeOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface LocalizeOptions extends InexactPartial<Handlebars.HelperOptions> {
+  /** Interpolation data passed to Localization#format */
   hash: Record<string, unknown>;
 }
 
-interface NumberFormatOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface NumberFormatOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: {
     /**
      * The number of decimal places to include in the resulting string
@@ -404,7 +416,10 @@ interface NumberFormatOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-interface NumberInputOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface NumberInputOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: FormInputConfig<number> &
     NumberInputConfig & {
       /**
@@ -414,7 +429,10 @@ interface NumberInputOptions extends Partial<Handlebars.HelperOptions> {
     };
 }
 
-interface RadioBoxesOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface RadioBoxesOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: {
     /**
      * Which key is currently checked?
@@ -430,37 +448,48 @@ interface RadioBoxesOptions extends Partial<Handlebars.HelperOptions> {
   };
 }
 
-interface RangePickerOptions extends Partial<Handlebars.HelperOptions> {
-  /**
-   * The name of the field to create
-   * @defaultValue `"range"`
-   */
-  name?: string;
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface RangePickerOptions extends InexactPartial<Handlebars.HelperOptions> {
+  hash?: {
+    /**
+     * The name of the field to create
+     * @defaultValue `"range"`
+     */
+    name?: string | undefined;
 
-  /**
-   * The current range value
-   */
-  value?: number;
+    /**
+     * The current range value
+     */
+    value?: number | undefined;
 
-  /**
-   * The minimum allowed value
-   */
-  min?: number;
+    /**
+     * The minimum allowed value
+     */
+    min?: number | undefined;
 
-  /**
-   * The maximum allowed value
-   */
-  max?: number;
+    /**
+     * The maximum allowed value
+     */
+    max?: number | undefined;
 
-  /**
-   * The allowed step size
-   */
-  step?: number;
+    /**
+     * The allowed step size
+     */
+    step?: number | undefined;
+  };
 }
 
-interface SelectOptions extends Handlebars.HelperOptions {}
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface SelectOptions extends InexactPartial<Handlebars.HelperOptions> {}
 
-interface SelectOptionsOptions extends Partial<Handlebars.HelperOptions> {
+/**
+ * Despite extending Handlebars.HelperOptions, the function does not use the non-hash options
+ */
+export interface SelectOptionsOptions extends InexactPartial<Handlebars.HelperOptions> {
   hash: SelectInputConfig & {
     /**
      * The currently selected value or values
