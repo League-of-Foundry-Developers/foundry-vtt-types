@@ -302,7 +302,14 @@ expectTypeOf(
 expectTypeOf(
   token.animate(
     { rotation: 90, alpha: 0.7 },
-    { duration: undefined, easing: null, movementSpeed: undefined, name: null, ontick: null, transition: null },
+    {
+      duration: undefined,
+      easing: undefined,
+      movementSpeed: undefined,
+      name: undefined,
+      ontick: undefined,
+      transition: null,
+    },
   ),
 ).toEqualTypeOf<Promise<void>>();
 
