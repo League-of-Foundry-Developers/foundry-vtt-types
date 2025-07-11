@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
@@ -18,7 +18,10 @@ declare class SceneControls<
   RenderContext extends SceneControls.RenderContext = SceneControls.RenderContext,
   Configuration extends SceneControls.Configuration = SceneControls.Configuration,
   RenderOptions extends SceneControls.RenderOptions = SceneControls.RenderOptions,
-> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {}
+> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  // Fake override.
+  static override DEFAULT_OPTIONS: SceneControls.DefaultOptions;
+}
 
 declare namespace SceneControls {
   interface Any extends AnySceneControls {}
@@ -102,7 +105,16 @@ declare namespace SceneControls {
     reference: string;
   }
 
-  interface Configuration extends ApplicationV2.Configuration {}
+  interface Configuration<SceneControls extends SceneControls.Any = SceneControls.Any>
+    extends ApplicationV2.Configuration<SceneControls> {}
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<SceneControls extends SceneControls.Any = SceneControls.Any> = DeepPartial<
+    Configuration<SceneControls>
+  > &
+    object;
+
   interface RenderOptions extends ApplicationV2.RenderOptions {}
 }
 

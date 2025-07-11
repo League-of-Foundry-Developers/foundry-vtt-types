@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
@@ -20,9 +20,12 @@ declare module "#configuration" {
  */
 declare class Hotbar<
   RenderContext extends object = Hotbar.RenderContext,
-  Configuration extends ApplicationV2.Configuration = ApplicationV2.Configuration,
-  RenderOptions extends ApplicationV2.RenderOptions = ApplicationV2.RenderOptions,
-> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {}
+  Configuration extends Hotbar.Configuration = Hotbar.Configuration,
+  RenderOptions extends Hotbar.RenderOptions = Hotbar.RenderOptions,
+> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  // Fake override.
+  static override DEFAULT_OPTIONS: Hotbar.DefaultOptions;
+}
 
 declare namespace Hotbar {
   interface Any extends AnyHotbar {}
@@ -41,7 +44,14 @@ declare namespace Hotbar {
     page: number;
   }
 
-  interface Configuration extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration {}
+  interface Configuration<Hotbar extends Hotbar.Any = Hotbar.Any>
+    extends HandlebarsApplicationMixin.Configuration,
+      ApplicationV2.Configuration<Hotbar> {}
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<Hotbar extends Hotbar.Any = Hotbar.Any> = DeepPartial<Configuration<Hotbar>> & object;
+
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
 }
 

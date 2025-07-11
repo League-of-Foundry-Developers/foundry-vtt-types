@@ -1,6 +1,6 @@
 import type ApplicationV2 from "../../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../../api/handlebars-application.d.mts";
-import type { Identity } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 
 import AVMaster = foundry.av.AVMaster;
 
@@ -20,7 +20,10 @@ declare class AVConfig<
   RenderContext extends AVConfig.RenderContext = AVConfig.RenderContext,
   Configuration extends AVConfig.Configuration = AVConfig.Configuration,
   RenderOptions extends AVConfig.RenderOptions = AVConfig.RenderOptions,
-> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {}
+> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  // Fake override.
+  static override DEFAULT_OPTIONS: AVConfig.DefaultOptions;
+}
 
 declare namespace AVConfig {
   interface Any extends AnyAVConfig {}
@@ -28,13 +31,19 @@ declare namespace AVConfig {
 
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
 
-  interface Configuration extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration {
+  interface Configuration<AVConfig extends AVConfig.Any = AVConfig.Any>
+    extends HandlebarsApplicationMixin.Configuration,
+      ApplicationV2.Configuration<AVConfig> {
     /**
      * The AVMaster instance being configured
      * @defaultValue `game.webrtc`
      */
     webrtc?: AVMaster;
   }
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<AVConfig extends AVConfig.Any = AVConfig.Any> = DeepPartial<Configuration<AVConfig>> & object;
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
 }

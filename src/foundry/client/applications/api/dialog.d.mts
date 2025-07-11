@@ -98,7 +98,7 @@ declare class DialogV2<
   Configuration extends DialogV2.Configuration = DialogV2.Configuration<any>,
   RenderOptions extends DialogV2.RenderOptions = DialogV2.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
-  static override DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration> & object;
+  static override DEFAULT_OPTIONS: DialogV2.DefaultOptions;
 
   protected override _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
 
@@ -364,7 +364,7 @@ declare namespace DialogV2 {
 
   interface RenderContext extends ApplicationV2.RenderContext {}
 
-  interface Configuration<Dialog extends DialogV2.Any = DialogV2.Any> extends ApplicationV2.Configuration {
+  interface Configuration<Dialog extends DialogV2.Any = DialogV2.Any> extends ApplicationV2.Configuration<Dialog> {
     /**
      * Modal dialogs prevent interaction with the rest of the UI until they are dismissed or submitted.
      */
@@ -392,6 +392,10 @@ declare namespace DialogV2 {
     // TODO(LukeAbby): This will probably never be sufficiently typed.
     submit?: SubmitCallback<unknown, Dialog> | null | undefined;
   }
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<Dialog extends DialogV2.Any = DialogV2.Any> = DeepPartial<Configuration<Dialog>> & object;
 
   interface RenderOptions extends ApplicationV2.RenderOptions {}
 

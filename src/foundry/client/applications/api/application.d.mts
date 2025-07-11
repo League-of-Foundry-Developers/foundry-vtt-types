@@ -7,6 +7,7 @@ import type {
   ValueOf,
   AnyArray,
   Identity,
+  ToMethod,
 } from "#utils";
 import type EventEmitterMixin from "#common/utils/event-emitter.d.mts";
 import type ContextMenu from "../ux/context-menu.d.mts";
@@ -122,7 +123,7 @@ declare namespace ApplicationV2 {
     tabs?: Record<string, Tab>;
   }
 
-  interface Configuration {
+  interface Configuration<Application extends ApplicationV2.Any = ApplicationV2.Any> {
     /**
      * An HTML element identifier used for this Application instance
      */
@@ -156,7 +157,7 @@ declare namespace ApplicationV2 {
      * containing both a handler function and an array of buttons which are
      * matched against the PointerEvent#button property.
      */
-    actions: Record<string, ClickAction | { handler: ClickAction; buttons: number[] }>;
+    actions: Record<string, ClickAction<Application> | { handler: ClickAction<Application>; buttons: number[] }>;
 
     /**
      * Configuration used if the application top-level element is a form
@@ -168,6 +169,13 @@ declare namespace ApplicationV2 {
      */
     position: Partial<Position>;
   }
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<Application extends ApplicationV2.Any = ApplicationV2.Any> = DeepPartial<
+    ApplicationV2.Configuration<Application>
+  > &
+    object;
 
   interface Position {
     /** Window offset pixels from top */
@@ -325,13 +333,17 @@ declare namespace ApplicationV2 {
   type ActionTarget = HTMLElement & { dataset: { action: string } };
 
   /** An on-click action supported by the Application. Run in the context of a HandlebarsApplication. */
-  type ClickAction = (
-    /** The originating click event */
-    event: PointerEvent,
+  type ClickAction<Application extends ApplicationV2.Any = ApplicationV2.Any> = ToMethod<
+    (
+      this: Application,
 
-    /** The capturing HTML element which defines the [data-action] */
-    target: HTMLElement,
-  ) => MaybePromise<void>;
+      /** The originating click event */
+      event: PointerEvent,
+
+      /** The capturing HTML element which defines the [data-action] */
+      target: HTMLElement,
+    ) => MaybePromise<void>
+  >;
 
   /** A form submission handler method. Run in the context of a HandlebarsApplication */
   type FormSubmission = (
@@ -501,10 +513,10 @@ declare class ApplicationV2<
 
   /**
    * The default configuration options which are assigned to every instance of this Application class.
-   * @privateRemarks This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
-   * Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+   * @privateRemarks `DefaultOptions` is designed to be more easily overrideable by having `object`
+   * merged into it.
    */
-  static DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration> & object;
+  static DEFAULT_OPTIONS: ApplicationV2.DefaultOptions;
 
   /**
    * Configuration of application tabs, with an entry per tab group.

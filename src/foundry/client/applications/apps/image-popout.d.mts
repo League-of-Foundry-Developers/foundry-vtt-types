@@ -37,6 +37,9 @@ declare class ImagePopout<
   RenderOptions extends ImagePopout.RenderOptions = ImagePopout.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   constructor(options: DeepPartial<Configuration> & { src: string });
+
+  // Fake override.
+  static override DEFAULT_OPTIONS: ImagePopout.DefaultOptions;
 }
 
 declare namespace ImagePopout {
@@ -55,7 +58,9 @@ declare namespace ImagePopout {
     altText: string;
   }
 
-  interface Configuration extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration {
+  interface Configuration<ImagePopout extends ImagePopout.Any = ImagePopout.Any>
+    extends HandlebarsApplicationMixin.Configuration,
+      ApplicationV2.Configuration<ImagePopout> {
     /** The URL to the image or video file */
     src: string;
 
@@ -71,6 +76,11 @@ declare namespace ImagePopout {
     /** Force showing or hiding the title */
     showTitle?: boolean | null | undefined;
   }
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<ImagePopout extends ImagePopout.Any = ImagePopout.Any> = DeepPartial<Configuration<ImagePopout>> &
+    object;
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
 
