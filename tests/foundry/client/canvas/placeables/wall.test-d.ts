@@ -16,7 +16,7 @@ declare const doc: WallDocument.Stored;
 const wall = new CONFIG.Wall.objectClass(doc);
 
 expectTypeOf(wall.controlIcon).toBeNull();
-expectTypeOf(wall.doorControl).toEqualTypeOf<DoorControl.ConfiguredInstance | null | undefined>();
+expectTypeOf(wall.doorControl).toEqualTypeOf<DoorControl.Implementation | null | undefined>();
 expectTypeOf(wall.line).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(wall.endpoints).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(wall.directionIcon).toEqualTypeOf<PIXI.Sprite | undefined>();
@@ -44,7 +44,7 @@ expectTypeOf(wall["_draw"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(wall["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(wall.clear()).toEqualTypeOf<Wall.Implementation>();
-expectTypeOf(wall.createDoorControl()).toEqualTypeOf<DoorControl.ConfiguredInstance>();
+expectTypeOf(wall.createDoorControl()).toEqualTypeOf<DoorControl.Implementation>();
 expectTypeOf(wall.clearDoorControl()).toBeVoid();
 
 expectTypeOf(wall.control()).toBeBoolean();

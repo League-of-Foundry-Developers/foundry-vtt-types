@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 
 /**
  * An extension of the default PIXI.Text object which forces double resolution.
@@ -15,7 +15,7 @@ declare class PreciseText extends PIXI.Text {
 
   /**
    * Prepare a TextStyle object which merges the canvas defaults with user-provided options
-   * @param anchor  - A text anchor point from CONST.TEXT_ANCHOR_POINTS
+   * @param anchor  - A text anchor point from {@linkcode CONST.TEXT_ANCHOR_POINTS}
    * @param options - Additional options merged with the default TextStyle
    * @returns The prepared TextStyle
    */
@@ -27,16 +27,15 @@ declare namespace PreciseText {
   interface AnyConstructor extends Identity<typeof AnyPreciseText> {}
 
   /** @internal */
-  type _GetTextStyleOptions = NullishProps<{
+  type _GetTextStyleOptions = InexactPartial<{
     /**
-     * A text anchor point from CONST.TEXT_ANCHOR_POINTS
-     * @remarks Only checked againt `.RIGHT` and `.LEFT`, and only if an `align` key is omitted
+     * A text anchor point from {@linkcode CONST.TEXT_ANCHOR_POINTS}
+     * @remarks Only checked against `.RIGHT` and `.LEFT`, and only if an `align` key is omitted
      */
-    anchor: foundry.CONST.TEXT_ANCHOR_POINTS;
-  }> &
-    // Can't be NullishProps because keys are only checked for `!== undefined` in PIXI
-    InexactPartial<PIXI.ITextStyle>;
-  interface GetTextStyleOptions extends _GetTextStyleOptions {}
+    anchor: CONST.TEXT_ANCHOR_POINTS;
+  }>;
+
+  interface GetTextStyleOptions extends _GetTextStyleOptions, InexactPartial<PIXI.ITextStyle> {}
 }
 
 export default PreciseText;

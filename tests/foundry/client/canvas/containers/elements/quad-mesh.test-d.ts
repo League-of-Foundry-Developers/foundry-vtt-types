@@ -1,11 +1,21 @@
 import { expectTypeOf } from "vitest";
-import { QuadMesh } from "#client/canvas/containers/_module.mjs";
 
+import QuadMesh = foundry.canvas.containers.QuadMesh;
 import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 import BaseSamplerShader = foundry.canvas.rendering.shaders.BaseSamplerShader;
 
-const myBaseSamplerShaderQuadMesh = new QuadMesh(BaseSamplerShader);
+const myQM = new QuadMesh(BaseSamplerShader);
 
-expectTypeOf(myBaseSamplerShaderQuadMesh.scale.x).toEqualTypeOf<number>();
-expectTypeOf(myBaseSamplerShaderQuadMesh.shader).toEqualTypeOf<AbstractBaseShader>();
-expectTypeOf(myBaseSamplerShaderQuadMesh.containsPoint({ x: 500, y: 500 })).toEqualTypeOf<boolean>();
+expectTypeOf(myQM.shader).toEqualTypeOf<AbstractBaseShader>();
+
+expectTypeOf(myQM.blendMode).toEqualTypeOf<PIXI.BLEND_MODES>();
+myQM.blendMode = PIXI.BLEND_MODES.SOFT_LIGHT; // Setter
+
+expectTypeOf(myQM.setShaderClass(BaseSamplerShader)).toBeVoid();
+
+declare const someRenderer: PIXI.Renderer;
+expectTypeOf(myQM["_render"](someRenderer)).toBeVoid();
+expectTypeOf(myQM["_calculateBounds"]()).toBeVoid();
+
+expectTypeOf(myQM.containsPoint({ x: 500, y: 500 })).toEqualTypeOf<boolean>();
+expectTypeOf(myQM.destroy()).toBeVoid();

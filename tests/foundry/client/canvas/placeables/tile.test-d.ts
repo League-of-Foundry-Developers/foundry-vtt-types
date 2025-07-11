@@ -139,7 +139,7 @@ expectTypeOf(tile.testOcclusion(someToken, {})).toBeBoolean();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.testOcclusion(someToken, { corners: true })).toBeBoolean();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(tile.testOcclusion(someToken, { corners: null })).toBeBoolean();
+expectTypeOf(tile.testOcclusion(someToken, { corners: undefined })).toBeBoolean();
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(tile.containsPixel(50, 50)).toBeBoolean();

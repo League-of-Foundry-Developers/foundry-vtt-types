@@ -1,9 +1,13 @@
 import { expectTypeOf } from "vitest";
-import { GridHighlight } from "#client/canvas/containers/_module.mjs";
 
-expectTypeOf(new GridHighlight("")).toEqualTypeOf<GridHighlight>();
+import GridHighlight = foundry.canvas.containers.GridHighlight;
 
-const grid = new GridHighlight("someName");
+declare const smoothGeometry: PIXI.smooth.SmoothGraphicsGeometry;
+
+// @ts-expect-error must pass a name
+new GridHighlight();
+new GridHighlight("someName");
+const grid = new GridHighlight("someName", smoothGeometry);
 
 expectTypeOf(grid.name).toEqualTypeOf<string>();
 expectTypeOf(grid.positions).toEqualTypeOf<Set<GridHighlight.PositionString>>();

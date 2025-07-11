@@ -46,7 +46,7 @@ declare class CanvasOcclusionMask extends CachedContainer {
   /**
    * Clear the occlusion mask.
    */
-  clear(): void;
+  override clear(): this;
 
   /**
    * Map an elevation to a value in the range [0, 1] with 8-bit precision.

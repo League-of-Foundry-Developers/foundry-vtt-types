@@ -7,9 +7,19 @@ declare class Cursor extends PIXI.Container {
   constructor(user: User.Implementation);
 
   /**
+   * The target cursor position.
    * @defaultValue `{x: 0, y: 0}`
    */
   target: PIXI.IPointData;
+
+  /**
+   * Update the position of this cursor based on the current position?
+   * @defaultValue `true`
+   * @internal
+   */
+  protected _updatePosition: boolean;
+
+  override updateTransform(): void;
 
   /**
    * Update visibility and animations
@@ -24,10 +34,13 @@ declare class Cursor extends PIXI.Container {
 
   /**
    * Move an existing cursor to a new position smoothly along the animation loop
+   * @deprecated Made hard private in v13 (this warning will be removed in v14)
    */
-  protected _animate(): void;
+  protected _animate(): never;
 
   override destroy(options?: PIXI.IDestroyOptions | boolean): void;
+
+  #Cursor: true;
 }
 
 declare namespace Cursor {

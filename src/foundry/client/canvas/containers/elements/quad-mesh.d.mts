@@ -4,7 +4,6 @@ import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_modul
 /**
  * A basic rectangular mesh with a shader only. Does not natively handle textures (but a bound shader can).
  * Bounds calculations are simplified and the geometry does not need to handle texture coords.
- * @privateRemarks Ideally the `shaderClass` passed to the constructor and `get shader()` could be synced up, but `setShaderClass` removes that option
  */
 declare class QuadMesh extends PIXI.Container {
   /**
@@ -26,7 +25,7 @@ declare class QuadMesh extends PIXI.Container {
 
   /**
    * Initialize shader based on the shader class type.
-   * @param shaderClass - Shader class used. Must inherit from AbstractBaseShader.
+   * @param shaderClass - Shader class used. Must inherit from {@linkcode AbstractBaseShader}.
    */
   setShaderClass(shaderClass: AbstractBaseShader.AnyConstructor): void;
 

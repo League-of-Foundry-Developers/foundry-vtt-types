@@ -8,9 +8,9 @@ import { QuadMesh } from "#client/canvas/containers/_module.mjs";
 declare class GridMesh extends QuadMesh {
   /**
    * The grid mesh constructor.
-   * @param shaderClass - The shader class
+   * @param shaderClass - The shader class (default: {@linkcode GridShader})
    */
-  constructor(shaderClass: GridShader.AnyConstructor);
+  constructor(shaderClass?: GridShader.AnyConstructor);
 
   /**
    * The data of this mesh.
@@ -52,9 +52,9 @@ declare namespace GridMesh {
   interface MeshData {
     /**
      * The type of the grid (see {@linkcode CONST.GRID_TYPES})
-     * @defaultValue `CONST.GRID_TYPES.GRIDLESS`
+     * @defaultValue {@linkcode CONST.GRID_TYPES.GRIDLESS}
      */
-    type: foundry.CONST.GRID_TYPES;
+    type: CONST.GRID_TYPES;
 
     /**
      * The width of the grid in pixels

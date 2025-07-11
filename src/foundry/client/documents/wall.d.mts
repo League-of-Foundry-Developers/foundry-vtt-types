@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "#utils";
+import type { InexactPartial, InterfaceToObject, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseWall from "#common/documents/wall.mjs";
@@ -211,6 +211,7 @@ declare namespace WallDocument {
     type: fields.StringField<{ initial: "swing"; blank: true }>;
   }
 
+  /** @remarks See {@linkcode foundry.canvas.containers.DoorMesh.AnimationConfiguration} */
   interface AnimationData extends fields.SchemaField.InitializedData<AnimationSchema> {}
 
   /**
@@ -388,7 +389,17 @@ declare namespace WallDocument {
      * An object of optional key/value flags
      * @defaultValue `{}`
      */
-    flags: fields.DocumentFlagsField<Name>;
+    flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
+  }
+
+  interface CoreFlags {
+    core?: {
+      /** @remarks Checked in `DoorMesh##getClosedPosition` */
+      textureGridSize?: number;
+
+      /** @remarks Checked in `DoorMesh##getClosedPosition` */
+      elevation?: number;
+    };
   }
 
   namespace Database {
