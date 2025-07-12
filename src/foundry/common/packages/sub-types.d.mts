@@ -13,14 +13,14 @@ declare class AdditionalTypesField<
 > extends ObjectField<
   Options,
   // Note(LukeAbby): `{}` is a valid initial so `| null | undefined` is added. Needs to respect overriden `initial` in the future.
-  AdditionalTypesField.ServerTypeDeclarations | null | undefined,
-  AdditionalTypesField.ServerTypeDeclarations,
-  AdditionalTypesField.ServerTypeDeclarations
+  AdditionalTypesField.DocumentTypesConfiguration | null | undefined,
+  AdditionalTypesField.DocumentTypesConfiguration,
+  AdditionalTypesField.DocumentTypesConfiguration
 > {
   static get _defaults(): AdditionalTypesField.DefaultOptions;
 
   protected _validateType(
-    value: AdditionalTypesField.ServerTypeDeclarations,
+    value: AdditionalTypesField.DocumentTypesConfiguration,
     options?: DataField.ValidateOptions<this>,
   ): boolean | void;
 }
@@ -36,5 +36,34 @@ declare namespace AdditionalTypesField {
     }
   >;
 
-  type ServerTypeDeclarations = Record<Document.SystemType, Record<string, Record<string, unknown>>>;
+  /**
+   * Document subtype registration information for systems and modules.
+   * The first layer of keys are document types, e.g. "Actor" or "Item".
+   * The second layer of keys are document subtypes, e.g. "character" or "feature".
+   */
+  type DocumentTypesConfiguration = Record<Document.SystemType, Record<string, ServerSanitationFields>>;
+
+  /** @deprecated Internal type will be removed */
+  type ServerTypeDeclarations = DocumentTypesConfiguration;
+
+  /**
+   * Fields that need dedicated server-side handling. Paths are automatically relative to `system`.
+   */
+  interface ServerSanitationFields {
+    /**
+     * HTML fields that must be cleaned by the server, e.g. "description.value"
+     */
+    htmlFields?: string[];
+
+    /**
+     * File path fields that must be cleaned by the server.
+     * Each key is a field path and the values are an array of keys in {@linkcode CONST.FILE_CATEGORIES}.
+     */
+    filePathFields?: Record<string, CONST.FILE_CATEGORIES>;
+
+    /**
+     * Fields that can only be updated by a GM user.
+     */
+    gmOnlyFields?: string[];
+  }
 }
