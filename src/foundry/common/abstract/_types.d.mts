@@ -5,7 +5,29 @@ import type Document from "./document.d.mts";
 // This means that actual functions must use helper types to properly omit properties or explicit undefined
 // Also, the _result property is intentionally left out as it is never present on the client
 
-export interface DatabaseGetOperation<Parent extends Document.Any | null = Document.Any | null> {
+// @ts-expect-error This pattern is inherently an error.
+interface _DynamicBase<T extends object> extends T {}
+
+interface _Parent<Parent extends Document.Any | null>
+  extends _DynamicBase<
+    Parent extends null
+      ? {
+          /**
+           * A parent Document within which Documents are embedded
+           * @defaultValue `null`
+           */
+          parent?: Parent | null | undefined;
+        }
+      : {
+          /**
+           * A parent Document within which Documents are embedded
+           */
+          parent: Parent;
+        }
+  > {}
+
+export interface DatabaseGetOperation<Parent extends Document.Any | null = Document.Any | null>
+  extends _Parent<Parent> {
   /**
    * A query object which identifies the set of Documents retrieved
    */
@@ -32,11 +54,6 @@ export interface DatabaseGetOperation<Parent extends Document.Any | null = Docum
   pack?: string | null | undefined;
 
   /**
-   * A parent Document within which Documents are embedded
-   */
-  parent?: Parent | null | undefined;
-
-  /**
    * A parent Document UUID provided when the parent instance is unavailable
    */
   parentUuid?: string | undefined;
@@ -46,7 +63,7 @@ export interface DatabaseCreateOperation<
   CreateData extends object | null | undefined = object | null | undefined,
   Parent extends Document.Any | null = Document.Any | null,
   Temporary extends boolean | undefined = boolean | undefined,
-> {
+> extends _Parent<Parent> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
@@ -92,11 +109,6 @@ export interface DatabaseCreateOperation<
   renderSheet: boolean;
 
   /**
-   * A parent Document within which Documents are embedded
-   */
-  parent?: Parent | undefined;
-
-  /**
    * A compendium collection ID which contains the Documents
    */
   pack?: string | null | undefined;
@@ -133,7 +145,7 @@ export interface DatabaseCreateOperation<
 export interface DatabaseUpdateOperation<
   UpdateData extends object | null | undefined = object | null | undefined,
   Parent extends Document.Any | null = Document.Any | null,
-> {
+> extends _Parent<Parent> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
@@ -177,11 +189,6 @@ export interface DatabaseUpdateOperation<
   noHook?: boolean | null;
 
   /**
-   * A parent Document within which Documents are embedded
-   */
-  parent?: Parent | null;
-
-  /**
    * A compendium collection ID which contains the Documents
    */
   pack?: string | null;
@@ -192,7 +199,8 @@ export interface DatabaseUpdateOperation<
   parentUuid?: string | null;
 }
 
-export interface DatabaseDeleteOperation<Parent extends Document.Any | null = Document.Any | null> {
+export interface DatabaseDeleteOperation<Parent extends Document.Any | null = Document.Any | null>
+  extends _Parent<Parent> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */
@@ -225,11 +233,6 @@ export interface DatabaseDeleteOperation<Parent extends Document.Any | null = Do
    * @defaultValue `true`
    */
   render: boolean;
-
-  /**
-   * A parent Document within which Documents are embedded
-   */
-  parent?: Parent | null;
 
   /**
    * A compendium collection ID which contains the Documents

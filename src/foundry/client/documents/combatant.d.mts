@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "fvtt-types/configuration";
-import type { Identity, InexactPartial, Merge, RequiredProps } from "#utils";
+import type { Identity, InexactPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -15,9 +15,8 @@ declare namespace Combatant {
 
   /**
    * The context used to create a `Combatant`.
-   * @privateRemarks This is off-template, as `Combatant` requires a valid parent to validate.
    */
-  interface ConstructionContext extends RequiredProps<Document.ConstructionContext<Parent>, "parent"> {}
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Combatant`.
@@ -130,8 +129,10 @@ declare namespace Combatant {
   /**
    * A document's parent is something that can contain it.
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+   *
+   * `Combatant` requires a parent so `null` is not an option here.
    */
-  type Parent = Combat.Implementation | null;
+  type Parent = Combat.Implementation;
 
   /**
    * A document's descendants are any child documents, grandchild documents, etc.

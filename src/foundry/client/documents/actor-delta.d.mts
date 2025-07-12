@@ -2,7 +2,7 @@ import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { ConfiguredActorDelta } from "fvtt-types/configuration";
-import type { Identity, InexactPartial, Merge, NullishProps, RequiredProps } from "#utils";
+import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
 import type DataModel from "#common/abstract/data.d.mts";
 
 import fields = foundry.data.fields;
@@ -14,9 +14,9 @@ declare namespace ActorDelta {
   type Name = "ActorDelta";
 
   /**
-   * @privateRemarks This is off-template, as `ActorDelta` requires a valid parent to validate.
+   * The context used to create a `ActorDelta`.
    */
-  interface ConstructionContext extends RequiredProps<Document.ConstructionContext<Parent>, "parent"> {}
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `ActorDelta`.
@@ -131,8 +131,10 @@ declare namespace ActorDelta {
   /**
    * A document's parent is something that can contain it.
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+   *
+   * `ActorDelta` requires a parent so `null` is not an option here.
    */
-  type Parent = TokenDocument.Implementation | null;
+  type Parent = TokenDocument.Implementation;
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.

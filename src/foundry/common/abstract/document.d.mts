@@ -1573,33 +1573,51 @@ declare namespace Document {
   }
 
   /** @internal */
-  type _ConstructionContext<Parent extends Document.Any | null> = NullishProps<{
-    /**
-     * The parent Document of this one, if this one is embedded
-     * @defaultValue `null`
-     */
-    parent: Parent;
+  interface _ParentContext<Parent extends Document.Any | null>
+    extends _DynamicBase<
+      Parent extends null
+        ? {
+            /**
+             * The parent Document of this one, if this one is embedded
+             * @defaultValue `null`
+             */
+            parent?: Parent | undefined;
+          }
+        : {
+            /**
+             * The parent Document of this one, if this one is embedded
+             */
+            parent: Parent;
+          }
+    > {}
 
-    /**
-     * The compendium collection ID which contains this Document, if any
-     * @defaultValue `null`
-     */
-    pack: string;
+  // @ts-expect-error This pattern is inherently an error.
+  interface _DynamicBase<T extends object> extends T {}
 
-    /**
-     * Whether to validate initial data strictly?
-     * @defaultValue `true`
-     */
-    strict: boolean;
+  /** @internal */
+  interface _ConstructionContext<Parent extends Document.Any | null>
+    extends _ParentContext<Parent>,
+      NullishProps<{
+        /**
+         * The compendium collection ID which contains this Document, if any
+         * @defaultValue `null`
+         */
+        pack: string;
 
-    /**
-     * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
-     * @privateRemarks Omitted from the typedef, inferred from usage in {@link Document._configure | `Document#_configure`}
-     * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
-     * {@link foundry.abstract.EmbeddedCollection.createDocument | `EmbeddedCollection#createDocument`})
-     */
-    parentCollection: string;
-  }>;
+        /**
+         * Whether to validate initial data strictly?
+         * @defaultValue `true`
+         */
+        strict: boolean;
+
+        /**
+         * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
+         * @privateRemarks Omitted from the typedef, inferred from usage in {@link Document._configure | `Document#_configure`}
+         * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
+         * {@link foundry.abstract.EmbeddedCollection.createDocument | `EmbeddedCollection#createDocument`})
+         */
+        parentCollection: string;
+      }> {}
 
   /**
    * Foundry does not include the properties from the DataModel construction context in `DocumentConstructionContext`,
