@@ -422,7 +422,7 @@ declare abstract class DataField<
    * @param delta  - The change delta.
    * @param model  - The model instance.
    * @param change - The original change data.
-   * @returns - The updated value.
+   * @returns The updated value.
    *
    * @remarks Returns `value + delta`. `model` and `change` are unused in `DataField`
    */
@@ -473,7 +473,7 @@ declare abstract class DataField<
    * @param delta - The change delta.
    * @param model - The model instance.
    * @param change - The original change data.
-   * @returns - The updated value.
+   * @returns The updated value.
    *
    * @remarks No-op in `DataField`, returns `undefined` unless overridden
    */
@@ -507,7 +507,7 @@ declare abstract class DataField<
    * @param delta - The change delta.
    * @param model - The model instance.
    * @param change - The original change data.
-   * @returns - The updated value.
+   * @returns The updated value.
    * @remarks Only returns a value if the target value of the change actually changed
    */
   protected _applyChangeCustom(

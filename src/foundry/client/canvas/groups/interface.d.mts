@@ -40,7 +40,7 @@ declare class InterfaceCanvasGroup<
    * @param origin  - An origin point where the text should first emerge
    * @param content - The text content to display
    * @param options - Options which customize the text animation
-   * @returns - The created PreciseText object which is scrolling
+   * @returns The created PreciseText object which is scrolling
    * @remarks Only returns `null` if the core `scrollingStatusText` setting is falsey
    */
   createScrollingText(
