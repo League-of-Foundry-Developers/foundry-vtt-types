@@ -456,8 +456,11 @@ export interface AllHooks extends DynamicHooks {
 
   /**
    * A hook event that fires when a custom active effect is applied.
-   * @param actor  - The actor the active effect is being applied to
-   * @param change - The change data being applied
+   * @param actor   - The actor the active effect is being applied to
+   * @param change  - The change data being applied
+   * @param current - The current value being modified
+   * @param delta   - The parsed value of the change object
+   * @param changes - An object which accumulates changes to be applied
    * @remarks This is called by {@linkcode Hooks.call}.
    * @see {@link ActiveEffect._applyCustom | `ActiveEffect#_applyCustom`}
    */
@@ -803,8 +806,11 @@ export interface AllHooks extends DynamicHooks {
       /** The new round of combat */
       round: number;
 
-      /** The new turn number */
-      turn: number;
+      /**
+       * The new turn number
+       * @remarks `combatRound`, unlike `combatTurn` and `combatStart`, can have a `null` turn.
+       */
+      turn: number | null;
     },
     updateOptions: {
       /** The amount of time in seconds that time is being advanced */
