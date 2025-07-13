@@ -1,5 +1,6 @@
 import type { AnyArray, Brand, Identity, InexactPartial, IntentionalPartial } from "#utils";
 import type { ControlIcon } from "#client/canvas/containers/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * Handle mouse interaction events for a Canvas object.
@@ -43,30 +44,44 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    * @param permissions  - An object of permission checks, keyed by action name, which return a boolean or invoke a function for whether the action is allowed. (default: `{}`)
    * @param callbacks    - An object of callback functions, keyed by action name, which will be executed during the event workflow (e.g., `hoverIn`, `clickLeft`). (default: `{}`)
    * @param options      - Additional options that configure interaction behavior. (default: `{}`)
+   *
+   * @remarks Foundry types `object` as {@linkcode PIXI.DisplayObject}, but only ever passes a {@linkcode placeables.PlaceableObject | PlaceableObject}
+   * (in {@linkcode placeables.PlaceableObject._createInteractionManager | #_createInteractionManager}) or the {@linkcode Canvas.stage | canvas.stage}
+   * (in `Canvas##addListeners`), so it's typed as {@linkcode PIXI.Container} here.
+   *
+   * `layer` is described as if it's a {@linkcode foundry.canvas.layers.CanvasLayer | CanvasLayer}, but Foundry always passes the {@linkcode Canvas.stage | canvas.stage}
    */
   constructor(
     object: ObjectFor,
     layer: PIXI.Container,
-    permissions?: MouseInteractionManager.Permissions,
-    callbacks?: MouseInteractionManager.Callbacks,
+    permissions?: MouseInteractionManager.Permissions<ObjectFor>,
+    callbacks?: MouseInteractionManager.Callbacks<ObjectFor>,
     options?: MouseInteractionManager.Options,
   );
 
+  /**
+   * The Canvas object (e.g., a Token, Tile, or Drawing) to which mouse events should be bound.
+   * @remarks See remarks on {@linkcode MouseInteractionManager | MouseInteractionManager#constructor}
+   */
   object: ObjectFor;
 
+  /**
+   * The Canvas Layer that contains the object.
+   * @remarks Despite the above description, in core usage this is always the {@linkcode Canvas.stage | canvas.stage}
+   */
   layer: PIXI.Container;
 
   /**
    * An object of permission checks, keyed by action name, which return a boolean or invoke a function for whether the action is allowed.
    * @defaultValue `{}`
    */
-  permissions: MouseInteractionManager.Permissions;
+  permissions: MouseInteractionManager.Permissions<ObjectFor>;
 
   /**
    * An object of callback functions, keyed by action name, which will be executed during the event workflow (e.g., `hoverIn`, `clickLeft`).
    * @defaultValue `{}`
    */
-  callbacks: MouseInteractionManager.Callbacks;
+  callbacks: MouseInteractionManager.Callbacks<ObjectFor>;
 
   /**
    * Interaction options which configure handling workflows
@@ -130,12 +145,12 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
 
   /**
    * Enumerate the states of a mouse interaction workflow.
-   * 0: NONE - the object is inactive
-   * 1: HOVER - the mouse is hovered over the object
-   * 2: CLICKED - the object is clicked
-   * 3: GRABBED - the object is grabbed
-   * 4: DRAG - the object is being dragged
-   * 5: DROP - the object is being dropped
+   * - `0`: `NONE` - the object is inactive
+   * - `1`: `HOVER` - the mouse is hovered over the object
+   * - `2`: `CLICKED` - the object is clicked
+   * - `3`: `GRABBED` - the object is grabbed
+   * - `4`: `DRAG` - the object is being dragged
+   * - `5`: `DROP` - the object is being dropped
    */
   static INTERACTION_STATES: MouseInteractionManager.InteractionStates;
 
@@ -198,8 +213,9 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    * @param action - The action being attempted
    * @param event  - The event being handled
    * @returns Can the action be performed?
+   * @remarks See {@linkcode MouseInteractionManager.PermissionFunction}
    */
-  can(action: MouseInteractionManager.PermissionAction, event: MouseInteractionManager.Event): boolean;
+  can(action: MouseInteractionManager.PermissionAction, event: MouseInteractionManager.Event<ObjectFor>): boolean;
 
   /**
    * Execute a callback function associated with a certain action in the workflow
@@ -208,9 +224,13 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    * @param args   - Additional callback arguments.
    * @returns A boolean which may indicate that the event was handled by the callback.
    * Events which do not specify a callback are assumed to have been handled as no-op.
-   * @remarks
+   * @remarks See {@linkcode MouseInteractionManager.CallbackFunction}
    */
-  callback(action: MouseInteractionManager.Action, event: MouseInteractionManager.Event, ...args: AnyArray): boolean;
+  callback(
+    action: MouseInteractionManager.Action,
+    event: MouseInteractionManager.Event<ObjectFor>,
+    ...args: AnyArray
+  ): boolean;
 
   /**
    * A reference to the possible interaction states which can be observed
@@ -280,7 +300,8 @@ declare namespace MouseInteractionManager {
   }
 
   /**
-   * @remarks The list of actions provided by foundry, minus `dragXCancel`, `unclickX`, and `longPress`, which do not check permissions
+   * @remarks The list of actions provided by foundry, minus `dragXCancel`, `unclickX`, and `longPress`,
+   * whose handler functions never call {@linkcode MouseInteractionManager.can | #can}
    */
   type PermissionAction =
     | "clickLeft"
@@ -296,9 +317,15 @@ declare namespace MouseInteractionManager {
     | "hoverIn"
     | "hoverOut";
 
-  type PermissionFunction = (user: User.Implementation, event: MouseInteractionManager.Event) => boolean;
+  type PermissionFunction<ObjectFor extends PIXI.Container = PIXI.Container> = (
+    this: ObjectFor,
+    user: User.Implementation,
+    event: MouseInteractionManager.Event<ObjectFor>,
+  ) => boolean;
 
-  type Permissions = Partial<Record<PermissionAction, PermissionFunction | boolean>>;
+  /** @remarks All values that aren't `boolean` or {@linkcode PermissionFunction} are treated as `true`, i.e, "always allow" */
+  interface Permissions<ObjectFor extends PIXI.Container = PIXI.Container>
+    extends InexactPartial<Record<PermissionAction, PermissionFunction<ObjectFor> | boolean>> {}
 
   /**
    * @remarks The full list of possible callback actions.
@@ -311,14 +338,26 @@ declare namespace MouseInteractionManager {
   type Action = PermissionAction | "dragLeftCancel" | "dragRightCancel" | "unclickLeft" | "unclickRight" | "longPress";
 
   /**
-   * @remarks Only three actions get additional, non-event arguments passed by Foundry:
-   * - `hoverIn` on all placeables takes `options: { hoverOutOthers: boolean }` to trigger hover-out behavior on sibling objects
-   *   - For Regions specifically, `hoverOut` takes an `options: { updateLegend: boolean }` object, and that key is also added to Region `hoverIn` options
+   * @remarks Returning `false` indicates the callback fully handled the event and no further action should be taken.
+   *
+   * Only three actions get additional, non-event arguments passed by Foundry:
+   * - `hoverIn` on all placeables takes {@linkcode PlaceableObject.HoverInOptions | options: PlaceableObject.HoverInOptions} to trigger hover-out behavior on sibling objects
+   * - `hoverOut` on {@linkcode foundry.canvas.placeables.Region | Region}s only takes {@linkcode foundry.canvas.placeables.Region.HoverOutOptions | options: Region.HoverOutOptions}, and that key is also added to Region `hoverIn` options
    * - `longPress` receives `origin: PIXI.Point`
    */
-  type CallbackFunction = (event: MouseInteractionManager.Event, ...args: never) => boolean | null | void;
+  type CallbackFunction<ObjectFor extends PIXI.Container = PIXI.Container> = (
+    this: ObjectFor,
+    event: MouseInteractionManager.Event<ObjectFor>,
+    ...args: never
+  ) => boolean | void;
 
-  type Callbacks = IntentionalPartial<Record<Action, CallbackFunction>>;
+  /**
+   * @remarks Any callbacks not provided effectively default to `() => true`
+   *
+   * See {@linkcode CallbackFunction}
+   */
+  interface Callbacks<ObjectFor extends PIXI.Container = PIXI.Container>
+    extends InexactPartial<Record<Action, CallbackFunction<ObjectFor>>> {}
 
   /** @internal */
   type _Options = InexactPartial<{
@@ -337,8 +376,8 @@ declare namespace MouseInteractionManager {
     dragResistance: number;
 
     /**
-     * A specific PIXI {@linkcode PIXI.Application | Application} to use for pointer event handling. Defaults to
-     * {@linkcode foundry.canvas.Canvas.app | canvas.app} if not provided.
+     * A specific {@linkcode PIXI.Application} to use for pointer event handling. Defaults to
+     * {@linkcode Canvas.app | canvas.app} if not provided.
      */
     application: PIXI.Application;
   }>;
@@ -365,13 +404,10 @@ declare namespace MouseInteractionManager {
 
   interface ResetOptions extends _ResetOptions {}
 
-  interface InteractionData<T extends PIXI.DisplayObject> {
-    origin?: PIXI.Point | undefined;
-    destination?: PIXI.Point | undefined;
-    object?: T | undefined;
-  }
+  interface InteractionData<ObjectFor extends PIXI.Container = PIXI.Container>
+    extends Pick<Canvas.Event.InteractionData<ObjectFor>, "object" | "origin" | "screenOrigin" | "destination"> {}
 
-  type Event = foundry.canvas.Canvas.Event._Base | globalThis.Event;
+  type Event<ObjectFor extends PIXI.Container = PIXI.Container> = Canvas.Event._Base<ObjectFor>; //| globalThis.Event;
 }
 
 export default MouseInteractionManager;

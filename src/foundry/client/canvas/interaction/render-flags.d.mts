@@ -9,6 +9,7 @@ import type {
   PhantomConstructor,
 } from "#utils";
 import type { LogCompatibilityWarningOptions } from "#common/utils/logging.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 declare class RenderFlagObject {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
@@ -24,8 +25,9 @@ declare class RenderFlagObject {
    * The ticker priority when RenderFlags of this class are handled.
    * Valid values are OBJECTS or PERCEPTION.
    * @defaultValue `"OBJECTS"`
+   * @remarks Must match a key of {@linkcode Canvas.pendingRenderFlags}
    */
-  static RENDER_FLAG_PRIORITY: "OBJECTS" | "PERCEPTION";
+  static RENDER_FLAG_PRIORITY: RenderFlags.Priority;
 
   /**
    * Status flags which are applied at render-time to update the PlaceableObject.
@@ -57,9 +59,8 @@ type _RenderFlag<Keys extends string> = InexactPartial<{
   reset: Keys[];
 
   /**
-   * Is this flag deprecated? The deprecation options are passed to
-   * logCompatibilityWarning. The deprectation message is auto-generated
-   * unless message is passed with the options.
+   * Is this flag deprecated? The deprecation options are passed to {@linkcode foundry.utils.logCompatibilityWarning}.
+   * The deprecation message is auto-generated unless message is passed with the options.
    * By default the message is logged only once.
    */
   deprecated: {
@@ -98,7 +99,11 @@ declare class RenderFlags<Flags extends RenderFlags.ValidateFlags<Flags>> extend
 
   readonly object: RenderFlagObject;
 
-  readonly priority: "OBJECT" | "PERCEPTION";
+  /**
+   * The update priority when these render flags are applied.
+   * Valid options are {@linkcode PIXI.UPDATE_PRIORITY.OBJECTS | OBJECTS} or {@linkcode PIXI.UPDATE_PRIORITY.OBJECTS | PERCEPTION}.
+   */
+  readonly priority: typeof PIXI.UPDATE_PRIORITY.OBJECTS | typeof PIXI.UPDATE_PRIORITY.PERCEPTION;
 
   /**
    * @returns The flags which were previously set that have been cleared.
@@ -128,12 +133,20 @@ declare namespace RenderFlags {
     object?: RenderFlagObject;
 
     /**
-     * The update priority when these render flags are applied.
-     * Valid options are OBJECTS or PERCEPTION.
-     * @defaultValue `PIXI.UPDATE_PRIORITY.OBJECTS`
+     * The ticker priority at which these render flags are handled
+     * @defaultValue {@linkcode PIXI.UPDATE_PRIORITY.OBJECTS}
+     * @remarks The default value does *not* match the type as of 13.346, this is a core bug: {@link https://github.com/foundryvtt/foundryvtt/issues/13171}
+     *
+     * See {@linkcode RenderFlags.priority | RenderFlags#priority}
      */
-    priority?: typeof PIXI.UPDATE_PRIORITY.OBJECTS | typeof PIXI.UPDATE_PRIORITY.PERCEPTION;
+    priority?: Priority;
   }
+
+  /**
+   * @remarks {@linkcode RenderFlags.set | RenderFlags#set} and {@linkcode RenderFlags.clear | RenderFlags#clear}
+   * both access {@linkcode Canvas.pendingRenderFlags | canvas.pendingRenderFlags[priority]}
+   */
+  type Priority = keyof Canvas.PendingRenderFlags;
 }
 
 /**
@@ -149,9 +162,9 @@ declare namespace RenderFlags {
 // only inherited directly by `PerceptionManager` and `PlaceableObject`.
 // Therefore it's mostly the subclasses of `PlaceableObject` that face this problem and that can't
 // be solved here unfortunately.
-declare function RenderFlagsMixin<BaseClass extends RenderFlagsMixin.BaseClass | undefined = undefined>(
-  Base?: BaseClass,
-): RenderFlagsMixin.Mix<BaseClass>;
+declare function RenderFlagsMixin<
+  BaseClass extends RenderFlagsMixin.BaseClass | undefined = RenderFlagsMixin.BaseClass,
+>(Base?: BaseClass): RenderFlagsMixin.Mix<BaseClass>;
 
 declare namespace RenderFlagsMixin {
   interface AnyMixedConstructor extends ReturnType<typeof RenderFlagsMixin<BaseClass>> {}
