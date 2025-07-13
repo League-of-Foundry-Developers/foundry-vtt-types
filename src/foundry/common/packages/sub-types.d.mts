@@ -53,17 +53,17 @@ declare namespace AdditionalTypesField {
     /**
      * HTML fields that must be cleaned by the server, e.g. "description.value"
      */
-    htmlFields?: string[];
+    htmlFields?: string[] | undefined;
 
     /**
      * File path fields that must be cleaned by the server.
      * Each key is a field path and the values are an array of keys in {@linkcode CONST.FILE_CATEGORIES}.
      */
-    filePathFields?: Record<string, CONST.FILE_CATEGORIES>;
+    filePathFields?: Record<string, CONST.FILE_CATEGORIES> | undefined;
 
     /**
      * Fields that can only be updated by a GM user.
      */
-    gmOnlyFields?: string[];
+    gmOnlyFields?: string[] | undefined;
   }
 }

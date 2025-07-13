@@ -399,6 +399,52 @@ declare namespace BasePackage {
     persistentStorage: fields.BooleanField;
   }
 
+  /**
+   * @remarks Package flags do not operate under the same rules as Document flags
+   * 1. They are constructed directly from the provided manifest.json files
+   * 2. There are no helper getFlag/setFlag functions
+   * 3. There is no enforced namespacing
+   * 4. There are *many* layers that accept flags, rather than just the top level
+   */
+  namespace Flags {
+    /**
+     * Flags used by the core software.
+     * @remarks Flags for the top level of the schema. Notably *not* namespaced as "core..."
+     */
+    interface Core {
+      /** Can you upload to this package's folder using the built-in FilePicker. */
+      canUpload?: boolean | undefined;
+
+      /** Configuration information for hot reload logic */
+      hotReload?: HotReloadConfig | undefined;
+
+      /**
+       * Mapping information for CompendiumArt.
+       * Each key is a unique system ID, e.g. "dnd5e" or "pf2e".
+       */
+      compendiumArtMappings?: Record<string, CompendiumArtFlag> | undefined;
+
+      /** A mapping of token subject paths to configured subject images. */
+      tokenRingSubjectMappings?: Record<string, string> | undefined;
+    }
+
+    interface HotReloadConfig {
+      /** A list of file extensions, e.g. `["css", "hbs", "json"]` */
+      extensions?: string[] | undefined;
+
+      /** File paths to watch, e.g. `["src/styles", "templates", "lang"]` */
+      paths?: string[] | undefined;
+    }
+
+    interface CompendiumArtFlag {
+      /** The path to the art mapping file. */
+      mapping: string;
+
+      /** An optional credit string for use by the game system to apply in an appropriate place. */
+      credit?: string | undefined;
+    }
+  }
+
   interface PackageManifestData {
     availability: foundry.CONST.PACKAGE_AVAILABILITY_CODES;
     locked: boolean;
