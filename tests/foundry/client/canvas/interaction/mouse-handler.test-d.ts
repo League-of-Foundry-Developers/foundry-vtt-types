@@ -1,10 +1,15 @@
 import { expectTypeOf, test } from "vitest";
 
 import MouseInteractionManager = foundry.canvas.interaction.MouseInteractionManager;
-// import ControlIcon = foundry.canvas.containers.ControlIcon;
+import ControlIcon = foundry.canvas.containers.ControlIcon;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import Region = foundry.canvas.placeables.Region;
 import Note = foundry.canvas.placeables.Note;
+
+declare const someRegion: Region.Implementation;
+declare const someNote: Note.Implementation;
+declare const regionEvent: MouseInteractionManager.Event<Region.Implementation>;
+declare const noteEvent: MouseInteractionManager.Event<Note.Implementation>;
 
 test("Static configuration properties", () => {
   expectTypeOf(MouseInteractionManager.DEFAULT_DRAG_RESISTANCE_PX).toBeNumber();
@@ -17,8 +22,7 @@ test("Static state property", () => {
   expectTypeOf(MouseInteractionManager.longPressTimeout).toEqualTypeOf<number | null>();
 });
 
-declare const someRegion: Region.Implementation;
-declare const someNote: Note.Implementation;
+// begin construction testing
 
 const notePermissions = {
   clickLeft(user, event) {
@@ -104,26 +108,69 @@ const regionMIM = new MouseInteractionManager(someRegion, stage, regionPermissio
   application: undefined,
 });
 
+// end construction testing
+
 test(`Branded "enum"(s)`, () => {
   expectTypeOf(MouseInteractionManager.INTERACTION_STATES).toExtend<
     Record<keyof MouseInteractionManager.InteractionStates, MouseInteractionManager.INTERACTION_STATES>
   >();
+  expectTypeOf(noteMIM.states).toEqualTypeOf<typeof MouseInteractionManager.INTERACTION_STATES>();
+  expectTypeOf(noteMIM.state).toEqualTypeOf<MouseInteractionManager.INTERACTION_STATES>();
+
   expectTypeOf(noteMIM.handlerOutcomes).toExtend<
     Record<keyof MouseInteractionManager.HandlerOutcomes, MouseInteractionManager.HANDLER_OUTCOMES>
   >();
 });
 
-test("Trivial properties, getters, setters, and methods", () => {
-  expectTypeOf(MouseInteractionManager.emulateMoveEvent()).toBeVoid();
+test("Properties set to/dependent on constructor arguments", () => {
   expectTypeOf(noteMIM.object).toEqualTypeOf<Note.Implementation>();
+  expectTypeOf(noteMIM.layer).toEqualTypeOf<PIXI.Container>();
+
+  // @ts-expect-error this is what the type *should* be but can't for circularity reasons
+  expectTypeOf(noteMIM.permissions).toEqualTypeOf<MouseInteractionManager.Permissions<Note.Implementation>>();
+  expectTypeOf(noteMIM.permissions).toEqualTypeOf<MouseInteractionManager.Permissions>();
+
+  // @ts-expect-error this is what the type *should* be but can't for circularity reasons
+  expectTypeOf(noteMIM.callbacks).toEqualTypeOf<MouseInteractionManager.Callbacks<Note.Implementation>>();
+  expectTypeOf(noteMIM.callbacks).toEqualTypeOf<MouseInteractionManager.Callbacks>();
+
+  expectTypeOf(noteMIM.options).toEqualTypeOf<MouseInteractionManager.Options>();
+
+  // @ts-expect-error We can't infer whether it has a controlIcon or not without introducing circularities, but we know Notes have them
+  expectTypeOf(noteMIM.controlIcon).toEqualTypeOf<ControlIcon>();
+  expectTypeOf(noteMIM.controlIcon).toEqualTypeOf<ControlIcon | null>();
+
+  // @ts-expect-error We can't infer whether it has a controlIcon or not without introducing circularities, but we know Notes have them
+  expectTypeOf(noteMIM.target).toEqualTypeOf<ControlIcon>();
+  expectTypeOf(noteMIM.target).toEqualTypeOf<Note.Implementation | ControlIcon>();
 });
 
-declare const regionEvent: MouseInteractionManager.Event<Region.Implementation>;
-declare const noteEvent: MouseInteractionManager.Event<Note.Implementation>;
+test("Trivial properties, getters, setters, and methods", () => {
+  expectTypeOf(MouseInteractionManager.emulateMoveEvent()).toBeVoid();
 
-expectTypeOf(noteEvent?.interactionData);
+  expectTypeOf(noteMIM.interactionData).toEqualTypeOf<MouseInteractionManager.InteractionData<Note.Implementation>>();
 
-test("callbacks", () => {
+  expectTypeOf(noteMIM.dragTime).toBeNumber();
+  expectTypeOf(noteMIM.lcTime).toBeNumber();
+  expectTypeOf(noteMIM.rcTime).toBeNumber();
+  expectTypeOf(noteMIM["_dragRight"]).toBeBoolean();
+
+  expectTypeOf(noteMIM.viewId).toBeString();
+  expectTypeOf(noteMIM.lastClick).toEqualTypeOf<PIXI.Point>();
+  expectTypeOf(noteMIM.isDragging).toBeBoolean();
+  expectTypeOf(noteMIM.activate()).toEqualTypeOf<typeof noteMIM>();
+
+  expectTypeOf(noteMIM.reset()).toBeVoid();
+  expectTypeOf(noteMIM.reset({ interactionData: true, state: false })).toBeVoid();
+  expectTypeOf(noteMIM.reset({ interactionData: undefined, state: undefined })).toBeVoid();
+});
+
+test("Permissions, Callbacks, and Event Handling", () => {
+  // @ts-expect-error Can't pass a region event to a note permission check
+  noteMIM.can("clickLeft", regionEvent);
+  expectTypeOf(noteMIM.can("clickLeft", noteEvent)).toBeBoolean();
+  expectTypeOf(regionMIM.can("clickLeft", regionEvent)).toBeBoolean();
+
   // All callback args are just `...AnyArray`
   // @ts-expect-error Can't pass a region event to a note callback
   noteMIM.callback("hoverIn", regionEvent, { hoverOutOthers: true });
@@ -131,6 +178,10 @@ test("callbacks", () => {
   expectTypeOf(noteMIM.callback("longPress", noteEvent, new PIXI.Point(1000, 1000)));
   expectTypeOf(regionMIM.callback("hoverIn", regionEvent, { hoverOutOthers: true })).toEqualTypeOf<boolean>;
   expectTypeOf(regionMIM.callback("longPress", regionEvent, new PIXI.Point(1000, 1000)));
+
+  expectTypeOf(noteMIM.handleEvent(noteEvent)).toBeBoolean();
+  expectTypeOf(regionMIM.handleEvent(regionEvent)).toBeBoolean();
+
+  expectTypeOf(noteMIM.cancel(noteEvent)).toBeVoid();
+  expectTypeOf(regionMIM.cancel(regionEvent)).toBeVoid();
 });
-expectTypeOf(noteMIM.state).toEqualTypeOf<MouseInteractionManager.INTERACTION_STATES>();
-expectTypeOf(noteMIM.reset({ interactionData: true, state: false })).toEqualTypeOf<void>();

@@ -1,4 +1,4 @@
-import type { AnyArray, Brand, Identity, InexactPartial, IntentionalPartial } from "#utils";
+import type { AnyArray, Brand, Identity, InexactPartial } from "#utils";
 import type { ControlIcon } from "#client/canvas/containers/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 
@@ -75,13 +75,15 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    * An object of permission checks, keyed by action name, which return a boolean or invoke a function for whether the action is allowed.
    * @defaultValue `{}`
    */
-  permissions: MouseInteractionManager.Permissions<ObjectFor>;
+  // TODO: This should be MouseInteractionManager.Permissions<ObjectFor> but that causes circularities in all placeables
+  permissions: MouseInteractionManager.Permissions;
 
   /**
    * An object of callback functions, keyed by action name, which will be executed during the event workflow (e.g., `hoverIn`, `clickLeft`).
    * @defaultValue `{}`
    */
-  callbacks: MouseInteractionManager.Callbacks<ObjectFor>;
+  // TODO: This should be MouseInteractionManager.Callbacks<ObjectFor> but that causes circularities in all placeables
+  callbacks: MouseInteractionManager.Callbacks;
 
   /**
    * Interaction options which configure handling workflows
@@ -129,6 +131,7 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
   /**
    * An optional ControlIcon instance for the object
    */
+  // TODO: can this be inferred from ObjectFor without introducing circularities?
   controlIcon: ControlIcon | null;
 
   /**
@@ -195,8 +198,10 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
 
   /**
    * Get the target.
+   * @remarks Returns the {@linkcode ControlIcon} if one is in use and the appropriate {@linkcode MouseInteractionManager.Options.target | options.target} was passed,
+   * otherwise {@linkcode MouseInteractionManager.object | this.object}
    */
-  get target(): PIXI.DisplayObject;
+  get target(): ObjectFor | ControlIcon;
 
   /**
    * Is this mouse manager in a dragging state?
@@ -250,7 +255,7 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    * @remarks Note that the event has specific `interactionData` it expects. A valid `event` can be
    * fairly involved to create from scratch.
    */
-  handleEvent(event: MouseInteractionManager.Event): boolean;
+  handleEvent(event: MouseInteractionManager.Event<ObjectFor>): boolean;
 
   /**
    * A public method to cancel a current interaction workflow from this manager.
@@ -259,7 +264,7 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
    * @remarks Note that the event has specific `interactionData` it expects. A valid `event` can be
    * fairly involved to create from scratch.
    */
-  cancel(event: MouseInteractionManager.Event): void;
+  cancel(event: MouseInteractionManager.Event<ObjectFor>): void;
 
   /**
    * Reset the mouse manager.
@@ -276,27 +281,27 @@ declare namespace MouseInteractionManager {
 
   interface HandlerOutcomes {
     /** -2: SKIPPED - the handler has been skipped by previous logic */
-    SKIPPED: -2 & MouseInteractionManager.HANDLER_OUTCOMES;
+    SKIPPED: -2 & HANDLER_OUTCOMES;
 
     /** -1: DISALLOWED - the handler has disallowed further process */
-    DISALLOWED: -1 & MouseInteractionManager.HANDLER_OUTCOMES;
+    DISALLOWED: -1 & HANDLER_OUTCOMES;
 
     /** 1: REFUSED - the handler callback has been processed and is refusing further process */
-    REFUSED: 1 & MouseInteractionManager.HANDLER_OUTCOMES;
+    REFUSED: 1 & HANDLER_OUTCOMES;
 
     /** 2: ACCEPTED - the handler callback has been processed and is accepting further process */
-    ACCEPTED: 2 & MouseInteractionManager.HANDLER_OUTCOMES;
+    ACCEPTED: 2 & HANDLER_OUTCOMES;
   }
 
   type INTERACTION_STATES = Brand<number, "MouseInteractionManager.INTERACTION_STATES">;
 
   interface InteractionStates {
-    NONE: 0 & MouseInteractionManager.INTERACTION_STATES;
-    HOVER: 1 & MouseInteractionManager.INTERACTION_STATES;
-    CLICKED: 2 & MouseInteractionManager.INTERACTION_STATES;
-    GRABBED: 3 & MouseInteractionManager.INTERACTION_STATES;
-    DRAG: 4 & MouseInteractionManager.INTERACTION_STATES;
-    DROP: 5 & MouseInteractionManager.INTERACTION_STATES;
+    NONE: 0 & INTERACTION_STATES;
+    HOVER: 1 & INTERACTION_STATES;
+    CLICKED: 2 & INTERACTION_STATES;
+    GRABBED: 3 & INTERACTION_STATES;
+    DRAG: 4 & INTERACTION_STATES;
+    DROP: 5 & INTERACTION_STATES;
   }
 
   /**
@@ -329,11 +334,6 @@ declare namespace MouseInteractionManager {
 
   /**
    * @remarks The full list of possible callback actions.
-   *
-   * Three actions get additional, non-event arguments passed by Foundry:
-   * - `hoverIn` on all placeables takes `options: { hoverOutOthers: boolean }` to trigger hover-out behavior on sibling objects
-   *   - For Regions specifically, `hoverOut` takes an `options: { updateLegend: boolean }` object, and that key is also added to Region `hoverIn` options
-   * - `longPress` receives `origin: PIXI.Point`
    */
   type Action = PermissionAction | "dragLeftCancel" | "dragRightCancel" | "unclickLeft" | "unclickRight" | "longPress";
 
@@ -342,7 +342,8 @@ declare namespace MouseInteractionManager {
    *
    * Only three actions get additional, non-event arguments passed by Foundry:
    * - `hoverIn` on all placeables takes {@linkcode PlaceableObject.HoverInOptions | options: PlaceableObject.HoverInOptions} to trigger hover-out behavior on sibling objects
-   * - `hoverOut` on {@linkcode foundry.canvas.placeables.Region | Region}s only takes {@linkcode foundry.canvas.placeables.Region.HoverOutOptions | options: Region.HoverOutOptions}, and that key is also added to Region `hoverIn` options
+   * - `hoverOut` on {@linkcode foundry.canvas.placeables.Region | Region}s only takes {@linkcode foundry.canvas.placeables.Region.HoverOutOptions | options: Region.HoverOutOptions},
+   * and that key is also added to Region `hoverIn` options
    * - `longPress` receives `origin: PIXI.Point`
    */
   type CallbackFunction<ObjectFor extends PIXI.Container = PIXI.Container> = (
@@ -366,6 +367,7 @@ declare namespace MouseInteractionManager {
      * This is used to set {@linkcode MouseInteractionManager.controlIcon | MouseInteractionManager#controlIcon}.
      * @remarks In practice, this should only be `"controlIcon"` or omitted
      */
+    // TODO: Can we limit this to `PropertiesOfType<ObjectFor, ControlIcon>` without introducing circularities?
     target: string;
 
     /**
@@ -388,7 +390,7 @@ declare namespace MouseInteractionManager {
   interface Options extends _Options {}
 
   /** @internal */
-  type _ResetOptions = IntentionalPartial<{
+  type _ResetOptions = InexactPartial<{
     /**
      * Reset the interaction data?
      * @defaultValue `true`

@@ -1,131 +1,110 @@
-import { expectTypeOf } from "vitest";
-import { Ruler } from "#client/canvas/interaction/_module.mjs";
-import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import { describe, expectTypeOf, test } from "vitest";
 
+import Ruler = foundry.canvas.interaction.Ruler;
 import Canvas = foundry.canvas.Canvas;
-import GridHighlight = foundry.canvas.containers.GridHighlight;
-import Ray = foundry.canvas.geometry.Ray;
 
-expectTypeOf(Ruler.STATES).toExtend<Record<keyof Ruler.States, Ruler.STATES>>();
-expectTypeOf(Ruler.canMeasure).toBeBoolean();
+declare const user: User.Implementation;
+declare const event: PIXI.FederatedEvent;
+declare const wheelEvent: WheelEvent;
+declare const waypoint: Ruler.Waypoint;
 
-if (game.ready) {
-  expectTypeOf(new Ruler(undefined)).toEqualTypeOf<Ruler>();
-  expectTypeOf(new Ruler(game.user, { color: null })).toEqualTypeOf<Ruler>();
-  expectTypeOf(new Ruler(game.user, { color: 0x32f4e2 })).toEqualTypeOf<Ruler>();
-}
+// @ts-expect-error Ruler requires a passed user as of v13
+new Ruler();
+const ruler = new Ruler(user);
 
-const ruler = new Ruler();
-declare const somePoint: PIXI.Point;
+describe("BaseRuler tests", () => {
+  test("Trivial methods, properties, getters, and setters", () => {
+    expectTypeOf(Ruler.getSnappedPoint({ x: 50, y: 70 })).toEqualTypeOf<Canvas.Point>();
+    expectTypeOf(Ruler.RENDER_FLAGS.refresh).toEqualTypeOf<
+      foundry.canvas.interaction.RenderFlag<Ruler.RENDER_FLAGS, "refresh">
+    >();
+    expectTypeOf(Ruler.canMeasure).toBeBoolean();
 
-expectTypeOf(ruler.user).toEqualTypeOf<User.Implementation>();
-expectTypeOf(ruler.name).toEqualTypeOf<string>();
-expectTypeOf(ruler.color).toEqualTypeOf<Color>();
+    expectTypeOf(ruler.user).toEqualTypeOf<User.Implementation>();
+    expectTypeOf(ruler.active).toBeBoolean();
+    expectTypeOf(ruler.visible).toBeBoolean();
 
-expectTypeOf(ruler.ruler).toEqualTypeOf<PIXI.Graphics>();
-expectTypeOf(ruler.labels).toEqualTypeOf<PIXI.Container>();
+    expectTypeOf(ruler.path).toEqualTypeOf<readonly Readonly<Canvas.ElevatedPoint>[]>();
+    ruler.path = [
+      { x: 200, y: 300, elevation: 0 },
+      { x: 500, y: 300, elevation: 20 },
+    ]; // Setter
 
-expectTypeOf(ruler.destination).toEqualTypeOf<Canvas.Point | null>();
-expectTypeOf(ruler.origin).toEqualTypeOf<Canvas.Point | null>();
-expectTypeOf(ruler.waypoints).toEqualTypeOf<Canvas.Point[]>();
+    expectTypeOf(ruler.origin).toEqualTypeOf<Canvas.ElevatedPoint | undefined>();
+    expectTypeOf(ruler.destination).toEqualTypeOf<Canvas.ElevatedPoint | undefined>();
 
-expectTypeOf(ruler.segments).toEqualTypeOf<Ruler.MeasurementSegment[]>();
-expectTypeOf(ruler.history).toEqualTypeOf<Ruler.MeasurementHistoryWaypoint[]>();
+    expectTypeOf(ruler.hidden).toBeBoolean();
+    ruler.hidden = true; // Setter
 
-expectTypeOf(ruler.totalDistance).toBeNumber();
-expectTypeOf(ruler.totalCost).toBeNumber();
+    expectTypeOf(ruler["_onPathChange"]()).toBeVoid();
+    expectTypeOf(ruler["_onHiddenChange"]()).toBeVoid();
 
-expectTypeOf(ruler.state).toEqualTypeOf<Ruler.STATES>();
-expectTypeOf(ruler["_state"]).toEqualTypeOf<Ruler.STATES>();
+    expectTypeOf(ruler.reset()).toBeVoid();
+    // #draw and #destroy are abstract, tested with Ruler methods
+    expectTypeOf(ruler.refresh()).toBeVoid();
+    // #_refresh is abstract, tested with Ruler methods
+    expectTypeOf(ruler.applyRenderFlags()).toBeVoid();
 
-expectTypeOf(ruler.active).toEqualTypeOf<boolean>();
-expectTypeOf(ruler.highlightLayer).toEqualTypeOf<GridHighlight>();
-expectTypeOf(ruler.token).toEqualTypeOf<Token.Implementation | null>();
+    expectTypeOf(ruler["_addDragWaypoint"]({ x: 222, y: 333 })).toBeVoid();
+    expectTypeOf(ruler["_addDragWaypoint"]({ x: 222, y: 333 }, { snap: false })).toBeVoid();
+    expectTypeOf(ruler["_addDragWaypoint"]({ x: 222, y: 333 }, { snap: undefined })).toBeVoid();
+    expectTypeOf(ruler["_removeDragWaypoint"]()).toBeVoid();
 
-expectTypeOf(ruler.clear()).toBeVoid();
+    expectTypeOf(ruler["_changeDragElevation"](20)).toBeVoid();
+    expectTypeOf(ruler["_changeDragElevation"](20, { precise: true })).toBeVoid();
+    expectTypeOf(ruler["_changeDragElevation"](20, { precise: undefined })).toBeVoid();
+  });
 
-expectTypeOf(ruler.measure(somePoint)).toEqualTypeOf<Ruler.MeasurementSegment[] | void>();
-expectTypeOf(ruler.measure({ x: 10, y: 10 }, {})).toEqualTypeOf<Ruler.MeasurementSegment[] | void>();
-expectTypeOf(ruler.measure({ x: 10, y: 10 }, { snap: null, force: undefined })).toEqualTypeOf<
-  Ruler.MeasurementSegment[] | void
->();
+  test("Event callbacks", () => {
+    expectTypeOf(ruler["_onDragStart"](event)).toBeVoid();
+    expectTypeOf(ruler["_onDragCancel"](event)).toEqualTypeOf<boolean | void>();
+    expectTypeOf(ruler["_onClickLeft"](event)).toBeVoid();
+    expectTypeOf(ruler["_onClickRight"](event)).toBeVoid();
+    expectTypeOf(ruler["_onMouseMove"](event)).toBeVoid();
+    expectTypeOf(ruler["_onMouseUp"](event)).toBeVoid();
+    expectTypeOf(ruler["_onMouseWheel"](wheelEvent)).toBeVoid();
+  });
 
-expectTypeOf(ruler["_getMeasurementOrigin"](somePoint)).toEqualTypeOf<Canvas.Point>();
-expectTypeOf(ruler["_getMeasurementOrigin"](somePoint, {})).toEqualTypeOf<Canvas.Point>();
-expectTypeOf(ruler["_getMeasurementOrigin"](somePoint, { snap: false })).toEqualTypeOf<Canvas.Point>();
+  test("Deprecated", () => {
+    // deprecated since v13, until v15
 
-expectTypeOf(ruler["_getMeasurementDestination"](somePoint)).toEqualTypeOf<Canvas.Point>();
-expectTypeOf(ruler["_getMeasurementDestination"](somePoint, {})).toEqualTypeOf<Canvas.Point>();
-expectTypeOf(ruler["_getMeasurementDestination"](somePoint, { snap: undefined })).toEqualTypeOf<Canvas.Point>();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(ruler.clear()).toBeVoid();
 
-expectTypeOf(ruler["_getMeasurementSegments"]()).toEqualTypeOf<Ruler.MeasurementSegment[]>();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(ruler.update()).toBeVoid();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(ruler.update({ hidden: true, path: [{ x: 1, y: 2, elevation: 3 }] })).toBeVoid();
+  });
+});
 
-expectTypeOf(ruler["_startMeasurement"](somePoint)).toBeVoid();
-expectTypeOf(ruler["_startMeasurement"](somePoint, {})).toBeVoid();
-expectTypeOf(ruler["_startMeasurement"](somePoint, { snap: true })).toBeVoid();
+describe("Ruler tests", () => {
+  test("Trivial methods, properties, getters, and setters", () => {
+    expectTypeOf(Ruler.WAYPOINT_LABEL_TEMPLATE).toBeString();
 
-expectTypeOf(ruler["_endMeasurement"]()).toBeVoid();
+    const outlineConfig = ruler["_configureOutline"]();
+    expectTypeOf(outlineConfig.thickness).toBeNumber();
+    expectTypeOf(outlineConfig.color).toEqualTypeOf<PIXI.ColorSource>();
 
-expectTypeOf(ruler["_addWaypoint"](somePoint)).toBeVoid();
-expectTypeOf(ruler["_addWaypoint"](somePoint, {})).toBeVoid();
-expectTypeOf(ruler["_addWaypoint"](somePoint, { snap: null })).toBeVoid();
+    expectTypeOf(ruler.draw()).toEqualTypeOf<Promise<void>>();
+    expectTypeOf(ruler.destroy()).toBeVoid();
+    expectTypeOf(ruler["_refresh"]()).toBeVoid();
 
-expectTypeOf(ruler["_getCostFunction"]()).toEqualTypeOf<foundry.grid.BaseGrid.MeasurePathCostFunction2D | void>();
-expectTypeOf(ruler["_computeDistance"]()).toBeVoid();
+    expectTypeOf(ruler["_getWaypointLabelContext"](waypoint, {})).toEqualTypeOf<Ruler.WaypointContext | void>();
+    expectTypeOf(
+      ruler["_getWaypointLabelContext"](waypoint, { hasElevation: true }),
+    ).toEqualTypeOf<Ruler.WaypointContext | void>();
 
-declare const fullRulerSegment: Ruler.MeasurementSegment;
-expectTypeOf(ruler["_getSegmentLabel"](fullRulerSegment)).toBeString();
-expectTypeOf(ruler["_getSegmentLabel"]({ distance: 50, last: false, teleport: false })).toBeString();
+    expectTypeOf(ruler["_getWaypointStyle"](waypoint)).toEqualTypeOf<Ruler.WaypointStyle>();
+    expectTypeOf(ruler["_getSegmentStyle"](waypoint)).toEqualTypeOf<Ruler.SegmentStyle>();
+  });
 
-expectTypeOf(ruler["_drawMeasuredPath"]()).toBeVoid();
+  test("Deprecated", () => {
+    // deprecated since v13, until v15
 
-declare const someRay: Ray;
-expectTypeOf(ruler["_highlightMeasurementSegment"](fullRulerSegment)).toBeVoid();
-expectTypeOf(ruler["_highlightMeasurementSegment"]({ teleport: true, ray: someRay })).toBeVoid();
-
-expectTypeOf(ruler.moveToken()).toEqualTypeOf<Promise<boolean>>();
-expectTypeOf(ruler["_getMovementToken"](somePoint)).toEqualTypeOf<Token.Implementation | null>();
-
-expectTypeOf(ruler["_getMeasurementHistory"]()).toEqualTypeOf<Ruler.MeasurementHistory | void>();
-expectTypeOf(ruler["_createMeasurementHistory"]()).toEqualTypeOf<Ruler.MeasurementHistory>();
-
-declare const someToken: Token.Implementation;
-expectTypeOf(ruler["_canMove"](someToken)).toBeBoolean();
-expectTypeOf(ruler["_animateMovement"](someToken)).toEqualTypeOf<Promise<void>>();
-
-expectTypeOf(
-  ruler["_animateSegment"](someToken, fullRulerSegment, somePoint, { noHook: false, recursive: true }),
-).toEqualTypeOf<Promise<void>>();
-expectTypeOf(
-  ruler["_animateSegment"](
-    someToken,
-    {
-      animation: {
-        // TODO: fill in once properly typed in TokenDocument
-      },
-      teleport: true,
-    },
-    somePoint,
-    {
-      noHook: false,
-      recursive: true,
-    },
-  ),
-).toEqualTypeOf<Promise<void>>();
-
-expectTypeOf(ruler["_preMove"](someToken)).toEqualTypeOf<Promise<void>>();
-expectTypeOf(ruler["_postMove"](someToken)).toEqualTypeOf<Promise<void>>();
-expectTypeOf(ruler["_broadcastMeasurement"]()).toBeVoid();
-expectTypeOf(ruler["_getMeasurementData"]()).toEqualTypeOf<Ruler.MeasurementData>();
-
-expectTypeOf(ruler.update()).toBeVoid();
-expectTypeOf(ruler.update(null)).toBeVoid();
-expectTypeOf(
-  ruler.update({
-    destination: somePoint,
-    history: [],
-    state: Ruler.STATES.MEASURING,
-    token: someToken.id,
-    waypoints: [],
-  }),
-).toBeVoid();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(ruler.color).toEqualTypeOf<Color>();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(ruler.ruler).toEqualTypeOf<PIXI.Graphics>();
+  });
+});
