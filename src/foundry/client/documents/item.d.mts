@@ -86,27 +86,27 @@ declare namespace Item {
   type SubType = foundry.Game.Model.TypeNames<"Item">;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@link SubType} for more information.
    */
-  type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Item">;
+  type ConfiguredSubType = Document.ConfiguredSubTypeOf<"Item">;
 
   /**
    * `Known` represents the types of `Item` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = Item.OfType<Item.ConfiguredSubTypes>;
+  type Known = Item.OfType<Item.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `Item` with the corresponding type. This works with both the
    * builtin `Item` class or a custom subclass if that is set up in
    * {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`}.
    */
-  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubTypes>;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
   interface _OfType
@@ -122,7 +122,7 @@ declare namespace Item {
   /**
    * `SystemOfType` returns the system property for a specific `Item` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubTypes>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
@@ -553,6 +553,11 @@ declare namespace Item {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode Item.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

@@ -354,7 +354,7 @@ declare namespace BaseActor {
   export import Hierarchy = Actor.Hierarchy;
   export import Metadata = Actor.Metadata;
   export import SubType = Actor.SubType;
-  export import ConfiguredSubTypes = Actor.ConfiguredSubTypes;
+  export import ConfiguredSubType = Actor.ConfiguredSubType;
   export import Known = Actor.Known;
   export import OfType = Actor.OfType;
   export import SystemOfType = Actor.SystemOfType;

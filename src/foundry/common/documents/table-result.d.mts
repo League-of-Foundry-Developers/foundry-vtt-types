@@ -320,7 +320,7 @@ declare namespace BaseTableResult {
   export import Hierarchy = TableResult.Hierarchy;
   export import Metadata = TableResult.Metadata;
   export import SubType = TableResult.SubType;
-  export import ConfiguredSubTypes = TableResult.ConfiguredSubTypes;
+  export import ConfiguredSubType = TableResult.ConfiguredSubType;
   export import Known = TableResult.Known;
   export import OfType = TableResult.OfType;
   export import Parent = TableResult.Parent;

@@ -77,20 +77,20 @@ declare namespace JournalEntryPage {
   type SubType = foundry.Game.Model.TypeNames<"JournalEntryPage">;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@link SubType} for more information.
    */
-  type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"JournalEntryPage">;
+  type ConfiguredSubType = Document.ConfiguredSubTypeOf<"JournalEntryPage">;
 
   /**
    * `Known` represents the types of `JournalEntryPage` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = JournalEntryPage.OfType<JournalEntryPage.ConfiguredSubTypes>;
+  type Known = JournalEntryPage.OfType<JournalEntryPage.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `JournalEntryPage` with the corresponding type. This works with both the
@@ -98,7 +98,7 @@ declare namespace JournalEntryPage {
    * {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`}.
    * up.
    */
-  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubTypes>;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
   interface _OfType
@@ -114,7 +114,7 @@ declare namespace JournalEntryPage {
   /**
    * `SystemOfType` returns the system property for a specific `JournalEntryPage` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubTypes>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
@@ -633,6 +633,11 @@ declare namespace JournalEntryPage {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode JournalEntryPage.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

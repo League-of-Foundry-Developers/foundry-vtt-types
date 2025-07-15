@@ -384,7 +384,7 @@ declare namespace BaseActorDelta {
   export import Hierarchy = ActorDelta.Hierarchy;
   export import Metadata = ActorDelta.Metadata;
   export import SubType = ActorDelta.SubType;
-  export import ConfiguredSubTypes = ActorDelta.ConfiguredSubTypes;
+  export import ConfiguredSubType = ActorDelta.ConfiguredSubType;
   export import Known = ActorDelta.Known;
   export import OfType = ActorDelta.OfType;
   export import SystemOfType = ActorDelta.SystemOfType;

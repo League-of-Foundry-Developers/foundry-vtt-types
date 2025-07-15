@@ -315,7 +315,7 @@ declare namespace BaseMacro {
   export import Hierarchy = Macro.Hierarchy;
   export import Metadata = Macro.Metadata;
   export import SubType = Macro.SubType;
-  export import ConfiguredSubTypes = Macro.ConfiguredSubTypes;
+  export import ConfiguredSubType = Macro.ConfiguredSubType;
   export import Known = Macro.Known;
   export import OfType = Macro.OfType;
   export import Parent = Macro.Parent;

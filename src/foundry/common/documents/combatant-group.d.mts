@@ -287,7 +287,7 @@ declare namespace BaseCombatantGroup {
   export import Hierarchy = CombatantGroup.Hierarchy;
   export import Metadata = CombatantGroup.Metadata;
   export import SubType = CombatantGroup.SubType;
-  export import ConfiguredSubTypes = CombatantGroup.ConfiguredSubTypes;
+  export import ConfiguredSubType = CombatantGroup.ConfiguredSubType;
   export import Known = CombatantGroup.Known;
   export import OfType = CombatantGroup.OfType;
   export import SystemOfType = CombatantGroup.SystemOfType;

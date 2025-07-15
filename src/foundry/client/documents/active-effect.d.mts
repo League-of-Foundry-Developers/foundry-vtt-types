@@ -81,27 +81,27 @@ declare namespace ActiveEffect {
   type SubType = foundry.Game.Model.TypeNames<"ActiveEffect">;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@link SubType} for more information.
    */
-  type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"ActiveEffect">;
+  type ConfiguredSubType = Document.ConfiguredSubTypeOf<"ActiveEffect">;
 
   /**
    * `Known` represents the types of `ActiveEffect` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = ActiveEffect.OfType<ActiveEffect.ConfiguredSubTypes>;
+  type Known = ActiveEffect.OfType<ActiveEffect.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `ActiveEffect` with the corresponding type. This works with both the
    * builtin `ActiveEffect` class or a custom subclass if that is set up in
    * {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`}.
    */
-  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubTypes>;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
   interface _OfType
@@ -117,7 +117,7 @@ declare namespace ActiveEffect {
   /**
    * `SystemOfType` returns the system property for a specific `ActiveEffect` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubTypes>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
@@ -665,6 +665,11 @@ declare namespace ActiveEffect {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode ActiveEffect.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

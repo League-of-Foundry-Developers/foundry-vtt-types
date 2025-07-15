@@ -978,8 +978,8 @@ declare namespace Document {
     ? Exclude<Types, "base">
     : Types;
 
-  type ConfiguredSubTypesOf<Name extends Type> = Name extends "ActorDelta"
-    ? ConfiguredSubTypesOf<"Actor">
+  type ConfiguredSubTypeOf<Name extends Type> = Name extends "ActorDelta"
+    ? ConfiguredSubTypeOf<"Actor">
     : // ESLint doesn't know that `DataModelConfig` and `SourceConfig` are meant to be declaration merged into.
       // Therefore it hastily thinks the results are always `never`.
       // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-duplicate-type-constituents
@@ -987,7 +987,7 @@ declare namespace Document {
 
   type SubTypesOf<Name extends Document.Type> = Name extends "ActorDelta"
     ? SubTypesOf<"Actor">
-    : Document.CoreTypesForName<Name> | ConfiguredSubTypesOf<Name> | _ModuleSubType<Name>;
+    : Document.CoreTypesForName<Name> | ConfiguredSubTypeOf<Name> | _ModuleSubType<Name>;
 
   /** @internal */
   type _ModuleSubType<Name extends Type> = SystemConfig extends {
@@ -1214,17 +1214,17 @@ declare namespace Document {
       Name extends Document.WithSystem,
       SystemMap extends Record<SubType, object | undefined>,
       SubType extends string,
-      ConfiguredSubTypes extends string,
+      ConfiguredSubType extends string,
     > =
       GetKey<SystemConfig, Name, "none"> extends "discriminateAll"
         ? _DiscriminateUndefined<SystemMap[SubType]>
         :
-            | ([Extract<SubType, ConfiguredSubTypes>] extends [never]
+            | ([Extract<SubType, ConfiguredSubType>] extends [never]
                 ? never
-                : _DiscriminateUndefined<SystemMap[Extract<SubType, ConfiguredSubTypes>]>)
-            | ([Exclude<SubType, ConfiguredSubTypes>] extends [never]
+                : _DiscriminateUndefined<SystemMap[Extract<SubType, ConfiguredSubType>]>)
+            | ([Exclude<SubType, ConfiguredSubType>] extends [never]
                 ? never
-                : SystemMap[Exclude<SubType, ConfiguredSubTypes>]);
+                : SystemMap[Exclude<SubType, ConfiguredSubType>]);
 
     /** @internal */
     type _DiscriminateUndefined<T extends object | undefined> = DiscriminatedUnion<Exclude<T, undefined>>;
@@ -1255,14 +1255,14 @@ declare namespace Document {
       Name extends Document.WithSystem,
       TypeMap extends Record<SubType, { system: object | undefined }>,
       SubType extends string,
-      ConfiguredSubTypes extends string,
+      ConfiguredSubType extends string,
     > = SystemConfig extends { readonly [_ in Name]: { readonly discriminate: "all" } }
       ? DiscriminateSubType<SubType, TypeMap>
       :
-          | DiscriminateSubType<Extract<SubType, ConfiguredSubTypes>, TypeMap>
-          | ([Exclude<SubType, ConfiguredSubTypes>] extends [never]
+          | DiscriminateSubType<Extract<SubType, ConfiguredSubType>, TypeMap>
+          | ([Exclude<SubType, ConfiguredSubType>] extends [never]
               ? never
-              : TypeMap[Exclude<SubType, ConfiguredSubTypes>]);
+              : TypeMap[Exclude<SubType, ConfiguredSubType>]);
 
     type DiscriminateSubType<
       SubType extends AllSubType,

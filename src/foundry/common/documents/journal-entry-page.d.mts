@@ -294,7 +294,7 @@ declare namespace BaseJournalEntryPage {
   export import Hierarchy = JournalEntryPage.Hierarchy;
   export import Metadata = JournalEntryPage.Metadata;
   export import SubType = JournalEntryPage.SubType;
-  export import ConfiguredSubTypes = JournalEntryPage.ConfiguredSubTypes;
+  export import ConfiguredSubType = JournalEntryPage.ConfiguredSubType;
   export import Known = JournalEntryPage.Known;
   export import OfType = JournalEntryPage.OfType;
   export import SystemOfType = JournalEntryPage.SystemOfType;

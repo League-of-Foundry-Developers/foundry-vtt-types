@@ -300,7 +300,7 @@ declare namespace BaseCard {
   export import Hierarchy = Card.Hierarchy;
   export import Metadata = Card.Metadata;
   export import SubType = Card.SubType;
-  export import ConfiguredSubTypes = Card.ConfiguredSubTypes;
+  export import ConfiguredSubType = Card.ConfiguredSubType;
   export import Known = Card.Known;
   export import OfType = Card.OfType;
   export import SystemOfType = Card.SystemOfType;

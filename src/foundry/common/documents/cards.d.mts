@@ -342,7 +342,7 @@ declare namespace BaseCards {
   export import Hierarchy = Cards.Hierarchy;
   export import Metadata = Cards.Metadata;
   export import SubType = Cards.SubType;
-  export import ConfiguredSubTypes = Cards.ConfiguredSubTypes;
+  export import ConfiguredSubType = Cards.ConfiguredSubType;
   export import Known = Cards.Known;
   export import OfType = Cards.OfType;
   export import SystemOfType = Cards.SystemOfType;

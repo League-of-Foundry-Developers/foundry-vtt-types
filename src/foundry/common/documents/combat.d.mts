@@ -345,7 +345,7 @@ declare namespace BaseCombat {
   export import Hierarchy = Combat.Hierarchy;
   export import Metadata = Combat.Metadata;
   export import SubType = Combat.SubType;
-  export import ConfiguredSubTypes = Combat.ConfiguredSubTypes;
+  export import ConfiguredSubType = Combat.ConfiguredSubType;
   export import Known = Combat.Known;
   export import OfType = Combat.OfType;
   export import SystemOfType = Combat.SystemOfType;

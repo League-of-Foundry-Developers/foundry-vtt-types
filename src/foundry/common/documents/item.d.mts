@@ -351,7 +351,7 @@ declare namespace BaseItem {
   export import Hierarchy = Item.Hierarchy;
   export import Metadata = Item.Metadata;
   export import SubType = Item.SubType;
-  export import ConfiguredSubTypes = Item.ConfiguredSubTypes;
+  export import ConfiguredSubType = Item.ConfiguredSubType;
   export import Known = Item.Known;
   export import OfType = Item.OfType;
   export import SystemOfType = Item.SystemOfType;

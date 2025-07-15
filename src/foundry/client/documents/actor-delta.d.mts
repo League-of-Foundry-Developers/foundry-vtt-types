@@ -78,27 +78,27 @@ declare namespace ActorDelta {
   type SubType = Actor.SubType;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@linkcode ActorDelta.SubType} for more information.
    */
-  type ConfiguredSubTypes = Actor.SubType;
+  type ConfiguredSubType = Actor.SubType;
 
   /**
    * `Known` represents the types of `ActorDelta` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = ActorDelta.OfType<ActorDelta.ConfiguredSubTypes>;
+  type Known = ActorDelta.OfType<ActorDelta.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `ActorDelta` with the corresponding type. This works with both the
    * builtin `ActorDelta` class or a custom subclass if that is set up in
    * {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`}.
    */
-  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubTypes>;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
   interface _OfType
@@ -114,7 +114,7 @@ declare namespace ActorDelta {
   /**
    * `SystemOfType` returns the system property for a specific `ActorDelta` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubTypes>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
@@ -553,6 +553,11 @@ declare namespace ActorDelta {
    * parent in the construction context for any construction, not just `.create`ion
    */
   interface ConstructorArgs extends Identity<[data: CreateData | undefined, context: ConstructionContext]> {}
+
+  /**
+   * @deprecated Replaced with {@linkcode ActorDelta.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

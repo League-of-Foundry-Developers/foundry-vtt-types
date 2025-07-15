@@ -77,7 +77,7 @@ declare namespace TableResult {
    *
    * This type exists only to be informative.
    */
-  type ConfiguredSubTypes = never;
+  type ConfiguredSubType = never;
 
   /**
    * @deprecated `TableResult` does not have `system` and therefore there is no way for a user to
@@ -453,6 +453,12 @@ declare namespace TableResult {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode TableResult.ConfiguredSubType} (will be removed in v14).
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

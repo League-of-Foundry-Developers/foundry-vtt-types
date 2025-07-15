@@ -79,27 +79,27 @@ declare namespace Card {
   type SubType = foundry.Game.Model.TypeNames<"Card">;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@link SubType} for more information.
    */
-  type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Card">;
+  type ConfiguredSubType = Document.ConfiguredSubTypeOf<"Card">;
 
   /**
    * `Known` represents the types of `Card` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = Card.OfType<Card.ConfiguredSubTypes>;
+  type Known = Card.OfType<Card.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `Card` with the corresponding type. This works with both the
    * builtin `Card` class or a custom subclass if that is set up in
    * {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`}.
    */
-  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubTypes>;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
   interface _OfType
@@ -115,7 +115,7 @@ declare namespace Card {
   /**
    * `SystemOfType` returns the system property for a specific `Card` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubTypes>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
@@ -562,6 +562,11 @@ declare namespace Card {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode Card.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**
