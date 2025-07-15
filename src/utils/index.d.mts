@@ -284,11 +284,10 @@ export type MaybeEmpty<T extends AnyObject> =
 /**
  * The following uses `extends object` instead of `AnyObject` to allow `O = typeof SomeClass`
  */
-export type PropertiesOfType<O extends object, T> = {
-  [K in keyof O]: _KeyOfType<O[K], K, T>;
+export type PropertiesOfType<O extends object, V> = {
+  // This type is not distributive to avoid `O[PropertiesOfType<O, V>]` not being assignable to `V`
+  [K in keyof O]: O[K] extends V ? K : never;
 }[keyof O];
-
-type _KeyOfType<V, K, T> = V extends T ? K : never;
 
 declare class Branded<in out BrandName extends string> {
   #brand: BrandName;
