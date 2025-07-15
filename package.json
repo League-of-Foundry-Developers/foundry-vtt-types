@@ -52,9 +52,7 @@
     "test:watch": "vitest --typecheck",
     "typecheck": "tsgo",
     "typecheck:all": "tsgo --project tsconfig.all.json",
-    "prepare": "is-ci || husky",
-    "betterer": "betterer",
-    "betterer:update": "betterer --update"
+    "prepare": "is-ci || husky"
   },
   "repository": {
     "type": "git",
