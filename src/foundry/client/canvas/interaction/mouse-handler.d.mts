@@ -368,7 +368,7 @@ declare namespace MouseInteractionManager {
      * @remarks In practice, this should only be `"controlIcon"` or omitted
      */
     // TODO: Can we limit this to `PropertiesOfType<ObjectFor, ControlIcon>` without introducing circularities?
-    target: string;
+    target: PropertyKey;
 
     /**
      * A minimum number of pixels the mouse must move before a drag is initiated.

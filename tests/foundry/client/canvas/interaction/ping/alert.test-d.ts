@@ -1,10 +1,13 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 
 import AlertPing = foundry.canvas.interaction.AlertPing;
 
 declare const someColor: Color;
 declare const someSymbol: unique symbol;
+declare const someGraphics: PIXI.Graphics;
 
+// @ts-expect-error Must pass an origin
+new AlertPing();
 new AlertPing({ x: 23, y: 54 });
 const myAlertPing = new AlertPing(
   { x: 23, y: 54 },
@@ -18,5 +21,6 @@ const myAlertPing = new AlertPing(
   },
 );
 
-declare const someGraphics: PIXI.Graphics;
-expectTypeOf(myAlertPing["_drawShape"](someGraphics, Color.from(0xcfbdea), 0.333, 20));
+test("Only overridden method", () => {
+  expectTypeOf(myAlertPing["_drawShape"](someGraphics, Color.from(0xcfbdea), 0.333, 20));
+});

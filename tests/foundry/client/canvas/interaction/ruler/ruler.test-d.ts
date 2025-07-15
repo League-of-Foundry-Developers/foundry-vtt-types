@@ -12,8 +12,8 @@ declare const waypoint: Ruler.Waypoint;
 new Ruler();
 const ruler = new Ruler(user);
 
-describe("BaseRuler tests", () => {
-  test("Trivial methods, properties, getters, and setters", () => {
+describe("BaseRuler Tests", () => {
+  test("Uncategorized", () => {
     expectTypeOf(Ruler.getSnappedPoint({ x: 50, y: 70 })).toEqualTypeOf<Canvas.Point>();
     expectTypeOf(Ruler.RENDER_FLAGS.refresh).toEqualTypeOf<
       foundry.canvas.interaction.RenderFlag<Ruler.RENDER_FLAGS, "refresh">
@@ -78,17 +78,13 @@ describe("BaseRuler tests", () => {
   });
 });
 
-describe("Ruler tests", () => {
-  test("Trivial methods, properties, getters, and setters", () => {
+describe("Ruler Tests", () => {
+  test("Uncategorized", () => {
     expectTypeOf(Ruler.WAYPOINT_LABEL_TEMPLATE).toBeString();
 
     const outlineConfig = ruler["_configureOutline"]();
     expectTypeOf(outlineConfig.thickness).toBeNumber();
     expectTypeOf(outlineConfig.color).toEqualTypeOf<PIXI.ColorSource>();
-
-    expectTypeOf(ruler.draw()).toEqualTypeOf<Promise<void>>();
-    expectTypeOf(ruler.destroy()).toBeVoid();
-    expectTypeOf(ruler["_refresh"]()).toBeVoid();
 
     expectTypeOf(ruler["_getWaypointLabelContext"](waypoint, {})).toEqualTypeOf<Ruler.WaypointContext | void>();
     expectTypeOf(
@@ -97,6 +93,12 @@ describe("Ruler tests", () => {
 
     expectTypeOf(ruler["_getWaypointStyle"](waypoint)).toEqualTypeOf<Ruler.WaypointStyle>();
     expectTypeOf(ruler["_getSegmentStyle"](waypoint)).toEqualTypeOf<Ruler.SegmentStyle>();
+  });
+
+  test("Abstract Methods", () => {
+    expectTypeOf(ruler.draw()).toEqualTypeOf<Promise<void>>();
+    expectTypeOf(ruler.destroy()).toBeVoid();
+    expectTypeOf(ruler["_refresh"]()).toBeVoid();
   });
 
   test("Deprecated", () => {

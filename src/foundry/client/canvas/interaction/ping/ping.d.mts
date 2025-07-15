@@ -68,7 +68,7 @@ declare namespace Ping {
 
     /**
      * The color of the ping graphic.
-     * @defaultValue `#ff6400`
+     * @defaultValue `"#ff6400"`
      * @remarks Can't be `undefined` because the default is provided via `mergeObject`
      */
     color: Color.Source;

@@ -162,9 +162,9 @@ declare namespace RenderFlags {
 // only inherited directly by `PerceptionManager` and `PlaceableObject`.
 // Therefore it's mostly the subclasses of `PlaceableObject` that face this problem and that can't
 // be solved here unfortunately.
-declare function RenderFlagsMixin<
-  BaseClass extends RenderFlagsMixin.BaseClass | undefined = RenderFlagsMixin.BaseClass,
->(Base?: BaseClass): RenderFlagsMixin.Mix<BaseClass>;
+declare function RenderFlagsMixin<BaseClass extends RenderFlagsMixin.BaseClass | undefined = undefined>(
+  Base?: BaseClass,
+): RenderFlagsMixin.Mix<BaseClass>;
 
 declare namespace RenderFlagsMixin {
   interface AnyMixedConstructor extends ReturnType<typeof RenderFlagsMixin<BaseClass>> {}
