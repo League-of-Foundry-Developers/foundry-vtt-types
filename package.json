@@ -172,7 +172,16 @@
     "expect-type": "^1.2.2"
   },
   "peerDependencies": {
-    "typescript": "^5.4"
+    "typescript": "^5.4",
+    "@typescript/native-preview": "*"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    },
+    "@typescript/native-preview": {
+      "optional": true
+    }
   },
   "files": [
     "index.d.mts",
