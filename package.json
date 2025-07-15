@@ -184,8 +184,6 @@
     }
   },
   "files": [
-    "index.d.mts",
-    "index-lenient.d.mts",
     "src",
     "tsconfig.base.json",
     "tsconfig.json"
