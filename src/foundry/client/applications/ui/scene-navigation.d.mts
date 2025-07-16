@@ -12,13 +12,61 @@ declare module "#configuration" {
 
 /**
  * The Scene Navigation UI element.
- * @remarks TODO: Stub
  */
 declare class SceneNavigation<
   RenderContext extends SceneNavigation.RenderContext = SceneNavigation.RenderContext,
   Configuration extends SceneNavigation.Configuration = SceneNavigation.Configuration,
   RenderOptions extends SceneNavigation.RenderOptions = SceneNavigation.RenderOptions,
-> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {}
+> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  static override DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration> & object;
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  /**
+   * Whether the scene navigation is currently expanded.
+   */
+  get expanded(): boolean;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  protected override _onFirstRender(
+    context: DeepPartial<RenderContext>,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<void>;
+
+  protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+
+  /**
+   * Get the set of ContextMenu options which should be applied for Scenes in the menu.
+   */
+  protected _getContextMenuOptions(): foundry.applications.ux.ContextMenu.Entry<HTMLElement>[];
+
+  /**
+   * Expand Scene Navigation, displaying inactive Scenes.
+   */
+  expand(): void;
+
+  /**
+   * Collapse Scene Navigation, hiding inactive Scenes.
+   */
+  collapse(): Promise<void>;
+
+  /**
+   * Toggle the expanded state of scene navigation.
+   * @param expanded - Force the expanded state to the provided value, otherwise toggle the state.
+   */
+  toggleExpanded(expanded?: boolean): void;
+
+  /**
+   * @deprecated since v13
+   * @ignore
+   */
+  static displayProgressBar({ label, pct }?: { label?: string; pct?: number }): void;
+
+  static #SceneNavigationStatic: true;
+  #SceneNavigation: true;
+}
 
 declare namespace SceneNavigation {
   interface Any extends AnySceneNavigation {}
