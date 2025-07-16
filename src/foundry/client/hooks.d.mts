@@ -979,11 +979,12 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the context menu for a SceneNavigation entry is constructed.
    * @param app            - The Application instance that the context menu is constructed in
    * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   getSceneContextOptions: (
     app: foundry.applications.ui.SceneNavigation,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
-  ) => boolean | void;
+  ) => void;
 }
 
 declare global {
