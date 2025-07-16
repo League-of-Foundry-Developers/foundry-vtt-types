@@ -1,15 +1,11 @@
 import type { EditorState, Plugin } from "prosemirror-state";
-import type { DeepPartial, EmptyObject, ValueOf } from "#utils";
+import type { AnyMutableObject, DeepPartial, EmptyObject, ValueOf } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "#common/prosemirror/_module.d.mts";
 import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
 import type PointVisionSource from "#client/canvas/sources/point-vision-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "#common/abstract/_types.d.mts";
+import type { DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
 import type CompendiumArt from "#client/helpers/media/compendium-art.d.mts";
 import type { Hooks as HookConfigs } from "#configuration";
 import type Hooks from "./helpers/hooks.d.mts";
@@ -102,7 +98,7 @@ type CreateDocumentHooks = {
 };
 
 type PreUpdateDocumentHooks = {
-  [K in Document.Type as `preUpdate${K}`]: Hooks.PreCreateDocument<Document.ImplementationFor<K>>;
+  [K in Document.Type as `preUpdate${K}`]: Hooks.PreUpdateDocument<Document.ImplementationFor<K>>;
 };
 
 type UpdateDocumentHooks = {
@@ -465,7 +461,13 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.call}.
    * @see {@link ActiveEffect._applyCustom | `ActiveEffect#_applyCustom`}
    */
-  applyActiveEffect: (actor: Actor.Implementation, change: ActiveEffect.ChangeData) => boolean | void;
+  applyActiveEffect: (
+    actor: Actor.Implementation,
+    change: ActiveEffect.ChangeData,
+    current: unknown,
+    delta: unknown,
+    changes: AnyMutableObject,
+  ) => boolean | void;
 
   /** Compendium */
 
@@ -1267,8 +1269,7 @@ declare global {
     type PreCreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       data: Document.CreateDataForName<D["documentName"]>,
-      // TODO
-      options: Document.Database.PreCreateOptions<DatabaseCreateOperation>,
+      options: Document.Database.PreCreateOptionsFor<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1314,7 +1315,7 @@ declare global {
     type PreUpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       changed: Document.UpdateDataForName<D["documentName"]>,
-      options: Document.Database.PreUpdateOptions<DatabaseUpdateOperation>,
+      options: Document.Database.PreUpdateOptionsFor<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1360,7 +1361,7 @@ declare global {
      */
     type PreDeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.PreDeleteOperationInstance<DatabaseDeleteOperation>,
+      options: Document.Database.PreDeleteOptionsFor<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
