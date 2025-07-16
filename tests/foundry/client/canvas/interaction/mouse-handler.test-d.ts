@@ -11,7 +11,7 @@ declare const someNote: Note.Implementation;
 declare const regionEvent: MouseInteractionManager.Event<Region.Implementation>;
 declare const noteEvent: MouseInteractionManager.Event<Note.Implementation>;
 
-describe("MouseInteractionManager tests", () => {
+describe("MouseInteractionManager Tests", () => {
   test("Static configuration properties", () => {
     expectTypeOf(MouseInteractionManager.DEFAULT_DRAG_RESISTANCE_PX).toBeNumber();
     expectTypeOf(MouseInteractionManager.DOUBLE_CLICK_TIME_MS).toBeNumber();
