@@ -2,19 +2,33 @@ import { describe, expectTypeOf, test } from "vitest";
 
 import AlertPing = foundry.canvas.interaction.AlertPing;
 
-declare const someColor: Color;
+declare const color: Color;
 declare const someSymbol: unique symbol;
-declare const someGraphics: PIXI.Graphics;
+declare const graphics: PIXI.Graphics;
 
 describe("AlertPing Tests", () => {
-  // @ts-expect-error Must pass an origin
-  new AlertPing();
-  new AlertPing({ x: 23, y: 54 });
+  test("Construction", () => {
+    // @ts-expect-error Must pass an origin
+    new AlertPing();
+    new AlertPing({ x: 23, y: 54 });
+    new AlertPing(
+      { x: 23, y: 54 },
+      {
+        color: 0x00ff00,
+        color2: color,
+        rings: 15,
+        name: someSymbol,
+        duration: 250,
+        size: 512,
+      },
+    );
+  });
+
   const myAlertPing = new AlertPing(
     { x: 23, y: 54 },
     {
       color: 0x00ff00,
-      color2: someColor,
+      color2: color,
       rings: 15,
       name: someSymbol,
       duration: 250,
@@ -23,6 +37,6 @@ describe("AlertPing Tests", () => {
   );
 
   test("Shape Configuration", () => {
-    expectTypeOf(myAlertPing["_drawShape"](someGraphics, Color.from(0xcfbdea), 0.333, 20));
+    expectTypeOf(myAlertPing["_drawShape"](graphics, Color.from(0xcfbdea), 0.333, 20));
   });
 });

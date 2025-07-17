@@ -10,9 +10,16 @@ declare const waypoint: Ruler.Waypoint;
 
 // @ts-expect-error Ruler requires a passed user as of v13
 new Ruler();
-const ruler = new Ruler(user);
 
 describe("BaseRuler Tests", () => {
+  test("Construction", () => {
+    // @ts-expect-error Ruler requires a passed user as of v13
+    new Ruler();
+    new Ruler(user);
+  });
+
+  const ruler = new Ruler(user);
+
   test("Uncategorized", () => {
     expectTypeOf(Ruler.getSnappedPoint({ x: 50, y: 70 })).toEqualTypeOf<Canvas.Point>();
     expectTypeOf(Ruler.RENDER_FLAGS.refresh).toEqualTypeOf<
@@ -79,6 +86,8 @@ describe("BaseRuler Tests", () => {
 });
 
 describe("Ruler Tests", () => {
+  const ruler = new Ruler(user);
+
   test("Uncategorized", () => {
     expectTypeOf(Ruler.WAYPOINT_LABEL_TEMPLATE).toBeString();
 

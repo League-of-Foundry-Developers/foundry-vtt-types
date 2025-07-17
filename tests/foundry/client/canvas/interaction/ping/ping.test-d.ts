@@ -12,20 +12,33 @@ class MyPing extends Ping {
 }
 
 declare const animData: CanvasAnimation.AnimationData<MyPing>;
+
 describe("Ping Tests", () => {
-  // @ts-expect-error ping requires an origin
-  new MyPing();
-  new MyPing({ x: 50, y: 70 });
-  new MyPing(
-    { x: 50, y: 70 },
-    {
-      // color, duration, and size can't be undefined because their defaults are applied via mergeObject
-      // color: undefined,
-      // duration: undefined,
-      name: undefined,
-      // size: undefined,
-    },
-  );
+  describe("Construction", () => {
+    // @ts-expect-error ping requires an origin
+    new MyPing();
+    new MyPing({ x: 50, y: 70 });
+    new MyPing(
+      { x: 50, y: 70 },
+      {
+        // color, duration, and size can't be undefined because their defaults are applied via mergeObject
+        // color: undefined,
+        // duration: undefined,
+        name: undefined,
+        // size: undefined,
+      },
+    );
+    new MyPing(
+      { x: 50, y: 70 },
+      {
+        name: "MyPing",
+        color: Color.from([0.2, 0.5, 0.7]),
+        duration: 2000,
+        size: 192,
+      },
+    );
+  });
+
   const myPing = new MyPing(
     { x: 50, y: 70 },
     {

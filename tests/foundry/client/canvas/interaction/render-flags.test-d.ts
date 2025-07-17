@@ -8,6 +8,7 @@ declare class MyRenderFlagsUsingObject extends RenderFlagsMixin(PIXI.Text) {
 
   renderFlags: RenderFlags<typeof validFlags>;
 }
+
 describe("RenderFlagsMixin Tests", () => {
   test("Flags", () => {
     const myRenderFlagObject = new MyRenderFlagsUsingObject();
@@ -15,6 +16,7 @@ describe("RenderFlagsMixin Tests", () => {
     expectTypeOf(myRenderFlagObject.renderFlags.flags.someFlag.propagate).toEqualTypeOf<"otherFlag"[]>();
   });
 });
+
 describe("RenderFlags Tests", () => {
   test("Flags", () => {
     new RenderFlags(validFlags);
