@@ -44,8 +44,10 @@ declare class CanvasAnimation {
    * ];
    * CanvasAnimation.animate(attributes, {duration:500});
    * ```
+   *
+   * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    */
-  static animate<Parents extends AnyObject[] = AnyObject[]>(
+  static animate<Parents extends object[] = AnyObject[]>(
     attributes: CanvasAnimation.Attributes<Parents>,
     options?: CanvasAnimation.AnimateOptions<Parents>,
   ): CanvasAnimation.AnimateReturn;
@@ -190,7 +192,10 @@ declare namespace CanvasAnimation {
     from: number | Color;
   }>;
 
-  type Attributes<Parents extends AnyObject[]> = {
+  /**
+   * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
+   */
+  type Attributes<Parents extends object[]> = {
     [K in keyof Parents]: Attribute<Parents[K]>;
   };
 
