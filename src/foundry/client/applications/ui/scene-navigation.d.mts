@@ -59,10 +59,10 @@ declare class SceneNavigation<
   toggleExpanded(expanded?: boolean): void;
 
   /**
-   * @deprecated since v13
+   * @deprecated "SceneNavigation.displayProgressBar is deprecated in favor of {@linkcode Notifications#notify} using the \{progress: true\} option" (since v13, until v15)
    * @ignore
    */
-  static displayProgressBar({ label, pct }?: { label?: string; pct?: number }): void;
+  static displayProgressBar({ label, pct }?: SceneNavigation.DisplayProgressBarOptions): void;
 
   static #SceneNavigationStatic: true;
   #SceneNavigation: true;
@@ -86,6 +86,11 @@ declare namespace SceneNavigation {
       active: PreparedScene[];
     };
     canExpand: number;
+  }
+
+  interface DisplayProgressBarOptions {
+    label?: string | undefined;
+    pct?: number | undefined;
   }
 
   interface Configuration<SceneNavigation extends SceneNavigation.Any = SceneNavigation.Any>
