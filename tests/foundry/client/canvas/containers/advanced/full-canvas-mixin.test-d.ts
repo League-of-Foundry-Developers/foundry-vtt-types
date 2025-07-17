@@ -1,9 +1,13 @@
-import { expectTypeOf } from "vitest";
+import { describe, expectTypeOf, test } from "vitest";
 
 import FullCanvasObjectMixin = foundry.canvas.containers.FullCanvasObjectMixin;
 
 class MyFullCanvasContainer extends FullCanvasObjectMixin(PIXI.Container) {}
 
-const myFullCanvasContainer = new MyFullCanvasContainer();
+describe("FullCanvasObjectMixin Tests", () => {
+  test("Uncategorized", () => {
+    const myFullCanvasContainer = new MyFullCanvasContainer();
 
-expectTypeOf(myFullCanvasContainer.calculateBounds()).toEqualTypeOf<void>();
+    expectTypeOf(myFullCanvasContainer.calculateBounds()).toEqualTypeOf<void>();
+  });
+});
