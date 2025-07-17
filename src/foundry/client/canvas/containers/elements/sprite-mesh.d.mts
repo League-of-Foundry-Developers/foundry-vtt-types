@@ -80,7 +80,7 @@ declare class SpriteMesh extends PIXI.Container {
    *
    * {@link https://docs.cocos2d-x.org/cocos2d-x/en/sprites/manipulation.html}
    */
-  protected _anchor: PIXI.ObservablePoint<SpriteMesh>;
+  protected _anchor: PIXI.ObservablePoint<SpriteMesh.Any>;
 
   /**
    * This is used to store the vertex data of the sprite (basically a quad).
@@ -118,7 +118,7 @@ declare class SpriteMesh extends PIXI.Container {
   protected _tintRGB: number;
 
   /**
-   * An instance of a texture uvs used for padded SpriteMesh.
+   * An instance of a texture uvs used for padded `SpriteMesh`.
    * Instanced only when padding becomes non-zero.
    * @defaultValue `null`
    */
@@ -237,7 +237,7 @@ declare class SpriteMesh extends PIXI.Container {
    * If you pass only single parameter, it will set both x and y to the same value as shown in the example below.
    * @privateRemarks Technically should be `ObservablePoint<this>` but this breaks `PrimarySpriteMesh`
    */
-  get anchor(): PIXI.ObservablePoint<SpriteMesh>;
+  get anchor(): PIXI.ObservablePoint<SpriteMesh.Any>;
 
   set anchor(anchor);
 

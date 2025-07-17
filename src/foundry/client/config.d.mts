@@ -2069,9 +2069,9 @@ declare global {
       /** @defaultValue `1` */
       thresholdAttenuationMultiplier: number;
 
-      doorSounds: CONFIG.Wall.DoorSounds;
+      doorSounds: InterfaceToObject<CONFIG.Wall.DoorSounds>;
 
-      animationTypes: CONFIG.Wall.DoorAnimations;
+      animationTypes: InterfaceToObject<CONFIG.Wall.DoorAnimations>;
     };
 
     /**
@@ -3432,7 +3432,7 @@ declare global {
 
     namespace Wall {
       /** @internal */
-      type _DoorSound = InexactPartial<{
+      type _DoorSoundConfig = InexactPartial<{
         /**
          * One or more sound paths for when the door is closed
          * @remarks If an array is provided, a random entry is chosen
@@ -3464,13 +3464,15 @@ declare global {
         unlock: string | string[];
       }>;
 
-      interface DoorSound extends _DoorSound {
+      interface DoorSoundConfig extends _DoorSoundConfig {
         /** A localization string label */
         label: string;
       }
 
+      type DoorSound = Brand<string, "CONFIG.Wall.doorSounds">;
+
       interface DoorSounds {
-        [sound: string]: DoorSound;
+        [sound: DoorSound]: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3485,7 +3487,7 @@ declare global {
          * }
          * ```
          */
-        futuristicFast: DoorSound;
+        futuristicFast: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3500,7 +3502,7 @@ declare global {
          * }
          * ```
          */
-        futuristicHydraulic: DoorSound;
+        futuristicHydraulic: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3515,7 +3517,7 @@ declare global {
          * }
          * ```
          */
-        futuristicForcefield: DoorSound;
+        futuristicForcefield: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3530,7 +3532,7 @@ declare global {
          * }
          * ```
          */
-        industrial: DoorSound;
+        industrial: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3545,7 +3547,7 @@ declare global {
          * }
          * ```
          */
-        industrialCreaky: DoorSound;
+        industrialCreaky: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3560,7 +3562,7 @@ declare global {
          * }
          * ```
          */
-        jail: DoorSound;
+        jail: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3575,7 +3577,7 @@ declare global {
          * }
          * ```
          */
-        magicDoor: DoorSound;
+        magicDoor: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3590,7 +3592,7 @@ declare global {
          * }
          * ```
          */
-        magicWall: DoorSound;
+        magicWall: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3605,7 +3607,7 @@ declare global {
          * }
          * ```
          */
-        metal: DoorSound;
+        metal: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3620,7 +3622,7 @@ declare global {
          * }
          * ```
          */
-        slidingMetal: DoorSound;
+        slidingMetal: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3635,7 +3637,7 @@ declare global {
          * }
          * ```
          */
-        slidingMetalHeavy: DoorSound;
+        slidingMetalHeavy: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3650,7 +3652,7 @@ declare global {
          * }
          * ```
          */
-        slidingModern: DoorSound;
+        slidingModern: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3665,7 +3667,7 @@ declare global {
          * }
          * ```
          */
-        slidingWood: DoorSound;
+        slidingWood: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3680,7 +3682,7 @@ declare global {
          * }
          * ```
          */
-        stoneBasic: DoorSound;
+        stoneBasic: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3695,7 +3697,7 @@ declare global {
          * }
          * ```
          */
-        stoneRocky: DoorSound;
+        stoneRocky: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3710,7 +3712,7 @@ declare global {
          * }
          * ```
          */
-        stoneSandy: DoorSound;
+        stoneSandy: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3725,7 +3727,7 @@ declare global {
          * }
          * ```
          */
-        woodBasic: DoorSound;
+        woodBasic: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3740,7 +3742,7 @@ declare global {
          * }
          * ```
          */
-        woodCreaky: DoorSound;
+        woodCreaky: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3755,7 +3757,7 @@ declare global {
          * }
          * ```
          */
-        woodHeavy: DoorSound;
+        woodHeavy: DoorSoundConfig;
       }
 
       type DoorAnimationFunction = (this: DoorMesh, open: boolean) => CanvasAnimation.Attribute[];
@@ -3793,8 +3795,10 @@ declare global {
         duration: number;
       }
 
+      type DoorAnimation = Brand<string, "CONFIG.Wall.animationTypes">;
+
       interface DoorAnimations {
-        [animationName: string]: DoorAnimationConfig;
+        [animationName: DoorAnimation]: DoorAnimationConfig;
 
         /**
          * @defaultValue

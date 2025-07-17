@@ -47,7 +47,7 @@ declare class DoorMesh extends PrimarySpriteMesh {
    * Configure and initialize the DoorMesh.
    * This is called automatically upon construction, but may be called manually later to update the DoorMesh.
    * @remarks Despite all properties of {@linkcode DoorMesh.AnimationConfiguration} being optional, `options`
-   * lacks a `={}` default, so you must pass at last an empty object
+   * lacks a `={}` default, so you must pass at least an empty object
    */
   initialize(animation: DoorMesh.AnimationConfiguration): void;
 
@@ -138,7 +138,7 @@ declare namespace DoorMesh {
      * @defaultValue `1`
      * @remarks
      * - For `swing` and `swivel` this is rotation direction: `1` for clockwise, `-1` counter-clockwise (pivoting from the
-     * {@linkcode Wall.edge.a | a} endpoint of the edge for `swing`, and the center for `swivel`)
+     * {@linkcode Wall.edge.a | a} endpoint of the edge for `swing`, and the midpoint for `swivel`)
      * - For `slide`, `1` slides towards `a` , `-1` away
      * - For `ascend` and `descend` it has no effect
      */
@@ -174,8 +174,7 @@ declare namespace DoorMesh {
      * - For `swing` and `swivel` it's a linear scale from 0 (no movement) to 2 (180 degrees)
      * - For `slide` it's door-lengths shifted
      * - For `ascend` and `descend` it affects how much the texture grows/shrinks. For `ascend` there's also code in place that implies it should
-     * effect the resulting texture `alpha` (down to a minimum of `0.6` at strength `2.0`), but it's animating a property that doesn't exist
-     * on {@linkcode StateSnapshot} that nothing else reads, so it has no effect.
+     * affect the  texture `alpha` (down to a minimum of `0.6` at strength `2.0`), but it's non-functional as of 13.346: {@link https://github.com/foundryvtt/foundryvtt/issues/13157}
      */
     strength: number;
 

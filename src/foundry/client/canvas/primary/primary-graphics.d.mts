@@ -8,11 +8,10 @@ import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 declare class PrimaryGraphics extends PrimaryCanvasObjectMixin(PIXI.smooth.SmoothGraphics) {
   /**
    * @param options - A config object
-   * @remarks Passing a geometry object should still be supported here; Foundry swapped this class from extending {@linkcode PIXI.Graphics}
-   * to {@linkcode PIXI.smooth.SmoothGraphics}, changing the geometry type used from {@linkcode PIXI.GraphicsGeometry} to
-   * {@linkcode PIXI.smooth.SmoothGraphicsGeometry}, but they neglected to update the `instanceof` check in the constructor, which still
-   * wants a `GraphicsGeometry` if anything is passed other than {@linkcode PrimaryGraphics.ConstructorOptions | ConstructorOptions}.
-   * Since this would cause the type of {@linkcode PrimaryGraphics.geometry | PrimaryGraphics#geometry} to be wrong, it is disallowed.
+   * @remarks Passing a {@linkcode PIXI.smooth.SmoothGraphicsGeometry} instead of an `options` should be supported here,
+   * but has been disabled due to a core bug: {@link https://github.com/foundryvtt/foundryvtt/issues/13170}
+   *
+   * If you need to pass a specific geometry instead of using a default `new SmoothGraphicsGeometry`, pass it as `options.geometry`.
    */
   constructor(options?: PrimaryGraphics.ConstructorOptions);
 
@@ -36,9 +35,8 @@ declare namespace PrimaryGraphics {
      * @defaultValue {@linkcode PIXI.smooth.SmoothGraphicsGeometry | new PIXI.smooth.SmoothGraphicsGeometry()}
      * @remarks Default applied in the {@linkcode PIXI.smooth.SmoothGraphics} constructor.
      *
-     * Foundry types this as {@linkcode PIXI.GraphicsGeometry} still, despite swapping from extending {@linkcode PIXI.Graphics}
-     * to `SmoothGraphics` in v13. Both classes extend {@linkcode PIXI.Geometry}, but `SmoothGraphicsGeometry` does not extend
-     * `GraphicsGeometry`. Likely an oversight, rather than intentional wrongness.
+     * @privateRemarks Foundry types this incorrectly because they didn't update it when they switched base classes:
+     * {@link https://github.com/foundryvtt/foundryvtt/issues/13170}
      */
     geometry: PIXI.smooth.SmoothGraphicsGeometry;
 

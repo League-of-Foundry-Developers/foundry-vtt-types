@@ -1,4 +1,4 @@
-import type { PropertiesOfType, Brand, AnyObject, Identity, InexactPartial } from "#utils";
+import type { PropertiesOfType, Brand, AnyObject, Identity, InexactPartial, AllKeysOf } from "#utils";
 
 /**
  * A helper class providing utility methods for PIXI Canvas animation
@@ -44,10 +44,12 @@ declare class CanvasAnimation {
    * ];
    * CanvasAnimation.animate(attributes, {duration:500});
    * ```
+   *
+   * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    */
-  static animate<AnimationParent extends object = AnyObject>(
-    attributes: CanvasAnimation.Attribute<AnimationParent>[],
-    options?: CanvasAnimation.AnimateOptions<AnimationParent>,
+  static animate<Parents extends object[] = AnyObject[]>(
+    attributes: CanvasAnimation.Attributes<Parents>,
+    options?: CanvasAnimation.AnimateOptions<Parents>,
   ): CanvasAnimation.AnimateReturn;
 
   /**
@@ -123,12 +125,18 @@ declare namespace CanvasAnimation {
     readonly COMPLETED: 2 & CanvasAnimation.STATES;
   }
 
+  /**
+   * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
+   */
   type OnTickFunction<AnimationParent extends object = AnyObject> = (
     dt: number,
     animation: CanvasAnimation.AnimationData<AnimationParent>,
   ) => void;
 
-  /** @internal */
+  /**
+   * `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
+   * @internal
+   */
   type _AnimateOptions<AnimationParent extends object = AnyObject> = InexactPartial<{
     /**
      * A DisplayObject which defines context to the PIXI.Ticker function
@@ -169,8 +177,11 @@ declare namespace CanvasAnimation {
     wait: Promise<void>;
   }>;
 
-  interface AnimateOptions<AnimationParent extends object = AnyObject>
-    extends CanvasAnimation._AnimateOptions<AnimationParent> {}
+  /**
+   * @privateRemarks `extends object[]` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
+   */
+  interface AnimateOptions<Parents extends object[] = AnyObject[]>
+    extends CanvasAnimation._AnimateOptions<Parents[number]> {}
 
   /** @internal */
   type _AnimationAttribute = InexactPartial<{
@@ -181,12 +192,26 @@ declare namespace CanvasAnimation {
     from: number | Color;
   }>;
 
+  /**
+   * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
+   */
+  type Attributes<Parents extends object[]> = {
+    [K in keyof Parents]: Attribute<Parents[K]>;
+  };
+
+  /**
+   * @remarks The portion of Foundry's `CanvasAnimationAttribute` typedef that gets respected if passed.
+   *
+   * See {@linkcode ProcessedAttribute}
+   *
+   * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
+   */
   interface Attribute<AnimationParent extends object = AnyObject> extends _AnimationAttribute {
     /**
      * The attribute name being animated
      * @remarks Does not support dotkeys
      */
-    attribute: keyof AnimationParent;
+    attribute: AllKeysOf<AnimationParent>;
 
     /** The object within which the attribute is stored */
     parent: AnimationParent;
@@ -195,29 +220,41 @@ declare namespace CanvasAnimation {
     to: number | Color;
   }
 
-  interface CanvasAnimationAttribute<AnimationParent extends object = AnyObject>
+  /**
+   * @remarks This is the type after {@linkcode CanvasAnimation.animate} provides the computed `delta` and a `0` value
+   * for `done`, which gets bundled into a {@linkcode CanvasAnimation.AnimationData} and put into {@linkcode CanvasAnimation.animations}
+   *
+   * See {@linkcode CanvasAnimation.Attribute}
+   *
+   * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
+   */
+  interface ProcessedAttribute<AnimationParent extends object = AnyObject>
     extends CanvasAnimation.Attribute<AnimationParent> {
     /**
      * The computed delta between to and from
-     * @remarks This key is always overwritten inside {@linkcode CanvasAnimation.animate}, its passed value is irrelevant
+     * @remarks This key is always computed inside {@linkcode CanvasAnimation.animate}, its passed value is irrelevant
      */
     delta: number;
 
     /**
      * The amount of the total delta which has been animated
-     * @remarks This key is always overwritten inside {@linkcode CanvasAnimation.animate}, its passed value is irrelevant
+     * @remarks This key is always computed inside {@linkcode CanvasAnimation.animate}, its passed value is irrelevant
      */
     done: number;
 
     /**
      * Is this a color animation that applies to RGB channels
-     * @remarks When true, `CanvasAnimation.#animateFrame` assumes `to` *and* `from` are
-     * both `Color`s. It's automatically set `true` if `to` is passed as a `Color`, so it
-     * should be unnecessary to set manually.
+     * @remarks When true, `CanvasAnimation.#animateFrame` assumes `to` *and* `from` are both `Color`s. It's automatically set `true`
+     * if `to` is passed as a `Color` regardless of its own passed value, and is irrelevant if `to` isn't a `Color`, so it should be
+     * unnecessary to set manually and has been omitted from the passable interface. It is read by `CanvasAnimation##updateAttribute`
+     * to determine update behaviour.
      */
     color?: boolean;
   }
 
+  /**
+   * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
+   */
   interface AnimationData<AnimationParent extends object = AnyObject> extends CanvasAnimation.AnimateOptions {
     /** The animation function being executed each frame */
     fn: (dt: number) => void;
@@ -226,7 +263,8 @@ declare namespace CanvasAnimation {
     time: number;
 
     /** The attributes being animated */
-    attributes: CanvasAnimationAttribute<AnimationParent>[];
+    // TODO: a method to narrow what `ProcessedAttribute.attributes` can be by the `.parent` (see https://discord.com/channels/732325252788387980/793933527065690184/1391965566276861964)
+    attributes: ProcessedAttribute<AnimationParent>[];
 
     /** The current state of the animation */
     state: CanvasAnimation.STATES;

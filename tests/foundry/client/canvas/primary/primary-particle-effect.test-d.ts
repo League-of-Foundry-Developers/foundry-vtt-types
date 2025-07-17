@@ -1,23 +1,34 @@
-import { expectTypeOf } from "vitest";
+import { describe, expectTypeOf, test } from "vitest";
+
 import PrimaryParticleEffect = foundry.canvas.primary.PrimaryParticleEffect;
 
 declare const emitterConfig: PIXI.particles.EmitterConfigV3;
 
-// @ts-expect-error Construction requires an EmitterConfig
-new PrimaryParticleEffect();
-const myPPE = new PrimaryParticleEffect(emitterConfig);
+describe("PrimaryParticleEffect Tests", () => {
+  test("Construction", () => {
+    // @ts-expect-error Construction requires an EmitterConfig
+    new PrimaryParticleEffect();
+    new PrimaryParticleEffect(emitterConfig);
+  });
 
-expectTypeOf(myPPE.sort).toBeNumber();
-myPPE.sort = 5; // Setter
+  const myPPE = new PrimaryParticleEffect(emitterConfig);
 
-expectTypeOf(myPPE.elevation).toBeNumber();
-myPPE.elevation = 5; // Setter
+  test("Uncategorized", () => {
+    expectTypeOf(myPPE.sort).toBeNumber();
+    myPPE.sort = 5; // Setter
 
-expectTypeOf(myPPE.shouldRenderDepth).toBeBoolean();
-expectTypeOf(myPPE.destroy()).toBeVoid();
+    expectTypeOf(myPPE.elevation).toBeNumber();
+    myPPE.elevation = 5; // Setter
 
-expectTypeOf(myPPE.initialize(emitterConfig)).toBeVoid();
-expectTypeOf(myPPE.initialize(emitterConfig, true)).toBeVoid();
+    expectTypeOf(myPPE.shouldRenderDepth).toBeBoolean();
+    expectTypeOf(myPPE.destroy()).toBeVoid();
 
-expectTypeOf(myPPE.play()).toBeVoid();
-expectTypeOf(myPPE.stop()).toBeVoid();
+    expectTypeOf(myPPE.initialize(emitterConfig)).toBeVoid();
+    expectTypeOf(myPPE.initialize(emitterConfig, true)).toBeVoid();
+  });
+
+  test("Interaction", () => {
+    expectTypeOf(myPPE.play()).toBeVoid();
+    expectTypeOf(myPPE.stop()).toBeVoid();
+  });
+});
