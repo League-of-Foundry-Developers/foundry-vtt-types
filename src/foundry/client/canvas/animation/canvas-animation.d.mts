@@ -242,6 +242,7 @@ declare namespace CanvasAnimation {
     time: number;
 
     /** The attributes being animated */
+    // TODO: a method to narrow what `ProcessedAttribute.attributes` can be by the `.parent` (see https://discord.com/channels/732325252788387980/793933527065690184/1391965566276861964)
     attributes: ProcessedAttribute<AnimationParent>[];
 
     /** The current state of the animation */
