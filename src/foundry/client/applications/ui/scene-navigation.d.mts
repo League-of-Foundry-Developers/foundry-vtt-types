@@ -18,7 +18,7 @@ declare class SceneNavigation<
   Configuration extends SceneNavigation.Configuration = SceneNavigation.Configuration,
   RenderOptions extends SceneNavigation.RenderOptions = SceneNavigation.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
-  static override DEFAULT_OPTIONS: DeepPartial<ApplicationV2.Configuration> & object;
+  static override DEFAULT_OPTIONS: SceneNavigation.DefaultOptions;
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
 
   /**
