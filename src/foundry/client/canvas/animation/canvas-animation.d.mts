@@ -123,13 +123,13 @@ declare namespace CanvasAnimation {
     readonly COMPLETED: 2 & CanvasAnimation.STATES;
   }
 
-  type OnTickFunction<AnimationParent extends AnyObject = AnyObject> = (
+  type OnTickFunction<AnimationParent extends object = AnyObject> = (
     dt: number,
     animation: CanvasAnimation.AnimationData<AnimationParent>,
   ) => void;
 
   /** @internal */
-  type _AnimateOptions<AnimationParent extends AnyObject = AnyObject> = InexactPartial<{
+  type _AnimateOptions<AnimationParent extends object = AnyObject> = InexactPartial<{
     /**
      * A DisplayObject which defines context to the PIXI.Ticker function
      * @defaultValue {@linkcode foundry.canvas.Canvas.stage | canvas.stage}
@@ -190,7 +190,7 @@ declare namespace CanvasAnimation {
    *
    * See {@linkcode ProcessedAttribute}
    */
-  interface Attribute<AnimationParent extends AnyObject = AnyObject> extends _AnimationAttribute {
+  interface Attribute<AnimationParent extends object = AnyObject> extends _AnimationAttribute {
     /**
      * The attribute name being animated
      * @remarks Does not support dotkeys
@@ -210,7 +210,7 @@ declare namespace CanvasAnimation {
    *
    * See {@linkcode CanvasAnimation.Attribute}
    */
-  interface ProcessedAttribute<AnimationParent extends AnyObject = AnyObject>
+  interface ProcessedAttribute<AnimationParent extends object = AnyObject>
     extends CanvasAnimation.Attribute<AnimationParent> {
     /**
      * The computed delta between to and from
@@ -234,7 +234,7 @@ declare namespace CanvasAnimation {
     color?: boolean;
   }
 
-  interface AnimationData<AnimationParent extends AnyObject = AnyObject> extends CanvasAnimation.AnimateOptions {
+  interface AnimationData<AnimationParent extends object = AnyObject> extends CanvasAnimation.AnimateOptions {
     /** The animation function being executed each frame */
     fn: (dt: number) => void;
 
