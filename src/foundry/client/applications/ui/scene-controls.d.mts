@@ -217,7 +217,8 @@ declare namespace SceneControls {
 
   type EmittedEvents = [...ApplicationV2.EmittedEvents, "activate"];
 
-  interface ActivateOptions extends Pick<SceneControls.RenderOptions, "event" | "control" | "tool" | "toggles"> {}
+  interface ActivateOptions
+    extends Pick<DeepPartial<SceneControls.RenderOptions>, "event" | "control" | "tool" | "toggles"> {}
 }
 
 declare abstract class AnySceneControls extends SceneControls<
