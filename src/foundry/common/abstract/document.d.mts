@@ -1092,18 +1092,6 @@ declare namespace Document {
 
   type WorldCollectionFor<Name extends Document.WorldType> = _WorldCollectionMap[Name];
 
-  // Note(LukeAbby): Will be updated with the CONFIG revamp.
-  type ConfiguredCollectionClass<Name extends Document.Type> = CONFIG extends {
-    readonly [K in Name]: {
-      readonly documentClass?: infer DocumentClass;
-    };
-  }
-    ? DocumentClass
-    : never;
-
-  // Note(LukeAbby): Will be updated with the CONFIG revamp.
-  type ConfiguredCollection<Name extends Document.Type> = FixedInstanceType<ConfiguredCollectionClass<Name>>;
-
   type IsParentOf<
     ParentDocument extends Document.Internal.Instance.Any,
     ChildDocument extends Document.Internal.Instance.Any,
@@ -1341,6 +1329,18 @@ declare namespace Document {
     // The type `{}` is useful here because in an intersection it reduces down to nothing unlike `EmptyObject`.
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     type ConfiguredFlagsForName<Name extends Type> = GetKey<FlagConfig, Name, {}>;
+
+    // Note(LukeAbby): Will be updated with the CONFIG revamp.
+    type ConfiguredCollectionClass<Name extends Document.Type> = CONFIG extends {
+      readonly [K in Name]: {
+        readonly documentClass?: infer DocumentClass;
+      };
+    }
+      ? DocumentClass
+      : never;
+
+    // Note(LukeAbby): Will be updated with the CONFIG revamp.
+    type ConfiguredCollection<Name extends Document.Type> = FixedInstanceType<ConfiguredCollectionClass<Name>>;
   }
 
   /** Any Document, that is a child of the given parent Document. */
@@ -2739,4 +2739,14 @@ declare namespace Document {
     ? D
     : // eslint-disable-next-line @typescript-eslint/no-deprecated
       Stored<D>;
+
+  /**
+   * @deprecated This has been removed without replacement. If you have a need for it please let us know.
+   */
+  type ConfiguredCollectionClass<Name extends Document.Type> = Document.Internal.ConfiguredCollectionClass<Name>;
+
+  /**
+   * @deprecated This has been removed without replacement. If you have a need for it please let us know.
+   */
+  type ConfiguredCollection<Name extends Document.Type> = Document.Internal.ConfiguredCollection<Name>;
 }

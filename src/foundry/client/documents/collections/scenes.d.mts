@@ -52,8 +52,8 @@ declare namespace Scenes {
   interface Any extends AnyScenes {}
   interface AnyConstructor extends Identity<typeof AnyScenes> {}
 
-  interface ImplementationClass extends Document.ConfiguredCollectionClass<"Scene"> {}
-  interface Implementation extends Document.ConfiguredCollection<"Scene"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Scene"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"Scene"> {}
 
   /**
    * @deprecated Replaced by {@linkcode Scenes.ImplementationClass}.

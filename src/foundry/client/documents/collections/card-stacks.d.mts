@@ -14,8 +14,8 @@ declare namespace CardStacks {
   interface Any extends AnyCardStacks {}
   interface AnyConstructor extends Identity<typeof AnyCardStacks> {}
 
-  interface ImplementationClass extends Document.ConfiguredCollectionClass<"Cards"> {}
-  interface Implementation extends Document.ConfiguredCollection<"Cards"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Cards"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"Cards"> {}
 
   /**
    * @deprecated Replaced by {@linkcode CardStacks.ImplementationClass}.

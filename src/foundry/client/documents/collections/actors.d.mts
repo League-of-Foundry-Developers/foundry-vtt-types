@@ -32,8 +32,8 @@ declare namespace Actors {
   interface Any extends AnyActors {}
   interface AnyConstructor extends Identity<typeof AnyActors> {}
 
-  interface ImplementationClass extends Document.ConfiguredCollectionClass<"Actor"> {}
-  interface Implementation extends Document.ConfiguredCollection<"Actor"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Actor"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"Actor"> {}
 
   interface FromCompendiumOptions extends foundry.documents.abstract.WorldCollection.FromCompendiumOptions {
     /**

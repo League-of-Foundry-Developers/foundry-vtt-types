@@ -33,8 +33,8 @@ declare namespace WorldSettings {
   interface Any extends AnyWorldSettings {}
   interface AnyConstructor extends Identity<typeof AnyWorldSettings> {}
 
-  interface ImplementationClass extends Document.ConfiguredCollectionClass<"Setting"> {}
-  interface Implementation extends Document.ConfiguredCollection<"Setting"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Setting"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"Setting"> {}
 
   /**
    * @deprecated Replaced by {@linkcode GlobalLightSource.ImplementationClass}.

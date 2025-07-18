@@ -21,8 +21,8 @@ declare namespace FogExplorations {
   interface Any extends AnyFogExplorations {}
   interface AnyConstructor extends Identity<typeof AnyFogExplorations> {}
 
-  interface ImplementationClass extends Document.ConfiguredCollectionClass<"FogExploration"> {}
-  interface Implementation extends Document.ConfiguredCollection<"FogExploration"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"FogExploration"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"FogExploration"> {}
 
   /**
    * @deprecated Replaced by {@linkcode FogExplorations.ImplementationClass}.

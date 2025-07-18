@@ -34,8 +34,8 @@ declare namespace Playlists {
   interface Any extends AnyPlaylists {}
   interface AnyConstructor extends Identity<typeof AnyPlaylists> {}
 
-  interface ImplementationClass extends Document.ConfiguredCollectionClass<"Playlist"> {}
-  interface Implementation extends Document.ConfiguredCollection<"Playlist"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Playlist"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"Playlist"> {}
 
   /**
    * @deprecated Replaced by {@linkcode Playlists.ImplementationClass}.

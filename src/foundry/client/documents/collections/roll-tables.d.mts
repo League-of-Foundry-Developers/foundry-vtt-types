@@ -23,8 +23,8 @@ declare namespace RollTables {
   interface Any extends AnyRollTables {}
   interface AnyConstructor extends Identity<typeof AnyRollTables> {}
 
-  interface ImplementationClass extends Document.ConfiguredCollectionClass<"RollTable"> {}
-  interface Implementation extends Document.ConfiguredCollection<"RollTable"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"RollTable"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"RollTable"> {}
 
   /**
    * @deprecated Replaced by {@linkcode RollTables.ImplementationClass}.

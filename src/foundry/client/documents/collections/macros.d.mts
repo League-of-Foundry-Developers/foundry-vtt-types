@@ -23,8 +23,8 @@ declare namespace Macros {
   interface Any extends AnyMacros {}
   interface AnyConstructor extends Identity<typeof AnyMacros> {}
 
-  interface ImplementationClass extends Document.ConfiguredCollectionClass<"Macro"> {}
-  interface Implementation extends Document.ConfiguredCollection<"Macro"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Macro"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"Macro"> {}
 
   /**
    * @deprecated Replaced by {@linkcode Macros.ImplementationClass}.

@@ -37,8 +37,8 @@ declare namespace ChatMessages {
   interface Any extends AnyMessages {}
   interface AnyConstructor extends Identity<typeof AnyMessages> {}
 
-  interface ImplementationClass extends Document.ConfiguredCollectionClass<"ChatMessage"> {}
-  interface Implementation extends Document.ConfiguredCollection<"ChatMessage"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"ChatMessage"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"ChatMessage"> {}
 
   /**
    * @deprecated Replaced by {@linkcode ChatMessages.ImplementationClass}.

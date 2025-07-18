@@ -16,8 +16,8 @@ declare namespace Items {
   interface Any extends AnyItems {}
   interface AnyConstructor extends Identity<typeof AnyItems> {}
 
-  interface ImplementationClass extends Document.ConfiguredCollectionClass<"Item"> {}
-  interface Implementation extends Document.ConfiguredCollection<"Item"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Item"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"Item"> {}
 
   /**
    * @deprecated Replaced by {@linkcode Items.ImplementationClass}.
