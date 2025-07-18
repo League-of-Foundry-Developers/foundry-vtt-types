@@ -232,12 +232,12 @@ declare namespace Cards {
   /**
    * The world collection that contains `Cards`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.CardStacks.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.CardStacks.ImplementationClass;
 
   /**
    * The world collection that contains `Cards`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.CardStacks.Configured;
+  type Collection = foundry.documents.collections.CardStacks.Implementation;
 
   /**
    * An instance of `Cards` that comes from the database but failed validation meaning that

@@ -34,8 +34,18 @@ declare namespace Playlists {
   interface Any extends AnyPlaylists {}
   interface AnyConstructor extends Identity<typeof AnyPlaylists> {}
 
-  interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Playlist"> {}
-  interface Configured extends Document.ConfiguredCollection<"Playlist"> {}
+  interface ImplementationClass extends Document.ConfiguredCollectionClass<"Playlist"> {}
+  interface Implementation extends Document.ConfiguredCollection<"Playlist"> {}
+
+  /**
+   * @deprecated Replaced by {@linkcode Playlists.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode Playlists.Implementation}.
+   */
+  type Configured = Implementation;
 }
 
 declare abstract class AnyPlaylists extends Playlists {

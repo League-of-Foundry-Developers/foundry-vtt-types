@@ -188,12 +188,12 @@ declare namespace Scene {
   /**
    * The world collection that contains `Scene`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Scenes.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Scenes.ImplementationClass;
 
   /**
    * The world collection that contains `Scene`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Scenes.Configured;
+  type Collection = foundry.documents.collections.Scenes.Implementation;
 
   /**
    * An instance of `Scene` that comes from the database but failed validation meaning that

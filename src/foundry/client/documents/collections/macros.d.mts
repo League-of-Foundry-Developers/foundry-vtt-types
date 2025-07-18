@@ -23,8 +23,18 @@ declare namespace Macros {
   interface Any extends AnyMacros {}
   interface AnyConstructor extends Identity<typeof AnyMacros> {}
 
-  interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Macro"> {}
-  interface Configured extends Document.ConfiguredCollection<"Macro"> {}
+  interface ImplementationClass extends Document.ConfiguredCollectionClass<"Macro"> {}
+  interface Implementation extends Document.ConfiguredCollection<"Macro"> {}
+
+  /**
+   * @deprecated Replaced by {@linkcode Macros.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode Macros.Implementation}.
+   */
+  type Configured = Implementation;
 }
 
 declare abstract class AnyMacros extends Macros {

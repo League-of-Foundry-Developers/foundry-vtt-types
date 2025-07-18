@@ -32,8 +32,8 @@ declare namespace Actors {
   interface Any extends AnyActors {}
   interface AnyConstructor extends Identity<typeof AnyActors> {}
 
-  interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Actor"> {}
-  interface Configured extends Document.ConfiguredCollection<"Actor"> {}
+  interface ImplementationClass extends Document.ConfiguredCollectionClass<"Actor"> {}
+  interface Implementation extends Document.ConfiguredCollection<"Actor"> {}
 
   interface FromCompendiumOptions extends foundry.documents.abstract.WorldCollection.FromCompendiumOptions {
     /**
@@ -42,6 +42,16 @@ declare namespace Actors {
      */
     clearPrototypeToken: boolean;
   }
+
+  /**
+   * @deprecated Replaced by {@linkcode Actors.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode Actors.Implementation}.
+   */
+  type Configured = Implementation;
 }
 
 declare abstract class AnyActors extends Actors {

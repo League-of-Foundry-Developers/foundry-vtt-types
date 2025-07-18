@@ -150,12 +150,12 @@ declare namespace Folder {
   /**
    * The world collection that contains `Folder`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Folders.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Folders.ImplementationClass;
 
   /**
    * The world collection that contains `Folder`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Folders.Configured;
+  type Collection = foundry.documents.collections.Folders.Implementation;
 
   /**
    * An instance of `Folder` that comes from the database but failed validation meaning that

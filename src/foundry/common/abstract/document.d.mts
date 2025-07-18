@@ -1074,7 +1074,7 @@ declare namespace Document {
    * @internal
    */
   interface _WorldCollectionMap {
-    Actor: foundry.documents.collections.Actors.Configured;
+    Actor: foundry.documents.collections.Actors.Implementation;
     Cards: foundry.documents.collections.CardStacks;
     Combat: foundry.documents.collections.CombatEncounters;
     FogExploration: foundry.documents.collections.FogExplorations;

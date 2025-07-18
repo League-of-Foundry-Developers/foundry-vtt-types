@@ -168,12 +168,12 @@ declare namespace Playlist {
   /**
    * The world collection that contains `Playlist`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Playlists.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Playlists.ImplementationClass;
 
   /**
    * The world collection that contains `Playlist`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Playlists.Configured;
+  type Collection = foundry.documents.collections.Playlists.Implementation;
 
   /**
    * An instance of `Playlist` that comes from the database but failed validation meaning that

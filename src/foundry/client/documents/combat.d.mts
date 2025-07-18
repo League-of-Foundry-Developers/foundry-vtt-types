@@ -239,12 +239,12 @@ declare namespace Combat {
   /**
    * The world collection that contains `Combat`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.CombatEncounters.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.CombatEncounters.ImplementationClass;
 
   /**
    * The world collection that contains `Combat`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.CombatEncounters.Configured;
+  type Collection = foundry.documents.collections.CombatEncounters.Implementation;
 
   /**
    * An instance of `Combat` that comes from the database but failed validation meaning that

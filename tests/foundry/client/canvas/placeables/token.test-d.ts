@@ -60,7 +60,7 @@ expectTypeOf(token.light).toEqualTypeOf<
 >();
 
 expectTypeOf(token.animationContexts).toEqualTypeOf<Map<string, Token.AnimationContext>>();
-expectTypeOf(token.ring).toEqualTypeOf<TokenRing.ConfiguredInstance | null | undefined>();
+expectTypeOf(token.ring).toEqualTypeOf<TokenRing.Implementation | null | undefined>();
 expectTypeOf(token.hasDynamicRing).toBeBoolean();
 // TODO: see if we can fix the 'possibly infinite' here
 expectTypeOf(token.actor).toEqualTypeOf<Actor.Implementation | null>();

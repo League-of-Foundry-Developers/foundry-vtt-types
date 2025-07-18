@@ -12,7 +12,7 @@ expectTypeOf(control.wall).toEqualTypeOf<Wall.Implementation>();
 expectTypeOf(control.center).toEqualTypeOf<PIXI.Point>();
 expectTypeOf(control.isVisible).toEqualTypeOf<boolean>();
 
-expectTypeOf(control.draw()).toEqualTypeOf<Promise<DoorControl.ConfiguredInstance>>();
+expectTypeOf(control.draw()).toEqualTypeOf<Promise<DoorControl.Implementation>>();
 
 expectTypeOf(control.bg).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(control.icon).toEqualTypeOf<PIXI.Sprite | undefined>();

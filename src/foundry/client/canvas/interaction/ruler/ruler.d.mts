@@ -348,8 +348,8 @@ declare namespace Ruler {
   interface Any extends AnyRuler {}
   interface AnyConstructor extends Identity<typeof AnyRuler> {}
 
-  type ConfiguredClass = CONFIG["Canvas"]["rulerClass"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  type ImplementationClass = CONFIG["Canvas"]["rulerClass"];
+  type Implementation = FixedInstanceType<ImplementationClass>;
 
   /** @internal */
   type _ConstructorOptions = NullishProps<{
@@ -489,6 +489,16 @@ declare namespace Ruler {
   interface PartialSegmentForAnimating
     extends Pick<MeasurementSegment, "teleport" | "animation">,
       IntentionalPartial<Omit<MeasurementSegment, "teleport" | "animation">> {}
+
+  /**
+   * @deprecated Replaced by {@linkcode Ruler.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode Ruler.Implementation}.
+   */
+  type ConfiguredInstance = Implementation;
 }
 
 export default Ruler;

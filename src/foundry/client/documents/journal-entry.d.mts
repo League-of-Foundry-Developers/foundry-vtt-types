@@ -174,12 +174,12 @@ declare namespace JournalEntry {
   /**
    * The world collection that contains `JournalEntry`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Journal.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Journal.ImplementationClass;
 
   /**
    * The world collection that contains `JournalEntry`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Journal.Configured;
+  type Collection = foundry.documents.collections.Journal.Implementation;
 
   /**
    * An instance of `JournalEntry` that comes from the database but failed validation meaning that

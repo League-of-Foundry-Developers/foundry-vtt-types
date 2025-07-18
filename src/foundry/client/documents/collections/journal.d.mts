@@ -67,8 +67,18 @@ declare namespace Journal {
   interface Any extends AnyJournal {}
   interface AnyConstructor extends Identity<typeof AnyJournal> {}
 
-  interface ConfiguredClass extends Document.ConfiguredCollectionClass<"JournalEntry"> {}
-  interface Configured extends Document.ConfiguredCollection<"JournalEntry"> {}
+  interface ImplementationClass extends Document.ConfiguredCollectionClass<"JournalEntry"> {}
+  interface Implementation extends Document.ConfiguredCollection<"JournalEntry"> {}
+
+  /**
+   * @deprecated Replaced by {@linkcode Journal.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode Journal.Implementation}.
+   */
+  type Configured = Implementation;
 }
 
 declare abstract class AnyJournal extends Journal {

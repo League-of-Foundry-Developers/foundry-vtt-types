@@ -171,12 +171,12 @@ declare namespace ChatMessage {
   /**
    * The world collection that contains `ChatMessage`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.ChatMessages.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.ChatMessages.ImplementationClass;
 
   /**
    * The world collection that contains `ChatMessage`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.ChatMessages.Configured;
+  type Collection = foundry.documents.collections.ChatMessages.Implementation;
 
   /**
    * An instance of `ChatMessage` that comes from the database but failed validation meaning that

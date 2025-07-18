@@ -38,8 +38,18 @@ declare namespace Folders {
   interface Any extends AnyFolders {}
   interface AnyConstructor extends Identity<typeof AnyFolders> {}
 
-  interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Folder"> {}
-  interface Configured extends Document.ConfiguredCollection<"Folder"> {}
+  interface ImplementationClass extends Document.ConfiguredCollectionClass<"Folder"> {}
+  interface Implementation extends Document.ConfiguredCollection<"Folder"> {}
+
+  /**
+   * @deprecated Replaced by {@linkcode Folders.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode Folders.Implementation}.
+   */
+  type Configured = Implementation;
 }
 
 declare abstract class AnyFolders extends Folders {

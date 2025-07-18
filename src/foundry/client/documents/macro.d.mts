@@ -160,12 +160,12 @@ declare namespace Macro {
   /**
    * The world collection that contains `Macro`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Macros.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Macros.ImplementationClass;
 
   /**
    * The world collection that contains `Folder`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Macros.Configured;
+  type Collection = foundry.documents.collections.Macros.Implementation;
 
   /**
    * An instance of `Macro` that comes from the database but failed validation meaning that

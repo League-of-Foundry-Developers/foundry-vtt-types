@@ -20,7 +20,7 @@ declare class EnvironmentCanvasGroup<
    * The global light source attached to the environment
    * @remarks This is `defineProperty`'d as non-writable and non-configurable at construction
    */
-  readonly globalLightSource: foundry.canvas.sources.GlobalLightSource.ConfiguredInstance;
+  readonly globalLightSource: foundry.canvas.sources.GlobalLightSource.Implementation;
 
   /**
    * Should this group tear down its non-layer children?

@@ -110,12 +110,12 @@ declare namespace User {
   /**
    * The world collection that contains `User`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Users.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Users.ImplementationClass;
 
   /**
    * The world collection that contains `User`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Users.Configured;
+  type Collection = foundry.documents.collections.Users.Implementation;
 
   /**
    * An instance of `User` that comes from the database but failed validation meaning that

@@ -234,12 +234,12 @@ declare namespace Item {
   /**
    * The world collection that contains `Item`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Items.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Items.ImplementationClass;
 
   /**
    * The world collection that contains `Item`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Items.Configured;
+  type Collection = foundry.documents.collections.Items.Implementation;
 
   /**
    * An instance of `Item` that comes from the database but failed validation meaning that

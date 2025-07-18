@@ -33,8 +33,18 @@ declare namespace WorldSettings {
   interface Any extends AnyWorldSettings {}
   interface AnyConstructor extends Identity<typeof AnyWorldSettings> {}
 
-  interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Setting"> {}
-  interface Configured extends Document.ConfiguredCollection<"Setting"> {}
+  interface ImplementationClass extends Document.ConfiguredCollectionClass<"Setting"> {}
+  interface Implementation extends Document.ConfiguredCollection<"Setting"> {}
+
+  /**
+   * @deprecated Replaced by {@linkcode GlobalLightSource.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode GlobalLightSource.Implementation}.
+   */
+  type Configured = Implementation;
 }
 
 declare abstract class AnyWorldSettings extends WorldSettings {

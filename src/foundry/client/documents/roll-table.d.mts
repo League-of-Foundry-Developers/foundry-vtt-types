@@ -163,12 +163,12 @@ declare namespace RollTable {
   /**
    * The world collection that contains `RollTable`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.RollTables.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.RollTables.ImplementationClass;
 
   /**
    * The world collection that contains `RollTable`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.RollTables.Configured;
+  type Collection = foundry.documents.collections.RollTables.Implementation;
 
   /**
    * An instance of `RollTable` that comes from the database but failed validation meaning that

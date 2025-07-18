@@ -237,12 +237,12 @@ declare namespace Actor {
   /**
    * The world collection that contains `Actor`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Actors.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Actors.ImplementationClass;
 
   /**
    * The world collection that contains `Actor`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Actors.Configured;
+  type Collection = foundry.documents.collections.Actors.Implementation;
 
   /**
    * An instance of `Actor` that comes from the database but failed validation meaning that

@@ -79,8 +79,18 @@ declare namespace DoorControl {
   interface Any extends AnyDoorControl {}
   interface AnyConstructor extends Identity<typeof AnyDoorControl> {}
 
-  type ConfiguredClass = CONFIG["Canvas"]["doorControlClass"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  type ImplementationClass = CONFIG["Canvas"]["doorControlClass"];
+  type Implementation = FixedInstanceType<ImplementationClass>;
+
+  /**
+   * @deprecated Replaced by {@linkcode DoorControl.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode DoorControl.Implementation}.
+   */
+  type ConfiguredInstance = Implementation;
 }
 
 export default DoorControl;
