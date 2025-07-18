@@ -54,7 +54,7 @@ declare class ActorSheet<Options extends ActorSheet.Options = ActorSheet.Options
 
   override close(options?: FormApplication.CloseOptions): Promise<void>;
 
-  override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<ActorSheet.ActorSheetData>>;
+  override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<ActorSheet.Data>>;
 
   protected override _getHeaderButtons(): Application.HeaderButton[];
 
@@ -179,12 +179,17 @@ declare namespace ActorSheet {
     token?: TokenDocument.Implementation | null;
   }
 
-  interface ActorSheetData<Options extends ActorSheet.Options = ActorSheet.Options>
-    extends DocumentSheet.DocumentSheetData<Options, Actor.Implementation> {
+  interface Data<Options extends ActorSheet.Options = ActorSheet.Options>
+    extends DocumentSheet.Data<Options, Actor.Implementation> {
     actor: ActorSheet["actor"];
     items: this["data"]["items"];
     effects: this["data"]["effects"];
   }
+
+  /**
+   * @deprecated Replaced with {@linkcode ActorSheet.Data}.
+   */
+  type ActorSheetData = Data;
 }
 
 declare abstract class AnyActorSheet extends ActorSheet<ActorSheet.Options> {

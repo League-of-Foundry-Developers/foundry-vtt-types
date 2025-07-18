@@ -52,7 +52,7 @@ declare class ItemSheet<Options extends ItemSheet.Options = ItemSheet.Options> e
    */
   get actor(): this["item"]["actor"];
 
-  override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<ItemSheet.ItemSheetData>>;
+  override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<ItemSheet.Data>>;
 }
 
 declare namespace ItemSheet {
@@ -60,9 +60,14 @@ declare namespace ItemSheet {
 
   interface Options extends DocumentSheet.Options<Item.Implementation> {}
 
-  interface ItemSheetData<Options extends ItemSheet.Options = ItemSheet.Options>
-    extends DocumentSheet.DocumentSheetData<Options, Item.Implementation> {
+  interface Data<Options extends ItemSheet.Options = ItemSheet.Options>
+    extends DocumentSheet.Data<Options, Item.Implementation> {
     item: this["document"];
   }
+
+  /**
+   * @deprecated Replaced with {@linkcode ItemSheet.Data}.
+   */
+  type ItemSheetData = Data;
 }
 export default ItemSheet;

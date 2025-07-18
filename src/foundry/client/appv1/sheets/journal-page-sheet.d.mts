@@ -44,7 +44,7 @@ declare class JournalPageSheet<
 
   toc: Record<string, JournalEntryPage.JournalEntryPageHeading>;
 
-  override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<JournalPageSheet.JournalPageSheetData>>;
+  override getData(options?: Partial<Options>): MaybePromise<GetDataReturnType<JournalPageSheet.Data>>;
 
   protected override _renderInner(data: ReturnType<this["getData"]>): Promise<JQuery<HTMLElement>>;
 
@@ -79,9 +79,14 @@ declare namespace JournalPageSheet {
 
   interface Options extends DocumentSheet.Options<JournalEntryPage.Implementation> {}
 
-  interface JournalPageSheetData extends DocumentSheet.DocumentSheetData<Options, JournalEntryPage.Implementation> {
+  interface Data extends DocumentSheet.Data<Options, JournalEntryPage.Implementation> {
     headingLevels: Record<number, string>;
   }
+
+  /**
+   * @deprecated Replaced with {@linkcode JournalPageSheet.Data}.
+   */
+  type JournalPageSheetData = Data;
 }
 
 /**
@@ -136,7 +141,7 @@ declare class JournalTextPageSheet extends JournalPageSheet {
 }
 
 declare namespace JournalTextPageSheet {
-  interface TextData extends JournalPageSheet.JournalPageSheetData {
+  interface TextData extends JournalPageSheet.Data {
     editor: {
       engine: string;
       collaborate: boolean;
@@ -151,7 +156,7 @@ declare namespace JournalTextPageSheet {
 declare class JournalTextTinyMCESheet extends JournalTextPageSheet {
   override getData(
     options?: Partial<JournalPageSheet.Options>,
-  ): Promise<GetDataReturnType<JournalTextTinyMCESheet.MCEData>>;
+  ): Promise<GetDataReturnType<JournalTextTinyMCESheet.Data>>;
 
   override close(options?: FormApplication.CloseOptions): Promise<void>;
 
@@ -165,7 +170,12 @@ declare namespace JournalTextTinyMCESheet {
   interface Any extends AnyJournalTextTinyMCESheet {}
   interface AnyConstructor extends Identity<typeof AnyJournalTextTinyMCESheet> {}
 
-  interface MCEData extends JournalTextPageSheet.TextData {}
+  interface Data extends JournalTextPageSheet.TextData {}
+
+  /**
+   * @deprecated Replaced with {@linkcode JournalTextTinyMCESheet.Data}.
+   */
+  type MCEData = Data;
 }
 
 declare abstract class AnyJournalPageSheet extends JournalPageSheet<JournalPageSheet.Options> {

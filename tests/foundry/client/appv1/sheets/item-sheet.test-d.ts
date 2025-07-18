@@ -10,7 +10,7 @@ const itemSheet = new ItemSheet(item);
 expectTypeOf(itemSheet.object).toEqualTypeOf<Item.Implementation>();
 expectTypeOf(itemSheet.document).toEqualTypeOf<Item.Implementation>();
 expectTypeOf(ItemSheet.defaultOptions).toEqualTypeOf<DocumentSheet.Options<Item.Implementation>>();
-expectTypeOf(itemSheet.getData()).toEqualTypeOf<MaybePromise<GetDataReturnType<ItemSheet.ItemSheetData>>>();
+expectTypeOf(itemSheet.getData()).toEqualTypeOf<MaybePromise<GetDataReturnType<ItemSheet.Data>>>();
 expectTypeOf(itemSheet.render(true)).toEqualTypeOf<ItemSheet>();
 
 expectTypeOf(itemSheet.item).toEqualTypeOf<Item.Implementation>();
