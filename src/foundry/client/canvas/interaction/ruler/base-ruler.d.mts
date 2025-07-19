@@ -225,7 +225,6 @@ declare namespace BaseRuler {
      * @defaultValue `[]`
      * @remarks Can't be `undefined` because of an `in` check.
      */
-
     path: Canvas.ElevatedPoint[];
 
     /**
