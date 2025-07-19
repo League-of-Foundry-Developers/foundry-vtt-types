@@ -1,4 +1,4 @@
-import type { PropertiesOfType, Brand, AnyObject, Identity, InexactPartial, AllKeysOf } from "#utils";
+import type { PropertiesOfType, Brand, Identity, InexactPartial, AllKeysOf } from "#utils";
 
 /**
  * A helper class providing utility methods for PIXI Canvas animation
@@ -47,7 +47,7 @@ declare class CanvasAnimation {
    *
    * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    */
-  static animate<Parents extends object[] = AnyObject[]>(
+  static animate<Parents extends object[] = object[]>(
     attributes: CanvasAnimation.Attributes<Parents>,
     options?: CanvasAnimation.AnimateOptions<Parents>,
   ): CanvasAnimation.AnimateReturn;
@@ -128,7 +128,7 @@ declare namespace CanvasAnimation {
   /**
    * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    */
-  type OnTickFunction<AnimationParent extends object = AnyObject> = (
+  type OnTickFunction<AnimationParent extends object = object> = (
     dt: number,
     animation: CanvasAnimation.AnimationData<AnimationParent>,
   ) => void;
@@ -137,7 +137,7 @@ declare namespace CanvasAnimation {
    * `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    * @internal
    */
-  type _AnimateOptions<AnimationParent extends object = AnyObject> = InexactPartial<{
+  type _AnimateOptions<AnimationParent extends object = object> = InexactPartial<{
     /**
      * A DisplayObject which defines context to the PIXI.Ticker function
      * @defaultValue {@linkcode foundry.canvas.Canvas.stage | canvas.stage}
@@ -180,7 +180,7 @@ declare namespace CanvasAnimation {
   /**
    * @privateRemarks `extends object[]` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    */
-  interface AnimateOptions<Parents extends object[] = AnyObject[]>
+  interface AnimateOptions<Parents extends object[] = object[]>
     extends CanvasAnimation._AnimateOptions<Parents[number]> {}
 
   /** @internal */
@@ -206,7 +206,7 @@ declare namespace CanvasAnimation {
    *
    * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    */
-  interface Attribute<AnimationParent extends object = AnyObject> extends _AnimationAttribute {
+  interface Attribute<AnimationParent extends object = object> extends _AnimationAttribute {
     /**
      * The attribute name being animated
      * @remarks Does not support dotkeys
@@ -228,7 +228,7 @@ declare namespace CanvasAnimation {
    *
    * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    */
-  interface ProcessedAttribute<AnimationParent extends object = AnyObject>
+  interface ProcessedAttribute<AnimationParent extends object = object>
     extends CanvasAnimation.Attribute<AnimationParent> {
     /**
      * The computed delta between to and from
@@ -255,7 +255,7 @@ declare namespace CanvasAnimation {
   /**
    * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    */
-  interface AnimationData<AnimationParent extends object = AnyObject> extends CanvasAnimation.AnimateOptions {
+  interface AnimationData<AnimationParent extends object = object> extends CanvasAnimation.AnimateOptions {
     /** The animation function being executed each frame */
     fn: (dt: number) => void;
 
