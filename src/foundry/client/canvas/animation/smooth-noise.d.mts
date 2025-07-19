@@ -7,30 +7,46 @@ declare class SmoothNoise {
   /**
    * @param options - Configuration options for the noise process.
    */
-  constructor({ amplitude, scale, maxReferences }?: InexactPartial<SmoothNoise.ConstructorOptions>);
+  constructor(options?: SmoothNoise.ConstructorOptions);
 
-  _maxReferences: number;
+  /**
+   * @remarks Stores the value passed in construction options, or `1` if that's falsey.
+   *
+   * `defineProperty`'d in construction with `writable: false`
+   */
+  protected readonly _maxReferences: number;
 
-  _references: number[];
+  /**
+   * @remarks Stores {@linkcode _maxReferences} number of `Math.random()` calls
+   *
+   * `defineProperty`'d in construction with `writable: false`
+   */
+  protected readonly _references: number[];
 
   /**
    * Amplitude of the generated noise output
    * The noise output is multiplied by this value
+   *
+   * @remarks
+   * @throws If passed `NaN` or `+`/`-Infinity`
    */
   get amplitude(): number;
 
   set amplitude(amplitude);
 
-  _amplitude: number;
+  protected _amplitude: number;
 
   /**
    * Scale factor of the random indices
+   *
+   * @remarks
+   * @throws If passed a negative number, `NaN`, or `+`/`-Infinity`
    */
   get scale(): number;
 
   set scale(scale);
 
-  _scale: number;
+  protected _scale: number;
 
   /**
    * Generate the noise value corresponding to a provided numeric x value.
@@ -49,14 +65,14 @@ declare namespace SmoothNoise {
     /**
      * The generated noise will be on the range [0, amplitude].
      * @defaultValue `1`
-     * @remarks Can't be null because it only has a signature-provided default
+     * @remarks Must be finite
      */
     amplitude: number;
 
     /**
      * An adjustment factor for the input x values which place them on an appropriate range.
      * @defaultValue `1`
-     * @remarks Can't be null because it only has a signature-provided default
+     * @remarks Must be finite and non-negative
      */
     scale: number;
 
@@ -64,7 +80,6 @@ declare namespace SmoothNoise {
      * The number of pre-generated random numbers to generate.
      * @defaultValue `256`
      * @remarks Must be a power of 2 or construction throws.
-     * Can't be null because it only has a signature-provided default
      */
     maxReferences: number;
   }>;
