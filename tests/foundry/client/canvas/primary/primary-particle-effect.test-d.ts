@@ -1,4 +1,34 @@
-// import { expectTypeOf } from "vitest";
-// import { PrimaryParticleEffect } from "#client/canvas/primary/_module.mjs";
+import { describe, expectTypeOf, test } from "vitest";
 
-// TODO: new in v13
+import PrimaryParticleEffect = foundry.canvas.primary.PrimaryParticleEffect;
+
+declare const emitterConfig: PIXI.particles.EmitterConfigV3;
+
+describe("PrimaryParticleEffect Tests", () => {
+  test("Construction", () => {
+    // @ts-expect-error Construction requires an EmitterConfig
+    new PrimaryParticleEffect();
+    new PrimaryParticleEffect(emitterConfig);
+  });
+
+  const myPPE = new PrimaryParticleEffect(emitterConfig);
+
+  test("Uncategorized", () => {
+    expectTypeOf(myPPE.sort).toBeNumber();
+    myPPE.sort = 5; // Setter
+
+    expectTypeOf(myPPE.elevation).toBeNumber();
+    myPPE.elevation = 5; // Setter
+
+    expectTypeOf(myPPE.shouldRenderDepth).toBeBoolean();
+    expectTypeOf(myPPE.destroy()).toBeVoid();
+
+    expectTypeOf(myPPE.initialize(emitterConfig)).toBeVoid();
+    expectTypeOf(myPPE.initialize(emitterConfig, true)).toBeVoid();
+  });
+
+  test("Interaction", () => {
+    expectTypeOf(myPPE.play()).toBeVoid();
+    expectTypeOf(myPPE.stop()).toBeVoid();
+  });
+});

@@ -3,13 +3,13 @@ import type { Identity } from "#utils";
 /**
  * A special Graphics class which handles Grid layer highlighting
  */
-declare class GridHighlight extends PIXI.Graphics {
-  constructor(name: string, ...args: ConstructorParameters<typeof PIXI.Graphics>);
+declare class GridHighlight extends PIXI.smooth.SmoothGraphics {
+  constructor(name: string, ...args: ConstructorParameters<typeof PIXI.smooth.SmoothGraphics>);
 
   /**
    * Track the Grid Highlight name
    */
-  name: string;
+  override name: string;
 
   /**
    * Track distinct positions which have already been highlighted

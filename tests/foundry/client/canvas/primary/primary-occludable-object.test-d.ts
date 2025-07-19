@@ -1,21 +1,52 @@
-import { expectTypeOf } from "vitest";
-import { PrimaryOccludableObjectMixin } from "#client/canvas/primary/_module.mjs";
-import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import { describe, expectTypeOf, test } from "vitest";
+
+import PrimaryOccludableObjectMixin = foundry.canvas.primary.PrimaryOccludableObjectMixin;
+import Token = foundry.canvas.placeables.Token;
 
 declare const someToken: Token.Implementation;
-declare const someRenderer: PIXI.Renderer;
 
-const POOClass = PrimaryOccludableObjectMixin(PIXI.Container);
-const myPOO = new POOClass();
+describe("PrimaryOccludableObject Tests", () => {
+  const myPOO = new (PrimaryOccludableObjectMixin(PIXI.Container))();
 
-expectTypeOf(myPOO.testOcclusion(someToken, { corners: true })).toEqualTypeOf<boolean>();
-expectTypeOf(myPOO.occlusionMode).toEqualTypeOf<foundry.CONST.OCCLUSION_MODES>();
-expectTypeOf(myPOO._restrictionState).toEqualTypeOf<number>();
-expectTypeOf(myPOO.debounceSetOcclusion(false)).toEqualTypeOf<boolean>();
+  test("Uncategorized", () => {
+    expectTypeOf(myPOO.hidden).toBeBoolean();
+    expectTypeOf(myPOO.occluded).toBeBoolean();
+    expectTypeOf(myPOO.occlusionMode).toEqualTypeOf<CONST.OCCLUSION_MODES>();
+    expectTypeOf(myPOO.unoccludedAlpha).toBeNumber();
+    expectTypeOf(myPOO.occludedAlpha).toBeNumber();
 
-// deprecated until v13
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myPOO.renderOcclusion(someRenderer)).toEqualTypeOf<void>();
-// deprecated until v14
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myPOO.containsPixel(500, 500, 0.5)).toEqualTypeOf<boolean>();
+    expectTypeOf(myPOO.hoverFade).toBeBoolean();
+    myPOO.hoverFade = true; // Setter
+
+    expectTypeOf(myPOO["_occlusionState"]).toEqualTypeOf<PrimaryOccludableObjectMixin.OcclusionState>();
+    expectTypeOf(myPOO["_hoverFadeState"]).toEqualTypeOf<PrimaryOccludableObjectMixin.HoverFadeState>();
+    expectTypeOf(myPOO["_restrictionState"]).toBeNumber();
+
+    expectTypeOf(myPOO.restrictsLight).toBeBoolean();
+    myPOO.restrictsLight = true; // Setter
+
+    expectTypeOf(myPOO.restrictsWeather).toBeBoolean();
+    myPOO.restrictsWeather = true; // Setter
+
+    expectTypeOf(myPOO.isOccludable).toBeBoolean();
+    expectTypeOf(myPOO.debounceSetOcclusion(false)).toEqualTypeOf<boolean>();
+    expectTypeOf(myPOO.updateCanvasTransform()).toBeVoid();
+    expectTypeOf(myPOO["_shouldRenderDepth"]()).toBeBoolean();
+
+    expectTypeOf(myPOO.testOcclusion(someToken)).toEqualTypeOf<boolean>();
+    expectTypeOf(myPOO.testOcclusion(someToken, { corners: true })).toEqualTypeOf<boolean>();
+    expectTypeOf(myPOO.testOcclusion(someToken, { corners: undefined })).toEqualTypeOf<boolean>();
+  });
+
+  test("Deprecated", () => {
+    // deprecated since v12, until v14
+
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(myPOO.roof).toBeBoolean();
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    myPOO.roof = false; // Setter
+
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(myPOO.containsPixel(500, 500, 0.5)).toEqualTypeOf<boolean>();
+  });
+});

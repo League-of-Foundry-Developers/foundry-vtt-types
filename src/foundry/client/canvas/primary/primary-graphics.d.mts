@@ -1,26 +1,27 @@
-import type { Identity, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type { PrimaryCanvasObjectMixin } from "./_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
 /**
  * A basic PCO which is handling drawings of any shape.
  */
-declare class PrimaryGraphics extends PrimaryCanvasObjectMixin(PIXI.Graphics) {
+declare class PrimaryGraphics extends PrimaryCanvasObjectMixin(PIXI.smooth.SmoothGraphics) {
   /**
    * @param options - A config object
+   * @remarks Passing a {@linkcode PIXI.smooth.SmoothGraphicsGeometry} instead of an `options` should be supported here,
+   * but has been disabled due to a core bug: {@link https://github.com/foundryvtt/foundryvtt/issues/13170}
+   *
+   * If you need to pass a specific geometry instead of using a default `new SmoothGraphicsGeometry`, pass it as `options.geometry`.
    */
-  constructor(
-    /**
-     * @remarks Passing `null`, or an object where the `geometry` property is either missing or nullish, will result in an effective default of `new PIXI.GraphicsGeometry()`
-     */
-    options?: PIXI.GraphicsGeometry | PrimaryGraphics.ConstructorOptions | null,
-  );
+  constructor(options?: PrimaryGraphics.ConstructorOptions);
 
-  override _calculateCanvasBounds(): void;
+  protected override _calculateCanvasBounds(): void;
 
   override updateCanvasTransform(): void;
 
   override containsCanvasPoint(point: PIXI.IPointData): boolean;
+
+  #PrimaryGraphics: true;
 }
 
 declare namespace PrimaryGraphics {
@@ -28,28 +29,31 @@ declare namespace PrimaryGraphics {
   interface AnyConstructor extends Identity<typeof AnyPrimaryGraphics> {}
 
   /** @internal */
-  type _ConstructorOptions = NullishProps<{
+  type _ConstructorOptions = InexactPartial<{
     /**
      * A geometry passed to the graphics.
-     * @defaultValue `new PIXI.GraphicsGeometry()`
-     * @remarks Default via calling `super(geometry)` with a falsey value
+     * @defaultValue {@linkcode PIXI.smooth.SmoothGraphicsGeometry | new PIXI.smooth.SmoothGraphicsGeometry()}
+     * @remarks Default applied in the {@linkcode PIXI.smooth.SmoothGraphics} constructor.
+     *
+     * @privateRemarks Foundry types this incorrectly because they didn't update it when they switched base classes:
+     * {@link https://github.com/foundryvtt/foundryvtt/issues/13170}
      */
-    geometry: PIXI.GraphicsGeometry;
+    geometry: PIXI.smooth.SmoothGraphicsGeometry;
 
     /**
      * The name of the PCO.
      * @defaultValue `null`
-     * @remarks Default via `?? null` in function body
      */
-    name: string;
+    name: string | null;
 
     /**
      * Any object that owns this PCO.
      * @defaultValue `null`
-     * @remarks Default via `?? null` in function body
-     * @privateRemarks Foundry types as `*`, but the only place they use this class is for `Drawing`s
+     * @remarks Foundry types as `*`, but the only place this class sees core use it's in {@linkcode PrimaryCanvasGroup.addDrawing | PrimaryCanvasGroup#addDrawing}
+     *
+     * See {@linkcode PrimaryCanvasObjectMixin.AnyMixed.object | PrimaryCanvasObject#object}
      */
-    object: PlaceableObject.Any;
+    object: PlaceableObject.Any | null;
   }>;
 
   interface ConstructorOptions extends _ConstructorOptions {}

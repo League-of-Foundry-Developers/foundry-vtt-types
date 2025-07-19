@@ -6,8 +6,7 @@ import { FullCanvasObjectMixin } from "#client/canvas/containers/_module.mjs";
  */
 declare class ParticleEffect extends FullCanvasObjectMixin(PIXI.Container) {
   /**
-   * @param options - Options passed to the getParticleEmitters method which can be used to customize values of the emitter configuration.
-   *                  (default: `{}`)
+   * @param options - Options passed to the getParticleEmitters method which can be used to customize values of the emitter configuration. (default: `{}`)
    * @remarks Despite being an `={}` parameter, construction will throw if it is passed (or defaults to via omission) an empty object
    */
   constructor(options: PIXI.particles.EmitterConfigV3);
@@ -15,7 +14,7 @@ declare class ParticleEffect extends FullCanvasObjectMixin(PIXI.Container) {
   emitters: PIXI.particles.Emitter[];
 
   /**
-   * Create an emitter instance which automatically updates using the shared PIXI.Ticker
+   * Create an emitter instance which automatically updates using the shared {@linkcode PIXI.Ticker}
    * @param config - The emitter configuration
    * @returns The created Emitter instance
    */
@@ -26,9 +25,9 @@ declare class ParticleEffect extends FullCanvasObjectMixin(PIXI.Container) {
    * This base class creates a single emitter using the explicitly provided configuration.
    * Subclasses can override this method for more advanced configurations.
    * @param options - Options provided to the ParticleEffect constructor which can be used to customize
-   *                  configuration values for created emitters. (default: `{}`)
-   * @throws If `options` is passed as (or defaults to via omission) an empty object
+   * configuration values for created emitters. (default: `{}`)
    * @remarks Despite its name, this method only takes a single config object and only returns a single-element array.
+   * @throws If `options` is passed as (or defaults to via omission) an empty object
    */
   getParticleEmitters(options: PIXI.particles.EmitterConfigV3): PIXI.particles.Emitter[];
 

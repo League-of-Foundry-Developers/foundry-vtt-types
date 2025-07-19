@@ -144,4 +144,8 @@ expectTypeOf(myWall.threshold.light).toEqualTypeOf<number | null>();
 expectTypeOf(myWall.threshold.sight).toEqualTypeOf<number | null>();
 expectTypeOf(myWall.threshold.sound).toEqualTypeOf<number | null>();
 expectTypeOf(myWall.threshold.attenuation).toBeBoolean();
-expectTypeOf(myWall.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();
+expectTypeOf(myWall.flags).toEqualTypeOf<
+  foundry.data.fields.DocumentFlagsField._TwoLevelPartial<
+    InterfaceToObject<Document.CoreFlags> & InterfaceToObject<WallDocument.CoreFlags>
+  >
+>();

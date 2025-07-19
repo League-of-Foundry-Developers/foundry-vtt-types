@@ -17,7 +17,7 @@ expectTypeOf(myOcclusionMask.autoRender).toBeBoolean();
 expectTypeOf(myOcclusionMask.vision).toBeBoolean();
 // @ts-expect-error No setter is provided for `vision`
 myOcclusionMask.vision = false;
-expectTypeOf(myOcclusionMask.clear()).toBeVoid();
+expectTypeOf(myOcclusionMask.clear()).toEqualTypeOf<typeof myOcclusionMask>();
 expectTypeOf(myOcclusionMask.mapElevation(20)).toBeNumber();
 expectTypeOf(myOcclusionMask.updateOcclusion()).toBeVoid();
 expectTypeOf(myOcclusionMask["_updateOcclusionMask"]()).toBeVoid();
