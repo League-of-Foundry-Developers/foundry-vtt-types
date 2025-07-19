@@ -26,10 +26,10 @@ declare class GamePause<
   protected override _renderHTML(
     _context: RenderContext,
     _options: DeepPartial<RenderOptions>,
-  ): Promise<GamePause.RenderHTMLResult>;
+  ): Promise<GamePause.RenderHTMLReturn>;
 
   protected override _replaceHTML(
-    result: GamePause.RenderHTMLResult,
+    result: GamePause.RenderHTMLReturn,
     content: HTMLElement,
     _options: DeepPartial<RenderOptions>,
   ): void;
@@ -50,7 +50,7 @@ declare namespace GamePause {
     spin: boolean;
   }
 
-  type RenderHTMLResult = [HTMLImageElement, HTMLElement];
+  type RenderHTMLReturn = [HTMLImageElement, HTMLElement];
 
   interface Configuration<GamePause extends GamePause.Any = GamePause.Any>
     extends ApplicationV2.Configuration<GamePause> {}
