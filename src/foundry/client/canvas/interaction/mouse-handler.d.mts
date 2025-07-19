@@ -234,6 +234,7 @@ declare class MouseInteractionManager<ObjectFor extends PIXI.Container = PIXI.Co
   callback(
     action: MouseInteractionManager.Action,
     event: MouseInteractionManager.Event<ObjectFor>,
+    // TODO: Possibly limit `args` to what's valid for the given `action`
     ...args: AnyArray
   ): boolean;
 
@@ -409,7 +410,7 @@ declare namespace MouseInteractionManager {
   interface InteractionData<ObjectFor extends PIXI.Container = PIXI.Container>
     extends Pick<Canvas.Event.InteractionData<ObjectFor>, "object" | "origin" | "screenOrigin" | "destination"> {}
 
-  type Event<ObjectFor extends PIXI.Container = PIXI.Container> = Canvas.Event._Base<ObjectFor>; //| globalThis.Event;
+  type Event<ObjectFor extends PIXI.Container = PIXI.Container> = Canvas.Event._Base<ObjectFor>;
 }
 
 export default MouseInteractionManager;

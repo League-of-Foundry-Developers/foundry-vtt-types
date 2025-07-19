@@ -826,7 +826,10 @@ declare namespace Canvas {
   }
 
   namespace Event {
-    /** @internal */
+    /**
+     * All known InteractionData properties. Last updated 13.346.
+     * @internal
+     */
     type _InteractionData<ObjectFor extends PIXI.DisplayObject> = InexactPartial<{
       /**
        * @remarks Set in `MouseInteractionManager##assignInteractionData`, which is called in
@@ -836,12 +839,11 @@ declare namespace Canvas {
       object: ObjectFor;
 
       /**
-       * @remarks Set as:
+       * @privateRemarks Set as:
        *
        * A {@linkcode PIXI.Point} in:
        * - `MouseInteractionManager##handlePointerMove`
        * - `MouseInteractionManager##handlePointerUp`
-       *
        *
        * A {@linkcode Canvas.PossiblyElevatedPoint} in:
        * - {@linkcode layers.DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}
@@ -857,23 +859,23 @@ declare namespace Canvas {
       destination: PIXI.Point | Canvas.PossiblyElevatedPoint;
 
       /**
-       * @remarks Set:
+       * @privateRemarks Set:
        * - As {@linkcode PIXI.Point} in `MouseInteractionManager##assignOriginData`
        * - As {@linkcode Canvas.Rectangle} in {@linkcode placeables.Tile._onHandleDragStart | Tile#_onHandleDragStart}
        */
       origin: PIXI.Point | Canvas.Rectangle;
 
-      /** @remarks Set in `MouseInteractionManager##assignOriginData` */
+      /** @privateRemarks Set in `MouseInteractionManager##assignOriginData` */
       screenOrigin: PIXI.Point;
 
-      /** @remarks Set in `Canvas##onDragSelect` */
+      /** @privateRemarks Set in `Canvas##onDragSelect` */
       coords: Canvas.Rectangle;
 
-      /** @remarks Set in `Canvas##onDragLeftStart` */
+      /** @privateRemarks Set in `Canvas##onDragLeftStart` */
       ruler: boolean;
 
       /**
-       * @remarks Set in:
+       * @privateRemarks Set in:
        * - `SceneControls##onToolChange`
        * - `ClientKeybindings.#onDismiss`
        * - {@linkcode interaction.BaseRuler._onDragStart | BaseRuler#_onDragStart}
@@ -888,7 +890,7 @@ declare namespace Canvas {
       cancelled: boolean;
 
       /**
-       * @remarks Set in:
+       * @privateRemarks Set in:
        * - {@linkcode placeables.Token._initializeDragLeft | Token#_initializeDragLeft}
        * - {@linkcode placeables.Token._onDragLeftDrop | Token#_onDragLeftDrop}
        * - {@linkcode placeables.Token._triggerDragLeftDrop | Token#_triggerDragLeftDrop}
@@ -896,7 +898,7 @@ declare namespace Canvas {
       dropped: boolean;
 
       /**
-       * @remarks Set in:
+       * @privateRemarks Set in:
        * - {@linkcode interaction.BaseRuler._onDragStart | BaseRuler#_onDragStart}
        * - {@linkcode interaction.BaseRuler._onMouseUp | BaseRuler#_onMouseUp}
        * - {@linkcode placeables.Token._initializeDragLeft | Token#_initializeDragLeft}
@@ -905,7 +907,7 @@ declare namespace Canvas {
       released: boolean;
 
       /**
-       * @remarks Set in:
+       * @privateRemarks Set in:
        * - {@linkcode layers.DrawingsLayer._onDragLeftStart | DrawingsLayer#_onDragLeftStart}
        * - {@linkcode layers.LightingLayer._onDragLeftStart | LightingLayer#_onDragLeftStart}
        * - {@linkcode layers.SoundsLayer._onDragLeftStart | SoundsLayer#_onDragLeftStart}
@@ -915,7 +917,7 @@ declare namespace Canvas {
       preview: ObjectFor;
 
       /**
-       * @remarks Set in:
+       * @privateRemarks Set in:
        * - {@linkcode layers.DrawingsLayer._onClickLeft2 | DrawingsLayer#_onClickLeft2}
        * - {@linkcode layers.DrawingsLayer._onDragLeftStart | DrawingsLayer#_onDragLeftStart}
        * - {@linkcode layers.DrawingsLayer._onDragLeftMove | DrawingsLayer#_onDragLeftMove}
@@ -925,14 +927,14 @@ declare namespace Canvas {
       drawingsState: layers.PlaceablesLayer.CREATION_STATES;
 
       /**
-       * @remarks Set in:
+       * @privateRemarks Set in:
        * - {@linkcode layers.SoundsLayer._onDragLeftStart | SoundsLayer#_onDragLeftStart}
        * - {@linkcode layers.SoundsLayer._onDragLeftMove | SoundsLayer#_onDragLeftMove}
        */
       soundState: layers.PlaceablesLayer.CREATION_STATES;
 
       /**
-       * @remarks Set in:
+       * @privateRemarks Set in:
        * - {@linkcode placeables.PlaceableObject._onDragLeftDrop | PlaceableObject#_onDragLeftDrop}
        * - {@linkcode layers.PlaceablesLayer._onDragLeftDrop | PlaceablesLayer#_onDragLeftDrop}
        * - {@linkcode layers.DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}
@@ -942,39 +944,39 @@ declare namespace Canvas {
       clearPreviewContainer: boolean;
 
       /**
-       * @remarks Set in: {@linkcode placeables.PlaceableObject._onClickLeft | PlaceableObject#_onClickLeft}
+       * @privateRemarks Set in: {@linkcode placeables.PlaceableObject._onClickLeft | PlaceableObject#_onClickLeft}
        */
       release: boolean;
 
       /**
-       * @remarks Set in:
+       * @privateRemarks Set in:
        * - {@linkcode placeables.Drawing._onClickLeft | Drawing#_onClickLeft}
        * - {@linkcode placeables.Tile._onClickLeft | Tile#_onClickLeft}
        */
       dragHandle: boolean;
 
       /**
-       * @remarks Set in {@linkcode placeables.Drawing._onHandleDragStart | Drawing#_onHandleDragStart}
+       * @privateRemarks Set in {@linkcode placeables.Drawing._onHandleDragStart | Drawing#_onHandleDragStart}
        */
       handleOrigin: Canvas.Point;
 
       /**
-       * @remarks Set in {@linkcode placeables.Drawing._onHandleDragStart | Drawing#_onHandleDragStart}
+       * @privateRemarks Set in {@linkcode placeables.Drawing._onHandleDragStart | Drawing#_onHandleDragStart}
        */
       originalData: DrawingDocument.Source;
 
       /**
-       * @remarks Set in {@linkcode placeables.Drawing._onHandleDragDrop | Drawing#_onHandleDragDrop}
+       * @privateRemarks Set in {@linkcode placeables.Drawing._onHandleDragDrop | Drawing#_onHandleDragDrop}
        */
       restoreOriginalData: boolean;
 
       /**
-       * @remarks Set in {@linkcode placeables.PlaceableObject._initializeDragLeft | PlaceableObject#_initializeDragLeft}
+       * @privateRemarks Set in {@linkcode placeables.PlaceableObject._initializeDragLeft | PlaceableObject#_initializeDragLeft}
        */
       clones: ObjectFor[];
 
       /**
-       * @remarks Set in {@linkcode layers.WallsLayer._onDragLeftStart | WallsLayer#_onDragLeftStart}
+       * @privateRemarks Set in {@linkcode layers.WallsLayer._onDragLeftStart | WallsLayer#_onDragLeftStart}
        */
       fixed: boolean;
     }>;

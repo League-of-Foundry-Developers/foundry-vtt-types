@@ -55,7 +55,7 @@ declare namespace Ping {
      * @defaultValue `900`
      * @remarks Can't be `undefined` because the default is provided via `mergeObject`
      *
-     * See
+     * See {@linkcode CanvasAnimation.AnimateOptions.duration}
      */
     duration: number;
 

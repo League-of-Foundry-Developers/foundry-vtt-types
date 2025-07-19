@@ -223,18 +223,14 @@ declare namespace BaseRuler {
   type _UpdateData = IntentionalPartial<{
     /**
      * @defaultValue `[]`
-     * @remarks Can't be `undefined` because of an `in` check
-     *
-     * Default only applied if no data is passed to {@linkcode BaseRuler.update | #update}
+     * @remarks Can't be `undefined` because of an `in` check.
      */
 
     path: Canvas.ElevatedPoint[];
 
     /**
      * @defaultValue `false`
-     * @remarks Can't be `undefined` because of an `in` check
-     *
-     * Default only applied if no data is passed to {@linkcode BaseRuler.update | #update}
+     * @remarks Can't be `undefined` because of an `in` check.
      */
     hidden: boolean;
   }>;
