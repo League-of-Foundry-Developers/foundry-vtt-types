@@ -81,6 +81,12 @@ declare namespace DoorControl {
 
   type ImplementationClass = CONFIG["Canvas"]["doorControlClass"];
   type Implementation = FixedInstanceType<ImplementationClass>;
+
+  /** @deprecated Use {@linkcode ImplementationClass} instead. This warning will be removed in v14 */
+  type ConfiguredClass = ImplementationClass;
+
+  /** @deprecated Use {@linkcode Implementation} instead. This warning will be removed in v14 */
+  type ConfiguredInstance = Implementation;
 }
 
 export default DoorControl;
