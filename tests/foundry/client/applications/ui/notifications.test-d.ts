@@ -13,7 +13,7 @@ expectTypeOf(notifications.notify("Hello world", "error")).toEqualTypeOf<
   Readonly<Notifications.Notification<"error">>
 >();
 
-// @ts-expect-error - "foobar" is not a valid notification type.
+// @ts-expect-error "foobar" is not a valid notification type.
 notifications.notify("Hello world", "foobar");
 
 expectTypeOf(notifications.notify("Hello world", "error", { localize: true })).toEqualTypeOf<

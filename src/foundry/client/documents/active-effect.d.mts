@@ -1,6 +1,7 @@
 import type { ConfiguredActiveEffect } from "fvtt-types/configuration";
 import type {
   AnyMutableObject,
+  Identity,
   InexactPartial,
   IntentionalPartial,
   InterfaceToObject,
@@ -80,41 +81,53 @@ declare namespace ActiveEffect {
   type SubType = foundry.Game.Model.TypeNames<"ActiveEffect">;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@link SubType} for more information.
    */
-  type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"ActiveEffect">;
+  type ConfiguredSubType = Document.ConfiguredSubTypeOf<"ActiveEffect">;
 
   /**
    * `Known` represents the types of `ActiveEffect` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = ActiveEffect.OfType<ActiveEffect.ConfiguredSubTypes>;
+  type Known = ActiveEffect.OfType<ActiveEffect.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `ActiveEffect` with the corresponding type. This works with both the
    * builtin `ActiveEffect` class or a custom subclass if that is set up in
    * {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`}.
    */
-  type OfType<Type extends SubType> = Document.Internal.OfType<
-    ConfiguredActiveEffect<Type>,
-    // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    () => ActiveEffect<Type>
-  >;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredActiveEffect<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            ActiveEffect<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `ActiveEffect` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
    */
-  interface _SystemMap extends Document.Internal.SystemMap<"ActiveEffect"> {}
+  interface _ModelMap extends Document.Internal.ModelMap<Name> {}
+
+  /**
+   * @internal
+   */
+  interface _SystemMap extends Document.Internal.SystemMap<Name> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -172,7 +185,7 @@ declare namespace ActiveEffect {
    * An instance of `ActiveEffect` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `ActiveEffect` that comes from the database.
@@ -236,13 +249,7 @@ declare namespace ActiveEffect {
      * The name of the ActiveEffect
      * @defaultValue `""`
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * An image path used to depict the ActiveEffect as an icon
@@ -340,8 +347,7 @@ declare namespace ActiveEffect {
         integer: true;
         initial: typeof CONST.ACTIVE_EFFECT_MODES.ADD;
       },
-      // TODO: (LukeAbby): fix this when redoing DataField
-      // FIXME: Overrides required to enforce the branded type
+      // Note(LukeAbby): This will always need an override since there's no validation.
       CONST.ACTIVE_EFFECT_MODES | null | undefined,
       CONST.ACTIVE_EFFECT_MODES,
       CONST.ACTIVE_EFFECT_MODES
@@ -405,18 +411,18 @@ declare namespace ActiveEffect {
     /** Options passed along in Create operations for ActiveEffects */
     interface Create<Temporary extends boolean | undefined = boolean | undefined>
       extends foundry.abstract.types.DatabaseCreateOperation<ActiveEffect.CreateData, ActiveEffect.Parent, Temporary> {
-      animate?: boolean;
+      animate?: boolean | undefined;
     }
 
     /** Options passed along in Delete operations for ActiveEffects */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ActiveEffect.Parent> {
-      animate?: boolean;
+      animate?: boolean | undefined;
     }
 
     /** Options passed along in Update operations for ActiveEffects */
     interface Update
       extends foundry.abstract.types.DatabaseUpdateOperation<ActiveEffect.UpdateData, ActiveEffect.Parent> {
-      animate?: boolean;
+      animate?: boolean | undefined;
     }
 
     /** Operation for {@linkcode ActiveEffect.createDocuments} */
@@ -659,6 +665,11 @@ declare namespace ActiveEffect {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode ActiveEffect.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

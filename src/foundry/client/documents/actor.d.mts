@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, NullishProps, Merge } from "#utils";
+import type { AnyObject, InexactPartial, NullishProps, Merge, Identity } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type BaseActor from "#common/documents/actor.d.mts";
@@ -89,38 +89,53 @@ declare namespace Actor {
   type SubType = foundry.Game.Model.TypeNames<"Actor">;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@link SubType} for more information.
    */
-  type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Actor">;
+  type ConfiguredSubType = Document.ConfiguredSubTypeOf<"Actor">;
 
   /**
    * `Known` represents the types of `Actor` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = Actor.OfType<Actor.ConfiguredSubTypes>;
+  type Known = Actor.OfType<Actor.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `Actor` with the corresponding type. This works with both the
    * builtin `Actor` class or a custom subclass if that is set up in
    * {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`}.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredActor<Type>, () => Actor<Type>>;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredActor<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            Actor<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Actor` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
    */
-  interface _SystemMap extends Document.Internal.SystemMap<"Actor"> {}
+  interface _ModelMap extends Document.Internal.ModelMap<Name> {}
+
+  /**
+   * @internal
+   */
+  interface _SystemMap extends Document.Internal.SystemMap<Name> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -222,18 +237,18 @@ declare namespace Actor {
   /**
    * The world collection that contains `Actor`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Actors.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Actors.ImplementationClass;
 
   /**
    * The world collection that contains `Actor`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Actors.Configured;
+  type Collection = foundry.documents.collections.Actors.Implementation;
 
   /**
    * An instance of `Actor` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Actor` that comes from the database.
@@ -294,17 +309,11 @@ declare namespace Actor {
     _id: fields.DocumentIdField;
 
     /** The name of this Actor */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Actor subtype which configures the system data model applied */
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof BaseActor, {}, Actor.SubType, Actor.SubType, Actor.SubType>;
+    type: fields.DocumentTypeField<typeof BaseActor, {}>;
 
     /**
      * An image file path which provides the artwork for this Actor
@@ -543,7 +552,8 @@ declare namespace Actor {
   }
 
   type ItemTypes = {
-    [SubType in Item.SubType]: Array<Item.OfType<SubType>>;
+    // Note(LukeAbby): `keyof Item._SystemMap` is used to preserve optional modifiers
+    [SubType in keyof Item._SystemMap]: Array<Item.OfType<SubType>>;
   };
 
   type GetActiveTokensReturn<Document extends boolean | undefined> = Document extends true
@@ -645,6 +655,11 @@ declare namespace Actor {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode Actor.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

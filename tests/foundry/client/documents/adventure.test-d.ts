@@ -2,10 +2,10 @@ import { expectTypeOf } from "vitest";
 
 import FormApplication = foundry.appv1.api.FormApplication;
 
-// @ts-expect-error - Adventure requires name.
+// @ts-expect-error Adventure requires name.
 new Adventure.implementation();
 
-// @ts-expect-error - Adventure requires name.
+// @ts-expect-error Adventure requires name.
 new Adventure.implementation({});
 
 const adventure = new Adventure.implementation({ name: "My adventure" });

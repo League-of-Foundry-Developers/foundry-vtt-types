@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { AnyMutableObject } from "fvtt-types/utils";
 
-// TODO(LukeAbby): Make `blank` fields required.
+// @ts-expect-error Missing required properties.
 new foundry.packages.BaseWorld({});
 
 const baseWorld = new foundry.packages.BaseWorld({ id: "foo", title: "foo", system: "", coreVersion: "13.345" });

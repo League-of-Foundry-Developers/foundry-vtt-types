@@ -61,8 +61,18 @@ declare namespace Users {
   interface Any extends AnyUsers {}
   interface AnyConstructor extends Identity<typeof AnyUsers> {}
 
-  interface ConfiguredClass extends Document.ConfiguredCollectionClass<"User"> {}
-  interface Configured extends Document.ConfiguredCollection<"User"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"User"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"User"> {}
+
+  /**
+   * @deprecated Replaced by {@linkcode Users.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode Users.Implementation}.
+   */
+  type Configured = Implementation;
 }
 
 declare abstract class AnyUsers extends Users {

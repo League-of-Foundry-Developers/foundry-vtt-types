@@ -1,12 +1,12 @@
 import { expectTypeOf } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
-// import type { ArmorData, WeaponData } from "./item.test-d";
+import type { ArmorData, WeaponData } from "./item.test-d";
 
-// @ts-expect-error - Actor requires name.
+// @ts-expect-error Actor requires name.
 new Actor.implementation();
 
-// @ts-expect-error - Actor requires name.
+// @ts-expect-error Actor requires name.
 new Actor.implementation({});
 
 const actor = new Actor.implementation({ name: "Beren", type: "base" });
@@ -31,11 +31,11 @@ expectTypeOf(actor.getActiveTokens(false, Math.random() > 0.5)).toEqualTypeOf<
 expectTypeOf(actor.getActiveTokens(true, true)).toEqualTypeOf<TokenDocument.Implementation[]>();
 expectTypeOf(actor.getActiveTokens(true, false)).toEqualTypeOf<Token.Implementation[]>();
 
-// TODO: Implement #1551 so the `system` properties resolve correctly.
-expectTypeOf(actor.itemTypes.weapon[0]!.type).toEqualTypeOf<"weapon">();
-// expectTypeOf(actor.itemTypes.weapon[0]!.system).toEqualTypeOf<WeaponData>();
+expectTypeOf(actor.itemTypes.weapon![0]!.type).toEqualTypeOf<"weapon">();
+expectTypeOf(actor.itemTypes.weapon![0]!.system).toEqualTypeOf<WeaponData>();
 expectTypeOf(actor.itemTypes.armor[0]!.type).toEqualTypeOf<"armor">();
-// expectTypeOf(actor.itemTypes.armor[0]!.system).toEqualTypeOf<ArmorData>();
+expectTypeOf(actor.itemTypes.armor[0]!.system).toEqualTypeOf<ArmorData>();
+
 for (const effect of actor.allApplicableEffects()) {
   expectTypeOf(effect).toEqualTypeOf<ActiveEffect.Implementation>();
 }

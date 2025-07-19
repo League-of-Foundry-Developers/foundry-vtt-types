@@ -95,6 +95,8 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   type: SubType;
 
+  aaaaa: SubType;
+
   /* Document overrides */
 
   // Same as Document for now
@@ -168,17 +170,14 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   override createEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    // TODO(LukeAbby): The correct signature would be:
-    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
-    // However this causes a number of errors.
-    operation?: object,
-  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
+    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends Item.Embedded.Name>(
     embeddedName: EmbeddedName,
@@ -352,7 +351,7 @@ declare namespace BaseItem {
   export import Hierarchy = Item.Hierarchy;
   export import Metadata = Item.Metadata;
   export import SubType = Item.SubType;
-  export import ConfiguredSubTypes = Item.ConfiguredSubTypes;
+  export import ConfiguredSubType = Item.ConfiguredSubType;
   export import Known = Item.Known;
   export import OfType = Item.OfType;
   export import SystemOfType = Item.SystemOfType;

@@ -34,7 +34,7 @@ new TestBaseFogExploration({
   scene: scene,
 });
 
-// @ts-expect-error - `new` must be used.
+// @ts-expect-error `new` must be used.
 TestBaseFogExploration({ user: user });
 
 new TestBaseFogExploration({

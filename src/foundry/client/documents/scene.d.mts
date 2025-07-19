@@ -188,18 +188,18 @@ declare namespace Scene {
   /**
    * The world collection that contains `Scene`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Scenes.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Scenes.ImplementationClass;
 
   /**
    * The world collection that contains `Scene`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Scenes.Configured;
+  type Collection = foundry.documents.collections.Scenes.Implementation;
 
   /**
    * An instance of `Scene` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Scene.Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Scene` that comes from the database.
@@ -413,13 +413,7 @@ declare namespace Scene {
      * The name of this scene
      * @defaultValue `""`
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * Is this scene currently active? Only one scene may be active at a given time

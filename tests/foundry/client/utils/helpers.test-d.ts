@@ -19,10 +19,10 @@ expectTypeOf(fromUuid<Actor.Implementation>("Actor.uuid1.Item.uuid2")).toEqualTy
   Promise<Actor.Implementation | null>
 >;
 
-// @ts-expect-error - This is an invalid Uuid.
+// @ts-expect-error This is an invalid Uuid.
 fromUuid("invalid");
 
-// @ts-expect-error - The error emitted here is subpar. Would benefit from throw types.
+// @ts-expect-error The error emitted here is subpar. Would benefit from throw types.
 // However the usual strategy of returning a union of possible uuids isn't possible here because
 // `Item.${string}` would erroneously allow it as a 'valid' uuid.
 fromUuid("Item.uuid1.Abc.uuid2");
@@ -30,10 +30,10 @@ fromUuid("Item.uuid1.Abc.uuid2");
 expectTypeOf(fromUuidSync("Actor.uuid1")).toEqualTypeOf<Actor.Implementation | AnyObject | null>;
 expectTypeOf(fromUuidSync("Actor.uuid1.Item.uuid2")).toEqualTypeOf<Item.Implementation | AnyObject | null>;
 
-// @ts-expect-error - This is an invalid Uuid.
+// @ts-expect-error This is an invalid Uuid.
 fromUuidSync("invalid");
 
-// @ts-expect-error - The error emitted here is subpar. Would benefit from throw types.
+// @ts-expect-error The error emitted here is subpar. Would benefit from throw types.
 fromUuidSync("Item.uuid1.Abc.uuid2");
 
 interface SortingStructure {

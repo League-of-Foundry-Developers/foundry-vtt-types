@@ -163,7 +163,7 @@ declare class Token extends PlaceableObject<TokenDocument.Implementation> {
    * @defaultValue `undefined`
    * @remarks Only `undefined` prior to first draw. Set `null` if `token.document.ring.enabled` is `false`.
    */
-  get ring(): TokenRing.ConfiguredInstance | null | undefined;
+  get ring(): TokenRing.Implementation | null | undefined;
 
   /**
    * A convenience boolean to test whether the Token is using a dynamic ring.
@@ -1077,7 +1077,7 @@ declare namespace Token {
     | "disabled"
   >;
 
-  // TODO: (LukeAbby) possible candidate for `-=` key handling
+  // TODO(LukeAbby) possible candidate for `-=` key handling
   interface BlindedStates extends Record<string, boolean> {
     blind: boolean;
     burrow: boolean;
@@ -1139,7 +1139,7 @@ declare namespace Token {
   /**
    * The return type of {@link Token.getRingColors | `Token#getRingColors`}. Core's implementation returns `{}`.
    * Values returned by subclasses should not be nullish, as they are `mergeObject`'d into the default color values
-   * from {@linkcode TokenRing.ConfiguredClass}
+   * from {@linkcode TokenRing.ImplementationClass}
    */
   interface RingColors {
     ring?: Color;

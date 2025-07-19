@@ -163,18 +163,18 @@ declare namespace RollTable {
   /**
    * The world collection that contains `RollTable`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.RollTables.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.RollTables.ImplementationClass;
 
   /**
    * The world collection that contains `RollTable`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.RollTables.Configured;
+  type Collection = foundry.documents.collections.RollTables.Implementation;
 
   /**
    * An instance of `RollTable` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<RollTable.Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `RollTable` that comes from the database.
@@ -238,13 +238,7 @@ declare namespace RollTable {
      * The name of this RollTable
      * @defaultValue `""`
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * An image file path which provides the thumbnail artwork for this RollTable

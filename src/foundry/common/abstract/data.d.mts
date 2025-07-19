@@ -7,7 +7,7 @@ type DataSchema = fields.DataSchema;
 
 declare const DynamicClass: new <_Computed extends object>(...args: never) => _Computed;
 
-// @ts-expect-error - This is a workaround to allow for dynamic top level properties in a class.
+// @ts-expect-error This is a workaround to allow for dynamic top level properties in a class.
 declare class _InternalDataModel<
   out Schema extends DataSchema,
   // Do not inline. Being a type parameter is an important part of the circumvention of TypeScript's detection of dynamic classes.

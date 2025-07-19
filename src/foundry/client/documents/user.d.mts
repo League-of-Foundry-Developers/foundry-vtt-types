@@ -110,18 +110,18 @@ declare namespace User {
   /**
    * The world collection that contains `User`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Users.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Users.ImplementationClass;
 
   /**
    * The world collection that contains `User`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Users.Configured;
+  type Collection = foundry.documents.collections.Users.Implementation;
 
   /**
    * An instance of `User` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<User.Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `User` that comes from the database.
@@ -184,13 +184,7 @@ declare namespace User {
     /**
      * The user's name.
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The user's role, see CONST.USER_ROLES.

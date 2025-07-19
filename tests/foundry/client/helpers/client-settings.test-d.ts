@@ -28,11 +28,11 @@ declare global {
 
 clientSettings.register("foo", "bar", {
   scope: "world",
-  // @ts-expect-error - The setting foo.bar was declared as a boolean not a string
+  // @ts-expect-error The setting foo.bar was declared as a boolean not a string
   type: String,
 });
 
-// @ts-expect-error - The setting foo.bar was declared as a boolean not a string
+// @ts-expect-error The setting foo.bar was declared as a boolean not a string
 clientSettings.set("foo", "bar", "true");
 
 clientSettings.register("foo", "bar", {
@@ -45,13 +45,13 @@ clientSettings.set("foo", "bar", false);
 expectTypeOf(clientSettings.get("foo", "bar")).toEqualTypeOf<boolean>();
 expectTypeOf(clientSettings.get("foo", "bar", { document: true })).toEqualTypeOf<Setting.Implementation>();
 
-// @ts-expect-error - Expect an error because the setting wasn't registered.
+// @ts-expect-error Expect an error because the setting wasn't registered.
 clientSettings.get("foo", "baz");
 
 clientSettings.register("some", "stringSetting", {
   scope: "world",
   type: String,
-  // @ts-expect-error - Range shouldn't be valid for string settings
+  // @ts-expect-error Range shouldn't be valid for string settings
   range: {
     min: 0,
     max: 42,
@@ -72,7 +72,7 @@ clientSettings.register("some", "numberSetting", {
 clientSettings.register("some", "numberSetting", {
   scope: "world",
   type: Number,
-  // @ts-expect-error - filePicker isnot a valid config setting
+  // @ts-expect-error filePicker isnot a valid config setting
   filePicker: "audio",
 });
 

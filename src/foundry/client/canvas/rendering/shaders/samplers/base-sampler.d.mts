@@ -167,7 +167,7 @@ declare class BaseSamplerShader extends AbstractBaseShader {
 
   /**
    * Create a batch plugin for this sampler class.
-   * @returns - The batch plugin class linked to this sampler class.
+   * @returns The batch plugin class linked to this sampler class.
    */
   static createPlugin<ThisType extends BaseSamplerShader.AnyConstructor>(
     this: ThisType,

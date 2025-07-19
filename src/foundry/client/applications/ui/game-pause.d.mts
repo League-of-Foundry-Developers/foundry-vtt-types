@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 
 declare module "#configuration" {
@@ -17,7 +17,10 @@ declare class GamePause<
   RenderContext extends GamePause.RenderContext = GamePause.RenderContext,
   Configuration extends GamePause.Configuration = GamePause.Configuration,
   RenderOptions extends GamePause.RenderOptions = GamePause.RenderOptions,
-> extends ApplicationV2<RenderContext, Configuration, RenderOptions> {}
+> extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
+  // Fake override.
+  static override DEFAULT_OPTIONS: GamePause.DefaultOptions;
+}
 
 declare namespace GamePause {
   interface Any extends AnyGamePause {}
@@ -34,7 +37,13 @@ declare namespace GamePause {
     spin: boolean;
   }
 
-  interface Configuration extends ApplicationV2.Configuration {}
+  interface Configuration<GamePause extends GamePause.Any = GamePause.Any>
+    extends ApplicationV2.Configuration<GamePause> {}
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<GamePause extends GamePause.Any = GamePause.Any> = DeepPartial<Configuration<GamePause>> & object;
+
   interface RenderOptions extends ApplicationV2.RenderOptions {}
 }
 

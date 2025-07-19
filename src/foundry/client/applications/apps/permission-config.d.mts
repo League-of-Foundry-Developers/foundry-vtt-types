@@ -23,7 +23,7 @@ declare class PermissionConfig<
   // placeholder private member to help subclassing
   #permissionConfig: true;
 
-  static override DEFAULT_OPTIONS: Partial<ApplicationV2.Configuration>;
+  static override DEFAULT_OPTIONS: PermissionConfig.DefaultOptions;
   static override PARTS: InterfaceToObject<PermissionConfig.Parts>;
 
   /* -------------------------------------------- */
@@ -56,7 +56,17 @@ declare namespace PermissionConfig {
     buttons: ApplicationV2.FormFooterButton[];
   }
 
-  interface Configuration extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration {}
+  interface Configuration<PermissionConfig extends PermissionConfig.Any = PermissionConfig.Any>
+    extends HandlebarsApplicationMixin.Configuration,
+      ApplicationV2.Configuration<PermissionConfig> {}
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<PermissionConfig extends PermissionConfig.Any = PermissionConfig.Any> = DeepPartial<
+    Configuration<PermissionConfig>
+  > &
+    object;
+
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
 
   interface Parts {

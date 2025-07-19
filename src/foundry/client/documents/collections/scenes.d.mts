@@ -52,8 +52,18 @@ declare namespace Scenes {
   interface Any extends AnyScenes {}
   interface AnyConstructor extends Identity<typeof AnyScenes> {}
 
-  interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Scene"> {}
-  interface Configured extends Document.ConfiguredCollection<"Scene"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Scene"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"Scene"> {}
+
+  /**
+   * @deprecated Replaced by {@linkcode Scenes.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode Scenes.Implementation}.
+   */
+  type Configured = Implementation;
 }
 
 declare abstract class AnyScenes extends Scenes {

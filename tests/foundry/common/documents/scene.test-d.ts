@@ -1,10 +1,10 @@
 import { expectTypeOf } from "vitest";
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
-// @ts-expect-error - A BaseScene requires data.
+// @ts-expect-error A BaseScene requires data.
 foundry.documents.BaseScene.create();
 
-// @ts-expect-error - A BaseScene requires a name.
+// @ts-expect-error A BaseScene requires a name.
 new foundry.documents.BaseScene({});
 
 expectTypeOf(foundry.documents.BaseScene.create({ name: "My scene" })).toEqualTypeOf<
@@ -19,7 +19,7 @@ if (myScene) {
 // Subclass `BaseScene` to avoid it being abstract.
 class BaseScene extends foundry.documents.BaseScene {}
 
-// @ts-expect-error - A BaseScene requires a name.
+// @ts-expect-error A BaseScene requires a name.
 new BaseScene({});
 
 const scene = new BaseScene({ name: "My third scene" });

@@ -319,7 +319,7 @@ declare namespace BaseActiveEffect {
   export import Hierarchy = ActiveEffect.Hierarchy;
   export import Metadata = ActiveEffect.Metadata;
   export import SubType = ActiveEffect.SubType;
-  export import ConfiguredSubTypes = ActiveEffect.ConfiguredSubTypes;
+  export import ConfiguredSubType = ActiveEffect.ConfiguredSubType;
   export import Known = ActiveEffect.Known;
   export import OfType = ActiveEffect.OfType;
   export import SystemOfType = ActiveEffect.SystemOfType;

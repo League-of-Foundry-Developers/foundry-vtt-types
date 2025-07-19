@@ -64,7 +64,7 @@ declare abstract class DocumentSheet<
 
   override getData(
     options?: Partial<Options>,
-  ): MaybePromise<GetDataReturnType<DocumentSheet.DocumentSheetData<Options, ConcreteDocument>>>;
+  ): MaybePromise<GetDataReturnType<DocumentSheet.Data<Options, ConcreteDocument>>>;
 
   protected override _activateCoreListeners(html: JQuery<HTMLElement>): void;
 
@@ -130,7 +130,7 @@ declare namespace DocumentSheet {
   interface Any extends AnyDocumentSheet {}
   interface AnyConstructor extends Identity<typeof AnyDocumentSheet> {}
 
-  interface DocumentSheetData<
+  interface Data<
     Options extends DocumentSheet.Options<ConcreteDocument>,
     ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
   > extends FormApplication.FormApplicationData {
@@ -154,6 +154,14 @@ declare namespace DocumentSheet {
     /** An array of {@linkcode HTMLSecret} configuration objects. */
     secrets: HTMLSecret.Configuration<ConcreteDocument>[];
   }
+
+  /**
+   * @deprecated Replaced with {@linkcode JournalPageSheet.Data}.
+   */
+  type DocumentSheetData<
+    Options extends DocumentSheet.Options<ConcreteDocument>,
+    ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
+  > = Data<Options, ConcreteDocument>;
 }
 
 declare abstract class AnyDocumentSheet extends DocumentSheet<

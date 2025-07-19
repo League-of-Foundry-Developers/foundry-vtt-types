@@ -52,9 +52,7 @@
     "test:watch": "vitest --typecheck",
     "typecheck": "tsgo",
     "typecheck:all": "tsgo --project tsconfig.all.json",
-    "prepare": "is-ci || husky",
-    "betterer": "betterer",
-    "betterer:update": "betterer --update"
+    "prepare": "is-ci || husky"
   },
   "repository": {
     "type": "git",
@@ -141,8 +139,6 @@
   "devDependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
-    "@betterer/betterer": "^6.0.0-alpha.1",
-    "@betterer/cli": "^6.0.0-alpha.1",
     "@eslint/compat": "^1.2.6",
     "@eslint/js": "^9.19.0",
     "@types/debug": "^4.1.12",
@@ -171,14 +167,21 @@
     "vitest": "^4.0.0-beta.1"
   },
   "overrides": {
-    "expect-type": "https://pkg.pr.new/mmkal/expect-type@7d6fa42"
+    "expect-type": "^1.2.2"
   },
   "peerDependencies": {
-    "typescript": "^5.4"
+    "typescript": "^5.4",
+    "@typescript/native-preview": "*"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    },
+    "@typescript/native-preview": {
+      "optional": true
+    }
   },
   "files": [
-    "index.d.mts",
-    "index-lenient.d.mts",
     "src",
     "tsconfig.base.json",
     "tsconfig.json"

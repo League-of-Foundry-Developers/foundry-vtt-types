@@ -84,7 +84,7 @@ declare class ControlsLayer extends InteractionLayer {
    *
    * Foundry marked `@private`
    */
-  protected _rulers: Record<string, Ruler.ConfiguredInstance>;
+  protected _rulers: Record<string, Ruler.Implementation>;
 
   /**
    * The positions of any offscreen pings we are tracking.
@@ -114,12 +114,12 @@ declare class ControlsLayer extends InteractionLayer {
   /**
    * A convenience accessor to the Ruler for the active game user
    */
-  get ruler(): Ruler.ConfiguredInstance | null;
+  get ruler(): Ruler.Implementation | null;
 
   /**
    * Get the Ruler display for a specific User ID
    */
-  getRulerForUser(userId: string): Ruler.ConfiguredInstance | null;
+  getRulerForUser(userId: string): Ruler.Implementation | null;
 
   protected override _draw(options: HandleEmptyObject<ControlsLayer.DrawOptions>): Promise<void>;
 

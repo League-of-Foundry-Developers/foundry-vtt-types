@@ -28,4 +28,4 @@ expectTypeOf(myEffectGroup.visibility).toExtend<CanvasVisibility.Any>();
 expectTypeOf(
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   myEffectGroup.globalLightSource,
-).toEqualTypeOf<foundry.canvas.sources.GlobalLightSource.ConfiguredInstance>();
+).toEqualTypeOf<foundry.canvas.sources.GlobalLightSource.Implementation>();

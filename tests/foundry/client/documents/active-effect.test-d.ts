@@ -4,10 +4,10 @@ import type { AnyMutableObject } from "../../../../src/utils/index.d.mts";
 import DataModel = foundry.abstract.DataModel;
 import Document = foundry.abstract.Document;
 
-// @ts-expect-error - ActiveEffect requires name.
+// @ts-expect-error ActiveEffect requires name.
 new ActiveEffect.implementation();
 
-// @ts-expect-error - ActiveEffect requires name.
+// @ts-expect-error ActiveEffect requires name.
 new ActiveEffect.implementation({});
 
 declare const model: DataModel.Any;
@@ -60,7 +60,7 @@ expectTypeOf(ActiveEffect.defaultName({ pack: null, parent: null, type: null }))
 // Note: this call will fail at runtime but a validator function to require `pack` or `parent` has not yet been written.
 expectTypeOf(ActiveEffect.defaultName({})).toBeString();
 
-// @ts-expect-error - `ActiveEffect.createDialog` requires `createOptions` for pack information.
+// @ts-expect-error `ActiveEffect.createDialog` requires `createOptions` for pack information.
 await ActiveEffect.createDialog({});
 
 declare const someActor: Actor.Implementation;

@@ -2,7 +2,7 @@ import type { ConfiguredRegionBehavior } from "fvtt-types/configuration";
 import type Document from "#common/abstract/document.d.mts";
 import type BaseRegionBehavior from "#common/documents/region-behavior.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { InexactPartial, Merge } from "#utils";
+import type { Identity, InexactPartial, Merge } from "#utils";
 
 import fields = foundry.data.fields;
 
@@ -87,41 +87,53 @@ declare namespace RegionBehavior {
   type SubType = foundry.Game.Model.TypeNames<"RegionBehavior">;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@link SubType} for more information.
    */
-  type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"RegionBehavior">;
+  type ConfiguredSubType = Document.ConfiguredSubTypeOf<"RegionBehavior">;
 
   /**
    * `Known` represents the types of `RegionBehavior` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = RegionBehavior.OfType<RegionBehavior.ConfiguredSubTypes>;
+  type Known = RegionBehavior.OfType<RegionBehavior.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `RegionBehavior` with the corresponding type. This works with both the
    * builtin `RegionBehavior` class or a custom subclass if that is set up in
    * {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`}.
    */
-  type OfType<Type extends SubType> = Document.Internal.OfType<
-    ConfiguredRegionBehavior<Type>,
-    // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    () => RegionBehavior<Type>
-  >;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredRegionBehavior<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            RegionBehavior<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `RegionBehavior` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
    */
-  interface _SystemMap extends Document.Internal.SystemMap<"RegionBehavior"> {}
+  interface _ModelMap extends Document.Internal.ModelMap<Name> {}
+
+  /**
+   * @internal
+   */
+  interface _SystemMap extends Document.Internal.SystemMap<Name> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -179,7 +191,7 @@ declare namespace RegionBehavior {
    * An instance of `RegionBehavior` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `RegionBehavior` that comes from the database.
@@ -250,14 +262,8 @@ declare namespace RegionBehavior {
     /**
      * An RegionBehavior subtype which configures the system data model applied
      */
-    type: fields.DocumentTypeField<
-      typeof BaseRegionBehavior,
-      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-      {},
-      RegionBehavior.SubType,
-      RegionBehavior.SubType,
-      RegionBehavior.SubType
-    >;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    type: fields.DocumentTypeField<typeof BaseRegionBehavior, {}>;
 
     /**
      * Data for a RegionBehavior subtype, defined by a System or Module
@@ -439,6 +445,11 @@ declare namespace RegionBehavior {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode RegionBehavior.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

@@ -2,10 +2,10 @@ import { expectTypeOf } from "vitest";
 
 import ImageHelper = foundry.helpers.media.ImageHelper;
 
-// @ts-expect-error - A Scene requires name.
+// @ts-expect-error A Scene requires name.
 new Scene.implementation();
 
-// @ts-expect-error - A Scene requires name.
+// @ts-expect-error A Scene requires name.
 new Scene.implementation({});
 const scene = new Scene.implementation({ name: "My scene" });
 

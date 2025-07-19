@@ -59,21 +59,21 @@ expectTypeOf(baseItem.getFlag)
 expectTypeOf(baseItem.getFlag("my-system", "countable")).toEqualTypeOf<boolean>();
 expectTypeOf(baseItem.getFlag("my-system", "optionalKey")).toEqualTypeOf<string | undefined>();
 
-// @ts-expect-error - "invalid-key" is not a valid key in the flags.
+// @ts-expect-error "invalid-key" is not a valid key in the flags.
 baseItem.getFlag("my-system", "invalid-key");
 
 expectTypeOf(baseItem.getFlag("another-system", "value")).toEqualTypeOf<unknown>();
 
-// @ts-expect-error - "invalid-system" is not a valid system in the flags.
+// @ts-expect-error "invalid-system" is not a valid system in the flags.
 expectTypeOf(baseItem.getFlag("invalid-system", "value")).toEqualTypeOf<never>();
 
 // returns `this`
 expectTypeOf(baseItem.setFlag("my-system", "countable", true)).toEqualTypeOf<Promise<foundry.documents.BaseItem>>();
 
-// @ts-expect-error - my-system.countable is a boolean not a number.
+// @ts-expect-error my-system.countable is a boolean not a number.
 baseItem.setFlag("my-system", "countable", 2);
 
-// @ts-expect-error - my-system.unknown-key does not exist.
+// @ts-expect-error my-system.unknown-key does not exist.
 baseItem.setFlag("my-system", "unknown-key", 2);
 
 // returns `this`
@@ -91,10 +91,10 @@ class _TestFlags extends Item {
 
 class _TestFlagsFail<Type extends Document.Type> extends Document<Type, BaseItem.Schema, any> {
   testFlagsFail() {
-    // @ts-expect-error - Because `Type` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
+    // @ts-expect-error Because `Type` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
     this.getFlag("my-system", "countable");
 
-    // @ts-expect-error - Because `Type` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
+    // @ts-expect-error Because `Type` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
     this.setFlag("my-system", "countable", true);
   }
 }

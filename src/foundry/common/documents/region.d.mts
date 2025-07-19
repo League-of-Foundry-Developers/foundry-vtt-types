@@ -126,17 +126,14 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   override createEmbeddedDocuments<EmbeddedName extends RegionDocument.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    // TODO(LukeAbby): The correct signature would be:
-    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
-    // However this causes a number of errors.
-    operation?: object,
-  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
+    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends RegionDocument.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends RegionDocument.Embedded.Name>(
     embeddedName: EmbeddedName,

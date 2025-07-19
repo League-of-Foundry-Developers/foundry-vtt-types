@@ -11,7 +11,7 @@ interface InternalAbstractWeatherShader_Interface extends AbstractBaseShaderClas
 
 declare const InternalAbstractWeatherShader_Const: InternalAbstractWeatherShader_Interface;
 
-// @ts-expect-error - This pattern inherently requires a ts-expect-error as the base class is dynamic.
+// @ts-expect-error This pattern inherently requires a ts-expect-error as the base class is dynamic.
 class InternalAbstractWeatherShader<
   DefaultUniforms extends AbstractBaseShader.Uniforms,
   _ComputedUniforms extends object = RemoveIndexSignatures<DefaultUniforms>,

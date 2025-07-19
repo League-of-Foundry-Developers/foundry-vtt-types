@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "fvtt-types/configuration";
-import type { InexactPartial, Merge, RequiredProps } from "#utils";
+import type { Identity, InexactPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -15,9 +15,8 @@ declare namespace Combatant {
 
   /**
    * The context used to create a `Combatant`.
-   * @privateRemarks This is off-template, as `Combatant` requires a valid parent to validate.
    */
-  interface ConstructionContext extends RequiredProps<Document.ConstructionContext<Parent>, "parent"> {}
+  interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
    * The documents embedded within `Combatant`.
@@ -79,44 +78,61 @@ declare namespace Combatant {
   type SubType = foundry.Game.Model.TypeNames<"Combatant">;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@link SubType} for more information.
    */
-  type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Combatant">;
+  type ConfiguredSubType = Document.ConfiguredSubTypeOf<"Combatant">;
 
   /**
    * `Known` represents the types of `Combatant` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = Combatant.OfType<Combatant.ConfiguredSubTypes>;
+  type Known = Combatant.OfType<Combatant.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `Combatant` with the corresponding type. This works with both the
    * builtin `Combatant` class or a custom subclass if that is set up in
    * {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`}.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredCombatant<Type>, () => Combatant<Type>>;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredCombatant<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            Combatant<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Combatant` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
    */
-  interface _SystemMap extends Document.Internal.SystemMap<"Combatant"> {}
+  interface _ModelMap extends Document.Internal.ModelMap<Name> {}
+
+  /**
+   * @internal
+   */
+  interface _SystemMap extends Document.Internal.SystemMap<Name> {}
 
   /**
    * A document's parent is something that can contain it.
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+   *
+   * `Combatant` requires a parent so `null` is not an option here.
    */
-  type Parent = Combat.Implementation | null;
+  type Parent = Combat.Implementation;
 
   /**
    * A document's descendants are any child documents, grandchild documents, etc.
@@ -168,7 +184,7 @@ declare namespace Combatant {
    * An instance of `Combatant` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Combatant` that comes from the database.
@@ -471,6 +487,11 @@ declare namespace Combatant {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode Combatant.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

@@ -109,18 +109,18 @@ declare namespace FogExploration {
   /**
    * The world collection that contains `FogExploration`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.FogExplorations.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.FogExplorations.ImplementationClass;
 
   /**
    * The world collection that contains `FogExploration`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.FogExplorations.Configured;
+  type Collection = foundry.documents.collections.FogExplorations.Implementation;
 
   /**
    * An instance of `FogExploration` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<FogExploration.Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `FogExploration` that comes from the database.

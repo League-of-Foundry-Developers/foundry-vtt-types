@@ -17,6 +17,9 @@ declare abstract class AbstractSidebarTab<
   Configuration extends AbstractSidebarTab.Configuration = AbstractSidebarTab.Configuration,
   RenderOptions extends AbstractSidebarTab.RenderOptions = AbstractSidebarTab.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
+  // Fake override.
+  static override DEFAULT_OPTIONS: AbstractSidebarTab.DefaultOptions;
+
   static tabName: string;
 
   static override readonly emittedEvents: string[];
@@ -85,7 +88,17 @@ declare namespace AbstractSidebarTab {
   interface AnyConstructor extends Identity<typeof AnyAbstractSidebarTab> {}
 
   interface RenderContext extends ApplicationV2.RenderContext {}
-  interface Configuration extends ApplicationV2.Configuration {}
+
+  interface Configuration<AbstractSidebarTab extends AbstractSidebarTab.Any = AbstractSidebarTab.Any>
+    extends ApplicationV2.Configuration<AbstractSidebarTab> {}
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<AbstractSidebarTab extends AbstractSidebarTab.Any = AbstractSidebarTab.Any> = DeepPartial<
+    Configuration<AbstractSidebarTab>
+  > &
+    object;
+
   interface RenderOptions extends ApplicationV2.RenderOptions {}
 
   type EmittedEvents = Readonly<["render", "close", "position", "activate", "deactivate"]>;

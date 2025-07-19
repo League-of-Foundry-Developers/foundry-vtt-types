@@ -316,7 +316,7 @@ declare namespace BaseChatMessage {
   export import Hierarchy = ChatMessage.Hierarchy;
   export import Metadata = ChatMessage.Metadata;
   export import SubType = ChatMessage.SubType;
-  export import ConfiguredSubTypes = ChatMessage.ConfiguredSubTypes;
+  export import ConfiguredSubType = ChatMessage.ConfiguredSubType;
   export import Known = ChatMessage.Known;
   export import OfType = ChatMessage.OfType;
   export import SystemOfType = ChatMessage.SystemOfType;

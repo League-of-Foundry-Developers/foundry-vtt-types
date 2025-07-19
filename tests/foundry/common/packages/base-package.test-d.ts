@@ -8,6 +8,7 @@ import System = foundry.packages.System;
 
 const basePackage = new foundry.packages.BasePackage({
   id: "foobar",
+  title: "Test Package",
 });
 
 expectTypeOf(basePackage.availability).toEqualTypeOf<foundry.CONST.PACKAGE_AVAILABILITY_CODES>();
@@ -170,7 +171,7 @@ expectTypeOf(basePackage.relationships.flags).toEqualTypeOf<AnyObject>();
 expectTypeOf(basePackage.relationships.systems.first()!.reason).toEqualTypeOf<string | undefined>();
 
 expectTypeOf(basePackage.socket).toEqualTypeOf<boolean>();
-expectTypeOf(basePackage.manifest).toEqualTypeOf<OptionalString>();
+expectTypeOf(basePackage.manifest).toEqualTypeOf<string | undefined>();
 expectTypeOf(basePackage.download).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.protected).toEqualTypeOf<boolean>();
 expectTypeOf(basePackage.exclusive).toEqualTypeOf<boolean>();

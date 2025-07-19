@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
@@ -20,6 +20,9 @@ declare class BasePlaceableHUD<
   Configuration extends BasePlaceableHUD.Configuration = BasePlaceableHUD.Configuration,
   RenderOptions extends BasePlaceableHUD.RenderOptions = BasePlaceableHUD.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
+  // Fake override.
+  static override DEFAULT_OPTIONS: BasePlaceableHUD.DefaultOptions;
+
   /**
    * Reference a PlaceableObject this HUD is currently bound to.
    */
@@ -50,7 +53,16 @@ declare namespace BasePlaceableHUD {
     // TODO: Remaining properties
   }
 
-  interface Configuration extends ApplicationV2.Configuration {}
+  interface Configuration<BasePlaceableHUD extends BasePlaceableHUD.Any = BasePlaceableHUD.Any>
+    extends ApplicationV2.Configuration<BasePlaceableHUD> {}
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<BasePlaceableHUD extends BasePlaceableHUD.Any = BasePlaceableHUD.Any> = DeepPartial<
+    Configuration<BasePlaceableHUD>
+  > &
+    object;
+
   interface RenderOptions extends ApplicationV2.RenderOptions {}
 }
 

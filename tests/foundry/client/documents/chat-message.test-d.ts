@@ -39,7 +39,7 @@ expectTypeOf(
   ChatMessage.applyRollMode({}, "custom-roll-mode"),
 ).toEqualTypeOf<foundry.documents.BaseChatMessage.CreateData>();
 
-// @ts-expect-error - "unknown-roll-mode" is not a valid roll mode
+// @ts-expect-error "unknown-roll-mode" is not a valid roll mode
 ChatMessage.applyRollMode({}, "unknown-roll-mode");
 
 expectTypeOf(ChatMessage.getSpeaker()).toEqualTypeOf<ChatMessage.SpeakerData>();
@@ -85,7 +85,7 @@ declare const key: keyof typeof CONFIG.Dice.rollModes;
 expectTypeOf(chat.applyRollMode(key)).toEqualTypeOf<void>();
 expectTypeOf(chat.applyRollMode(game.settings!.get("core", "rollMode")!)).toEqualTypeOf<void>();
 
-// @ts-expect-error - "unknown-roll-mode" is not a valid roll mode
+// @ts-expect-error "unknown-roll-mode" is not a valid roll mode
 chat.applyRollMode("unknown-roll-mode");
 
 expectTypeOf(chat.getRollData()).toEqualTypeOf<AnyObject>();

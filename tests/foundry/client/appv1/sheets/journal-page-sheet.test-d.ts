@@ -10,7 +10,5 @@ expectTypeOf(journalPageSheet.object).toEqualTypeOf<JournalEntryPage.Implementat
 expectTypeOf(journalPageSheet.document).toEqualTypeOf<JournalEntryPage.Implementation>();
 expectTypeOf(JournalPageSheet.defaultOptions).toEqualTypeOf<JournalPageSheet.Options>();
 expectTypeOf(journalPageSheet.options).toEqualTypeOf<JournalPageSheet.Options>();
-expectTypeOf(journalPageSheet.getData()).toEqualTypeOf<
-  MaybePromise<GetDataReturnType<JournalPageSheet.JournalPageSheetData>>
->();
+expectTypeOf(journalPageSheet.getData()).toEqualTypeOf<MaybePromise<GetDataReturnType<JournalPageSheet.Data>>>();
 expectTypeOf(journalPageSheet.render(true)).toEqualTypeOf<JournalPageSheet>();

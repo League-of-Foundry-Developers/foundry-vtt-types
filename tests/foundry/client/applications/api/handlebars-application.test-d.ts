@@ -2,6 +2,7 @@ import { expectTypeOf, test } from "vitest";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import ContextMenu = foundry.applications.ux.ContextMenu;
+import type { DeepPartial } from "#utils";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -16,7 +17,11 @@ declare namespace HBMixinTest {
     testProp?: number; // Exists only to differentiate from `ApplicationV2.RenderContext`.
   }
 
-  interface Configuration extends ApplicationV2.Configuration {}
+  interface Configuration<Test extends HBMixinTest = HBMixinTest> extends ApplicationV2.Configuration<Test> {}
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<Test extends HBMixinTest = HBMixinTest> = DeepPartial<Configuration<Test>> & object;
 
   interface RenderOptions extends ApplicationV2.RenderOptions {
     testProp?: string;

@@ -311,7 +311,7 @@ declare namespace BaseRegionBehavior {
   export import Hierarchy = RegionBehavior.Hierarchy;
   export import Metadata = RegionBehavior.Metadata;
   export import SubType = RegionBehavior.SubType;
-  export import ConfiguredSubTypes = RegionBehavior.ConfiguredSubTypes;
+  export import ConfiguredSubType = RegionBehavior.ConfiguredSubType;
   export import Known = RegionBehavior.Known;
   export import OfType = RegionBehavior.OfType;
   export import SystemOfType = RegionBehavior.SystemOfType;

@@ -40,3 +40,20 @@ Hooks.on("deleteToken", (document, options) => {
   expectTypeOf(document).toEqualTypeOf<TokenDocument.Implementation>();
   expectTypeOf(options.parent).toEqualTypeOf<TokenDocument.Parent | undefined>();
 });
+
+Hooks.on("preCreateActiveEffect", (document, data, options) => {
+  expectTypeOf(document).toEqualTypeOf<ActiveEffect.Implementation>();
+  expectTypeOf(data).toEqualTypeOf<ActiveEffect.CreateData>();
+  expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database.PreCreateOptions>();
+});
+
+Hooks.on("preUpdateActiveEffect", (document, changed, options) => {
+  expectTypeOf(document).toEqualTypeOf<ActiveEffect.Implementation>();
+  expectTypeOf(changed).toEqualTypeOf<ActiveEffect.UpdateData>();
+  expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database.PreUpdateOptions>();
+});
+
+Hooks.on("preDeleteActiveEffect", (document, options) => {
+  expectTypeOf(document).toEqualTypeOf<ActiveEffect.Implementation>();
+  expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database.PreDeleteOptions>();
+});

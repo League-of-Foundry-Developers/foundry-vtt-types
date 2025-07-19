@@ -146,8 +146,18 @@ declare namespace FogManager {
   interface Any extends AnyFogManager {}
   interface AnyConstructor extends Identity<typeof AnyFogManager> {}
 
-  type ConfiguredClass = CONFIG["Canvas"]["fogManager"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  type ImplementationClass = CONFIG["Canvas"]["fogManager"];
+  type Implementation = FixedInstanceType<ImplementationClass>;
+
+  /**
+   * @deprecated Replaced by {@linkcode FogManager.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode FogManager.Implementation}.
+   */
+  type ConfiguredInstance = Implementation;
 }
 
 export default FogManager;

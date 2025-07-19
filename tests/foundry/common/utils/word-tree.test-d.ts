@@ -16,7 +16,7 @@ const entry = {
 
 expectTypeOf(w.addLeaf("a", entry)).toEqualTypeOf<ActorEntryNode>();
 
-// @ts-expect-error - An array of strings may be valid in other trees but not in a `WordTree`.
+// @ts-expect-error An array of strings may be valid in other trees but not in a `WordTree`.
 w.addLeaf(["a"], entry);
 
 expectTypeOf(w.lookup("a")).toEqualTypeOf<ActorEntry[]>();

@@ -21,7 +21,7 @@ new DrawingDocument.implementation({
 
 // Invalid calls:
 
-// @ts-expect-error - `CreateData` is required.
+// @ts-expect-error `CreateData` is required.
 new DrawingDocument.implementation();
 
 // TODO: These should error as shape must be visible. Essentially `shape.width` and `shape.height` are required.

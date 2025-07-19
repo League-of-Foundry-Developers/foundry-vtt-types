@@ -59,7 +59,7 @@ if (moduleOptionalProps) {
   if (moduleOptionalProps.active) {
     expectTypeOf(moduleOptionalProps.always).toEqualTypeOf<string>();
     expectTypeOf(moduleOptionalProps.maybe).toEqualTypeOf<undefined | number>();
-    // @ts-expect-error - number would the entirely wrong type.
+    // @ts-expect-error number would the entirely wrong type.
     expectTypeOf(moduleOptionalProps.maybe).toEqualTypeOf<number>();
   }
 }
@@ -83,7 +83,7 @@ expectTypeOf(game.declarationMergingWorks).toEqualTypeOf<number | undefined>();
 if (game instanceof Game) {
   expectTypeOf(game.declarationMergingWorks).toEqualTypeOf<number>();
 
-  // @ts-expect-error - game is not guaranteed to be ready yet.
+  // @ts-expect-error game is not guaranteed to be ready yet.
   // Arguably it shouldn't be a hard error, just undefined.
   game.onlyInReady;
 }
@@ -104,7 +104,9 @@ if (game instanceof Game) {
 
   const itemModel = game.model.Item;
   expectTypeOf(itemModel.base).toEqualTypeOf<EmptyObject>();
-  expectTypeOf(itemModel.weapon).toEqualTypeOf<EmptyObject>();
+
+  // The `weapon` subtype is optional.
+  expectTypeOf(itemModel.weapon).toEqualTypeOf<EmptyObject | undefined>();
 
   const journalEntryPageModel = game.model.JournalEntryPage;
   // @ts-expect-error base is not a valid subtype for JournalEntryPage

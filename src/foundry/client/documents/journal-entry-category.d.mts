@@ -102,12 +102,12 @@ declare namespace JournalEntryCategory {
    * An instance of `JournalEntryCategory` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<JournalEntryCategory.Implementation> {}
+  type Invalid = Document.Internal.Invalid<JournalEntryCategory.Implementation>;
 
   /**
    * An instance of `JournalEntryCategory` that comes from the database.
    */
-  interface Stored extends Document.Internal.Stored<JournalEntryCategory.Implementation> {}
+  type Stored = Document.Internal.Stored<JournalEntryCategory.Implementation>;
 
   /**
    * The data put in {@link JournalEntryCategory._source | `JournalEntryCategory#_source`}. This data is what was

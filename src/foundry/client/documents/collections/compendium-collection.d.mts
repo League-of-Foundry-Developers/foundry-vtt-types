@@ -12,13 +12,13 @@ import type ApplicationV2 from "#client/applications/api/application.mjs";
  * @see {@link Game.packs | `Game#packs`}
  */
 declare class CompendiumCollection<
-  Type extends foundry.documents.collections.CompendiumCollection.DocumentName,
+  Type extends CompendiumCollection.DocumentName,
 > extends foundry.documents.abstract.DirectoryCollectionMixin(foundry.documents.abstract.DocumentCollection)<Type> {
   /** @param metadata - The compendium metadata, an object provided by game.data */
-  constructor(metadata: foundry.documents.collections.CompendiumCollection.ConstructorMetadata<Type>);
+  constructor(metadata: CompendiumCollection.ConstructorMetadata<Type>);
 
   /** The compendium metadata which defines the compendium content and location */
-  metadata: foundry.documents.collections.CompendiumCollection.Metadata;
+  metadata: CompendiumCollection.Metadata;
 
   /** A subsidiary collection which contains the more minimal index of the pack */
   index: IndexTypeForMetadata<Type>;
@@ -83,7 +83,7 @@ declare class CompendiumCollection<
   // Note(LukeAbby): The override for `_getVisibleTreeContents` become unreasonably long and don't add any changes and so has been omitted.
 
   /** Access the compendium configuration data for this pack */
-  get config(): foundry.documents.collections.CompendiumCollection.Configuration | EmptyObject;
+  get config(): CompendiumCollection.Configuration | EmptyObject;
 
   get documentName(): Type;
 
@@ -127,7 +127,7 @@ declare class CompendiumCollection<
    * Load the Compendium index and cache it as the keys and values of the Collection.
    * @param options - Options which customize how the index is created
    */
-  getIndex(options?: foundry.documents.collections.CompendiumCollection.GetIndexOptions<Type>): Promise<this["index"]>;
+  getIndex(options?: CompendiumCollection.GetIndexOptions<Type>): Promise<this["index"]>;
 
   /**
    * Get a single Document from this Compendium by ID.
@@ -158,9 +158,7 @@ declare class CompendiumCollection<
    * await pack.getDocuments({ type__in: ["weapon", "armor"] });
    * ```
    */
-  getDocuments(
-    query?: foundry.documents.collections.CompendiumCollection.Query<Type>,
-  ): Promise<Document.ImplementationFor<Type>[]>;
+  getDocuments(query?: CompendiumCollection.Query<Type>): Promise<Document.ImplementationFor<Type>[]>;
 
   /**
    * Get the ownership level that a User has for this Compendium pack.
@@ -180,7 +178,7 @@ declare class CompendiumCollection<
   testUserPermission(
     user: User.Implementation,
     permission: string | number,
-    options?: foundry.documents.collections.CompendiumCollection.TestUserPermissionOptions,
+    options?: CompendiumCollection.TestUserPermissionOptions,
   ): boolean;
 
   /**
@@ -200,29 +198,21 @@ declare class CompendiumCollection<
    * @param folder  - The existing Folder you wish to import
    * @param options - Additional options which modify how the data is imported.
    */
-  importFolder(
-    folder: Folder.Implementation,
-    options?: foundry.documents.collections.CompendiumCollection.ImportFolderOptions,
-  ): Promise<void>;
+  importFolder(folder: Folder.Implementation, options?: CompendiumCollection.ImportFolderOptions): Promise<void>;
 
   /**
    * Import an array of Folders into this Compendium Collection.
    * @param folders - The existing Folders you wish to import
    * @param options - Additional options which modify how the data is imported.
    */
-  importFolders(
-    folders: Folder.Implementation[],
-    options?: foundry.documents.collections.CompendiumCollection.ImportFoldersOptions,
-  ): Promise<void>;
+  importFolders(folders: Folder.Implementation[], options?: CompendiumCollection.ImportFoldersOptions): Promise<void>;
 
   /**
    * Fully import the contents of a Compendium pack into a World folder.
    * @param options - Options which modify the import operation. Additional options are forwarded to {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@linkcode Document.createDocuments} (default: `{}`)
    * @returns The imported Documents, now existing within the World
    */
-  importAll(
-    options?: foundry.documents.collections.CompendiumCollection.ImportAllOptions<Type>,
-  ): Promise<Document.StoredForName<Type>[]>;
+  importAll(options?: CompendiumCollection.ImportAllOptions<Type>): Promise<Document.StoredForName<Type>[]>;
 
   /**
    * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
@@ -261,9 +251,9 @@ declare class CompendiumCollection<
    * @param options - Additional options which modify the Compendium creation request
    *                  (default: `{}`)
    */
-  static createCompendium<T extends foundry.documents.collections.CompendiumCollection.DocumentName>(
+  static createCompendium<T extends CompendiumCollection.DocumentName>(
     this: abstract new (...args: never) => CompendiumCollection<NoInfer<T>>,
-    metadata: foundry.documents.collections.CompendiumCollection.CreateCompendiumMetadata<T>,
+    metadata: CompendiumCollection.CreateCompendiumMetadata<T>,
     options?: unknown,
   ): Promise<CompendiumCollection<T>>;
 
@@ -294,9 +284,7 @@ declare class CompendiumCollection<
    * Duplicate a compendium pack to the current World.
    * @param label - A new Compendium label
    */
-  duplicateCompendium({
-    label,
-  }?: foundry.documents.collections.CompendiumCollection.DuplicateCompendiumOptions): Promise<this>;
+  duplicateCompendium({ label }?: CompendiumCollection.DuplicateCompendiumOptions): Promise<this>;
 
   /**
    * Migrate a compendium pack.
@@ -333,19 +321,21 @@ declare namespace CompendiumCollection {
   }
 
   // The type that's passed to `new CompendiumCollection(...)`
-  type ConstructorMetadata<Type extends foundry.documents.collections.CompendiumCollection.DocumentName> =
-    Metadata<Type> & {
-      index: IndexTypeForMetadata<Type>;
-      folders: Folder.Implementation[];
-    };
+  type ConstructorMetadata<Type extends CompendiumCollection.DocumentName> = Metadata<Type> & {
+    index: IndexTypeForMetadata<Type>;
+    folders: Folder.Implementation[];
+  };
 
   // The type that appears in `compendium.metadata` after initialization.
-  interface Metadata<
-    Type extends
-      foundry.documents.collections.CompendiumCollection.DocumentName = foundry.documents.collections.CompendiumCollection.DocumentName,
-  > {
+  interface Metadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName> {
     type: Type;
     label: string;
+
+    /**
+     * @remarks `undefined` is replaced with the default `CONFIG[this.metadata.type]?.compendiumBanner`
+     * but `null` passes through unchanged.
+     */
+    banner?: string | null | undefined;
     name: string;
 
     flags: Record<string, never>; // created by the server, but always empty and no way to change it in a way that is s
@@ -431,7 +421,7 @@ declare namespace CompendiumCollection {
     importParents?: boolean | undefined;
   }
 
-  type ImportAllOptions<Type extends foundry.documents.collections.CompendiumCollection.DocumentName> = SimpleMerge<
+  type ImportAllOptions<Type extends CompendiumCollection.DocumentName> = SimpleMerge<
     UnionToIntersection<Document.Database.CreateOperationForName<Type>>,
     foundry.documents.abstract.WorldCollection.FromCompendiumOptions
   > & {
@@ -462,9 +452,7 @@ declare namespace CompendiumCollection {
 
   // Note(LukeAbby): One neat possibility for this type would be making something like `type: "foo"`,
   // `type__ne: "foo"`, and `type__in: ["foo", "bar"]` all narrow `system`.
-  type Query<Type extends foundry.documents.collections.CompendiumCollection.DocumentName> = _Queryify<
-    Document.SourceForName<Type>
-  >;
+  type Query<Type extends CompendiumCollection.DocumentName> = _Queryify<Document.SourceForName<Type>>;
 
   /** @internal */
   type _Queryify<T> = T extends object ? _QueryifyObject<T> : T;
@@ -487,7 +475,8 @@ declare namespace CompendiumCollection {
 
 type IsComparable<T> = T extends boolean | string | number | bigint | symbol | null | undefined ? true : false;
 
-type IndexTypeForMetadata<Type extends foundry.documents.collections.CompendiumCollection.DocumentName> =
-  foundry.utils.Collection<foundry.documents.collections.CompendiumCollection.IndexEntry<Type>>;
+type IndexTypeForMetadata<Type extends CompendiumCollection.DocumentName> = foundry.utils.Collection<
+  CompendiumCollection.IndexEntry<Type>
+>;
 
 export default CompendiumCollection;
