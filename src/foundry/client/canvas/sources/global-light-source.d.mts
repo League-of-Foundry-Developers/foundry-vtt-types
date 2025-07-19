@@ -68,6 +68,9 @@ declare namespace GlobalLightSource {
   interface Any extends AnyGlobalLightSource {}
   interface AnyConstructor extends Identity<typeof AnyGlobalLightSource> {}
 
+  type ImplementationClass = CONFIG["Canvas"]["globalLightSourceClass"];
+  type Implementation = FixedInstanceType<ImplementationClass>;
+
   type Initialized<
     SourceData extends GlobalLightSource.SourceData = GlobalLightSource.SourceData,
     SourceShape extends PIXI.Polygon = PIXI.Polygon,
@@ -130,8 +133,15 @@ declare namespace GlobalLightSource {
     };
   }
 
-  type ConfiguredClass = CONFIG["Canvas"]["globalLightSourceClass"];
-  type ConfiguredInstance = FixedInstanceType<ConfiguredClass>;
+  /**
+   * @deprecated Replaced by {@linkcode GlobalLightSource.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode GlobalLightSource.Implementation}.
+   */
+  type ConfiguredInstance = Implementation;
 }
 
 declare abstract class AnyGlobalLightSource extends GlobalLightSource {

@@ -201,8 +201,8 @@ declare namespace TokenRing {
   interface Any extends AnyTokenRing {}
   interface AnyConstructor extends Identity<typeof AnyTokenRing> {}
 
-  interface ConfiguredClass extends Identity<CONFIG["Token"]["ring"]["ringClass"]> {}
-  interface ConfiguredInstance extends FixedInstanceType<ConfiguredClass> {}
+  interface ImplementationClass extends Identity<CONFIG["Token"]["ring"]["ringClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   /** @remarks Overrides for default values */
   interface FlashColorOptions extends CanvasAnimation.AnimateOptions {
@@ -281,6 +281,16 @@ declare namespace TokenRing {
     /** @remarks Foundry comments "or spectral pulse effect" */
     readonly INVISIBILITY: 0x10 & EFFECTS;
   }
+
+  /**
+   * @deprecated Replaced by {@linkcode TokenRing.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode TokenRing.Implementation}.
+   */
+  type ConfiguredInstance = Implementation;
 }
 
 declare abstract class AnyTokenRing extends TokenRing {

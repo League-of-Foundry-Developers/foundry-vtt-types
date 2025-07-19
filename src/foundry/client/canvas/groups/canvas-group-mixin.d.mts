@@ -5,7 +5,7 @@ import type { CanvasLayer } from "#client/canvas/layers/_module.d.mts";
 
 declare const DynamicClass: new <_Computed extends object>(...args: never) => _Computed;
 
-// @ts-expect-error - This is a workaround to allow for dynamic top level properties in a class.
+// @ts-expect-error This is a workaround to allow for dynamic top level properties in a class.
 declare class LayersClass<
   Group extends CanvasGroupMixin.LayerGroup | NoLayerGroup,
   Instance extends object = RemoveIndexSignatures<CanvasGroupMixin.LayersFor<Group>>,

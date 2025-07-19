@@ -38,7 +38,7 @@ if (myMacro.type === "script") {
 }
 if (myMacro.type === "chat") {
   expectTypeOf(myMacro.type).toEqualTypeOf<"chat">();
-  // @ts-expect-error - Unable to successfully narrow the type here, *should* be `void | Promies<unknown>`
+  // @ts-expect-error Unable to successfully narrow the type here, *should* be `void | Promies<unknown>`
   expectTypeOf(myMacro.execute()).toEqualTypeOf<void | Promise<unknown>>();
 }
 

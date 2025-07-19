@@ -454,7 +454,7 @@ declare namespace RegionDocument {
    * An instance of `Region` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<RegionDocument.Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Region` that comes from the database.
@@ -517,13 +517,7 @@ declare namespace RegionDocument {
     /**
      * The name used to describe the Region
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The color used to highlight the Region

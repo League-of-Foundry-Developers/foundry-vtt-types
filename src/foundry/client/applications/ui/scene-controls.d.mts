@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type ApplicationV2 from "../api/application.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
@@ -12,13 +12,94 @@ declare module "#configuration" {
 
 /**
  * The Scene Controls UI element.
- * @remarks TODO: Stub
  */
 declare class SceneControls<
   RenderContext extends SceneControls.RenderContext = SceneControls.RenderContext,
   Configuration extends SceneControls.Configuration = SceneControls.Configuration,
   RenderOptions extends SceneControls.RenderOptions = SceneControls.RenderOptions,
-> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {}
+> extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  static override DEFAULT_OPTIONS: SceneControls.DefaultOptions;
+
+  static PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  static override readonly emittedEvents: string[];
+
+  /**
+   * Prepared data of available controls.
+   */
+  get controls(): Record<string, SceneControls.Control>;
+
+  /**
+   * The currently active control layer.
+   */
+  get control(): SceneControls.Control | null;
+
+  /**
+   * The tools which are available within the current control layer.
+   */
+  get tools(): Record<string, SceneControls.Tool>;
+
+  /**
+   * The currently active tool in the control palette.
+   */
+  get tool(): SceneControls.Tool;
+
+  /**
+   * Activate a new control layer or tool.
+   * This method is advantageous to use because it minimizes the amount of re-rendering necessary.
+   */
+  activate(options?: SceneControls.ActivateOptions): Promise<void>;
+
+  protected override _configureRenderOptions(options: DeepPartial<RenderOptions>): void;
+  protected override _preRender(
+    context: DeepPartial<RenderContext>,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<void>;
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+  protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<RenderOptions>): Promise<void>;
+
+  /**
+   * Update the class of the notes layer icon to reflect whether there are visible notes or not.
+   * @internal
+   */
+  _updateNotesIcon(): void;
+
+  override setPosition(position?: DeepPartial<ApplicationV2.Position>): ApplicationV2.Position | void;
+
+  /**
+   * Reusable toolclip items.
+   */
+  static COMMON_TOOLCLIP_ITEMS: Record<string, SceneControls.ToolclipItem>;
+
+  /**
+   * A helper function used to prepare an array of toolclip items.
+   */
+  static buildToolclipItems(
+    items: Array<SceneControls.ToolclipConfigurationItem | string | null>,
+  ): SceneControls.ToolclipConfigurationItem[];
+
+  /**
+   * @deprecated "{@linkcode SceneControls#activeControl} is deprecated in favor of {@linkcode SceneControls#control#name}" (since v13, until v15)
+   * @ignore
+   */
+  get activeControl(): void;
+
+  /**
+   * @deprecated "{@linkcode SceneControls#activeTool} is deprecated in favor of {@linkcode SceneControls#tool#name}" (since v13, until v15)
+   * @ignore
+   */
+  get activeTool(): void;
+
+  /**
+   * @deprecated "{@linkcode SceneControls#initialize} is deprecated in favor of {@linkcode SceneControls#render} with `{controls, tool}` passed as render options." (since v13, until v15)
+   * @ignore
+   */
+  initialize({ layer, tool }: { layer?: string | undefined; tool?: string | undefined }): Promise<void>;
+
+  #sceneControls: true;
+}
 
 declare namespace SceneControls {
   interface Any extends AnySceneControls {}
@@ -102,8 +183,42 @@ declare namespace SceneControls {
     reference: string;
   }
 
-  interface Configuration extends ApplicationV2.Configuration {}
-  interface RenderOptions extends ApplicationV2.RenderOptions {}
+  interface ToolclipItem {
+    heading: string;
+    reference: string;
+  }
+
+  interface Configuration<SceneControls extends SceneControls.Any = SceneControls.Any>
+    extends ApplicationV2.Configuration<SceneControls> {}
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<SceneControls extends SceneControls.Any = SceneControls.Any> = DeepPartial<
+    Configuration<SceneControls>
+  > &
+    object;
+
+  interface RenderOptions extends ApplicationV2.RenderOptions, HandlebarsApplicationMixin.RenderOptions {
+    /** An event which prompted a re-render */
+    event: Event;
+
+    /** Re-prepare the possible list of controls */
+    reset: boolean;
+
+    /** The control set to activate. If undefined, the current control set remains active */
+    control: string;
+
+    /** A specific tool to activate. If undefined the current tool or default tool for the control set becomes active */
+    tool: string;
+
+    /** Changes to apply to toggles within the control set */
+    toggles: Record<string, boolean>;
+  }
+
+  type EmittedEvents = [...ApplicationV2.EmittedEvents, "activate"];
+
+  interface ActivateOptions
+    extends Pick<DeepPartial<SceneControls.RenderOptions>, "event" | "control" | "tool" | "toggles"> {}
 }
 
 declare abstract class AnySceneControls extends SceneControls<

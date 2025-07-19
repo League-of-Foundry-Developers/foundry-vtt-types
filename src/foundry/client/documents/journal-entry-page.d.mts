@@ -1,5 +1,5 @@
 import type { ConfiguredJournalEntryPage } from "fvtt-types/configuration";
-import type { AnyObject, InexactPartial, Merge, NullishProps } from "#utils";
+import type { AnyObject, Identity, InexactPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseJournalEntryPage from "#common/documents/journal-entry-page.d.mts";
@@ -77,20 +77,20 @@ declare namespace JournalEntryPage {
   type SubType = foundry.Game.Model.TypeNames<"JournalEntryPage">;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@link SubType} for more information.
    */
-  type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"JournalEntryPage">;
+  type ConfiguredSubType = Document.ConfiguredSubTypeOf<"JournalEntryPage">;
 
   /**
    * `Known` represents the types of `JournalEntryPage` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = JournalEntryPage.OfType<JournalEntryPage.ConfiguredSubTypes>;
+  type Known = JournalEntryPage.OfType<JournalEntryPage.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `JournalEntryPage` with the corresponding type. This works with both the
@@ -98,21 +98,33 @@ declare namespace JournalEntryPage {
    * {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`}.
    * up.
    */
-  type OfType<Type extends SubType> = Document.Internal.OfType<
-    ConfiguredJournalEntryPage<Type>,
-    // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    () => JournalEntryPage<Type>
-  >;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredJournalEntryPage<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            JournalEntryPage<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `JournalEntryPage` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
    */
-  interface _SystemMap extends Document.Internal.SystemMap<"JournalEntryPage"> {}
+  interface _ModelMap extends Document.Internal.ModelMap<Name> {}
+
+  /**
+   * @internal
+   */
+  interface _SystemMap extends Document.Internal.SystemMap<Name> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -170,7 +182,7 @@ declare namespace JournalEntryPage {
    * An instance of `JournalEntryPage` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `JournalEntryPage` that comes from the database.
@@ -235,13 +247,7 @@ declare namespace JournalEntryPage {
     /**
      * The text name of this page.
      */
-    name: fields.StringField<
-      { required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; label: "JOURNALENTRYPAGE.PageTitle"; textSearch: true }>;
 
     /**
      * The type of this page, in {@linkcode BaseJournalEntryPage.TYPES}.
@@ -627,6 +633,11 @@ declare namespace JournalEntryPage {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode JournalEntryPage.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

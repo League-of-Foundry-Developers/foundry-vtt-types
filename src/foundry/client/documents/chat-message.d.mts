@@ -1,5 +1,5 @@
 import type { ConfiguredChatMessage } from "fvtt-types/configuration";
-import type { AnyObject, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
+import type { AnyObject, Identity, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
@@ -78,38 +78,53 @@ declare namespace ChatMessage {
   type SubType = foundry.Game.Model.TypeNames<"ChatMessage">;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@link SubType} for more information.
    */
-  type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"ChatMessage">;
+  type ConfiguredSubType = Document.ConfiguredSubTypeOf<"ChatMessage">;
 
   /**
    * `Known` represents the types of `ChatMessage` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = ChatMessage.OfType<ChatMessage.ConfiguredSubTypes>;
+  type Known = ChatMessage.OfType<ChatMessage.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `ChatMessage` with the corresponding type. This works with both the
    * builtin `ChatMessage` class or a custom subclass if that is set up in
    * {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`}.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredChatMessage<Type>, () => ChatMessage<Type>>;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredChatMessage<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            ChatMessage<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `ChatMessage` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
    */
-  interface _SystemMap extends Document.Internal.SystemMap<"ChatMessage"> {}
+  interface _ModelMap extends Document.Internal.ModelMap<Name> {}
+
+  /**
+   * @internal
+   */
+  interface _SystemMap extends Document.Internal.SystemMap<Name> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -156,18 +171,18 @@ declare namespace ChatMessage {
   /**
    * The world collection that contains `ChatMessage`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.ChatMessages.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.ChatMessages.ImplementationClass;
 
   /**
    * The world collection that contains `ChatMessage`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.ChatMessages.Configured;
+  type Collection = foundry.documents.collections.ChatMessages.Implementation;
 
   /**
    * An instance of `ChatMessage` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `ChatMessage` that comes from the database.
@@ -642,6 +657,11 @@ declare namespace ChatMessage {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode ChatMessage.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

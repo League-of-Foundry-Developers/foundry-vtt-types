@@ -7,13 +7,13 @@ type DataSchema = foundry.data.fields.DataSchema;
 
 declare namespace ArmorData {
   interface Schema extends DataSchema {
-    defense: foundry.data.fields.NumberField;
+    defense: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
   }
 }
 
 declare namespace WeaponData {
   interface Schema extends DataSchema {
-    attack: foundry.data.fields.NumberField;
+    attack: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
   }
 }
 
@@ -21,25 +21,29 @@ export class ArmorData extends foundry.abstract.TypeDataModel<ArmorData.Schema, 
 
 export class WeaponData extends foundry.abstract.TypeDataModel<WeaponData.Schema, Item.Implementation> {}
 
+test("optional subtype", () => {
+  delete game.model?.Item.weapon;
+});
+
 declare global {
   interface DataModelConfig {
     Item: {
       armor: typeof ArmorData;
-      weapon: typeof WeaponData;
+      weapon?: typeof WeaponData;
     };
   }
 }
 
-// @ts-expect-error - Item requires name and type.
+// @ts-expect-error Item requires name and type.
 new Item.implementation();
 
-// @ts-expect-error - Item requires name and type.
+// @ts-expect-error Item requires name and type.
 await Item.create();
 
-// @ts-expect-error - Item requires name and type.
+// @ts-expect-error Item requires name and type.
 new Item.implementation({});
 
-// @ts-expect-error - Item requires name and type.
+// @ts-expect-error Item requires name and type.
 await Item.create({});
 
 const item = new Item.implementation({ name: "Mighty Axe of Killing", type: "weapon" });
@@ -51,6 +55,16 @@ expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
 expectTypeOf(item.type).toEqualTypeOf<"base" | "armor" | "weapon" | Document.ModuleSubType>();
 expectTypeOf(item.getRollData()).toEqualTypeOf<AnyObject>();
+
+declare const known: Item.Known;
+if (known.type === "weapon") {
+  expectTypeOf(known.system.attack).toEqualTypeOf<number>();
+
+  // Ideally this property wouldn't exist at all but due to how narrowing works this doesn't seem possible.
+  expectTypeOf(known.system.defense).toEqualTypeOf<undefined>();
+}
+
+expectTypeOf(known.system.defense).toEqualTypeOf<number | undefined>();
 
 // Reported by @n3dst4 on Discord, see https://discord.com/channels/732325252788387980/803646399014109205/1372236409402032231
 test("update regression test", () => {

@@ -38,7 +38,7 @@ declare class AdventureImporter<
    */
   static override get defaultOptions(): AdventureImporter.Options;
 
-  override getData(options?: Partial<Options>): Promise<GetDataReturnType<AdventureImporter.AdventureImporterData>>;
+  override getData(options?: Partial<Options>): Promise<GetDataReturnType<AdventureImporter.Data>>;
 
   override activateListeners(html: JQuery<HTMLElement>): void;
 
@@ -85,13 +85,18 @@ declare namespace AdventureImporter {
 
   interface Options extends DocumentSheet.Options<Adventure.Implementation> {}
 
-  interface AdventureImporterData {
+  interface Data {
     adventure: Adventure.Implementation;
 
     contents: ReturnType<AdventureImporter["_getContentList"]>;
 
     imported: boolean;
   }
+
+  /**
+   * @deprecated Replaced with {@linkcode AdventureImporter.Data}.
+   */
+  type AdventureImporterData = Data;
 }
 
 declare abstract class AnyAdventureImporter extends AdventureImporter<AdventureImporter.Options> {

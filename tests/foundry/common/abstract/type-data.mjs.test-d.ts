@@ -204,6 +204,6 @@ class QuestModel3 extends foundry.abstract.TypeDataModel<QuestSchema, JournalEnt
 test("TypeDataModel parent regression test", () => {
   class CustomTypeDataModel extends foundry.abstract.TypeDataModel<any, Item.Implementation> {}
 
-  // @ts-expect-error - This should not work as it is attempting to give an `Actor` to `TypeDataModel` where it's configured with a parent of `Item`.
+  // @ts-expect-error This should not work as it is attempting to give an `Actor` to `TypeDataModel` where it's configured with a parent of `Item`.
   new CustomTypeDataModel({}, { parent: new Actor.implementation({ name: "test" }) });
 });

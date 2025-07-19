@@ -22,10 +22,10 @@ expectTypeOf(lock.add(async () => false)).toEqualTypeOf<Promise<boolean>>();
 declare function foo(): Promise<string | number | null>;
 expectTypeOf(await lock.add(foo)).toEqualTypeOf<string | number | null>();
 
-// @ts-expect-error - The callback needs one argument.
+// @ts-expect-error The callback needs one argument.
 lock.add(async (s: string) => !s);
 
-// @ts-expect-error - The callback doesn't need any arguments.
+// @ts-expect-error The callback doesn't need any arguments.
 lock.add(async () => false, "");
 
 expectTypeOf(lock.clear()).toEqualTypeOf<void>();

@@ -106,18 +106,18 @@ declare namespace Setting {
   /**
    * The world collection that contains `Setting`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.WorldSettings.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.WorldSettings.ImplementationClass;
 
   /**
    * The world collection that contains `Setting`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.WorldSettings.Configured;
+  type Collection = foundry.documents.collections.WorldSettings.Implementation;
 
   /**
    * An instance of `Setting` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Setting.Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Setting` that comes from the database.

@@ -1942,7 +1942,7 @@ declare global {
       hudClass: foundry.applications.hud.TokenHUD.AnyConstructor;
 
       /** @defaultValue `typeof TokenRuler` */
-      rulerClass: foundry.canvas.placeables.tokens.TokenRuler;
+      rulerClass: foundry.canvas.placeables.tokens.TokenRuler.AnyConstructor;
 
       movement: {
         /** @defaultValue `data.TerrainData` */
@@ -3215,10 +3215,10 @@ declare global {
     }
 
     namespace Dice {
-      type RollMode = Brand<string, "CONFIG.Dice.RollMode">;
+      type RollMode = keyof RollModes;
 
       interface RollModes {
-        [rollMode: RollMode]: RollModeConfig;
+        [rollMode: Brand<string, "CONFIG.Dice.RollMode">]: RollModeConfig;
         publicroll: RollModes.PublicRoll;
         gmroll: RollModes.GMRoll;
         blindroll: RollModes.BlindRoll;

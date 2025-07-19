@@ -82,12 +82,12 @@ expectTypeOf(baseCard.faces).toEqualTypeOf<Card.FaceData[]>();
 // if (baseCard._source.type === "old") {
 //   expectTypeOf(baseCard._source.condition).toEqualTypeOf<"grubby">();
 
-//   // @ts-expect-error - "age" is not a property of OldCardDataSourceData.
+//   // @ts-expect-error "age" is not a property of OldCardDataSourceData.
 //   baseCard._source.age;
 // } else {
 //   expectTypeOf(baseCard._source.special).toEqualTypeOf<boolean>();
 
-//   // @ts-expect-error - "color" is not a property of UnoCardDataSourceData.
+//   // @ts-expect-error "color" is not a property of UnoCardDataSourceData.
 //   baseCard._source.color;
 // }
 

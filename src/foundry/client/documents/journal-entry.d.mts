@@ -174,18 +174,18 @@ declare namespace JournalEntry {
   /**
    * The world collection that contains `JournalEntry`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Journal.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Journal.ImplementationClass;
 
   /**
    * The world collection that contains `JournalEntry`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Journal.Configured;
+  type Collection = foundry.documents.collections.Journal.Implementation;
 
   /**
    * An instance of `JournalEntry` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<JournalEntry.Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `JournalEntry` that comes from the database.
@@ -248,13 +248,7 @@ declare namespace JournalEntry {
     /**
      * The name of this JournalEntry
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The pages contained within this JournalEntry document

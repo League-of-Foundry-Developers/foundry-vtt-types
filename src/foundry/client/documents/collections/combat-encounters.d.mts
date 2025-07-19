@@ -45,8 +45,18 @@ declare namespace CombatEncounters {
   interface Any extends AnyCombatEncounters {}
   interface AnyConstructor extends Identity<typeof AnyCombatEncounters> {}
 
-  interface ConfiguredClass extends Document.ConfiguredCollectionClass<"Combat"> {}
-  interface Configured extends Document.ConfiguredCollection<"Combat"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Combat"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"Combat"> {}
+
+  /**
+   * @deprecated Replaced by {@linkcode CombatEncounters.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode CombatEncounters.Implementation}.
+   */
+  type Configured = Implementation;
 }
 
 declare abstract class AnyCombatEncounters extends CombatEncounters {

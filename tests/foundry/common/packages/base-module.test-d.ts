@@ -2,7 +2,8 @@ import { expectTypeOf } from "vitest";
 import type AdditionalTypesField from "../../../../src/foundry/common/packages/sub-types.d.mts";
 
 const baseModule = new foundry.packages.BaseModule({
-  changelog: "Test",
+  id: "123",
+  title: "Test Title",
 });
 
 // schema fields

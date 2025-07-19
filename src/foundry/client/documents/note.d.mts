@@ -118,7 +118,7 @@ declare namespace NoteDocument {
    * An instance of `NoteDocument` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<NoteDocument.Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `NoteDocument` that comes from the database.

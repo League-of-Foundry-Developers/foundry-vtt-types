@@ -305,7 +305,7 @@ declare namespace BaseCombatant {
   export import Hierarchy = Combatant.Hierarchy;
   export import Metadata = Combatant.Metadata;
   export import SubType = Combatant.SubType;
-  export import ConfiguredSubTypes = Combatant.ConfiguredSubTypes;
+  export import ConfiguredSubType = Combatant.ConfiguredSubType;
   export import Known = Combatant.Known;
   export import OfType = Combatant.OfType;
   export import SystemOfType = Combatant.SystemOfType;

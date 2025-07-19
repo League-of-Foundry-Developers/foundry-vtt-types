@@ -168,18 +168,18 @@ declare namespace Playlist {
   /**
    * The world collection that contains `Playlist`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Playlists.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Playlists.ImplementationClass;
 
   /**
    * The world collection that contains `Playlist`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Playlists.Configured;
+  type Collection = foundry.documents.collections.Playlists.Implementation;
 
   /**
    * An instance of `Playlist` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Playlist.Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Playlist` that comes from the database.
@@ -242,13 +242,7 @@ declare namespace Playlist {
     /**
      * The name of this playlist
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * The description of this playlist

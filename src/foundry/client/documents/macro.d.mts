@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "fvtt-types/configuration";
-import type { InexactPartial, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
@@ -83,7 +83,7 @@ declare namespace Macro {
    *
    * This type exists only to be informative.
    */
-  type ConfiguredSubTypes = never;
+  type ConfiguredSubType = never;
 
   /**
    * @deprecated `Macro` does not have `system` and therefore there is no way for a user to
@@ -101,8 +101,19 @@ declare namespace Macro {
    * Note that `Macro` does not have a `system` property and therefore there is no way for a user
    * to configure custom subtypes. See {@linkcode Macro.SubType} for more information.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredMacro<Type>, () => Macro<Type>>;
+  // Note(LukeAbby): The lack of a `system` is why `Document.Internal.DiscriminateSystem` isn't applied.
+  type OfType<Type extends SubType> = _OfType[Type];
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredMacro<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            Macro<Type>
+        : never;
+    }> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -149,18 +160,18 @@ declare namespace Macro {
   /**
    * The world collection that contains `Macro`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Macros.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Macros.ImplementationClass;
 
   /**
    * The world collection that contains `Folder`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Macros.Configured;
+  type Collection = foundry.documents.collections.Macros.Implementation;
 
   /**
    * An instance of `Macro` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<OfType<SubType>> {}
+  type Invalid = Document.Internal.Invalid<OfType<SubType>>;
 
   /**
    * An instance of `Macro` that comes from the database.
@@ -224,13 +235,7 @@ declare namespace Macro {
      * The name of this Macro
      * @defaultValue `""`
      */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /**
      * A Macro subtype from CONST.MACRO_TYPES
@@ -520,6 +525,12 @@ declare namespace Macro {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode Macro.ConfiguredSubType} (will be removed in v14).
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

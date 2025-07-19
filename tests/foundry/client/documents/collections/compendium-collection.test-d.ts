@@ -49,7 +49,7 @@ expectTypeOf(compendiumCollection.get("", { strict: true })).toEqualTypeOf<Journ
 //   Array<Document.Stored<foundry.documents.BaseJournalEntry>["_source"]>
 // >();
 
-// @ts-expect-error - "_initialize" is a protected method.
+// @ts-expect-error "_initialize" is a protected method.
 // This is interesting to check because `CompendiumCollection` uses a novel approach for its mixin and comparable strategies strip away visibility modifiers.
 compendiumCollection._initialize();
 
@@ -90,6 +90,6 @@ await itemCollection.getDocuments({
 });
 
 await itemCollection.getDocuments({
-  // @ts-expect-error - Excess keys should not be allowed.
+  // @ts-expect-error Excess keys should not be allowed.
   excessKey: 123,
 });

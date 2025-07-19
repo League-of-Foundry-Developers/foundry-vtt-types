@@ -25,12 +25,12 @@ await foundry.documents.BaseNote.create({
 
 // #2555 NumberField Choices
 
-// @ts-expect-error - A textAnchor cannot be an arbitrary number.
+// @ts-expect-error A textAnchor cannot be an arbitrary number.
 await foundry.documents.BaseNote.create({ textAnchor: 999 });
 // Should be correct
 await foundry.documents.BaseNote.create({ textAnchor: CONST.TEXT_ANCHOR_POINTS.BOTTOM });
 
-// @ts-expect-error - t cannot be an arbitrary string.
+// @ts-expect-error t cannot be an arbitrary string.
 await foundry.documents.BaseMeasuredTemplate.create({ t: "foobar" });
 
 // Flags
@@ -69,7 +69,7 @@ expectTypeOf(JEPSystemTypes).toEqualTypeOf<
 
 declare const myJournalEntryPage: JournalEntryPage.Implementation;
 if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
-  expectTypeOf(myJournalEntryPage.system?.prepareBaseData()).toEqualTypeOf<void>();
+  myJournalEntryPage.system?.prepareBaseData();
 }
 
 /** EmbeddedDataField */
@@ -164,7 +164,7 @@ stringField.toInput({ value: 200 });
 stringField.toInput({ blank: "blank option", choices: ["option1"] });
 stringField.toInput({ blank: "blank option", options: [{ value: "option2", label: "Option 2" }] });
 
-// @ts-expect-error - `blank` is not valid by itself when the field doesn't have choices set.
+// @ts-expect-error `blank` is not valid by itself when the field doesn't have choices set.
 stringField.toInput({ blank: "blank option" });
 
 // Because this `StringField` has options it doesn't need to be passed in to `toInput` anymore.
@@ -181,6 +181,41 @@ test("circular data model heritage regression test", () => {
   };
 
   class MyActorSystem extends foundry.abstract.TypeDataModel<typeof schema, Actor.Implementation> {}
+});
+
+test("choices", () => {
+  const schema = () => ({
+    choices: new foundry.data.fields.StringField({ choices: ["a", "b"] }),
+  });
+
+  class StringModel extends foundry.abstract.DataModel<ReturnType<typeof schema>> {
+    static override defineSchema() {
+      return schema();
+    }
+  }
+
+  // @ts-expect-error `blank` is `false` by default when `choices` is set.
+  new StringModel({ choices: "" });
+
+  const model = new StringModel({ choices: "a" });
+  expectTypeOf(model.choices).toEqualTypeOf<"a" | "b" | undefined>();
+});
+
+test("blank choices", () => {
+  const schema = () => ({
+    blankChoices: new foundry.data.fields.StringField({ blank: true, choices: ["a", "b"] }),
+  });
+
+  class BlankModel extends foundry.abstract.DataModel<ReturnType<typeof schema>> {
+    static override defineSchema() {
+      return schema();
+    }
+  }
+
+  new BlankModel({ blankChoices: "a" });
+
+  const model = new BlankModel({ blankChoices: "" });
+  expectTypeOf(model.blankChoices).toEqualTypeOf<"a" | "b" | "" | undefined>();
 });
 
 // TODO(LukeAbby): Relevant once requisite circularities are fixed.

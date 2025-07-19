@@ -38,7 +38,7 @@ declare class InteractionLayer extends CanvasLayer {
   /**
    * Activate the InteractionLayer, deactivating other layers and marking this layer's children as interactive.
    * @param options - Options which configure layer activation
-   * @returns - The layer instance, now activated
+   * @returns The layer instance, now activated
    */
   activate(options?: InteractionLayer.ActivateOptions): this;
 
@@ -49,7 +49,7 @@ declare class InteractionLayer extends CanvasLayer {
 
   /**
    * Deactivate the InteractionLayer, removing interactivity from its children.
-   * @returns - The layer instance, now inactive
+   * @returns The layer instance, now inactive
    */
   deactivate(): this;
 

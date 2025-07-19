@@ -3,10 +3,10 @@ import { assertType, expectTypeOf, test } from "vitest";
 import UserTargets = foundry.canvas.placeables.tokens.UserTargets;
 import FormApplication = foundry.appv1.api.FormApplication;
 
-// @ts-expect-error - requires a name.
+// @ts-expect-error requires a name.
 new User.implementation();
 
-// @ts-expect-error - requires a name.
+// @ts-expect-error requires a name.
 new User.implementation({});
 
 const user = new User.implementation({ name: "Test" });

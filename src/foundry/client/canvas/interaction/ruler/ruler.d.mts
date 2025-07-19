@@ -75,12 +75,6 @@ declare namespace Ruler {
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["rulerClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
-  /** @deprecated Use {@linkcode ImplementationClass} instead */
-  type ConfiguredClass = ImplementationClass;
-
-  /** @deprecated Use {@linkcode Implementation} instead */
-  type ConfiguredInstance = Implementation;
-
   interface ConfigureOutlineReturn {
     thickness: number;
     color: PIXI.ColorSource;
@@ -204,6 +198,12 @@ declare namespace Ruler {
   export import UpdateData = foundry.canvas.interaction.BaseRuler.UpdateData;
   export import AddDragWaypointOptions = foundry.canvas.interaction.BaseRuler.AddDragWaypointOptions;
   export import ChangeDragElevationOptions = foundry.canvas.interaction.BaseRuler.ChangeDragElevationOptions;
+
+  /** @deprecated Use {@linkcode ImplementationClass} instead */
+  type ConfiguredClass = ImplementationClass;
+
+  /** @deprecated Use {@linkcode Implementation} instead */
+  type ConfiguredInstance = Implementation;
 }
 
 export default Ruler;

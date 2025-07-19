@@ -191,17 +191,14 @@ declare abstract class BaseActorDelta<
   override createEmbeddedDocuments<EmbeddedName extends ActorDelta.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    // TODO(LukeAbby): The correct signature would be:
-    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
-    // However this causes a number of errors.
-    operation?: object,
-  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
+    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends ActorDelta.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends ActorDelta.Embedded.Name>(
     embeddedName: EmbeddedName,
@@ -387,7 +384,7 @@ declare namespace BaseActorDelta {
   export import Hierarchy = ActorDelta.Hierarchy;
   export import Metadata = ActorDelta.Metadata;
   export import SubType = ActorDelta.SubType;
-  export import ConfiguredSubTypes = ActorDelta.ConfiguredSubTypes;
+  export import ConfiguredSubType = ActorDelta.ConfiguredSubType;
   export import Known = ActorDelta.Known;
   export import OfType = ActorDelta.OfType;
   export import SystemOfType = ActorDelta.SystemOfType;

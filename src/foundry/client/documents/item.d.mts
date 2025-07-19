@@ -2,7 +2,7 @@ import type { ConfiguredItem } from "fvtt-types/configuration";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
-import type { AnyObject, InexactPartial, Merge } from "#utils";
+import type { AnyObject, Identity, InexactPartial, Merge } from "#utils";
 import type BaseItem from "#common/documents/item.mjs";
 
 import fields = foundry.data.fields;
@@ -86,38 +86,53 @@ declare namespace Item {
   type SubType = foundry.Game.Model.TypeNames<"Item">;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@link SubType} for more information.
    */
-  type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"Item">;
+  type ConfiguredSubType = Document.ConfiguredSubTypeOf<"Item">;
 
   /**
    * `Known` represents the types of `Item` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = Item.OfType<Item.ConfiguredSubTypes>;
+  type Known = Item.OfType<Item.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `Item` with the corresponding type. This works with both the
    * builtin `Item` class or a custom subclass if that is set up in
    * {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`}.
    */
-  // eslint-disable-next-line @typescript-eslint/no-restricted-types
-  type OfType<Type extends SubType> = Document.Internal.OfType<ConfiguredItem<Type>, () => Item<Type>>;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredItem<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            Item<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Item` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
    */
-  interface _SystemMap extends Document.Internal.SystemMap<"Item"> {}
+  interface _ModelMap extends Document.Internal.ModelMap<Name> {}
+
+  /**
+   * @internal
+   */
+  interface _SystemMap extends Document.Internal.SystemMap<Name> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -219,18 +234,18 @@ declare namespace Item {
   /**
    * The world collection that contains `Item`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Items.ConfiguredClass;
+  type CollectionClass = foundry.documents.collections.Items.ImplementationClass;
 
   /**
    * The world collection that contains `Item`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Items.Configured;
+  type Collection = foundry.documents.collections.Items.Implementation;
 
   /**
    * An instance of `Item` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid extends Document.Internal.Invalid<Implementation> {}
+  type Invalid = Document.Internal.Invalid<Implementation>;
 
   /**
    * An instance of `Item` that comes from the database.
@@ -291,17 +306,11 @@ declare namespace Item {
     _id: fields.DocumentIdField;
 
     /** The name of this Item */
-    name: fields.StringField<
-      { required: true; blank: false; textSearch: true },
-      // Note(LukeAbby): Field override because `blank: false` isn't fully accounted for or something.
-      string,
-      string,
-      string
-    >;
+    name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Item subtype which configures the system data model applied */
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof documents.BaseItem, {}, Item.SubType, Item.SubType, Item.SubType>;
+    type: fields.DocumentTypeField<typeof documents.BaseItem, {}>;
 
     /**
      * An image file path which provides the artwork for this Item
@@ -544,6 +553,11 @@ declare namespace Item {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode Item.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

@@ -8,7 +8,7 @@ declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 
 describe("DoorControl Tests", () => {
   test("Construction", () => {
-    // @ts-expect-error - A DoorControl requires a wall.
+    // @ts-expect-error A DoorControl requires a wall.
     new DoorControl();
     new DoorControl(wall);
   });

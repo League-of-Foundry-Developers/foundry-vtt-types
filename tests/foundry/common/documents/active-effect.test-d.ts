@@ -14,7 +14,7 @@ new TestActiveEffect();
 // @ts-expect-error Active effects require a `name` in construction data
 new TestActiveEffect({});
 
-// @ts-expect-error - Name cannot be undefined.
+// @ts-expect-error Name cannot be undefined.
 new TestActiveEffect({ name: undefined });
 
 const fullSource = {

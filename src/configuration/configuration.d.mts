@@ -348,3 +348,41 @@ export interface SettingConfig {
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SystemNameConfig {}
+
+/**
+ * Controls various behaviors of `system`. By default fvtt-types forces you to account for all
+ * possible subtypes of a document. This helps make your code more robust for things like the
+ * arbitrary module subtypes that may exist. This is why if you try writing `item.system.someProp`
+ * you are going to get an error like:
+ * ```text
+ * Property 'someProp' does not exist on type 'SystemOfType<...>'.
+ *   Property 'someProp' does not exist on type 'UnknownTypeDataModel'.
+ * ```
+ *
+ * While inconvenient this is necessary for soundness. As a module subtype is designed to be
+ * completely arbitrary they could have a conflicting property with any shape. Therefore it's
+ * recommended to work around this with helpers that make it easier to actually account for module
+ * subtypes like an `isKnown` helper etc. but if you want to tweak the behavior for certain classes
+ * you can add `discriminate: "all"` which will make `item.system.someProp` be typed as
+ * `T | undefined`.
+ *
+ * Even more unsoundly, you can entirely ignore the existence of module subtypes and `"base"`
+ * entirely with `moduleSubtype: "ignore"` and `base: "ignore"`.
+ *
+ * @example
+ * ```typescript
+ * declare module "fvtt-types/configuration" {
+ *   interface SystemConfig {
+ *     Item: {
+ *       discriminate: "all";
+ *     };
+ *     Actor: {
+ *        moduleSubtype: "ignore";
+ *        base: "ignore";
+ *     };
+ *   }
+ * }
+ * ```
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface SystemConfig {}

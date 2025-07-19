@@ -250,17 +250,14 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   override createEmbeddedDocuments<EmbeddedName extends Scene.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    // TODO(LukeAbby): The correct signature would be:
-    // operation?: Document.Database.CreateOperation<Document.Database.CreateForName<EmbeddedName>>,
-    // However this causes a number of errors.
-    operation?: object,
-  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
+    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends Scene.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
-  ): Promise<Array<Document.StoredForName<EmbeddedName>> | undefined>;
+  ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends Scene.Embedded.Name>(
     embeddedName: EmbeddedName,

@@ -1,3 +1,5 @@
+import type { Identity } from "#utils";
+
 export default Color;
 
 // `Color#fromString` breaks inheritance
@@ -307,7 +309,9 @@ declare class InternalColor extends PatchedNumber {
   static fromLinearRGB(linear: Color.RGBColorVector): Color;
 }
 
-declare const Color: typeof InternalColor & (new (...args: any) => number);
+interface ColorConstructor extends Identity<typeof InternalColor & (new (...args: any) => number)> {}
+
+declare const Color: ColorConstructor;
 type Color = InternalColor & number;
 
 declare namespace Color {

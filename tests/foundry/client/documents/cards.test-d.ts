@@ -2,13 +2,13 @@ import { expectTypeOf } from "vitest";
 
 import FormApplication = foundry.appv1.api.FormApplication;
 
-// @ts-expect-error - Cards requires name.
+// @ts-expect-error Cards requires name.
 new Cards.implementation();
 
-// @ts-expect-error - Cards requires name.
+// @ts-expect-error Cards requires name.
 new Cards.implementation({});
 
-// @ts-expect-error - "german" is not a valid type
+// @ts-expect-error "german" is not a valid type
 new Cards.implementation({ name: "Just a deck of cards", type: "german" });
 
 const cards = new Cards.implementation({ name: "Just a deck of cards", type: "deck" });
@@ -38,13 +38,13 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<Cards.Implementation>>();
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 cards.deal([cards], undefined, { unknownProp: 0 });
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 cards.deal([cards], undefined, { updateData: { unknownProp: 3 } });
 
-// @ts-expect-error - There is no argument for the ids parameter
+// @ts-expect-error There is no argument for the ids parameter
 cards.pass(cards);
 
 expectTypeOf(cards.pass(cards, ["foo"])).toEqualTypeOf<Promise<Card.Implementation[]>>();
@@ -56,10 +56,10 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<Card.Implementation[]>>();
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 cards.pass(cards, ["foo"], { unknownProp: 0 });
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 cards.pass(cards, ["foo"], { updateData: { unknownProp: 0 } });
 
 // draw
@@ -78,10 +78,10 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<Card.Implementation[]>>();
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 cards.draw(cards, undefined, { unknownProp: 0 });
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 cards.draw(cards, undefined, { updateData: { unknownProp: 3 } });
 
 // shuffle
@@ -95,10 +95,10 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<Cards.Implementation>>();
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 cards.shuffle({ unknownProp: 0 });
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 cards.shuffle({ updateData: { unknownProp: 3 } });
 
 // recall
@@ -112,10 +112,10 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<Cards.Implementation>>();
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 cards.reset({ unknownProp: 0 });
 
-// @ts-expect-error - "unknownProp" is not a valid option
+// @ts-expect-error "unknownProp" is not a valid option
 cards.reset({ updateData: { unknownProp: 3 } });
 
 // dealDialog

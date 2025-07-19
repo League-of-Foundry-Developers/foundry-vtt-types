@@ -1,9 +1,9 @@
 import { expectTypeOf } from "vitest";
 
-// @ts-expect-error - requires name.
+// @ts-expect-error requires name.
 new PlaylistSound.implementation();
 
-// @ts-expect-error - requires name.
+// @ts-expect-error requires name.
 new PlaylistSound.implementation({});
 
 const sound = new PlaylistSound.implementation({ name: "my sound" });

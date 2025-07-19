@@ -18,19 +18,19 @@ expectTypeOf(b.states).toEqualTypeOf<
 >();
 expectTypeOf(b.isEmpty).toEqualTypeOf<boolean>();
 
-// @ts-expect-error - only valid states should work
+// @ts-expect-error only valid states should work
 expectTypeOf(b.hasState("a")).toEqualTypeOf<boolean>();
 expectTypeOf(b.hasState("foo")).toEqualTypeOf<boolean>();
 
-// @ts-expect-error - only valid states should work
+// @ts-expect-error only valid states should work
 expectTypeOf(b.addState("a")).toEqualTypeOf<void>();
 expectTypeOf(b.addState("foo")).toEqualTypeOf<void>();
 
-// @ts-expect-error - only valid states should work
+// @ts-expect-error only valid states should work
 expectTypeOf(b.removeState("a")).toEqualTypeOf<void>();
 expectTypeOf(b.removeState("bar")).toEqualTypeOf<void>();
 
-// @ts-expect-error - only valid states should work
+// @ts-expect-error only valid states should work
 expectTypeOf(b.toggleState("a", true)).toEqualTypeOf<void>();
 expectTypeOf(b.toggleState("bar")).toEqualTypeOf<number>();
 expectTypeOf(b.toggleState("foo", true)).toEqualTypeOf<void>();

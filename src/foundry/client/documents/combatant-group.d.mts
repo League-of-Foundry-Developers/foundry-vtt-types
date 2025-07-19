@@ -1,5 +1,5 @@
 import type { ConfiguredCombatantGroup } from "fvtt-types/configuration";
-import type { InexactPartial, Merge } from "#utils";
+import type { Identity, InexactPartial, Merge } from "#utils";
 import type Document from "#common/abstract/document.mjs";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseCombatantGroup from "#common/documents/combatant-group.d.mts";
@@ -61,41 +61,53 @@ declare namespace CombatantGroup {
   type SubType = foundry.Game.Model.TypeNames<"CombatantGroup">;
 
   /**
-   * `ConfiguredSubTypes` represents the subtypes a user explicitly registered. This excludes
+   * `ConfiguredSubType` represents the subtypes a user explicitly registered. This excludes
    * subtypes like the Foundry builtin subtype `"base"` and the catch-all subtype for arbitrary
    * module subtypes `${string}.${string}`.
    *
    * @see {@link SubType} for more information.
    */
-  type ConfiguredSubTypes = Document.ConfiguredSubTypesOf<"CombatantGroup">;
+  type ConfiguredSubType = Document.ConfiguredSubTypeOf<"CombatantGroup">;
 
   /**
    * `Known` represents the types of `CombatantGroup` that a user explicitly registered.
    *
-   * @see {@link ConfiguredSubTypes} for more information.
+   * @see {@link ConfiguredSubType} for more information.
    */
-  type Known = CombatantGroup.OfType<CombatantGroup.ConfiguredSubTypes>;
+  type Known = CombatantGroup.OfType<CombatantGroup.ConfiguredSubType>;
 
   /**
    * `OfType` returns an instance of `CombatantGroup` with the corresponding type. This works with both the
    * builtin `CombatantGroup` class or a custom subclass if that is set up in
    * {@link ConfiguredCombatantGroup | `fvtt-types/configuration/ConfiguredCombatantGroup`}.
    */
-  type OfType<Type extends SubType> = Document.Internal.OfType<
-    ConfiguredCombatantGroup<Type>,
-    // eslint-disable-next-line @typescript-eslint/no-restricted-types
-    () => CombatantGroup<Type>
-  >;
+  type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
+
+  /** @internal */
+  interface _OfType
+    extends Identity<{
+      [Type in SubType]: Type extends unknown
+        ? ConfiguredCombatantGroup<Type> extends { document: infer Document }
+          ? Document
+          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+            CombatantGroup<Type>
+        : never;
+    }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `CombatantGroup` subtype.
    */
-  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<_SystemMap, Type>;
+  type SystemOfType<Type extends SubType> = Document.Internal.SystemOfType<Name, _SystemMap, Type, ConfiguredSubType>;
 
   /**
    * @internal
    */
-  interface _SystemMap extends Document.Internal.SystemMap<"CombatantGroup"> {}
+  interface _ModelMap extends Document.Internal.ModelMap<Name> {}
+
+  /**
+   * @internal
+   */
+  interface _SystemMap extends Document.Internal.SystemMap<Name> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -153,14 +165,16 @@ declare namespace CombatantGroup {
    * An instance of `CombatantGroup` that comes from the database but failed validation meaning that
    * its `system` and `_source` could theoretically be anything.
    */
-  interface Invalid<out SubType extends CombatantGroup.SubType = CombatantGroup.SubType>
-    extends Document.Internal.Invalid<OfType<SubType>> {}
+  type Invalid<SubType extends CombatantGroup.SubType = CombatantGroup.SubType> = Document.Internal.Invalid<
+    OfType<SubType>
+  >;
 
   /**
    * An instance of `CombatantGroup` that comes from the database.
    */
-  interface Stored<out SubType extends CombatantGroup.SubType = CombatantGroup.SubType>
-    extends Document.Internal.Stored<OfType<SubType>> {}
+  type Stored<SubType extends CombatantGroup.SubType = CombatantGroup.SubType> = Document.Internal.Stored<
+    OfType<SubType>
+  >;
 
   /**
    * The data put in {@link CombatantGroup._source | `CombatantGroup#_source`}. This data is what was
@@ -433,6 +447,11 @@ declare namespace CombatantGroup {
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
+
+  /**
+   * @deprecated Replaced with {@linkcode CombatantGroup.ConfiguredSubType} (will be removed in v14).
+   */
+  type ConfiguredSubTypes = ConfiguredSubType;
 }
 
 /**

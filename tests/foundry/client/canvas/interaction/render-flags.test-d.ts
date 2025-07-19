@@ -21,10 +21,10 @@ describe("RenderFlags Tests", () => {
   test("Flags", () => {
     new RenderFlags(validFlags);
 
-    // @ts-expect-error - "nonexistant" is not a valid flag.
+    // @ts-expect-error "nonexistant" is not a valid flag.
     new RenderFlags({ someFlag: { propagate: ["nonexistant"] }, otherFlag: {} });
 
-    // @ts-expect-error - a flag that propagates to itself doesn't make any sense.
+    // @ts-expect-error a flag that propagates to itself doesn't make any sense.
     new RenderFlags({ selfReferential: { propagate: ["selfReferential"] } });
   });
 });

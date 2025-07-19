@@ -37,8 +37,18 @@ declare namespace ChatMessages {
   interface Any extends AnyMessages {}
   interface AnyConstructor extends Identity<typeof AnyMessages> {}
 
-  interface ConfiguredClass extends Document.ConfiguredCollectionClass<"ChatMessage"> {}
-  interface Configured extends Document.ConfiguredCollection<"ChatMessage"> {}
+  interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"ChatMessage"> {}
+  interface Implementation extends Document.Internal.ConfiguredCollection<"ChatMessage"> {}
+
+  /**
+   * @deprecated Replaced by {@linkcode ChatMessages.ImplementationClass}.
+   */
+  type ConfiguredClass = ImplementationClass;
+
+  /**
+   * @deprecated Replaced by {@linkcode ChatMessages.Implementation}.
+   */
+  type Configured = Implementation;
 }
 
 declare abstract class AnyMessages extends ChatMessages {

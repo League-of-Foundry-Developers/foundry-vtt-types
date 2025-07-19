@@ -20,6 +20,9 @@ declare class FilePicker<
   Configuration extends FilePicker.Configuration = FilePicker.Configuration,
   RenderOptions extends FilePicker.RenderOptions = FilePicker.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
+  // Fake override.
+  static override DEFAULT_OPTIONS: FilePicker.DefaultOptions;
+
   /**
    * The full requested path given by the user
    * @defaultValue `""`
@@ -317,7 +320,9 @@ declare namespace FilePicker {
     img: string;
   }
 
-  interface Configuration extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration {
+  interface Configuration<FilePicker extends FilePicker.Any = FilePicker.Any>
+    extends HandlebarsApplicationMixin.Configuration,
+      ApplicationV2.Configuration<FilePicker> {
     /**
      * A type of file to target.
      * @defaultValue `"any"`
@@ -363,6 +368,11 @@ declare namespace FilePicker {
     /** Redirect to the root directory rather than starting in the source directory of one of these files. */
     redirectToRoot?: string[] | null | undefined;
   }
+
+  // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
+  // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
+  type DefaultOptions<FilePicker extends FilePicker.Any = FilePicker.Any> = DeepPartial<Configuration<FilePicker>> &
+    object;
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
 
