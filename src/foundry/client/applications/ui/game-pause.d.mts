@@ -11,15 +11,28 @@ declare module "#configuration" {
 
 /**
  * The Game Paused banner.
- * @remarks TODO: Stub
  */
 declare class GamePause<
   RenderContext extends GamePause.RenderContext = GamePause.RenderContext,
   Configuration extends GamePause.Configuration = GamePause.Configuration,
   RenderOptions extends GamePause.RenderOptions = GamePause.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
-  // Fake override.
   static override DEFAULT_OPTIONS: GamePause.DefaultOptions;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  protected override _renderHTML(
+    _context: RenderContext,
+    _options: DeepPartial<RenderOptions>,
+  ): Promise<GamePause.RenderHTMLResult>;
+
+  protected override _replaceHTML(
+    result: GamePause.RenderHTMLResult,
+    content: HTMLElement,
+    _options: DeepPartial<RenderOptions>,
+  ): void;
 }
 
 declare namespace GamePause {
@@ -36,6 +49,8 @@ declare namespace GamePause {
     text: string;
     spin: boolean;
   }
+
+  type RenderHTMLResult = [HTMLImageElement, HTMLElement];
 
   interface Configuration<GamePause extends GamePause.Any = GamePause.Any>
     extends ApplicationV2.Configuration<GamePause> {}

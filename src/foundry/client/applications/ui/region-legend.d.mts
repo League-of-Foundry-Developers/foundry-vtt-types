@@ -19,6 +19,7 @@ declare class RegionLegend<
   RenderOptions extends RegionLegend.RenderOptions = RegionLegend.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   #RegionLegend: true;
+  static #RegionLegendStatic: true;
 
   static override DEFAULT_OPTIONS: RegionLegend.DefaultOptions;
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
