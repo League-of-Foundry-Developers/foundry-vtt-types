@@ -67,10 +67,6 @@ type _RenderFlag<Keys extends string> = InexactPartial<{
     message: string;
   } & LogCompatibilityWarningOptions;
 
-  /**
-   * @remarks Possibly meant to be a sub-property of deprecated,
-   * the runtime check in `RenderFlags##set` looks for this as a top level property
-   */
   alias: boolean;
 }>;
 
@@ -95,15 +91,19 @@ declare class RenderFlags<Flags extends RenderFlags.ValidateFlags<Flags>> extend
    */
   constructor(flags: Flags, config?: RenderFlags.Config);
 
-  readonly flags: Flags;
+  /** @remarks `defineProperty`'d at construction with `enumerable: false, writable: false` and the value frozen. */
+  readonly flags: Readonly<Flags>;
 
+  /** @remarks `defineProperty`'d at construction with `enumerable: false, writable: false` */
   readonly object: RenderFlagObject;
 
   /**
    * The update priority when these render flags are applied.
-   * Valid options are {@linkcode PIXI.UPDATE_PRIORITY.OBJECTS | OBJECTS} or {@linkcode PIXI.UPDATE_PRIORITY.OBJECTS | PERCEPTION}.
+   * Valid options are `"OBJECTS"` or `"PERCEPTION"`.
+   *
+   * @remarks `defineProperty`'d at construction with `enumerable: false, writable: false`
    */
-  readonly priority: typeof PIXI.UPDATE_PRIORITY.OBJECTS | typeof PIXI.UPDATE_PRIORITY.PERCEPTION;
+  readonly priority: RenderFlags.Priority;
 
   /**
    * @returns The flags which were previously set that have been cleared.
@@ -135,11 +135,12 @@ declare namespace RenderFlags {
     /**
      * The ticker priority at which these render flags are handled
      * @defaultValue {@linkcode PIXI.UPDATE_PRIORITY.OBJECTS}
-     * @remarks The default value does *not* match the type as of 13.346, this is a core bug: {@link https://github.com/foundryvtt/foundryvtt/issues/13171}
+     * @remarks The default value does *not* match the type as of 13.346, this is a core bug: {@link https://github.com/foundryvtt/foundryvtt/issues/13171}.
+     * Due to this the property has been marked required here, it can go back to optional if the default is fixed.
      *
      * See {@linkcode RenderFlags.priority | RenderFlags#priority}
      */
-    priority?: Priority;
+    priority: Priority;
   }
 
   /**
