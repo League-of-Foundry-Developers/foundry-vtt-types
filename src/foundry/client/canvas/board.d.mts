@@ -2,8 +2,16 @@ import type { InexactPartial, NullishProps, FixedInstanceType } from "#utils";
 import type { CANVAS_PERFORMANCE_MODES } from "#common/constants.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { MouseInteractionManager, RenderFlagsMixin, Ping } from "#client/canvas/interaction/_module.d.mts";
-import type * as groups from "#client/canvas/groups/_module.d.mts";
-import type * as layers from "#client/canvas/layers/_module.d.mts";
+import type {
+  groups,
+  layers,
+  // placeables is only used for @links
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  placeables,
+  // interaction is only used for @links
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interaction,
+} from "./_module.d.mts";
 import type { PerceptionManager } from "#client/canvas/perception/_module.d.mts";
 
 type InternalCanvas = new (...args: never) => {
@@ -715,16 +723,6 @@ declare namespace Canvas {
     elevation: number;
   }
 
-  /**
-   * A 3D point, expressed as `{x, y, elevation}`.
-   * @remarks Copied from `common/_types.mjs`
-   */
-  interface ElevatedPoint {
-    x: number;
-    y: number;
-    elevation: number;
-  }
-
   type PossiblyElevatedPoint = Point | ElevatedPoint;
 
   /**
@@ -828,13 +826,173 @@ declare namespace Canvas {
   }
 
   namespace Event {
+    /**
+     * All known InteractionData properties. Last updated 13.346.
+     * @internal
+     */
+    type _InteractionData<ObjectFor extends PIXI.DisplayObject> = InexactPartial<{
+      /**
+       * @remarks Set in `MouseInteractionManager##assignInteractionData`, which is called in
+       * {@linkcode MouseInteractionManager.callback | #callback}, so this will always be available
+       * to {@linkcode CallbackFunction}s
+       */
+      object: ObjectFor;
+
+      /**
+       * @privateRemarks Set as:
+       *
+       * A {@linkcode PIXI.Point} in:
+       * - `MouseInteractionManager##handlePointerMove`
+       * - `MouseInteractionManager##handlePointerUp`
+       *
+       * A {@linkcode Canvas.PossiblyElevatedPoint} in:
+       * - {@linkcode layers.DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}
+       * - {@linkcode layers.RegionLayer._onDragLeftMove | RegionLayer#_onDragLeftMove}
+       * - {@linkcode layers.RegionLayer._onDragLeftDrop | RegionLayer#_onDragLeftDrop}
+       * - {@linkcode layers.SoundsLayer._onDragLeftDrop | SoundsLayer#_onDragLeftDrop}
+       * - {@linkcode layers.TemplateLayer._onDragLeftMove | TemplateLayer#_onDragLeftMove}
+       * - {@linkcode layers.TilesLayer._onDragLeftMove | TilesLayer#_onDragLeftMove}
+       * - {@linkcode layers.TilesLayer._onDragLeftDrop | TilesLayer#_onDragLeftDrop}
+       * - {@linkcode placeables.Tile._onHandleDragMove | Tile#_onHandleDragMove}
+       * - {@linkcode placeables.Tile._onHandleDragDrop | Tile#_onHandleDragDrop}
+       */
+      destination: PIXI.Point | Canvas.PossiblyElevatedPoint;
+
+      /**
+       * @privateRemarks Set:
+       * - As {@linkcode PIXI.Point} in `MouseInteractionManager##assignOriginData`
+       * - As {@linkcode Canvas.Rectangle} in {@linkcode placeables.Tile._onHandleDragStart | Tile#_onHandleDragStart}
+       */
+      origin: PIXI.Point | Canvas.Rectangle;
+
+      /** @privateRemarks Set in `MouseInteractionManager##assignOriginData` */
+      screenOrigin: PIXI.Point;
+
+      /** @privateRemarks Set in `Canvas##onDragSelect` */
+      coords: Canvas.Rectangle;
+
+      /** @privateRemarks Set in `Canvas##onDragLeftStart` */
+      ruler: boolean;
+
+      /**
+       * @privateRemarks Set in:
+       * - `SceneControls##onToolChange`
+       * - `ClientKeybindings.#onDismiss`
+       * - {@linkcode interaction.BaseRuler._onDragStart | BaseRuler#_onDragStart}
+       * - {@linkcode interaction.BaseRuler._onClickLeft | BaseRuler#_onClickLeft}
+       * - {@linkcode interaction.BaseRuler._onClickRight | BaseRuler#_onClickRight}
+       * - {@linkcode interaction.BaseRuler._onMouseUp | BaseRuler#_onMouseUp}
+       * - {@linkcode layers.ControlsLayer._onLongPress | ControlsLayer#_onLongPress}
+       * - {@linkcode layers.WallsLayer._onUndoCreate | WallsLayer#_onUndoCreate}
+       * - {@linkcode placeables.Token._initializeDragLeft | Token#_initializeDragLeft}
+       * - {@linkcode placeables.Token._triggerDragLeftCancel | Token#_triggerDragLeftCancel}
+       */
+      cancelled: boolean;
+
+      /**
+       * @privateRemarks Set in:
+       * - {@linkcode placeables.Token._initializeDragLeft | Token#_initializeDragLeft}
+       * - {@linkcode placeables.Token._onDragLeftDrop | Token#_onDragLeftDrop}
+       * - {@linkcode placeables.Token._triggerDragLeftDrop | Token#_triggerDragLeftDrop}
+       */
+      dropped: boolean;
+
+      /**
+       * @privateRemarks Set in:
+       * - {@linkcode interaction.BaseRuler._onDragStart | BaseRuler#_onDragStart}
+       * - {@linkcode interaction.BaseRuler._onMouseUp | BaseRuler#_onMouseUp}
+       * - {@linkcode placeables.Token._initializeDragLeft | Token#_initializeDragLeft}
+       * - {@linkcode placeables.Token._onDragLeftDrop | Token#_onDragLeftDrop}
+       */
+      released: boolean;
+
+      /**
+       * @privateRemarks Set in:
+       * - {@linkcode layers.DrawingsLayer._onDragLeftStart | DrawingsLayer#_onDragLeftStart}
+       * - {@linkcode layers.LightingLayer._onDragLeftStart | LightingLayer#_onDragLeftStart}
+       * - {@linkcode layers.SoundsLayer._onDragLeftStart | SoundsLayer#_onDragLeftStart}
+       * - {@linkcode layers.TemplateLayer._onDragLeftStart | TemplateLayer#_onDragLeftStart}
+       * - {@linkcode layers.WallsLayer._onDragLeftStart | WallsLayer#_onDragLeftStart}
+       */
+      preview: ObjectFor;
+
+      /**
+       * @privateRemarks Set in:
+       * - {@linkcode layers.DrawingsLayer._onClickLeft2 | DrawingsLayer#_onClickLeft2}
+       * - {@linkcode layers.DrawingsLayer._onDragLeftStart | DrawingsLayer#_onDragLeftStart}
+       * - {@linkcode layers.DrawingsLayer._onDragLeftMove | DrawingsLayer#_onDragLeftMove}
+       * - {@linkcode layers.DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}
+       * - {@linkcode layers.DrawingsLayer._onDragLeftCancel | DrawingsLayer#_onDragLeftCancel}
+       */
+      drawingsState: layers.PlaceablesLayer.CREATION_STATES;
+
+      /**
+       * @privateRemarks Set in:
+       * - {@linkcode layers.SoundsLayer._onDragLeftStart | SoundsLayer#_onDragLeftStart}
+       * - {@linkcode layers.SoundsLayer._onDragLeftMove | SoundsLayer#_onDragLeftMove}
+       */
+      soundState: layers.PlaceablesLayer.CREATION_STATES;
+
+      /**
+       * @privateRemarks Set in:
+       * - {@linkcode placeables.PlaceableObject._onDragLeftDrop | PlaceableObject#_onDragLeftDrop}
+       * - {@linkcode layers.PlaceablesLayer._onDragLeftDrop | PlaceablesLayer#_onDragLeftDrop}
+       * - {@linkcode layers.DrawingsLayer._onDragLeftDrop | DrawingsLayer#_onDragLeftDrop}
+       * - {@linkcode layers.WallsLayer._onDragLeftStart | WallsLayer#_onDragLeftStart}
+       * - {@linkcode layers.WallsLayer._onDragLeftDrop | WallsLayer#_onDragLeftDrop}
+       */
+      clearPreviewContainer: boolean;
+
+      /**
+       * @privateRemarks Set in: {@linkcode placeables.PlaceableObject._onClickLeft | PlaceableObject#_onClickLeft}
+       */
+      release: boolean;
+
+      /**
+       * @privateRemarks Set in:
+       * - {@linkcode placeables.Drawing._onClickLeft | Drawing#_onClickLeft}
+       * - {@linkcode placeables.Tile._onClickLeft | Tile#_onClickLeft}
+       */
+      dragHandle: boolean;
+
+      /**
+       * @privateRemarks Set in {@linkcode placeables.Drawing._onHandleDragStart | Drawing#_onHandleDragStart}
+       */
+      handleOrigin: Canvas.Point;
+
+      /**
+       * @privateRemarks Set in {@linkcode placeables.Drawing._onHandleDragStart | Drawing#_onHandleDragStart}
+       */
+      originalData: DrawingDocument.Source;
+
+      /**
+       * @privateRemarks Set in {@linkcode placeables.Drawing._onHandleDragDrop | Drawing#_onHandleDragDrop}
+       */
+      restoreOriginalData: boolean;
+
+      /**
+       * @privateRemarks Set in {@linkcode placeables.PlaceableObject._initializeDragLeft | PlaceableObject#_initializeDragLeft}
+       */
+      clones: ObjectFor[];
+
+      /**
+       * @privateRemarks Set in {@linkcode layers.WallsLayer._onDragLeftStart | WallsLayer#_onDragLeftStart}
+       */
+      fixed: boolean;
+    }>;
+
+    interface InteractionData<ObjectFor extends PIXI.DisplayObject = PIXI.DisplayObject>
+      extends _InteractionData<ObjectFor> {}
+
     /** @internal */
-    interface _Base<Original extends UIEvent | PIXI.PixiTouch = UIEvent | PIXI.PixiTouch>
-      extends PIXI.FederatedEvent<Original> {
-      interactionData: MouseInteractionManager.InteractionData<PIXI.DisplayObject>;
+    interface _Base<
+      ObjectFor extends PIXI.DisplayObject = PIXI.DisplayObject,
+      Original extends UIEvent | PIXI.PixiTouch = UIEvent | PIXI.PixiTouch,
+    > extends PIXI.FederatedEvent<Original> {
+      interactionData: InteractionData<ObjectFor>;
     }
 
-    interface Pointer extends _Base<PointerEvent> {}
+    interface Pointer<ObjectFor extends PIXI.Container = PIXI.Container> extends _Base<ObjectFor, PointerEvent> {}
     interface Wheel extends WheelEvent {}
     interface DeleteKey extends KeyboardEvent {}
 

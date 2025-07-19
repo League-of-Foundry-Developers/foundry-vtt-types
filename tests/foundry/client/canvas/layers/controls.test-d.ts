@@ -23,11 +23,11 @@ expectTypeOf(layer.debug).toEqualTypeOf<PIXI.Graphics>();
 expectTypeOf(layer.select).toEqualTypeOf<PIXI.Graphics | undefined>();
 
 expectTypeOf(layer._cursors).toEqualTypeOf<Record<string, Cursor>>();
-expectTypeOf(layer["_rulers"]).toEqualTypeOf<Record<string, Ruler.ConfiguredInstance>>();
+expectTypeOf(layer["_rulers"]).toEqualTypeOf<Record<string, Ruler.Implementation>>();
 expectTypeOf(layer["_offscreenPings"]).toEqualTypeOf<Record<string, Canvas.Point>>();
 
-expectTypeOf(layer.ruler).toEqualTypeOf<Ruler.ConfiguredInstance | null>();
-expectTypeOf(layer.getRulerForUser("afasfasg")).toEqualTypeOf<Ruler.ConfiguredInstance | null>();
+expectTypeOf(layer.ruler).toEqualTypeOf<Ruler.Implementation | null>();
+expectTypeOf(layer.getRulerForUser("afasfasg")).toEqualTypeOf<Ruler.Implementation | null>();
 
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(layer["_tearDown"]({})).toEqualTypeOf<Promise<void>>();
@@ -53,18 +53,7 @@ expectTypeOf(layer.updateCursor(someUser, null)).toBeVoid();
 
 expectTypeOf(layer.updateRuler(someUser)).toBeVoid();
 expectTypeOf(layer.updateRuler(someUser, null)).toBeVoid();
-expectTypeOf(
-  layer.updateRuler(someUser, {
-    destination: { x: 50, y: 50 },
-    history: [{ x: 20, y: 35, teleport: false, cost: 1 }],
-    state: Ruler.STATES.MEASURING,
-    token: "asfasgasg",
-    waypoints: [
-      { x: 0, y: 20 },
-      { x: 10, y: 35 },
-    ],
-  }),
-).toBeVoid();
+expectTypeOf(layer.updateRuler(someUser, { hidden: true, path: [{ x: 1, y: 2, elevation: 3 }] })).toBeVoid();
 
 // @ts-expect-error handlePing requires a `scene` ID in its options
 expectTypeOf(layer.handlePing(someUser, somePoint)).toEqualTypeOf<Promise<boolean>>();
@@ -99,9 +88,9 @@ expectTypeOf(layer.drawPing(somePoint)).toEqualTypeOf<Promise<boolean>>();
 expectTypeOf(layer.drawPing(somePoint, {})).toEqualTypeOf<Promise<boolean>>();
 expectTypeOf(
   layer.drawPing(somePoint, {
-    // color: "#ABCDEF",
-    name: null,
-    duration: undefined,
+    color: "#ABCDEF",
+    name: "bizzfuzz",
+    duration: 1000,
     size: 250,
     style: null,
     user: null,

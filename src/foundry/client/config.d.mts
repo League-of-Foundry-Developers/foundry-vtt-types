@@ -2223,6 +2223,9 @@ declare global {
     }
 
     interface Canvas {
+      /** @defaultValue `10` */
+      elevationSnappingPrecision: number;
+
       /** @defaultValue `8` */
       blurStrength: number;
 
