@@ -970,16 +970,15 @@ export interface AllHooks extends DynamicHooks {
   initializeDynamicTokenRingConfig: (ringConfig: TokenRingConfig) => void;
 
   /**
-   * A hook event that fires when the context menu for a PlayersList entry is constructed.
+   * A hook event that fires when the context menu for a Players entry is constructed.
    * @param app            - The Application instance that the context menu is constructed in
    * @param contextOptions - The context menu entries
-   * @remarks This is called by {@linkcode Hooks.call}.
-   * @see {@link PlayerList.activateListeners | `PlayerList#activateListeners`}
+   * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   getUserContextOptions: (
     app: foundry.applications.ui.Players,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
-  ) => boolean | void;
+  ) => void;
 
   /**
    * A hook event that fires when the context menu for a SceneNavigation entry is constructed.
@@ -989,6 +988,17 @@ export interface AllHooks extends DynamicHooks {
    */
   getSceneContextOptions: (
     app: foundry.applications.ui.SceneNavigation,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a Macro Hotbar entry is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  getMacroContextOptions: (
+    app: foundry.applications.ui.Hotbar,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
 }
