@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { FixedInstanceType, InexactPartial } from "../../../../../src/utils/index.d.mts";
+import type { FixedInstanceType, InexactPartial } from "fvtt-types/utils";
 
 import Application = foundry.appv1.api.Application;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;

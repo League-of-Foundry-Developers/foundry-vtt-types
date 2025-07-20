@@ -4,7 +4,7 @@ import { expectTypeOf } from "vitest";
 // There's also a lot of `Config extends ...` going on here which means that excess property checks aren't being done.
 
 import DialogV2 = foundry.applications.api.DialogV2;
-import type { AnyObject, EmptyObject } from "../../../../../src/utils/index.d.mts";
+import type { AnyObject, EmptyObject } from "fvtt-types/utils";
 
 const numberCallback = async () => 5;
 

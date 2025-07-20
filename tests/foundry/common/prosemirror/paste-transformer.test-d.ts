@@ -1,6 +1,6 @@
-/* eslint-disable import-x/extensions */
 import { expectTypeOf } from "vitest";
-import ProseMirrorPasteTransformer from "../../../../src/foundry/common/prosemirror/paste-transformer.mjs";
+
+import ProseMirrorPasteTransformer = foundry.prosemirror.ProseMirrorPasteTransformer;
 
 declare const schema: foundry.prosemirror.Schema;
 

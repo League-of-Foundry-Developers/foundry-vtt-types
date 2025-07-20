@@ -1,8 +1,11 @@
 import { expectTypeOf } from "vitest";
 import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
-import type { CompendiumOwnershipField } from "../../../../src/foundry/common/packages/base-package.d.mts";
-import type BaseFolder from "../../../../src/foundry/common/documents/folder.d.mts";
 
+// Import necessary as this is otherwise inaccessible.
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import type { CompendiumOwnershipField } from "../../../../src/foundry/common/packages/base-package.d.mts";
+
+import BaseFolder = foundry.documents.BaseFolder;
 import Module = foundry.packages.Module;
 import System = foundry.packages.System;
 

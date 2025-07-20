@@ -1,7 +1,8 @@
 import { expectTypeOf } from "vitest";
-import type PointDarknessSource from "../../../../../src/foundry/client/canvas/sources/point-darkness-source.d.mts";
-import type PointLightSource from "../../../../../src/foundry/client/canvas/sources/point-light-source.d.mts";
 import { AmbientLight, PlaceableObject } from "#client/canvas/placeables/_module.mjs";
+
+import PointDarknessSource = foundry.canvas.sources.PointDarknessSource;
+import PointLightSource = foundry.canvas.sources.PointLightSource;
 
 expectTypeOf(AmbientLight.embeddedName).toEqualTypeOf<"AmbientLight">();
 expectTypeOf(AmbientLight.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<

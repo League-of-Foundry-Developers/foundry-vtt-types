@@ -1,4 +1,7 @@
 import { expectTypeOf } from "vitest";
+
+// Import necessary as this is otherwise inaccessible.
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type AdditionalTypesField from "../../../../src/foundry/common/packages/sub-types.d.mts";
 
 const baseModule = new foundry.packages.BaseModule({

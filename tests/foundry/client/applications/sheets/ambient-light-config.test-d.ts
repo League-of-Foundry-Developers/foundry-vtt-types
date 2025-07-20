@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type DocumentSheetV2 from "../../../../../src/foundry/client/applications/api/document-sheet.d.mts";
 
 declare const doc: AmbientLightDocument.Implementation;
 const lightConfig = new foundry.applications.sheets.AmbientLightConfig({ document: doc });
@@ -14,7 +13,7 @@ expectTypeOf(lightConfig._onChangeForm(formConfig, event)).toEqualTypeOf<void>()
 
 expectTypeOf(
   foundry.applications.sheets.AmbientLightConfig.DEFAULT_OPTIONS,
-).toEqualTypeOf<DocumentSheetV2.DefaultOptions>();
+).toEqualTypeOf<foundry.applications.api.DocumentSheetV2.DefaultOptions>();
 
 expectTypeOf(foundry.applications.sheets.AmbientLightConfig.PARTS).toEqualTypeOf<
   Record<string, foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart>

@@ -1,9 +1,11 @@
-/* eslint-disable import-x/extensions */
 import { expectTypeOf } from "vitest";
-import ImageLinkNode from "../../../../../src/foundry/common/prosemirror/schema/image-link-node.mjs";
 import type { AttributeSpec, Node, NodeSpec } from "prosemirror-model";
 import type { EditorView } from "prosemirror-view";
 import type SchemaDefinition from "#common/prosemirror/schema/schema-definition.mjs";
+
+// Import necessary as this is otherwise inaccessible.
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports, import-x/extensions
+import ImageLinkNode from "../../../../../src/foundry/common/prosemirror/schema/image-link-node.mjs";
 
 new ImageLinkNode();
 

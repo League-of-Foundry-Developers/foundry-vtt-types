@@ -2,12 +2,15 @@ import { expectTypeOf, test } from "vitest";
 import type { DeepPartial, EmptyObject } from "fvtt-types/utils";
 
 import TypeDataModel = foundry.abstract.TypeDataModel;
-import type Document from "../../../../src/foundry/common/abstract/document.d.mts";
+
+// Import necessary as this is otherwise inaccessible.
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type {
   DatabaseCreateOperation,
   DatabaseUpdateOperation,
 } from "../../../../src/foundry/common/abstract/_types.d.mts";
 
+import Document = foundry.abstract.Document;
 import fields = foundry.data.fields;
 
 /* attempting to use the example as a test */

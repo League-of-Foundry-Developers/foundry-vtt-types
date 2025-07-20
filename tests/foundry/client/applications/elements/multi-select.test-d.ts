@@ -1,8 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type {
-  FormInputConfig,
-  SelectInputConfig,
-} from "../../../../../src/foundry/client/applications/forms/fields.d.mts";
 
 declare const multiSelect: foundry.applications.elements.AbstractMultiSelectElement;
 
@@ -13,7 +9,8 @@ expectTypeOf(foundry.applications.elements.AbstractMultiSelectElement.tagName).t
 
 expectTypeOf(foundry.applications.elements.HTMLMultiSelectElement.tagName).toEqualTypeOf<"multi-select">();
 
-declare const multiSelectConfig: FormInputConfig<string[]> & Omit<SelectInputConfig, "blank">;
+declare const multiSelectConfig: foundry.applications.fields.FormInputConfig<string[]> &
+  Omit<foundry.applications.fields.SelectInputConfig, "blank">;
 expectTypeOf(
   foundry.applications.elements.HTMLMultiSelectElement.create(multiSelectConfig),
 ).toEqualTypeOf<foundry.applications.elements.HTMLMultiSelectElement>();

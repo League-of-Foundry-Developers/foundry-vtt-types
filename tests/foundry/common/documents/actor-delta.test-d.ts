@@ -3,7 +3,7 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import EmbeddedCollectionDelta = foundry.abstract.EmbeddedCollectionDelta;
 import BaseActorDelta = foundry.documents.BaseActorDelta;
 import Document = foundry.abstract.Document;
-import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
+import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
 class TestAD extends BaseActorDelta {}
 

@@ -1,9 +1,9 @@
 import { expectTypeOf } from "vitest";
 import type { InterfaceToObject } from "fvtt-types/utils";
-import type EmbeddedCollection from "../../../../src/foundry/common/abstract/embedded-collection.d.mts";
 
 import BaseRegion = foundry.documents.BaseRegion;
 import Document = foundry.abstract.Document;
+import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
 class TestRegion extends BaseRegion {}
 

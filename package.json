@@ -18,10 +18,10 @@
     "./configuration": {
       "types": "./src/configuration/index.d.mts"
     },
-    "./worker": {
+    "./workers": {
       "types": "./src/foundry/public/scripts/workers/index.d.mts"
     },
-    "./worker/image-compressor": {
+    "./workers/image-compressor": {
       "types": "./src/foundry/public/scripts/workers/image-compressor.d.mts"
     }
   },

@@ -1,12 +1,9 @@
 import { expectTypeOf } from "vitest";
-import { TextureCompressor } from "#client/canvas/workers/_module.mjs";
-import type {
-  BufferOperationReturn,
-  CopyBufferResult,
-  ProcessBufferRedToBufferRGBAResult,
-  ProcessBufferRGBAToBufferRedResult,
-  ProcessBufferToBase64Result,
-} from "../../../../../src/types/workers/image-compressor.mjs";
+
+// eslint-disable-next-line import-x/extensions
+import "fvtt-types/workers/image-compressor";
+
+import TextureCompressor = foundry.canvas.workers.TextureCompressor;
 
 const myTC = new TextureCompressor("foobar", {
   debug: true,

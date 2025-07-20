@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { ParentheticalRollParseNode } from "../../../../../src/foundry/client/dice/_types.d.mts";
 
 const poolTerm = new foundry.dice.terms.PoolTerm();
 
@@ -27,7 +26,7 @@ expectTypeOf(foundry.dice.terms.PoolTerm.SERIALIZE_ATTRIBUTES).toEqualTypeOf<str
 expectTypeOf(foundry.dice.terms.PoolTerm.fromExpression("")).toEqualTypeOf<foundry.dice.terms.PoolTerm | null>();
 expectTypeOf(foundry.dice.terms.PoolTerm.fromRolls([])).toEqualTypeOf<foundry.dice.terms.PoolTerm>();
 
-declare const node: ParentheticalRollParseNode;
+declare const node: foundry.dice.types.ParentheticalRollParseNode;
 expectTypeOf(
   foundry.dice.terms.ParentheticalTerm.fromParseNode(node),
 ).toEqualTypeOf<foundry.dice.terms.ParentheticalTerm>();
