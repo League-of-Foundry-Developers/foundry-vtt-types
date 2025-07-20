@@ -1,4 +1,4 @@
-import type { ConfiguredCombatantGroup } from "fvtt-types/configuration";
+import type { ConfiguredCombatantGroup } from "#configuration";
 import type { Identity, InexactPartial, Merge } from "#utils";
 import type Document from "#common/abstract/document.mjs";
 import type { DataSchema } from "#common/data/fields.d.mts";

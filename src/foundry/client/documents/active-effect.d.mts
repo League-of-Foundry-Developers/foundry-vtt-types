@@ -1,4 +1,4 @@
-import type { ConfiguredActiveEffect } from "fvtt-types/configuration";
+import type { ConfiguredActiveEffect } from "#configuration";
 import type {
   AnyMutableObject,
   Identity,

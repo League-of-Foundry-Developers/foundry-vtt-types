@@ -3,7 +3,7 @@ import type AdditionalTypesField from "#common/packages/sub-types.d.mts";
 import type DataModel from "#common/abstract/data.mjs";
 import type ClientPackageMixin from "./client-package.d.mts";
 import type { SystemNameConfig } from "#configuration";
-import type { GetKey } from "fvtt-types/utils";
+import type { GetKey } from "#utils";
 
 import fields = foundry.data.fields;
 import Game = foundry.Game;

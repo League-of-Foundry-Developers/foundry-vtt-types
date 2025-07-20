@@ -1,4 +1,4 @@
-import type { ConfiguredRegionBehavior } from "fvtt-types/configuration";
+import type { ConfiguredRegionBehavior } from "#configuration";
 import type Document from "#common/abstract/document.d.mts";
 import type BaseRegionBehavior from "#common/documents/region-behavior.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";

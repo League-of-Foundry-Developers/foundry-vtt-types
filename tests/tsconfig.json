@@ -2,7 +2,10 @@
   "$schema": "https://json.schemastore.org/tsconfig.json",
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["fvtt-types"]
+    // typeRoots is used such that under normal operation `import "fvtt-types"` isn't importable.
+    // This has caused multiple issues historically as it froze the name.
+    "typeRoots": ["../node_modules/@types"],
+    "types": ["fvtt-types"],
   },
   "include": ["**/*"]
 }
