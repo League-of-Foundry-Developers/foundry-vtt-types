@@ -4,70 +4,62 @@ import Notifications = foundry.applications.ui.Notifications;
 
 const notifications = new foundry.applications.ui.Notifications();
 
-expectTypeOf(notifications.notify("Hello world")).toEqualTypeOf<Readonly<Notifications.Notification<"info">>>();
-expectTypeOf(notifications.notify("Hello world", "info")).toEqualTypeOf<Readonly<Notifications.Notification<"info">>>();
-expectTypeOf(notifications.notify("Hello world", "warning")).toEqualTypeOf<
-  Readonly<Notifications.Notification<"warning">>
->();
-expectTypeOf(notifications.notify("Hello world", "error")).toEqualTypeOf<
-  Readonly<Notifications.Notification<"error">>
->();
+expectTypeOf(notifications.notify("Hello world")).toEqualTypeOf<Notifications.Notification<"info">>();
+expectTypeOf(notifications.notify("Hello world", "info")).toEqualTypeOf<Notifications.Notification<"info">>();
+expectTypeOf(notifications.notify("Hello world", "warning")).toEqualTypeOf<Notifications.Notification<"warning">>();
+expectTypeOf(notifications.notify("Hello world", "error")).toEqualTypeOf<Notifications.Notification<"error">>();
 
 // @ts-expect-error "foobar" is not a valid notification type.
 notifications.notify("Hello world", "foobar");
 
 expectTypeOf(notifications.notify("Hello world", "error", { localize: true })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"error">>
+  Notifications.Notification<"error">
 >();
 expectTypeOf(notifications.notify("Hello world", "error", { permanent: true })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"error">>
+  Notifications.Notification<"error">
 >();
 expectTypeOf(notifications.notify("Hello world", "error", { console: false })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"error">>
+  Notifications.Notification<"error">
 >();
 
-expectTypeOf(notifications.info("Hello world")).toEqualTypeOf<Readonly<Notifications.Notification<"info">>>();
-expectTypeOf(notifications.info("Hello world", { localize: true })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"info">>
->();
+expectTypeOf(notifications.info("Hello world")).toEqualTypeOf<Notifications.Notification<"info">>();
+expectTypeOf(notifications.info("Hello world", { localize: true })).toEqualTypeOf<Notifications.Notification<"info">>();
 expectTypeOf(notifications.info("Hello world", { permanent: true })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"info">>
+  Notifications.Notification<"info">
 >();
-expectTypeOf(notifications.info("Hello world", { console: false })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"info">>
->();
+expectTypeOf(notifications.info("Hello world", { console: false })).toEqualTypeOf<Notifications.Notification<"info">>();
 
-expectTypeOf(notifications.warn("Hello world")).toEqualTypeOf<Readonly<Notifications.Notification<"warning">>>();
+expectTypeOf(notifications.warn("Hello world")).toEqualTypeOf<Notifications.Notification<"warning">>();
 expectTypeOf(notifications.warn("Hello world", { localize: true })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"warning">>
+  Notifications.Notification<"warning">
 >();
 expectTypeOf(notifications.warn("Hello world", { permanent: true })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"warning">>
+  Notifications.Notification<"warning">
 >();
 expectTypeOf(notifications.warn("Hello world", { console: false })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"warning">>
+  Notifications.Notification<"warning">
 >();
 
-expectTypeOf(notifications.error("Hello world")).toEqualTypeOf<Readonly<Notifications.Notification<"error">>>();
+expectTypeOf(notifications.error("Hello world")).toEqualTypeOf<Notifications.Notification<"error">>();
 expectTypeOf(notifications.error("Hello world", { localize: true })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"error">>
+  Notifications.Notification<"error">
 >();
 expectTypeOf(notifications.error("Hello world", { permanent: true })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"error">>
+  Notifications.Notification<"error">
 >();
 expectTypeOf(notifications.error("Hello world", { console: false })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"error">>
+  Notifications.Notification<"error">
 >();
 
-expectTypeOf(notifications.success("Hello world")).toEqualTypeOf<Readonly<Notifications.Notification<"success">>>();
+expectTypeOf(notifications.success("Hello world")).toEqualTypeOf<Notifications.Notification<"success">>();
 expectTypeOf(notifications.success("Hello world", { localize: true })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"success">>
+  Notifications.Notification<"success">
 >();
 expectTypeOf(notifications.success("Hello world", { permanent: true })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"success">>
+  Notifications.Notification<"success">
 >();
 expectTypeOf(notifications.success("Hello world", { console: false })).toEqualTypeOf<
-  Readonly<Notifications.Notification<"success">>
+  Notifications.Notification<"success">
 >();
 
 const myNotification = notifications.notify("Hello World");
