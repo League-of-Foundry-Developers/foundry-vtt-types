@@ -134,13 +134,14 @@ declare class HandlebarsApplication {
  */
 declare function HandlebarsApplicationMixin<BaseClass extends HandlebarsApplicationMixin.BaseClass>(
   BaseApplication: BaseClass,
-): Mixin<typeof HandlebarsApplication, BaseClass>;
+): HandlebarsApplicationMixin.Mix<BaseClass>;
 
 declare namespace HandlebarsApplicationMixin {
   interface AnyMixedConstructor extends ReturnType<typeof HandlebarsApplicationMixin<BaseClass>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = ApplicationV2.Internal.Constructor;
+  type Mix<BaseClass extends HandlebarsApplicationMixin.BaseClass> = Mixin<typeof HandlebarsApplication, BaseClass>;
 
   interface PartState {
     scrollPositions: Array<[el1: HTMLElement, scrollTop: number, scrollLeft: number]>;
