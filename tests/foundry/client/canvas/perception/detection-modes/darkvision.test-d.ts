@@ -1,18 +1,26 @@
-import { expectTypeOf } from "vitest";
-import { DetectionMode, DetectionModeDarkvision } from "#client/canvas/perception/_module.mjs";
-import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import { describe, expectTypeOf, test } from "vitest";
 
-const source = {
-  id: "foo",
-  label: "bar",
-  type: DetectionMode.DETECTION_TYPES.OTHER,
-  angle: false,
-  walls: true,
-  tokenConfig: false,
-};
+import DetectionModeDarkvision = foundry.canvas.perception.DetectionModeDarkvision;
+import DetectionMode = foundry.canvas.perception.DetectionMode;
+import PointVisionSource = foundry.canvas.sources.PointVisionSource;
+import Token = foundry.canvas.placeables.Token;
 
-declare const someVisionSource: foundry.canvas.sources.PointVisionSource;
-declare const someToken: Token.Implementation;
+declare const visionSource: PointVisionSource.Initialized;
+declare const token: Token.Implementation;
 
-const myDetectionModeBasicSight = new DetectionModeDarkvision(source);
-expectTypeOf(myDetectionModeBasicSight["_canDetect"](someVisionSource, someToken)).toEqualTypeOf<boolean>();
+describe("DetectionModeDarkvision Tests", () => {
+  const source = {
+    id: "foo",
+    label: "bar",
+    type: DetectionMode.DETECTION_TYPES.OTHER,
+    angle: false,
+    walls: true,
+    tokenConfig: false,
+  } satisfies DetectionMode.CreateData;
+
+  const myDetectionModeDarkvision = new DetectionModeDarkvision(source);
+
+  test("Visibility Testing", () => {
+    expectTypeOf(myDetectionModeDarkvision["_canDetect"](visionSource, token)).toEqualTypeOf<boolean>();
+  });
+});
