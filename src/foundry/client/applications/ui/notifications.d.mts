@@ -50,7 +50,7 @@ declare class Notifications {
    * @remarks `type` and `options` use parameter defaults so `null` causes an error
    */
   notify<T extends Notifications.Type | undefined = undefined>(
-    message: string,
+    message: string | Error,
     type?: T,
     options?: Notifications.NotifyOptions,
   ): Notifications.Notification<Coalesce<T, "info">>;
@@ -61,7 +61,7 @@ declare class Notifications {
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
    */
-  info(message: string, options?: Notifications.NotifyOptions): Notifications.Notification<"info">;
+  info(message: string | Error, options?: Notifications.NotifyOptions): Notifications.Notification<"info">;
 
   /**
    * Display a notification with the "warning" type
@@ -69,7 +69,7 @@ declare class Notifications {
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
    */
-  warn(message: string, options?: Notifications.NotifyOptions): Notifications.Notification<"warning">;
+  warn(message: string | Error, options?: Notifications.NotifyOptions): Notifications.Notification<"warning">;
 
   /**
    * Display a notification with the "error" type
@@ -77,7 +77,7 @@ declare class Notifications {
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
    */
-  error(message: string, options?: Notifications.NotifyOptions): Notifications.Notification<"error">;
+  error(message: string | Error, options?: Notifications.NotifyOptions): Notifications.Notification<"error">;
 
   /**
    * Display a notification with the "success" type.
@@ -85,7 +85,7 @@ declare class Notifications {
    * @param options - Notification options passed to the notify function
    * @returns The registered notification
    */
-  success(message: string, options?: Notifications.NotifyOptions): Notifications.Notification<"success">;
+  success(message: string | Error, options?: Notifications.NotifyOptions): Notifications.Notification<"success">;
 
   /**
    * Update the progress of the notification.
@@ -132,6 +132,12 @@ declare namespace Notifications {
     type: T;
     timestamp: number;
     message: string;
+
+    /**
+     * @remarks Only set when the original `message` is an `Error`.
+     */
+    error?: Error | undefined;
+
     permanent: boolean;
     console: boolean;
     active: boolean;
