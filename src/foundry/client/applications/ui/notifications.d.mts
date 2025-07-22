@@ -143,9 +143,22 @@ declare namespace Notifications {
     active: boolean;
     progress: boolean;
     pct: number;
+
+    /**
+     * @remarks Set when the notification is currently being rendered. When the notification is
+     * removed {@linkcode HTMLLIElement.remove | HTMLLIElement#remove} is called.
+     */
     element?: HTMLLIElement | undefined;
-    remove?: (() => void) | undefined;
-    update?: ((update: Notifications.UpdateOptions) => void) | undefined;
+
+    /**
+     * @remarks Foundry claims this is required but always sets it in practice.
+     */
+    remove: () => void;
+
+    /**
+     * @remarks Foundry claims this is required but always sets it in practice.
+     */
+    update: (update: Notifications.UpdateOptions) => void;
   }
 
   interface FormatOptions {
