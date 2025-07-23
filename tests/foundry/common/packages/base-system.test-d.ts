@@ -13,7 +13,10 @@ expectTypeOf(baseSystem.strictDataCleaning).toEqualTypeOf<boolean>();
 
 // schema fields
 expectTypeOf(baseSystem.version).toEqualTypeOf<string>();
-expectTypeOf(baseSystem.documentTypes).toEqualTypeOf<AdditionalTypesField.ServerTypeDeclarations>();
+expectTypeOf(baseSystem.documentTypes).toEqualTypeOf<AdditionalTypesField.DocumentTypesConfiguration>();
+expectTypeOf(baseSystem.documentTypes.Actor["character"]).toEqualTypeOf<
+  AdditionalTypesField.ServerSanitationFields | undefined
+>();
 expectTypeOf(baseSystem.background).toEqualTypeOf<string | undefined>();
 expectTypeOf(baseSystem.initiative).toEqualTypeOf<string | undefined>();
 expectTypeOf(baseSystem.grid.type).toEqualTypeOf<number>();

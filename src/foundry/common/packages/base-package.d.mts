@@ -64,16 +64,22 @@ declare namespace BasePackage {
   }
 
   interface PackageMediaSchema extends DataSchema {
+    /** Usage type for the media asset. "setup" means it will be used on the setup screen. */
     type: fields.StringField<OptionalString>;
 
+    /** A web url link to the media element. */
     url: fields.StringField<OptionalString>;
 
+    /** A caption for the media element. */
     caption: fields.StringField<OptionalString>;
 
+    /** Should the media play on loop? */
     loop: fields.BooleanField<{ required: false; blank: false; initial: false }>;
 
+    /** A link to the thumbnail for the media element. */
     thumbnail: fields.StringField<OptionalString>;
 
+    /** An object of optional key/value flags. */
     flags: fields.ObjectField;
   }
 
@@ -228,14 +234,21 @@ declare namespace BasePackage {
 
   /** @internal */
   interface _PackageCompendiumFolderSchema extends DataSchema {
+    /** Name for the folder. Multiple packages with identical folder names will merge by name. */
     name: fields.StringField<{ required: true; blank: false }>;
+
+    /** Alphabetical or manual sorting. */
     sorting: fields.StringField<{
       required: false;
       blank: false;
       initial: undefined;
       choices: typeof BaseFolder.SORTING_MODES;
     }>;
+
+    /** A hex string for the pack's color. */
     color: fields.ColorField;
+
+    /** A list of the pack names to include in this folder. */
     packs: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
   }
 
@@ -244,6 +257,7 @@ declare namespace BasePackage {
 
   type PackageCompendiumFolderSchema<Depth> = Depth extends number
     ? _PackageCompendiumFolderSchema & {
+        /** Nested folder data, up to three levels. */
         folders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<FolderRecursion[Depth]>>>;
       }
     : _PackageCompendiumFolderSchema;
@@ -300,34 +314,37 @@ declare namespace BasePackage {
      */
     changelog: fields.StringField<OptionalString>;
 
+    /**
+     * An object of optional key/value flags. Packages can use this namespace for their own purposes,
+     * preferably within a namespace matching their package ID.
+     */
     flags: fields.ObjectField;
 
+    /** An array of objects containing media info about the package. */
     media: fields.SetField<fields.SchemaField<PackageMediaSchema>>;
 
     // Moved to base-module and base-system to avoid conflict with base-world
 
-    /**
-     * The current package version
-     */
     // version: fields.StringField<{ required: true; blank: false; initial: "0" }>;
 
     /**
-     * The compatibility of this version with the core Foundry software
+     * The compatibility of this version with the core Foundry software. See https://foundryvtt.com/article/versioning/
+     * for more info on how the core software structures its releases.
      */
     compatibility: PackageCompatibility;
 
     /**
-     * An array of urls or relative file paths for JavaScript files which should be included
+     * An array of urls or relative file paths for JavaScript files to include
      */
     scripts: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
 
     /**
-     * An array of urls or relative file paths for ESModule files which should be included
+     * An array of urls or relative file paths for ESModule files to include
      */
     esmodules: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
 
     /**
-     * An array of urls or relative file paths for CSS stylesheet files which should be included
+     * An array of urls or relative file paths for CSS stylesheet files to include
      */
     styles: fields.SetField<fields.StringField<{ required: true; blank: false }>>;
 
@@ -341,6 +358,9 @@ declare namespace BasePackage {
      */
     packs: PackageCompendiumPacks<fields.SchemaField<PackageCompendiumSchema>>;
 
+    /**
+     * An array of pack folders that will be initialized once per world.
+     */
     packFolders: fields.SetField<fields.SchemaField<PackageCompendiumFolderSchema<1>>>;
 
     /**
@@ -368,9 +388,61 @@ declare namespace BasePackage {
      */
     protected: fields.BooleanField;
 
+    /**
+     * Whether this package is a free Exclusive pack.
+     */
     exclusive: fields.BooleanField;
 
+    /**
+     * Whether updates should leave the contents of the package's /storage folder.
+     */
     persistentStorage: fields.BooleanField;
+  }
+
+  /**
+   * @remarks Package flags do not operate under the same rules as Document flags
+   * 1. They are constructed directly from the provided manifest.json files
+   * 2. There are no helper getFlag/setFlag functions
+   * 3. There is no enforced namespacing
+   * 4. There are *many* layers that accept flags, rather than just the top level
+   */
+  namespace Flags {
+    /**
+     * Flags used by the core software.
+     * @remarks Flags for the top level of the schema. Notably *not* namespaced as "core..."
+     */
+    interface Core {
+      /** Can you upload to this package's folder using the built-in FilePicker. */
+      canUpload?: boolean | undefined;
+
+      /** Configuration information for hot reload logic */
+      hotReload?: HotReloadConfig | undefined;
+
+      /**
+       * Mapping information for CompendiumArt.
+       * Each key is a unique system ID, e.g. "dnd5e" or "pf2e".
+       */
+      compendiumArtMappings?: Record<string, CompendiumArtFlag> | undefined;
+
+      /** A mapping of token subject paths to configured subject images. */
+      tokenRingSubjectMappings?: Record<string, string> | undefined;
+    }
+
+    interface HotReloadConfig {
+      /** A list of file extensions, e.g. `["css", "hbs", "json"]` */
+      extensions?: string[] | undefined;
+
+      /** File paths to watch, e.g. `["src/styles", "templates", "lang"]` */
+      paths?: string[] | undefined;
+    }
+
+    interface CompendiumArtFlag {
+      /** The path to the art mapping file. */
+      mapping: string;
+
+      /** An optional credit string for use by the game system to apply in an appropriate place. */
+      credit?: string | undefined;
+    }
   }
 
   interface PackageManifestData {
