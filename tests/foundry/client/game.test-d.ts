@@ -36,13 +36,14 @@ declare global {
   }
 }
 
-assertType<undefined | Module>(aGame.modules.get("optional-module"));
+assertType<Module | undefined>(aGame.modules.get("optional-module"));
+assertType<Module>(aGame.modules.get("optional-module", { strict: true }));
 
-expectTypeOf(aGame.modules.get("required-module")).toEqualTypeOf<Module>();
+expectTypeOf(aGame.modules.get("required-module")).toEqualTypeOf<{ active: true } & Module>();
 
 const optionalApiModule = aGame.modules.get("optional-api-module");
 if (optionalApiModule) {
-  expectTypeOf(optionalApiModule.api).toEqualTypeOf<undefined | ModuleConfig["optional-api-module"]["api"]>();
+  expectTypeOf(optionalApiModule.api).toEqualTypeOf<ModuleConfig["optional-api-module"]["api"] | undefined>();
   if (optionalApiModule.active) {
     expectTypeOf(optionalApiModule.active).toEqualTypeOf<true>();
     expectTypeOf(optionalApiModule.api.testApi).toEqualTypeOf<(value: string) => boolean>();
@@ -65,7 +66,7 @@ if (moduleOptionalProps) {
 }
 const requiredApiModule = aGame.modules.get("required-api-module");
 
-expectTypeOf(requiredApiModule).toEqualTypeOf<Module & ModuleConfig["required-api-module"]>();
+expectTypeOf(requiredApiModule).toEqualTypeOf<{ active: true } & Module & ModuleConfig["required-api-module"]>();
 expectTypeOf(requiredApiModule.hooks.triggerDialog(5)).toEqualTypeOf<void>();
 
 declare global {

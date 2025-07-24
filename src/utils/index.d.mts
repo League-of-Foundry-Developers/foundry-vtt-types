@@ -1,7 +1,5 @@
 import type { Document } from "../foundry/common/abstract/_module.d.mts";
 
-export {};
-
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type ConfiguredModuleData<Name extends string> = Name extends keyof ModuleConfig ? ModuleConfig[Name] : {};
 
@@ -15,6 +13,7 @@ export type FixedInstanceType<T extends abstract new (...args: never) => any> = 
   ? R
   : never;
 
+/** @deprecated Replaced with {@linkcode foundry.packages.Module.ForName | Module.ForName}, will be removed in v14 */
 export type ConfiguredModule<Name extends string> = Name extends keyof RequiredModules
   ? ConfiguredModuleData<Name>
   :

@@ -1,17 +1,11 @@
 import type { Socket } from "socket.io-client";
-import type {
-  ConfiguredModule,
-  ValueOf,
-  FixedInstanceType,
-  InitializationHook,
-  InitializedOn,
-  EmptyObject,
-} from "#utils";
+import type { ValueOf, FixedInstanceType, InitializationHook, InitializedOn, EmptyObject, GetKey } from "#utils";
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 
 import AVMaster = foundry.av.AVMaster;
+import Module = foundry.packages.Module;
 
 // Must be called with all hooks in a union.
 // Do not increase the complexity of this type. If you do Game related types may get complex enough to complain about not being statically known.
@@ -627,15 +621,37 @@ declare global {
 }
 
 declare namespace Game {
-  interface ModuleCollection extends Collection<foundry.packages.Module> {
+  interface ModuleCollection extends Collection<foundry.packages.Module, ModuleCollectionMethods> {}
+
+  interface ModuleCollectionMethods {
     /**
-     * Gets the module requested for by ID
-     * @see {@linkcode ModuleConfig} to add custom properties to modules like APIs.
+     * @remarks Gets the module requested for by ID
+     * @see {@linkcode ModuleConfig} to add custom properties to modules, for example APIs.
      * @see {@linkcode RequiredModules} to remove `undefined` from the return type for a given module
      * @param id - The module ID to look up
      */
-    get<T extends string>(id: T): foundry.packages.Module & ConfiguredModule<T>;
+    get<T extends string, Options extends Collection.GetOptions | undefined = undefined>(
+      id: T,
+      { strict }?: Options,
+    ): _ModuleCollectionGet<T, Options>;
   }
+
+  /** @internal */
+  type _ModuleCollectionGet<
+    Name extends string,
+    Options extends Collection.GetOptions | undefined = undefined,
+  > = Name extends keyof RequiredModules ? _Module<Name> : Collection.GetReturnType<_MaybeActiveModule<Name>, Options>;
+
+  /** @internal */
+  type _Module<Name extends string> =
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    { active: true } & Module & GetKey<ModuleConfig, Name, {}>;
+
+  /** @internal */
+  type _MaybeActiveModule<Name extends string> =
+    | _Module<Name>
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    | ({ active: false } & Module & { [K in keyof GetKey<ModuleConfig, Name, {}>]?: never });
 
   namespace Model {
     /**
