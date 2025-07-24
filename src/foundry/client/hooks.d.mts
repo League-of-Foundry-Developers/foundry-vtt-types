@@ -40,11 +40,11 @@ type RenderApplicationHooks = {
 };
 
 type GetApplicationHeaderButtonsHooks = {
-  [K in ApplicationName as `get${K}HeaderButtons`]: Hooks.RenderApplication<ApplicationConfig[K]>;
+  [K in ApplicationName as `get${K}HeaderButtons`]: Hooks.GetApplicationHeaderButtons<ApplicationConfig[K]>;
 };
 
 type CloseApplicationHooks = {
-  [K in ApplicationName as `close${K}`]: Hooks.RenderApplication<ApplicationConfig[K]>;
+  [K in ApplicationName as `close${K}`]: Hooks.CloseApplication<ApplicationConfig[K]>;
 };
 
 type GetApplicationEntryContextHooks = {
