@@ -718,8 +718,13 @@ declare namespace Canvas {
    * @remarks Copied from `common/_types.mjs`
    */
   interface ElevatedPoint {
+    /** The x-coordinate in pixels */
     x: number;
+
+    /** The y-coordinate in pixels */
     y: number;
+
+    /** The elevation in grid units */
     elevation: number;
   }
 
@@ -734,20 +739,6 @@ declare namespace Canvas {
   type PointTuple = [x: number, y: number];
 
   type PairOfPointsTuple = [x0: number, y0: number, x1: number, y1: number];
-
-  /**
-   * A 3D point, expessed as \{x, y, elevation\}.
-   */
-  interface ElevatedPoint {
-    /** The x-coordinate in pixels */
-    x: number;
-
-    /** The y-coordinate in pixels */
-    y: number;
-
-    /** The elevation in grid units */
-    elevation: number;
-  }
 
   /**
    * A standard rectangle interface.
@@ -1006,8 +997,8 @@ declare namespace Canvas {
   }
 
   interface PendingRenderFlags {
-    OBJECTS: Set<FixedInstanceType<ReturnType<typeof RenderFlagsMixin>>>;
-    PERCEPTION: Set<FixedInstanceType<ReturnType<typeof RenderFlagsMixin>>>;
+    OBJECTS: Set<RenderFlagsMixin.AnyMixed>;
+    PERCEPTION: Set<RenderFlagsMixin.AnyMixed>;
   }
 }
 

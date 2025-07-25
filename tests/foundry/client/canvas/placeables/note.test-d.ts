@@ -44,7 +44,7 @@ expectTypeOf(note.clear()).toEqualTypeOf<Note.Implementation>();
 expectTypeOf(note["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(note["_applyRenderFlags"]({})).toBeVoid();
 // all falsey values have no effect
-expectTypeOf(note["_applyRenderFlags"]({ refreshElevation: null, refreshPosition: undefined })).toBeVoid();
+expectTypeOf(note["_applyRenderFlags"]({ refreshElevation: false, refreshPosition: undefined })).toBeVoid();
 expectTypeOf(
   note["_applyRenderFlags"]({
     redraw: true,

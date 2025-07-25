@@ -1,65 +1,91 @@
-import { expectTypeOf } from "vitest";
-import { DetectionMode } from "#client/canvas/perception/_module.mjs";
-import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import { describe, expectTypeOf, test } from "vitest";
 
-expectTypeOf(DetectionMode.getDetectionFilter()).toEqualTypeOf<PIXI.Filter | undefined>();
-expectTypeOf(DetectionMode.DETECTION_TYPES).toExtend<
-  Record<keyof DetectionMode.DetectionTypes, DetectionMode.DETECTION_TYPES>
->();
-expectTypeOf(DetectionMode.BASIC_MODE_ID).toEqualTypeOf<"basicSight">();
+import DetectionMode = foundry.canvas.perception.DetectionMode;
+import PointVisionSource = foundry.canvas.sources.PointVisionSource;
+import Token = foundry.canvas.placeables.Token;
+import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
 
-const source = {
-  id: "foo",
-  label: "bar",
-  type: DetectionMode.DETECTION_TYPES.OTHER,
-  angle: false,
-  walls: true,
-  tokenConfig: false,
-};
-const myDetectionMode = new DetectionMode(source);
+declare const visionSource: PointVisionSource.Initialized;
+declare const token: Token.Implementation;
 
-declare const someVisionSource: foundry.canvas.sources.PointVisionSource;
-declare const someToken: Token.Implementation;
+describe("DetectionMode Tests", () => {
+  const source = {
+    id: "foo",
+    label: "bar",
+    type: DetectionMode.DETECTION_TYPES.OTHER,
+    angle: false,
+    walls: true,
+    tokenConfig: false,
+  } satisfies DetectionMode.CreateData;
 
-const someCanvasVisibilityTest = {
-  elevation: 20,
-  los: new Map([[someVisionSource, true]]),
-  point: { x: 50, y: 50 },
-};
+  const visibilityTests = [
+    {
+      los: new Map([[visionSource, true]]),
+      point: { x: 50, y: 50, elevation: 20 },
+      // deprecated since v13 until v15 (use the point's elevation instead)
+      elevation: 20,
+    },
+    {
+      los: new Map([[visionSource, true]]),
+      point: { x: 200, y: 300, elevation: -5 },
+    },
+  ] satisfies CanvasVisibility.Test[];
 
-expectTypeOf(
-  myDetectionMode.testVisibility(
-    someVisionSource,
-    { id: "foobar", enabled: true, range: 3 },
-    { object: someToken, tests: [someCanvasVisibilityTest] },
-  ),
-).toEqualTypeOf<boolean>();
+  const dmData = {
+    enabled: true,
+    id: "baz",
+    range: 600,
+  } satisfies TokenDocument.DetectionModeData;
 
-expectTypeOf(myDetectionMode.id).toEqualTypeOf<string | undefined>();
-expectTypeOf(myDetectionMode.label).toEqualTypeOf<string | undefined>();
-expectTypeOf(myDetectionMode.tokenConfig).toEqualTypeOf<boolean>();
-expectTypeOf(myDetectionMode.walls).toEqualTypeOf<boolean>();
-expectTypeOf(myDetectionMode.angle).toEqualTypeOf<boolean>();
+  test("Construction", () => {
+    new DetectionMode();
+    new DetectionMode(source);
+  });
 
-// @ts-expect-error For two reasons: first, this currently wants `| undefined` when it shouldn't (the field is `required: false`, but has an `initial`),
-// and second, it isn't not accepting the Branded number type
-expectTypeOf(myDetectionMode.type).toEqualTypeOf<DetectionMode.DETECTION_TYPES | null>();
+  const myDetectionMode = new DetectionMode(source);
 
-const someTokenDetectionMode = {
-  enabled: true,
-  id: "baz",
-  range: 600,
-};
-expectTypeOf(myDetectionMode["_canDetect"](someVisionSource, someToken)).toEqualTypeOf<boolean>();
-expectTypeOf(
-  myDetectionMode["_testPoint"](someVisionSource, someTokenDetectionMode, someToken, someCanvasVisibilityTest),
-).toEqualTypeOf<boolean>();
-expectTypeOf(
-  myDetectionMode["_testLOS"](someVisionSource, someTokenDetectionMode, someToken, someCanvasVisibilityTest),
-).toEqualTypeOf<boolean>();
-expectTypeOf(
-  myDetectionMode["_testAngle"](someVisionSource, someTokenDetectionMode, someToken, someCanvasVisibilityTest),
-).toEqualTypeOf<boolean>();
-expectTypeOf(
-  myDetectionMode["_testRange"](someVisionSource, someTokenDetectionMode, someToken, someCanvasVisibilityTest),
-).toEqualTypeOf<boolean>();
+  test("Uncategorized", () => {
+    expectTypeOf(DetectionMode.getDetectionFilter()).toEqualTypeOf<PIXI.Filter | undefined>();
+    expectTypeOf(DetectionMode.DETECTION_TYPES).toExtend<
+      Record<keyof DetectionMode.DetectionTypes, DetectionMode.DETECTION_TYPES>
+    >();
+    expectTypeOf(DetectionMode.BASIC_MODE_ID).toEqualTypeOf<"basicSight">();
+  });
+
+  test("Schema properties", () => {
+    expectTypeOf(myDetectionMode.id).toEqualTypeOf<string | undefined>();
+    expectTypeOf(myDetectionMode.label).toEqualTypeOf<string | undefined>();
+    expectTypeOf(myDetectionMode.tokenConfig).toBeBoolean();
+    expectTypeOf(myDetectionMode.walls).toBeBoolean();
+    expectTypeOf(myDetectionMode.angle).toBeBoolean();
+    expectTypeOf(myDetectionMode.type).toEqualTypeOf<DetectionMode.DETECTION_TYPES>();
+  });
+
+  test("Visibility Testing", () => {
+    expectTypeOf(
+      myDetectionMode.testVisibility(
+        visionSource,
+        { id: "foobar", enabled: true, range: 3 },
+        { object: token, tests: visibilityTests },
+      ),
+    ).toBeBoolean();
+    expectTypeOf(
+      myDetectionMode.testVisibility(visionSource, dmData, { object: null, tests: visibilityTests }),
+    ).toBeBoolean();
+    expectTypeOf(
+      myDetectionMode.testVisibility(visionSource, dmData, { object: undefined, tests: visibilityTests }),
+    ).toBeBoolean();
+
+    expectTypeOf(myDetectionMode["_canDetect"](visionSource, token)).toBeBoolean();
+    expectTypeOf(myDetectionMode["_testPoint"](visionSource, dmData, token, visibilityTests[0]!)).toBeBoolean();
+    expectTypeOf(myDetectionMode["_testLOS"](visionSource, dmData, token, visibilityTests[0]!)).toBeBoolean();
+    expectTypeOf(myDetectionMode["_testAngle"](visionSource, dmData, token, visibilityTests[0]!)).toBeBoolean();
+    expectTypeOf(myDetectionMode["_testRange"](visionSource, dmData, token, visibilityTests[0]!)).toBeBoolean();
+  });
+
+  test("Deprecated", () => {
+    // Deprecated since v13, until v15
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(myDetectionMode.BASIC_MODE_ID).toEqualTypeOf<"basicSight">();
+  });
+});

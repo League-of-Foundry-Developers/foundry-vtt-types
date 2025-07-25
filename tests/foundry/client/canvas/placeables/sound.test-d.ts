@@ -48,7 +48,7 @@ expectTypeOf(sound["_destroy"](undefined)).toBeVoid();
 expectTypeOf(sound["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(sound["_applyRenderFlags"]({})).toBeVoid();
 // all falsey values have no effect
-expectTypeOf(sound["_applyRenderFlags"]({ refreshElevation: null, refreshPosition: undefined })).toBeVoid();
+expectTypeOf(sound["_applyRenderFlags"]({ refreshElevation: false, refreshPosition: undefined })).toBeVoid();
 expectTypeOf(
   sound["_applyRenderFlags"]({
     redraw: true,

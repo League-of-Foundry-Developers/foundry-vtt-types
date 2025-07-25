@@ -45,7 +45,7 @@ expectTypeOf(light.clear()).toEqualTypeOf<AmbientLight.Implementation>();
 expectTypeOf(light["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(light["_applyRenderFlags"]({})).toBeVoid();
 // all falsey values have no effect
-expectTypeOf(light["_applyRenderFlags"]({ refreshElevation: null, refreshPosition: undefined })).toBeVoid();
+expectTypeOf(light["_applyRenderFlags"]({ refreshElevation: false, refreshPosition: undefined })).toBeVoid();
 expectTypeOf(
   light["_applyRenderFlags"]({
     redraw: true,

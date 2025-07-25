@@ -1,6 +1,7 @@
 import type { Identity } from "#utils";
 import type { DetectionMode } from "../_module.d.mts";
 import type { CanvasVisibility } from "#client/canvas/groups/_module.d.mts";
+import type { PointVisionSource } from "#client/canvas/sources/_module.d.mts";
 
 /**
  * A special detection mode which models a form of darkvision (night vision).
@@ -9,8 +10,8 @@ import type { CanvasVisibility } from "#client/canvas/groups/_module.d.mts";
  */
 declare class DetectionModeDarkvision extends DetectionMode {
   protected override _canDetect(
-    visionSource: foundry.canvas.sources.PointVisionSource.Any,
-    target: CanvasVisibility.TestObject,
+    visionSource: PointVisionSource.Any,
+    target: CanvasVisibility.TestObject | undefined,
   ): boolean;
 }
 
