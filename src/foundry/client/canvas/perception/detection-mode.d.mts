@@ -129,6 +129,8 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * @param test            - The test case being evaluated
    * @returns Is the target within range?
    * @remarks As of 13.346, Foundry's implementation does not use `target` at all
+   *
+   * See {@linkcode _canDetect} remarks.
    */
   protected _testRange(
     visionSource: PointVisionSource.Any,

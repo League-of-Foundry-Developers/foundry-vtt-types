@@ -1,4 +1,4 @@
-import type { Brand, ConcreteKeys, Identity, InterfaceToObject, SimpleMerge } from "#utils";
+import type { AnyObject, Brand, ConcreteKeys, Identity, InterfaceToObject, SimpleMerge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { DataModel } from "#common/abstract/_module.d.mts";
@@ -178,7 +178,7 @@ declare namespace VisionMode {
     illumination: fields.SchemaField<LightingTypeSchema>;
     levels: fields.ObjectField<
       {
-        validate: (o: unknown) => boolean;
+        validate: (o: AnyObject) => o is LightingLevels;
         validationError: "may only contain a mapping of keys from VisionMode.LIGHTING_LEVELS";
       },
       LightingLevels,
@@ -187,7 +187,7 @@ declare namespace VisionMode {
     >;
     multipliers: fields.ObjectField<
       {
-        validate: (o: unknown) => boolean;
+        validate: (o: AnyObject) => o is LightingMultipliers;
         validationError: "must provide a mapping of keys from VisionMode.LIGHTING_LEVELS to numeric multiplier values";
       },
       LightingMultipliers,
@@ -196,8 +196,8 @@ declare namespace VisionMode {
     >;
   }
 
-  type LightingLevels = Record<CONST.LIGHTING_LEVELS, CONST.LIGHTING_LEVELS>;
-  type LightingMultipliers = Record<CONST.LIGHTING_LEVELS, number>;
+  type LightingLevels = Record<CONST.LIGHTING_LEVELS | `${CONST.LIGHTING_LEVELS}`, CONST.LIGHTING_LEVELS>;
+  type LightingMultipliers = Record<CONST.LIGHTING_LEVELS | `${CONST.LIGHTING_LEVELS}`, number>;
 
   interface Schema extends fields.DataSchema {
     id: fields.StringField<{ blank: false }>;
