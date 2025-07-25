@@ -1,9 +1,8 @@
 import type EventEmitterMixin from "#common/utils/event-emitter.mjs";
 import type { FixedInstanceType, Identity } from "#utils";
-import type TextureExtractor from "#client/canvas/texture-extractor.d.mts";
 import type { SpriteMesh } from "#client/canvas/containers/_module.mjs";
 import type { CanvasVisibility } from "#client/canvas/groups/_module.d.mts";
-import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { Canvas, TextureExtractor } from "#client/canvas/_module.d.mts";
 
 /**
  * A fog of war management class which is the singleton {@linkcode Canvas.fog | canvas.fog} instance.
