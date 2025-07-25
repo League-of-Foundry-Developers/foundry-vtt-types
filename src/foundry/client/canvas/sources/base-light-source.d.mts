@@ -140,6 +140,7 @@ declare abstract class BaseLightSource<
    * An animation with flickering ratio and light intensity.
    * @param dt      - Delta time
    * @param options - Additional options which modify the torch animation
+   * @remarks A valid {@linkcode BaseLightSource.LightAnimationFunction | LightAnimationFunction}
    */
   animateTorch(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
@@ -147,6 +148,7 @@ declare abstract class BaseLightSource<
    * An animation with flickering ratio and light intensity
    * @param dt      - Delta time
    * @param options - Additional options which modify the flame animation
+   * @remarks A valid {@linkcode BaseLightSource.LightAnimationFunction | LightAnimationFunction}
    */
   animateFlickering(dt: number, options?: BaseLightSource.AnimateFlickeringOptions): void;
 
@@ -154,6 +156,7 @@ declare abstract class BaseLightSource<
    * A basic "pulse" animation which expands and contracts.
    * @param dt      - Delta time
    * @param options - Additional options which modify the pulse animation
+   * @remarks A valid {@linkcode BaseLightSource.LightAnimationFunction | LightAnimationFunction}
    */
   animatePulse(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
@@ -164,6 +167,7 @@ declare abstract class BaseLightSource<
    *
    * @param dt      - The delta time since the last frame, in milliseconds.
    * @param options - Additional options for customizing the audio reaction.
+   * @remarks A valid {@linkcode BaseLightSource.LightAnimationFunction | LightAnimationFunction}
    */
   animateSoundPulse(dt: number, options?: BaseLightSource.AnimateSoundPulseOptions): void;
 

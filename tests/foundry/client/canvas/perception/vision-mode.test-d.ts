@@ -80,7 +80,9 @@ describe("VisionMode Tests", () => {
 
   test("Animation", () => {
     expectTypeOf(monochromatic.animated).toBeBoolean();
-    expectTypeOf(monochromatic.animate(0.6)).toEqualTypeOf<void>();
+    // Not actually deprecated by foundry, but always throws at runtime: https://github.com/foundryvtt/foundryvtt/issues/13227
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(monochromatic.animate(0.6)).toBeVoid();
   });
 
   test("Schema properties", () => {
