@@ -1,6 +1,7 @@
 // import { expectTypeOf } from "vitest";
-import type { TokenRuler } from "#client/canvas/placeables/tokens/_module.mjs";
 import type { DeepReadonly } from "#utils";
+import TokenRuler = foundry.canvas.placeables.tokens.TokenRuler;
+import Ruler = foundry.canvas.interaction.Ruler;
 
 /**
  * Draw Steel implementation of the core token ruler
@@ -129,7 +130,7 @@ class DrawSteelTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
    * @param style    - The calculated style properties from the parent class
    * @param waypoint - The waypoint being adjusted
    */
-  #speedValueStyle(style: TokenRuler.SegmentStyle | TokenRuler.GridHighlightStyle, waypoint: TokenRuler.Waypoint) {
+  #speedValueStyle(style: Ruler.SegmentStyle | TokenRuler.GridHighlightStyle, waypoint: TokenRuler.Waypoint) {
     // color order
     const colors = [0x33bc4e, 0xf1d836, 0xe72124] as const;
 

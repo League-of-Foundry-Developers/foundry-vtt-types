@@ -1,19 +1,32 @@
-import { expectTypeOf } from "vitest";
-import { DetectionMode, DetectionModeAll } from "#client/canvas/perception/_module.mjs";
-import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import { describe, expectTypeOf, test } from "vitest";
 
-const source = {
-  id: "foo",
-  label: "bar",
-  type: DetectionMode.DETECTION_TYPES.OTHER,
-  angle: false,
-  walls: true,
-  tokenConfig: false,
-};
+import DetectionModeAll = foundry.canvas.perception.DetectionModeAll;
+import DetectionMode = foundry.canvas.perception.DetectionMode;
+import PointVisionSource = foundry.canvas.sources.PointVisionSource;
+import Token = foundry.canvas.placeables.Token;
+import OutlineOverlayFilter = foundry.canvas.rendering.filters.OutlineOverlayFilter;
 
-declare const someVisionSource: foundry.canvas.sources.PointVisionSource;
-declare const someToken: Token.Implementation;
+declare const visionSource: PointVisionSource.Initialized;
+declare const token: Token.Implementation;
 
-expectTypeOf(DetectionModeAll.getDetectionFilter()).toEqualTypeOf<PIXI.Filter>();
-const myDetectionModeAll = new DetectionModeAll(source);
-expectTypeOf(myDetectionModeAll["_canDetect"](someVisionSource, someToken)).toEqualTypeOf<boolean>();
+describe("DetectionModeAll Tests", () => {
+  const source = {
+    id: "foo",
+    label: "bar",
+    type: DetectionMode.DETECTION_TYPES.OTHER,
+    angle: false,
+    walls: true,
+    tokenConfig: false,
+  } satisfies DetectionMode.CreateData;
+
+  const myDetectionModeAll = new DetectionModeAll(source);
+
+  test("Filter", () => {
+    expectTypeOf(DetectionModeAll.getDetectionFilter()).toEqualTypeOf<OutlineOverlayFilter>();
+    expectTypeOf(DetectionModeAll["_detectionFilter"]).toEqualTypeOf<OutlineOverlayFilter | undefined>();
+  });
+
+  test("Visibility Testing", () => {
+    expectTypeOf(myDetectionModeAll["_canDetect"](visionSource, token)).toEqualTypeOf<boolean>();
+  });
+});

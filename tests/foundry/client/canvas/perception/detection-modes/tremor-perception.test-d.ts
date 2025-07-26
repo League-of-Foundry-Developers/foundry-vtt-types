@@ -1,19 +1,32 @@
-import { expectTypeOf } from "vitest";
-import { DetectionMode, DetectionModeTremor } from "#client/canvas/perception/_module.mjs";
-import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import { describe, expectTypeOf, test } from "vitest";
 
-const source = {
-  id: "foo",
-  label: "bar",
-  type: DetectionMode.DETECTION_TYPES.OTHER,
-  angle: false,
-  walls: true,
-  tokenConfig: false,
-};
+import DetectionModeTremor = foundry.canvas.perception.DetectionModeTremor;
+import DetectionMode = foundry.canvas.perception.DetectionMode;
+import PointVisionSource = foundry.canvas.sources.PointVisionSource;
+import Token = foundry.canvas.placeables.Token;
+import OutlineOverlayFilter = foundry.canvas.rendering.filters.OutlineOverlayFilter;
 
-declare const someVisionSource: foundry.canvas.sources.PointVisionSource;
-declare const someToken: Token.Implementation;
+declare const visionSource: PointVisionSource.Initialized;
+declare const token: Token.Implementation;
 
-expectTypeOf(DetectionModeTremor.getDetectionFilter()).toEqualTypeOf<PIXI.Filter>();
-const myDetectionModeTremor = new DetectionModeTremor(source);
-expectTypeOf(myDetectionModeTremor["_canDetect"](someVisionSource, someToken)).toEqualTypeOf<boolean>();
+describe("DetectionModeTremor Tests", () => {
+  const source = {
+    id: "foo",
+    label: "bar",
+    type: DetectionMode.DETECTION_TYPES.OTHER,
+    angle: false,
+    walls: true,
+    tokenConfig: false,
+  } satisfies DetectionMode.CreateData;
+
+  const myDetectionModeTremor = new DetectionModeTremor(source);
+
+  test("Filter", () => {
+    expectTypeOf(DetectionModeTremor.getDetectionFilter()).toEqualTypeOf<OutlineOverlayFilter>();
+    expectTypeOf(DetectionModeTremor["_detectionFilter"]).toEqualTypeOf<OutlineOverlayFilter | undefined>();
+  });
+
+  test("Visibility Testing", () => {
+    expectTypeOf(myDetectionModeTremor["_canDetect"](visionSource, token)).toEqualTypeOf<boolean>();
+  });
+});

@@ -13,8 +13,9 @@ declare class EventEmitter {
 
   /**
    * An array of event types which are valid for this class.
+   * @privateRemarks `| readonly` because {@linkcode foundry.canvas.perception.FogManager | FogManager.emittedEvents} is frozen
    */
-  static emittedEvents: string[];
+  static emittedEvents: string[] | readonly string[];
 
   /**
    * Add a new event listener for a certain type of event.

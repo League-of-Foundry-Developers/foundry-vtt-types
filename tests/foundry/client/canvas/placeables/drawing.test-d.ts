@@ -87,7 +87,7 @@ expectTypeOf(drawing.clear()).toEqualTypeOf<Drawing.Implementation>();
 expectTypeOf(drawing["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(drawing["_applyRenderFlags"]({})).toBeVoid();
 // all falsey values have no effect
-expectTypeOf(drawing["_applyRenderFlags"]({ refreshElevation: null, refreshTransform: undefined })).toBeVoid();
+expectTypeOf(drawing["_applyRenderFlags"]({ refreshElevation: false, refreshTransform: undefined })).toBeVoid();
 expectTypeOf(
   drawing["_applyRenderFlags"]({
     redraw: true,

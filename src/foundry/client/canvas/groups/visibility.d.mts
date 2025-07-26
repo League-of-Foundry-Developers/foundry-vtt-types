@@ -1,10 +1,16 @@
-import type { HandleEmptyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
+import type { EmptyObject, HandleEmptyObject, Identity, InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.mjs";
 import type { VisibilityFilter } from "#client/canvas/rendering/filters/_module.mjs";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
 import type { CanvasVisionMask } from "#client/canvas/layers/_module.d.mts";
-import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
+// PerceptionManager is only used for @links
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { PerceptionManager, VisionMode } from "#client/canvas/perception/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type { PointVisionSource } from "#client/canvas/sources/_module.d.mts";
+// Hooks are only linked, aliased to match foundry's links
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { AllHooks as hookEvents } from "#client/hooks.mjs";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -15,14 +21,21 @@ declare module "#configuration" {
 }
 
 /**
- * The visibility Layer which implements dynamic vision, lighting, and fog of war
- * This layer uses an event-driven workflow to perform the minimal required calculation in response to changes.
- * @see {@linkcode PointSource}
+ * The visibility group which implements dynamic vision, lighting, and fog of war.
+ * This group uses an event-driven workflow to perform the minimal required calculation in response to changes.
+ *
+ * ### Hook Events
+ * - {@linkcode hookEvents.initializeVisionMode}
+ * - {@linkcode hookEvents.initializeVisionSources}
+ * - {@linkcode hookEvents.sightRefresh}
+ * - {@linkcode hookEvents.visibilityRefresh}
  */
 declare class CanvasVisibility<
   DrawOptions extends CanvasVisibility.DrawOptions = CanvasVisibility.DrawOptions,
   TearDownOptions extends CanvasVisibility.TearDownOptions = CanvasVisibility.TearDownOptions,
 > extends CanvasGroupMixin<typeof PIXI.Container, "visibility">(PIXI.Container)<DrawOptions, TearDownOptions> {
+  // static override groupName is handled by the CanvasGroupMixin type
+
   /**
    * The currently revealed vision.
    * @remarks Only `undefined` prior to first draw
@@ -37,6 +50,7 @@ declare class CanvasVisibility<
 
   /**
    * The optional visibility overlay sprite that should be drawn instead of the unexplored color in the fog of war.
+   * @remarks This is `undefined` prior to first draw, and it remains that way unless a fog overlay texture has been set for the current scene
    */
   visibilityOverlay: PIXI.Sprite | undefined;
 
@@ -57,55 +71,55 @@ declare class CanvasVisibility<
 
   /**
    * Define whether each lighting layer is enabled, required, or disabled by this vision mode.
-   * The value for each lighting channel is a number in LIGHTING_VISIBILITY
+   * The value for each lighting channel is a number in {@linkcode VisionMode.LIGHTING_VISIBILITY}
    * ```js
    * {
    *   background: VisionMode.LIGHTING_VISIBILITY.ENABLED,
-   *    illumination: VisionMode.LIGHTING_VISIBILITY.ENABLED,
-   *    coloration: VisionMode.LIGHTING_VISIBILITY.ENABLED,
-   *    darkness: VisionMode.LIGHTING_VISIBILITY.ENABLED,
-   *    any: true
+   *   illumination: VisionMode.LIGHTING_VISIBILITY.ENABLED,
+   *   coloration: VisionMode.LIGHTING_VISIBILITY.ENABLED,
+   *   darkness: VisionMode.LIGHTING_VISIBILITY.ENABLED,
+   *   any: true
    * }
    * ```
    */
   lightingVisibility: CanvasVisibility.LightingVisibility;
 
   /**
-   * A status flag for whether the layer initialization workflow has succeeded.
+   * A status flag for whether the group initialization workflow has succeeded.
    */
   get initialized(): boolean;
 
   /**
    * Indicates whether containment filtering is required when rendering vision into a texture
-   * @remarks Foundry marked `@internal`
+   * @internal
    */
   get needsContainment(): boolean;
 
   /**
    * Does the currently viewed Scene support Token field of vision?
+   * @remarks
+   * @throws If {@linkcode Canvas.scene | Canvas#scene} is `null`
    */
   get tokenVision(): Scene.Implementation["tokenVision"];
 
   /**
    * The configured options used for the saved fog-of-war texture.
-   * @remarks Only `undefined` before first `#draw()`
+   * @remarks Only `undefined` prior to first draw
    */
   get textureConfiguration(): CanvasVisibility.TextureConfiguration | undefined;
 
   /**
    * Optional overrides for exploration sprite dimensions.
-   *
-   * @privateRemarks Foundry types this parameter as `FogTextureConfiguration` in v12.331 which is plainly wrong even if it didn't not exist
-   * v13.335 types as `PIXI.Rectangle | undefined`, but only x/y/width/height are ever accessed, and only then if this has been set to something
-   * other than `undefined`, and in fact nothing in core ever does.
+   * @privateRemarks Only `x`, `y`, `width`, and `height` are ever checked, and this is never even set by core anywhere,
+   * but they type it as a `PIXI.Rectangle` so might as well match.
    */
-  set explorationRect(rect: Canvas.Rectangle | undefined);
+  set explorationRect(rect: PIXI.Rectangle | undefined);
 
   /** @remarks This getter doesn't actually exist, it's only here to correct the type inferred from the setter */
   get explorationRect(): undefined;
 
   /**
-   * Initialize all Token vision sources which are present on this layer
+   * Initialize all Token vision sources which are present on this group
    */
   initializeSources(): void;
 
@@ -119,7 +133,7 @@ declare class CanvasVisibility<
   protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 
   /**
-   * Update the display of the sight layer.
+   * Update the display of the visibility group.
    * Organize sources into rendering queues and draw lighting containers for each source
    */
   refresh(): void;
@@ -142,31 +156,25 @@ declare class CanvasVisibility<
 
   /**
    * Test whether a target point on the Canvas is visible based on the current vision and LOS polygons.
-   * @param point   - The point in space to test, an object with coordinates x and y.
+   * @param point   - The point in space to test
    * @param options - Additional options which modify visibility testing.
    * @returns Whether the point is currently visible.
    */
-  testVisibility(
-    point: Canvas.Point,
-    options?: CanvasVisibility.TestVisibilityOptions, // not:null (destructured when passed to _createVisibilityTestConfig)
-  ): boolean;
+  testVisibility(point: Canvas.PossiblyElevatedPoint, options?: CanvasVisibility.TestVisibilityOptions): boolean;
 
   /**
    * Create the visibility test config.
    * @param point   - The point in space to test, an object with coordinates x and y.
    * @param options - Additional options which modify visibility testing.
-   * @remarks Foundry marked `@internal`
+   * @internal
+   * @remarks If a Point is passed without elevation, uses the `object`'s if it's a `Token`, otherwise defaults to `0`
    */
   protected _createVisibilityTestConfig(
-    point: Canvas.Point,
-    options?: CanvasVisibility.CreateTestConfigOptions, // not:null (destructured)
+    point: Canvas.PossiblyElevatedPoint,
+    options?: CanvasVisibility.CreateTestConfigOptions,
   ): CanvasVisibility.TestConfig;
 
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks `"fogOverlay is deprecated in favor of visibilityOverlay"`
-   */
-  get fogOverlay(): this["visibilityOverlay"];
+  #CanvasVisibility: true;
 }
 
 declare namespace CanvasVisibility {
@@ -180,17 +188,50 @@ declare namespace CanvasVisibility {
   type TestObject = PlaceableObject.Any | null;
 
   interface VisionModeData {
-    source: foundry.canvas.sources.PointVisionSource.Any | null | undefined;
-    activeLightingOptions: IntentionalPartial<VisionMode["lighting"]>;
+    /**
+     * @remarks Only `undefined` immediately following construction. Gets set to a Source or `null` when {@linkcode Canvas.perception | canvas.perception} receives the
+     * {@linkcode PerceptionManager.RENDER_FLAGS.initializeVisionModes | initializeVisionModes} render flag
+     */
+    source: PointVisionSource.Any | null | undefined;
+
+    /**
+     * @remarks Defaults to `{}` at construction. Gets set to {@linkcode VisionMode.lighting | this.visionModeData.source?.visionMode.lighting}`|| {}` when
+     * {@linkcode Canvas.perception | canvas.perception} receives the {@linkcode PerceptionManager.RENDER_FLAGS.initializeVisionModes | initializeVisionModes}
+     * render flag.
+     */
+    activeLightingOptions: VisionMode.LightingData | EmptyObject;
   }
 
   interface LightingVisibility {
+    /**
+     * @remarks Defaults to {@linkcode VisionMode.LIGHTING_VISIBILITY.ENABLED | ENABLED} at construction. Updated in `CanvasVisibility##configureLightingVisibility`
+     * when {@linkcode Canvas.perception | canvas.perception} receives the {@linkcode PerceptionManager.RENDER_FLAGS.initializeVisionModes | initializeVisionModes}
+     * render flag.
+     */
     illumination: VisionMode.LIGHTING_VISIBILITY;
+
+    /**
+     * @remarks Defaults to {@linkcode VisionMode.LIGHTING_VISIBILITY.ENABLED | ENABLED} at construction. Updated in `CanvasVisibility##configureLightingVisibility`
+     * when {@linkcode Canvas.perception | canvas.perception} receives the {@linkcode PerceptionManager.RENDER_FLAGS.initializeVisionModes | initializeVisionModes}
+     * render flag.
+     */
     background: VisionMode.LIGHTING_VISIBILITY;
+
+    /**
+     * @remarks Defaults to {@linkcode VisionMode.LIGHTING_VISIBILITY.ENABLED | ENABLED} at construction. Updated in `CanvasVisibility##configureLightingVisibility`
+     * when {@linkcode Canvas.perception | canvas.perception} receives the {@linkcode PerceptionManager.RENDER_FLAGS.initializeVisionModes | initializeVisionModes}
+     * render flag.
+     */
     coloration: VisionMode.LIGHTING_VISIBILITY;
+
+    /**
+     * @remarks Defaults to {@linkcode VisionMode.LIGHTING_VISIBILITY.ENABLED | ENABLED} at construction. Updated in `CanvasVisibility##configureLightingVisibility`
+     * when {@linkcode Canvas.perception | canvas.perception} receives the {@linkcode PerceptionManager.RENDER_FLAGS.initializeVisionModes | initializeVisionModes}
+     * render flag.
+     */
     darkness: VisionMode.LIGHTING_VISIBILITY;
 
-    /** @remarks Only set `false` if all other keys are `VisionMode.LIGHTING_VISIBILITY.DISABLED` */
+    /** @remarks Only set `false` if **all** other keys are {@linkcode VisionMode.LIGHTING_VISIBILITY.DISABLED} */
     any: boolean;
   }
 
@@ -200,10 +241,8 @@ declare namespace CanvasVisibility {
   type _CreateTestConfigOptions = InexactPartial<{
     /**
      * A numeric radial offset which allows for a non-exact match.
-     * For example, if tolerance is 2 then the test will pass if the point
-     * is within 2px of a vision polygon
+     * For example, if tolerance is 2 then the test will pass if the point is within 2px of a vision polygon
      * @defaultValue `2`
-     * @remarks Can't be `null` because it only has a parameter default
      */
     tolerance: number;
 
@@ -217,43 +256,48 @@ declare namespace CanvasVisibility {
   interface CreateTestConfigOptions extends _CreateTestConfigOptions {}
 
   /** @internal */
-  type _TestConfigOptional = NullishProps<{
+  type _TestConfigOptional = InexactPartial<{
     /**
      * The target object
      * @defaultValue `null`
-     * @remarks Only checked in `#_canDetect` for `instanceof Token`
+     * @remarks Foundry marks this required, but it's only checked in three places in core:
+     * - {@linkcode DetectionMode._canDetect | DetectionMode#_canDetect} for `object instanceof Token`
+     * - {@linkcode CanvasVisibility._createVisibilityTestConfig | CanvasVisibility#_crateVisibilityTestConfig} for `object instanceof Token`
+     * - {@linkcode foundry.canvas.sources.PointLightSource._canDetectObject | PointLightSource#_canDetectObject} for `object?.document instanceof TokenDocument`
+     * All of which are nullish-safe, so this is allowed to be optional/`undefined`, and if coming in via {@linkcode CanvasVisibility.testVisibility | #testVisibility}, it
+     * gets a `null` parameter default applied
      */
     object: TestObject;
   }>;
 
-  /** @internal */
-  interface _TestConfigRequired {
+  interface TestConfig extends _TestConfigOptional {
     /** An array of visibility tests */
     tests: CanvasVisibility.Test[];
   }
 
-  interface TestConfig extends _TestConfigRequired, _TestConfigOptional {}
-
   interface Test {
-    point: Canvas.Point;
-    elevation: number;
-    los: Map<foundry.canvas.sources.PointVisionSource.Any, boolean>;
+    point: Canvas.ElevatedPoint;
+
+    /**
+     * @deprecated "`CanvasVisibility.Test#elevation` has been deprecated in favor of {@linkcode Canvas.ElevatedPoint.elevation | CanvasVisibility.Test#point#elevation}." (since v13, until v15)
+     * @remarks This deprecation shim only exists on configs generated by {@linkcode CanvasVisibility._createVisibilityTestConfig | CanvasVisibility#_createVisibilityTestConfig}.
+     * @privateRemarks Actually a getter/setter pair tied to `this.point.elevation`, but getters/setters can't be optional.
+     *
+     * Can't be `undefined` as that is not a valid value for {@linkcode Canvas.ElevatedPoint.elevation}
+     */
+    elevation?: number;
+
+    los: Map<PointVisionSource.Any, boolean>;
   }
 
   /**
-   * @privateRemarks This is a fixed subset of `PIXI.IBaseTextureOptions` that `CanvasVisibility##createTextureConfiguration` produces.
-   * Since it's generated by a private method and stored in a private property, it's not meaningfully extensible (`canvas.visibility.textureConfiguration.foo = "bar"` doesn't count)
+   * @remarks The subset of {@linkcode PIXI.IBaseTextureOptions} that `CanvasVisibility##createTextureConfiguration` returns.
    */
-  interface TextureConfiguration {
-    resolution: number;
-    width: number;
-    height: number;
-    mipmap: PIXI.MIPMAP_MODES;
-    multisample: PIXI.MSAA_QUALITY;
-    scaleMode: PIXI.SCALE_MODES;
-    alphaMode: PIXI.ALPHA_MODES;
-    format: PIXI.FORMATS;
-  }
+  interface TextureConfiguration
+    extends Pick<
+      PIXI.IBaseTextureOptions,
+      "resolution" | "width" | "height" | "mipmap" | "multisample" | "scaleMode" | "alphaMode" | "format"
+    > {}
 }
 
 export default CanvasVisibility;

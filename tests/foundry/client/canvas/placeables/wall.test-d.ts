@@ -68,7 +68,7 @@ expectTypeOf(wall.getLinkedSegments()).toEqualTypeOf<Wall.GetLinkedSegmentsRetur
 expectTypeOf(wall["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(wall["_applyRenderFlags"]({})).toBeVoid();
 // all falsey values have no effect
-expectTypeOf(wall["_applyRenderFlags"]({ refreshLine: null, refreshEndpoints: undefined })).toBeVoid();
+expectTypeOf(wall["_applyRenderFlags"]({ refreshLine: false, refreshEndpoints: undefined })).toBeVoid();
 expectTypeOf(
   wall["_applyRenderFlags"]({
     redraw: true,

@@ -183,7 +183,7 @@ declare class ControlsLayer extends InteractionLayer {
    * Update display of an active Ruler object for a user given provided data
    * @see {@link Ruler#update}
    */
-  updateRuler(user: User.Implementation, rulerData?: Ruler.MeasurementData | null): void;
+  updateRuler(user: User.Implementation, rulerData?: Ruler.UpdateData | null): void;
 
   /**
    * Handle a broadcast ping.

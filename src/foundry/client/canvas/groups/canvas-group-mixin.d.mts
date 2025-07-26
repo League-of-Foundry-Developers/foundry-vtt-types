@@ -32,7 +32,7 @@ declare class CanvasGroup<
   DrawOptions extends CanvasGroupMixin.DrawOptions = CanvasGroupMixin.DrawOptions,
   TearDownOptions extends CanvasGroupMixin.TearDownOptions = CanvasGroupMixin.TearDownOptions,
 > extends LayersClass<Group> {
-  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /** @defaultValue `true` */
@@ -77,6 +77,8 @@ declare class CanvasGroup<
    * Remove and destroy all layers from the base canvas.
    */
   protected _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
+
+  #CanvasGroup: true;
 }
 
 declare const _NoLayerGroup: unique symbol;
@@ -103,8 +105,7 @@ declare function CanvasGroupMixin<
 
 declare global {
   /**
-   * @deprecated since v12, until 14
-   * @remarks "`BaseCanvasMixin` is deprecated in favor of {@linkcode foundry.canvas.groups.CanvasGroupMixin}"
+   * @deprecated "`BaseCanvasMixin` is deprecated in favor of {@linkcode foundry.canvas.groups.CanvasGroupMixin}" (since v12, until v14)
    */
   const BaseCanvasMixin: typeof CanvasGroupMixin;
 }

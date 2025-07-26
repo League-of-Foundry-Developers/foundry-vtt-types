@@ -64,7 +64,7 @@ expectTypeOf(placeable.applyRenderFlags()).toBeVoid();
 expectTypeOf(placeable["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(placeable["_applyRenderFlags"]({})).toBeVoid();
 // all falsey values have no effect
-expectTypeOf(placeable["_applyRenderFlags"]({ redraw: null, refresh: undefined })).toBeVoid();
+expectTypeOf(placeable["_applyRenderFlags"]({ redraw: false, refresh: undefined })).toBeVoid();
 expectTypeOf(placeable["_applyRenderFlags"]({ redraw: true, refresh: true, refreshState: true })).toBeVoid();
 
 expectTypeOf(placeable.clear()).toEqualTypeOf<FakeLight | void>();

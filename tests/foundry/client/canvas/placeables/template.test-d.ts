@@ -55,7 +55,7 @@ expectTypeOf(template.clear()).toEqualTypeOf<MeasuredTemplate.Implementation>();
 expectTypeOf(template["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(template["_applyRenderFlags"]({})).toBeVoid();
 // all falsey values have no effect
-expectTypeOf(template["_applyRenderFlags"]({ refreshElevation: null, refreshPosition: undefined })).toBeVoid();
+expectTypeOf(template["_applyRenderFlags"]({ refreshElevation: false, refreshPosition: undefined })).toBeVoid();
 expectTypeOf(
   template["_applyRenderFlags"]({
     redraw: true,

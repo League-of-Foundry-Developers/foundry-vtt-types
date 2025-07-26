@@ -36,10 +36,3 @@ expectTypeOf(myVisionMask.draw()).toEqualTypeOf<Promise<void>>();
 declare const someVisionContainer: CanvasVisionMask.CanvasVisionContainer;
 expectTypeOf(myVisionMask.attachVision(someVisionContainer)).toEqualTypeOf<CanvasVisionMask.CanvasVisionContainer>();
 expectTypeOf(myVisionMask.detachVision()).toEqualTypeOf<CanvasVisionMask.CanvasVisionContainer>();
-
-// deprecated since v11, until v13
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myVisionMask.filter).toEqualTypeOf<AlphaBlurFilter | undefined>();
-declare const someBlurFilter: AlphaBlurFilter;
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-myVisionMask.filter = someBlurFilter;

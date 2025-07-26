@@ -206,6 +206,9 @@ declare abstract class RenderedEffectSource<
    * Generic time-based animation used for Rendered Point Sources.
    * @param dt      - Delta time.
    * @param options - Options which affect the time animation
+   * @remarks A valid {@linkcode RenderedEffectSource.AnimationFunction}.
+   *
+   * `dt` is unused by core as of 13.346
    */
   animateTime(dt: number, options?: RenderedEffectSource.AnimationFunctionOptions): void;
 
@@ -242,16 +245,15 @@ declare namespace RenderedEffectSource {
     /**
      * A color applied to the rendered effect
      * @defaultValue `null`
-     * @remarks Foundry types as `number`, but it gets passed to `Color.from()`
-     *
-     * If `null`, Foundry will use the associated shader's `.defaultUniforms.color`
+     * @remarks If `null`, Foundry will use the associated shader's `.defaultUniforms.color`
+     * @privateRemarks Foundry types as `number`, but it gets passed to `Color.from()`
      */
     color: Color.Source | null;
 
     /**
      * An integer seed to synchronize (or de-synchronize) animations
      * @defaultValue `null`
-     * @remarks This will remain null in `#data` if not specified, which will lead to using `Math.floor(Math.random() * 100000)` at runtime
+     * @remarks This will remain null in {@linkcode RenderedEffectSource.data | #data} if not specified, which will lead to using `Math.floor(Math.random() * 100000)` at runtime
      *
      * If specified, this will take precedence over {@linkcode RenderedEffectSource.AnimationConfig.seed | RenderedEffectSource#animation.seed}
      */
@@ -267,8 +269,13 @@ declare namespace RenderedEffectSource {
   /**
    * @param dt      - Delta time
    * @param options - Additional options which modify the animation
+   * @remarks A function to be added to the {@link PIXI.Ticker | canvas.app.ticker}
+   *
+   * @privateRemarks As of 13.346 there is one non-Source usage of this in core: {@linkcode foundry.canvas.perception.VisionMode.animate | VisionMode#animate} attempts to call
+   * {@linkcode RenderedEffectSource.animateTime | RenderedEffectSource#animateTime} with `this` set to `VisionMode`, but that's invalid (see
+   * {@link https://github.com/foundryvtt/foundryvtt/issues/13227}), so it is not included in the `this` here.
    */
-  type AnimationFunction = (this: RenderedEffectSource, dt: number, options?: AnimationFunctionOptions) => void;
+  type AnimationFunction = (this: RenderedEffectSource.Any, dt: number, options?: AnimationFunctionOptions) => void;
 
   /** @internal */
   type _AnimationFunctionOptions = InexactPartial<{

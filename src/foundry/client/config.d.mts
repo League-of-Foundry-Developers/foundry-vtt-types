@@ -2223,6 +2223,9 @@ declare global {
     }
 
     interface Canvas {
+      /** @defaultValue `10` */
+      elevationSnappingPrecision: number;
+
       /** @defaultValue `8` */
       blurStrength: number;
 
@@ -2303,6 +2306,7 @@ declare global {
        * @defaultValue `FogManager`
        * @remarks Can't be `AnyConstructor` because Foundry assumes it can call `new` with the same arguments FogManager accepts
        */
+      // TODO: Widen to `.AnyConstructor`? Takes no arguments
       fogManager: typeof perception.FogManager;
 
       polygonBackends: Canvas.PolygonBackends;

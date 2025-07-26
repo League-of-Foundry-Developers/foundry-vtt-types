@@ -1,1 +1,1 @@
-// TODO: new in v13
+// BaseRuler is abstract, testing is done in `ruler.test-d.ts`

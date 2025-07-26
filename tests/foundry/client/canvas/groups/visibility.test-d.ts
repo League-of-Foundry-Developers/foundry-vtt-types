@@ -1,62 +1,80 @@
-import { expectTypeOf } from "vitest";
-import { CanvasVisibility } from "#client/canvas/groups/_module.mjs";
-import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import { describe, expectTypeOf, test } from "vitest";
 
+import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
+import Canvas = foundry.canvas.Canvas;
+import Token = foundry.canvas.placeables.Token;
 import CanvasVisionMask = foundry.canvas.layers.CanvasVisionMask;
 import VisibilityFilter = foundry.canvas.rendering.filters.VisibilityFilter;
 import VisionMode = foundry.canvas.perception.VisionMode;
 
-const layer = new CanvasVisibility();
+declare const point: Canvas.Point;
+declare const elevatedPoint: Canvas.ElevatedPoint;
+declare const possiblyElevatedPoint: Canvas.PossiblyElevatedPoint;
+declare const token: Token.Implementation;
 
-expectTypeOf(layer.vision).toEqualTypeOf<CanvasVisionMask.CanvasVisionContainer | undefined>();
-expectTypeOf(layer.explored).toEqualTypeOf<PIXI.Container | undefined>();
-expectTypeOf(layer.visibilityOverlay).toEqualTypeOf<PIXI.Sprite | undefined>();
-expectTypeOf(layer.filter).toEqualTypeOf<VisibilityFilter.Implementation | undefined>();
-expectTypeOf(layer.visionModeData).toEqualTypeOf<CanvasVisibility.VisionModeData>();
-expectTypeOf(layer.lightingVisibility).toEqualTypeOf<CanvasVisibility.LightingVisibility>();
-expectTypeOf(layer.lightingVisibility.background).toExtend<VisionMode.LIGHTING_VISIBILITY>();
+describe(" Tests", () => {
+  test("Construction", () => {
+    new CanvasVisibility();
+  });
 
-expectTypeOf(layer.initialized).toBeBoolean();
-expectTypeOf(layer.needsContainment).toBeBoolean();
-expectTypeOf(layer.tokenVision).toBeBoolean();
-expectTypeOf(layer.textureConfiguration).toEqualTypeOf<CanvasVisibility.TextureConfiguration | undefined>();
+  const layer = new CanvasVisibility();
 
-// getter not actually defined
-expectTypeOf(layer.explorationRect).toBeUndefined();
-layer.explorationRect = { x: 50, y: 100, width: 200, height: 500 };
-layer.explorationRect = undefined;
+  test("Uncategorized", () => {
+    expectTypeOf(layer.vision).toEqualTypeOf<CanvasVisionMask.CanvasVisionContainer | undefined>();
+    expectTypeOf(layer.explored).toEqualTypeOf<PIXI.Container | undefined>();
+    expectTypeOf(layer.visibilityOverlay).toEqualTypeOf<PIXI.Sprite | undefined>();
+    expectTypeOf(layer.filter).toEqualTypeOf<VisibilityFilter.Implementation | undefined>();
+    expectTypeOf(layer.visionModeData).toEqualTypeOf<CanvasVisibility.VisionModeData>();
+    expectTypeOf(layer.lightingVisibility).toEqualTypeOf<CanvasVisibility.LightingVisibility>();
+    expectTypeOf(layer.lightingVisibility.background).toExtend<VisionMode.LIGHTING_VISIBILITY>();
 
-expectTypeOf(layer.initializeSources()).toBeVoid();
-expectTypeOf(layer.initializeVisionMode()).toBeVoid();
+    expectTypeOf(layer.initialized).toBeBoolean();
+    expectTypeOf(layer.needsContainment).toBeBoolean();
+    expectTypeOf(layer.tokenVision).toBeBoolean();
+    expectTypeOf(layer.textureConfiguration).toEqualTypeOf<CanvasVisibility.TextureConfiguration | undefined>();
 
-expectTypeOf(layer.draw()).toEqualTypeOf<Promise<CanvasVisibility>>();
-expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
+    // getter not actually defined
+    expectTypeOf(layer.explorationRect).toBeUndefined();
+    layer.explorationRect = new PIXI.Rectangle(50, 100, 200, 500);
+    layer.explorationRect = undefined;
 
-expectTypeOf(layer.refresh()).toBeVoid();
-expectTypeOf(layer.refreshVisibility()).toBeVoid();
-expectTypeOf(layer.resetExploration()).toBeVoid();
-expectTypeOf(layer.restrictVisibility()).toBeVoid();
+    expectTypeOf(layer.initializeSources()).toBeVoid();
+    expectTypeOf(layer.initializeVisionMode()).toBeVoid();
 
-declare const somePoint: PIXI.Point;
-declare const someToken: Token.Implementation;
-expectTypeOf(layer.testVisibility({ x: 0, y: 0 })).toBeBoolean();
-expectTypeOf(layer.testVisibility(somePoint, {})).toBeBoolean();
-expectTypeOf(
-  layer.testVisibility(somePoint, {
-    object: someToken,
-    tolerance: 4,
-  }),
-).toBeBoolean();
+    expectTypeOf(layer.draw()).toEqualTypeOf<Promise<CanvasVisibility>>();
+    expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(layer["_createVisibilityTestConfig"]({ x: 0, y: 0 })).toEqualTypeOf<CanvasVisibility.TestConfig>();
-expectTypeOf(layer["_createVisibilityTestConfig"](somePoint, {})).toEqualTypeOf<CanvasVisibility.TestConfig>();
-expectTypeOf(
-  layer["_createVisibilityTestConfig"](somePoint, {
-    object: null,
-    tolerance: undefined,
-  }),
-).toEqualTypeOf<CanvasVisibility.TestConfig>();
+    expectTypeOf(layer.refresh()).toBeVoid();
+    expectTypeOf(layer.refreshVisibility()).toBeVoid();
+    expectTypeOf(layer.resetExploration()).toBeVoid();
+    expectTypeOf(layer.restrictVisibility()).toBeVoid();
+  });
 
-// deprecated until v13
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(layer.fogOverlay).toEqualTypeOf<typeof layer.visibilityOverlay>();
+  test("Visibility Testing", () => {
+    expectTypeOf(layer.testVisibility(point)).toBeBoolean();
+    expectTypeOf(layer.testVisibility(elevatedPoint)).toBeBoolean();
+    expectTypeOf(layer.testVisibility(possiblyElevatedPoint, {})).toBeBoolean();
+    expectTypeOf(
+      layer.testVisibility(possiblyElevatedPoint, {
+        object: token,
+        tolerance: 4,
+      }),
+    ).toBeBoolean();
+
+    expectTypeOf(layer["_createVisibilityTestConfig"]({ x: 0, y: 0 })).toEqualTypeOf<CanvasVisibility.TestConfig>();
+    expectTypeOf(
+      layer["_createVisibilityTestConfig"](possiblyElevatedPoint, {}),
+    ).toEqualTypeOf<CanvasVisibility.TestConfig>();
+    expectTypeOf(
+      layer["_createVisibilityTestConfig"](possiblyElevatedPoint, {
+        object: null,
+        tolerance: undefined,
+      }),
+    ).toEqualTypeOf<CanvasVisibility.TestConfig>();
+  });
+
+  test("Picking from a PIXI interface uses our brands", () => {
+    const _msaa: CanvasVisibility.TextureConfiguration["multisample"] = PIXI.MSAA_QUALITY.HIGH;
+    const _alpha: CanvasVisibility.TextureConfiguration["alphaMode"] = PIXI.ALPHA_MODES.NO_PREMULTIPLIED_ALPHA;
+  });
+});

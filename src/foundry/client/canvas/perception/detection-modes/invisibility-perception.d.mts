@@ -1,6 +1,8 @@
 import type { Identity } from "#utils";
 import type { DetectionMode } from "../_module.d.mts";
 import type { CanvasVisibility } from "#client/canvas/groups/_module.d.mts";
+import type { PointVisionSource } from "#client/canvas/sources/_module.d.mts";
+import type { GlowOverlayFilter } from "#client/canvas/rendering/filters/_module.d.mts";
 
 /**
  * Detection mode that see invisible creatures.
@@ -9,11 +11,14 @@ import type { CanvasVisibility } from "#client/canvas/groups/_module.d.mts";
  * - The "See" version needs sight and is affected by blindness
  */
 declare class DetectionModeInvisibility extends DetectionMode {
-  static override getDetectionFilter(): PIXI.Filter;
+  static override getDetectionFilter(): GlowOverlayFilter;
+
+  /** @privateRemarks Fake override */
+  protected static override _detectionFilter: GlowOverlayFilter | undefined;
 
   protected override _canDetect(
-    visionSource: foundry.canvas.sources.PointVisionSource.Any,
-    target: CanvasVisibility.TestObject,
+    visionSource: PointVisionSource.Any,
+    target: CanvasVisibility.TestObject | undefined,
   ): boolean;
 }
 

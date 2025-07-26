@@ -4,8 +4,10 @@ import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 
 /**
  * A class to manage a user ping on the canvas.
+ * @privateRemarks Foundry doesn't mark this abstract, but because of {@linkcode animate} always passing a bound {@linkcode _animateFrame},
+ * and the implementation here just throws, it is effectively abstract.
  */
-declare class Ping extends PIXI.Container {
+declare abstract class Ping extends PIXI.Container {
   /**
    * @param origin  - The canvas coordinates of the origin of the ping.
    * @param options - Additional options to configure the ping animation.
@@ -14,15 +16,19 @@ declare class Ping extends PIXI.Container {
 
   options: Ping.ConstructorOptions;
 
-  _color: Color;
+  /**
+   * The color of the ping
+   * @defaultValue {@linkcode Color.from | Color.from("#ff6400")}
+   */
+  protected _color: Color;
 
-  /** @remarks `Ping#destroy`'s parameter must be an object if passed, as the body does `options.children = true` */
+  /** @remarks Passing `options: boolean` is disallowed, as the body does `options.children = true` */
   override destroy(options?: PIXI.IDestroyOptions): void;
 
   /**
    * Start the ping animation.
    * @returns Returns true if the animation ran to completion, false otherwise.
-   * @privateRemarks This calls `CanvasAnimation.animate` with an empty attribute array for the first argument,
+   * @privateRemarks This calls {@linkcode CanvasAnimation.animate} with an empty attribute array for the first argument,
    * meaning no chance of early return, so no `| void` in the return type
    */
   animate(): Promise<boolean>;
@@ -31,8 +37,9 @@ declare class Ping extends PIXI.Container {
    * On each tick, advance the animation.
    * @param dt        - The number of ms that elapsed since the previous frame.
    * @param animation - The animation state.
+   * @remarks Simply throws in {@linkcode Ping}; subclasses must implement a valid {@linkcode CanvasAnimation.OnTickFunction}
    */
-  protected _animateFrame(dt: number, animation: CanvasAnimation.AnimationData): void;
+  protected abstract _animateFrame(dt: number, animation: CanvasAnimation.AnimationData<this>): void;
 }
 
 declare namespace Ping {
@@ -46,34 +53,32 @@ declare namespace Ping {
     /**
      * The duration of the animation in milliseconds.
      * @defaultValue `900`
-     * @remarks Can't be `null` because `options` is `mergeObject`ed with an object with this key,
-     * and the result is passed on to `CanvasAnimation.animate` in its options, which only has a
-     * parameter default for this property
+     * @remarks Can't be `undefined` because the default is provided via `mergeObject`
+     *
+     * See {@linkcode CanvasAnimation.AnimateOptions.duration}
      */
-    duration: number | undefined;
+    duration: number;
 
     /**
      * The size of the ping graphic.
      * @defaultValue `128`
-     * @remarks Can't be `null` or `undefined` because `options` is `mergeObject`ed with an object with this key.
-     * This value is not used in the base `Ping` class, but is used by subclasses to define radius and padding in
-     * ways where `undefined` produces `NaN` and values of `0` (ie, cast `null`) are nonsensical
+     * @remarks Can't be `undefined` because the default is provided via `mergeObject`
      */
     size: number;
 
     /**
      * The color of the ping graphic.
-     * @defaultValue `#ff6400`
-     * @remarks Can't be `null` or `undefined` because `options` is `mergeObject`ed with an object with this key,
-     * and passing either to `Color.from` produces a `Color(NaN)`, which may cause breakage in subclasses or when
-     * passed to PIXI methods
+     * @defaultValue `"#ff6400"`
+     * @remarks Can't be `undefined` because the default is provided via `mergeObject`
      */
     color: Color.Source;
 
     /**
      * The name for the ping animation to pass to {@linkcode CanvasAnimation.animate}.
+     *
+     * See {@linkcode CanvasAnimation.AnimateOptions.name}
      */
-    name: PropertyKey | undefined | null;
+    name: PropertyKey | undefined;
   }>;
 
   interface ConstructorOptions extends Ping._ConstructorOptions {}

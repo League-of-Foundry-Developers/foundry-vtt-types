@@ -3,7 +3,7 @@ import EventEmitterMixin = foundry.utils.EventEmitterMixin;
 
 declare class EventEmitter extends EventEmitterMixin() {}
 
-expectTypeOf(EventEmitter.emittedEvents).toEqualTypeOf<string[]>();
+expectTypeOf(EventEmitter.emittedEvents).toEqualTypeOf<string[] | readonly string[]>();
 
 declare const listener: (event: Event) => void;
 const eventEmitter = new EventEmitter();

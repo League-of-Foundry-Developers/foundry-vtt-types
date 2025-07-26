@@ -1,5 +1,6 @@
-import type { Identity } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type { PulsePing } from "#client/canvas/interaction/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * A type of ping that produces a pulse warning sign animation.
@@ -9,26 +10,28 @@ declare class AlertPing extends PulsePing {
    * @param origin  - The canvas coordinates of the origin of the ping.
    * @param options - Additional options to configure the ping animation.
    */
-  constructor(origin: PIXI.Point, options: AlertPing.ConstructorOptions);
+  constructor(origin: Canvas.Point, options?: AlertPing.ConstructorOptions);
 
-  protected override _drawShape(g: PIXI.Graphics, color: number | Color, alpha: number, size: number): void;
+  protected override _drawShape(g: PIXI.Graphics, color: number, alpha: number, size: number): void;
 }
 
 declare namespace AlertPing {
   interface Any extends AnyAlertPing {}
   interface AnyConstructor extends Identity<typeof AnyAlertPing> {}
 
-  /** @privateRemarks Only exists to change the default value of `color` */
-  interface ConstructorOptions extends PulsePing.ConstructorOptions {
+  /**
+   * Only exists to change the default value of `color`
+   * @internal
+   */
+  type _ConstructorOptions = InexactPartial<{
     /**
+     * The color of the ping graphic.
      * @defaultValue `"#ff0000"`
-     * @remarks Can't be `null` or `undefined` because `options` is `mergeObject`ed with an object with this key,
-     * and passing either to `Color.from` produces a `Color(NaN)`, which may cause breakage in subclasses or when
-     * passed to PIXI methods
-     * @privateRemarks Typing this as `Ping.ConstructorOptions["color"]` breaks, because it thinks `| undefined` has snuck in for unknown reasons
      */
-    color?: Color.Source;
-  }
+    color: Color.Source;
+  }>;
+
+  interface ConstructorOptions extends Omit<PulsePing.ConstructorOptions, "color">, _ConstructorOptions {}
 }
 
 export default AlertPing;
