@@ -1,7 +1,7 @@
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
-import type { ConfiguredActorDelta } from "fvtt-types/configuration";
+import type { ConfiguredActorDelta } from "#configuration";
 import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
 import type DataModel from "#common/abstract/data.d.mts";
 

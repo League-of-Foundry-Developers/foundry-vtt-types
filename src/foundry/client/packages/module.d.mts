@@ -62,7 +62,8 @@ declare namespace Module {
    */
   interface Schema extends BasePackage.Schema {
     /**
-     * The current package version
+     * The current package version. It is recommended to stick to dot-separated numbers like "5.0.3"
+     * and to not include a leading "v" to avoid string comparison. See {@linkcode foundry.utils.isNewerVersion}.
      * @remarks Actually defined in BasePackage but defined here to avoid conflict with BaseWorld
      */
     version: fields.StringField<{ required: true; blank: false; initial: "0" }>;

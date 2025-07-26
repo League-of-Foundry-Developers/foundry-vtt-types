@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject } from "../../../../src/utils/index.d.mts";
+import type { AnyMutableObject } from "fvtt-types/utils";
 
 import DataModel = foundry.abstract.DataModel;
 import Document = foundry.abstract.Document;

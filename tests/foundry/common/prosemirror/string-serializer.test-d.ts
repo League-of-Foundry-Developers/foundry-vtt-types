@@ -1,7 +1,9 @@
-/* eslint-disable import-x/extensions */
 import { expectTypeOf } from "vitest";
-import StringSerializer, { StringNode } from "../../../../src/foundry/common/prosemirror/string-serializer.mjs";
 import type { Fragment, Mark } from "prosemirror-model";
+
+// Import necessary as this is otherwise inaccessible.
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports, import-x/extensions
+import StringSerializer, { StringNode } from "../../../../src/foundry/common/prosemirror/string-serializer.mjs";
 
 declare const schema: foundry.prosemirror.Schema;
 

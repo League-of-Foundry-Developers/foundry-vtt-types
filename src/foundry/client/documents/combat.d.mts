@@ -1,4 +1,4 @@
-import type { ConfiguredCombat } from "fvtt-types/configuration";
+import type { ConfiguredCombat } from "#configuration";
 import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";

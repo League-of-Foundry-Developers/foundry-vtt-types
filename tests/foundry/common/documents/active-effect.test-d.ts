@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { EmptyObject, InterfaceToObject } from "../../../../src/utils/index.d.mts";
+import type { EmptyObject, InterfaceToObject } from "fvtt-types/utils";
 import BaseActiveEffect = foundry.documents.BaseActiveEffect;
 import Document = foundry.abstract.Document;
 import fields = foundry.data.fields;

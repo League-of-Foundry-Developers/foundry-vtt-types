@@ -12,15 +12,42 @@ declare module "#configuration" {
 
 /**
  * The main menu application which is toggled via the ESC key.
- * @remarks TODO: Stub
  */
 declare class MainMenu<
   RenderContext extends object = MainMenu.RenderContext,
   Configuration extends MainMenu.Configuration = MainMenu.Configuration,
   RenderOptions extends MainMenu.RenderOptions = MainMenu.RenderOptions,
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
-  // Fake override.
   static override DEFAULT_OPTIONS: MainMenu.DefaultOptions;
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  /**
+   * Configuration of Main Menu items.
+   */
+  static ITEMS: Record<string, MainMenu.MainMenuItem>;
+
+  /**
+   * A record of menu items which are currently enabled.
+   */
+  get items(): Record<string, MainMenu.MainMenuItem>;
+
+  protected override _insertElement(element: HTMLElement): void;
+
+  protected override _onFirstRender(
+    context: DeepPartial<RenderContext>,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<void>;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  /**
+   * Toggle display of the menu, or render it in the first place.
+   */
+  toggle(): Promise<void>;
+
+  static #MainMenuStatic: true;
 }
 
 declare namespace MainMenu {

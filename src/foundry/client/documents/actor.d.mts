@@ -2,7 +2,7 @@ import type { AnyObject, InexactPartial, NullishProps, Merge, Identity } from "#
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type BaseActor from "#common/documents/actor.d.mts";
-import type { ConfiguredActor } from "fvtt-types/configuration";
+import type { ConfiguredActor } from "#configuration";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { PrototypeToken } from "#common/data/data.mjs";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";

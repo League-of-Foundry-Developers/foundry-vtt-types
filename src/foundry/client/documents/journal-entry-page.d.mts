@@ -1,4 +1,4 @@
-import type { ConfiguredJournalEntryPage } from "fvtt-types/configuration";
+import type { ConfiguredJournalEntryPage } from "#configuration";
 import type { AnyObject, Identity, InexactPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";

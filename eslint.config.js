@@ -247,6 +247,13 @@ for (const placeable of placeables) {
   };
 }
 
+const noRestrictedImportsPaths = [
+  {
+    name: "type-fest",
+    message: "You probably meant to import fvtt-types/utils",
+  },
+];
+
 /**
  * @type {import("@typescript-eslint/utils").TSESLint.FlatConfig.ConfigArray}
  */
@@ -261,7 +268,7 @@ const rules = [
   eslintConfigPrettier,
   {
     // This is excluded because if it weren't then it would mess with the type checking of the rest of the repo as it loosens the types of many types.
-    ignores: ["src/index-lenient.d.mts"],
+    ignores: ["src/index-lenient.d.mts", "cvise"],
   },
   {
     languageOptions: {
@@ -322,12 +329,7 @@ const rules = [
       "@typescript-eslint/no-restricted-imports": [
         "error",
         {
-          paths: [
-            {
-              name: "type-fest",
-              message: "You probably meant to import fvtt-types/utils",
-            },
-          ],
+          paths: noRestrictedImportsPaths,
         },
       ],
       "@typescript-eslint/prefer-namespace-keyword": "error",
@@ -457,6 +459,20 @@ const rules = [
       "@typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/no-unsafe-return": "off",
       "@typescript-eslint/no-unsafe-argument": "off",
+
+      "@typescript-eslint/no-restricted-imports": [
+        "error",
+        {
+          paths: noRestrictedImportsPaths,
+          patterns: [
+            {
+              group: ["../"],
+              message:
+                "Relative imports are not allowed in tests. This is to prevent importing the main repo. If you have a need to import other test files this can be adjusted.",
+            },
+          ],
+        },
+      ],
     },
   },
 ];

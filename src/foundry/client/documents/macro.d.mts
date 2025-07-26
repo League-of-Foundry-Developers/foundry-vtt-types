@@ -1,4 +1,4 @@
-import type { ConfiguredMacro } from "fvtt-types/configuration";
+import type { ConfiguredMacro } from "#configuration";
 import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";

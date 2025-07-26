@@ -59,7 +59,7 @@ declare class SceneNavigation<
   toggleExpanded(expanded?: boolean): void;
 
   /**
-   * @deprecated "SceneNavigation.displayProgressBar is deprecated in favor of {@linkcode Notifications#notify} using the \{progress: true\} option" (since v13, until v15)
+   * @deprecated "{@linkcode SceneNavigation.displayProgressBar} is deprecated in favor of {@linkcode Notifications#notify} using the `{progress: true}` option" (since v13, until v15)
    * @ignore
    */
   static displayProgressBar({ label, pct }?: SceneNavigation.DisplayProgressBarOptions): void;

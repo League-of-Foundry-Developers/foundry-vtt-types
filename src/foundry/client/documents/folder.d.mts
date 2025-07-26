@@ -1,4 +1,4 @@
-import type { ConfiguredFolder } from "fvtt-types/configuration";
+import type { ConfiguredFolder } from "#configuration";
 import type { Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";

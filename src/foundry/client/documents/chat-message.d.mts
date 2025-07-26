@@ -1,4 +1,4 @@
-import type { ConfiguredChatMessage } from "fvtt-types/configuration";
+import type { ConfiguredChatMessage } from "#configuration";
 import type { AnyObject, Identity, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";

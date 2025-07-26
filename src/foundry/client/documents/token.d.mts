@@ -1044,6 +1044,21 @@ declare namespace TokenDocument {
 
   interface GetBarAttributeOptions extends _GetBarAttributeOptions {}
 
+  interface SingleAttributeBar {
+    type: "value";
+    attribute: string;
+    value: number;
+    editable: boolean;
+  }
+
+  interface ObjectAttributeBar {
+    type: "bar";
+    attribute: string;
+    value: number;
+    max: number;
+    editable: boolean;
+  }
+
   type GetBarAttributeReturn = SingleAttributeBar | ObjectAttributeBar | null;
 
   /** @internal */
@@ -2132,19 +2147,4 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   #TokenDocument: true;
 }
 
-interface SingleAttributeBar {
-  type: "value";
-  attribute: string;
-  value: number;
-  editable: boolean;
-}
-
-interface ObjectAttributeBar {
-  type: "bar";
-  attribute: string;
-  value: number;
-  max: number;
-  editable: boolean;
-}
-
-export { TokenDocument as default, SingleAttributeBar, ObjectAttributeBar };
+export default TokenDocument;

@@ -1,4 +1,4 @@
-import type { ConfiguredTableResult } from "fvtt-types/configuration";
+import type { ConfiguredTableResult } from "#configuration";
 import type { Identity, InexactPartial, Merge } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";

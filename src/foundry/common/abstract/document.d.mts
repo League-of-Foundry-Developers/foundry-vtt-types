@@ -1229,13 +1229,22 @@ declare namespace Document {
       }
     >;
 
-    // @ts-expect-error This pattern is inherently an error.
-    interface Invalid<D extends Document.Any> extends _Invalid, D {}
+    type Invalid<D extends Document.Any> = D extends { system: unknown } ? _InvalidSystem<D> : _Invalid<D>;
 
     /** @internal */
-    interface _Invalid {
-      _source: object;
-      system?: object | undefined;
+    // @ts-expect-error This pattern is inherently an error.
+    interface _InvalidSystem<D extends Document.Any> extends D {
+      // `Record<string, unknown>` is used to allow arbitrary property access since `in` checks are
+      // a nuisance.
+      _source: Record<string, unknown>;
+      system: Record<string, unknown>;
+      get invalid(): true;
+    }
+
+    /** @internal */
+    // @ts-expect-error This pattern is inherently an error.
+    interface _Invalid<D extends Document.Any> extends D {
+      _source: Record<string, unknown>;
       get invalid(): true;
     }
 
@@ -1457,6 +1466,42 @@ declare namespace Document {
     | (DocumentType extends "Tile" ? TileDocument.Source : never)
     | (DocumentType extends "Token" ? TokenDocument.Source : never)
     | (DocumentType extends "Wall" ? WallDocument.Source : never);
+
+  type ParentForName<DocumentType extends Document.Type> =
+    | (DocumentType extends "ActiveEffect" ? ActiveEffect.Parent : never)
+    | (DocumentType extends "ActorDelta" ? ActorDelta.Parent : never)
+    | (DocumentType extends "Actor" ? Actor.Parent : never)
+    | (DocumentType extends "Adventure" ? Adventure.Parent : never)
+    | (DocumentType extends "Card" ? Card.Parent : never)
+    | (DocumentType extends "Cards" ? Cards.Parent : never)
+    | (DocumentType extends "ChatMessage" ? ChatMessage.Parent : never)
+    | (DocumentType extends "Combat" ? Combat.Parent : never)
+    | (DocumentType extends "Combatant" ? Combatant.Parent : never)
+    | (DocumentType extends "CombatantGroup" ? CombatantGroup.Parent : never)
+    | (DocumentType extends "FogExploration" ? FogExploration.Parent : never)
+    | (DocumentType extends "Folder" ? Folder.Parent : never)
+    | (DocumentType extends "Item" ? Item.Parent : never)
+    | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Parent : never)
+    | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Parent : never)
+    | (DocumentType extends "JournalEntry" ? JournalEntry.Parent : never)
+    | (DocumentType extends "Macro" ? Macro.Parent : never)
+    | (DocumentType extends "PlaylistSound" ? PlaylistSound.Parent : never)
+    | (DocumentType extends "Playlist" ? Playlist.Parent : never)
+    | (DocumentType extends "RegionBehavior" ? RegionBehavior.Parent : never)
+    | (DocumentType extends "RollTable" ? RollTable.Parent : never)
+    | (DocumentType extends "Scene" ? Scene.Parent : never)
+    | (DocumentType extends "Setting" ? Setting.Parent : never)
+    | (DocumentType extends "TableResult" ? TableResult.Parent : never)
+    | (DocumentType extends "User" ? User.Parent : never)
+    | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Parent : never)
+    | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Parent : never)
+    | (DocumentType extends "Drawing" ? DrawingDocument.Parent : never)
+    | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Parent : never)
+    | (DocumentType extends "Note" ? NoteDocument.Parent : never)
+    | (DocumentType extends "Region" ? NoteDocument.Parent : never)
+    | (DocumentType extends "Tile" ? TileDocument.Parent : never)
+    | (DocumentType extends "Token" ? TokenDocument.Parent : never)
+    | (DocumentType extends "Wall" ? WallDocument.Parent : never);
 
   type SystemConstructor = AnyConstructor & {
     metadata: { name: SystemType };

@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { FunctionRollParseNode } from "../../../../../src/foundry/client/dice/_types.d.mts";
 
 const functionTerm = new foundry.dice.terms.FunctionTerm({ fn: "max" });
 
@@ -19,5 +18,5 @@ expectTypeOf(functionTerm.expression).toEqualTypeOf<string>();
 
 expectTypeOf(foundry.dice.terms.FunctionTerm.SERIALIZE_ATTRIBUTES).toEqualTypeOf<["fn", "terms", "rolls", "result"]>();
 
-declare const node: FunctionRollParseNode;
+declare const node: foundry.dice.types.FunctionRollParseNode;
 expectTypeOf(foundry.dice.terms.FunctionTerm.fromParseNode(node)).toEqualTypeOf<foundry.dice.terms.RollTerm>();

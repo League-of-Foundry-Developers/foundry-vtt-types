@@ -1,4 +1,4 @@
-import type { ConfiguredCard } from "fvtt-types/configuration";
+import type { ConfiguredCard } from "#configuration";
 import type { AnyObject, DeepPartial, Identity, InexactPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";

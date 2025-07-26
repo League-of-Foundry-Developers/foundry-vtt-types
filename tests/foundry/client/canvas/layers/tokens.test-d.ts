@@ -62,9 +62,7 @@ expectTypeOf(
     y: 30000,
   }),
 ).toEqualTypeOf<
-  Promise<
-    Readonly<foundry.applications.ui.Notifications.Notification<"warning">> | false | TokenDocument.Implementation
-  >
+  Promise<foundry.applications.ui.Notifications.Notification<"warning"> | false | TokenDocument.Implementation>
 >();
 expectTypeOf(layer["_onClickLeft"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token.Implementation[] | void>>();
