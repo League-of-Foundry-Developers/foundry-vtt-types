@@ -15,7 +15,6 @@ import type {
   RemoveIndexSignatures,
   FixedInstanceType,
   NullishProps,
-  DiscriminatedUnion,
   PickValue,
   Identity,
   Brand,
@@ -25,6 +24,7 @@ import type {
   PrettifyType,
   AllKeysOf,
   Override,
+  ConcreteKeys,
 } from "#utils";
 import type * as CONST from "../constants.mts";
 import type {
@@ -1203,19 +1203,33 @@ declare namespace Document {
       SystemMap extends Record<SubType, object | undefined>,
       SubType extends string,
       ConfiguredSubType extends string,
-    > =
-      GetKey<SystemConfig, Name, "none"> extends "discriminateAll"
-        ? _DiscriminateUndefined<SystemMap[SubType]>
-        :
-            | ([Extract<SubType, ConfiguredSubType>] extends [never]
-                ? never
-                : _DiscriminateUndefined<SystemMap[Extract<SubType, ConfiguredSubType>]>)
-            | ([Exclude<SubType, ConfiguredSubType>] extends [never]
-                ? never
-                : SystemMap[Exclude<SubType, ConfiguredSubType>]);
+    > = SystemConfig extends { readonly [_ in Name]: { readonly discriminate: "all" } }
+      ? _DiscriminateUndefined<SystemMap[SubType]>
+      :
+          | ([Extract<SubType, ConfiguredSubType>] extends [never]
+              ? never
+              : _DiscriminateUndefined<SystemMap[Extract<SubType, ConfiguredSubType>]>)
+          | ([Exclude<SubType, ConfiguredSubType>] extends [never]
+              ? never
+              : SystemMap[Exclude<SubType, ConfiguredSubType>]);
 
     /** @internal */
-    type _DiscriminateUndefined<T extends object | undefined> = DiscriminatedUnion<Exclude<T, undefined>>;
+    type _DiscriminateUndefined<T extends object | undefined> = _DiscriminatedUnion<
+      Exclude<T, undefined>,
+      {
+        // Avoid discriminating index signatures.
+        [K in keyof T]: ConcreteKeys<T>;
+      }[keyof T]
+    >;
+
+    /** @internal */
+    type _DiscriminatedUnion<U extends object, AllKeys extends PropertyKey> = U extends object
+      ? [Exclude<AllKeys, keyof U>] extends [never]
+        ? U
+        : U & {
+            readonly [K in Exclude<AllKeys, keyof U>]?: never;
+          }
+      : never;
 
     // TODO(LukeAbby): Improve the type display with a helper here.
     // TODO(LukeAbby): Add `StoredSource` for a better type display there.
