@@ -5,6 +5,9 @@ import type { AbstractBaseShader } from "#client/canvas/rendering/shaders/_modul
 import type { VisualEffectsMaskingFilter } from "#client/canvas/rendering/filters/_module.d.mts";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
 import type * as layers from "#client/canvas/layers/_module.d.mts";
+// Only used for, and aliased to match, foundry's links
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { AllHooks as hookEvents } from "#client/hooks.mjs";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -21,7 +24,7 @@ declare module "#configuration" {
  *  The effects canvas group is now only performing shape initialization, logic that needs to happen at
  *  the placeable or object level is now their burden.
  *  - [DONE] Adding or removing a source from the EffectsCanvasGroup collection.
- *  - [TODO] A change in a darkness source should re-initialize all overlaping light and vision source.
+ *  - [TODO] A change in a darkness source should re-initialize all overlapping light and vision source.
  *
  * ### Hook Events
  * - {@linkcode hookEvents.lightingRefresh}
@@ -215,6 +218,8 @@ declare class EffectsCanvasGroup<
    * @remarks "EffectsCanvasGroup#updateGlobalLightSource has been deprecated and is part of EnvironmentCanvasGroup#initialize workflow."
    */
   updateGlobalLightSource(): void;
+
+  #EffectsCanvasGroup: true;
 }
 
 declare namespace EffectsCanvasGroup {

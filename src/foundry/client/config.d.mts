@@ -2374,6 +2374,8 @@ declare global {
 
     namespace Canvas {
       interface Groups {
+        // TODO: Index signature?
+
         /** @defaultValue `{ groupClass: HiddenCanvasGroup, parent: "stage" }` */
         hidden: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.HiddenCanvasGroup>;
 
@@ -2399,11 +2401,29 @@ declare global {
         overlay: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.OverlayCanvasGroup>;
       }
 
-      // This requires `CanvasGroupConstructor` because `Canvas##createGroups` assumes there's no parameters.
-      interface GroupDefinition<GroupClass extends CanvasGroupConstructor = CanvasGroupConstructor> {
+      interface GroupDefinition<GroupClass extends typeof MixedCanvasGroup = typeof MixedCanvasGroup> {
+        /**
+         * @remarks The class that gets instantiated for this group. Must not take any arguments as Foundry doesn't pass any.
+         */
         groupClass: GroupClass;
-        parent: string;
+
+        /**
+         * @remarks Valid parents are {@linkcode foundry.canvas.Canvas.stage | "stage"} or any other defined Group
+         */
+        parent: "stage" | keyof typeof CONFIG.Canvas.groups;
+
+        /**
+         * @remarks Only used in `InterfaceCanvasGroup##createInterfaceDrawingsContainer`.
+         *
+         * Can't be `undefined` as it is directly assigned to {@linkcode PIXI.Container.zIndex | PIXI.Container#zIndex}
+         */
         zIndexDrawings?: number;
+
+        /**
+         * @remarks Only used in `InterfaceCanvasGroup##drawScrollingText`.
+         *
+         * Can't be `undefined` as it is directly assigned to {@linkcode PIXI.Container.zIndex | PIXI.Container#zIndex}
+         */
         zIndexScrollingText?: number;
       }
 
@@ -3893,17 +3913,11 @@ interface SheetClassConfig {
   label: string;
 }
 
-type PixiContainerConstructor = PIXI.Container.AnyConstructor;
-interface CanvasGroup extends PIXI.Container {
-  sortableChildren: boolean;
-}
+declare const Mixed: canvasGroups.CanvasGroupMixin.AnyMixedConstructor;
 
-interface CanvasGroupConstructor extends PixiContainerConstructor {
-  new (): CanvasGroup;
-
-  /**
-   * The name of this canvas group
-   * @remarks Can be undefined in some cases (e.g `EffectsCanvasGroup`) to prevent other groups using it as a parent
-   */
-  groupName?: string | undefined;
+/**
+ * @privateRemarks Used to enforce user-provided group classes taking no constructor arguments
+ */
+declare class MixedCanvasGroup extends Mixed {
+  constructor();
 }

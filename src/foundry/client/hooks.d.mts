@@ -651,11 +651,10 @@ export interface AllHooks extends DynamicHooks {
 
   /**
    * A hook event that fires when the LightingLayer is refreshed.
-   * @param layer - the LightingLayer
+   * @param group - The EffectsCanvasGroup instance
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link LightingLayer.refresh | `LightingLayer#refresh`}
    */
-  lightingRefresh: (layer: layers.LightingLayer) => void;
+  lightingRefresh: (group: EffectsCanvasGroup.Any) => void;
 
   /**
    * A hook event that fires when visibility is refreshed.
@@ -671,7 +670,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@link EffectsCanvasGroup.initializeLightSources | `EffectsCanvasGroup#initializeLightSources`}
    */
-  initializeLightSources: (group: EffectsCanvasGroup) => void;
+  initializeLightSources: (group: EffectsCanvasGroup.Any) => void;
 
   /**
    * A hook event that fires during darkness source initialization.
@@ -679,7 +678,7 @@ export interface AllHooks extends DynamicHooks {
    * @param group - The EffectsCanvasGroup where darkness sources are initialized
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  initializeDarknessSources: (group: EffectsCanvasGroup) => void;
+  initializeDarknessSources: (group: EffectsCanvasGroup.Any) => void;
 
   /**
    * A hook event that fires when the CanvasVisibility layer has been refreshed.
