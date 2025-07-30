@@ -71,6 +71,8 @@ declare class EnvironmentCanvasGroup<
    * @deprecated "`EnvironmentCanvasGroup#darknessPenalty` is deprecated without replacement. The darkness penalty is no longer applied on light and vision sources." (since v12, will be removed in v14)
    */
   get darknessPenalty(): 0;
+
+  #EnvironmentCanvasGroup: true;
 }
 
 declare namespace EnvironmentCanvasGroup {

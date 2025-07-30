@@ -83,6 +83,7 @@ declare class CanvasGroup<
 
   /**
    * Remove and destroy all layers from the base canvas.
+   * @remarks Fires the {@linkcode Hooks.TearDownGroup | tearDownGroupName} hook where `GroupName` is replaced with {@linkcode hookName | this.hookName}
    */
   tearDown(options?: HandleEmptyObject<TearDownOptions>): Promise<this>;
 
