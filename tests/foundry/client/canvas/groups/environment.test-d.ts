@@ -12,7 +12,7 @@ expectTypeOf(
     backgroundColor: [0.2, 0.4, 0.8],
     brightestColor: "#FFFFFF",
     daylightColor: "AABBCC",
-    fogExploredColor: null,
+    fogExploredColor: undefined,
     fogUnexploredColor: undefined,
     environment: {
       // TODO: expand test once SceneEnvironmentData is properly typed (dependant on BaseScene schema)
@@ -24,7 +24,7 @@ expectTypeOf(myEnvironmentGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor
 expectTypeOf(
   myEnvironmentGroup.globalLightSource,
 ).toEqualTypeOf<foundry.canvas.sources.GlobalLightSource.Implementation>();
-expectTypeOf(myEnvironmentGroup.darknessLevel).toEqualTypeOf<number>();
+expectTypeOf(myEnvironmentGroup.darknessLevel).toEqualTypeOf<number | undefined>();
 expectTypeOf(myEnvironmentGroup.colors.ambientBrightest).toEqualTypeOf<Color | undefined>();
 expectTypeOf(myEnvironmentGroup.weights.bright).toEqualTypeOf<number | undefined>();
 

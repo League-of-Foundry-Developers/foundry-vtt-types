@@ -1,6 +1,9 @@
 import type { FixedInstanceType, HandleEmptyObject, Identity, PrettifyType, RemoveIndexSignatures } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { CanvasLayer } from "#client/canvas/layers/_module.d.mts";
+// Hooks only used for links
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { AllHooks } from "#client/hooks.mjs";
 
 declare const DynamicClass: new <_Computed extends object>(...args: never) => _Computed;
 
@@ -8,7 +11,7 @@ declare const DynamicClass: new <_Computed extends object>(...args: never) => _C
 declare class LayersClass<
   Group extends CanvasGroupMixin.ConfiguredGroupNames | NoLayerGroup,
   Instance extends object = RemoveIndexSignatures<CanvasGroupMixin.LayersFor<Group>>,
-  // TODO: include child groups here https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3444
+  // TODO: include child groups https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3444
 > extends DynamicClass<Instance> {}
 
 // Note(LukeAbby): This interface has been separated out to simplify the constructor edge cases.
@@ -16,7 +19,7 @@ declare class LayersClass<
 interface CanvasGroupStatic<Group extends CanvasGroupMixin.ConfiguredGroupNames | NoLayerGroup> {
   /**
    * The name of this canvas group
-   * @remarks Foundry marked as abstract
+   * @privateRemarks Foundry marked as abstract
    */
   groupName: Group extends NoLayerGroup ? undefined : Group;
 
@@ -43,12 +46,15 @@ declare class CanvasGroup<
 
   /**
    * The canonical name of the canvas group is the name of the constructor that is the immediate child of the defined base class.
+   * @remarks For example, both `CanvasVisibility` and any user-provided subclasses would return `"CanvasVisibility"`, as that
+   * is the class in the chain that extends {@linkcode CanvasGroup | CanvasGroupMixin}
    */
   get name(): string;
 
   /**
    * The name used by hooks to construct their hook string.
    * Note: You should override this getter if hookName should not return the class constructor name.
+   * @remarks Just returns {@link name | this.name} in core's implementation
    */
   get hookName(): string;
 
@@ -63,7 +69,10 @@ declare class CanvasGroup<
    */
   protected _createLayers(): CanvasGroupMixin.LayersFor<Group>;
 
-  /** Draw the canvas group and all its component layers. */
+  /**
+   * Draw the canvas group and all its component layers.
+   * @remarks Fires the {@linkcode Hooks.DrawGroup | drawGroupName} hook where `GroupName` is replaced with {@linkcode hookName | this.hookName}
+   */
   draw(options?: HandleEmptyObject<DrawOptions>): Promise<this>;
 
   /**
@@ -104,7 +113,7 @@ type ApplyGroup<
 declare function CanvasGroupMixin<
   BaseClass extends CanvasGroupMixin.BaseClass,
   // In `_createLayers` the code assigns top level properties to the class.
-  // This is why Group exists.`
+  // This is why the Group type param exists.`
   Group extends CanvasGroupMixin.ConfiguredGroupNames | NoLayerGroup = NoLayerGroup,
 >(ContainerClass: BaseClass): CanvasGroupMixin.Mix<BaseClass, Group>;
 

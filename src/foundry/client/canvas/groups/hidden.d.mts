@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
 
 declare module "#configuration" {
@@ -32,7 +32,7 @@ declare class HiddenCanvasGroup<
    * @param displayObject - Display object to add.
    * @param position      - Position of the mask.
    * @throws If `displayObject` doesn't implement a `clear` method, or if `name` is an empty string
-   * @remarks `position` is not used if fasley
+   * @remarks `position` is not used if falsey
    */
   addMask(name: string, displayObject: PIXI.DisplayObject, position?: number | null): void;
 
@@ -49,6 +49,9 @@ declare class HiddenCanvasGroup<
 declare namespace HiddenCanvasGroup {
   interface Any extends AnyHiddenCanvasGroup {}
   interface AnyConstructor extends Identity<typeof AnyHiddenCanvasGroup> {}
+
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.groups.hidden.groupClass> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 

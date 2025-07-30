@@ -12,7 +12,7 @@ declare const elevatedPoint: Canvas.ElevatedPoint;
 declare const possiblyElevatedPoint: Canvas.PossiblyElevatedPoint;
 declare const token: Token.Implementation;
 
-describe(" Tests", () => {
+describe("CanvasVisibility Tests", () => {
   test("Construction", () => {
     new CanvasVisibility();
   });

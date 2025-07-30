@@ -1,4 +1,4 @@
-import type { EmptyObject, HandleEmptyObject, Identity, InexactPartial } from "#utils";
+import type { EmptyObject, FixedInstanceType, HandleEmptyObject, Identity, InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.mjs";
 import type { VisibilityFilter } from "#client/canvas/rendering/filters/_module.mjs";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
@@ -180,6 +180,9 @@ declare class CanvasVisibility<
 declare namespace CanvasVisibility {
   interface Any extends AnyCanvasVisibility {}
   interface AnyConstructor extends Identity<typeof AnyCanvasVisibility> {}
+
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.groups.visibility.groupClass> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 

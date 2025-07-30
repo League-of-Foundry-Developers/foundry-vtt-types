@@ -9,9 +9,13 @@ import type { DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
 import type CompendiumArt from "#client/helpers/media/compendium-art.d.mts";
 import type { Hooks as HookConfigs } from "#configuration";
 import type Hooks from "./helpers/hooks.d.mts";
-import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { CanvasGroupMixin, CanvasVisibility, EffectsCanvasGroup } from "#client/canvas/groups/_module.d.mts";
-import type * as layers from "#client/canvas/layers/_module.d.mts";
+import type { Canvas, layers } from "#client/canvas/_module.d.mts";
+import type {
+  CanvasGroupMixin,
+  CanvasVisibility,
+  EffectsCanvasGroup,
+  EnvironmentCanvasGroup,
+} from "#client/canvas/groups/_module.d.mts";
 
 import type { Note, PlaceableObject, Token } from "#client/canvas/placeables/_module.d.mts";
 import type { TokenRingConfig } from "#client/canvas/placeables/tokens/_module.d.mts";
@@ -633,6 +637,26 @@ export interface AllHooks extends DynamicHooks {
     data: foundry.appv1.sheets.ActorSheet.DropData,
   ) => boolean | void;
 
+  /** EnvironmentCanvasGroup */
+
+  /**
+   * A hook event that fires at the beginning of {@linkcode EnvironmentCanvasGroup.initialize | EnvironmentCanvasGroup#initialize} which
+   * allows the environment configuration to be altered by hook functions.
+   * The provided config param should be mutated to make any desired changes.
+   * A method subscribing to this hook may return false to prevent further configuration.
+   * @remarks This is called by {@linkcode Hooks.call}.
+   */
+  configureCanvasEnvironment: (config: EnvironmentCanvasGroup.Config) => boolean | void;
+
+  /* -------------------------------------------- */
+
+  /**
+   * A hook event that fires at the end of {@linkcode EnvironmentCanvasGroup.initialize | EnvironmentCanvasGroup#initialize} which
+   * allows the environment configuration to be altered by hook functions.
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  initializeCanvasEnvironment: () => void;
+
   /** CanvasVisibility */
 
   /**
@@ -640,13 +664,14 @@ export interface AllHooks extends DynamicHooks {
    * @param visibility - The CanvasVisibility instance
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  initializeVisionMode: (visibility: CanvasVisibility.Any) => void;
+  initializeVisionMode: (visibility: CanvasVisibility.Implementation) => void;
 
   /**
    * A hook event that fires when the set of vision sources are initialized.
    * @param sources - The collection of current vision sources
    * @remarks This is called by {@linkcode Hooks.call}.
    */
+  // TODO: .InitializedImplementation https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3438
   initializeVisionSources: (sources: Collection<PointVisionSource.Any>) => void;
 
   /**
@@ -654,31 +679,31 @@ export interface AllHooks extends DynamicHooks {
    * @param group - The EffectsCanvasGroup instance
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  lightingRefresh: (group: EffectsCanvasGroup.Any) => void;
+  lightingRefresh: (group: EffectsCanvasGroup.Implementation) => void;
 
   /**
    * A hook event that fires when visibility is refreshed.
-   * @param visibility - The CanvasVisibility instance
+   * @param visibility - The {@linkcode CanvasVisibility} instance
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  visibilityRefresh: (visibility: CanvasVisibility) => void;
+  visibilityRefresh: (visibility: CanvasVisibility.Implementation) => void;
 
   /**
    * A hook event that fires during light source initialization.
    * This hook can be used to add programmatic light sources to the Scene.
-   * @param source - The EffectsCanvasGroup where light sources are initialized
+   * @param source - The {@linkcode EffectsCanvasGroup} where light sources are initialized
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link EffectsCanvasGroup.initializeLightSources | `EffectsCanvasGroup#initializeLightSources`}
+   * @see {@link EffectsCanvasGroup.Implementation.initializeLightSources | `EffectsCanvasGroup#initializeLightSources`}
    */
-  initializeLightSources: (group: EffectsCanvasGroup.Any) => void;
+  initializeLightSources: (group: EffectsCanvasGroup.Implementation) => void;
 
   /**
-   * A hook event that fires during darkness source initialization.
-   * This hook can be used to add programmatic darkness sources to the Scene.
-   * @param group - The EffectsCanvasGroup where darkness sources are initialized
+   * A hook event that fires after priority light sources initialization.
+   * This hook can be used to add specific behaviors when for edges sources to the Scene.
+   * @param group - The {@linkcode EffectsCanvasGroup} where priority sources are initialized
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  initializeDarknessSources: (group: EffectsCanvasGroup.Any) => void;
+  initializePriorityLightSources: (group: EffectsCanvasGroup.Implementation) => void;
 
   /**
    * A hook event that fires when the CanvasVisibility layer has been refreshed.
@@ -1007,6 +1032,11 @@ export interface AllHooks extends DynamicHooks {
     app: foundry.applications.ui.Hotbar,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
+
+  /**
+   * @deprecated Removed without replacement in v13. This warning will be removed in v14.
+   */
+  initializeDarknessSources: (group: never) => never;
 }
 
 declare global {

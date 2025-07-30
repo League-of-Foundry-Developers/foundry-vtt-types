@@ -2435,7 +2435,7 @@ declare global {
         grid: LayerDefinition<typeof canvasLayers.GridLayer, "interface">;
 
         /** @defaultValue `{ layerClass: RegionLayer, group: "interface" }` */
-        // regions: LayerDefinition<typeof RegionLayer, "interface">;
+        regions: LayerDefinition<typeof canvasLayers.RegionLayer, "interface">;
 
         /** @defaultValue `{ layerClass: DrawingsLayer, group: "interface" }` */
         drawings: LayerDefinition<typeof canvasLayers.DrawingsLayer, "interface">;
@@ -2489,19 +2489,22 @@ declare global {
       }
 
       /**
-       * @privateRemarks Foundry types this as {@linkcode geometry.PointSourcePolygon | @enum PointSourcePolygon},
-       * but all the runtime defaults are {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}, and its
-       * types and methods are assumed in other canvas classes, so entries have been constrained to it over `PointSourcePolygon`.
-       * It is not impossible to add a new type of source, so the index signature is included, but this is unlikely to
-       * come up in real world code.
+       * @privateRemarks Foundry types this as {@linkcode geometry.PointSourcePolygon | @enum PointSourcePolygon}, but all the runtime defaults are
+       * {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}, and CSP types and methods are assumed in other canvas classes, so entries
+       * have been constrained to it instead of `PointSourcePolygon`.
+       *
+       * It is not impossible to add a new type of source, so the index signature is included, but this is unlikely to come up in real world code.
+       *
+       * `AnyConstructor` is used here because the expectation is that polygons are instantiated via {@linkcode geometry.ClockwiseSweepPolygon.create | .create},
+       * and the constructor has been made protected to enforce this.
        */
       interface PolygonBackends {
+        [K: string]: geometry.ClockwiseSweepPolygon.AnyConstructor;
         sight: geometry.ClockwiseSweepPolygon.AnyConstructor;
         light: geometry.ClockwiseSweepPolygon.AnyConstructor;
         darkness: geometry.ClockwiseSweepPolygon.AnyConstructor;
         sound: geometry.ClockwiseSweepPolygon.AnyConstructor;
         move: geometry.ClockwiseSweepPolygon.AnyConstructor;
-        [K: string]: geometry.ClockwiseSweepPolygon.AnyConstructor;
       }
 
       interface GridStyles {
