@@ -15,7 +15,7 @@ import type { AllHooks as hookEvents } from "#client/hooks.mjs";
 declare module "#configuration" {
   namespace Hooks {
     interface CanvasGroupConfig {
-      CanvasVisibility: CanvasVisibility.Any;
+      CanvasVisibility: CanvasVisibility.Implementation;
     }
   }
 }
