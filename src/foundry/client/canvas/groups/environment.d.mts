@@ -265,9 +265,6 @@ declare namespace EnvironmentCanvasGroup {
 
 export default EnvironmentCanvasGroup;
 
-declare abstract class AnyEnvironmentCanvasGroup extends EnvironmentCanvasGroup<
-  EnvironmentCanvasGroup.DrawOptions,
-  EnvironmentCanvasGroup.TearDownOptions
-> {
+declare abstract class AnyEnvironmentCanvasGroup extends EnvironmentCanvasGroup {
   constructor(...args: never);
 }

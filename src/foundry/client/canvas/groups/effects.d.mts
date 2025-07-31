@@ -323,9 +323,6 @@ declare namespace EffectsCanvasGroup {
 
 export default EffectsCanvasGroup;
 
-declare abstract class AnyEffectsCanvasGroup extends EffectsCanvasGroup<
-  EffectsCanvasGroup.DrawOptions,
-  EffectsCanvasGroup.TearDownOptions
-> {
+declare abstract class AnyEffectsCanvasGroup extends EffectsCanvasGroup {
   constructor(...args: never);
 }

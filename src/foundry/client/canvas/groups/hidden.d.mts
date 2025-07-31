@@ -80,9 +80,6 @@ declare namespace HiddenCanvasGroup {
 
 export default HiddenCanvasGroup;
 
-declare abstract class AnyHiddenCanvasGroup extends HiddenCanvasGroup<
-  HiddenCanvasGroup.DrawOptions,
-  HiddenCanvasGroup.TearDownOptions
-> {
+declare abstract class AnyHiddenCanvasGroup extends HiddenCanvasGroup {
   constructor(...args: never);
 }

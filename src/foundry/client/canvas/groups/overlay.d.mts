@@ -1,11 +1,11 @@
-import type { Identity } from "#utils";
+import type { FixedInstanceType, Identity } from "#utils";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
 import type { UnboundContainer } from "#client/canvas/containers/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
     interface CanvasGroupConfig {
-      OverlayCanvasGroup: OverlayCanvasGroup.Any;
+      OverlayCanvasGroup: OverlayCanvasGroup.Implementation;
     }
   }
 }
@@ -17,6 +17,8 @@ declare class OverlayCanvasGroup<
   DrawOptions extends OverlayCanvasGroup.DrawOptions = OverlayCanvasGroup.DrawOptions,
   TearDownOptions extends OverlayCanvasGroup.TearDownOptions = OverlayCanvasGroup.TearDownOptions,
 > extends CanvasGroupMixin<typeof UnboundContainer, "overlay">(UnboundContainer)<DrawOptions, TearDownOptions> {
+  // static override groupName is handled by the CanvasGroupMixin type
+
   /**
    * Should this group tear down its non-layer children?
    * @defaultValue `false`
@@ -27,6 +29,9 @@ declare class OverlayCanvasGroup<
 declare namespace OverlayCanvasGroup {
   interface Any extends AnyOverlayCanvasGroup {}
   interface AnyConstructor extends Identity<typeof AnyOverlayCanvasGroup> {}
+
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.groups.overlay.groupClass> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 

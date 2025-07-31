@@ -25,4 +25,4 @@ expectTypeOf(
     fontFamily: "serif",
     strokeThickness: 4,
   }),
-).toEqualTypeOf<Promise<PreciseText | null>>();
+).toEqualTypeOf<Promise<PreciseText | undefined>>();

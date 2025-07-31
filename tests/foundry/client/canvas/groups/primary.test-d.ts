@@ -24,15 +24,12 @@ const myPrimaryGroup = new PrimaryCanvasGroup(someMesh);
 
 expectTypeOf(myPrimaryGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"primary">>();
 
-expectTypeOf(myPrimaryGroup._ambienceFilter).toEqualTypeOf<PrimaryCanvasGroupAmbienceFilter | undefined>();
+expectTypeOf(myPrimaryGroup["_ambienceFilter"]).toEqualTypeOf<PrimaryCanvasGroupAmbienceFilter | undefined>();
 
 expectTypeOf(myPrimaryGroup.addToken(someToken)).toEqualTypeOf<PrimarySpriteMesh>();
 expectTypeOf(myPrimaryGroup.addTile(someTile)).toEqualTypeOf<PrimarySpriteMesh>();
 expectTypeOf(myPrimaryGroup.addDrawing(someDrawing)).toEqualTypeOf<PrimaryGraphics>();
 
-// deprecated since v11, until v13
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(myPrimaryGroup.mapElevationAlpha(20)).toEqualTypeOf<number>();
 // deprecated since v12, until v14
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(myPrimaryGroup.mapElevationToDepth(20)).toEqualTypeOf<number>();
