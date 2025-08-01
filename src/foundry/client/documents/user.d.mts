@@ -4,7 +4,7 @@ import type Document from "#common/abstract/document.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseActor, BaseUser } from "#common/documents/_module.d.mts";
 import type { UserTargets } from "#client/canvas/placeables/tokens/_module.d.mts";
-import type { Ping, Ruler } from "#client/canvas/interaction/_module.d.mts";
+import type { BaseRuler, Ping } from "#client/canvas/interaction/_module.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
 import fields = foundry.data.fields;
@@ -489,7 +489,7 @@ declare namespace User {
      * The state of the user's ruler, if they are currently using one.
      * @remarks Can't be explicit `undefined` as the socket drops such keys.
      */
-    ruler: Ruler.MeasurementData | null;
+    ruler: BaseRuler.UpdateData | null;
 
     /**
      * The IDs of the tokens the user has targeted in the currently viewed

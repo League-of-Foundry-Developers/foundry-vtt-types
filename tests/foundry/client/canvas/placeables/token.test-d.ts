@@ -141,7 +141,7 @@ expectTypeOf(token["_draw"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(token["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(token["_applyRenderFlags"]({})).toBeVoid();
 // all falsey values have no effect
-expectTypeOf(token["_applyRenderFlags"]({ refreshElevation: null, refreshPosition: undefined })).toBeVoid();
+expectTypeOf(token["_applyRenderFlags"]({ refreshElevation: false, refreshPosition: undefined })).toBeVoid();
 expectTypeOf(
   token["_applyRenderFlags"]({
     redraw: true,
@@ -302,7 +302,14 @@ expectTypeOf(
 expectTypeOf(
   token.animate(
     { rotation: 90, alpha: 0.7 },
-    { duration: undefined, easing: null, movementSpeed: undefined, name: null, ontick: null, transition: null },
+    {
+      duration: undefined,
+      easing: undefined,
+      movementSpeed: undefined,
+      name: undefined,
+      ontick: undefined,
+      transition: null,
+    },
   ),
 ).toEqualTypeOf<Promise<void>>();
 

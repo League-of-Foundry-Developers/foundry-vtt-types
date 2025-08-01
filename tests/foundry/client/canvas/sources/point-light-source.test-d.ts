@@ -88,7 +88,7 @@ const tests = [
   {
     elevation: 0,
     los: new Map([[someVisionSource, true]]),
-    point: { x: 50, y: 50 },
+    point: { elevation: 0, x: 50, y: 50 },
   },
 ];
 expectTypeOf(mySource.testVisibility({ object: object, tests }));

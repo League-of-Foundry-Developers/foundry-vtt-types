@@ -636,6 +636,13 @@ export interface AllHooks extends DynamicHooks {
   /** CanvasVisibility */
 
   /**
+   * A hook event that fires when the vision mode is initialized.
+   * @param visibility - The CanvasVisibility instance
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  initializeVisionMode: (visibility: CanvasVisibility.Any) => void;
+
+  /**
    * A hook event that fires when the set of vision sources are initialized.
    * @param sources - The collection of current vision sources
    * @remarks This is called by {@linkcode Hooks.call}.

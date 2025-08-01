@@ -40,7 +40,7 @@ expectTypeOf(region.clear()).toEqualTypeOf<Region.Implementation>();
 expectTypeOf(region["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(region["_applyRenderFlags"]({})).toBeVoid();
 // all falsey values have no effect
-expectTypeOf(region["_applyRenderFlags"]({ refreshBorder: null, refreshState: undefined })).toBeVoid();
+expectTypeOf(region["_applyRenderFlags"]({ refreshBorder: false, refreshState: undefined })).toBeVoid();
 expectTypeOf(
   region["_applyRenderFlags"]({
     redraw: true,

@@ -57,7 +57,7 @@ expectTypeOf(tile["_destroy"](undefined)).toBeVoid();
 expectTypeOf(tile["_applyRenderFlags"]()).toBeVoid();
 expectTypeOf(tile["_applyRenderFlags"]({})).toBeVoid();
 // all falsey values have no effect
-expectTypeOf(tile["_applyRenderFlags"]({ refreshElevation: null, refreshPosition: undefined })).toBeVoid();
+expectTypeOf(tile["_applyRenderFlags"]({ refreshElevation: false, refreshPosition: undefined })).toBeVoid();
 expectTypeOf(
   tile["_applyRenderFlags"]({
     redraw: true,

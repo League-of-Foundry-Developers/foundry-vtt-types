@@ -1,3 +1,4 @@
+import type { Ruler } from "#client/canvas/interaction/_module.d.mts";
 import type { Identity } from "#utils";
 import type { BaseTokenRuler } from "./_module.d.mts";
 
@@ -46,14 +47,14 @@ declare class TokenRuler extends BaseTokenRuler {
    * @param waypoint - The waypoint
    * @returns The radius, color, and alpha of the waypoint. If the radius is 0, no waypoint marker is drawn.
    */
-  protected _getWaypointStyle(waypoint: TokenRuler.Waypoint): TokenRuler.WaypointStyle;
+  protected _getWaypointStyle(waypoint: TokenRuler.Waypoint): Ruler.WaypointStyle;
 
   /**
    * Get the style of the segment from the previous to the given waypoint.
    * @param waypoint - The waypoint
    * @returns The line width, color, and alpha of the segment.  If the width is 0, no segment is drawn.
    */
-  protected _getSegmentStyle(waypoint: TokenRuler.Waypoint): TokenRuler.SegmentStyle;
+  protected _getSegmentStyle(waypoint: TokenRuler.Waypoint): Ruler.SegmentStyle;
 
   /**
    * Get the style to be used to highlight the grid offset.
@@ -159,49 +160,13 @@ declare namespace TokenRuler {
   /**
    * @remarks Fed into the template
    */
-  interface WaypointContext {
-    action: string;
-    cssClass: string;
-    secret: boolean;
-    units: string;
-    uiScale: number;
-    position: {
-      x: number;
-      y: number;
-    };
-    distance: SegmentDistance;
+  interface WaypointContext extends Ruler.WaypointContext {
     cost: SegmentCost;
-    elevation: ElevationContext;
   }
 
-  interface SegmentDistance {
-    total: string;
-    delta?: string | undefined;
-  }
-
-  interface SegmentCost {
+  interface SegmentCost extends Ruler._DeltaString {
     total: string;
     units: string;
-    delta?: string | undefined;
-  }
-
-  interface ElevationContext {
-    total: number;
-    icon: string;
-    hidden: boolean;
-    delta?: string | undefined;
-  }
-
-  interface WaypointStyle {
-    radius: number;
-    color?: PIXI.ColorSource | undefined;
-    alpha?: number | undefined;
-  }
-
-  interface SegmentStyle {
-    width: number;
-    color?: PIXI.ColorSource | undefined;
-    alpha?: number | undefined;
   }
 
   interface GridHighlightStyle {
