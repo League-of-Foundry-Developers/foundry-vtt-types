@@ -50,12 +50,12 @@ describe("HiddenCanvasGroup Tests", () => {
   });
 
   test("Hooks", () => {
-    Hooks.on("drawHiddenCanvasGroup", (hiddenCanvas) => {
-      expectTypeOf(hiddenCanvas).toEqualTypeOf<HiddenCanvasGroup.Implementation>();
+    Hooks.on("drawHiddenCanvasGroup", (group) => {
+      expectTypeOf(group).toEqualTypeOf<HiddenCanvasGroup.Implementation>();
     });
 
-    Hooks.on("tearDownHiddenCanvasGroup", (hiddenCanvas) => {
-      expectTypeOf(hiddenCanvas).toEqualTypeOf<HiddenCanvasGroup.Implementation>();
+    Hooks.on("tearDownHiddenCanvasGroup", (group) => {
+      expectTypeOf(group).toEqualTypeOf<HiddenCanvasGroup.Implementation>();
     });
   });
 });

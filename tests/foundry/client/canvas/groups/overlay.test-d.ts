@@ -1,14 +1,41 @@
-import { expectTypeOf } from "vitest";
+import { describe, expectTypeOf, test } from "vitest";
 
 import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
 import OverlayCanvasGroup = foundry.canvas.groups.OverlayCanvasGroup;
+import layers = foundry.canvas.layers;
 
-expectTypeOf(OverlayCanvasGroup.groupName).toEqualTypeOf<"overlay">();
+declare global {
+  namespace CONFIG.Canvas {
+    interface Layers {
+      fakeOverlayLayer: CONFIG.Canvas.LayerDefinition<typeof layers.ControlsLayer, "overlay">;
+    }
+  }
+}
 
-const myOverlayGroup = new OverlayCanvasGroup();
+describe("OverlayCanvasGroup Tests", () => {
+  test("Group name", () => {
+    expectTypeOf(OverlayCanvasGroup.groupName).toEqualTypeOf<"overlay">();
+  });
 
-expectTypeOf(myOverlayGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"overlay">>();
+  const myOverlayGroup = new CONFIG.Canvas.groups.overlay.groupClass();
 
-const myTransform = new PIXI.Transform();
+  test("Uncategorized", () => {
+    expectTypeOf(OverlayCanvasGroup.tearDownChildren).toBeBoolean();
+  });
 
-expectTypeOf(myOverlayGroup.transform.updateTransform(myTransform)).toEqualTypeOf<void>();
+  test("Layers", () => {
+    expectTypeOf(myOverlayGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"overlay">>();
+    // Core provides no layers with this as their group
+    expectTypeOf(myOverlayGroup.fakeOverlayLayer).toEqualTypeOf<layers.ControlsLayer>();
+  });
+
+  test("Hooks", () => {
+    Hooks.on("drawOverlayCanvasGroup", (group) => {
+      expectTypeOf(group).toEqualTypeOf<OverlayCanvasGroup.Implementation>();
+    });
+
+    Hooks.on("tearDownOverlayCanvasGroup", (group) => {
+      expectTypeOf(group).toEqualTypeOf<OverlayCanvasGroup.Implementation>();
+    });
+  });
+});
