@@ -3,7 +3,7 @@ import { describe, expectTypeOf, test } from "vitest";
 import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
 import Canvas = foundry.canvas.Canvas;
 import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
-import VEMF = foundry.canvas.rendering.filters.VisualEffectsMaskingFilter;
+import VisualEffectsMaskingFilter = foundry.canvas.rendering.filters.VisualEffectsMaskingFilter;
 import sources = foundry.canvas.sources;
 import layers = foundry.canvas.layers;
 
@@ -91,20 +91,60 @@ describe("EffectsCanvasGroup Tests", () => {
   });
 
   test("Filters", () => {
-    expectTypeOf(myEffectGroup.visualEffectsMaskingFilters).toEqualTypeOf<Set<VEMF.Implementation>>();
+    expectTypeOf(myEffectGroup.visualEffectsMaskingFilters).toEqualTypeOf<
+      Set<VisualEffectsMaskingFilter.Implementation>
+    >();
 
     expectTypeOf(myEffectGroup.toggleMaskingFilters()).toBeVoid();
     expectTypeOf(myEffectGroup.toggleMaskingFilters(false)).toBeVoid();
 
-    expectTypeOf(myEffectGroup.activatePostProcessingFilters(VEMF.FILTER_MODES.BACKGROUND)).toBeVoid();
     expectTypeOf(
-      myEffectGroup.activatePostProcessingFilters(VEMF.FILTER_MODES.BACKGROUND, ["CONTRAST", "SATURATION"]),
+      myEffectGroup.activatePostProcessingFilters(VisualEffectsMaskingFilter.FILTER_MODES.BACKGROUND),
     ).toBeVoid();
     expectTypeOf(
-      myEffectGroup.activatePostProcessingFilters(VEMF.FILTER_MODES.BACKGROUND, ["EXPOSURE"], { someUniformKey: 5 }),
+      myEffectGroup.activatePostProcessingFilters(VisualEffectsMaskingFilter.FILTER_MODES.BACKGROUND, [
+        "CONTRAST",
+        "SATURATION",
+      ]),
+    ).toBeVoid();
+    expectTypeOf(
+      myEffectGroup.activatePostProcessingFilters(
+        VisualEffectsMaskingFilter.FILTER_MODES.BACKGROUND,
+        ["EXPOSURE", "CONTRAST"],
+        {
+          someUniformKey: 5,
+        },
+      ),
     ).toBeVoid();
 
     expectTypeOf(myEffectGroup.resetPostProcessingFilters()).toBeVoid();
+  });
+
+  test("Child groups", () => {
+    // Core provides none
+    // TODO: once group dynamic properties are typed, add and test a fake group with this as parent
+  });
+
+  test("Hooks", () => {
+    Hooks.on("drawEffectsCanvasGroup", (group) => {
+      expectTypeOf(group).toEqualTypeOf<EffectsCanvasGroup.Implementation>();
+    });
+
+    Hooks.on("tearDownEffectsCanvasGroup", (group) => {
+      expectTypeOf(group).toEqualTypeOf<EffectsCanvasGroup.Implementation>();
+    });
+
+    Hooks.on("initializeLightSources", (group) => {
+      expectTypeOf(group).toEqualTypeOf<EffectsCanvasGroup.Implementation>();
+    });
+
+    Hooks.on("initializePriorityLightSources", (group) => {
+      expectTypeOf(group).toEqualTypeOf<EffectsCanvasGroup.Implementation>();
+    });
+
+    Hooks.on("lightingRefresh", (group) => {
+      expectTypeOf(group).toEqualTypeOf<EffectsCanvasGroup.Implementation>();
+    });
   });
 
   test("Deprecated", () => {

@@ -308,7 +308,9 @@ declare namespace EffectsCanvasGroup {
 
   /**
    * @remarks {@linkcode EffectsCanvasGroup} overrides {@linkcode CanvasGroupMixin.AnyMixed._createLayers | #_createLayers},
-   * returning a predefined object rather than something built from `CONFIG`
+   * returning a predefined object rather than something built from `CONFIG`. The layer classes are constructed by name,
+   * with no ability to override or extend by users.
+   * @privateRemarks ... which is why `.Any` is not used here
    */
   interface Layers {
     /** A layer of background alteration effects which change the appearance of the primary group render texture. */
@@ -317,7 +319,7 @@ declare namespace EffectsCanvasGroup {
     /** A layer which adds illumination-based effects to the scene. */
     illumination: layers.CanvasIlluminationEffects;
 
-    /**  layer which adds color-based effects to the scene. */
+    /** A layer which adds color-based effects to the scene. */
     coloration: layers.CanvasColorationEffects;
 
     /** A layer which adds darkness effects to the scene. */

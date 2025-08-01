@@ -1,4 +1,4 @@
-import type { FixedInstanceType, HandleEmptyObject, Identity, InexactPartial } from "#utils";
+import type { DeepPartial, FixedInstanceType, HandleEmptyObject, Identity, InexactPartial } from "#utils";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
 import type { GlobalLightSource } from "#client/canvas/sources/_module.d.mts";
 // Hooks only used for links
@@ -247,8 +247,11 @@ declare namespace EnvironmentCanvasGroup {
      * The scene environment data
      * @defaultValue `{}`
      * @remarks Default applied during destructuring assignment inside {@linkcode EnvironmentCanvasGroup.initialize | #initialize}
+     *
+     * Any values not provided will be filled in via mergeObject with this as the `original` and `canvas.scene.toObject().environment`
+     * as the `other`, with `overwrite: false`, so values here should not be `undefined` unless otherwise allowed by the Scene schema.
      */
-    environment: InexactPartial<Scene.EnvironmentData>;
+    environment: DeepPartial<Scene.EnvironmentData>;
 
     /**
      * @deprecated "`config.darknessLevel` parameter into {@linkcode EnvironmentCanvasGroup.initialize | EnvironmentCanvasGroup#initialize} is deprecated.
