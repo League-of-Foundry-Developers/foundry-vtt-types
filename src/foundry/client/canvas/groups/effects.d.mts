@@ -81,7 +81,7 @@ declare class EffectsCanvasGroup<
 
   /**
    * @remarks `EffectsCanvasGroup` doesn't use the same dynamic layer property assignment as other groups, instead this returns
-   * an object with known keys ({@linkcode background}, {@linkcode illumination}, {@linkcode coloration}, and {@linkcode darkness}, )
+   * an object with known keys ({@linkcode background}, {@linkcode illumination}, {@linkcode coloration}, and {@linkcode darkness})
    */
   protected override _createLayers(): EffectsCanvasGroup.Layers;
 
