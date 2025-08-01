@@ -79,7 +79,11 @@ declare class EffectsCanvasGroup<
   // TODO: Make .InitializedImplementation
   allSources(): Generator<sources.PointDarknessSource.Any | sources.PointLightSource.Any, void, undefined>;
 
-  override _createLayers(): EffectsCanvasGroup.Layers;
+  /**
+   * @remarks `EffectsCanvasGroup` doesn't use the same dynamic layer property assignment as other groups, instead this returns
+   * an object with known keys ({@linkcode background}, {@linkcode illumination}, {@linkcode coloration}, and {@linkcode darkness}, )
+   */
+  protected override _createLayers(): EffectsCanvasGroup.Layers;
 
   /** @privateRemarks Fake override to sync with {@linkcode _createLayers} */
   override layers: EffectsCanvasGroup.Layers;
@@ -193,7 +197,7 @@ declare class EffectsCanvasGroup<
    */
   getDarknessLevel(point: Canvas.Point, _elevation: number): number;
 
-  override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 
   /**
    * Activate vision masking for visual effects
@@ -304,20 +308,20 @@ declare namespace EffectsCanvasGroup {
 
   /**
    * @remarks {@linkcode EffectsCanvasGroup} overrides {@linkcode CanvasGroupMixin.AnyMixed._createLayers | #_createLayers},
-   * returning a predefined object rather than something built from CONFIG
+   * returning a predefined object rather than something built from `CONFIG`
    */
   interface Layers {
     /** A layer of background alteration effects which change the appearance of the primary group render texture. */
-    background: layers.CanvasBackgroundAlterationEffects.Any;
+    background: layers.CanvasBackgroundAlterationEffects;
 
     /** A layer which adds illumination-based effects to the scene. */
-    illumination: layers.CanvasIlluminationEffects.Any;
+    illumination: layers.CanvasIlluminationEffects;
 
     /**  layer which adds color-based effects to the scene. */
-    coloration: layers.CanvasColorationEffects.Any;
+    coloration: layers.CanvasColorationEffects;
 
     /** A layer which adds darkness effects to the scene. */
-    darkness: layers.CanvasDarknessEffects.Any;
+    darkness: layers.CanvasDarknessEffects;
   }
 }
 
