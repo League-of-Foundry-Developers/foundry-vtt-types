@@ -60,7 +60,7 @@ describe("InterfaceCanvasGroup Tests", () => {
   });
 
   test("Child groups", () => {
-    // Core provides none
+    // Core provides no groups that have this as parent
     // TODO: once group dynamic properties are typed, add and test a fake group with this as parent
   });
 
