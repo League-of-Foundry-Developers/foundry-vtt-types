@@ -4,6 +4,7 @@ import EnvironmentCanvasGroup = foundry.canvas.groups.EnvironmentCanvasGroup;
 import CanvasGroupMixin = foundry.canvas.groups.CanvasGroupMixin;
 import GlobalLightSource = foundry.canvas.sources.GlobalLightSource;
 import layers = foundry.canvas.layers;
+import groups = foundry.canvas.groups;
 
 declare global {
   namespace CONFIG.Canvas {
@@ -62,8 +63,10 @@ describe("EnvironmentCanvasGroup Tests", () => {
   });
 
   test("Child groups", () => {
-    // Core provides none
-    // TODO: once group dynamic properties are typed, add and test a fake group with this as parent
+    // @ts-expect-error Dynamic child group properties are not implemented yet https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3444
+    expectTypeOf(myEnvironmentGroup.primary).toEqualTypeOf<groups.PrimaryCanvasGroup.Implementation>();
+    // @ts-expect-error Dynamic child group properties are not implemented yet https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3444
+    expectTypeOf(myEnvironmentGroup.effects).toEqualTypeOf<groups.EffectsCanvasGroup.Implementation>();
   });
 
   test("Value stores", () => {
