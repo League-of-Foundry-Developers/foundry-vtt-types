@@ -44,7 +44,6 @@ describe("CanvasGroupMixin Tests", () => {
     expectTypeOf(myGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"primary">>();
     expectTypeOf(myGroup["_createLayers"]()).toEqualTypeOf<CanvasGroupMixin.LayersFor<"primary">>();
     expectTypeOf(myGroup.weather).toEqualTypeOf<WeatherEffects>();
-    // TODO: test adding a new layer definition with primary as its group to CONFIG.Canvas.layers
   });
 
   test("Child Groups", () => {

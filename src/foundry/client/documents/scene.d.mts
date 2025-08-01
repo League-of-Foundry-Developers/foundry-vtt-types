@@ -1,7 +1,7 @@
 import type { InexactPartial, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
 import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
+import type { DataSchema } from "#common/data/fields.d.mts";
 import type { LightData, TextureData } from "#common/data/data.d.mts";
 import type ImageHelper from "#client/helpers/media/image-helper.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
@@ -679,7 +679,7 @@ declare namespace Scene {
     colors: fields.SchemaField<FogColorSchema>;
   }
 
-  interface FogData extends SchemaField.InitializedData<FogSchema> {}
+  interface FogData extends fields.SchemaField.InitializedData<FogSchema> {}
 
   interface FogColorSchema extends DataSchema {
     /**
@@ -695,7 +695,7 @@ declare namespace Scene {
     unexplored: fields.ColorField;
   }
 
-  interface FogColorData extends SchemaField.InitializedData<FogColorSchema> {}
+  interface FogColorData extends fields.SchemaField.InitializedData<FogColorSchema> {}
 
   interface EnvironmentSchema extends DataSchema {
     /**
