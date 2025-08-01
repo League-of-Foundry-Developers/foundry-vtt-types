@@ -17,6 +17,11 @@ describe("OverlayCanvasGroup Tests", () => {
     expectTypeOf(OverlayCanvasGroup.groupName).toEqualTypeOf<"overlay">();
   });
 
+  test("Construction", () => {
+    new OverlayCanvasGroup();
+    new CONFIG.Canvas.groups.overlay.groupClass();
+  });
+
   const myOverlayGroup = new CONFIG.Canvas.groups.overlay.groupClass();
 
   test("Uncategorized", () => {

@@ -17,6 +17,11 @@ describe("RenderedCanvasGroup Tests", () => {
     expectTypeOf(RenderedCanvasGroup.groupName).toEqualTypeOf<"rendered">();
   });
 
+  test("Construction", () => {
+    new RenderedCanvasGroup();
+    new CONFIG.Canvas.groups.rendered.groupClass();
+  });
+
   const myRenderedGroup = new CONFIG.Canvas.groups.rendered.groupClass();
 
   test("Uncategorized", () => {
@@ -27,6 +32,13 @@ describe("RenderedCanvasGroup Tests", () => {
     expectTypeOf(myRenderedGroup.layers).toEqualTypeOf<CanvasGroupMixin.LayersFor<"rendered">>();
     // Core provides no layers with this as their group
     expectTypeOf(myRenderedGroup.fakeRenderedLayer).toEqualTypeOf<layers.ControlsLayer>();
+  });
+
+  test("Child groups", () => {
+    // @ts-expect-error Dynamic child group properties are not implemented yet https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3444
+    expectTypeOf(myRenderedGroup.visibility).toEqualTypeOf<groups.CanvasVisibility.Implementation>();
+    // @ts-expect-error Dynamic child group properties are not implemented yet https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3444
+    expectTypeOf(myRenderedGroup.interface).toEqualTypeOf<groups.InterfaceCanvasGroup.Implementation>();
   });
 
   test("Hooks", () => {

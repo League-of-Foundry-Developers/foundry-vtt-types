@@ -1,6 +1,5 @@
 import type { Brand, FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
 import type { PrimaryCanvasGroupAmbienceFilter } from "#client/canvas/rendering/filters/_module.d.mts";
-
 import type { CachedContainer, SpriteMesh } from "#client/canvas/containers/_module.d.mts";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
 import type { CanvasQuadtree } from "#client/canvas/geometry/quad-tree.d.mts";
@@ -73,7 +72,7 @@ declare class PrimaryCanvasGroup<
   /**
    * Track the set of HTMLVideoElements which are currently playing as part of this group.
    */
-  videoMeshes: Set<PrimarySpriteMesh>;
+  videoMeshes: Set<PrimarySpriteMesh.Any>;
 
   /**
    * Occludable objects above this elevation are faded on hover.
@@ -217,7 +216,7 @@ declare class PrimaryCanvasGroup<
    * @param hasMouseMoved - Has the mouse been moved (or it is a simulated mouse move event)?
    * @internal
    */
-  _onMouseMove(currentPos: PIXI.Point, hasMouseMoved: boolean): void;
+  protected _onMouseMove(currentPos: PIXI.Point, hasMouseMoved: boolean): void;
 
   /**
    * @deprecated "`PrimaryCanvasGroup#mapElevationAlpha` is deprecated. Use {@linkcode foundry.canvas.layers.CanvasDepthMask.mapElevation | canvas.masks.depth.mapElevation(elevation)}

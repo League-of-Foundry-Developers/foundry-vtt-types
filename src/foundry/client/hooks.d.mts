@@ -3,7 +3,6 @@ import type { AnyMutableObject, DeepPartial, EmptyObject, ValueOf } from "#utils
 import type Document from "#common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "#common/prosemirror/_module.d.mts";
 import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
-import type PointVisionSource from "#client/canvas/sources/point-vision-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
 import type { DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
 import type CompendiumArt from "#client/helpers/media/compendium-art.d.mts";
@@ -671,8 +670,7 @@ export interface AllHooks extends DynamicHooks {
    * @param sources - The collection of current vision sources
    * @remarks This is called by {@linkcode Hooks.call}.
    */
-  // TODO: .InitializedImplementation https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3438
-  initializeVisionSources: (sources: Collection<PointVisionSource.Any>) => void;
+  initializeVisionSources: (sources: EffectsCanvasGroup.Implementation["visionSources"]) => void;
 
   /**
    * A hook event that fires when the LightingLayer is refreshed.
@@ -711,7 +709,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@link CanvasVisibility.restrictVisibility | `CanvasVisibility#restrictVisibility`}
    */
-  sightRefresh: (visibility: CanvasVisibility) => void;
+  sightRefresh: (visibility: CanvasVisibility.Implementation) => void;
 
   /** Weather */
 

@@ -15,6 +15,11 @@ describe("EffectsCanvasGroup Tests", () => {
     expectTypeOf(EffectsCanvasGroup.groupName).toEqualTypeOf<undefined>();
   });
 
+  test("Construction", () => {
+    new EffectsCanvasGroup();
+    new CONFIG.Canvas.groups.effects.groupClass();
+  });
+
   const myEffectGroup = new CONFIG.Canvas.groups.effects.groupClass();
 
   test("Uncategorized", () => {

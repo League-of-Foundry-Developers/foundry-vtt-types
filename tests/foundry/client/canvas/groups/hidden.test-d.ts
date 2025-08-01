@@ -20,6 +20,11 @@ describe("HiddenCanvasGroup Tests", () => {
     expectTypeOf(HiddenCanvasGroup.groupName).toEqualTypeOf<"hidden">();
   });
 
+  test("Construction", () => {
+    new HiddenCanvasGroup();
+    new CONFIG.Canvas.groups.hidden.groupClass();
+  });
+
   const myHiddenGroup = new CONFIG.Canvas.groups.hidden.groupClass();
 
   test("Uncategorized", () => {

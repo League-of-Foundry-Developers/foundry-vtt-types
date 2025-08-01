@@ -13,6 +13,11 @@ describe("InterfaceCanvasGroup Tests", () => {
     expectTypeOf(InterfaceCanvasGroup.groupName).toEqualTypeOf<"interface">();
   });
 
+  test("Construction", () => {
+    new InterfaceCanvasGroup();
+    new CONFIG.Canvas.groups.interface.groupClass();
+  });
+
   const myInterfaceGroup = new CONFIG.Canvas.groups.interface.groupClass();
 
   test("Uncategorized", () => {

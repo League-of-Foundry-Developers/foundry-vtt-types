@@ -19,6 +19,11 @@ describe("EnvironmentCanvasGroup Tests", () => {
     expectTypeOf(EnvironmentCanvasGroup.groupName).toEqualTypeOf<"environment">();
   });
 
+  test("Construction", () => {
+    new EnvironmentCanvasGroup();
+    new CONFIG.Canvas.groups.environment.groupClass();
+  });
+
   const myEnvironmentGroup = new CONFIG.Canvas.groups.environment.groupClass();
 
   test("Uncategorized", () => {
