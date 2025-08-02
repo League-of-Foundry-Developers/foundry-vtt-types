@@ -48,7 +48,7 @@ declare class FogManager extends EventEmitterMixin() {
    * The configured options used for the saved fog-of-war texture.
    * @remarks Only `undefined` prior to the first time the canvas visibility layer is `#draw()`n
    */
-  get textureConfiguration(): CanvasVisibility["textureConfiguration"];
+  get textureConfiguration(): CanvasVisibility.Implementation["textureConfiguration"];
 
   /**
    * Does the currently viewed Scene support Token field of vision?
@@ -144,11 +144,19 @@ declare class FogManager extends EventEmitterMixin() {
 }
 
 declare namespace FogManager {
-  interface Any extends AnyFogManager {}
-  interface AnyConstructor extends Identity<typeof AnyFogManager> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
 
-  type ImplementationClass = CONFIG["Canvas"]["fogManager"];
-  type Implementation = FixedInstanceType<ImplementationClass>;
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyFogManager {}
+    interface AnyConstructor extends Identity<typeof AnyFogManager> {}
+  }
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["fogManager"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   /**
    * @deprecated Replaced by {@linkcode FogManager.ImplementationClass}.

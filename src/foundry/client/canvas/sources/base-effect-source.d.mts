@@ -59,8 +59,7 @@ declare abstract class BaseEffectSource<
    * Some other object which is responsible for this source.
    * @privateRemarks see {@linkcode BaseEffectSource.ConstructorOptions.object}
    */
-  // TODO: 4th type param for this?
-  object: placeables.PlaceableObject.Any | EnvironmentCanvasGroup.Any | null;
+  object: placeables.PlaceableObject.Any | EnvironmentCanvasGroup.Implementation | null;
 
   /**
    * The source id linked to this effect source.
@@ -230,7 +229,7 @@ declare namespace BaseEffectSource {
      * as an exception to Foundry's typing of just {@linkcode PlaceableObject}. Otherwise, is only ever {@linkcode placeables.AmbientLight | AmbientLight},
      * {@linkcode placeables.AmbientSound | AmbientSound}, or {@linkcode placeables.Token | Token} in Foundry usage
      */
-    object: placeables.PlaceableObject.Any | EnvironmentCanvasGroup.Any;
+    object: placeables.PlaceableObject.Any | EnvironmentCanvasGroup.Implementation;
 
     /**
      * A unique ID for this source. This will be set automatically if an object is provided, otherwise is required.

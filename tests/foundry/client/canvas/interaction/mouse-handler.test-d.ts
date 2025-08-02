@@ -74,7 +74,7 @@ const regionCallbacks = {
 
 const stage = canvas!.stage!;
 
-describe("MouseInteractionManager Tests", () => {
+describe("MouseInteractionManager tests", () => {
   test("Static configuration properties", () => {
     expectTypeOf(MouseInteractionManager.DEFAULT_DRAG_RESISTANCE_PX).toBeNumber();
     expectTypeOf(MouseInteractionManager.DOUBLE_CLICK_TIME_MS).toBeNumber();
@@ -149,7 +149,7 @@ describe("MouseInteractionManager Tests", () => {
     expectTypeOf(noteMIM.target).toEqualTypeOf<Note.Implementation | ControlIcon>();
   });
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(MouseInteractionManager.emulateMoveEvent()).toBeVoid();
 
     expectTypeOf(noteMIM.interactionData).toEqualTypeOf<MouseInteractionManager.InteractionData<Note.Implementation>>();

@@ -4,7 +4,7 @@ import GridHighlight = foundry.canvas.containers.GridHighlight;
 
 declare const smoothGeometry: PIXI.smooth.SmoothGraphicsGeometry;
 
-describe("GridHighlight Tests", () => {
+describe("GridHighlight tests", () => {
   test("Construction", () => {
     // @ts-expect-error must pass a name
     new GridHighlight();
@@ -14,7 +14,7 @@ describe("GridHighlight Tests", () => {
 
   const grid = new GridHighlight("someName", smoothGeometry);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(grid.name).toEqualTypeOf<string>();
     expectTypeOf(grid.positions).toEqualTypeOf<Set<GridHighlight.PositionString>>();
     expectTypeOf(grid.highlight(100, 100)).toEqualTypeOf<boolean>();

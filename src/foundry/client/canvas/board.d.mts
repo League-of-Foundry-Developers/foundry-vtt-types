@@ -414,7 +414,7 @@ declare class Canvas extends _InternalCanvas {
   /**
    * Create a SceneManager instance used for this Scene, if any.
    */
-  static getSceneManager(scene: Scene.Implementation): foundry.canvas.SceneManager | null;
+  static getSceneManager(scene: Scene.Implementation): foundry.canvas.SceneManager.Any | null;
 
   /**
    * Get the value of a GL parameter

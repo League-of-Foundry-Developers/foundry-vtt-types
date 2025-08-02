@@ -7,9 +7,9 @@ declare const renderer: PIXI.Renderer;
 declare const primaryCanvasGroup: foundry.canvas.groups.PrimaryCanvasGroup;
 declare const primaryCanvasContainer: foundry.canvas.primary.PrimaryCanvasContainer;
 
-describe("CanvasTransformMixin Tests", () => {
+describe("CanvasTransformMixin tests", () => {
   const myCT = new (CanvasTransformMixin(PIXI.Container))();
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myCT.canvasBounds).toEqualTypeOf<PIXI.Rectangle>();
     expectTypeOf(myCT["_canvasBounds"]).toEqualTypeOf<PIXI.Bounds>();
     expectTypeOf(myCT["_canvasBoundsID"]).toBeNumber();
@@ -20,10 +20,10 @@ describe("CanvasTransformMixin Tests", () => {
   });
 });
 
-describe("PrimaryCanvasObjectMixin Tests", () => {
+describe("PrimaryCanvasObjectMixin tests", () => {
   const myPCO = new (PrimaryCanvasObjectMixin(PIXI.Container))();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myPCO.object).toEqualTypeOf<PrimaryCanvasObjectMixin.OwningObject | null>();
 
     expectTypeOf(myPCO.elevation).toBeNumber();

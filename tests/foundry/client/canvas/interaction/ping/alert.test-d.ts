@@ -6,7 +6,7 @@ declare const color: Color;
 declare const someSymbol: unique symbol;
 declare const graphics: PIXI.Graphics;
 
-describe("AlertPing Tests", () => {
+describe("AlertPing tests", () => {
   test("Construction", () => {
     // @ts-expect-error Must pass an origin
     new AlertPing();

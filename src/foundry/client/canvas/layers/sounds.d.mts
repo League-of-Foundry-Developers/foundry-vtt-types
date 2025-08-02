@@ -30,7 +30,7 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
    * A mapping of ambient audio sources which are active within the rendered Scene
    * @defaultValue `new foundry.utils.Collection()`
    */
-  sources: foundry.utils.Collection<foundry.canvas.sources.PointSoundSource.Any>;
+  sources: Collection<foundry.canvas.sources.PointSoundSource.Internal.Any>;
 
   /**
    * @privateRemarks This is not overridden in foundry but reflects the real behavior.

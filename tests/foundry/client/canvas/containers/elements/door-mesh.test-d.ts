@@ -7,7 +7,7 @@ import CanvasAnimation = foundry.canvas.animation.CanvasAnimation;
 declare const someTex: PIXI.Texture;
 declare const someWall: foundry.canvas.placeables.Wall.Implementation;
 
-describe("DoorMesh Tests", () => {
+describe("DoorMesh tests", () => {
   test("Brands", () => {
     expectTypeOf(DoorMesh.DOOR_STYLES).toExtend<Readonly<Record<keyof DoorMesh.DoorStyles, DoorMesh.DoorStyle>>>();
   });
@@ -61,7 +61,7 @@ describe("DoorMesh Tests", () => {
 
   const myDM = new DoorMesh(constructorOptions);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myDM["_closedPosition"]).toEqualTypeOf<DoorMesh.StateSnapshot>();
     expectTypeOf(myDM["_animatedPosition"]).toEqualTypeOf<DoorMesh.StateSnapshot>();
 

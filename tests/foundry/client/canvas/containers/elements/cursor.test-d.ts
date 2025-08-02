@@ -4,10 +4,10 @@ import Cursor = foundry.canvas.containers.Cursor;
 
 declare const user: User.Implementation;
 
-describe("Cursor Tests", () => {
+describe("Cursor tests", () => {
   const cursor = new Cursor(user);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(cursor.target).toEqualTypeOf<PIXI.IPointData>();
     expectTypeOf(cursor["_updatePosition"]).toBeBoolean();
     expectTypeOf(cursor.updateTransform()).toBeVoid();

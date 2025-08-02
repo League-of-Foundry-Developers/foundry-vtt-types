@@ -48,7 +48,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * @returns Is the test target visible?
    */
   testVisibility(
-    visionSource: PointVisionSource.Any,
+    visionSource: PointVisionSource.Internal.Any,
     mode: TokenDocument.DetectionModeData,
     config: CanvasVisibility.TestConfig,
   ): boolean;
@@ -62,7 +62,10 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * @remarks Will always be passed a `target` when called by {@linkcode testVisibility | DetectionMode#testVisibility}, it just might possibly be `undefined`.
    * All use is gated behind an `instanceof Token` check, so that's fine.
    */
-  protected _canDetect(visionSource: PointVisionSource.Any, target: CanvasVisibility.TestObject | undefined): boolean;
+  protected _canDetect(
+    visionSource: PointVisionSource.Internal.Any,
+    target: CanvasVisibility.TestObject | undefined,
+  ): boolean;
 
   /**
    * Evaluate a single test point to confirm whether it is visible.
@@ -77,7 +80,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * See {@linkcode _canDetect} remarks.
    */
   protected _testPoint(
-    visionSource: PointVisionSource.Any,
+    visionSource: PointVisionSource.Internal.Any,
     mode: TokenDocument.DetectionModeData,
     target: CanvasVisibility.TestObject | undefined,
     test: CanvasVisibility.Test,
@@ -97,7 +100,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * See {@linkcode _canDetect} remarks.
    */
   protected _testLOS(
-    visionSource: PointVisionSource.Any,
+    visionSource: PointVisionSource.Internal.Any,
     mode: TokenDocument.DetectionModeData,
     target: CanvasVisibility.TestObject | undefined,
     test: CanvasVisibility.Test,
@@ -115,7 +118,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * See {@linkcode _canDetect} remarks.
    */
   protected _testAngle(
-    visionSource: PointVisionSource.Any,
+    visionSource: PointVisionSource.Internal.Any,
     mode: TokenDocument.DetectionModeData,
     target: CanvasVisibility.TestObject | undefined,
     test: CanvasVisibility.Test,
@@ -133,7 +136,7 @@ declare class DetectionMode extends DataModel<DetectionMode.Schema> {
    * See {@linkcode _canDetect} remarks.
    */
   protected _testRange(
-    visionSource: PointVisionSource.Any,
+    visionSource: PointVisionSource.Internal.Any,
     mode: TokenDocument.DetectionModeData,
     target: CanvasVisibility.TestObject | undefined,
     test: CanvasVisibility.Test,

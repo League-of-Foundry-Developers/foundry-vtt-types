@@ -6,7 +6,7 @@ import Wall = foundry.canvas.placeables.Wall;
 declare const wall: Wall.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 
-describe("DoorControl Tests", () => {
+describe("DoorControl tests", () => {
   test("Construction", () => {
     // @ts-expect-error A DoorControl requires a wall.
     new DoorControl();
@@ -15,7 +15,7 @@ describe("DoorControl Tests", () => {
 
   const control = new DoorControl(wall);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(control.wall).toEqualTypeOf<Wall.Implementation>();
     expectTypeOf(control.visible).toEqualTypeOf<boolean>();
     expectTypeOf(control.center).toEqualTypeOf<PIXI.Point>();

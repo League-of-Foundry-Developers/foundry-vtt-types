@@ -13,8 +13,16 @@ declare class Items extends foundry.documents.abstract.WorldCollection<"Item", "
 }
 
 declare namespace Items {
-  interface Any extends AnyItems {}
-  interface AnyConstructor extends Identity<typeof AnyItems> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyItems {}
+    interface AnyConstructor extends Identity<typeof AnyItems> {}
+  }
 
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Item"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Item"> {}

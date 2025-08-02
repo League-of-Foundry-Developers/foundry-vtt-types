@@ -5,10 +5,10 @@ import Token = foundry.canvas.placeables.Token;
 
 declare const someToken: Token.Implementation;
 
-describe("PrimaryOccludableObject Tests", () => {
+describe("PrimaryOccludableObject tests", () => {
   const myPOO = new (PrimaryOccludableObjectMixin(PIXI.Container))();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myPOO.hidden).toBeBoolean();
     expectTypeOf(myPOO.occluded).toBeBoolean();
     expectTypeOf(myPOO.occlusionMode).toEqualTypeOf<CONST.OCCLUSION_MODES>();

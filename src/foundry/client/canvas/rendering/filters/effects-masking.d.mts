@@ -94,11 +94,18 @@ declare class VisualEffectsMaskingFilter extends AbstractBaseMaskFilter {
 }
 
 declare namespace VisualEffectsMaskingFilter {
-  interface Any extends AnyVisualEffectsMaskingFilter {}
-  interface AnyConstructor extends Identity<typeof AnyVisualEffectsMaskingFilter> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
 
-  // TODO: This can't be an interface yet because of 'An interface can only extend an object type or intersection of object types with statically known members' errors
-  type ImplementationClass = CONFIG["Canvas"]["visualEffectsMaskingFilter"];
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyVisualEffectsMaskingFilter {}
+    interface AnyConstructor extends Identity<typeof AnyVisualEffectsMaskingFilter> {}
+  }
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["visualEffectsMaskingFilter"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   type PostProcessModes = Array<keyof typeof VisualEffectsMaskingFilter.POST_PROCESS_TECHNIQUES>;

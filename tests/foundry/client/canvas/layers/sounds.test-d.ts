@@ -15,7 +15,7 @@ expectTypeOf(layer.options).toEqualTypeOf<SoundsLayer.LayerOptions>();
 expectTypeOf(layer.options.name).toEqualTypeOf<"sounds">();
 
 expectTypeOf(layer.livePreview).toBeBoolean();
-expectTypeOf(layer.sources).toEqualTypeOf<foundry.utils.Collection<foundry.canvas.sources.PointSoundSource.Any>>();
+expectTypeOf(layer.sources).toEqualTypeOf<Collection<foundry.canvas.sources.PointSoundSource.Internal.Any>>();
 expectTypeOf(layer.hookName).toEqualTypeOf<"SoundsLayer">();
 
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();

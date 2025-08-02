@@ -11,7 +11,7 @@ declare const nullish: null | undefined;
 declare const someToken: Token.Implementation;
 declare const someRenderer: PIXI.Renderer;
 
-describe("PrimarySpriteMesh Tests", () => {
+describe("PrimarySpriteMesh tests", () => {
   test("Construction", () => {
     new PrimarySpriteMesh();
     new PrimarySpriteMesh(someTex);
@@ -38,7 +38,7 @@ describe("PrimarySpriteMesh Tests", () => {
     shaderClass: TokenRingSamplerShader,
   });
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myPSM["_batchData"]).toEqualTypeOf<PrimarySpriteMesh.BatchData>();
     expectTypeOf(myPSM["_textureAlphaData"]).toEqualTypeOf<TextureLoader.TextureAlphaData | null | undefined>();
     expectTypeOf(myPSM.textureAlphaThreshold).toBeNumber();

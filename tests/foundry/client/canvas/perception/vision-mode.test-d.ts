@@ -12,7 +12,7 @@ declare const assignmentShaderField: ShaderField.AssignmentType<ShaderField.Defa
 declare const initializedShaderField: ShaderField.InitializedType<ShaderField.DefaultOptions>;
 declare const visionSource: PointVisionSource.Initialized;
 
-describe("VisionMode Tests", () => {
+describe("VisionMode tests", () => {
   const monochromaticSource = {
     id: "monochromatic",
     label: "VISION.ModeMonochromatic",
@@ -69,7 +69,7 @@ describe("VisionMode Tests", () => {
     expectTypeOf(VisionMode.LIGHTING_LEVELS).toEqualTypeOf<typeof foundry.CONST.LIGHTING_LEVELS>();
   });
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(monochromatic.perceivesLight).toBeBoolean();
 
     expectTypeOf(monochromatic.activate(visionSource)).toBeVoid();

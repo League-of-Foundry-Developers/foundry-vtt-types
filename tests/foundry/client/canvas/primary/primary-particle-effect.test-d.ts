@@ -4,7 +4,7 @@ import PrimaryParticleEffect = foundry.canvas.primary.PrimaryParticleEffect;
 
 declare const emitterConfig: PIXI.particles.EmitterConfigV3;
 
-describe("PrimaryParticleEffect Tests", () => {
+describe("PrimaryParticleEffect tests", () => {
   test("Construction", () => {
     // @ts-expect-error Construction requires an EmitterConfig
     new PrimaryParticleEffect();
@@ -13,7 +13,7 @@ describe("PrimaryParticleEffect Tests", () => {
 
   const myPPE = new PrimaryParticleEffect(emitterConfig);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myPPE.sort).toBeNumber();
     myPPE.sort = 5; // Setter
 

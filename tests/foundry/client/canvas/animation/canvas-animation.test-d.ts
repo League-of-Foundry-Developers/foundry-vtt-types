@@ -11,7 +11,7 @@ declare const somePromise: Promise<void>;
 declare const animationSymbol: unique symbol;
 declare const ping: foundry.canvas.interaction.PulsePing;
 
-describe("CanvasAnimation Tests", () => {
+describe("CanvasAnimation tests", () => {
   const animatedState = {
     darkness: 0,
     color: Color.from(0x123345),
@@ -106,7 +106,7 @@ describe("CanvasAnimation Tests", () => {
     );
   });
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(CanvasAnimation.getAnimation("darknessShift")).toEqualTypeOf<
       CanvasAnimation.AnimationData | undefined
     >;

@@ -1,4 +1,4 @@
-import type { Brand, HandleEmptyObject, Identity } from "#utils";
+import type { Brand, FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
 import type { PrimaryCanvasGroupAmbienceFilter } from "#client/canvas/rendering/filters/_module.d.mts";
 import type { CachedContainer, SpriteMesh } from "#client/canvas/containers/_module.d.mts";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
@@ -13,7 +13,7 @@ import type {
 declare module "#configuration" {
   namespace Hooks {
     interface CanvasGroupConfig {
-      PrimaryCanvasGroup: PrimaryCanvasGroup.Any;
+      PrimaryCanvasGroup: PrimaryCanvasGroup.Implementation;
     }
   }
 }
@@ -21,16 +21,25 @@ declare module "#configuration" {
 /**
  * The primary Canvas group which generally contains tangible physical objects which exist within the Scene.
  * This group is a {@linkcode CachedContainer} which is rendered to the Scene as a {@linkcode SpriteMesh}.
- * This allows the rendered result of the Primary Canvas Group to be affected by a {@linkcode BaseSamplerShader}.
+ * This allows the rendered result of the Primary Canvas Group to be affected by a
+ * {@linkcode foundry.canvas.rendering.shaders.BaseSamplerShader | BaseSamplerShader}.
  */
 declare class PrimaryCanvasGroup<
   DrawOptions extends PrimaryCanvasGroup.DrawOptions = PrimaryCanvasGroup.DrawOptions,
   TearDownOptions extends PrimaryCanvasGroup.TearDownOptions = PrimaryCanvasGroup.TearDownOptions,
 > extends CanvasGroupMixin<typeof CachedContainer, "primary">(CachedContainer)<DrawOptions, TearDownOptions> {
+  // static override groupName is handled by the CanvasGroupMixin type
+
   /**
    * @param sprite - (default: `new SpriteMesh(undefined, BaseSamplerShader)`)
+   * @remarks Because `Canvas##createGroups` passes no arguments, this will always just use the default
    */
   constructor(sprite?: SpriteMesh);
+
+  /**
+   * @defaultValue `"none"`
+   */
+  override eventMode: PIXI.EventMode;
 
   /**
    * Sort order to break ties on the group/layer level.
@@ -50,24 +59,20 @@ declare class PrimaryCanvasGroup<
   static override textureConfiguration: CachedContainer.TextureConfiguration;
 
   /**
-   * @defaultValue `"none"`
-   */
-  override eventMode: PIXI.EventMode;
-
-  /**
    * @defaultValue `[0, 0, 0, 0]`
    */
   override clearColor: Color.RGBAColorVector;
 
   /**
    * The background color in RGB.
+   * @internal
    */
-  _backgroundColor: Color.RGBColorVector | undefined;
+  protected _backgroundColor: Color.RGBColorVector | undefined;
 
   /**
    * Track the set of HTMLVideoElements which are currently playing as part of this group.
    */
-  videoMeshes: Set<SpriteMesh>;
+  videoMeshes: Set<PrimarySpriteMesh.Any>;
 
   /**
    * Occludable objects above this elevation are faded on hover.
@@ -78,18 +83,21 @@ declare class PrimaryCanvasGroup<
   /**
    * Allow API users to override the default elevation of the background layer.
    * This is a temporary solution until more formal support for scene levels is added in a future release.
+   * @defaultValue `0`
    */
   static BACKGROUND_ELEVATION: number;
 
   /**
    * The primary background image configured for the Scene, rendered as a SpriteMesh.
+   * @remarks Only `undefined` prior to first draw
    */
-  background: SpriteMesh | undefined;
+  background: PrimarySpriteMesh | undefined;
 
   /**
    * The primary foreground image configured for the Scene, rendered as a SpriteMesh.
+   * @remarks Only `undefined` prior to first draw
    */
-  foreground: SpriteMesh | undefined;
+  foreground: PrimarySpriteMesh | undefined;
 
   /**
    * A Quadtree which partitions and organizes primary canvas objects.
@@ -98,7 +106,6 @@ declare class PrimaryCanvasGroup<
 
   /**
    * The collection of PrimaryDrawingContainer objects which are rendered in the Scene.
-   * @privateRemarks Foundry types this as `Collection<PrimaryDrawingContainer>`, which doesn't exist. It's `PrimaryGraphics` in practice.
    */
   drawings: Collection<PrimaryGraphics>;
 
@@ -116,18 +123,17 @@ declare class PrimaryCanvasGroup<
 
   /**
    * The ambience filter which is applying post-processing effects.
+   * @internal
    */
-  _ambienceFilter: PrimaryCanvasGroupAmbienceFilter | undefined;
+  protected _ambienceFilter: PrimaryCanvasGroupAmbienceFilter | undefined;
 
   /**
    * Return the base HTML image or video element which provides the background texture.
-   * @privateRemarks Foundry does not indicate the possibility of a null return
    */
   get backgroundSource(): HTMLImageElement | HTMLVideoElement | null;
 
   /**
    * Return the base HTML image or video element which provides the foreground texture.
-   * @privateRemarks Foundry does not indicate the possibility of a null return
    */
   get foregroundSource(): HTMLImageElement | HTMLVideoElement | null;
 
@@ -143,7 +149,7 @@ declare class PrimaryCanvasGroup<
 
   protected override _draw(options: HandleEmptyObject<DrawOptions>): Promise<void>;
 
-  protected override _render(_renderer: PIXI.Renderer): void;
+  protected override _render(renderer: PIXI.Renderer): void;
 
   protected override _tearDown(options: HandleEmptyObject<TearDownOptions>): Promise<void>;
 
@@ -188,32 +194,53 @@ declare class PrimaryCanvasGroup<
 
   /**
    * Override the default PIXI.Container behavior for how objects in this container are sorted.
-   * @remarks Actually an override of `PIXI.Container#sortChildren`
    */
-  sortChildren(): void;
+  override sortChildren(): void;
+
+  /**
+   * The sorting function used to order objects inside the Primary Canvas Group.
+   * Overrides the default sorting function defined for the PIXI.Container.
+   * Sort Tokens PCO above other objects except WeatherEffects, then Drawings PCO, all else held equal.
+   * @param a - An object to display
+   * @param b - Some other object to display
+   * @internal
+   */
+  protected static _compareObjects(
+    a: PrimaryCanvasObjectMixin.AnyMixed | PIXI.DisplayObject,
+    b: PrimaryCanvasObjectMixin.AnyMixed | PIXI.DisplayObject,
+  ): number;
 
   /**
    * Handle mousemove events on the primary group to update the hovered state of its children.
-   * @remarks Foundry marked `@internal`
+   * @param currentPos    - Current mouse position
+   * @param hasMouseMoved - Has the mouse been moved (or it is a simulated mouse move event)?
+   * @internal
    */
-  _onMouseMove(): void;
+  protected _onMouseMove(currentPos: PIXI.Point, hasMouseMoved: boolean): void;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks `"PrimaryCanvasGroup#mapElevationAlpha is deprecated. Use canvas.masks.depth.mapElevation(elevation) instead."`
+   * @deprecated "`PrimaryCanvasGroup#mapElevationAlpha` is deprecated. Use {@linkcode foundry.canvas.layers.CanvasDepthMask.mapElevation | canvas.masks.depth.mapElevation(elevation)}
+   * instead." (since v12, until v14)
    */
   mapElevationToDepth(elevation: number): number;
 
-  /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "PrimaryCanvasGroup#mapElevationAlpha is deprecated in favor of PrimaryCanvasGroup#mapElevationToDepth"
-   */
-  mapElevationAlpha(elevation: number): number;
+  #PrimaryCanvasGroup: true;
 }
 
 declare namespace PrimaryCanvasGroup {
-  interface Any extends AnyPrimaryCanvasGroup {}
-  interface AnyConstructor extends Identity<typeof AnyPrimaryCanvasGroup> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyPrimaryCanvasGroup {}
+    interface AnyConstructor extends Identity<typeof AnyPrimaryCanvasGroup> {}
+  }
+
+  interface ImplementationClass extends Identity<typeof CONFIG.Canvas.groups.primary.groupClass> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface DrawOptions extends CanvasGroupMixin.DrawOptions {}
 

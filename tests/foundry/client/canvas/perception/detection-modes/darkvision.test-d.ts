@@ -8,7 +8,7 @@ import Token = foundry.canvas.placeables.Token;
 declare const visionSource: PointVisionSource.Initialized;
 declare const token: Token.Implementation;
 
-describe("DetectionModeDarkvision Tests", () => {
+describe("DetectionModeDarkvision tests", () => {
   const source = {
     id: "foo",
     label: "bar",

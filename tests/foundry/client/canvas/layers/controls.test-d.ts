@@ -103,17 +103,17 @@ expectTypeOf(layer["_findViewportIntersection"](somePoint)).toEqualTypeOf<{
 }>();
 
 Hooks.on("drawControlsLayer", (layer) => {
-  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Any>();
+  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Implementation>();
 });
 
 Hooks.on("tearDownControlsLayer", (layer) => {
-  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Any>();
+  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Implementation>();
 });
 
 Hooks.on("activateControlsLayer", (layer) => {
-  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Any>();
+  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Implementation>();
 });
 
 Hooks.on("deactivateControlsLayer", (layer) => {
-  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Any>();
+  expectTypeOf(layer).toEqualTypeOf<ControlsLayer.Implementation>();
 });
