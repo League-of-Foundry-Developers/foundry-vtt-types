@@ -1,4 +1,4 @@
-import { assertType, expectTypeOf } from "vitest";
+import { assertType, expectTypeOf, test } from "vitest";
 import type { GetDataReturnType, MaybePromise } from "fvtt-types/utils";
 
 import FormApplication = foundry.appv1.api.FormApplication;
@@ -20,11 +20,46 @@ expectTypeOf(formApplication.form).toEqualTypeOf<HTMLElement | null>();
 expectTypeOf(formApplication.editors).toEqualTypeOf<Record<string, FormApplication.FormApplicationEditor>>();
 
 const app = new (class extends FormApplication<{ foo: string }, FormApplication.Options> {
-  protected _updateObject(): Promise<unknown> {
-    return Promise.resolve(undefined);
+  protected async _updateObject(): Promise<unknown> {
+    return undefined;
   }
 })({ foo: "bar" });
 
 assertType<Application>(app);
 expectTypeOf(app.isEditable).toEqualTypeOf<boolean>();
 expectTypeOf(app.object).toEqualTypeOf<{ foo: string }>();
+
+test("unset object optional", () => {
+  class DefaultApplication extends FormApplication {
+    protected async _updateObject(): Promise<unknown> {
+      return undefined;
+    }
+  }
+
+  // `unknown` object should allow passing no arguments.
+  new DefaultApplication();
+});
+
+test("set object required", () => {
+  class SetApplication extends FormApplication<{ foo: 123 | 456 }> {
+    protected async _updateObject(): Promise<unknown> {
+      return undefined;
+    }
+  }
+
+  // @ts-expect-error - `object` should now be required.
+  new SetApplication();
+
+  new SetApplication({ foo: 123 });
+});
+
+test("undefined object optional", () => {
+  class MaybeSetApplication extends FormApplication<{ foo: 123 | 456 } | undefined> {
+    protected async _updateObject(): Promise<unknown> {
+      return undefined;
+    }
+  }
+
+  new MaybeSetApplication();
+  new MaybeSetApplication({ foo: 123 });
+});

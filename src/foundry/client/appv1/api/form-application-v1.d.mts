@@ -246,7 +246,7 @@ declare namespace FormApplication {
     // See {@linkcode HandleEmptyObject} for more information.
     (<T>() => T extends FormApplication.NoObject ? 1 : 0) extends <T>() => T extends ConcreteObject ? 1 : 0
       ? [object?: ConcreteObject, options?: Partial<Options>]
-      : [ConcreteObject] extends [undefined]
+      : undefined extends ConcreteObject
         ? [object?: ConcreteObject, options?: Partial<Options>]
         : [object: ConcreteObject, options?: Partial<Options>];
 
