@@ -21,7 +21,7 @@ declare global {
   }
 }
 
-describe("CanvasVisibility Tests", () => {
+describe("CanvasVisibility tests", () => {
   test("Group name", () => {
     expectTypeOf(CanvasVisibility.groupName).toEqualTypeOf<"visibility">();
   });
@@ -33,7 +33,7 @@ describe("CanvasVisibility Tests", () => {
 
   const myVisibilityGroup = new CONFIG.Canvas.groups.visibility.groupClass();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myVisibilityGroup.vision).toEqualTypeOf<layers.CanvasVisionMask.CanvasVisionContainer | undefined>();
     expectTypeOf(myVisibilityGroup.explored).toEqualTypeOf<PIXI.Container | undefined>();
     expectTypeOf(myVisibilityGroup.visibilityOverlay).toEqualTypeOf<PIXI.Sprite | undefined>();

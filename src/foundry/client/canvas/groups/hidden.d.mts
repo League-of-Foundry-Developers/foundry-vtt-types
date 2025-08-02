@@ -51,8 +51,16 @@ declare class HiddenCanvasGroup<
 }
 
 declare namespace HiddenCanvasGroup {
-  interface Any extends AnyHiddenCanvasGroup {}
-  interface AnyConstructor extends Identity<typeof AnyHiddenCanvasGroup> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyHiddenCanvasGroup {}
+    interface AnyConstructor extends Identity<typeof AnyHiddenCanvasGroup> {}
+  }
 
   interface ImplementationClass extends Identity<typeof CONFIG.Canvas.groups.hidden.groupClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}

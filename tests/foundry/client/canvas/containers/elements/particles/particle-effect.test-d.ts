@@ -2,7 +2,7 @@ import { describe, expectTypeOf, test } from "vitest";
 
 import ParticleEffect = foundry.canvas.containers.ParticleEffect;
 
-describe("ParticleEffect Tests", () => {
+describe("ParticleEffect tests", () => {
   const emitterConfig = {
     lifetime: { max: 5, min: 5 },
     frequency: 3,
@@ -20,7 +20,7 @@ describe("ParticleEffect Tests", () => {
 
   const myEffect = new ParticleEffect(emitterConfig);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myEffect.emitters).toEqualTypeOf<PIXI.particles.Emitter[]>();
 
     expectTypeOf(myEffect.createEmitter(emitterConfig)).toEqualTypeOf<PIXI.particles.Emitter>();

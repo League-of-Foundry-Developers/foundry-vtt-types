@@ -7,7 +7,7 @@ declare const rect: Canvas.Rectangle;
 declare const nullish: null | undefined;
 declare const federatedPointerEvent: PIXI.FederatedEvent<PointerEvent>;
 
-describe("ResizeHandle Tests", () => {
+describe("ResizeHandle tests", () => {
   test("Construction", () => {
     // @ts-expect-error must pass offsets
     new ResizeHandle();
@@ -18,7 +18,7 @@ describe("ResizeHandle Tests", () => {
 
   const myResizeHandle = new ResizeHandle([2, 3], { canDrag: () => true });
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myResizeHandle.offset).toEqualTypeOf<[number, number]>();
     expectTypeOf(myResizeHandle.handlers.canDrag).toEqualTypeOf<(() => boolean) | undefined>();
     expectTypeOf(myResizeHandle.refresh({ x: 50, y: 70, height: 200, width: 545 })).toBeVoid();

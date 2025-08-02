@@ -4,7 +4,7 @@ import PreciseText = foundry.canvas.containers.PreciseText;
 
 declare const someCanvas: PIXI.ICanvas;
 
-describe("PreciseText Tests", () => {
+describe("PreciseText tests", () => {
   test("TextStyle generation", () => {
     expectTypeOf(PreciseText.getTextStyle({ anchor: undefined })).toEqualTypeOf<PIXI.TextStyle>();
     PreciseText.getTextStyle({
@@ -35,7 +35,7 @@ describe("PreciseText Tests", () => {
 
   const myPreciseText = new PreciseText("Some Text!", textStyle, someCanvas);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myPreciseText._autoResolution).toEqualTypeOf<boolean>();
     expectTypeOf(myPreciseText._resolution).toEqualTypeOf<number>();
   });

@@ -21,7 +21,7 @@ declare const drawing: Drawing.Implementation;
 declare const pixiPoint: PIXI.Point;
 declare const renderer: PIXI.Renderer;
 
-describe("PrimaryCanvasGroup Tests", () => {
+describe("PrimaryCanvasGroup tests", () => {
   test("Construction", () => {
     new PrimaryCanvasGroup();
     new CONFIG.Canvas.groups.primary.groupClass();
@@ -36,7 +36,7 @@ describe("PrimaryCanvasGroup Tests", () => {
 
   const myPrimaryGroup = new CONFIG.Canvas.groups.primary.groupClass();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(PrimaryCanvasGroup.tearDownChildren).toEqualTypeOf<boolean>();
 
     expectTypeOf(myPrimaryGroup.eventMode).toEqualTypeOf<PIXI.EventMode>();

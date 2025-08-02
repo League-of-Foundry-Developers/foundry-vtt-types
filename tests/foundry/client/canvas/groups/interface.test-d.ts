@@ -8,7 +8,7 @@ import layers = foundry.canvas.layers;
 
 declare const someDrawing: Drawing.Implementation;
 
-describe("InterfaceCanvasGroup Tests", () => {
+describe("InterfaceCanvasGroup tests", () => {
   test("Group name", () => {
     expectTypeOf(InterfaceCanvasGroup.groupName).toEqualTypeOf<"interface">();
   });
@@ -20,7 +20,7 @@ describe("InterfaceCanvasGroup Tests", () => {
 
   const myInterfaceGroup = new CONFIG.Canvas.groups.interface.groupClass();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myInterfaceGroup.addDrawing(someDrawing)).toEqualTypeOf<PIXI.Graphics>();
     expectTypeOf(myInterfaceGroup.removeDrawing(someDrawing)).toEqualTypeOf<void>();
 
@@ -56,7 +56,7 @@ describe("InterfaceCanvasGroup Tests", () => {
     expectTypeOf(myInterfaceGroup.sounds).toEqualTypeOf<layers.SoundsLayer.Any>();
     expectTypeOf(myInterfaceGroup.lighting).toEqualTypeOf<layers.LightingLayer.Any>();
     expectTypeOf(myInterfaceGroup.notes).toEqualTypeOf<layers.NotesLayer.Any>();
-    expectTypeOf(myInterfaceGroup.controls).toEqualTypeOf<layers.ControlsLayer.Any>();
+    expectTypeOf(myInterfaceGroup.controls).toEqualTypeOf<layers.ControlsLayer.Implementation>();
   });
 
   test("Child groups", () => {

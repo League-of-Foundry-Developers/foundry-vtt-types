@@ -76,8 +76,16 @@ declare class EnvironmentCanvasGroup<
 }
 
 declare namespace EnvironmentCanvasGroup {
-  interface Any extends AnyEnvironmentCanvasGroup {}
-  interface AnyConstructor extends Identity<typeof AnyEnvironmentCanvasGroup> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyEnvironmentCanvasGroup {}
+    interface AnyConstructor extends Identity<typeof AnyEnvironmentCanvasGroup> {}
+  }
 
   interface ImplementationClass extends Identity<typeof CONFIG.Canvas.groups.environment.groupClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
@@ -92,8 +100,8 @@ declare namespace EnvironmentCanvasGroup {
      * @remarks Only `undefined` prior to {@linkcode EnvironmentCanvasGroup.initialize | initialization}.
      *
      * Once initialized, the default value is {@linkcode CONFIG.Canvas.darknessColor}`?? EnvironmentCanvasGroup.#fallbackColors.darknessColor`.
-     * Inexplicably, Foundry provides different values for these, so were you to `delete CONFIG.Canvas.darknessColor` for whatever reason, the
-     * default would be `0x242448` instead of `0x303030`.
+     * Foundry provides different values for these, so if `CONFIG.Canvas.darknessColor` becomes nullish for whatever reason, the default would
+     * be `0x242448` instead of `0x303030`.
      */
     ambientDarkness: Color | undefined;
 
@@ -103,15 +111,14 @@ declare namespace EnvironmentCanvasGroup {
      * Once initialized, the default value if the current scene has token vision enabled is {@linkcode CONFIG.Canvas.daylightColor}
      * `?? EnvironmentCanvasGroup.#fallbackColors.daylightColor`, both of which are `0xEEEEE`. If token vision is disabled, then
      * the default is `0xFFFFFF`
-     *
      */
     ambientDaylight: Color | undefined;
 
     /**
      * @remarks Only `undefined` prior to {@linkcode EnvironmentCanvasGroup.initialize | initialization}.
      *
-     * Once initialized, the default value  is {@linkcode CONFIG.Canvas.brightestColor}` ?? EnvironmentCanvasGroup.#fallbackColors.daylightColor`,
-     * both of which are `0xFFFFFF`.
+     * Once initialized, the default value is {@linkcode CONFIG.Canvas.brightestColor}` ?? EnvironmentCanvasGroup.#fallbackColors.daylightColor`,
+     * both of which are `0xFFFFFF` (the `CONFIG` property by default, the fallback always).
      */
     ambientBrightest: Color | undefined;
 
@@ -248,7 +255,7 @@ declare namespace EnvironmentCanvasGroup {
      * @defaultValue `{}`
      * @remarks Default applied during destructuring assignment inside {@linkcode EnvironmentCanvasGroup.initialize | #initialize}
      *
-     * Any values not provided will be filled in via mergeObject with this as the `original` and `canvas.scene.toObject().environment`
+     * Any values not provided will be filled in via {@linkcode foundry.utils.mergeObject} with this as the `original` and `canvas.scene.toObject().environment`
      * as the `other`, with `overwrite: false`, so values here should not be `undefined` unless otherwise allowed by the Scene schema.
      */
     environment: DeepPartial<Scene.EnvironmentData>;

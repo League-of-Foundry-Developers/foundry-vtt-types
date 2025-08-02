@@ -48,7 +48,7 @@ describe("PulsePing", () => {
     },
   );
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myPulsePing.options).toEqualTypeOf<PulsePing.ConstructorOptions>();
   });
 

@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-describe("RenderedCanvasGroup Tests", () => {
+describe("RenderedCanvasGroup tests", () => {
   test("Group name", () => {
     expectTypeOf(RenderedCanvasGroup.groupName).toEqualTypeOf<"rendered">();
   });
@@ -24,7 +24,7 @@ describe("RenderedCanvasGroup Tests", () => {
 
   const myRenderedGroup = new CONFIG.Canvas.groups.rendered.groupClass();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(RenderedCanvasGroup.tearDownChildren).toBeBoolean();
   });
 

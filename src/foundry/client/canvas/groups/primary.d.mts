@@ -228,8 +228,16 @@ declare class PrimaryCanvasGroup<
 }
 
 declare namespace PrimaryCanvasGroup {
-  interface Any extends AnyPrimaryCanvasGroup {}
-  interface AnyConstructor extends Identity<typeof AnyPrimaryCanvasGroup> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyPrimaryCanvasGroup {}
+    interface AnyConstructor extends Identity<typeof AnyPrimaryCanvasGroup> {}
+  }
 
   interface ImplementationClass extends Identity<typeof CONFIG.Canvas.groups.primary.groupClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}

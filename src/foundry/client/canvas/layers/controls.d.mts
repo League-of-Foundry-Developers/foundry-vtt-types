@@ -9,7 +9,7 @@ import type { Ping, Ruler } from "#client/canvas/interaction/_module.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface InteractionLayerConfig {
-      ControlsLayer: ControlsLayer.Any;
+      ControlsLayer: ControlsLayer.Implementation;
     }
   }
 }
@@ -235,11 +235,19 @@ declare class ControlsLayer extends InteractionLayer {
 }
 
 declare namespace ControlsLayer {
-  interface Any extends AnyControlsLayer {}
-  interface AnyConstructor extends Identity<typeof AnyControlsLayer> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
 
-  type ImplementationClass = CONFIG["Canvas"]["layers"]["controls"]["layerClass"];
-  type Implementation = FixedInstanceType<ImplementationClass>;
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyControlsLayer {}
+    interface AnyConstructor extends Identity<typeof AnyControlsLayer> {}
+  }
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["controls"]["layerClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface DrawOptions extends InteractionLayer.DrawOptions {}
 

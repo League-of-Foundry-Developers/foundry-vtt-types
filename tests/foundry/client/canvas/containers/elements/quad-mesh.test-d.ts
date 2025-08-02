@@ -6,10 +6,10 @@ import BaseSamplerShader = foundry.canvas.rendering.shaders.BaseSamplerShader;
 
 declare const renderer: PIXI.Renderer;
 
-describe("QuadMesh Tests", () => {
+describe("QuadMesh tests", () => {
   const myQM = new QuadMesh(BaseSamplerShader);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myQM.shader).toEqualTypeOf<AbstractBaseShader>();
 
     expectTypeOf(myQM.blendMode).toEqualTypeOf<PIXI.BLEND_MODES>();

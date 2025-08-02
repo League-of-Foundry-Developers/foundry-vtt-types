@@ -4,8 +4,8 @@ import FullCanvasObjectMixin = foundry.canvas.containers.FullCanvasObjectMixin;
 
 class MyFullCanvasContainer extends FullCanvasObjectMixin(PIXI.Container) {}
 
-describe("FullCanvasObjectMixin Tests", () => {
-  test("Uncategorized", () => {
+describe("FullCanvasObjectMixin tests", () => {
+  test("Miscellaneous", () => {
     const myFullCanvasContainer = new MyFullCanvasContainer();
 
     expectTypeOf(myFullCanvasContainer.calculateBounds()).toEqualTypeOf<void>();

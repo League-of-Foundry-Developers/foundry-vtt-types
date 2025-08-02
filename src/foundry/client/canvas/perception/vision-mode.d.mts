@@ -105,25 +105,25 @@ declare class VisionMode extends DataModel<
    * Special activation handling that could be implemented by `VisionMode` subclasses
    * @param source - Activate this `VisionMode` for a specific source
    */
-  protected _activate(source: PointVisionSource.Any): void;
+  protected _activate(source: PointVisionSource.Internal.Any): void;
 
   /**
    * Special deactivation handling that could be implemented by `VisionMode` subclasses
    * @param source - Deactivate this `VisionMode` for a specific source
    */
-  protected _deactivate(source: PointVisionSource.Any): void;
+  protected _deactivate(source: PointVisionSource.Internal.Any): void;
 
   /**
    * Special handling which is needed when this Vision Mode is activated for a VisionSource.
    * @param source - Activate this `VisionMode` for a specific source
    */
-  activate(source: PointVisionSource.Any): void;
+  activate(source: PointVisionSource.Internal.Any): void;
 
   /**
    * Special handling which is needed when this Vision Mode is deactivated for a VisionSource.
    * @param source - Deactivate this `VisionMode` for a specific source
    */
-  deactivate(source: PointVisionSource.Any): void;
+  deactivate(source: PointVisionSource.Internal.Any): void;
 
   /**
    * An animation function which runs every frame while this Vision Mode is active.

@@ -4,9 +4,9 @@ import PrimaryCanvasContainer = foundry.canvas.primary.PrimaryCanvasContainer;
 
 declare const renderer: PIXI.Renderer;
 
-describe("PrimaryCanvasContainer Tests", () => {
+describe("PrimaryCanvasContainer tests", () => {
   const myPCC = new PrimaryCanvasContainer();
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myPCC.sort).toBeNumber();
     myPCC.sort = 5; // Setter
 

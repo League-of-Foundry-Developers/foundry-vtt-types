@@ -27,8 +27,16 @@ declare class OverlayCanvasGroup<
 }
 
 declare namespace OverlayCanvasGroup {
-  interface Any extends AnyOverlayCanvasGroup {}
-  interface AnyConstructor extends Identity<typeof AnyOverlayCanvasGroup> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyOverlayCanvasGroup {}
+    interface AnyConstructor extends Identity<typeof AnyOverlayCanvasGroup> {}
+  }
 
   interface ImplementationClass extends Identity<typeof CONFIG.Canvas.groups.overlay.groupClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}

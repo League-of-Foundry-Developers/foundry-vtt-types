@@ -15,7 +15,7 @@ declare global {
 declare const graphics: PIXI.LegacyGraphics;
 declare const occlusionMask: layers.CanvasOcclusionMask;
 
-describe("HiddenCanvasGroup Tests", () => {
+describe("HiddenCanvasGroup tests", () => {
   test("Group name", () => {
     expectTypeOf(HiddenCanvasGroup.groupName).toEqualTypeOf<"hidden">();
   });
@@ -27,7 +27,7 @@ describe("HiddenCanvasGroup Tests", () => {
 
   const myHiddenGroup = new CONFIG.Canvas.groups.hidden.groupClass();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myHiddenGroup.eventMode).toEqualTypeOf<PIXI.EventMode>();
     expectTypeOf(myHiddenGroup["_draw"]({})).toEqualTypeOf<Promise<void>>();
     expectTypeOf(myHiddenGroup["_tearDown"]({})).toEqualTypeOf<Promise<void>>();

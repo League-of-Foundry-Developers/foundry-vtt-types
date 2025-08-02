@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-describe("EnvironmentCanvasGroup Tests", () => {
+describe("EnvironmentCanvasGroup tests", () => {
   test("Group name", () => {
     expectTypeOf(EnvironmentCanvasGroup.groupName).toEqualTypeOf<"environment">();
   });
@@ -26,7 +26,7 @@ describe("EnvironmentCanvasGroup Tests", () => {
 
   const myEnvironmentGroup = new CONFIG.Canvas.groups.environment.groupClass();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(EnvironmentCanvasGroup.tearDownChildren).toBeBoolean();
 
     expectTypeOf(myEnvironmentGroup.eventMode).toEqualTypeOf<PIXI.EventMode>();

@@ -76,11 +76,19 @@ declare class DoorControl extends PIXI.Container {
 }
 
 declare namespace DoorControl {
-  interface Any extends AnyDoorControl {}
-  interface AnyConstructor extends Identity<typeof AnyDoorControl> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
 
-  type ImplementationClass = CONFIG["Canvas"]["doorControlClass"];
-  type Implementation = FixedInstanceType<ImplementationClass>;
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyDoorControl {}
+    interface AnyConstructor extends Identity<typeof AnyDoorControl> {}
+  }
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["doorControlClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   /**
    * @deprecated Replaced by {@linkcode DoorControl.ImplementationClass}.

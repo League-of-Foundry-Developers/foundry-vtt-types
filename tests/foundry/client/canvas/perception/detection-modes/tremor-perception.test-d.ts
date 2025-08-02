@@ -9,7 +9,7 @@ import OutlineOverlayFilter = foundry.canvas.rendering.filters.OutlineOverlayFil
 declare const visionSource: PointVisionSource.Initialized;
 declare const token: Token.Implementation;
 
-describe("DetectionModeTremor Tests", () => {
+describe("DetectionModeTremor tests", () => {
   const source = {
     id: "foo",
     label: "bar",

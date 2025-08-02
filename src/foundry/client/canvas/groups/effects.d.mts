@@ -52,21 +52,21 @@ declare class EffectsCanvasGroup<
    * @remarks Foundry always initializes prior to adding to this collection
    */
   // TODO: Make .InitializedImplementation when https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3438 is completed
-  lightSources: Collection<sources.PointLightSource.Any>;
+  lightSources: Collection<sources.PointLightSource.Internal.Any>;
 
   /**
    * A mapping of darkness sources which are active within the rendered Scene.
    * @remarks Foundry always initializes prior to adding to this collection
    */
   // TODO: Make .InitializedImplementation
-  darknessSources: Collection<sources.PointDarknessSource.Any>;
+  darknessSources: Collection<sources.PointDarknessSource.Internal.Any>;
 
   /**
    * A Collection of vision sources which are currently active within the rendered Scene.
    * @remarks Foundry always initializes prior to adding to this collection
    */
   // TODO: Make .InitializedImplementation
-  visionSources: Collection<sources.PointVisionSource.Any>;
+  visionSources: Collection<sources.PointVisionSource.Internal.Any>;
 
   /**
    * A set of vision mask filters used in visual effects group
@@ -77,7 +77,11 @@ declare class EffectsCanvasGroup<
    * Iterator for all light and darkness sources.
    */
   // TODO: Make .InitializedImplementation
-  allSources(): Generator<sources.PointDarknessSource.Any | sources.PointLightSource.Any, void, undefined>;
+  allSources(): Generator<
+    sources.PointDarknessSource.Internal.Any | sources.PointLightSource.Internal.Any,
+    void,
+    undefined
+  >;
 
   /**
    * @remarks `EffectsCanvasGroup` doesn't use the same dynamic layer property assignment as other groups, instead this returns
@@ -148,7 +152,6 @@ declare class EffectsCanvasGroup<
   /**
    * Test whether the point is inside light.
    * @param point   - The point to test.
-   * @param options -
    * @returns Is inside light?
    */
   testInsideLight(point: Canvas.ElevatedPoint, options?: EffectsCanvasGroup.TestInsideLightOptions): boolean;
@@ -165,7 +168,6 @@ declare class EffectsCanvasGroup<
   /**
    * Test whether the point is inside darkness.
    * @param point   - The point to test.
-   * @param options -
    * @returns Is inside darkness?
    */
   testInsideDarkness(point: Canvas.ElevatedPoint, options?: EffectsCanvasGroup.TestInsideDarknessOptions): boolean;
@@ -267,8 +269,16 @@ declare class EffectsCanvasGroup<
 }
 
 declare namespace EffectsCanvasGroup {
-  interface Any extends AnyEffectsCanvasGroup {}
-  interface AnyConstructor extends Identity<typeof AnyEffectsCanvasGroup> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyEffectsCanvasGroup {}
+    interface AnyConstructor extends Identity<typeof AnyEffectsCanvasGroup> {}
+  }
 
   interface ImplementationClass extends Identity<typeof CONFIG.Canvas.groups.effects.groupClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
@@ -277,7 +287,7 @@ declare namespace EffectsCanvasGroup {
   type _TestInsideLightOptions = InexactPartial<{
     /** Optional condition a source must satisfy in order to be tested. */
     // TODO: Make .InitializedImplementation
-    condition: (source: sources.PointLightSource.Any | sources.GlobalLightSource.Any) => boolean;
+    condition: (source: sources.PointLightSource.Internal.Any | sources.GlobalLightSource.Any) => boolean;
   }>;
 
   interface TestInsideLightOptions extends _TestInsideLightOptions {}
@@ -286,7 +296,7 @@ declare namespace EffectsCanvasGroup {
   type _TestInsideDarknessOptions = InexactPartial<{
     /** Optional condition a source must satisfy in order to be tested. */
     // TODO: Make .InitializedImplementation
-    condition: (source: sources.PointDarknessSource.Any) => boolean;
+    condition: (source: sources.PointDarknessSource.Internal.Any) => boolean;
   }>;
 
   interface TestInsideDarknessOptions extends _TestInsideLightOptions {}
@@ -309,8 +319,7 @@ declare namespace EffectsCanvasGroup {
   /**
    * @remarks {@linkcode EffectsCanvasGroup} overrides {@linkcode CanvasGroupMixin.AnyMixed._createLayers | #_createLayers},
    * returning a predefined object rather than something built from `CONFIG`. The layer classes are constructed by name,
-   * with no ability to override or extend by users.
-   * @privateRemarks ... which is why `.Any` is not used here
+   * with no ability to override or extend by users, which is why `.Any` is not used here
    */
   interface Layers {
     /** A layer of background alteration effects which change the appearance of the primary group render texture. */

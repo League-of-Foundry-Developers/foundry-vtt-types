@@ -2,7 +2,7 @@ import { describe, expectTypeOf, test } from "vitest";
 import { ArrowPing } from "#client/canvas/interaction/_module.mjs";
 
 declare const someGraphics: PIXI.Graphics;
-describe("ArrowPing Tests", () => {
+describe("ArrowPing tests", () => {
   test("Construction", () => {
     // @ts-expect-error Must pass an origin
     new ArrowPing();

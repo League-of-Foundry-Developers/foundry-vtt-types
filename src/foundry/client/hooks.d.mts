@@ -1030,11 +1030,6 @@ export interface AllHooks extends DynamicHooks {
     app: foundry.applications.ui.Hotbar,
     contextOptions: ContextMenu.Entry<HTMLElement>[],
   ) => void;
-
-  /**
-   * @deprecated Removed without replacement in v13. This warning will be removed in v14.
-   */
-  initializeDarknessSources: (group: never) => never;
 }
 
 declare global {

@@ -1,4 +1,4 @@
-import type { FixedInstanceType, HandleEmptyObject, Identity, InexactPartial, IntentionalPartial } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity, InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PreciseText } from "#client/canvas/containers/_module.mjs";
 import type { CanvasGroupMixin } from "#client/canvas/groups/_module.d.mts";
@@ -55,8 +55,16 @@ declare class InterfaceCanvasGroup<
 }
 
 declare namespace InterfaceCanvasGroup {
-  interface Any extends AnyInterfaceCanvasGroup {}
-  interface AnyConstructor extends Identity<typeof AnyInterfaceCanvasGroup> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyInterfaceCanvasGroup {}
+    interface AnyConstructor extends Identity<typeof AnyInterfaceCanvasGroup> {}
+  }
 
   interface ImplementationClass extends Identity<typeof CONFIG.Canvas.groups.interface.groupClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
@@ -94,11 +102,10 @@ declare namespace InterfaceCanvasGroup {
      */
     duration: number;
   }> &
-    /*
-     * Additional parameters of PIXI.TextStyle which are applied to the text
-     * Excess keys are collected as `{...textStyle}` and passed to {@linkcode PreciseText.getTextStyle} which checks for `!== undefined`, so this can't be NullishProps
-     */
-    IntentionalPartial<PIXI.ITextStyle>;
+    // Additional parameters of PIXI.TextStyle which are applied to the text
+    // Excess keys are collected as `{...textStyle}` and passed to {@linkcode PreciseText.getTextStyle} which checks for `!== undefined`,
+    // so this doesn't fall under the usual 'no InexactPartial on external interfaces' rule
+    InexactPartial<PIXI.ITextStyle>;
 
   interface CreateScrollingTextOptions extends _CreateScrollingTextOptions {}
 

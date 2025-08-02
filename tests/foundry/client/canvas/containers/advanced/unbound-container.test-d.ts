@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, test } from "vitest";
 
-describe("UnboundContainer Tests", () => {
+describe("UnboundContainer tests", () => {
   // OverlayCanvasGroup is the only class extending UnboundContainer in core
   const myOverlayGroup = new CONFIG.Canvas.groups.overlay.groupClass();
   const myTransform = new PIXI.Transform();

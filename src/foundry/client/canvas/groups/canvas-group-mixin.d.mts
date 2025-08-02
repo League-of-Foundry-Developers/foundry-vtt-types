@@ -114,7 +114,7 @@ type ApplyGroup<
 declare function CanvasGroupMixin<
   BaseClass extends CanvasGroupMixin.BaseClass,
   // In `_createLayers` the code assigns top level properties to the class.
-  // This is why the Group type param exists.`
+  // This is why the Group type param exists.
   Group extends CanvasGroupMixin.ConfiguredGroupNames | NoLayerGroup = NoLayerGroup,
 >(ContainerClass: BaseClass): CanvasGroupMixin.Mix<BaseClass, Group>;
 

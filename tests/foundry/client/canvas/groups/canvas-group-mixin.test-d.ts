@@ -9,7 +9,7 @@ class FakePrimaryGroup<
   TearDownOptions extends PrimaryCanvasGroup.TearDownOptions = PrimaryCanvasGroup.TearDownOptions,
 > extends CanvasGroupMixin<typeof PIXI.Container, "primary">(PIXI.Container)<DrawOptions, TearDownOptions> {}
 
-describe("CanvasGroupMixin Tests", () => {
+describe("CanvasGroupMixin tests", () => {
   test("Statics", () => {
     expectTypeOf(FakePrimaryGroup.groupName).toExtend<keyof CONFIG.Canvas.Groups>();
     expectTypeOf(FakePrimaryGroup.groupName).toEqualTypeOf<"primary">();
@@ -18,7 +18,7 @@ describe("CanvasGroupMixin Tests", () => {
 
   const myGroup = new FakePrimaryGroup();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     assertType<PIXI.Container>(myGroup);
 
     expectTypeOf(myGroup.sortableChildren).toBeBoolean();

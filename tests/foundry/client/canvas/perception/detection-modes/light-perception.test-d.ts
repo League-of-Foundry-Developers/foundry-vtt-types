@@ -9,7 +9,7 @@ import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
 declare const visionSource: PointVisionSource.Initialized;
 declare const token: Token.Implementation;
 
-describe("DetectionModeLightPerception Tests", () => {
+describe("DetectionModeLightPerception tests", () => {
   const source = {
     id: "foo",
     label: "bar",

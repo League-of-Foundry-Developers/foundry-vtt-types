@@ -178,8 +178,16 @@ declare class CanvasVisibility<
 }
 
 declare namespace CanvasVisibility {
-  interface Any extends AnyCanvasVisibility {}
-  interface AnyConstructor extends Identity<typeof AnyCanvasVisibility> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyCanvasVisibility {}
+    interface AnyConstructor extends Identity<typeof AnyCanvasVisibility> {}
+  }
 
   interface ImplementationClass extends Identity<typeof CONFIG.Canvas.groups.visibility.groupClass> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
@@ -195,7 +203,7 @@ declare namespace CanvasVisibility {
      * @remarks Only `undefined` immediately following construction. Gets set to a Source or `null` when {@linkcode Canvas.perception | canvas.perception} receives the
      * {@linkcode PerceptionManager.RENDER_FLAGS.initializeVisionModes | initializeVisionModes} render flag
      */
-    source: PointVisionSource.Any | null | undefined;
+    source: PointVisionSource.Internal.Any | null | undefined;
 
     /**
      * @remarks Defaults to `{}` at construction. Gets set to {@linkcode VisionMode.lighting | this.visionModeData.source?.visionMode.lighting}`|| {}` when
@@ -290,7 +298,7 @@ declare namespace CanvasVisibility {
      */
     elevation?: number;
 
-    los: Map<PointVisionSource.Any, boolean>;
+    los: Map<PointVisionSource.Internal.Any, boolean>;
   }
 
   /**

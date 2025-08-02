@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-describe("OverlayCanvasGroup Tests", () => {
+describe("OverlayCanvasGroup tests", () => {
   test("Group name", () => {
     expectTypeOf(OverlayCanvasGroup.groupName).toEqualTypeOf<"overlay">();
   });
@@ -24,7 +24,7 @@ describe("OverlayCanvasGroup Tests", () => {
 
   const myOverlayGroup = new CONFIG.Canvas.groups.overlay.groupClass();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(OverlayCanvasGroup.tearDownChildren).toBeBoolean();
   });
 

@@ -14,7 +14,7 @@ declare class DetectionModeTremor extends DetectionMode {
   protected static override _detectionFilter: OutlineOverlayFilter | undefined;
 
   protected override _canDetect(
-    visionSource: PointVisionSource.Any,
+    visionSource: PointVisionSource.Internal.Any,
     target: CanvasVisibility.TestObject | undefined,
   ): boolean;
 }

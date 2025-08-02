@@ -3,7 +3,7 @@ import { describe, expectTypeOf, test } from "vitest";
 import GridMesh = foundry.canvas.containers.GridMesh;
 import GridShader = foundry.canvas.rendering.shaders.GridShader;
 
-describe("GridMesh Tests", () => {
+describe("GridMesh tests", () => {
   test("Construction", () => {
     new GridMesh();
     new GridMesh(GridShader);
@@ -29,7 +29,7 @@ describe("GridMesh Tests", () => {
     alpha: undefined,
   };
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myGridMesh.data).toEqualTypeOf<GridMesh.MeshData>();
 
     expectTypeOf(myGridMesh.initialize(myGridMeshData)).toEqualTypeOf<typeof myGridMesh>();

@@ -10,7 +10,7 @@ import layers = foundry.canvas.layers;
 declare const point: Canvas.Point;
 declare const elevatedPoint: Canvas.ElevatedPoint;
 
-describe("EffectsCanvasGroup Tests", () => {
+describe("EffectsCanvasGroup tests", () => {
   test("Group name", () => {
     expectTypeOf(EffectsCanvasGroup.groupName).toEqualTypeOf<undefined>();
   });
@@ -22,7 +22,7 @@ describe("EffectsCanvasGroup Tests", () => {
 
   const myEffectGroup = new CONFIG.Canvas.groups.effects.groupClass();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myEffectGroup.clearEffects()).toBeVoid();
     expectTypeOf(myEffectGroup["_draw"]({})).toEqualTypeOf<Promise<void>>();
     expectTypeOf(myEffectGroup.initializeLightSources()).toBeVoid();
@@ -54,12 +54,12 @@ describe("EffectsCanvasGroup Tests", () => {
     expectTypeOf(myEffectGroup.animateLightSources).toBeBoolean();
     expectTypeOf(myEffectGroup.animateVisionSources).toBeBoolean();
 
-    expectTypeOf(myEffectGroup.lightSources).toEqualTypeOf<Collection<sources.PointLightSource.Any>>();
-    expectTypeOf(myEffectGroup.darknessSources).toEqualTypeOf<Collection<sources.PointDarknessSource.Any>>();
-    expectTypeOf(myEffectGroup.visionSources).toEqualTypeOf<Collection<sources.PointVisionSource.Any>>();
+    expectTypeOf(myEffectGroup.lightSources).toEqualTypeOf<Collection<sources.PointLightSource.Internal.Any>>();
+    expectTypeOf(myEffectGroup.darknessSources).toEqualTypeOf<Collection<sources.PointDarknessSource.Internal.Any>>();
+    expectTypeOf(myEffectGroup.visionSources).toEqualTypeOf<Collection<sources.PointVisionSource.Internal.Any>>();
 
     expectTypeOf([...myEffectGroup.allSources()]).toEqualTypeOf<
-      Array<sources.PointDarknessSource.Any | sources.PointLightSource.Any>
+      Array<sources.PointDarknessSource.Internal.Any | sources.PointLightSource.Internal.Any>
     >();
 
     expectTypeOf(myEffectGroup.activateAnimation()).toBeVoid();
