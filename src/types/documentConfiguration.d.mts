@@ -4,6 +4,7 @@
 import type { documents } from "../foundry/client/client.d.mts";
 import type { Document } from "../foundry/common/abstract/_module.d.mts";
 import type { InterfaceToObject, MakeConform, MustConform, FixedInstanceType } from "#utils";
+import type * as configuration from "#configuration";
 
 type DocumentConform<T> = MakeConform<T, Document.AnyConstructor>;
 
@@ -96,9 +97,11 @@ type GetDocumentClass<ConcreteDocumentType extends Document.Type> =
     : DefaultDocumentClasses[ConcreteDocumentType];
 
 type GetDocumentInstance<ConcreteDocumentType extends Document.Type> =
-  ConcreteDocumentType extends keyof DocumentClassConfig
-    ? FixedInstanceType<DocumentClassConfig[ConcreteDocumentType]>
-    : DefaultDocumentInstance[ConcreteDocumentType];
+  ConcreteDocumentType extends keyof configuration.DocumentInstanceConfig
+    ? configuration.DocumentInstanceConfig[ConcreteDocumentType]
+    : ConcreteDocumentType extends keyof DocumentClassConfig
+      ? FixedInstanceType<DocumentClassConfig[ConcreteDocumentType]>
+      : DefaultDocumentInstance[ConcreteDocumentType];
 
 // This interface exists as a way to catch circular errors easier.
 // This makes it more verbose than it might seem it has to be but it's important to stay this way.
