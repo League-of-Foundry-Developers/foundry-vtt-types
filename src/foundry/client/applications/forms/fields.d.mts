@@ -67,9 +67,19 @@ export interface FormGroupConfig extends NullishProps<_FormGroupConfig> {
 
 interface _FormInputConfig<FormInputValue = unknown> {
   /**
+   * The name of the form element
+   */
+  name: string;
+
+  /**
    * The current value of the form element
    */
   value: FormInputValue;
+
+  /**
+   * An id to assign to the element
+   */
+  id: string;
 
   /**
    * Is the field required?
@@ -107,9 +117,20 @@ interface _FormInputConfig<FormInputValue = unknown> {
   dataset: Record<string, string>;
 
   /**
+   * Aria attributes to assign to the input
+   * @remarks Omit the `aria-`-prefix
+   */
+  aria: Record<string, string>;
+
+  /**
    * A placeholder value, if supported by the element type
    */
   placeholder: string;
+
+  /**
+   * Space-delimited class names to apply to the input.
+   */
+  classes: string;
 
   input: CustomFormInput;
 }
