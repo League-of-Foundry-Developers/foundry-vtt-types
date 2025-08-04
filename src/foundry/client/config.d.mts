@@ -459,7 +459,7 @@ declare global {
         /** @defaultValue `"fa-duotone fa-layer-group"` */
         pile: string;
 
-        [x: string]: string;
+        [type: Brand<string, "CONFIG.Cards.typeIcons">]: string;
       };
     };
 
@@ -1007,7 +1007,7 @@ declare global {
      * Available Weather Effects implementations
      */
     weatherEffects: {
-      [key: string]: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      [weatherEffectID: Brand<string, "CONFIG.weatherEffects">]: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1636,7 +1636,7 @@ declare global {
       typeLabels: Record<foundry.documents.BaseJournalEntryPage.SubType, string>;
 
       typeIcons: {
-        [type: string]: string;
+        [type: Brand<string, "CONFIG.JournalEntryPage">]: string;
 
         /** @defaultValue `"fas fa-file-image"` */
         image: string;
@@ -2534,8 +2534,6 @@ declare global {
         bright: number;
       }
 
-      type PolygonBackend = Brand<string, "CONFIG.Canvas.polygonBackends">;
-
       /**
        * @privateRemarks Foundry types this as {@linkcode geometry.PointSourcePolygon | @enum PointSourcePolygon}, but all the runtime defaults are
        * {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}, and CSP types and methods are assumed in other canvas classes, so entries
@@ -2547,7 +2545,7 @@ declare global {
        * and the constructor has been made protected to enforce this.
        */
       interface PolygonBackends {
-        [polygonType: PolygonBackend]: geometry.ClockwiseSweepPolygon.AnyConstructor;
+        [polygonType: Brand<string, "CONFIG.Canvas.polygonBackends">]: geometry.ClockwiseSweepPolygon.AnyConstructor;
         sight: geometry.ClockwiseSweepPolygon.AnyConstructor;
         light: geometry.ClockwiseSweepPolygon.AnyConstructor;
         darkness: geometry.ClockwiseSweepPolygon.AnyConstructor;
@@ -2555,10 +2553,8 @@ declare global {
         move: geometry.ClockwiseSweepPolygon.AnyConstructor;
       }
 
-      type GridStyle = Brand<string, "CONFIG.Canvas.gridStyles">;
-
       interface GridStyles {
-        [gridStyle: GridStyle]: canvasLayers.GridLayer.GridStyle;
+        [gridStyle: Brand<string, "CONFIG.Canvas.gridStyles">]: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2651,10 +2647,8 @@ declare global {
           InexactPartial<Omit<RenderedEffectSource._AnimationConfigLightingShaders, "colorationShader">>,
           RenderedEffectSource._Seed {}
 
-      type LightAnimation = Brand<string, "CONFIG.Canvas.lightAnimations">;
-
       interface LightAnimations {
-        [animationID: LightAnimation]: LightSourceAnimationConfig;
+        [animationID: Brand<string, "CONFIG.Canvas.lightAnimations">]: LightSourceAnimationConfig;
         flame: LightAnimations.Flame;
         torch: LightAnimations.Torch;
         revolving: LightAnimations.Revolving;
@@ -2921,10 +2915,8 @@ declare global {
           RenderedEffectSource._AnimationConfigDarknessShaders,
           RenderedEffectSource._Seed {}
 
-      type DarknessAnimation = Brand<string, "CONFIG.Canvas.darknessAnimations">;
-
       interface DarknessAnimations {
-        [animationID: DarknessAnimation]: DarknessSourceAnimationConfig;
+        [animationID: Brand<string, "CONFIG.Canvas.darknessAnimations">]: DarknessSourceAnimationConfig;
         magicalGloom: DarknessAnimations.MagicalGloom;
         roiling: DarknessAnimations.Roiling;
         hole: DarknessAnimations.Hole;
@@ -2989,10 +2981,8 @@ declare global {
           ARROW: string;
         }
 
-        type PingStyle = Brand<string, "CONFIG.Canvas.pings.styles">;
-
         interface Styles {
-          [pingStyle: PingStyle]: CONFIG.Canvas.Pings.Style;
+          [pingStyle: Brand<string, "CONFIG.Canvas.pings.styles">]: CONFIG.Canvas.Pings.Style;
 
           /** @defaultValue `{ class: AlertPing, color: "#ff0000", size: 1.5, duration: 900 }` */
           alert: CONFIG.Canvas.Pings.Style;
@@ -3057,10 +3047,8 @@ declare global {
         duration: number;
       }
 
-      type VisionMode = Brand<string, "CONFIG.Canvas.visionModes">;
-
       interface VisionModes {
-        [visionMode: VisionMode]: perception.VisionMode;
+        [visionMode: Brand<string, "CONFIG.Canvas.visionModes">]: perception.VisionMode;
 
         /**
          * Default (Basic) Vision
@@ -3233,10 +3221,8 @@ declare global {
         lightAmplification: perception.VisionMode;
       }
 
-      type DetectionMode = Brand<string, "CONFIG.Canvas.detectionModes">;
-
       interface DetectionModes {
-        [detectionMode: DetectionMode]: perception.DetectionMode;
+        [detectionMode: Brand<string, "CONFIG.Canvas.detectionModes">]: perception.DetectionMode;
 
         lightPerception: perception.DetectionModeLightPerception;
 
@@ -3295,12 +3281,10 @@ declare global {
     }
 
     namespace Dice {
-      type ConfiguredRollModes = keyof RollModes;
-
-      type RollMode = Brand<string, "CONFIG.Dice.RollMode">;
+      type RollMode = keyof RollModes;
 
       interface RollModes {
-        [rollMode: RollMode]: RollModeConfig;
+        [rollMode: Brand<string, "CONFIG.Dice.RollMode">]: RollModeConfig;
         publicroll: RollModes.PublicRoll;
         gmroll: RollModes.GMRoll;
         blindroll: RollModes.BlindRoll;
@@ -3551,10 +3535,8 @@ declare global {
         label: string;
       }
 
-      type DoorSound = Brand<string, "CONFIG.Wall.doorSounds">;
-
       interface DoorSounds {
-        [sound: DoorSound]: DoorSoundConfig;
+        [sound: Brand<string, "CONFIG.Wall.doorSounds">]: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3877,10 +3859,8 @@ declare global {
         duration: number;
       }
 
-      type DoorAnimation = Brand<string, "CONFIG.Wall.animationTypes">;
-
       interface DoorAnimations {
-        [animationName: DoorAnimation]: DoorAnimationConfig;
+        [animationName: Brand<string, "CONFIG.Wall.animationTypes">]: DoorAnimationConfig;
 
         /**
          * @defaultValue
