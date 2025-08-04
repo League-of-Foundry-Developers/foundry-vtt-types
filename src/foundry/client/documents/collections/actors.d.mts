@@ -29,8 +29,16 @@ declare class Actors extends foundry.documents.abstract.WorldCollection<"Actor",
 }
 
 declare namespace Actors {
-  interface Any extends AnyActors {}
-  interface AnyConstructor extends Identity<typeof AnyActors> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyActors {}
+    interface AnyConstructor extends Identity<typeof AnyActors> {}
+  }
 
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Actor"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Actor"> {}

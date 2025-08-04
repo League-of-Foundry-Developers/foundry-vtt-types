@@ -198,8 +198,16 @@ declare class TokenRing {
 }
 
 declare namespace TokenRing {
-  interface Any extends AnyTokenRing {}
-  interface AnyConstructor extends Identity<typeof AnyTokenRing> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyTokenRing {}
+    interface AnyConstructor extends Identity<typeof AnyTokenRing> {}
+  }
 
   interface ImplementationClass extends Identity<CONFIG["Token"]["ring"]["ringClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}

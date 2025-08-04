@@ -64,8 +64,16 @@ declare class Journal extends foundry.documents.abstract.WorldCollection<"Journa
 }
 
 declare namespace Journal {
-  interface Any extends AnyJournal {}
-  interface AnyConstructor extends Identity<typeof AnyJournal> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyJournal {}
+    interface AnyConstructor extends Identity<typeof AnyJournal> {}
+  }
 
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"JournalEntry"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"JournalEntry"> {}

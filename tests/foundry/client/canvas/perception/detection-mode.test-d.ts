@@ -8,7 +8,7 @@ import CanvasVisibility = foundry.canvas.groups.CanvasVisibility;
 declare const visionSource: PointVisionSource.Initialized;
 declare const token: Token.Implementation;
 
-describe("DetectionMode Tests", () => {
+describe("DetectionMode tests", () => {
   const source = {
     id: "foo",
     label: "bar",
@@ -44,7 +44,7 @@ describe("DetectionMode Tests", () => {
 
   const myDetectionMode = new DetectionMode(source);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(DetectionMode.getDetectionFilter()).toEqualTypeOf<PIXI.Filter | undefined>();
     expectTypeOf(DetectionMode.DETECTION_TYPES).toExtend<
       Record<keyof DetectionMode.DetectionTypes, DetectionMode.DETECTION_TYPES>

@@ -8,7 +8,7 @@ declare const renderTexture: PIXI.RenderTexture;
 declare const sprite: PIXI.Sprite;
 declare const spriteMesh: foundry.canvas.containers.SpriteMesh;
 
-describe("CachedContainer Tests", () => {
+describe("CachedContainer tests", () => {
   test("Construction", () => {
     new CachedContainer(spriteMesh);
     new CachedContainer(sprite);
@@ -16,7 +16,7 @@ describe("CachedContainer Tests", () => {
 
   const container = new CachedContainer(sprite);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(CachedContainer.textureConfiguration).toEqualTypeOf<CachedContainer.TextureConfiguration>();
     expectTypeOf(CachedContainer.resizeRenderTexture(renderer, renderTexture)).toBeVoid();
 

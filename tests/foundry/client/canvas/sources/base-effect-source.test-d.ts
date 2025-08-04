@@ -47,7 +47,7 @@ new MyEffectSource();
 new MyEffectSource({ object: undefined, sourceId: undefined });
 const mySource = new MyEffectSource({ object, sourceId: object.sourceId });
 
-expectTypeOf(mySource.object).toEqualTypeOf<PlaceableObject.Any | EnvironmentCanvasGroup.Any | null>();
+expectTypeOf(mySource.object).toEqualTypeOf<PlaceableObject.Any | EnvironmentCanvasGroup.Implementation | null>();
 expectTypeOf(mySource.sourceId).toEqualTypeOf<string | undefined>();
 expectTypeOf(mySource.data).toEqualTypeOf<BaseEffectSource.SourceData>();
 expectTypeOf(mySource.shape).toEqualTypeOf<PIXI.Polygon | number[] | undefined>();

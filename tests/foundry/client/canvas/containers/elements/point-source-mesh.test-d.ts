@@ -8,11 +8,11 @@ const myShader = AdaptiveBackgroundShader.create();
 declare const someState: PIXI.State;
 declare const someRect: PIXI.Rectangle;
 
-describe("PointSourceMesh Tests", () => {
+describe("PointSourceMesh tests", () => {
   // Matches a call made in `RenderedPointSource##createMesh`, the only place Foundry calls `new`
   const myPSM = new PointSourceMesh(myGeometry, myShader, someState);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     // test the type param
     expectTypeOf(myPSM.shader).toEqualTypeOf<typeof myShader>();
 

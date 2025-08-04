@@ -8,7 +8,7 @@ declare const graphicsGeometry: PIXI.GraphicsGeometry;
 declare const smoothGraphicsGeometry: PIXI.smooth.SmoothGraphicsGeometry;
 declare const nullish: null | undefined;
 
-describe("PrimaryGraphics Tests", () => {
+describe("PrimaryGraphics tests", () => {
   test("Construction", () => {
     new PrimaryGraphics();
     // @ts-expect-error Foundry swapped the base class for PrimaryGraphics in v13 without updating their `instanceof` check
@@ -41,7 +41,7 @@ describe("PrimaryGraphics Tests", () => {
     geometry: smoothGraphicsGeometry,
   });
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myPG["_calculateCanvasBounds"]()).toBeVoid();
     expectTypeOf(myPG.updateCanvasTransform()).toBeVoid();
     expectTypeOf(myPG.containsCanvasPoint({ x: 500, y: 500 })).toEqualTypeOf<boolean>();

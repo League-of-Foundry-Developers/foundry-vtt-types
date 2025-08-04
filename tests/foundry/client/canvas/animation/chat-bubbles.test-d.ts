@@ -7,10 +7,10 @@ declare const socket: io.Socket;
 declare const someToken: foundry.canvas.placeables.Token.Implementation;
 declare const docOrPlaceable: TokenDocument.Implementation | typeof someToken;
 
-describe("ClassName Tests", () => {
+describe("ClassName tests", () => {
   const myCB = new ChatBubbles();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(ChatBubbles["_activateSocketListeners"](socket)).toBeVoid();
 
     expectTypeOf(myCB.template).toBeString();

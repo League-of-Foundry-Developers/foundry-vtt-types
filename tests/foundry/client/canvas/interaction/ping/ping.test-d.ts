@@ -13,7 +13,7 @@ class MyPing extends Ping {
 
 declare const animData: CanvasAnimation.AnimationData<MyPing>;
 
-describe("Ping Tests", () => {
+describe("Ping tests", () => {
   describe("Construction", () => {
     // @ts-expect-error ping requires an origin
     new MyPing();
@@ -49,7 +49,7 @@ describe("Ping Tests", () => {
     },
   );
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myPing["_color"]).toEqualTypeOf<Color>();
   });
 

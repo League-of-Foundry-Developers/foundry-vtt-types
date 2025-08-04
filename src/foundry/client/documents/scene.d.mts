@@ -528,42 +528,7 @@ declare namespace Scene {
     /**
      * Fog-exploration settings and other data
      */
-    fog: fields.SchemaField<{
-      /**
-       * Should fog exploration progress be tracked for this Scene?
-       * @defaultValue `true`
-       */
-      exploration: fields.BooleanField<{ initial: true }>;
-
-      /**
-       * The timestamp at which fog of war was last reset for this Scene.
-       * @defaultValue `undefined`
-       */
-      reset: fields.NumberField<{ required: false; initial: undefined }>;
-
-      /**
-       * A special overlay image or video texture which is used for fog of war
-       * @defaultValue `null`
-       */
-      overlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; virtual: true }>;
-
-      /**
-       * Fog-exploration coloration data
-       */
-      colors: fields.SchemaField<{
-        /**
-         * A color tint applied to explored regions of fog of war
-         * @defaultValue `null`
-         */
-        explored: fields.ColorField;
-
-        /**
-         * A color tint applied to unexplored regions of fog of war
-         * @defaultValue `null`
-         */
-        unexplored: fields.ColorField;
-      }>;
-    }>;
+    fog: fields.SchemaField<FogSchema>;
 
     /**
      * The environment data applied to the Scene.
@@ -689,6 +654,49 @@ declare namespace Scene {
     _stats: fields.DocumentStatsField;
   }
 
+  interface FogSchema extends DataSchema {
+    /**
+     * Should fog exploration progress be tracked for this Scene?
+     * @defaultValue `true`
+     */
+    exploration: fields.BooleanField<{ initial: true }>;
+
+    /**
+     * The timestamp at which fog of war was last reset for this Scene.
+     * @defaultValue `undefined`
+     */
+    reset: fields.NumberField<{ required: false; initial: undefined }>;
+
+    /**
+     * A special overlay image or video texture which is used for fog of war
+     * @defaultValue `null`
+     */
+    overlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; virtual: true }>;
+
+    /**
+     * Fog-exploration coloration data
+     */
+    colors: fields.SchemaField<FogColorSchema>;
+  }
+
+  interface FogData extends fields.SchemaField.InitializedData<FogSchema> {}
+
+  interface FogColorSchema extends DataSchema {
+    /**
+     * A color tint applied to explored regions of fog of war
+     * @defaultValue `null`
+     */
+    explored: fields.ColorField;
+
+    /**
+     * A color tint applied to unexplored regions of fog of war
+     * @defaultValue `null`
+     */
+    unexplored: fields.ColorField;
+  }
+
+  interface FogColorData extends fields.SchemaField.InitializedData<FogColorSchema> {}
+
   interface EnvironmentSchema extends DataSchema {
     /**
      * The environment darkness level.
@@ -794,7 +802,7 @@ declare namespace Scene {
   interface GridSchema extends DataSchema {
     /**
      * The type of grid, a number from CONST.GRID_TYPES.
-     * @defaultValue `game.system.grid.type`
+     * @defaultValue {@linkcode foundry.packages.BaseSystem.grid | game.system.grid.type}
      */
     type: fields.NumberField<
       {

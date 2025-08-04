@@ -10,7 +10,7 @@ describe(" Tests", () => {
 
   const manager = new PerceptionManager();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(manager.initialize()).toBeVoid();
   });
 
