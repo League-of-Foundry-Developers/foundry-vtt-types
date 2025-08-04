@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, FixedInstanceType, EmptyObject, Identity, ConcreteKeys } from "#utils";
+import type { AnyObject, InexactPartial, FixedInstanceType, EmptyObject, Identity } from "#utils";
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
 import type PoolTerm from "./terms/pool.d.mts";
@@ -543,7 +543,10 @@ declare namespace Roll {
     interface AnyConstructor extends Identity<typeof AnyRoll> {}
   }
 
-  type ConfiguredRollModes = ConcreteKeys<typeof CONFIG.Dice.rollModes>;
+  /** @deprecated Use {@linkcode foundry.dice.Roll.Mode} instead */
+  type ConfiguredRollModes = Mode;
+
+  type Mode = keyof CONFIG.Dice.RollModes;
 
   // TODO: Make this actually configurable
   interface ImplementationClass extends Identity<CONFIG["Dice"]["rolls"][0]> {}

@@ -3281,7 +3281,8 @@ declare global {
     }
 
     namespace Dice {
-      type RollMode = keyof RollModes;
+      /** @deprecated Use {@linkcode foundry.dice.Roll.Mode} instead */
+      type RollMode = foundry.dice.Roll.Mode;
 
       interface RollModes {
         [rollMode: Brand<string, "CONFIG.Dice.RollMode">]: RollModeConfig;
