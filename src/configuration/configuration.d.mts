@@ -314,9 +314,9 @@ export interface SettingConfig {
       choices: InterfaceToObject<typeof CONFIG.Dice.rollModes>;
     },
     // Note(LukeAbby): This override is necessary because the `initial` wasn't removing `null`.
-    CONFIG.Dice.RollMode | null | undefined,
-    CONFIG.Dice.RollMode,
-    CONFIG.Dice.RollMode
+    foundry.dice.Roll.Mode | null | undefined,
+    foundry.dice.Roll.Mode,
+    foundry.dice.Roll.Mode
   >;
   "core.rtcClientSettings": typeof AVSettings.schemaFields.client;
   "core.rtcWorldSettings": typeof AVSettings.schemaFields.world;
