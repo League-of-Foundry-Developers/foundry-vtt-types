@@ -3,8 +3,15 @@ import type { AnyObject } from "#utils";
 import { CanvasLayer } from "#client/canvas/layers/_module.mjs";
 import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
 
+declare global {
+  namespace CONFIG.Canvas {
+    interface Layers {
+      testCanvasLayer: CONFIG.Canvas.LayerDefinition<typeof MyCanvasLayer, "primary">;
+    }
+  }
+}
 interface MyLayerOptions extends CanvasLayer.LayerOptions {
-  name: "MyLayer";
+  name: "testCanvasLayer";
   baseClass: typeof MyCanvasLayer;
 }
 

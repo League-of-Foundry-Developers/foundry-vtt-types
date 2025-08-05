@@ -89,7 +89,7 @@ declare namespace CanvasLayer {
      *
      * See {@linkcode CanvasLayer.instance} remarks.
      */
-    name: string;
+    name: CanvasLayer.Layers | "effects" | "";
 
     baseClass: typeof CanvasLayer;
   }

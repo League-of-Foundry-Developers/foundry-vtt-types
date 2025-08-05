@@ -10,13 +10,21 @@ import PlaceablesLayer = foundry.canvas.layers.PlaceablesLayer;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
 
+declare global {
+  namespace CONFIG.Canvas {
+    interface Layers {
+      testPlaceablesLayer: CONFIG.Canvas.LayerDefinition<typeof SomeLightLayer, "primary">;
+    }
+  }
+}
+
 type CAL = AmbientLight.Implementation;
 type CALDoc = AmbientLightDocument.Implementation;
 
 class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
   static override get layerOptions() {
     return foundry.utils.mergeObject(super.layerOptions, {
-      name: "myLighting",
+      name: "testPlaceablesLayer",
     });
   }
 
