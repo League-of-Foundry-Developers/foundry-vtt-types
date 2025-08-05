@@ -1,4 +1,4 @@
-import type { AnyObject, Identity } from "#utils";
+import type { AnyObject, FixedInstanceType, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { Drawing } from "#client/canvas/placeables/_module.d.mts";
@@ -6,7 +6,7 @@ import type { Drawing } from "#client/canvas/placeables/_module.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface PlaceablesLayerConfig {
-      DrawingsLayer: DrawingsLayer.Any;
+      DrawingsLayer: DrawingsLayer.Implementation;
     }
   }
 }
@@ -105,6 +105,9 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
 declare namespace DrawingsLayer {
   interface Any extends AnyDrawingsLayer {}
   interface AnyConstructor extends Identity<typeof AnyDrawingsLayer> {}
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["drawings"]["layerClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Drawing.ImplementationClass> {
     name: "drawings";

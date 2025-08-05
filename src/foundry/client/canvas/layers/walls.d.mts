@@ -1,4 +1,4 @@
-import type { Coalesce, AnyObject, Identity, NullishProps } from "#utils";
+import type { Coalesce, AnyObject, Identity, NullishProps, FixedInstanceType } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Ray, PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
@@ -7,7 +7,7 @@ import type { PlaceableObject, Wall } from "#client/canvas/placeables/_module.d.
 declare module "#configuration" {
   namespace Hooks {
     interface PlaceablesLayerConfig {
-      WallsLayer: WallsLayer.Any;
+      WallsLayer: WallsLayer.Implementation;
     }
   }
 }
@@ -179,6 +179,9 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
 declare namespace WallsLayer {
   interface Any extends AnyWallsLayer {}
   interface AnyConstructor extends Identity<typeof AnyWallsLayer> {}
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["walls"]["layerClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Wall.ImplementationClass> {
     name: "walls";

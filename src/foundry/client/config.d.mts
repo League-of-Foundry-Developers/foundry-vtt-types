@@ -1696,8 +1696,12 @@ declare global {
       /** @defaultValue `typeof AmbientLightDocument` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.AmbientLight>;
 
-      /** @defaultValue `typeof LightingLayer` */
-      layerClass: canvasLayers.LightingLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.LightingLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The lighting layer can be set at {@linkcode CONFIG.Canvas.layers.lighting}
+       */
+      layerClass: typeof canvasLayers.LightingLayer;
     };
 
     /**
@@ -1720,8 +1724,12 @@ declare global {
       /** @defaultValue `typeof AmbientSound` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.AmbientSound>;
 
-      /** @defaultValue `typeof SoundsLayer` */
-      layerClass: canvasLayers.SoundsLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.SoundsLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The sounds layer can be set at {@linkcode CONFIG.Canvas.layers.sounds}
+       */
+      layerClass: typeof canvasLayers.SoundsLayer;
     };
 
     /**
@@ -1800,7 +1808,11 @@ declare global {
       /** @defaultValue `typeof Drawing` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Drawing>;
 
-      /** @defaultValue `typeof DrawingsLayer` */
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.DrawingsLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The drawings layer can be set at {@linkcode CONFIG.Canvas.layers.drawings}
+       */
       layerClass: typeof canvasLayers.DrawingsLayer;
 
       /** @defaultValue `typeof DrawingHUD` */
@@ -1867,7 +1879,11 @@ declare global {
       /** @defaultValue `typeof MeasuredTemplate` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.MeasuredTemplate>;
 
-      /** @defaultValue `typeof TemplateLayer` */
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.TemplateLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The template layer can be set at {@linkcode CONFIG.Canvas.layers.templates}
+       */
       layerClass: typeof canvasLayers.TemplateLayer;
     };
 
@@ -1891,8 +1907,12 @@ declare global {
       /** @defaultValue `typeof Note` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Note>;
 
-      /** @defaultValue `typeof NotesLayer` */
-      layerClass: canvasLayers.NotesLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.NotesLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The notes layer can be set at {@linkcode CONFIG.Canvas.layers.notes}
+       */
+      layerClass: typeof canvasLayers.NotesLayer;
     };
 
     Region: {
@@ -1902,8 +1922,12 @@ declare global {
       /** @defaultValue `Region` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Region>;
 
-      /** @defaultValue `RegionLayer` */
-      layerClass: canvasLayers.RegionLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.RegionLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The regions layer can be set at {@linkcode CONFIG.Canvas.layers.regions}
+       */
+      layerClass: typeof canvasLayers.RegionLayer;
 
       /**
        * @remarks added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
@@ -1949,8 +1973,12 @@ declare global {
       /** @defaultValue `typeof Tile` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Tile>;
 
-      /** @defaultValue `typeof TilesLayer` */
-      layerClass: canvasLayers.TilesLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.TilesLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The tiles layer can be set at {@linkcode CONFIG.Canvas.layers.tiles}
+       */
+      layerClass: typeof canvasLayers.TilesLayer;
 
       /** @defaultValue `typeof TileHUD` */
       hudClass: foundry.applications.hud.TileHUD.AnyConstructor;
@@ -1976,8 +2004,12 @@ declare global {
       /** @defaultValue `typeof Token` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Token>;
 
-      /** @defaultValue `typeof TokenLayer` */
-      layerClass: canvasLayers.TokenLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.TokenLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The tokens layer can be set at {@linkcode CONFIG.Canvas.layers.tokens}
+       */
+      layerClass: typeof canvasLayers.TokenLayer;
 
       /** @defaultValue `typeof TokenConfig` */
       prototypeSheetClass: foundry.applications.sheets.TokenConfig.AnyConstructor;
@@ -2107,8 +2139,12 @@ declare global {
       /** @defaultValue `typeof Wall` */
       objectClass: ConfiguredObjectClassOrDefault<typeof placeables.Wall>;
 
-      /** @defaultValue `typeof WallsLayer` */
-      layerClass: canvasLayers.WallsLayer.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.canvas.layers.WallsLayer}
+       * @deprecated This is vestigial in foundry, and is not used for anything since at least v11.
+       * The walls layer can be set at {@linkcode CONFIG.Canvas.layers.walls}
+       */
+      layerClass: typeof canvasLayers.WallsLayer;
 
       /** @defaultValue `1` */
       thresholdAttenuationMultiplier: number;

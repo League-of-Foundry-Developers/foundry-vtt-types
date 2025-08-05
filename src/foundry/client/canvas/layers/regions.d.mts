@@ -1,4 +1,4 @@
-import type { AnyObject, Identity } from "#utils";
+import type { AnyObject, FixedInstanceType, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
@@ -7,7 +7,7 @@ import type { Region } from "#client/canvas/placeables/_module.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface PlaceablesLayerConfig {
-      RegionLayer: RegionLayer.Any;
+      RegionLayer: RegionLayer.Implementation;
     }
   }
 }
@@ -103,6 +103,9 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
 declare namespace RegionLayer {
   interface Any extends AnyRegionLayer {}
   interface AnyConstructor extends Identity<typeof AnyRegionLayer> {}
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["regions"]["layerClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Region.ImplementationClass> {
     name: "regions";

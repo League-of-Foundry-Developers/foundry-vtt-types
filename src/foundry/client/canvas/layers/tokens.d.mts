@@ -1,4 +1,4 @@
-import type { AnyObject, Identity, NullishProps } from "#utils";
+import type { AnyObject, FixedInstanceType, Identity, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
@@ -7,7 +7,7 @@ import type { PlaceableObject, Token } from "#client/canvas/placeables/_module.d
 declare module "#configuration" {
   namespace Hooks {
     interface PlaceablesLayerConfig {
-      TokenLayer: TokenLayer.Any;
+      TokenLayer: TokenLayer.Implementation;
     }
   }
 }
@@ -171,6 +171,9 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
 declare namespace TokenLayer {
   interface Any extends AnyTokenLayer {}
   interface AnyConstructor extends Identity<typeof AnyTokenLayer> {}
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["tokens"]["layerClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Token.ImplementationClass> {
     name: "tokens";
