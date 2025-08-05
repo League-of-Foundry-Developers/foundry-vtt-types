@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity } from "#utils";
+import type { AnyObject, Identity } from "#utils";
 import type { VisualEffectsMaskingFilter } from "#client/canvas/rendering/filters/_module.mjs";
 import type { CachedContainer, SpriteMesh } from "#client/canvas/containers/_module.d.mts";
 import type { CanvasLayer } from "../_module.d.mts";
@@ -91,9 +91,9 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
 
   override render(renderer: PIXI.Renderer): void;
 
-  protected override _draw(options: HandleEmptyObject<CanvasIlluminationEffects.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
-  protected override _tearDown(options: HandleEmptyObject<CanvasIlluminationEffects.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: AnyObject): Promise<void>;
 
   /**
    * @deprecated since v11, will be removed in v13
@@ -117,10 +117,6 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
 declare namespace CanvasIlluminationEffects {
   interface Any extends AnyCanvasIlluminationEffects {}
   interface AnyConstructor extends Identity<typeof AnyCanvasIlluminationEffects> {}
-
-  interface DrawOptions extends CanvasLayer.DrawOptions {}
-
-  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 }
 
 /**

@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity } from "#utils";
+import type { AnyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
@@ -74,7 +74,7 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
 
   override getZIndex(): number;
 
-  protected override _draw(options: HandleEmptyObject<RegionLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
   /**
    * Highlight the shape or clear the highlight.
@@ -103,8 +103,6 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
 declare namespace RegionLayer {
   interface Any extends AnyRegionLayer {}
   interface AnyConstructor extends Identity<typeof AnyRegionLayer> {}
-
-  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Region.ImplementationClass> {
     name: "regions";

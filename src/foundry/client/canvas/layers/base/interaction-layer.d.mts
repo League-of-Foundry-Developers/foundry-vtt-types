@@ -1,7 +1,6 @@
-import type { HandleEmptyObject, Identity, NullishProps } from "#utils";
+import type { AnyObject, Identity, NullishProps } from "#utils";
 import type { CanvasLayer } from "../_module.d.mts";
-
-import Canvas = foundry.canvas.Canvas;
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * A subclass of CanvasLayer which provides support for user interaction with its contained objects.
@@ -58,7 +57,7 @@ declare class InteractionLayer extends CanvasLayer {
    */
   protected _deactivate(): void;
 
-  protected override _draw(options: HandleEmptyObject<InteractionLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
   /**
    * Get the zIndex that should be used for ordering this layer vertically relative to others in the same Container.
@@ -152,10 +151,6 @@ declare namespace InteractionLayer {
   }>;
 
   interface ActivateOptions extends _ActivateOptions {}
-
-  interface DrawOptions extends CanvasLayer.DrawOptions {}
-
-  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 }
 
 export default InteractionLayer;

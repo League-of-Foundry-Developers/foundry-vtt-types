@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity, InexactPartial, NullishProps } from "#utils";
+import type { AnyObject, Identity, InexactPartial, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
@@ -50,7 +50,7 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
 
   protected override _deactivate(): void;
 
-  protected override _draw(options: HandleEmptyObject<NotesLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
   /**
    * Register game settings used by the NotesLayer
@@ -85,8 +85,6 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
 declare namespace NotesLayer {
   interface Any extends AnyNotesLayer {}
   interface AnyConstructor extends Identity<typeof AnyNotesLayer> {}
-
-  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Note.ImplementationClass> {
     name: "notes";

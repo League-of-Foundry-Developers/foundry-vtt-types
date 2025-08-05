@@ -1,6 +1,6 @@
-import type { HandleEmptyObject, Identity } from "#utils";
+import type { AnyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { CanvasLayer, PlaceablesLayer } from "./_module.d.mts";
+import type { PlaceablesLayer } from "./_module.d.mts";
 import type { Drawing } from "#client/canvas/placeables/_module.d.mts";
 
 declare module "#configuration" {
@@ -63,7 +63,7 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
 
   protected override _deactivate(): void;
 
-  protected override _draw(options: HandleEmptyObject<DrawingsLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
   /**
    * Get initial data for a new drawing.
@@ -105,8 +105,6 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
 declare namespace DrawingsLayer {
   interface Any extends AnyDrawingsLayer {}
   interface AnyConstructor extends Identity<typeof AnyDrawingsLayer> {}
-
-  interface DrawOptions extends CanvasLayer.DrawOptions {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Drawing.ImplementationClass> {
     name: "drawings";

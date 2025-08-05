@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity } from "#utils";
+import type { AnyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { AmbientLight } from "#client/canvas/placeables/_module.d.mts";
@@ -41,9 +41,9 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
 
   override get hookName(): "LightingLayer";
 
-  protected override _draw(options: HandleEmptyObject<LightingLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
-  protected override _tearDown(options: HandleEmptyObject<LightingLayer.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: AnyObject): Promise<void>;
 
   /**
    * Refresh the fields of all the ambient lights on this scene.
@@ -73,10 +73,6 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
 declare namespace LightingLayer {
   interface Any extends AnyLightingLayer {}
   interface AnyConstructor extends Identity<typeof AnyLightingLayer> {}
-
-  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
-
-  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass> {
     name: "lighting";

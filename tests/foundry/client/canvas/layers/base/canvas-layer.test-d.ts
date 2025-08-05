@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { HandleEmptyObject } from "#utils";
+import type { AnyObject } from "#utils";
 import { CanvasLayer } from "#client/canvas/layers/_module.mjs";
 import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
 
@@ -13,7 +13,7 @@ declare class MyCanvasLayer extends CanvasLayer {
 
   static override get layerOptions(): MyLayerOptions;
 
-  protected override _draw(_options: HandleEmptyObject<CanvasLayer.DrawOptions>): Promise<void>;
+  protected override _draw(_options: AnyObject): Promise<void>;
 }
 
 expectTypeOf(MyCanvasLayer.instance).toEqualTypeOf<CanvasLayer.Any | EffectsCanvasGroup.Implementation | undefined>;

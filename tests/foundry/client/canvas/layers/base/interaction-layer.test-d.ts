@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { HandleEmptyObject } from "fvtt-types/utils";
+import type { AnyObject } from "fvtt-types/utils";
 import { InteractionLayer } from "#client/canvas/layers/_module.mjs";
 
 interface MyInteractionLayerOptions extends InteractionLayer.LayerOptions {
@@ -14,7 +14,7 @@ declare class MyInteractionLayer extends InteractionLayer {
 
   static override get layerOptions(): MyInteractionLayerOptions;
 
-  protected override _draw(options: HandleEmptyObject<InteractionLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 }
 
 expectTypeOf(MyInteractionLayer.layerOptions.baseClass).toEqualTypeOf<typeof MyInteractionLayer>;
