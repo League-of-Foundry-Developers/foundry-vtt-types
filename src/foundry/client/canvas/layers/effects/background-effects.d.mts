@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity } from "#utils";
+import type { AnyObject, Identity } from "#utils";
 import type { CanvasLayer } from "../_module.d.mts";
 
 declare module "#configuration" {
@@ -28,11 +28,9 @@ declare class CanvasBackgroundAlterationEffects extends CanvasLayer {
    */
   lighting: PIXI.Container;
 
-  protected override _draw(options: HandleEmptyObject<CanvasBackgroundAlterationEffects.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
-  protected override _tearDown(
-    options: HandleEmptyObject<CanvasBackgroundAlterationEffects.TearDownOptions>,
-  ): Promise<void>;
+  protected override _tearDown(options: AnyObject): Promise<void>;
 
   /**
    * Clear background alteration effects vision and lighting containers
@@ -43,10 +41,6 @@ declare class CanvasBackgroundAlterationEffects extends CanvasLayer {
 declare namespace CanvasBackgroundAlterationEffects {
   interface Any extends AnyCanvasBackgroundAlterationEffects {}
   interface AnyConstructor extends Identity<typeof AnyCanvasBackgroundAlterationEffects> {}
-
-  interface DrawOptions extends CanvasLayer.DrawOptions {}
-
-  interface TearDownOptions extends CanvasLayer.DrawOptions {}
 }
 
 export default CanvasBackgroundAlterationEffects;

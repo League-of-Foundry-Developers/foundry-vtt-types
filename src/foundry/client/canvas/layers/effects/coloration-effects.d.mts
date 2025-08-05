@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity } from "#utils";
+import type { AnyObject, Identity } from "#utils";
 import type { VisualEffectsMaskingFilter } from "#client/canvas/rendering/filters/_module.mjs";
 import type { CanvasLayer } from "../_module.d.mts";
 
@@ -30,18 +30,14 @@ declare class CanvasColorationEffects extends CanvasLayer {
    */
   clear(): void;
 
-  protected override _draw(options: HandleEmptyObject<CanvasColorationEffects.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
-  protected override _tearDown(options: HandleEmptyObject<CanvasColorationEffects.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: AnyObject): Promise<void>;
 }
 
 declare namespace CanvasColorationEffects {
   interface Any extends AnyCanvasColorationEffects {}
   interface AnyConstructor extends Identity<typeof AnyCanvasColorationEffects> {}
-
-  interface DrawOptions extends CanvasLayer.DrawOptions {}
-
-  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 }
 
 export default CanvasColorationEffects;

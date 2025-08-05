@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity, NullishProps } from "#utils";
+import type { AnyObject, Identity, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
@@ -70,9 +70,9 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
   /** @remarks Forces top left corner snapping */
   override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-  protected override _draw(options: HandleEmptyObject<TokenLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
-  protected override _tearDown(options: HandleEmptyObject<TokenLayer.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: AnyObject): Promise<void>;
 
   protected override _activate(): void;
 
@@ -171,10 +171,6 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
 declare namespace TokenLayer {
   interface Any extends AnyTokenLayer {}
   interface AnyConstructor extends Identity<typeof AnyTokenLayer> {}
-
-  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
-
-  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Token.ImplementationClass> {
     name: "tokens";

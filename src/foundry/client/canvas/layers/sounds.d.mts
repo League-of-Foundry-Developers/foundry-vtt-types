@@ -1,4 +1,4 @@
-import type { IntentionalPartial, InexactPartial, NullishProps, HandleEmptyObject, Identity } from "#utils";
+import type { IntentionalPartial, InexactPartial, NullishProps, AnyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
@@ -53,9 +53,9 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
 
   override get hookName(): "SoundsLayer";
 
-  protected override _draw(options: HandleEmptyObject<SoundsLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
-  protected override _tearDown(options: HandleEmptyObject<SoundsLayer.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: AnyObject): Promise<void>;
 
   protected override _activate(): void;
 
@@ -190,10 +190,6 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
 declare namespace SoundsLayer {
   interface Any extends AnySoundsLayer {}
   interface AnyConstructor extends Identity<typeof AnySoundsLayer> {}
-
-  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
-
-  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientSound.ImplementationClass> {
     name: "sounds";

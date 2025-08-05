@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity } from "#utils";
+import type { AnyObject, Identity } from "#utils";
 import type { EffectsCanvasGroup } from "#client/canvas/groups/_module.d.mts";
 
 /**
@@ -43,26 +43,26 @@ declare abstract class CanvasLayer extends PIXI.Container {
    * The Promise resolves to the drawn layer once its contents are successfully rendered.
    * @param options - Options which configure how the layer is drawn
    */
-  draw(options?: HandleEmptyObject<CanvasLayer.DrawOptions>): Promise<this>;
+  draw(options?: AnyObject): Promise<this>;
 
   /**
    * The inner _draw method which must be defined by each CanvasLayer subclass.
    * @param options - Options which configure how the layer is drawn
    */
-  protected abstract _draw(options: HandleEmptyObject<CanvasLayer.DrawOptions>): Promise<void>;
+  protected abstract _draw(options: AnyObject): Promise<void>;
 
   /**
    * Deconstruct data used in the current layer in preparation to re-draw the canvas
    * @param options - Options which configure how the layer is deconstructed
    * @remarks ControlsLayer returns void. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6939
    */
-  tearDown(options?: HandleEmptyObject<CanvasLayer.TearDownOptions>): Promise<this>;
+  tearDown(options?: AnyObject): Promise<this>;
 
   /**
    * The inner _tearDown method which may be customized by each CanvasLayer subclass.
    * @param options - Options which configure how the layer is deconstructed
    */
-  protected _tearDown(options: HandleEmptyObject<CanvasLayer.TearDownOptions>): Promise<void>;
+  protected _tearDown(options: AnyObject): Promise<void>;
 }
 
 declare namespace CanvasLayer {
@@ -77,12 +77,6 @@ declare namespace CanvasLayer {
 
     baseClass: typeof CanvasLayer;
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface DrawOptions {}
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface TearDownOptions {}
 }
 
 export default CanvasLayer;

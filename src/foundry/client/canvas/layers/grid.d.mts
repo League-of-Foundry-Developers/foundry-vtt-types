@@ -1,4 +1,4 @@
-import type { EmptyObject, HandleEmptyObject, Identity, NullishProps, RemoveIndexSignatures } from "#utils";
+import type { EmptyObject, AnyObject, Identity, NullishProps, RemoveIndexSignatures } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { GridShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { GridMesh, GridHighlight } from "#client/canvas/containers/_module.d.mts";
@@ -53,7 +53,7 @@ declare class GridLayer extends CanvasLayer {
 
   override options: GridLayer.LayerOptions;
 
-  protected override _draw(options: HandleEmptyObject<GridLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
   /**
    * Creates the grid mesh.
@@ -187,10 +187,6 @@ declare class GridLayer extends CanvasLayer {
 declare namespace GridLayer {
   interface Any extends AnyGridLayer {}
   interface AnyConstructor extends Identity<typeof AnyGridLayer> {}
-
-  interface DrawOptions extends CanvasLayer.DrawOptions {}
-
-  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 
   interface LayerOptions extends CanvasLayer.LayerOptions {
     name: "grid";
