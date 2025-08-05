@@ -1,4 +1,4 @@
-import type { AnyObject, Identity } from "#utils";
+import type { AnyObject, FixedInstanceType, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { MeasuredTemplate } from "#client/canvas/placeables/_module.d.mts";
@@ -6,7 +6,7 @@ import type { MeasuredTemplate } from "#client/canvas/placeables/_module.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface PlaceablesLayerConfig {
-      TemplateLayer: TemplateLayer.Any;
+      TemplateLayer: TemplateLayer.Implementation;
     }
   }
 }
@@ -62,6 +62,9 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
 declare namespace TemplateLayer {
   interface Any extends AnyTemplateLayer {}
   interface AnyConstructor extends Identity<typeof AnyTemplateLayer> {}
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["templates"]["layerClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<MeasuredTemplate.ImplementationClass> {
     name: "templates";

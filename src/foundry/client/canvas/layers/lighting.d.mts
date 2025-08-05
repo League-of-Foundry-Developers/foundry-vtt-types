@@ -1,4 +1,4 @@
-import type { AnyObject, Identity } from "#utils";
+import type { AnyObject, FixedInstanceType, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { AmbientLight } from "#client/canvas/placeables/_module.d.mts";
@@ -6,7 +6,7 @@ import type { AmbientLight } from "#client/canvas/placeables/_module.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface PlaceablesLayerConfig {
-      LightingLayer: LightingLayer.Any;
+      LightingLayer: LightingLayer.Implementation;
     }
   }
 }
@@ -73,6 +73,9 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
 declare namespace LightingLayer {
   interface Any extends AnyLightingLayer {}
   interface AnyConstructor extends Identity<typeof AnyLightingLayer> {}
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["lighting"]["layerClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass> {
     name: "lighting";

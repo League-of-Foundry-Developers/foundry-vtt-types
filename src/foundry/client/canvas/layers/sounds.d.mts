@@ -1,4 +1,4 @@
-import type { IntentionalPartial, InexactPartial, NullishProps, AnyObject, Identity } from "#utils";
+import type { IntentionalPartial, InexactPartial, NullishProps, AnyObject, Identity, FixedInstanceType } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
@@ -6,7 +6,7 @@ import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface PlaceablesLayerConfig {
-      SoundsLayer: SoundsLayer.Any;
+      SoundsLayer: SoundsLayer.Implementation;
     }
   }
 }
@@ -190,6 +190,9 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
 declare namespace SoundsLayer {
   interface Any extends AnySoundsLayer {}
   interface AnyConstructor extends Identity<typeof AnySoundsLayer> {}
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["sounds"]["layerClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientSound.ImplementationClass> {
     name: "sounds";

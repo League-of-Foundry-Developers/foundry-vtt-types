@@ -1,4 +1,4 @@
-import type { AnyObject, Identity, InexactPartial, NullishProps } from "#utils";
+import type { AnyObject, FixedInstanceType, Identity, InexactPartial, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
@@ -6,7 +6,7 @@ import type { Note } from "#client/canvas/placeables/_module.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface PlaceablesLayerConfig {
-      NotesLayer: NotesLayer.Any;
+      NotesLayer: NotesLayer.Implementation;
     }
   }
 }
@@ -85,6 +85,9 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
 declare namespace NotesLayer {
   interface Any extends AnyNotesLayer {}
   interface AnyConstructor extends Identity<typeof AnyNotesLayer> {}
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["notes"]["layerClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Note.ImplementationClass> {
     name: "notes";

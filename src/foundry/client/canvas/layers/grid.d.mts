@@ -1,4 +1,4 @@
-import type { EmptyObject, AnyObject, Identity, NullishProps, RemoveIndexSignatures } from "#utils";
+import type { EmptyObject, AnyObject, Identity, NullishProps, RemoveIndexSignatures, FixedInstanceType } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { GridShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { GridMesh, GridHighlight } from "#client/canvas/containers/_module.d.mts";
@@ -7,7 +7,7 @@ import type { CanvasLayer } from "#client/canvas/layers/_module.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface CanvasLayerConfig {
-      GridLayer: GridLayer.Any;
+      GridLayer: GridLayer.Implementation;
     }
   }
 }
@@ -187,6 +187,9 @@ declare class GridLayer extends CanvasLayer {
 declare namespace GridLayer {
   interface Any extends AnyGridLayer {}
   interface AnyConstructor extends Identity<typeof AnyGridLayer> {}
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["grid"]["layerClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends CanvasLayer.LayerOptions {
     name: "grid";

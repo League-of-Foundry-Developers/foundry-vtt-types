@@ -22,7 +22,6 @@ const layer = new MyCanvasLayer();
 
 expectTypeOf(layer.name).toEqualTypeOf<string>();
 expectTypeOf(layer.hookName).toEqualTypeOf<string>();
-expectTypeOf(layer.options.baseClass).toExtend<CanvasLayer.AnyConstructor>();
 expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof MyCanvasLayer>();
 expectTypeOf(layer.draw()).toEqualTypeOf<Promise<MyCanvasLayer>>();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();

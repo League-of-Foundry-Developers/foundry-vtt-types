@@ -22,5 +22,5 @@ expectTypeOf(
 
 // Test the props
 expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Implementation | null>();
-expectTypeOf(doc.layer).toEqualTypeOf<LightingLayer.Any>();
+expectTypeOf(doc.layer).toEqualTypeOf<LightingLayer.Implementation>();
 expectTypeOf(doc.rendered).toEqualTypeOf<boolean>();

@@ -1,4 +1,4 @@
-import type { AnyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
+import type { AnyObject, FixedInstanceType, Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { AbstractWeatherShader, WeatherShaderEffect } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { WeatherOcclusionMaskFilter } from "#client/canvas/rendering/filters/_module.d.mts";
@@ -164,6 +164,9 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
 declare namespace WeatherEffects {
   interface Any extends AnyWeatherEffects {}
   interface AnyConstructor extends Identity<typeof AnyWeatherEffects> {}
+
+  interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["weather"]["layerClass"]> {}
+  interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends CanvasLayer.LayerOptions {
     /** @remarks This causes `WeatherEffect.instance` to be the `EffectsCanvasGroup` */
