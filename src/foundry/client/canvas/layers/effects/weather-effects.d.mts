@@ -12,7 +12,7 @@ import type { CanvasLayer } from "../_module.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface CanvasLayerConfig {
-      WeatherEffects: WeatherEffects.Any;
+      WeatherEffects: WeatherEffects.Implementation;
     }
   }
 }
@@ -162,8 +162,16 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
 }
 
 declare namespace WeatherEffects {
-  interface Any extends AnyWeatherEffects {}
-  interface AnyConstructor extends Identity<typeof AnyWeatherEffects> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyWeatherEffects {}
+    interface AnyConstructor extends Identity<typeof AnyWeatherEffects> {}
+  }
 
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["weather"]["layerClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}

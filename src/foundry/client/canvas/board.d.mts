@@ -985,6 +985,8 @@ declare namespace Canvas {
 
     interface Pointer<ObjectFor extends PIXI.Container = PIXI.Container> extends _Base<ObjectFor, PointerEvent> {}
     interface Wheel extends WheelEvent {}
+
+    /** @deprecated Just use {@linkcode KeyboardEvent} instead */
     interface DeleteKey extends KeyboardEvent {}
 
     interface DarknessChange extends PIXI.FederatedEvent {

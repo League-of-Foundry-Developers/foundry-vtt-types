@@ -372,7 +372,7 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   protected override _onMouseWheel(event: Canvas.Event.Wheel): Promise<Document.ObjectFor<DocumentName>[] | void>;
 
-  protected override _onDeleteKey(event: Canvas.Event.DeleteKey): Promise<void>;
+  // protected override _onDeleteKey(event: Canvas.Event.DeleteKey): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14

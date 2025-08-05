@@ -94,21 +94,25 @@ declare class EffectsCanvasGroup<
 
   /**
    * A layer of background alteration effects which change the appearance of the primary group render texture.
+   * @remarks Not configurable, doesn't have an `Implementation`
    */
   background: layers.CanvasBackgroundAlterationEffects.Any;
 
   /**
    * A layer which adds illumination-based effects to the scene.
+   * @remarks Not configurable, doesn't have an `Implementation`
    */
   illumination: layers.CanvasIlluminationEffects.Any;
 
   /**
    * A layer which adds color-based effects to the scene.
+   * @remarks Not configurable, doesn't have an `Implementation`
    */
   coloration: layers.CanvasColorationEffects.Any;
 
   /**
    * A layer which adds darkness effects to the scene.
+   * @remarks Not configurable, doesn't have an `Implementation`
    */
   darkness: layers.CanvasDarknessEffects.Any;
 

@@ -6,6 +6,7 @@ import type { CanvasLayer } from "../_module.d.mts";
 declare module "#configuration" {
   namespace Hooks {
     interface CanvasLayerConfig {
+      /** @remarks Not configurable, doesn't have an `Implementation` */
       CanvasIlluminationEffects: CanvasIlluminationEffects.Any;
     }
   }
