@@ -35,7 +35,7 @@ expectTypeOf(
     uneditable: [{ key: "Numpad7", logicalKey: "Numpad7", modifiers: ["CONTROL"] }],
     hint: "Some description of the action to be done",
     onDown: (context: KeyboardManager.KeyboardEventContext) => (!context.repeat ? true : undefined),
-    onUp: (_context: KeyboardManager.KeyboardEventContext) => !!(Math.random() > 0.5),
+    onUp: (_context: KeyboardManager.KeyboardEventContext) => Math.random() > 0.5,
     precedence: CONST.KEYBINDING_PRECEDENCE.PRIORITY,
     repeat: false,
     reservedModifiers: [KeyboardManager.MODIFIER_KEYS.SHIFT],
