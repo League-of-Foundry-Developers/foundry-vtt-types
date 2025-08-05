@@ -2,8 +2,16 @@ import { expectTypeOf } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 import { InteractionLayer } from "#client/canvas/layers/_module.mjs";
 
+declare global {
+  namespace CONFIG.Canvas {
+    interface Layers {
+      testInteractionLayer: CONFIG.Canvas.LayerDefinition<typeof MyInteractionLayer, "primary">;
+    }
+  }
+}
+
 interface MyInteractionLayerOptions extends InteractionLayer.LayerOptions {
-  name: "MyInteractionLayer";
+  name: "testInteractionLayer";
   baseClass: typeof MyInteractionLayer;
 }
 
