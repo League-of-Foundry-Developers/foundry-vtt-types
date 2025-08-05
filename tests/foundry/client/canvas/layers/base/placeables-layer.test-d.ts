@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { Container, DisplayObject } from "pixi.js";
 
 import AmbientLight = foundry.canvas.placeables.AmbientLight;
 import BasePlaceableHUD = foundry.applications.hud.BasePlaceableHUD;
@@ -9,6 +8,7 @@ import Document = foundry.abstract.Document;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 import PlaceablesLayer = foundry.canvas.layers.PlaceablesLayer;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
+import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
 
 type CAL = AmbientLight.Implementation;
 type CALDoc = AmbientLightDocument.Implementation;
@@ -23,7 +23,7 @@ class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
   override options: PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass> = SomeLightLayer.layerOptions;
 }
 
-expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | Container<DisplayObject> | undefined>();
+expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | EffectsCanvasGroup.Implementation | undefined>();
 // The following fails as the static `layerOptions` can't access the `DocumentName` type param
 // expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass>>();
 

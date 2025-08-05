@@ -200,7 +200,7 @@ declare class Canvas extends _InternalCanvas {
    * This includes lighting, vision, fog of war and related animations.
    * @defaultValue `undefined`
    */
-  readonly effects: groups.EffectsCanvasGroup | undefined;
+  readonly effects: groups.EffectsCanvasGroup.Implementation | undefined;
 
   /**
    * The visibility Canvas group which handles the fog of war overlay by consolidating multiple render textures,

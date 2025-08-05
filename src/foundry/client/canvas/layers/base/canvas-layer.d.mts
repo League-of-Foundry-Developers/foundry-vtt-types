@@ -1,4 +1,5 @@
 import type { HandleEmptyObject, Identity } from "#utils";
+import type { EffectsCanvasGroup } from "#client/canvas/groups/_module.d.mts";
 
 /**
  * An abstract pattern for primary layers of the game canvas to implement
@@ -23,7 +24,7 @@ declare abstract class CanvasLayer extends PIXI.Container {
   /**
    * Return a reference to the active instance of this canvas layer
    */
-  static get instance(): CanvasLayer.Any | PIXI.Container | undefined;
+  static get instance(): CanvasLayer.Any | EffectsCanvasGroup.Implementation | undefined;
 
   /**
    * The canonical name of the CanvasLayer is the name of the constructor that is the immediate child of the defined baseClass for the layer type.

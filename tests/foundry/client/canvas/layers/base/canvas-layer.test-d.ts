@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { HandleEmptyObject } from "#utils";
 import { CanvasLayer } from "#client/canvas/layers/_module.mjs";
+import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
 
 interface MyLayerOptions extends CanvasLayer.LayerOptions {
   name: "MyLayer";
@@ -15,7 +16,7 @@ declare class MyCanvasLayer extends CanvasLayer {
   protected override _draw(_options: HandleEmptyObject<CanvasLayer.DrawOptions>): Promise<void>;
 }
 
-expectTypeOf(MyCanvasLayer.instance).toEqualTypeOf<CanvasLayer.Any | PIXI.Container | undefined>;
+expectTypeOf(MyCanvasLayer.instance).toEqualTypeOf<CanvasLayer.Any | EffectsCanvasGroup.Implementation | undefined>;
 
 const layer = new MyCanvasLayer();
 
