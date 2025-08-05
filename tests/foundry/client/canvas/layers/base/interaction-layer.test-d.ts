@@ -1,34 +1,48 @@
 import { expectTypeOf } from "vitest";
-import type { HandleEmptyObject } from "fvtt-types/utils";
-import { InteractionLayer } from "#client/canvas/layers/_module.mjs";
+import type { AnyObject } from "fvtt-types/utils";
 
-interface MyInteractionLayerOptions extends InteractionLayer.LayerOptions {
-  name: "MyInteractionLayer";
-  baseClass: typeof MyInteractionLayer;
+import InteractionLayer = foundry.canvas.layers.InteractionLayer;
+
+declare module "fvtt-types/configuration" {
+  namespace Hooks {
+    interface InteractionLayerConfig {
+      TestInteractionLayer: TestInteractionLayer;
+    }
+  }
 }
 
-declare class MyInteractionLayer extends InteractionLayer {
-  override get hookName(): "MyInteractionLayer";
-
-  override options: MyInteractionLayerOptions;
-
-  static override get layerOptions(): MyInteractionLayerOptions;
-
-  protected override _draw(options: HandleEmptyObject<InteractionLayer.DrawOptions>): Promise<void>;
+declare global {
+  namespace CONFIG.Canvas {
+    interface Layers {
+      testInteractionLayer: CONFIG.Canvas.LayerDefinition<typeof TestInteractionLayer, "primary">;
+    }
+  }
 }
 
-expectTypeOf(MyInteractionLayer.layerOptions.baseClass).toEqualTypeOf<typeof MyInteractionLayer>;
+interface TestInteractionLayerOptions extends InteractionLayer.LayerOptions {
+  name: "testInteractionLayer";
+  baseClass: typeof TestInteractionLayer;
+}
+
+declare class TestInteractionLayer extends InteractionLayer {
+  override options: TestInteractionLayerOptions;
+
+  static override get layerOptions(): TestInteractionLayerOptions;
+
+  protected override _draw(options: AnyObject): Promise<void>;
+}
+
+expectTypeOf(TestInteractionLayer.layerOptions.baseClass).toEqualTypeOf<typeof TestInteractionLayer>;
 
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someUser: User.Implementation;
-const layer = new MyInteractionLayer();
+const layer = new TestInteractionLayer();
 
 expectTypeOf(layer.name).toEqualTypeOf<string>();
-expectTypeOf(layer.hookName).toEqualTypeOf<"MyInteractionLayer">();
 
-expectTypeOf(layer.activate()).toEqualTypeOf<MyInteractionLayer>();
-expectTypeOf(layer.activate({})).toEqualTypeOf<MyInteractionLayer>();
-expectTypeOf(layer.activate({ tool: "foo" })).toEqualTypeOf<MyInteractionLayer>();
+expectTypeOf(layer.activate()).toEqualTypeOf<TestInteractionLayer>();
+expectTypeOf(layer.activate({})).toEqualTypeOf<TestInteractionLayer>();
+expectTypeOf(layer.activate({ tool: "foo" })).toEqualTypeOf<TestInteractionLayer>();
 
 expectTypeOf(layer["_activate"]()).toBeVoid();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();

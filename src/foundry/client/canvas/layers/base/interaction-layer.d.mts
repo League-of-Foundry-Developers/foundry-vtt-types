@@ -1,7 +1,6 @@
-import type { HandleEmptyObject, Identity, NullishProps } from "#utils";
+import type { AnyObject, Identity, InexactPartial } from "#utils";
 import type { CanvasLayer } from "../_module.d.mts";
-
-import Canvas = foundry.canvas.Canvas;
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 /**
  * A subclass of CanvasLayer which provides support for user interaction with its contained objects.
@@ -13,13 +12,13 @@ declare class InteractionLayer extends CanvasLayer {
   get active(): boolean;
 
   /**
-   * @privateRemarks Override not in foundry docs but implicit from layerOptions
+   * @privateRemarks Fake override to sync with {@linkcode InteractionLayer.layerOptions}
    */
   override options: InteractionLayer.LayerOptions;
 
   /**
    * @defaultValue `"passive"`
-   * @remarks Set to `"static"` when this layer is `#activate()`d, returned to `"passive"` when `#deactivate()`d
+   * @remarks Set to `"static"` when this layer is {@linkcode activate | activated}, returned to `"passive"` when {@linkcode deactivate | deactivated}
    */
   override eventMode: PIXI.EventMode;
 
@@ -27,38 +26,38 @@ declare class InteractionLayer extends CanvasLayer {
    * Customize behaviors of this CanvasLayer by modifying some behaviors at a class level.
    * @defaultValue
    * ```js
-   * {
+   * Object.assign(super.layerOptions, {
    *   baseClass: InteractionLayer,
    *   zIndex: 0,
-   * }
+   * })
    * ```
    */
   static get layerOptions(): InteractionLayer.LayerOptions;
 
   /**
-   * Activate the InteractionLayer, deactivating other layers and marking this layer's children as interactive.
+   * Activate the `InteractionLayer`, deactivating other layers and marking this layer's children as interactive.
    * @param options - Options which configure layer activation
    * @returns The layer instance, now activated
    */
   activate(options?: InteractionLayer.ActivateOptions): this;
 
   /**
-   * The inner _activate method which may be defined by each InteractionLayer subclass.
+   * The inner `_activate` method which may be defined by each `InteractionLayer` subclass.
    */
   protected _activate(): void;
 
   /**
-   * Deactivate the InteractionLayer, removing interactivity from its children.
+   * Deactivate the `InteractionLayer`, removing interactivity from its children.
    * @returns The layer instance, now inactive
    */
   deactivate(): this;
 
   /**
-   * The inner _deactivate method which may be defined by each InteractionLayer subclass.
+   * The inner `_deactivate` method which may be defined by each `InteractionLayer` subclass.
    */
   protected _deactivate(): void;
 
-  protected override _draw(options: HandleEmptyObject<InteractionLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
   /**
    * Get the zIndex that should be used for ordering this layer vertically relative to others in the same Container.
@@ -146,16 +145,12 @@ declare namespace InteractionLayer {
   }
 
   /** @internal */
-  type _ActivateOptions = NullishProps<{
+  type _ActivateOptions = InexactPartial<{
     /** A specific tool in the control palette to set as active */
     tool: string;
   }>;
 
   interface ActivateOptions extends _ActivateOptions {}
-
-  interface DrawOptions extends CanvasLayer.DrawOptions {}
-
-  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 }
 
 export default InteractionLayer;

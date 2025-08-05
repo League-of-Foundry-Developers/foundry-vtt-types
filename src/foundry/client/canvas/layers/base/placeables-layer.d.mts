@@ -1,16 +1,8 @@
-import type {
-  Brand,
-  FixedInstanceType,
-  HandleEmptyObject,
-  Identity,
-  InexactPartial,
-  NullishProps,
-  ToMethod,
-} from "#utils";
+import type { AnyObject, Brand, FixedInstanceType, Identity, InexactPartial, NullishProps, ToMethod } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
-import type { CanvasLayer, InteractionLayer } from "../_module.d.mts";
+import type { InteractionLayer } from "../_module.d.mts";
 import type { CanvasQuadtree } from "#client/canvas/geometry/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
@@ -21,6 +13,9 @@ import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
  * @template Options      - The type of the options in this layer.
  */
 declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentNames> extends InteractionLayer {
+  /** @privateRemarks Fake type override */
+  static get instance(): PlaceablesLayer.Any | undefined;
+
   /**
    * Sort order for placeables belonging to this layer
    * @defaultValue `0`
@@ -175,7 +170,7 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
    */
   getDocuments(): NonNullable<this["documentCollection"]> | [];
 
-  protected override _draw(options: HandleEmptyObject<PlaceablesLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
   /**
    * Draw a single placeable object
@@ -183,7 +178,7 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
    */
   createObject(document: Document.ImplementationFor<DocumentName>): Document.ObjectFor<DocumentName>;
 
-  protected override _tearDown(options: HandleEmptyObject<PlaceablesLayer.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: AnyObject): Promise<void>;
 
   protected override _activate(): void;
 
@@ -416,10 +411,6 @@ declare namespace PlaceablesLayer {
   type ObjectOf<ConcretePlaceablesLayer extends PlaceablesLayer.Any> = Document.ObjectFor<
     DocumentNameOf<ConcretePlaceablesLayer>
   >;
-
-  interface DrawOptions extends InteractionLayer.DrawOptions {}
-
-  interface TearDownOptions extends CanvasLayer.DrawOptions {}
 
   type CREATION_STATES = Brand<number, "PlaceablesLayer.CREATION_STATES">;
 

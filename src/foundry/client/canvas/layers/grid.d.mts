@@ -1,4 +1,4 @@
-import type { EmptyObject, HandleEmptyObject, Identity, NullishProps, RemoveIndexSignatures } from "#utils";
+import type { AnyObject, EmptyObject, Identity, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { GridShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { GridMesh, GridHighlight } from "#client/canvas/containers/_module.d.mts";
@@ -17,9 +17,7 @@ declare module "#configuration" {
  */
 declare class GridLayer extends CanvasLayer {
   /**
-   * @remarks Due to the grid rework in v12 this points to a BaseGrid subclass rather than a GridLayer instance,
-   *          however to avoid inheritance-based issues this is left as the intended GridLayer instance
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
+   * @remarks Returns `canvas.interface.grid`, as `canvas.grid` is the current {@linkcode foundry.grid.BaseGrid} subclass instance
    */
   static get instance(): GridLayer;
 
@@ -53,7 +51,7 @@ declare class GridLayer extends CanvasLayer {
 
   override options: GridLayer.LayerOptions;
 
-  protected override _draw(options: HandleEmptyObject<GridLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
   /**
    * Creates the grid mesh.
@@ -188,10 +186,6 @@ declare namespace GridLayer {
   interface Any extends AnyGridLayer {}
   interface AnyConstructor extends Identity<typeof AnyGridLayer> {}
 
-  interface DrawOptions extends CanvasLayer.DrawOptions {}
-
-  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
-
   interface LayerOptions extends CanvasLayer.LayerOptions {
     name: "grid";
   }
@@ -199,7 +193,7 @@ declare namespace GridLayer {
   /** @internal */
   type _InitializeMeshOptions = NullishProps<{
     /** The grid style */
-    style: ConfiguredGridStyles;
+    style: Styles;
   }>;
 
   interface InitializeMeshOptions
@@ -274,7 +268,10 @@ declare namespace GridLayer {
     label: string;
   }
 
-  type ConfiguredGridStyles = keyof RemoveIndexSignatures<CONFIG["Canvas"]["gridStyles"]>;
+  /** @deprecated Use {@linkcode GridLayer.Styles} instead */
+  type ConfiguredGridStyles = Styles;
+
+  type Styles = keyof CONFIG["Canvas"]["gridStyles"];
 }
 
 export default GridLayer;

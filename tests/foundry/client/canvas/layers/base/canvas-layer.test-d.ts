@@ -1,28 +1,49 @@
 import { expectTypeOf } from "vitest";
-import type { HandleEmptyObject } from "#utils";
-import { CanvasLayer } from "#client/canvas/layers/_module.mjs";
+import type { AnyObject } from "#utils";
 
-interface MyLayerOptions extends CanvasLayer.LayerOptions {
-  name: "MyLayer";
-  baseClass: typeof MyCanvasLayer;
+import CanvasLayer = foundry.canvas.layers.CanvasLayer;
+import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
+
+declare module "fvtt-types/configuration" {
+  namespace Hooks {
+    interface CanvasLayerConfig {
+      TestCanvasLayer: TestCanvasLayer;
+    }
+  }
 }
 
-declare class MyCanvasLayer extends CanvasLayer {
-  override options: MyLayerOptions;
-
-  static override get layerOptions(): MyLayerOptions;
-
-  protected override _draw(_options: HandleEmptyObject<CanvasLayer.DrawOptions>): Promise<void>;
+declare global {
+  namespace CONFIG.Canvas {
+    interface Layers {
+      testCanvasLayer: CONFIG.Canvas.LayerDefinition<typeof TestCanvasLayer, "primary">;
+    }
+  }
 }
 
-expectTypeOf(MyCanvasLayer.instance).toEqualTypeOf<CanvasLayer.Any | PIXI.Container | undefined>;
+interface TestCanvasLayerOptions extends CanvasLayer.LayerOptions {
+  name: "testCanvasLayer";
+  baseClass: typeof TestCanvasLayer;
+}
 
-const layer = new MyCanvasLayer();
+declare class TestCanvasLayer extends CanvasLayer {
+  override options: TestCanvasLayerOptions;
+
+  static override get layerOptions(): TestCanvasLayerOptions;
+
+  protected override _draw(_options: AnyObject): Promise<void>;
+}
+
+expectTypeOf(TestCanvasLayer.instance).toEqualTypeOf<CanvasLayer.Any | EffectsCanvasGroup.Implementation | undefined>;
+
+const layer = new TestCanvasLayer();
 
 expectTypeOf(layer.name).toEqualTypeOf<string>();
 expectTypeOf(layer.hookName).toEqualTypeOf<string>();
-expectTypeOf(layer.options.baseClass).toExtend<CanvasLayer.AnyConstructor>();
-expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof MyCanvasLayer>();
-expectTypeOf(layer.draw()).toEqualTypeOf<Promise<MyCanvasLayer>>();
+expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof TestCanvasLayer>();
+expectTypeOf(layer.draw()).toEqualTypeOf<Promise<TestCanvasLayer>>();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
-expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<MyCanvasLayer>>();
+expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<TestCanvasLayer>>();
+
+Hooks.on("drawTestCanvasLayer", (layer) => {
+  expectTypeOf(layer).toEqualTypeOf<TestCanvasLayer>();
+});

@@ -1,5 +1,4 @@
-import type { HandleEmptyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
-import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { AnyObject, Identity, InexactPartial, IntentionalPartial, NullishProps } from "#utils";
 import type { AbstractWeatherShader, WeatherShaderEffect } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { WeatherOcclusionMaskFilter } from "#client/canvas/rendering/filters/_module.d.mts";
 import type {
@@ -8,6 +7,7 @@ import type {
   AutumnLeavesWeatherEffect,
 } from "#client/canvas/containers/_module.d.mts";
 import type { CanvasLayer } from "../_module.d.mts";
+import type { EffectsCanvasGroup } from "#client/canvas/groups/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -24,7 +24,7 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
   /**
    * @privateRemarks This is not overridden in foundry but reflects the real behavior, due to `layerOptions.name` being `"effects"`
    */
-  static get instance(): Canvas["effects"];
+  static override get instance(): EffectsCanvasGroup.Implementation | undefined;
 
   /**
    * @defaultValue `true`
@@ -118,9 +118,9 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
 
   set zIndex(value);
 
-  protected override _draw(options: HandleEmptyObject<WeatherEffects.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
-  protected override _tearDown(options: HandleEmptyObject<WeatherEffects.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: AnyObject): Promise<void>;
 
   /**
    * Initialize the weather container from a weather config object.
@@ -169,10 +169,6 @@ declare namespace WeatherEffects {
     /** @remarks This causes `WeatherEffect.instance` to be the `EffectsCanvasGroup` */
     name: "effects";
   }
-
-  interface DrawOptions extends CanvasLayer.DrawOptions {}
-
-  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 
   /**
    * @internal

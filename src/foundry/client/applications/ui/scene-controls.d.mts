@@ -27,6 +27,7 @@ declare class SceneControls<
   /**
    * Prepared data of available controls.
    */
+  // TODO: Dynamically generate keys from CONFIG InteractionLayers
   get controls(): Record<string, SceneControls.Control>;
 
   /**

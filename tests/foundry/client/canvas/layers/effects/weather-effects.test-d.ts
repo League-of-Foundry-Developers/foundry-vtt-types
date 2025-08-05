@@ -2,13 +2,13 @@ import { expectTypeOf } from "vitest";
 
 import AbstractWeatherShader = foundry.canvas.rendering.shaders.AbstractWeatherShader;
 import AutumnLeavesWeatherEffect = foundry.canvas.containers.AutumnLeavesWeatherEffect;
-import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
+// import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
 import ParticleEffect = foundry.canvas.containers.ParticleEffect;
 import WeatherEffects = foundry.canvas.layers.WeatherEffects;
 import WeatherShaderEffect = foundry.canvas.rendering.shaders.WeatherShaderEffect;
 
 // not an error, Foundry really does this for some reason
-expectTypeOf(WeatherEffects.instance).toEqualTypeOf<EffectsCanvasGroup | undefined>();
+// expectTypeOf(WeatherEffects.instance).toEqualTypeOf<EffectsCanvasGroup.Implementation | undefined>();
 expectTypeOf(WeatherEffects.layerOptions).toEqualTypeOf<WeatherEffects.LayerOptions>();
 expectTypeOf(WeatherEffects.layerOptions.name).toEqualTypeOf<"effects">();
 

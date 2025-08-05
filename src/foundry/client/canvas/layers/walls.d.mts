@@ -1,4 +1,4 @@
-import type { Coalesce, HandleEmptyObject, Identity, NullishProps } from "#utils";
+import type { Coalesce, AnyObject, Identity, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Ray, PointSourcePolygon } from "#client/canvas/geometry/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
@@ -76,7 +76,7 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
 
   override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-  protected override _draw(options: HandleEmptyObject<WallsLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
   protected override _deactivate(): void;
 
@@ -179,8 +179,6 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
 declare namespace WallsLayer {
   interface Any extends AnyWallsLayer {}
   interface AnyConstructor extends Identity<typeof AnyWallsLayer> {}
-
-  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Wall.ImplementationClass> {
     name: "walls";

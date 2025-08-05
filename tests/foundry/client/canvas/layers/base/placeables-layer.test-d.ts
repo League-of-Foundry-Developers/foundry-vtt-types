@@ -1,39 +1,52 @@
 import { expectTypeOf } from "vitest";
-import type { Container, DisplayObject } from "pixi.js";
 
 import AmbientLight = foundry.canvas.placeables.AmbientLight;
 import BasePlaceableHUD = foundry.applications.hud.BasePlaceableHUD;
-import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 import CanvasQuadtree = foundry.canvas.geometry.CanvasQuadtree;
 import Document = foundry.abstract.Document;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 import PlaceablesLayer = foundry.canvas.layers.PlaceablesLayer;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 
+// declare module "fvtt-types/configuration" {
+//   namespace Hooks {
+//     interface PlaceablesLayerConfig {
+//       TestLightLayer: TestLightLayer;
+//     }
+//   }
+// }
+
+// declare global {
+//   namespace CONFIG.Canvas {
+//     interface Layers {
+//       testLightLayer: CONFIG.Canvas.LayerDefinition<typeof TestLightLayer, "primary">;
+//     }
+//   }
+// }
 type CAL = AmbientLight.Implementation;
 type CALDoc = AmbientLightDocument.Implementation;
 
-class SomeLightLayer extends PlaceablesLayer<"AmbientLight"> {
+class TestLightLayer extends PlaceablesLayer<"AmbientLight"> {
   static override get layerOptions() {
     return foundry.utils.mergeObject(super.layerOptions, {
-      name: "myLighting",
+      name: "testLightLayer",
     });
   }
 
-  override options: PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass> = SomeLightLayer.layerOptions;
+  override options: PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass> = TestLightLayer.layerOptions;
 }
 
-expectTypeOf(SomeLightLayer.instance).toEqualTypeOf<CanvasLayer | Container<DisplayObject> | undefined>();
+expectTypeOf(TestLightLayer.instance).toEqualTypeOf<PlaceablesLayer.Any | undefined>();
 // The following fails as the static `layerOptions` can't access the `DocumentName` type param
 // expectTypeOf(SomeLightLayer.layerOptions).toEqualTypeOf<PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass>>();
 
-expectTypeOf(SomeLightLayer.layerOptions.objectClass).toEqualTypeOf<any>(); // TODO: Can this be typed to Document.AnyConstructor?
+expectTypeOf(TestLightLayer.layerOptions.objectClass).toEqualTypeOf<any>(); // TODO: Can this be typed to Document.AnyConstructor?
 expectTypeOf(PlaceablesLayer.documentName).toEqualTypeOf<
   "AmbientLight" | "AmbientSound" | "Drawing" | "MeasuredTemplate" | "Note" | "Region" | "Tile" | "Token" | "Wall"
 >();
 expectTypeOf(PlaceablesLayer.placeableClass).toEqualTypeOf<PlaceableObject.AnyConstructor>();
 
-const layer = new SomeLightLayer();
+const layer = new TestLightLayer();
 
 expectTypeOf(layer.options).toEqualTypeOf<PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass>>();
 
@@ -60,7 +73,7 @@ expectTypeOf(layer.getDocuments()).toEqualTypeOf<
   EmbeddedCollection<AmbientLightDocument.Implementation, Scene.Implementation> | []
 >();
 
-expectTypeOf(layer.draw()).toEqualTypeOf<Promise<SomeLightLayer>>();
+expectTypeOf(layer.draw()).toEqualTypeOf<Promise<TestLightLayer>>();
 declare const someLight: CALDoc;
 expectTypeOf(layer.createObject(someLight)).toEqualTypeOf<CAL>();
 
@@ -70,9 +83,9 @@ layer.createObject({});
 // @ts-expect-error A LightLayer needs an AmbientLightDocument.
 layer.createObject();
 
-expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<SomeLightLayer>>();
-expectTypeOf(layer.activate()).toEqualTypeOf<SomeLightLayer>();
-expectTypeOf(layer.deactivate()).toEqualTypeOf<SomeLightLayer>();
+expectTypeOf(layer.tearDown()).toEqualTypeOf<Promise<TestLightLayer>>();
+expectTypeOf(layer.activate()).toEqualTypeOf<TestLightLayer>();
+expectTypeOf(layer.deactivate()).toEqualTypeOf<TestLightLayer>();
 
 expectTypeOf(layer.get("id")).toEqualTypeOf<CAL | undefined>();
 
@@ -163,3 +176,7 @@ expectTypeOf(layer.updateAll(transformer, filter, { diff: true, noHook: true }))
 // @ts-expect-error An x and y coordinate is required
 // This actually currently errors just on unknown key, not x/y requiredness
 layer.updateAll({ no_light_data: 0 });
+
+// Hooks.on("drawTestLightLayer", (layer) => {
+//   expectTypeOf(layer).toEqualTypeOf<TestLightLayer>();
+// });

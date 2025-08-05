@@ -1,9 +1,9 @@
-import type { FixedInstanceType, HandleEmptyObject, Identity, NullishProps } from "#utils";
+import type { AnyObject, FixedInstanceType, Identity, NullishProps } from "#utils";
 import type { LineIntersection } from "#common/utils/geometry.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Cursor } from "#client/canvas/containers/_module.mjs";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
-import type { CanvasLayer, InteractionLayer } from "#client/canvas/layers/_module.d.mts";
+import type { InteractionLayer } from "#client/canvas/layers/_module.d.mts";
 import type { Ping, Ruler } from "#client/canvas/interaction/_module.d.mts";
 
 declare module "#configuration" {
@@ -121,9 +121,9 @@ declare class ControlsLayer extends InteractionLayer {
    */
   getRulerForUser(userId: string): Ruler.Implementation | null;
 
-  protected override _draw(options: HandleEmptyObject<ControlsLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
-  protected override _tearDown(options: HandleEmptyObject<ControlsLayer.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: AnyObject): Promise<void>;
 
   /**
    * Draw the cursors container
@@ -248,10 +248,6 @@ declare namespace ControlsLayer {
 
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["controls"]["layerClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
-
-  interface DrawOptions extends InteractionLayer.DrawOptions {}
-
-  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 
   interface LayerOptions extends InteractionLayer.LayerOptions {
     name: "controls";

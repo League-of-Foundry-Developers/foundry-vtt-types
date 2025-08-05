@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity } from "#utils";
+import type { AnyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { MeasuredTemplate } from "#client/canvas/placeables/_module.d.mts";
@@ -44,7 +44,7 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
 
   protected override _deactivate(): void;
 
-  protected override _draw(options: HandleEmptyObject<TemplateLayer.DrawOptions>): Promise<void>;
+  protected override _draw(options: AnyObject): Promise<void>;
 
   /**
    * Register game settings used by the TemplatesLayer
@@ -62,8 +62,6 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
 declare namespace TemplateLayer {
   interface Any extends AnyTemplateLayer {}
   interface AnyConstructor extends Identity<typeof AnyTemplateLayer> {}
-
-  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<MeasuredTemplate.ImplementationClass> {
     name: "templates";

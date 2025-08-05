@@ -1,4 +1,4 @@
-import type { HandleEmptyObject, Identity } from "#utils";
+import type { AnyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { CanvasDepthMask, PlaceablesLayer } from "./_module.d.mts";
 import type { Tile } from "#client/canvas/placeables/_module.d.mts";
@@ -54,7 +54,7 @@ declare class TilesLayer extends PlaceablesLayer<"Tile"> {
 
   override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-  protected override _tearDown(options: HandleEmptyObject<TilesLayer.TearDownOptions>): Promise<void>;
+  protected override _tearDown(options: AnyObject): Promise<void>;
 
   protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
 
@@ -107,8 +107,6 @@ declare class TilesLayer extends PlaceablesLayer<"Tile"> {
 declare namespace TilesLayer {
   interface Any extends AnyTilesLayer {}
   interface AnyConstructor extends Identity<typeof AnyTilesLayer> {}
-
-  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<Tile.ImplementationClass> {
     name: "tiles";
