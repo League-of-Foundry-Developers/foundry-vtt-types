@@ -24,7 +24,7 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
   /**
    * @privateRemarks This is not overridden in foundry but reflects the real behavior, due to `layerOptions.name` being `"effects"`
    */
-  static get instance(): Canvas["effects"];
+  static override get instance(): Canvas["effects"];
 
   /**
    * @defaultValue `true`
