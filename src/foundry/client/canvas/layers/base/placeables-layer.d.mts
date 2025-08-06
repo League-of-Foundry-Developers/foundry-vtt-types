@@ -1,13 +1,4 @@
-import type {
-  AnyObject,
-  Brand,
-  FixedInstanceType,
-  Identity,
-  InexactPartial,
-  NullishProps,
-  PrettifyType,
-  ToMethod,
-} from "#utils";
+import type { AnyObject, Brand, Identity, InexactPartial, NullishProps, ToMethod } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
@@ -21,7 +12,7 @@ import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
  * @template DocumentName - The key of the configuration which defines the object and document class.
  * @template Options      - The type of the options in this layer.
  */
-declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentNames> extends InteractionLayer {
+declare class PlaceablesLayer<out DocumentName extends Document.PlaceableType> extends InteractionLayer {
   /**
    * Sort order for placeables belonging to this layer
    * @defaultValue `0`
@@ -94,7 +85,7 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
    * @defaultValue `undefined`
    * @abstract
    */
-  static documentName: PlaceablesLayer.DocumentNames;
+  static documentName: Document.PlaceableType;
 
   /**
    * Creation states affected to placeables during their construction.
@@ -576,12 +567,12 @@ declare namespace PlaceablesLayer {
   interface MoveManyOptions extends _MoveManyOptions {}
 
   /** @privateRemarks Handled like this rather than an interface mapping to avoid extraneous type calculation */
-  type HistoryDataFor<Operation extends Document.Database.Operation, DocumentName extends DocumentNames> =
+  type HistoryDataFor<Operation extends Document.Database.Operation, DocumentName extends Document.PlaceableType> =
     | (Operation extends "create" ? { _id: string } : never)
     | (Operation extends "update" ? Document.UpdateDataForName<DocumentName> & { _id: string } : never)
     | (Operation extends "delete" ? Document.CreateDataForName<DocumentName> & { _id: string } : never);
 
-  type HistoryEntry<DocumentName extends DocumentNames> =
+  type HistoryEntry<DocumentName extends Document.PlaceableType> =
     | { type: "create"; data: HistoryDataFor<"create", DocumentName>[] }
     | {
         type: "update";
@@ -671,15 +662,16 @@ declare namespace PlaceablesLayer {
 
   // Note(LukeAbby): This uses `ToMethod` for variance reasons. Specifically this should be
   // covariant over `DocumentName`.
-  type UpdateAllTransformation<DocumentName extends DocumentNames> =
+  type UpdateAllTransformation<DocumentName extends Document.PlaceableType> =
     | ToMethod<(placeable: Document.ObjectFor<DocumentName>) => Document.UpdateDataForName<DocumentName>>
     | Document.UpdateDataForName<DocumentName>;
 
-  type UpdateAllCondition<DocumentName extends DocumentNames> = (
+  type UpdateAllCondition<DocumentName extends Document.PlaceableType> = (
     placeable: Document.ObjectFor<DocumentName>,
   ) => boolean;
 
-  type UpdateAllOptions<DocumentName extends DocumentNames> = Document.Database.UpdateOperationForName<DocumentName>;
+  type UpdateAllOptions<DocumentName extends Document.PlaceableType> =
+    Document.Database.UpdateOperationForName<DocumentName>;
 
   /** @internal */
   type _CanvasCoordinatesFromDropOptions = NullishProps<{
@@ -718,6 +710,6 @@ declare namespace PlaceablesLayer {
 
 export default PlaceablesLayer;
 
-declare abstract class AnyPlaceablesLayer extends PlaceablesLayer<PlaceablesLayer.DocumentNames> {
+declare abstract class AnyPlaceablesLayer extends PlaceablesLayer<Document.PlaceableType> {
   constructor(...args: never);
 }
