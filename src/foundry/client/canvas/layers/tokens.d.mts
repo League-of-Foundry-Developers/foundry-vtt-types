@@ -143,7 +143,7 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
 
   protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 
-  protected override _onMouseWheel(event: Canvas.Event.Wheel): Promise<Token.Implementation[] | void>;
+  protected override _onMouseWheel(event: Canvas.Event.Wheel): Promise<Token.Implementation[]> | void;
 
   /**
    * @deprecated since v12 until v14
