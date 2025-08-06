@@ -411,7 +411,7 @@ declare namespace PlaceablesLayer {
   type DocumentNames = Document.PlaceableType;
 
   // type ImplementationClassFor<Name extends Document.PlaceableType> =
-  // type ImplementationFor<Name extends Document.PlaceableType> = DocumentNameToLayerMap[Name];
+  type ImplementationFor<Name extends Document.PlaceableType> = DocumentNameToLayerMap[Name];
 
   /**
    * No constraint on T, unlike {@linkcode DocumentNameOf}; use that instead if possible
