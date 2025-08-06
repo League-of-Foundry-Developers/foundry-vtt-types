@@ -60,7 +60,6 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
 
   protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
-  // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to just Promise<AmbientLight>
   protected _onMouseWheel(event: Canvas.Event.Wheel): Promise<AmbientLight.Implementation>;
 
   /**

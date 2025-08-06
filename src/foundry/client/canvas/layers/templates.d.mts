@@ -55,7 +55,6 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
 
   protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
-  // @ts-expect-error Foundry is changing the return type here from Promise<PlaceableObject[]> to Promise<MeasuredTemplate>
   protected override _onMouseWheel(event: Canvas.Event.Wheel): Promise<MeasuredTemplate.Implementation> | void;
 }
 

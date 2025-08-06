@@ -1,4 +1,13 @@
-import type { AnyObject, Brand, FixedInstanceType, Identity, InexactPartial, NullishProps, ToMethod } from "#utils";
+import type {
+  AnyObject,
+  Brand,
+  FixedInstanceType,
+  Identity,
+  InexactPartial,
+  NullishProps,
+  PrettifyType,
+  ToMethod,
+} from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
@@ -28,6 +37,13 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
   objects: PIXI.Container | null;
 
   /**
+   * Preview container for config previews
+   * @defaultValue `null`
+   * @remarks Only `null` prior to first draw, does not get reset on tearDown
+   */
+  protected _configPreview: PIXI.Container | null;
+
+  /**
    * Preview Object Placement
    * @defaultValue `null`
    * @remarks Only `null` prior to first draw, does not get reset on tearDown
@@ -42,10 +58,9 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
 
   /**
    * Keep track of an object copied with CTRL+C which can be pasted later
-   * @defaultValue `[]`
-   * @privateRemarks Accessed externally in `ClientKeybinds#_onPaste`, which is marked `@private`
+   * @deprecated Replaced with {@linkcode PlaceablesLayer.clipboard}
    */
-  protected _copy: Document.ObjectFor<DocumentName>[];
+  protected _copy: never;
 
   /**
    * A Quadtree which partitions and organizes Walls into quadrants for efficient target identification.
@@ -370,7 +385,9 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
 
   /** @privateRemarks `void` added to return union for TokenLayer reasons */
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  protected override _onMouseWheel(event: Canvas.Event.Wheel): Promise<Document.ObjectFor<DocumentName>[] | void>;
+  protected override _onMouseWheel(
+    event: Canvas.Event.Wheel,
+  ): Promise<Document.ObjectFor<DocumentName>[] | Document.ObjectFor<DocumentName>> | void;
 
   // protected override _onDeleteKey(event: Canvas.Event.DeleteKey): Promise<void>;
 
@@ -391,16 +408,31 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
    * @remarks `"PlaceableLayer#_highlight is deprecated. Use PlaceableLayer#highlightObjects instead."`
    */
   set _highlight(state);
+
+  #documentName: DocumentName;
 }
 
 declare namespace PlaceablesLayer {
   interface Any extends AnyPlaceablesLayer {}
   interface AnyConstructor extends Identity<typeof AnyPlaceablesLayer> {}
 
+  /** @deprecated Use {@linkcode Document.PlaceableType} */
   type DocumentNames = Document.PlaceableType;
 
-  type ImplementationClassFor<Name extends DocumentNames> = CONFIG[Name]["layerClass"];
-  type ImplementationFor<Name extends DocumentNames> = FixedInstanceType<CONFIG[Name]["layerClass"]>;
+  // type ImplementationClassFor<Name extends Document.PlaceableType> =
+  type ImplementationFor<Name extends Document.PlaceableType> = DocumentNameToLayerMap[Name];
+
+  /**
+   * No constraint on T, unlike {@linkcode DocumentNameOf}; use that instead if possible
+   * @internal
+   */
+  type _LayerClassName<T> = T extends abstract new (...args: never) => PlaceablesLayer<infer Name> ? Name : never;
+
+  type DocumentNameToLayerMap = {
+    [K in keyof typeof CONFIG.Canvas.layers as _LayerClassName<
+      (typeof CONFIG.Canvas.layers)[K]["layerClass"]
+    >]: (typeof CONFIG.Canvas.layers)[K]["layerClass"];
+  };
 
   type DocumentNameOf<ConcretePlaceablesLayer extends PlaceablesLayer.Any> =
     ConcretePlaceablesLayer extends PlaceablesLayer<infer DocumentName> ? DocumentName : never;
