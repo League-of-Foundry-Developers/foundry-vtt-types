@@ -1,4 +1,4 @@
-import type { AnyObject, Brand, Identity, InexactPartial, NullishProps, ToMethod } from "#utils";
+import type { AnyObject, Brand, FixedInstanceType, Identity, InexactPartial, NullishProps, ToMethod } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
@@ -410,20 +410,21 @@ declare namespace PlaceablesLayer {
   /** @deprecated Use {@linkcode Document.PlaceableType} */
   type DocumentNames = Document.PlaceableType;
 
-  // type ImplementationClassFor<Name extends Document.PlaceableType> =
-  type ImplementationFor<Name extends Document.PlaceableType> = DocumentNameToLayerMap[Name];
+  type ImplementationClassFor<Name extends Document.PlaceableType> =
+    CONFIG["Canvas"]["layers"][DocumentNameToLayerNameMap[Name]]["layerClass"];
+  type ImplementationFor<Name extends Document.PlaceableType> = FixedInstanceType<ImplementationClassFor<Name>>;
 
-  /**
-   * No constraint on T, unlike {@linkcode DocumentNameOf}; use that instead if possible
-   * @internal
-   */
-  type _LayerClassName<T> = T extends abstract new (...args: never) => PlaceablesLayer<infer Name> ? Name : never;
-
-  type DocumentNameToLayerMap = {
-    [K in keyof typeof CONFIG.Canvas.layers as _LayerClassName<
-      (typeof CONFIG.Canvas.layers)[K]["layerClass"]
-    >]: (typeof CONFIG.Canvas.layers)[K]["layerClass"];
-  };
+  interface DocumentNameToLayerNameMap {
+    AmbientLight: "lighting";
+    AmbientSound: "sounds";
+    Drawing: "drawings";
+    MeasuredTemplate: "templates";
+    Note: "notes";
+    Region: "regions";
+    Tile: "tiles";
+    Token: "tokens";
+    Wall: "walls";
+  }
 
   type DocumentNameOf<ConcretePlaceablesLayer extends PlaceablesLayer.Any> =
     ConcretePlaceablesLayer extends PlaceablesLayer<infer DocumentName> ? DocumentName : never;
