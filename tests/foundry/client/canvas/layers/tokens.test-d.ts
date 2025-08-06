@@ -65,7 +65,7 @@ expectTypeOf(
   Promise<foundry.applications.ui.Notifications.Notification<"warning"> | false | TokenDocument.Implementation>
 >();
 expectTypeOf(layer["_onClickLeft"](pointerEvent)).toBeVoid();
-expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token.Implementation[] | void>>();
+expectTypeOf(layer["_onMouseWheel"](someWheelEvent)).toEqualTypeOf<Promise<Token.Implementation[]> | void>();
 
 // deprecated since v12, until v14
 // eslint-disable-next-line @typescript-eslint/no-deprecated
