@@ -64,7 +64,8 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
 
   override storeHistory<Operation extends Document.Database.Operation>(
     type: Operation,
-    data: PlaceablesLayer.HistoryDataFor<Operation, "Region">,
+    data: PlaceablesLayer.HistoryDataFor<Operation, "Region">[],
+    options?: PlaceablesLayer.HistoryEntry<"Region">["options"],
   ): void;
 
   /** @remarks Core overrides this returning an empty array to prevent copy & paste behavior. */

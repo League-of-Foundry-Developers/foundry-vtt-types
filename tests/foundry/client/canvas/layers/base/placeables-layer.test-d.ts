@@ -109,24 +109,28 @@ expectTypeOf(
 expectTypeOf(layer.moveMany()).toEqualTypeOf<Promise<CAL[]> | undefined>();
 expectTypeOf(layer.moveMany({})).toEqualTypeOf<Promise<CAL[]> | undefined>();
 expectTypeOf(
-  layer.moveMany({ dx: undefined, dy: -1, rotate: true, ids: ["abc", "def"], includeLocked: null }),
+  layer.moveMany({ dx: undefined, dy: -1, rotate: true, ids: ["abc", "def"], includeLocked: undefined }),
 ).toEqualTypeOf<Promise<CAL[]> | undefined>();
 
 expectTypeOf(layer.undoHistory()).toEqualTypeOf<Promise<CALDoc[]>>();
 expectTypeOf(layer.deleteAll()).toEqualTypeOf<Promise<undefined | false | null>>();
 
-expectTypeOf(layer.storeHistory("create", { _id: someLight.id ?? "XXXXXSomeIDXXXXX" })).toEqualTypeOf<void>();
+expectTypeOf(layer.storeHistory("create", [{ _id: someLight.id ?? "XXXXXSomeIDXXXXX" }])).toEqualTypeOf<void>();
 expectTypeOf(
-  layer.storeHistory("update", {
-    ...someLight.toObject(), // TODO: make this a subset of known properties of the schema after docs v2
-    _id: someLight.id ?? "XXXXXSomeIDXXXXX",
-  }),
+  layer.storeHistory("update", [
+    {
+      ...someLight.toObject(), // TODO: make this a subset of known properties of the schema after docs v2
+      _id: someLight.id ?? "XXXXXSomeIDXXXXX",
+    },
+  ]),
 ).toEqualTypeOf<void>();
 expectTypeOf(
-  layer.storeHistory("delete", {
-    ...someLight.toObject(), // TODO: make this a subset of known properties of the schema after docs v2
-    _id: someLight.id ?? "XXXXXSomeIDXXXXX",
-  }),
+  layer.storeHistory("delete", [
+    {
+      ...someLight.toObject(), // TODO: make this a subset of known properties of the schema after docs v2
+      _id: someLight.id ?? "XXXXXSomeIDXXXXX",
+    },
+  ]),
 ).toEqualTypeOf<void>();
 
 // @ts-expect-error "new" is not a valid history type.

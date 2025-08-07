@@ -6,7 +6,7 @@ import type { SceneControls } from "#client/applications/ui/_module.d.mts";
 /**
  * A subclass of CanvasLayer which provides support for user interaction with its contained objects.
  */
-declare class InteractionLayer extends CanvasLayer {
+declare abstract class InteractionLayer extends CanvasLayer {
   /**
    * Is this layer currently active
    */

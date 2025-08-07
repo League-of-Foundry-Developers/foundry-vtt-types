@@ -126,10 +126,10 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
    */
   protected _getOccludableTokens(): Token.Implementation[];
 
-  /** @remarks "Clean actorData and delta updates from the history so changes to those fields are not undone" */
   override storeHistory<Operation extends Document.Database.Operation>(
     type: Operation,
-    data: PlaceablesLayer.HistoryDataFor<Operation, "Token">,
+    data: PlaceablesLayer.HistoryDataFor<Operation, "Token">[],
+    options?: PlaceablesLayer.HistoryEntry<"Token">["options"],
   ): void;
 
   /**

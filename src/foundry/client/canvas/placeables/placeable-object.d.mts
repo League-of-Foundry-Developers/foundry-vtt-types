@@ -618,9 +618,13 @@ declare namespace PlaceableObject {
   interface Any extends AnyPlaceableObject {}
   interface AnyConstructor extends Identity<typeof AnyPlaceableObject> {}
 
-  type AnyCanvasDocument = Scene.Embedded;
+  type AnyCanvasDocument = Document.ImplementationFor<Document.PlaceableType>;
 
   type RenderFlags = RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS>;
+
+  type PassableRenderFlagsFor<DocumentName extends Document.PlaceableType> = RenderFlagsMixin.ToBooleanFlags<
+    Document.ObjectClassFor<DocumentName>["RENDER_FLAGS"]
+  >;
 
   interface RENDER_FLAGS {
     /** @defaultValue `{ propagate: ["refresh"] }` */
