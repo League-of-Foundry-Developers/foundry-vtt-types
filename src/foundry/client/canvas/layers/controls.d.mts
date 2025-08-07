@@ -1,7 +1,7 @@
-import type { FixedInstanceType, AnyObject, Identity, NullishProps } from "#utils";
+import type { FixedInstanceType, AnyObject, Identity, InexactPartial } from "#utils";
 import type { LineIntersection } from "#common/utils/geometry.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type { Cursor } from "#client/canvas/containers/_module.mjs";
+import type { Cursor, UnboundContainer } from "#client/canvas/containers/_module.mjs";
 import type { Ray } from "#client/canvas/geometry/_module.d.mts";
 import type { InteractionLayer } from "#client/canvas/layers/_module.d.mts";
 import type { Ping, Ruler } from "#client/canvas/interaction/_module.d.mts";
@@ -15,7 +15,7 @@ declare module "#configuration" {
 }
 
 /**
- * A CanvasLayer for displaying UI controls which are overlayed on top of other layers.
+ * A CanvasLayer for displaying UI controls which are overlaid on top of other layers.
  *
  * We track three types of events:
  * 1) Cursor movement
@@ -25,9 +25,7 @@ declare module "#configuration" {
 declare class ControlsLayer extends InteractionLayer {
   constructor();
 
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  /** @privateRemarks This is not overridden in foundry but reflects the real behavior. */
   static get instance(): Canvas["controls"];
 
   /**
@@ -38,24 +36,32 @@ declare class ControlsLayer extends InteractionLayer {
 
   /**
    * A container of DoorControl instances
-   * @defaultValue `new PIXI.Container()`
    */
   doors: PIXI.Container;
 
   /**
-   * A container of cursor interaction elements.
-   * Contains cursors, rulers, interaction rectangles, and pings
-   * @defaultValue `new PIXI.Container()`
+   * A container of pings interaction elements.
+   * Contains pings elements.
    * @remarks This Container's `eventMode` is set to `"none"` and its `mask` is set to `canvas.masks.canvas`
    */
-  cursors: PIXI.Container;
+  pings: PIXI.Container;
 
   /**
-   * Ruler tools, one per connected user
-   * @defaultValue `new PIXI.Container()`
+   * A container of cursor interaction elements.
+   * Contains cursors, rulers, interaction rectangles, and pings
    * @remarks This Container's `eventMode` is set to `"none"`
    */
-  rulers: PIXI.Container;
+  cursors: UnboundContainer;
+
+  /** @deprecated Removed and replaced with {@linkcode _rulerPaths} in v13. This warning will be removed in v14. */
+  rulers: never;
+
+  /**
+   * The ruler paths.
+   * @remarks This Container's `eventMode` is set to `"none"`
+   * @internal
+   */
+  protected _rulerPaths: PIXI.Container;
 
   /**
    * A graphics instance used for drawing debugging visualization
@@ -70,35 +76,14 @@ declare class ControlsLayer extends InteractionLayer {
    */
   select: PIXI.Graphics | undefined;
 
-  /**
-   * A mapping of user IDs to Cursor instances for quick access
-   * @defaultValue `{}`
-   * @remarks Cursor class is non-configurable
-   */
-  _cursors: Record<string, Cursor>;
+  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
+  _cursors: never;
 
-  /**
-   * A convenience mapping of user IDs to Ruler instances for quick access
-   * @defaultValue `{}`
-   * @remarks Keys are User IDs
-   *
-   * Foundry marked `@private`
-   */
-  protected _rulers: Record<string, Ruler.Implementation>;
+  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
+  protected _rulers: never;
 
-  /**
-   * The positions of any offscreen pings we are tracking.
-   * @remarks Keys in the format `Ping.${foundry.utils.randomID()}`
-   *
-   * Foundry marked `@private`
-   */
-  protected _offscreenPings: Record<string, Canvas.Point>;
-
-  /**
-   * @privateRemarks This override does not exist in Foundry but reflects reality. Not automateable because of
-   * lack of access to the constructor from the instance side
-   */
-  override options: ControlsLayer.LayerOptions;
+  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
+  protected _offscreenPings: never;
 
   /**
    * @defaultValue
@@ -111,15 +96,24 @@ declare class ControlsLayer extends InteractionLayer {
    */
   static override get layerOptions(): ControlsLayer.LayerOptions;
 
+  /** @privateRemarks Fake type override */
+  override options: ControlsLayer.LayerOptions;
+
   /**
    * A convenience accessor to the Ruler for the active game user
    */
   get ruler(): Ruler.Implementation | null;
 
   /**
-   * Get the Ruler display for a specific User ID
+   * Get the Ruler instance for a specific User ID.
    */
   getRulerForUser(userId: string): Ruler.Implementation | null;
+
+  /**
+   * Get the Cursor instance for a specific User ID.
+   * @param userId - The User ID
+   */
+  getCursorForUser(userId: string): Cursor | null;
 
   protected override _draw(options: AnyObject): Promise<void>;
 
@@ -131,9 +125,9 @@ declare class ControlsLayer extends InteractionLayer {
   drawCursors(): void;
 
   /**
-   * Create and add Ruler graphics instances for every game User.
+   * Create and add Ruler instances for every game User.
    */
-  drawRulers(): void;
+  drawRulers(): Promise<void>;
 
   /**
    * Draw door control icons to the doors container.
@@ -142,16 +136,18 @@ declare class ControlsLayer extends InteractionLayer {
 
   /**
    * Draw the select rectangle given an event originated within the base canvas layer
-   * @param coords - The rectangle coordinates of the form `{x, y, width, height}`
+   * @param coords - The rectangle
    */
   drawSelect(coords: Canvas.Rectangle): void;
 
   protected override _deactivate(): void;
 
   /**
-   * Handle mousemove events on the game canvas to broadcast activity of the user's cursor position
+   * Handle mousemove events on the game canvas to broadcast activity. With SHOW_CURSOR permission enabled,
+   * the user's cursor position is transmitted.
+   * @internal
    */
-  protected _onMouseMove(): void;
+  protected _onMouseMove(currentPos: PIXI.Point): void;
 
   /**
    * Handle pinging the canvas.
@@ -167,10 +163,17 @@ declare class ControlsLayer extends InteractionLayer {
   protected _onCanvasPan(): void;
 
   /**
-   * Create and draw the Cursor object for a given User
-   * @param user - The User docuwment for whom to draw the cursor Container
+   * Create and draw the Cursor object for a given User.
+   * @param user - The User document for whom to draw the cursor Container
    */
   drawCursor(user: User.Implementation): Cursor;
+
+  /**
+   * Create and draw the Ruler object for a given User.
+   * @param user - The User document for whom to draw the Ruler
+   * @returns The Ruler instance
+   */
+  drawRuler(user: User.Implementation): Promise<Ruler.Implementation>;
 
   /**
    * Update the cursor when the user moves to a new position
@@ -181,29 +184,27 @@ declare class ControlsLayer extends InteractionLayer {
 
   /**
    * Update display of an active Ruler object for a user given provided data
-   * @see {@link Ruler#update}
    */
   updateRuler(user: User.Implementation, rulerData?: Ruler.UpdateData | null): void;
 
   /**
    * Handle a broadcast ping.
-   * @see {@link Ping.drawPing | `Ping#drawPing`}
+   * @see {@linkcode ControlsLayer.drawPing | ControlsLayer#drawPing}
    * @param user     - The user who pinged.
    * @param position - The position on the canvas that was pinged.
    * @param data     - The broadcast ping data.
    * @returns A promise which resolves once the Ping has been drawn and animated
+   * @remarks Despite `data` being a `={}` parameter, an object containing a valid `scene` property (a scene ID) must be passed
    */
   handlePing(
     user: User.Implementation,
     position: Canvas.Point,
-
-    /** @remarks Despite being a `={}` parameter, an object containing a valid `scene` property (a scene ID) must be passed */
     data: ControlsLayer.HandlePingOptions,
   ): Promise<boolean>;
 
   /**
    * Draw a ping at the edge of the viewport, pointing to the location of an off-screen ping.
-   * @see {@link Ping.drawPing | `Ping#drawPing`}
+   * @see {@linkcode Ping.drawPing | Ping#drawPing}
    * @param position - The coordinates of the off-screen ping.
    * @param options  - Additional options to configure how the ping is drawn.
    * @returns A promise which resolves once the Ping has been drawn and animated
@@ -215,7 +216,7 @@ declare class ControlsLayer extends InteractionLayer {
 
   /**
    * Draw a ping on the canvas
-   * @see {@link Ping.animate | `Ping#animate`}
+   * @see {@linkcode Ping.animate | Ping#animate}
    * @param position - The position on the canvas that was pinged.
    * @param options  - Additional options to configure how the ping is drawn.
    * @returns A promise which resolves once the Ping has been drawn and animated
@@ -232,6 +233,8 @@ declare class ControlsLayer extends InteractionLayer {
    * @remarks Foundry marked `@private`
    */
   protected _findViewportIntersection(position: Canvas.Point): ControlsLayer.ViewportIntersectionData;
+
+  #ControlsLayer: true;
 }
 
 declare namespace ControlsLayer {
@@ -251,30 +254,34 @@ declare namespace ControlsLayer {
 
   interface LayerOptions extends InteractionLayer.LayerOptions {
     name: "controls";
-    zIndex: 1000;
+    zIndex: number;
   }
 
   interface HandlePingOptions extends User.PingData, Ping.ConstructorOptions {}
 
   /** @internal */
-  type _DrawPingOptions = NullishProps<{
+  type _User = InexactPartial<{
     /**
      * The user who pinged.
      * @remarks Only used to set the color of the ping. If `user?.color` ends up `undefined`, the relevant Ping class will provide a default color.
-     * If a `color` property is passed along with this, `color` will take precedence
+     * If a `color` property is passed along with this, it will take precedence.
      */
     user: User.Implementation;
   }>;
 
-  interface DrawPingOptions extends _DrawPingOptions, Pick<User.PingData, "style">, Ping.ConstructorOptions {}
+  interface DrawPingOptions extends _User, Pick<User.PingData, "style">, Ping.ConstructorOptions {}
 
-  interface DrawOffscreenPingOptions extends DrawPingOptions {
+  /** @internal */
+  type _DrawOffscreenPingOptions = InexactPartial<{
     /**
+     * The style of ping to draw, from {@linkcode CONFIG.Canvas.pings}.
      * @defaultValue `"arrow"`
-     * @remarks Can't be `null` as it only has a parameter default
+     * @remarks See {@linkcode User.PingData.style}
      */
-    style?: User.PingData["style"] | undefined;
-  }
+    style: User.PingData["style"];
+  }>;
+
+  interface DrawOffscreenPingOptions extends Omit<DrawPingOptions, "style">, _DrawOffscreenPingOptions {}
 
   interface ViewportIntersectionData {
     /** A Ray from the center of the [viewport minus right sidebar] area to the point on the edge of that area in line with an offscreen ping */

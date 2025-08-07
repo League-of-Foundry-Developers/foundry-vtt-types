@@ -446,13 +446,13 @@ declare namespace User {
       pull: boolean;
 
       /**
-       * The ping style, see CONFIG.Canvas.pings.
+       * The ping style, see {@linkcode CONFIG.Canvas.pings}.
        * @defaultValue `"pulse"`
        * @remarks Overridden with `"arrow"` if the position of the ping is outside the viewport
        *
        * Overridden with `CONFIG.Canvas.pings.types.PULL` (`"chevron"` by default) if photosensitive mode is enabled and the ping is within the viewport
        */
-      style: Ping.ConfiguredStyles;
+      style: Ping.Styles;
     }>;
 
   /** @privateRemarks Only consumed by {@link ControlsLayer.handlePing | `ControlsLayer#handlePing`} */
