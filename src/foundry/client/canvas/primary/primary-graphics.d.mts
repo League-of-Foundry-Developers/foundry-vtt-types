@@ -8,12 +8,8 @@ import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 declare class PrimaryGraphics extends PrimaryCanvasObjectMixin(PIXI.smooth.SmoothGraphics) {
   /**
    * @param options - A config object
-   * @remarks Passing a {@linkcode PIXI.smooth.SmoothGraphicsGeometry} instead of an `options` should be supported here,
-   * but has been disabled due to a core bug: {@link https://github.com/foundryvtt/foundryvtt/issues/13170}
-   *
-   * If you need to pass a specific geometry instead of using a default `new SmoothGraphicsGeometry`, pass it as `options.geometry`.
    */
-  constructor(options?: PrimaryGraphics.ConstructorOptions);
+  constructor(options?: PrimaryGraphics.ConstructorOptions | PIXI.smooth.SmoothGraphicsGeometry);
 
   protected override _calculateCanvasBounds(): void;
 
@@ -34,9 +30,6 @@ declare namespace PrimaryGraphics {
      * A geometry passed to the graphics.
      * @defaultValue {@linkcode PIXI.smooth.SmoothGraphicsGeometry | new PIXI.smooth.SmoothGraphicsGeometry()}
      * @remarks Default applied in the {@linkcode PIXI.smooth.SmoothGraphics} constructor.
-     *
-     * @privateRemarks Foundry types this incorrectly because they didn't update it when they switched base classes:
-     * {@link https://github.com/foundryvtt/foundryvtt/issues/13170}
      */
     geometry: PIXI.smooth.SmoothGraphicsGeometry;
 
