@@ -12,7 +12,7 @@
 
 // eslint-disable-next-line import-x/no-named-default
 import { default as AlphaBlurFilter, AlphaBlurFilterPass } from "#client/canvas/rendering/filters/blur.mjs";
-import { ShaderField } from "#client/canvas/perception/vision-mode.mjs";
+import { ShaderField } from "#client/data/fields.mjs";
 import { DarknessLevelContainer } from "#client/canvas/layers/_module.mjs";
 
 export import AVSettings = globalThis.AVSettings;

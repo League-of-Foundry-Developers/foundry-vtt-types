@@ -8,3 +8,14 @@
 import type CombatConfiguration from "./combat-config.d.mts";
 
 type CombatConfigurationData = CombatConfiguration.Data;
+type CalendarConfig = unknown;
+type CalendarConfigYears = unknown;
+type CalendarConfigLeapYear = unknown;
+type CalendarConfigMonths = unknown;
+type CalendarConfigMonth = unknown;
+type CalendarConfigDays = unknown;
+type CalendarConfigDay = unknown;
+type CalendarConfigSeasons = unknown;
+type CalendarConfigSeason = unknown;
+type TimeComponents = unknown;
+type TimeFormatter = unknown;

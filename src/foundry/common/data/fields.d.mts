@@ -3786,6 +3786,13 @@ declare namespace ColorField {
 
 /**
  * A special {@linkcode StringField} which records a file path or inline base64 data.
+ *
+ * When using the `FilePathField` in a data model that is persisted to the database, for example a Document sub-type,
+ * it is essential to declare this field in the package manifest so that it receives proper server-side validation of
+ * its contents.
+ *
+ * See {@linkcode foundry.packages.AdditionalTypesField.ServerSanitizationFields} for information about this structure.
+ *
  * @template Options         - the options of the FilePathField instance
  * @template AssignmentType  - the type of the allowed assignment values of the FilePathField
  * @template InitializedType - the type of the initialized values of the FilePathField
@@ -4429,9 +4436,16 @@ declare class AnyField extends DataField<DataField.Options.Any, unknown, unknown
 }
 
 /**
- * A subclass of {@linkcode StringField} which contains a sanitized HTML string.
+ * A subclass of {@link foundry.data.fields.StringField | StringField} which contains a sanitized HTML string.
  * This class does not override any StringField behaviors, but is used by the server-side to identify fields which
  * require sanitization of user input.
+ *
+ * When using the `HTMLField` in a data model that is persisted to the database, for example a Document sub-type,
+ * it is essential to declare this field in the package manifest so that it receives proper server-side validation
+ * of its contents.
+ *
+ * See {@linkcode foundry.packages.AdditionalTypesField.ServerSanitizationFields} for information about this structure.
+ *
  * @template Options         - the options of the HTMLField instance
  * @template AssignmentType  - the type of the allowed assignment values of the HTMLField
  * @template InitializedType - the type of the initialized values of the HTMLField
