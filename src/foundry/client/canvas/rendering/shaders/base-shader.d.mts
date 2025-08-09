@@ -12,6 +12,13 @@ declare abstract class AbstractBaseShader extends BaseShaderMixin(PIXI.Shader) {
   constructor(program: PIXI.Program, uniforms?: AbstractBaseShader.Uniforms);
 
   /**
+   * Identify this class to be compatible with ShaderField
+   * @internal
+   * @remarks This is `defineProperty`'d on the class after its definition, with `writable: false, enumerable: false, configurable: false`
+   */
+  protected static readonly _isShaderFieldCompatible: true;
+
+  /**
    * The raw vertex shader used by this class.
    * A subclass of AbstractBaseShader must implement the vertexShader static field.
    * @defaultValue `""`
