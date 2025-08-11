@@ -260,6 +260,23 @@ declare abstract class AnyTypeDataModel extends TypeDataModel<any, any, any, any
  *   }
  * }
  * ```
+ *
+ * **en.json** To provide the localization for methods like {@link foundry.ClientDocument.createDialog |
+ * ClientDocument.createDialog}
+ * ```json
+ * {
+ *   "TYPES": {
+ *     "Actor": {
+ *       "sidekick": "Sidekick",
+ *       "villain": "Villain"
+ *     },
+ *     "JournalEntryPage": {
+ *       "dossier": "Dossier",
+ *       "quest": "Quest"
+ *     }
+ *   }
+ * }
+ * ```
  */
 declare abstract class TypeDataModel<
   Schema extends DataSchema,
@@ -277,23 +294,49 @@ declare abstract class TypeDataModel<
 
   modelProvider: foundry.packages.System | foundry.packages.Module | null;
 
-  /**
-   * A set of localization prefix paths which are used by this data model.
-   */
-  static LOCALIZATION_PREFIXES: string[];
+  static override LOCALIZATION_PREFIXES: string[];
 
   /**
-   * Prepare data related to this DataModel itself, before any derived data is computed.
+   * Prepare data related to this DataModel itself, before any derived data (including Active Effects)
+   * is computed. This is especially useful for initializing numbers, arrays, and sets you expect to be
+   * modified by active effects.
    *
-   * Called before {@link ClientDocument.prepareBaseData | `ClientDocument#prepareBaseData`} in {@link ClientDocument.prepareData | `ClientDocument#prepareData`}.
+   * Called before {@linkcode foundry.documents.abstract.ClientDocumentMixin.AnyMixed.prepareBaseData | ClientDocument#prepareBaseData} in
+   * {@linkcode foundry.documents.abstract.ClientDocumentMixin.AnyMixed.prepareData | ClientDocument#prepareData}.
+   *
+   * @example
+   * ```js
+   * prepareBaseData() {
+   *   // Ensures an active effect of `system.encumbrance.max | ADD | 10` doesn't produce `NaN`
+   *   this.encumbrance = {
+   *     max: 0
+   *   }
+   *   // If you need to access the owning Document, `this.parent` provides a reference for properties like the name
+   *   // or embedded collections, e.g. `this.parent.name` or `this.parent.items`
+   * }
+   * ```
    */
   prepareBaseData(this: TypeDataModel.PrepareBaseDataThis<this>): void;
 
   /**
-   * Apply transformations of derivations to the values of the source data object.
+   * Apply transformations or derivations to the values of the source data object.
    * Compute data fields whose values are not stored to the database.
    *
-   * Called before {@link ClientDocument.prepareDerivedData | `ClientDocument#prepareDerivedData`} in {@link ClientDocument.prepareData | `ClientDocument#prepareData`}.
+   * Called before {@linkcode foundry.abstract.ClientDocumentMixin.AnyMixed.prepareDerivedData | ClientDocument#prepareDerivedData} in
+   * {@linkcode foundry.abstract.ClientDocumentMixin.AnyMixed.prepareData | ClientDocument#prepareData}.
+   *
+   * @example
+   * ```js
+   * prepareDerivedData() {
+   *   this.hp.bloodied = Math.floor(this.hp.max / 2);
+   *
+   *   // this.parent accesses the Document, allowing access to embedded collections
+   *   this.encumbrance.value = this.parent.items.reduce((total, item) => {
+   *     total += item.system.weight;
+   *     return total;
+   *   }, 0)
+   * }
+   * ```
    */
   prepareDerivedData(this: TypeDataModel.PrepareDerivedDataThis<this>): void;
 

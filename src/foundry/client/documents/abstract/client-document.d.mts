@@ -517,11 +517,16 @@ declare const _ClientDocument: _ClientDocumentType;
 // FIXME(LukeAbby): Unlike most mixins, `ClientDocumentMixin` actually requires a specific constructor, the same as `Document`.
 // This means that `BaseClass extends Document.Internal.Constructor` is actually too permissive.
 // However this easily leads to circularities.
-declare function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
+declare function ClientDocumentMixin<BaseClass extends ClientDocumentMixin.BaseClass>(
   Base: BaseClass,
 ): ClientDocumentMixin.Mix<BaseClass>;
 
 declare namespace ClientDocumentMixin {
+  interface AnyMixedConstructor extends ReturnType<typeof foundry.documents.abstract.ClientDocumentMixin<BaseClass>> {}
+  interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+
+  type BaseClass = Document.Internal.Constructor;
+
   type Mix<BaseClass extends Document.Internal.Constructor> = Mixin<
     typeof InternalClientDocument<Document.NameFor<BaseClass>>,
     BaseClass
