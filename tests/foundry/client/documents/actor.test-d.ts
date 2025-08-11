@@ -1,4 +1,4 @@
-import { expectTypeOf } from "vitest";
+import { expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { ArmorData, WeaponData } from "./item.test-d";
@@ -48,3 +48,11 @@ expectTypeOf(actor.prepareEmbeddedDocuments()).toEqualTypeOf<void>();
 
 expectTypeOf(actor.rollInitiative()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(actor.getDependentTokens()).toEqualTypeOf<TokenDocument.Implementation[]>();
+
+test("actor system update", () => {
+  // Note(LukeAbby): This test _should_ fail at some point. Specifically it should require `==type`
+  // as well.
+  actor.update({
+    "==system": {},
+  });
+});

@@ -43,7 +43,7 @@ if (firstHistoryEntry.type === "create") {
 } else if (firstHistoryEntry.type === "update") {
   expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<Array<AmbientLightDocument.UpdateData & { _id: string }>>();
 } else {
-  expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<Array<AmbientLightDocument.UpdateData & { _id: string }>>();
+  expectTypeOf(firstHistoryEntry.data).toEqualTypeOf<Array<AmbientLightDocument.CreateData & { _id: string }>>();
 }
 
 expectTypeOf(layer.options.objectClass).toEqualTypeOf<AmbientLight.ImplementationClass>();

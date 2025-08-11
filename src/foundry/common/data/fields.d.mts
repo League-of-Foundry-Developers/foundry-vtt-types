@@ -1108,10 +1108,24 @@ declare namespace SchemaField {
    * The required type of data used when updating a document.
    * @template Fields - the DataSchema fields of the SchemaField
    */
-  // Note(LukeAbby): Currently this is identical to `AssignmentData` but the intent is to make it
+  // Note(LukeAbby): Currently this is too close to `AssignmentData` but the intent is to make it
   // more accurate in the future.
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type UpdateData<Fields extends DataSchema> = AssignmentData<Fields>;
+  type UpdateData<Fields extends DataSchema> = _AddUpdateKeys<
+    RemoveIndexSignatures<{
+      [Key in keyof Fields]?: Fields[Key][" __fvtt_types_internal_assignment_data"];
+    }>
+  >;
+
+  /** @internal */
+  type _AddUpdateKeys<T> = PrettifyType<
+    T & {
+      [K in keyof T as K extends string ? (T[K] extends undefined ? `-=${K}` : never) : never]?: null;
+    } & {
+      // Note(LukeAbby): There's more work to be done here. For example `type` and `==system` must
+      // go together. This will be added once a performant validator type is created.
+      [K in keyof T as K extends string ? `==${K}` : never]?: T[K];
+    }
+  >;
 
   /**
    * Gets the initialized version of a schema. This means a
