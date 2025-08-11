@@ -1,13 +1,5 @@
 import type { DataModel } from "../abstract/data.d.mts";
-import type {
-  AnyMutableObject,
-  EmptyObject,
-  GetKey,
-  NullishCoalesce,
-  RemoveIndexSignatures,
-  ToMethod,
-  ValueOf,
-} from "#utils";
+import type { AnyMutableObject, GetKey, NullishCoalesce, RemoveIndexSignatures, ToMethod, ValueOf } from "#utils";
 import type { SchemaField } from "./fields.d.mts";
 
 import fields = foundry.data.fields;
@@ -612,8 +604,9 @@ declare namespace TextureData {
  * A {@linkcode fields.SchemaField} subclass used to represent texture data.
  */
 declare class TextureData<
-  SrcOptions extends TextureData.SrcOptions = TextureData.DefaultOptions,
-  SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = EmptyObject,
+  const SrcOptions extends TextureData.SrcOptions = TextureData.DefaultOptions,
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  const SchemaOptions extends fields.SchemaField.Options<TextureData.Schema<SrcOptions>> = {},
 > extends fields.SchemaField<TextureData.Schema<SrcOptions>, SchemaOptions> {
   /**
    * @param options    - Options which are forwarded to the SchemaField constructor
