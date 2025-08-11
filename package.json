@@ -164,14 +164,14 @@
     "type-fest": "^4.41.0",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.31.0",
-    "vitest": "^4.0.0-beta.1"
+    "vitest": "^4.0.0-beta.7"
   },
   "overrides": {
     "expect-type": "^1.2.2"
   },
   "peerDependencies": {
-    "typescript": "^5.4",
-    "@typescript/native-preview": "*"
+    "@typescript/native-preview": "*",
+    "typescript": "^5.4"
   },
   "peerDependenciesMeta": {
     "typescript": {
