@@ -84,8 +84,8 @@ declare namespace BasePackage {
   }
 
   type OwnershipRecord = Record<
-    keyof typeof foundry.CONST.USER_ROLES,
-    keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | undefined
+    keyof typeof CONST.USER_ROLES,
+    keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | undefined
   >;
 
   interface PackageCompendiumSchema extends DataSchema {

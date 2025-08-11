@@ -1,4 +1,5 @@
 import type { DeepPartial, EmptyObject, InexactPartial, PrettifyType, SimpleMerge, UnionToIntersection } from "#utils";
+import type { fields } from "#client/data/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 
 import SocketInterface = foundry.helpers.SocketInterface;
@@ -9,7 +10,7 @@ import type ApplicationV2 from "#client/applications/api/application.mjs";
  * A collection of Document objects contained within a specific compendium pack.
  * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
  *
- * @see {@link Game.packs | `Game#packs`}
+ * @see {@linkcode Game.packs | Game#packs}
  */
 declare class CompendiumCollection<
   Type extends CompendiumCollection.DocumentName,
@@ -37,6 +38,11 @@ declare class CompendiumCollection<
    * The named game setting which contains Compendium configurations.
    */
   static CONFIG_SETTING: "compendiumConfiguration";
+
+  /**
+   * The DataField definition for the configuration Setting
+   */
+  static CONFIG_FIELD: CompendiumCollection.ConfigSetting.Field;
 
   /** The canonical Compendium name - comprised of the originating package and the pack name */
   get collection(): this["metadata"]["id"];
@@ -235,6 +241,7 @@ declare class CompendiumCollection<
   /**
    * Prompt the gamemaster with a dialog to configure ownership of this Compendium pack.
    * @returns The configured ownership for the pack
+   * @remarks As of 13.347, any choices made here will not be saved (see {@link https://github.com/foundryvtt/foundryvtt/issues/13283}).
    */
   configureOwnershipDialog(): Promise<foundry.packages.BasePackage.OwnershipRecord>;
 
@@ -266,13 +273,13 @@ declare class CompendiumCollection<
 
   /**
    * Assign configuration metadata settings to the compendium pack
-   * @param configuration - The object of compendium settings to define
-   *                        (default: `{}`)
+   * @param configuration - The object of compendium settings to define (default: `{}`)
    * @returns A Promise which resolves once the setting is updated
    */
-  configure(
-    configuration?: InexactPartial<CompendiumCollection.Configuration>,
-  ): Promise<CompendiumCollection.Configuration>;
+  configure(configuration?: CompendiumCollection.ConfigSetting.PassableEntry): Promise<void>;
+
+  /** @deprecated See {@linkcode CompendiumCollection.PassableConfigSettingEntryBroken.ownership}  */
+  configure(configuration: CompendiumCollection.ConfigSetting.PassableEntryBroken): Promise<void>;
 
   /**
    * Delete an existing world-level Compendium Collection.
@@ -291,7 +298,7 @@ declare class CompendiumCollection<
    * This operation re-saves all documents within the compendium pack to disk, applying the current data model.
    * If the document type has system data, the latest system data template will also be applied to all documents.
    */
-  migrate(): Promise<this>;
+  migrate(options?: CompendiumCollection.MigrateOptions): Promise<this>;
 
   // Note(LukeAbby): The override for `updateAll` and `_onModifyContents` become unreasonably long and don't add any changes and so has been omitted.
 
@@ -300,13 +307,65 @@ declare class CompendiumCollection<
   /**
    * Handle changes to the world compendium configuration setting.
    */
-  protected static _onConfigure(config: CompendiumCollection.WorldCompendiumConfiguration): void;
+  protected static _onConfigure(config: CompendiumCollection.ConfigSetting.Entry): void;
 }
 
 declare namespace CompendiumCollection {
   interface Any extends CompendiumCollection<DocumentName> {}
 
-  type DocumentName = foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+  type DocumentName = CONST.COMPENDIUM_DOCUMENT_TYPES;
+
+  namespace ConfigSetting {
+    interface EntrySchema extends fields.DataSchema {
+      /**
+       * @defaultValue `undefined`
+       * @remarks The`id` of the folder this is in in the {@linkcode foundry.applications.sidebar.apps.Compendium | Compendium directory}.
+       * `undefined` and `null` should behave
+       */
+      folder: fields.StringField<{
+        required: false;
+        blank: false;
+        nullable: true;
+        validate: (value: unknown) => boolean;
+      }>;
+
+      /** @remarks Integer sort value, for if this pack is either not in a folder, or is in one set to manual sort */
+      sort: fields.NumberField<{
+        required: false;
+        nullable: false;
+        integer: true;
+        min: 0;
+        initial: undefined;
+      }>;
+
+      /** @remarks Is the compendium edit lock engaged? */
+      locked: fields.BooleanField<{ required: false; initial: undefined }>;
+
+      // Presumably the resolution to https://github.com/foundryvtt/foundryvtt/issues/13283 will be a CompendiumOwnershipField here
+    }
+
+    /** @internal */
+    type _Ownership = InexactPartial<{
+      /**
+       * @deprecated As of 13.347, an implementation change has rendered this key (presumably temporarily) non-functional
+       * (see {@link https://github.com/foundryvtt/foundryvtt/issues/13283}).
+       */
+      ownership: foundry.packages.BasePackage.OwnershipRecord;
+    }>;
+
+    interface Entry extends fields.SchemaField.InitializedData<EntrySchema> {}
+
+    interface PassableEntry extends InexactPartial<Entry> {}
+
+    interface PassableEntryBroken extends PassableEntry, _Ownership {}
+
+    type FieldElement = fields.SchemaField<EntrySchema>;
+
+    type Field = fields.TypedObjectField<FieldElement>;
+
+    interface Data
+      extends fields.TypedObjectField.InitializedType<FieldElement, fields.TypedObjectField.DefaultOptions> {}
+  }
 
   interface Configuration {
     ownership: foundry.packages.BasePackage.OwnershipRecord;
@@ -442,13 +501,22 @@ declare namespace CompendiumCollection {
     label?: string | undefined;
   }
 
-  interface WorldCompendiumPackConfiguration {
-    folder?: string;
-    sort?: number;
-    locked?: boolean;
-  }
+  /** @deprecated Use {@linkcode CompendiumCollection.ConfigSetting.Entry} instead. */
+  type WorldCompendiumPackConfiguration = ConfigSetting.Entry;
 
-  interface WorldCompendiumConfiguration extends Record<string, InexactPartial<WorldCompendiumPackConfiguration>> {}
+  /** @deprecated Use {@linkcode CompendiumCollection.ConfigSetting.Data} instead. */
+  type WorldCompendiumConfiguration = ConfigSetting.Data;
+
+  /** @internal */
+  type _MigrateOptions = InexactPartial<{
+    /**
+     * Display notifications
+     * @defaultValue `true`
+     */
+    notify: boolean;
+  }>;
+
+  interface MigrateOptions extends _MigrateOptions {}
 
   // Note(LukeAbby): One neat possibility for this type would be making something like `type: "foo"`,
   // `type__ne: "foo"`, and `type__in: ["foo", "bar"]` all narrow `system`.
