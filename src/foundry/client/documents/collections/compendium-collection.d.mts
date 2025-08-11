@@ -1,10 +1,11 @@
 import type { DeepPartial, EmptyObject, InexactPartial, PrettifyType, SimpleMerge, UnionToIntersection } from "#utils";
 import type { fields } from "#client/data/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
-
-import SocketInterface = foundry.helpers.SocketInterface;
-import Game = foundry.Game;
-import type ApplicationV2 from "#client/applications/api/application.mjs";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { Application } from "#client/appv1/api/_module.d.mts";
+import type { Game } from "#client/_module.d.mts";
+import type { SocketInterface } from "#client/helpers/_module.d.mts";
+import type { BasePackage } from "#common/packages/_module.d.mts";
 
 /**
  * A collection of Document objects contained within a specific compendium pack.
@@ -54,9 +55,7 @@ declare class CompendiumCollection<
    * A reference to the Application class which provides an interface to interact with this compendium content.
    * @defaultValue `Compendium`
    */
-  applicationClass:
-    | foundry.appv1.api.Application.AnyConstructor
-    | foundry.applications.api.ApplicationV2.AnyConstructor;
+  applicationClass: Application.AnyConstructor | ApplicationV2.AnyConstructor;
 
   /**
    * A subsidiary collection which contains the folders within the pack
@@ -89,7 +88,7 @@ declare class CompendiumCollection<
   // Note(LukeAbby): The override for `_getVisibleTreeContents` become unreasonably long and don't add any changes and so has been omitted.
 
   /** Access the compendium configuration data for this pack */
-  get config(): CompendiumCollection.Configuration | EmptyObject;
+  get config(): CompendiumCollection.ConfigSetting.Entry | EmptyObject;
 
   get documentName(): Type;
 
@@ -99,7 +98,7 @@ declare class CompendiumCollection<
   /**
    * The visibility configuration of this compendium pack.
    */
-  get ownership(): foundry.packages.BasePackage.OwnershipRecord;
+  get ownership(): BasePackage.OwnershipRecord;
 
   /** Is this Compendium pack visible to the current game User? */
   get visible(): boolean;
@@ -169,7 +168,7 @@ declare class CompendiumCollection<
   /**
    * Get the ownership level that a User has for this Compendium pack.
    * @param user - The user being tested (default: `game.user`)
-   * @returns The ownership level in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}
+   * @returns The ownership level in {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}
    */
   // user: not null (parameter default only)
   getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
@@ -190,8 +189,7 @@ declare class CompendiumCollection<
   /**
    * Import a Document into this Compendium Collection.
    * @param document - The existing Document you wish to import
-   * @param options  - Additional options which modify how the data is imported. See {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`}
-   *                   (default: `{}`)
+   * @param options  - Additional options which modify how the data is imported. See {@linkcode foundry.documents.abstract.ClientDocumentMixin.AnyMixed.toCompendium | ClientDocument#toCompendium} (default: `{}`)
    * @returns The imported Document instance
    */
   importDocument(
@@ -215,22 +213,19 @@ declare class CompendiumCollection<
 
   /**
    * Fully import the contents of a Compendium pack into a World folder.
-   * @param options - Options which modify the import operation. Additional options are forwarded to {@link WorldCollection.fromCompendium | `WorldCollection#fromCompendium`} and {@linkcode Document.createDocuments} (default: `{}`)
+   * @param options - Options which modify the import operation. Additional options are forwarded to {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium} and {@linkcode Document.createDocuments} (default: `{}`)
    * @returns The imported Documents, now existing within the World
    */
   importAll(options?: CompendiumCollection.ImportAllOptions<Type>): Promise<Document.StoredForName<Type>[]>;
 
   /**
    * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
-   * @param options - Additional options passed to the DialogV2.confirm method
-   *                  (default: `{}`)
+   * @param options - Additional options passed to the DialogV2.confirm method (default: `{}`)
    * @returns A promise which resolves in the following ways: an array of imported
    *          Documents if the "yes" button was pressed, false if the "no" button was pressed, or
    *          null if the dialog was closed without making a choice.
    */
-  importDialog(
-    options?: foundry.applications.api.DialogV2.ConfirmConfig,
-  ): Promise<Document.StoredForName<Type>[] | null | false>;
+  importDialog(options?: DialogV2.ConfirmConfig): Promise<Document.StoredForName<Type>[] | null | false>;
 
   /**
    * Add a Document to the index, capturing it's relevant index attributes
@@ -255,8 +250,7 @@ declare class CompendiumCollection<
   /**
    * Create a new Compendium Collection using provided metadata.
    * @param metadata - The compendium metadata used to create the new pack
-   * @param options - Additional options which modify the Compendium creation request
-   *                  (default: `{}`)
+   * @param options - Additional options which modify the Compendium creation request (default: `{}`)
    */
   static createCompendium<T extends CompendiumCollection.DocumentName>(
     this: abstract new (...args: never) => CompendiumCollection<NoInfer<T>>,
@@ -278,7 +272,7 @@ declare class CompendiumCollection<
    */
   configure(configuration?: CompendiumCollection.ConfigSetting.PassableEntry): Promise<void>;
 
-  /** @deprecated See {@linkcode CompendiumCollection.PassableConfigSettingEntryBroken.ownership}  */
+  /** @deprecated The `ownership` key is currently non-functional, see {@link https://github.com/foundryvtt/foundryvtt/issues/13283} */
   configure(configuration: CompendiumCollection.ConfigSetting.PassableEntryBroken): Promise<void>;
 
   /**
@@ -306,8 +300,12 @@ declare class CompendiumCollection<
 
   /**
    * Handle changes to the world compendium configuration setting.
+   * @remarks As the setting's {@linkcode foundry.helpers.ClientSettings.SettingConfig.onChange | onChange} function, this gets passed the new value after
+   * it's been cleaned and validated by the field in `ClientSettings##cleanJSON`
    */
   protected static _onConfigure(config: CompendiumCollection.ConfigSetting.Entry): void;
+
+  #CompendiumCollection: true;
 }
 
 declare namespace CompendiumCollection {
@@ -355,8 +353,10 @@ declare namespace CompendiumCollection {
 
     interface Entry extends fields.SchemaField.InitializedData<EntrySchema> {}
 
+    /** @remarks The partial'd interface for passing to {@linkcode CompendiumCollection.configure} */
     interface PassableEntry extends InexactPartial<Entry> {}
 
+    /** @privateRemarks See {@linkcode _Ownership.ownership} */
     interface PassableEntryBroken extends PassableEntry, _Ownership {}
 
     type FieldElement = fields.SchemaField<EntrySchema>;
@@ -367,10 +367,8 @@ declare namespace CompendiumCollection {
       extends fields.TypedObjectField.InitializedType<FieldElement, fields.TypedObjectField.DefaultOptions> {}
   }
 
-  interface Configuration {
-    ownership: foundry.packages.BasePackage.OwnershipRecord;
-    locked: boolean;
-  }
+  /** @deprecated Use {@linkcode CompendiumCollection.ConfigSetting.Entry} or {@linkcode CompendiumCollection.ConfigSetting.PassableEntry | PassableEntry} instead */
+  type Configuration = ConfigSetting.Entry;
 
   // The type that's passed to `createCompendium`.
   interface CreateCompendiumMetadata<Type extends DocumentName> {

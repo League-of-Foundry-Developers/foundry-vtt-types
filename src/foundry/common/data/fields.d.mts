@@ -3791,7 +3791,7 @@ declare namespace ColorField {
  * it is essential to declare this field in the package manifest so that it receives proper server-side validation of
  * its contents.
  *
- * See {@linkcode foundry.packages.AdditionalTypesField.ServerSanitizationFields} for information about this structure.
+ * See {@linkcode foundry.packages.AdditionalTypesField.ServerSanitizationFields | ServerSanitizationFields} for information about this structure.
  *
  * @template Options         - the options of the FilePathField instance
  * @template AssignmentType  - the type of the allowed assignment values of the FilePathField
@@ -4444,7 +4444,7 @@ declare class AnyField extends DataField<DataField.Options.Any, unknown, unknown
  * it is essential to declare this field in the package manifest so that it receives proper server-side validation
  * of its contents.
  *
- * See {@linkcode foundry.packages.AdditionalTypesField.ServerSanitizationFields} for information about this structure.
+ * See {@linkcode foundry.packages.AdditionalTypesField.ServerSanitizationFields | ServerSanitizationFields} for information about this structure.
  *
  * @template Options         - the options of the HTMLField instance
  * @template AssignmentType  - the type of the allowed assignment values of the HTMLField
