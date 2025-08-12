@@ -56,7 +56,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/League-of-Foundry-Developers/foundry-vtt-types"
+    "url": "git+https://github.com/League-of-Foundry-Developers/foundry-vtt-types.git"
   },
   "contributors": [
     {
