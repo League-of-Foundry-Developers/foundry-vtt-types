@@ -4,7 +4,7 @@ import type { Identity } from "#utils";
  * A specialized cache used for audio buffers.
  * This is an LRU cache which expires buffers from the cache once the maximum cache size is exceeded.
  */
-declare class AudioBufferCache extends Map {
+declare class AudioBufferCache extends Map<string, AudioBufferCache.Entry> {
   /**
    * Construct an AudioBufferCache providing a maximum disk size beyond which entries are expired.
    * @param cacheSize - The maximum cache size in bytes. 1GB by default.
@@ -42,10 +42,11 @@ declare class AudioBufferCache extends Map {
    * @param src    - The audio buffer source path
    * @param locked - Lock the buffer, preventing its expiration?
    */
-  // locked: not null (put directly into an Entry)
   lock(src: string, locked?: boolean): void;
 
   override toString(): string;
+
+  #AudioBufferCache: true;
 }
 
 declare namespace AudioBufferCache {
