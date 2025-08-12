@@ -27,10 +27,8 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
    */
   lights: PIXI.Container;
 
-  /**
-   * A minimalist texture that holds the background color.
-   */
-  backgroundColorTexture: PIXI.Texture;
+  /** @deprecated Removed without replacement in v13. This warning will be removed in v14 */
+  backgroundColorTexture: never;
 
   /**
    * The base line mesh.
@@ -52,14 +50,8 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
    */
   get renderTexture(): PIXI.RenderTexture;
 
-  /**
-   * Set or retrieve the illumination background color.
-   * @remarks Foundry types this as `number` but it gets passed to {@link Color.from}
-   */
-  set backgroundColor(color: Color.Source);
-
-  /** @remarks This getter doesn't actually exist, it's only here to correct the type inferred from the setter */
-  get backgroundColor(): undefined;
+  /** @deprecated Removed without replacement in v13. This warning will be removed in v14 */
+  set backgroundColor(color: never);
 
   /**
    * Clear illumination effects container
@@ -73,46 +65,27 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
    */
   invalidateDarknessLevelContainer(force?: boolean | null): void;
 
-  /**
-   * Create the background color texture used by illumination point source meshes.
-   * 1x1 single pixel texture.
-   * @returns The background color texture.
-   * @defaultValue
-   * ```js
-   * PIXI.Texture.fromBuffer(new Float32Array(3), 1, 1, {
-   *      type: PIXI.TYPES.FLOAT,
-   *      format: PIXI.FORMATS.RGB,
-   *      wrapMode: PIXI.WRAP_MODES.CLAMP,
-   *      scaleMode: PIXI.SCALE_MODES.NEAREST,
-   *      mipmap: PIXI.MIPMAP_MODES.OFF
-   * })
-   * ```
-   */
-  protected _createBackgroundColorTexture(): PIXI.Texture;
+  /** @deprecated Removed without replacement in v13. This warning will be removed in v14 */
+  protected _createBackgroundColorTexture(): never;
 
-  override render(renderer: PIXI.Renderer): void;
+  /** @deprecated Removed without replacement in v13. This warning will be removed in v14 */
+  override render(renderer: never): never;
 
   protected override _draw(options: AnyObject): Promise<void>;
 
   protected override _tearDown(options: AnyObject): Promise<void>;
 
   /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks "CanvasIlluminationEffects#updateGlobalLight has been deprecated."
-   */
-  updateGlobalLight(): false;
-
-  /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "CanvasIlluminationEffects#background is now obsolete."
+   * @deprecated "`CanvasIlluminationEffects#background` is now obsolete." (since v12, until v14)
    */
   background(): null;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "CanvasIlluminationEffects#globalLight has been deprecated without replacement. Check the canvas.environment.globalLightSource.active instead."
+   * @deprecated "`CanvasIlluminationEffects#globalLight` has been deprecated without replacement. Check the {@linkcode foundry.canvas.sources.GlobalLightSource.active | canvas.environment.globalLightSource.active} instead." (since v12, until v14)
    */
   get globalLight(): boolean;
+
+  #CanvasIlluminationEffects: true;
 }
 
 declare namespace CanvasIlluminationEffects {
@@ -139,8 +112,7 @@ declare class DarknessLevelContainer extends CachedContainer {
    */
   static override textureConfiguration: CachedContainer.TextureConfiguration;
 
-  /** @privateRemarks Including to protect duck typing due to overall similarities b/w DarknessLevelContainer and CachedContainer */
-  #onChildChange(): void;
+  #DarknessLevelContainer: true;
 }
 
 declare namespace DarknessLevelContainer {

@@ -34,6 +34,8 @@ declare class CanvasColorationEffects extends CanvasLayer {
   protected override _draw(options: AnyObject): Promise<void>;
 
   protected override _tearDown(options: AnyObject): Promise<void>;
+
+  #ColorationEffects: true;
 }
 
 declare namespace CanvasColorationEffects {

@@ -1006,182 +1006,7 @@ declare global {
     /**
      * Available Weather Effects implementations
      */
-    weatherEffects: {
-      [weatherEffectID: Brand<string, "CONFIG.weatherEffects">]: canvasLayers.WeatherEffects.AmbienceConfiguration;
-
-      /**
-       * @defaultValue
-       * ```ts
-       * {
-       *   id: "leaves",
-       *   label: "WEATHER.AutumnLeaves",
-       *   effects: [{
-       *     id: "leavesParticles",
-       *     effectClass: AutumnLeavesWeatherEffect
-       *   }]
-       * }
-       * ```
-       */
-      leaves: canvasLayers.WeatherEffects.AmbienceConfiguration;
-
-      /**
-       * @defaultValue
-       * ```ts
-       * {
-       *   id: "rain",
-       *   label: "WEATHER.Rain",
-       *   filter: {
-       *     enabled: false
-       *   },
-       *   effects: [{
-       *     id: "rainShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: RainShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     config: {
-       *       opacity: 0.25,
-       *       tint: [0.7, 0.9, 1.0],
-       *       intensity: 1,
-       *       strength: 1,
-       *       rotation: 0.2618,
-       *       speed: 0.2,
-       *     }
-       *   }]
-       * }
-       * ```
-       */
-      rain: canvasLayers.WeatherEffects.AmbienceConfiguration;
-
-      /**
-       * @defaultValue
-       * ```
-       * {
-       *   id: "rainStorm",
-       *   label: "WEATHER.RainStorm",
-       *   filter: {
-       *     enabled: false
-       *   },
-       *   effects: [{
-       *     id: "fogShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: FogShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     performanceLevel: 2,
-       *     config: {
-       *       slope: 1.5,
-       *       intensity: 0.050,
-       *       speed: -55.0,
-       *       scale: 25,
-       *     }
-       *   },
-       *   {
-       *     id: "rainShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: RainShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     config: {
-       *       opacity: 0.45,
-       *       tint: [0.7, 0.9, 1.0],
-       *       intensity: 1.5,
-       *       strength: 1.5,
-       *       rotation: 0.5236,
-       *       speed: 0.30,
-       *     }
-       *   }]
-       * }
-       * ```
-       */
-      rainStorm: canvasLayers.WeatherEffects.AmbienceConfiguration;
-
-      /**
-       * @defaultValue
-       * ```
-       * {
-       *   id: "fog",
-       *   label: "WEATHER.Fog",
-       *   filter: {
-       *     enabled: false
-       *   },
-       *   effects: [{
-       *     id: "fogShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: FogShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     config: {
-       *       slope: 0.45,
-       *       intensity: 0.4,
-       *       speed: 0.4,
-       *     }
-       *   }]
-       * }
-       * ```
-       */
-      fog: canvasLayers.WeatherEffects.AmbienceConfiguration;
-
-      /**
-       * @defaultValue
-       * ```
-       * {
-       *   id: "snow",
-       *   label: "WEATHER.Snow",
-       *   filter: {
-       *     enabled: false
-       *   },
-       *   effects: [{
-       *     id: "snowShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: SnowShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     config: {
-       *       tint: [0.85, 0.95, 1],
-       *       direction: 0.5,
-       *       speed: 2,
-       *       scale: 2.5,
-       *     }
-       *   }]
-       * }
-       * ```
-       */
-      snow: canvasLayers.WeatherEffects.AmbienceConfiguration;
-
-      /**
-       * @defaultValue
-       * ```
-       * {
-       *   id: "blizzard",
-       *   label: "WEATHER.Blizzard",
-       *   filter: {
-       *     enabled: false
-       *   },
-       *   effects: [{
-       *     id: "snowShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: SnowShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     config: {
-       *       tint: [0.95, 1, 1],
-       *       direction: 0.80,
-       *       speed: 8,
-       *       scale: 2.5,
-       *     }
-       *   },
-       *   {
-       *     id: "fogShader",
-       *     effectClass: WeatherShaderEffect,
-       *     shaderClass: FogShader,
-       *     blendMode: PIXI.BLEND_MODES.SCREEN,
-       *     performanceLevel: 2,
-       *     config: {
-       *       slope: 1.0,
-       *       intensity: 0.15,
-       *       speed: -4.0,
-       *     }
-       *   }]
-       * }
-       * ```
-       */
-      blizzard: canvasLayers.WeatherEffects.AmbienceConfiguration;
-    };
+    weatherEffects: CONFIG.WeatherEffects;
 
     /**
      * The control icons used for rendering common HUD operations
@@ -3287,6 +3112,184 @@ declare global {
       BURROW: string;
       HOVER: string;
       FLY: string;
+    }
+
+    interface WeatherEffects {
+      [weatherEffectID: Brand<string, "CONFIG.weatherEffects">]: canvasLayers.WeatherEffects.AmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   id: "leaves",
+       *   label: "WEATHER.AutumnLeaves",
+       *   effects: [{
+       *     id: "leavesParticles",
+       *     effectClass: AutumnLeavesWeatherEffect
+       *   }]
+       * }
+       * ```
+       * @remarks See {@linkcode canvasLayers.WeatherEffects.SpecificallyAutumnLeavesConfiguration.config | SpecificallyAutumnLeavesConfiguration.config}
+       */
+      leaves: canvasLayers.WeatherEffects.AmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```ts
+       * {
+       *   id: "rain",
+       *   label: "WEATHER.Rain",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "rainShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: RainShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       opacity: 0.25,
+       *       tint: [0.7, 0.9, 1.0],
+       *       intensity: 1,
+       *       strength: 1,
+       *       rotation: 0.2618,
+       *       speed: 0.2,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      rain: canvasLayers.WeatherEffects.AmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```
+       * {
+       *   id: "rainStorm",
+       *   label: "WEATHER.RainStorm",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "fogShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: FogShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     performanceLevel: 2,
+       *     config: {
+       *       slope: 1.5,
+       *       intensity: 0.050,
+       *       speed: -55.0,
+       *       scale: 25,
+       *     }
+       *   },
+       *   {
+       *     id: "rainShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: RainShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       opacity: 0.45,
+       *       tint: [0.7, 0.9, 1.0],
+       *       intensity: 1.5,
+       *       strength: 1.5,
+       *       rotation: 0.5236,
+       *       speed: 0.30,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      rainStorm: canvasLayers.WeatherEffects.AmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```
+       * {
+       *   id: "fog",
+       *   label: "WEATHER.Fog",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "fogShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: FogShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       slope: 0.45,
+       *       intensity: 0.4,
+       *       speed: 0.4,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      fog: canvasLayers.WeatherEffects.AmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```
+       * {
+       *   id: "snow",
+       *   label: "WEATHER.Snow",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "snowShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: SnowShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       tint: [0.85, 0.95, 1],
+       *       direction: 0.5,
+       *       speed: 2,
+       *       scale: 2.5,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      snow: canvasLayers.WeatherEffects.AmbienceConfiguration;
+
+      /**
+       * @defaultValue
+       * ```
+       * {
+       *   id: "blizzard",
+       *   label: "WEATHER.Blizzard",
+       *   filter: {
+       *     enabled: false
+       *   },
+       *   effects: [{
+       *     id: "snowShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: SnowShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     config: {
+       *       tint: [0.95, 1, 1],
+       *       direction: 0.80,
+       *       speed: 8,
+       *       scale: 2.5,
+       *     }
+       *   },
+       *   {
+       *     id: "fogShader",
+       *     effectClass: WeatherShaderEffect,
+       *     shaderClass: FogShader,
+       *     blendMode: PIXI.BLEND_MODES.SCREEN,
+       *     performanceLevel: 2,
+       *     config: {
+       *       slope: 1.0,
+       *       intensity: 0.15,
+       *       speed: -4.0,
+       *     }
+       *   }]
+       * }
+       * ```
+       */
+      blizzard: canvasLayers.WeatherEffects.AmbienceConfiguration;
     }
 
     namespace Cards {
