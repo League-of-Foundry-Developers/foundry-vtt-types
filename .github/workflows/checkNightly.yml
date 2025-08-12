@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  node_version: 23
+  node_version: 24
 
 jobs:
   verify-next:
