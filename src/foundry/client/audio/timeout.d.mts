@@ -1,4 +1,4 @@
-import type { Identity, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 
 /**
  * A special error class used for cancellation.
@@ -57,6 +57,11 @@ declare class AudioTimeout<CallbackReturn = undefined> {
   complete: Promise<CallbackReturn> | undefined;
 
   /**
+   * Is this audio timeout cancelled?
+   */
+  get cancelled(): boolean;
+
+  /**
    * Cancel an AudioTimeout by ending it early, rejecting its completion promise, and skipping any callback function.
    */
   cancel(): void;
@@ -72,11 +77,12 @@ declare class AudioTimeout<CallbackReturn = undefined> {
    * @param options - Additional options which modify timeout behavior
    * @returns A promise which resolves as a returned value of the callback or void
    */
-  // options: not null (destructured where forwarded)
   static wait<CallbackReturn = undefined>(
     delayMS: number,
     options?: AudioTimeout.ConstructorOptions<CallbackReturn>,
   ): Promise<CallbackReturn>;
+
+  #AudioTimeout: true;
 }
 
 declare namespace AudioTimeout {
@@ -84,7 +90,7 @@ declare namespace AudioTimeout {
   interface AnyConstructor extends Identity<typeof AnyAudioTimeout> {}
 
   /** @internal */
-  type _ConstructorOptions<Return = undefined> = NullishProps<{
+  type _ConstructorOptions<Return = undefined> = InexactPartial<{
     /** @defaultValue `game.audio.music` */
     context: AudioContext;
 
