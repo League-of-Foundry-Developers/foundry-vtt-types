@@ -94,17 +94,17 @@ declare namespace System {
     initiative: fields.StringField;
 
     /**
-     * The default grid settings to use for Scenes in this system
+     * The default grid settings to use for Scenes in this system.
      */
     grid: fields.SchemaField<{
-      /** A default grid type to use for Scenes in this system */
+      /** A default grid type to use for Scenes in this system. */
       type: fields.NumberField<{
         required: true;
         choices: typeof foundry.CONST.GRID_TYPES;
         initial: typeof foundry.CONST.GRID_TYPES.SQUARE;
       }>;
 
-      /** A default distance measurement to use for Scenes in this system */
+      /** A default distance measurement to use for Scenes in this system. */
       distance: fields.NumberField<{
         required: true;
         nullable: false;
@@ -112,12 +112,12 @@ declare namespace System {
         initial: 1;
       }>;
 
-      /** A default unit of measure to use for distance measurement in this system */
+      /** A default unit of measure to use for distance measurement in this system. */
       units: fields.StringField<{
         required: true;
       }>;
 
-      /** The default rule used by this system for diagonal measurement on square grids */
+      /** The default rule used by this system for diagonal measurement on square grids. */
       diagonals: fields.NumberField<{
         required: true;
         choices: typeof foundry.CONST.GRID_DIAGONALS;

@@ -41,17 +41,20 @@ declare namespace AdditionalTypesField {
    * The first layer of keys are document types, e.g. "Actor" or "Item".
    * The second layer of keys are document subtypes, e.g. "character" or "feature".
    */
-  type DocumentTypesConfiguration = Record<Document.SystemType, Record<string, ServerSanitationFields>>;
+  type DocumentTypesConfiguration = Record<Document.SystemType, Record<string, ServerSanitizationFields>>;
 
   /** @deprecated Internal type will be removed */
   type ServerTypeDeclarations = DocumentTypesConfiguration;
 
+  /** @deprecated Use {@linkcode ServerSanitizationFields} instead. This warning will be removed in v14. */
+  type ServerSanitationFields = ServerSanitizationFields;
+
   /**
    * Fields that need dedicated server-side handling. Paths are automatically relative to `system`.
    */
-  interface ServerSanitationFields {
+  interface ServerSanitizationFields {
     /**
-     * HTML fields that must be cleaned by the server, e.g. "description.value"
+     * HTML fields that must be cleaned by the server, e.g. `"description.value"`
      */
     htmlFields?: string[] | undefined;
 

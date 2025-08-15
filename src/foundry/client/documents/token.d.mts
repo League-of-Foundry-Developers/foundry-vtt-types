@@ -1651,6 +1651,12 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   stopMovement(): boolean;
 
   /**
+   * This function is called on Token documents that are still being moved by a User that just disconnected.
+   * @internal
+   */
+  _stopMovementOnDisconnect(): void;
+
+  /**
    * Pause the movement of this Token document. The movement can be resumed after being paused.
    * Only the User that initiated the movement can pause it.
    * Returns a callback that can be used to resume the movement later.

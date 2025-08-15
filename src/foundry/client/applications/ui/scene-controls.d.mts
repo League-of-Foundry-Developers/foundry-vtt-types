@@ -115,14 +115,34 @@ declare namespace SceneControls {
   }
 
   /**
-   * The data structure for a set of controls in the {@link SceneControls#controls} record.
+   * The data structure for a set of controls in the {@linkcode SceneControls.controls | SceneControls#controls} record.
    */
   interface Control {
+    /**
+     * A unique identifier for the control
+     */
     name: string;
+
+    /**
+     * An integer indicating the control's order, with 0 being at the top
+     */
     order: number;
+
+    /**
+     * A title for the control: can be a localization path
+     */
     title: string;
+
+    /**
+     * One or more icon classes for the control, typically Font Awesome classes such as `"fa-solid fa-face-smile"`
+     */
     icon: string;
+
+    /**
+     * Whether the control should be visible to the current User
+     */
     visible?: boolean | undefined;
+
     tools: Record<string, Tool>;
 
     /**
@@ -138,17 +158,47 @@ declare namespace SceneControls {
   }
 
   /**
-   * The data structure for a single tool in the {@link Control#tools} record.
+   * The data structure for a single tool in the {@linkcode Control.tools | Control#tools} record.
    */
   interface Tool {
+    /**
+     * An identifier for the tool, unique among the tools of its SceneControl
+     */
     name: string;
+
+    /**
+     * An integer indicating the tool's order, with 0 being at the top
+     */
     order: number;
+
+    /**
+     * A title for the tool: can be a localization path
+     */
     title: string;
+
+    /**
+     * One or more icon classes for the tool, typically Font Awesome classes such as `"fa-solid fa-face-smile"`
+     */
     icon: string;
 
+    /**
+     * Whether the tool should be visible to the current User
+     */
     visible?: boolean | undefined;
+
+    /**
+     * Is the tool an on-or-off toggle?
+     */
     toggle?: boolean | undefined;
+
+    /**
+     * Is the tool the currently the active one? Not applicable to toggles or buttons.
+     */
     active?: boolean | undefined;
+
+    /**
+     * Is the tool a "button" in the sense of immediately resolving on click without becoming the active tool?
+     */
     button?: boolean | undefined;
 
     /** A callback invoked when the tool is activated or deactivated */

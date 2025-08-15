@@ -21,3 +21,4 @@ export { default as VisibilityFilter } from "./visibility.mjs";
 export { default as VisionMaskFilter } from "./vision-mask-filter.mjs";
 export { default as VoidFilter } from "./void.mjs";
 export { default as WeatherOcclusionMaskFilter } from "./weather-occlusion-mask.mjs";
+export { default as AlphaBlurFilter, AlphaBlurFilterPass } from "./blur.mjs";

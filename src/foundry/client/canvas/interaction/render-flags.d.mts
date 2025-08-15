@@ -94,8 +94,14 @@ declare class RenderFlags<Flags extends RenderFlags.ValidateFlags<Flags>> extend
   /** @remarks `defineProperty`'d at construction with `enumerable: false, writable: false` and the value frozen. */
   readonly flags: Readonly<Flags>;
 
-  /** @remarks `defineProperty`'d at construction with `enumerable: false, writable: false` */
-  readonly object: RenderFlagObject;
+  /**
+   * @remarks `defineProperty`'d at construction with `enumerable: false, writable: false`
+   *
+   * `| undefined` because Foundry marks both the constructor's `config` parameter and its {@linkcode RenderFlags.Config.object | object}
+   * property as optional, but in core usage the only place this is called is in the {@linkcode RenderFlagsObject} constructor, where it's
+   * passed `object: this`
+   */
+  readonly object: RenderFlagObject | undefined;
 
   /**
    * The update priority when these render flags are applied.
@@ -134,13 +140,10 @@ declare namespace RenderFlags {
 
     /**
      * The ticker priority at which these render flags are handled
-     * @defaultValue {@linkcode PIXI.UPDATE_PRIORITY.OBJECTS}
-     * @remarks The default value does *not* match the type as of 13.346, this is a core bug: {@link https://github.com/foundryvtt/foundryvtt/issues/13171}.
-     * Due to this the property has been marked required here, it can go back to optional if the default is fixed.
-     *
-     * See {@linkcode RenderFlags.priority | RenderFlags#priority}
+     * @defaultValue "OBJECTS"
+     * @remarks See {@linkcode RenderFlags.priority | RenderFlags#priority}
      */
-    priority: Priority;
+    priority?: Priority | undefined;
   }
 
   /**

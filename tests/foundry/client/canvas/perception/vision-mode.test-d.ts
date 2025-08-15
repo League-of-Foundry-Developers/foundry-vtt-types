@@ -1,12 +1,11 @@
 import { describe, expectTypeOf, test } from "vitest";
-// ShaderField is not re-exported so can't be `import =`
-import type { ShaderField } from "#client/canvas/perception/vision-mode.d.mts";
 
 import VisionMode = foundry.canvas.perception.VisionMode;
 import PointVisionSource = foundry.canvas.sources.PointVisionSource;
 import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 import ColorAdjustmentsSamplerShader = foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader;
 import FlameColorationShader = foundry.canvas.rendering.shaders.FlameColorationShader;
+import ShaderField = foundry.data.fields.ShaderField;
 
 declare const assignmentShaderField: ShaderField.AssignmentType<ShaderField.DefaultOptions>;
 declare const initializedShaderField: ShaderField.InitializedType<ShaderField.DefaultOptions>;

@@ -17,7 +17,17 @@ declare class _InternalDataModel<
 export default DataModel;
 
 /**
- * The abstract base class which defines the data schema contained within a Document.
+ * An abstract class which is a fundamental building block of numerous structures and concepts in Foundry Virtual
+ * Tabletop. Data models perform several essential roles:
+ *
+ * - A static schema definition that all instances of that model adhere to.
+ * - A workflow for data migration, cleaning, validation, and initialization such that provided input data is structured
+ *   according to the rules of the model's declared schema.
+ * - A workflow for transacting differential updates to the instance data and serializing its data into format suitable
+ *   for storage or transport.
+ *
+ * DataModel subclasses can be used for a wide variety of purposes ranging from simple game settings to high complexity
+ * objects like `Scene` documents. Data models are often nested; see the {@linkcode DataModel.parent} property for more.
  */
 declare abstract class DataModel<
   Schema extends DataSchema,
@@ -69,8 +79,40 @@ declare abstract class DataModel<
   readonly parent: Parent;
 
   /**
-   * Define the data schema for documents of this type.
+   * Define the data schema for models of this type.
    * The schema is populated the first time it is accessed and cached for future reuse.
+   *
+   * The schema, through its fields, provide the essential cleaning, validation, and initialization methods to turn the
+   * {@linkcode _source} values into direct properties of the data model. The schema is a static property of the model and
+   * is reused by all instances to perform validation.
+   *
+   * The schemas defined by the core software in classes like {@linkcode foundry.documents.BaseActor} are validated by the
+   * server, where user code does not run. However, almost all documents have a `flags` field to store data, and many
+   * have a `system` field that can be configured to be a {@linkcode foundry.abstract.TypeDataModel} instance. Those models
+   * are *not* constructed on the server and rely purely on client-side code, which means certain extra-sensitive fields
+   * must be also be registered through your package manifest. {@linkcode foundry.packages.AdditionalTypesField.ServerSanitizationFields | ServerSanitizationFields}
+   *
+   * @example
+   * ```js
+   * class SomeModel extends foundry.abstract.DataModel {
+   *   static defineSchema() {
+   *     return {
+   *       foo: new foundry.data.fields.StringField()
+   *     }
+   *   }
+   * }
+   *
+   * class AnotherModel extends SomeModel {
+   *   static defineSchema() {
+   *     // Inheritance and object oriented principles apply to schema definition
+   *     const schema = super.defineSchema()
+   *
+   *     schema.bar = new foundry.data.fields.NumberField()
+   *
+   *     return schema;
+   *   }
+   * }
+   * ```
    * @remarks The returned value MUST be kept up to sync with the `Schema` type parameter.
    */
   static defineSchema(): DataSchema;
@@ -100,7 +142,49 @@ declare abstract class DataModel<
   #validationFailures: { fields: DataModelValidationFailure | null; joint: DataModelValidationFailure | null };
 
   /**
-   * A set of localization prefix paths which are used by this DataModel.
+   * A set of localization prefix paths which are used by this DataModel. This provides an alternative to defining the
+   * `label` and `hint` property of each field by having foundry map the labels to a structure inside the path
+   * provided by the prefix.
+   *
+   * @example
+   * JavaScript class definition and localization call.
+   * ```js
+   * class MyDataModel extends foundry.abstract.DataModel {
+   *   static defineSchema() {
+   *     return {
+   *       foo: new foundry.data.fields.StringField(),
+   *       bar: new foundry.data.fields.NumberField()
+   *     };
+   *   }
+   *   static LOCALIZATION_PREFIXES = ["MYMODULE.MYDATAMODEL"];
+   * }
+   *
+   * Hooks.on("i18nInit", () => {
+   *   // Foundry will attempt to automatically localize models registered for a document subtype, so this step is only
+   *   // needed for other data model usage, e.g. for a Setting.
+   *   Localization.localizeDataModel(MyDataModel);
+   * });
+   * ```
+   *
+   * JSON localization file
+   * ```json
+   * {
+   *   "MYMODULE": {
+   *     "MYDATAMODEL": {
+   *       "FIELDS" : {
+   *         "foo": {
+   *           "label": "Foo",
+   *           "hint": "Instructions for foo"
+   *         },
+   *         "bar": {
+   *           "label": "Bar",
+   *           "hint": "Instructions for bar"
+   *         }
+   *       }
+   *     }
+   *   }
+   * }
+   * ```
    */
   static LOCALIZATION_PREFIXES: string[];
 
