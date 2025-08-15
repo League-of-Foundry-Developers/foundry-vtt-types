@@ -3,11 +3,13 @@ import { describe, expectTypeOf, test } from "vitest";
 import AmbientSound = foundry.canvas.placeables.AmbientSound;
 import Sound = foundry.audio.Sound;
 import Canvas = foundry.canvas.Canvas;
+import AudioTimeout = foundry.audio.AudioTimeout;
 
 const path = "a/path/to/some/sound/file.ogg";
 declare const context: AudioContext;
 declare const point: Canvas.Point;
 declare const elevatedPoint: Canvas.ElevatedPoint;
+declare const timeout: AudioTimeout;
 const callback = (sound: Sound) => {
   console.log(sound);
 };
@@ -163,6 +165,12 @@ describe("Sound Tests", () => {
     expectTypeOf(sound.schedule(() => 3, 3)).toEqualTypeOf<Promise<number>>();
     expectTypeOf(sound.schedule(() => "a", 3)).toEqualTypeOf<Promise<string>>();
     expectTypeOf(sound.schedule(async () => "a", 3)).toEqualTypeOf<Promise<string>>();
+
+    expectTypeOf(sound.unschedule(timeout)).toBeVoid();
+    expectTypeOf(sound.unschedule({ timeout })).toBeVoid();
+
+    expectTypeOf(sound.unscheduleAll()).toBeVoid();
+
     expectTypeOf(sound.applyEffects()).toEqualTypeOf<void>();
   });
 
