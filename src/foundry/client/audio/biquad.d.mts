@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 
 /**
  * A sound effect which applies a biquad filter.
@@ -9,7 +9,6 @@ declare class BiquadFilterEffect extends BiquadFilterNode {
    * @param context - The audio context required by the BiquadFilterNode
    * @param options - Additional options which modify the BiquadFilterEffect behavior
    */
-  // options: not null (destructured)
   constructor(context: AudioContext, options?: BiquadFilterEffect.ConstructorOptions);
 
   /**
@@ -22,10 +21,12 @@ declare class BiquadFilterEffect extends BiquadFilterNode {
   /**
    * Update the state of the effect node given the active flag and numeric intensity.
    * @param options - Options which are updated
-   * @throws If `type` is set to any value in {@link BiquadFilterEffect.AllowedFilterType} other than `"highpass"` or `"lowpass"`
+   * @remarks
+   * @throws If `type` is set to any value in {@linkcode BiquadFilterEffect.AllowedFilterType} other than `"highpass"` or `"lowpass"`
    */
-  // options: not null (destructured)
   update(options?: BiquadFilterEffect.UpdateOptions): void;
+
+  #BiquadFilterEffect: true;
 }
 
 declare namespace BiquadFilterEffect {
@@ -56,16 +57,13 @@ declare namespace BiquadFilterEffect {
     /**
      * The initial intensity of the effect
      * @defaultValue `5`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     intensity: number;
 
     /**
      * The filter type to apply
      * @defaultValue `"lowpass"`
-     * @remarks Can't be `null` as it only has a parameter default.
-     *
-     * Only allows a subset of {@linkcode BiquadFilterType}s
+     * @remarks Only allows a subset of {@linkcode BiquadFilterType}s
      */
     type: AllowedFilterType;
   }>;
@@ -77,7 +75,7 @@ declare namespace BiquadFilterEffect {
    */
   interface ConstructorOptions extends _ConstructorOptions, Omit<BiquadFilterOptions, "type"> {}
 
-  type _UpdateOptions = NullishProps<{
+  type _UpdateOptions = InexactPartial<{
     /**
      * A new effect intensity
      * @remarks This is ignored if it fails a `Number.isFinite` check

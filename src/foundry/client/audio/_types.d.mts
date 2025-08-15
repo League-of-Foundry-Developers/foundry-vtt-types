@@ -16,3 +16,14 @@ type SoundCreationOptions = foundry.audio.AudioHelper.SoundCreationOptions;
 type SoundPlaybackOptions = foundry.audio.Sound.PlaybackOptions;
 
 type SoundScheduleCallback = foundry.audio.Sound.ScheduleCallback;
+
+type AnalysisDataValue = foundry.audio.AudioHelper.AnalysisDataValue;
+
+type AnalysisData = foundry.audio.AudioHelper.AnalysisData;
+
+type ContextName = foundry.audio.AudioHelper.ContextName;
+
+type BandName = foundry.audio.AudioHelper.BandName;
+
+/** @privateRemarks We have no implementation of this type to point to because it is completely unused by core as of 13.347 */
+type AnalysisNodes = unknown;

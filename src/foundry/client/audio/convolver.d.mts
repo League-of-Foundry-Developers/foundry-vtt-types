@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, NullishProps } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 
 declare namespace ConvolverEffect {}
 
@@ -16,7 +16,6 @@ declare class ConvolverEffect extends ConvolverNode {
    * @param context - The audio context required by the ConvolverNode
    * @param options - Additional options which modify the ConvolverEffect behavior
    */
-  // options: not null (destructured)
   constructor(context: AudioContext, options?: ConvolverEffect.ConstructorOptions);
 
   /**
@@ -30,7 +29,6 @@ declare class ConvolverEffect extends ConvolverNode {
    * Update the state of the effect node given the active flag and numeric intensity.
    * @param options - Options which are updated
    */
-  // options: not null (destructured)
   update(options?: ConvolverEffect.UpdateOptions): void;
 
   /** @privateRemarks This override only does side effects then forwards args to super, no type changes */
@@ -61,14 +59,12 @@ declare namespace ConvolverEffect {
     /**
      * The file path to the impulse response buffer to use
      * @defaultValue `"sounds/impulse-responses/ir-full.wav"`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     impulseResponsePath: string;
 
     /**
      * The initial intensity of the effect
      * @defaultValue `5`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     intensity: number;
   }>;
@@ -76,7 +72,7 @@ declare namespace ConvolverEffect {
   interface ConstructorOptions extends _ConstructorOptions, ConvolverOptions {}
 
   /** @internal */
-  type _UpdateOptions = NullishProps<{
+  type _UpdateOptions = InexactPartial<{
     /**
      * A new effect intensity
      * @remarks This is ignored if it fails a `Number.isFinite` check
