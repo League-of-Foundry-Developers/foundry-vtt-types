@@ -5,8 +5,7 @@ declare global {
     /**
      * Test for near-equivalence of two numbers within some permitted epsilon
      * @param n - Some other number
-     * @param e - Some permitted epsilon, by default 1e-8
-                  (default: `1e-8`)
+     * @param e - Some permitted epsilon, by default 1e-8 (default: `1e-8`)
      * @returns Are the numbers almost equal?
      */
     almostEqual(n: number, e?: number): boolean;
@@ -29,39 +28,44 @@ declare global {
     paddedString(digits: number): string;
 
     /**
-     * Return a string prefaced by the sign of the number (+) or (-)
-     * @returns The signed number as a string
+     * Return a locally formatted string prefaced by the explicit sign of the number (+) or (-). Use of this method is
+     * intended for display purposes only.
+     * @returns The signed number as a locally formatted string
+     * @remarks Uses `−` (`U+2212 Minus Sign`) instead of a regular ASCII `-`
      */
     signedString(): string;
 
     /**
-     * Round a number to the nearest number which is a multiple of a given interval
+     * Round a number to the closest number which subtracted from the base is a multiple of the provided interval.
      * This is a convenience function intended to humanize issues of floating point precision.
      * The interval is treated as a standard string representation to determine the amount of decimal truncation applied.
-     * @param interval - The interval to round the number to the nearest multiple of
-     *                   (default: `1`)
-     * @param method   - The rounding method in: round, ceil, floor
-     *                   (default: `"round"`)
+     * @param interval - The step interval (default: `1`)
+     * @param method   - The rounding method (default: `"round"`)
+     * @param base     - The step base (default: `0`)
      * @returns The rounded number
      *
      * @example Round a number to the nearest step interval
-     * ```typescript
+     * ```js
      * let n = 17.18;
      * n.toNearest(5); // 15
      * n.toNearest(10); // 20
      * n.toNearest(10, "floor"); // 10
      * n.toNearest(10, "ceil"); // 20
      * n.toNearest(0.25); // 17.25
+     * n.toNearest(2, "round", 1); // 17
      * ```
+     *
+     * @remarks
+     * @throws If `interval` is negative
      */
-    toNearest(interval?: number, method?: "round" | "ceil" | "floor"): number;
+    toNearest(interval?: number, method?: "round" | "ceil" | "floor", base?: number): number;
 
     /**
      * A faster numeric between check which avoids type coercion to the Number object.
      * Since this avoids coercion, if non-numbers are passed in unpredictable results will occur. Use with caution.
      * @param a         - The lower-bound
      * @param b         - The upper-bound
-     * @param inclusive - Include the bounding values as a true result?
+     * @param inclusive - Include the bounding values as a true result? (default: `true`)
      * @returns Is the number between the two bounds?
      */
     between(a: number, b: number, inclusive?: boolean): boolean;
@@ -69,7 +73,7 @@ declare global {
 
   interface NumberConstructor {
     /**
-     * @see {@link NumberInstance.between | `Number#between`}
+     * @see {@linkcode Number#between}
      */
     between(num: number, a: number, b: number, inclusive?: boolean): boolean;
 
