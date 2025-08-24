@@ -465,7 +465,7 @@ declare abstract class DataField<
     delta: InitializedType,
     model: DataModel.Any,
     change: ActiveEffect.ChangeData,
-  ): InitializedType;
+  ): InitializedType | undefined;
 
   /**
    * Apply an UPGRADE change to this field.
