@@ -88,7 +88,7 @@ declare class CompendiumCollection<
   // Note(LukeAbby): The override for `_getVisibleTreeContents` become unreasonably long and don't add any changes and so has been omitted.
 
   /** Access the compendium configuration data for this pack */
-  get config(): CompendiumCollection.Configuration | EmptyObject;
+  get config(): CompendiumCollection.StoredConfiguration | EmptyObject;
 
   get documentName(): Type;
 
@@ -270,10 +270,10 @@ declare class CompendiumCollection<
    * @param configuration - The object of compendium settings to define (default: `{}`)
    * @returns A Promise which resolves once the setting is updated
    */
-  configure(configuration?: CompendiumCollection.PassableConfiguration): Promise<void>;
+  configure(configuration?: CompendiumCollection.Configuration): Promise<void>;
 
   /** @deprecated The `ownership` key is currently non-functional, see {@link https://github.com/foundryvtt/foundryvtt/issues/13283} */
-  configure(configuration: CompendiumCollection.PassableConfigurationBroken): Promise<void>;
+  configure(configuration: CompendiumCollection.ConfigurationBroken): Promise<void>;
 
   /**
    * Delete an existing world-level Compendium Collection.
@@ -303,7 +303,7 @@ declare class CompendiumCollection<
    * @remarks As the setting's {@linkcode foundry.helpers.ClientSettings.SettingConfig.onChange | onChange} function, this gets passed the new value after
    * it's been cleaned and validated by the field in `ClientSettings##cleanJSON`
    */
-  protected static _onConfigure(config: CompendiumCollection.Configuration): void;
+  protected static _onConfigure(config: CompendiumCollection.StoredConfiguration): void;
 
   #CompendiumCollection: true;
 }
@@ -341,10 +341,10 @@ declare namespace CompendiumCollection {
     // Presumably the resolution to https://github.com/foundryvtt/foundryvtt/issues/13283 will be a CompendiumOwnershipField here
   }
 
-  interface Configuration extends fields.SchemaField.InitializedData<ConfigSettingElementSchema> {}
+  interface StoredConfiguration extends fields.SchemaField.InitializedData<ConfigSettingElementSchema> {}
 
-  /** @remarks The partial'd interface for passing to {@linkcode CompendiumCollection.configure} */
-  interface PassableConfiguration extends InexactPartial<Configuration> {}
+  /** @remarks The partial'd interface for passing to {@linkcode CompendiumCollection.configure}, if you want the stored interface see {@linkcode CompendiumCollection.StoredConfiguration} */
+  interface Configuration extends InexactPartial<StoredConfiguration> {}
 
   /** @internal */
   type _Ownership = InexactPartial<{
@@ -356,7 +356,7 @@ declare namespace CompendiumCollection {
   }>;
 
   /** @privateRemarks See {@linkcode _Ownership.ownership} */
-  interface PassableConfigurationBroken extends PassableConfiguration, _Ownership {}
+  interface ConfigurationBroken extends Configuration, _Ownership {}
 
   type SettingFieldElement = fields.SchemaField<ConfigSettingElementSchema>;
 
@@ -494,8 +494,8 @@ declare namespace CompendiumCollection {
     label?: string | undefined;
   }
 
-  /** @deprecated Use {@linkcode CompendiumCollection.Configuration} instead. */
-  type WorldCompendiumPackConfiguration = CompendiumCollection.Configuration;
+  /** @deprecated Use {@linkcode CompendiumCollection.StoredConfiguration} instead. */
+  type WorldCompendiumPackConfiguration = CompendiumCollection.StoredConfiguration;
 
   /** @deprecated Use {@linkcode CompendiumCollection.SettingData} instead. */
   type WorldCompendiumConfiguration = CompendiumCollection.SettingData;
