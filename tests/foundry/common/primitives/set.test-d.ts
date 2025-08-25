@@ -23,13 +23,15 @@ describe("Set Tests", () => {
     expectTypeOf(stringSet.equals(stringSet2)).toBeBoolean();
     expectTypeOf(stringUnionSet.equals(stringSet)).toBeBoolean();
     expectTypeOf(stringSet.equals(stringUnionSet)).toBeBoolean();
-    // @ts-expect-error A set cannot equal a set with an element type its does not overlap with
+    // This should be an error because a set cannot equal a set with an element type its does not overlap with, but
+    // due to OverlapsWith-based types breaking things, it is currently allowed
     stringSet.equals(numberSet);
 
     expectTypeOf(stringSet.intersects(stringSet2)).toBeBoolean();
     expectTypeOf(stringUnionSet.intersects(stringSet)).toBeBoolean();
     expectTypeOf(stringSet.intersects(stringUnionSet)).toBeBoolean();
-    // @ts-expect-error A set cannot intersect a set with an element type its does not overlap with
+    // This should be an error because a set cannot intersect a set with an element type its does not overlap with, but
+    // due to OverlapsWith-based types breaking things, it is currently allowed
     stringSet.intersects(numberSet);
   });
 
@@ -66,7 +68,8 @@ describe("Set Tests", () => {
     // Deprecated since v13, until v15
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     expectTypeOf(stringSet.isSubset(stringSet2)).toBeBoolean();
-    // @ts-expect-error A set cannot be a subset of a set with an element type its does not overlap with
+    // This should be an error because a set cannot be a subset of a set with an element type its does not overlap with, but
+    // due to OverlapsWith-based types breaking things, it is currently allowed
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     stringSet.isSubset(numberSet);
   });

@@ -1,5 +1,3 @@
-import type { OverlapsWith } from "#utils";
-
 export {};
 
 declare global {
@@ -10,7 +8,7 @@ declare global {
      * @param other - Some other set to compare against
      * @returns Are the sets equal?
      */
-    equals<const O>(other: Set<OverlapsWith<O, T>>): boolean;
+    equals(other: ReadonlySetLike<unknown>): boolean;
 
     /**
      * Return the first value from the set.
@@ -24,7 +22,7 @@ declare global {
      * @returns Do the sets intersect?
      * @remarks Just returns {@linkcode Set.isDisjointFrom | !this.isDisjointFrom(other)}
      */
-    intersects<const O>(other: ReadonlySetLike<OverlapsWith<O, T>>): boolean;
+    intersects(other: ReadonlySetLike<unknown>): boolean;
 
     /**
      * Test whether this set is a subset of some other set.
@@ -33,7 +31,7 @@ declare global {
      * @returns Is the other set a subset of this one?
      * @deprecated "`Set#isSubset` is deprecated in favor of the native {@linkcode Set.isSubsetOf | Set#isSubsetOf}." (since v13, until v15)
      */
-    isSubset<const O>(other: ReadonlySetLike<OverlapsWith<O, T>>): boolean;
+    isSubset(other: ReadonlySetLike<unknown>): boolean;
 
     /**
      * Convert a set to a JSON object by mapping its contents to an array
