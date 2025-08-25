@@ -1,13 +1,16 @@
-import type { Brand, InexactPartial, MaybePromise, NullishProps, Identity } from "#utils";
+import type { Brand, InexactPartial, MaybePromise, Identity, IntentionalPartial } from "#utils";
 import type EventEmitterMixin from "#common/utils/event-emitter.d.mts";
 import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { PointSoundSource } from "#client/canvas/sources/_module.d.mts";
+import type { AudioTimeout } from "./_module.d.mts";
 
 declare namespace Sound {
   interface Any extends AnySound {}
   interface AnyConstructor extends Identity<typeof AnySound> {}
 
   /** @internal */
-  type _ConstructorOptions = NullishProps<{
+  type _ConstructorOptions = InexactPartial<{
     /**
      * Force use of an AudioBufferSourceNode even if the audio duration is long
      * @defaultValue `false`
@@ -38,21 +41,19 @@ declare namespace Sound {
   }
 
   /** @internal */
-  type _LoadOptions = NullishProps<{
+  type _LoadOptions = InexactPartial<{
     /**
      * Automatically begin playback of the sound once loaded
      * @defaultValue `false`
      */
     autoplay: boolean;
-  }> &
-    InexactPartial<{
-      /**
-       * Playback options passed to Sound#play, if autoplay
-       * @defaultValue `{}`
-       * @remarks Can't be `null` as it only has a parameter default
-       */
-      autoplayOptions: Sound.PlaybackOptions;
-    }>;
+
+    /**
+     * Playback options passed to Sound#play, if autoplay
+     * @defaultValue `{}`
+     */
+    autoplayOptions: Sound.PlaybackOptions;
+  }>;
 
   interface LoadOptions extends _LoadOptions {}
 
@@ -60,10 +61,9 @@ declare namespace Sound {
    * Since `Sound##playback` isn't exposed, this interface can *just* be accurate to what's allowable to pass
    * to {@link Sound.play | `Sound#play`} or {@link Sound.stop | `#stop`}, which in reality is what's allowed
    * by `Sound##configurePlayback`
-   *
    * @internal
    */
-  type _PlaybackOptions = NullishProps<{
+  type _PlaybackOptions = InexactPartial<{
     /**
      * A delay in seconds by which to delay playback
      * @defaultValue `0`
@@ -87,49 +87,54 @@ declare namespace Sound {
     /**
      * Should sound playback loop?
      * @defaultValue `false`
-     * @remarks The above default is true for initial calls, but the actual default
-     * value, if this is passed nullish or omitted, is whatever the current value is
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever the current value in `this##playback`
+     * is, unless this is part of a {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with
+     * no playback history
      */
     loop: boolean;
 
     /**
      * Seconds of the AudioBuffer when looped playback should start. Only works for AudioBufferSourceNode.
      * @defaultValue `0`
-     * @remarks The above default is true for initial calls, but the actual default
-     * value, if this is passed nullish or omitted, is whatever the current value is
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever the current value in `this##playback`
+     * is, unless this is part of a {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with
+     * no playback history
      */
     loopStart: number;
 
     /**
      * Seconds of the Audio buffer when looped playback should restart. Only works for AudioBufferSourceNode.
      * @defaultValue `undefined`
-     * @remarks The above default is true for initial calls, but the actual default
-     * value, if this is passed nullish or omitted, is whatever the current value is
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever the current value in `this##playback`
+     * is, unless this is part of a {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with
+     * no playback history
      */
     loopEnd: number;
 
     /**
      * An offset in seconds at which to start playback
      * @defaultValue `0`
-     * @remarks The above default is true for initial calls, but the actual default
-     * value, if this is passed nullish or omitted, is whatever the current value of
-     * `loopStart` is
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever the current value of `loopStart` in
+     * `this##playback` is, unless this is part of a {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates
+     * a new sound with no playback history
      */
     offset: number;
 
     /**
      * A callback function attached to the source node
      * @defaultValue `null`
-     * @remarks The above default is true for initial calls, but the actual default
-     * value, if this is passed nullish or omitted, is whatever the current value is
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever the current value in `this##playback`
+     * is, unless this is part of a {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with
+     * no playback history
      */
     onended: ScheduleCallback | null;
 
     /**
      * The volume at which to play the sound
      * @defaultValue `1.0`
-     * @remarks The above default is true for initial calls, but the actual default
-     * value, if this is passed nullish or omitted, is whatever the current value is
+     * @remarks The above default is true for initial calls, but the actual default value, if this is passed nullish or omitted, is whatever the current value in `this##playback`
+     * is, unless this is part of a {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition} call, as that method always creates a new sound with
+     * no playback history
      */
     volume: number;
   }>;
@@ -137,29 +142,78 @@ declare namespace Sound {
   /** @remarks Default values here are what `Sound##configurePlayback` would use if passed an empty object with no prior calls */
   interface PlaybackOptions extends _PlaybackOptions {}
 
+  /** @remarks `volume` is always overwritten in {@linkcode Sound.playAtPosition | Sound#playAtPosition}  */
+  interface PlaybackOptionsPositional extends Omit<PlaybackOptions, "volume"> {}
+
+  /** @remarks The keys omitted are generated from other data passed to {@linkcode Sound.playAtPosition | Sound#playAtPosition} */
+  interface PartialSourceData
+    extends IntentionalPartial<Omit<PointSoundSource.SourceData, "x" | "y" | "elevation" | "radius" | "walls">> {}
+
+  /** @internal */
+  type _PlayAtPositionOptions = InexactPartial<{
+    /**
+     * The maximum volume at which the effect should be played
+     * @defaultValue `1.0`
+     */
+    volume: number;
+
+    /**
+     * Should volume be attenuated by distance?
+     * @defaultValue `true`
+     */
+    easing: boolean;
+
+    /**
+     * Should the sound be constrained by walls?
+     * @defaultValue `true`
+     */
+    walls: boolean;
+
+    /**
+     * Should the sound always be played for GM users regardless of actively controlled tokens?
+     * @defaultValue `true`
+     */
+    gmAlways: boolean;
+
+    /** A base sound effect to apply to playback */
+    baseEffect: AmbientSoundDocument.Effect;
+
+    /** A muffled sound effect to apply to playback, a sound may only be muffled if it is not constrained by walls */
+    muffledEffect: AmbientSoundDocument.Effect;
+
+    /**
+     * Additional data passed to the SoundSource constructor
+     */
+    sourceData: Sound.PartialSourceData;
+
+    /**
+     * Additional options passed to {@linkcode Sound.play | Sound#play}
+     */
+    playbackOptions: Sound.PlaybackOptionsPositional;
+  }>;
+
+  interface PlayAtPositionOptions extends _PlayAtPositionOptions {}
+
   /** @internal */
   type _FadeOptions = InexactPartial<{
     /**
      * The duration of the fade effect in milliseconds
      * @defaultValue `1000`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     duration: number;
 
     /**
      * The type of fade easing, "linear" or "exponential"
      * @defaultValue `"linear"`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     type: "linear" | "exponential";
-  }> &
-    NullishProps<{
-      /**
-       * A volume level to start from, the current volume by default
-       * @defaultValue `this.gain.value`
-       */
-      from: number;
-    }>;
+
+    /**
+     * A volume level to start from, the current volume by default
+     * @defaultValue `this.gain.value`
+     */
+    from: number;
+  }>;
 
   interface FadeOptions extends _FadeOptions {}
 
@@ -177,7 +231,6 @@ declare class Sound extends EventEmitterMixin() {
    * @param src     - The audio source path, either a relative path or a remote URL
    * @param options - Additional options which configure the Sound
    */
-  // options: not null (destructured)
   constructor(src: string, options?: Sound.ConstructorOptions);
 
   /**
@@ -241,7 +294,7 @@ declare class Sound extends EventEmitterMixin() {
 
   /**
    * The life-cycle state of the sound.
-   * @defaultValue `Sound.STATES.NONE`
+   * @defaultValue {@linkcode Sound.STATES.NONE}
    */
   protected _state: Sound.STATES;
 
@@ -268,7 +321,7 @@ declare class Sound extends EventEmitterMixin() {
 
   /**
    * A convenience reference to the GainNode gain audio parameter.
-   * @remarks `undefined` if {@link Sound.gainNode | `Sound#gainNode`} is.
+   * @remarks `undefined` if {@linkcode Sound.gainNode | Sound#gainNode} is.
    */
   get gain(): AudioParam | undefined;
 
@@ -325,11 +378,8 @@ declare class Sound extends EventEmitterMixin() {
   /**
    * An internal reference to some object which is managing this Sound instance.
    * @defaultValue `null`
-   * @remarks Foundry marked `@internal`
-   *
-   * Only ever set *or* read externally by core, so not protected
-   *
-   * @privateRemarks Foundry types this as `Object|null` but the only place in Core this gets set is in `AmbientSound`, to `this`
+   * @internal
+   * @remarks Only ever set *or* read externally by core, so not protected
    */
   _manager: AmbientSound.Implementation | null;
 
@@ -338,14 +388,12 @@ declare class Sound extends EventEmitterMixin() {
    * @param options - Additional options which affect resource loading
    * @returns A Promise which resolves to the Sound once it is loaded
    */
-  // options: not null (destructured)
   load(options?: Sound.LoadOptions): Promise<this>;
 
   /**
    * An inner method which handles loading so that it can be de-duplicated under a single shared Promise resolution.
    * This method is factored out to allow for subclasses to override loading behavior.
    * @returns A Promise which resolves once the sound is loaded
-   * @throws An error if loading failed for any reason
    */
   protected _load(): Promise<void>;
 
@@ -359,10 +407,59 @@ declare class Sound extends EventEmitterMixin() {
   play(options?: Sound.PlaybackOptions): Promise<this>;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks "`Sound#play` now takes an object of playback options instead of positional arguments."
+   * @deprecated "`Sound#play` now takes an object of playback options instead of positional arguments." (since v12, until v14)
    */
   play(offset: number, onended?: Sound.ScheduleCallback | null): Promise<this>;
+
+  /**
+   * Play a one-shot Sound originating from a predefined point on the canvas.
+   * The sound plays locally for the current client only.
+   * To play a sound for all connected clients use {@linkcode foundry.canvas.layers.SoundsLayer.emitAtPosition | SoundsLayer#emitAtPosition}.
+   * A helper which does not depend on a pre-existing Sound instance is available at
+   * {@linkcode foundry.canvas.layers.SoundsLayer.playAtPosition | SoundsLayer#playAtPosition}.
+   *
+   * @param origin  - The canvas coordinates from which the sound originates
+   * @param radius  - The radius of effect in distance units
+   * @param options - Additional options which configure playback
+   * @returns A Promise which resolves to the played Sound, or null
+   *
+   * Play the sound of a trap springing
+   * @example
+   * ```js
+   * const sound = new Sound("modules/my-module/sounds/spring-trap.ogg", {context: game.audio.environment});
+   * await sound.load();
+   * const origin = {x: 5200, y: 3700};  // The origin point for the sound
+   * const radius = 30;                  // Audible in a 30-foot radius
+   * await sound.playAtPosition(origin, radius);
+   * ```
+   *
+   * A Token casts a spell
+   * @example
+   * ```js
+   * const sound = new Sound("modules/my-module/sounds/spells-sprite.ogg", {context: game.audio.environment});
+   * const origin = token.center;         // The origin point for the sound
+   * const radius = 60;                   // Audible in a 60-foot radius
+   * await sound.playAtPosition(origin, radius, {
+   *   walls: false,                      // Not constrained by walls with a lowpass muffled effect
+   *   muffledEffect: {type: "lowpass", intensity: 6},
+   *   sourceData: {
+   *     angle: 120,                      // Sound emitted at a limited angle
+   *     rotation: 270                    // Configure the direction of sound emission
+   *   }
+   *   playbackOptions: {
+   *     loopStart: 12,                   // Audio sprite timing
+   *     loopEnd: 16,
+   *     fade: 300,                      // Fade-in 300ms
+   *     onended: () => console.log("Do something after the spell sound has played")
+   *   }
+   * });
+   * ```
+   */
+  playAtPosition(
+    origin: Canvas.PossiblyElevatedPoint,
+    radius: number,
+    options?: Sound.PlayAtPositionOptions,
+  ): Promise<this | null>;
 
   /**
    * Begin playback for the configured pipeline and playback options.
@@ -372,9 +469,10 @@ declare class Sound extends EventEmitterMixin() {
 
   /**
    * Pause playback of the Sound.
-   * For AudioBufferSourceNode this stops playback after recording the current time.
-   * Calling Sound#play will resume playback from the pausedTime unless some other offset is passed.
-   * For a MediaElementAudioSourceNode this simply calls the HTMLAudioElement#pause method directly.
+   * For {@linkcode AudioBufferSourceNode} this stops playback after recording the current time.
+   * Calling {@linkcode Sound.play | Sound#play} will resume playback from the {@linkcode Sound.pauseTime | #pausedTime} unless some other offset is passed.
+   * For a {@linkcode MediaElementAudioSourceNode} this simply calls the {@linkcode HTMLAudioElement.pause | HTMLAudioElement#pause} method directly.
+   * @remarks
    * @throws If called while the Sound isn't playing
    */
   pause(): void;
@@ -392,7 +490,6 @@ declare class Sound extends EventEmitterMixin() {
    * @param options - Options which configure the stopping of sound playback
    * @returns A Promise which resolves once playback is fully stopped (including fade)
    */
-  // options: not null (parameter default only, destructured where forwarded)
   stop(options?: Sound.PlaybackOptions): Promise<this>;
 
   /**
@@ -407,7 +504,6 @@ declare class Sound extends EventEmitterMixin() {
    * @param options - Additional options that configure the fade operation
    * @returns A Promise that resolves after the requested fade duration
    */
-  // options: not null (destructured)
   fade(volume: number, options?: Sound.FadeOptions): Promise<void>;
 
   /**
@@ -431,6 +527,18 @@ declare class Sound extends EventEmitterMixin() {
    * ```
    */
   schedule<R extends Sound.ScheduleCallback>(fn: R, playbackTime: number): Promise<Awaited<ReturnType<R>>>;
+
+  /**
+   * Cancel one scheduled event created with {@linkcode Sound.schedule | Sound#schedule}.
+   * You may pass either the {@linkcode AudioTimeout} returned internally or the Promise returned by `Sound#schedule`.
+   * @param handle - The handle to cancel.
+   */
+  unschedule(handle: AudioTimeout | { timeout: AudioTimeout }): void;
+
+  /**
+   * Cancel all events that are still scheduled for this sound.
+   */
+  unscheduleAll(): void;
 
   /**
    * Update the array of effects applied to a Sound instance.
@@ -458,48 +566,42 @@ declare class Sound extends EventEmitterMixin() {
   protected _disconnectPipeline(): void;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "`AudioContainer.LOAD_STATES` is deprecated in favor of {@linkcode Sound.STATES}"
+   * @deprecated "`AudioContainer.LOAD_STATES` is deprecated in favor of {@linkcode Sound.STATES}" (since v12, until v14)
    */
   static get LOAD_STATES(): Sound.States;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "`AudioContainer#loadState` is deprecated in favor of {@link Sound._state | `Sound#_state`}"
+   * @deprecated "`AudioContainer#loadState` is deprecated in favor of {@linkcode Sound._state | Sound#_state}" (since v12, until v14)
    */
   get loadState(): Sound.STATES;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "`Sound#container` is deprecated without replacement because the `Sound` and `AudioContainer` classes are now merged"
+   * @deprecated "`Sound#container` is deprecated without replacement because the `Sound` and `AudioContainer` classes are now merged" (since v12, until v14)
    */
   get container(): this;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "`Sound#node` is renamed {@link Sound.sourceNode | `Sound#sourceNode`}"
+   * @deprecated "`Sound#node` is renamed {@linkcode Sound.sourceNode | Sound#sourceNode}" (since v12, until v14)
    */
   get node(): this["sourceNode"];
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "`Sound#on` is deprecated in favor of {@link Sound.addEventListener | `Sound#addEventListener`}"
+   * @deprecated "`Sound#on` is deprecated in favor of {@linkcode Sound.addEventListener | Sound#addEventListener}" (since v12, until v14)
    */
   on(eventName: string, fn: EventEmitterMixin.EventListener, options?: EventEmitterMixin.AddListenerOptions): void;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "`Sound#off` is deprecated in favor of {@link Sound.removeEventListener | `Sound#removeEventListener`}"
+   * @deprecated "`Sound#off` is deprecated in favor of {@linkcode Sound.removeEventListener | Sound#removeEventListener}" (since v12, until v14)
    */
   off(eventName: string, fn: EventEmitterMixin.EventListener): void;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "`Sound#emit` is deprecated in favor of {@link Sound.dispatchEvent | `Sound#dispatchEvent`}"
-   *
-   * This method still takes a string, then creates an `Event` with it and passes that along to `dispatchEvent`
+   * @deprecated "`Sound#emit` is deprecated in favor of {@linkcode Sound.dispatchEvent | Sound#dispatchEvent}" (since v12, until v14)
+   * @remarks This method still takes a string, then creates an `Event` with it and passes that along to `dispatchEvent`
    */
   emit(eventName: string): void;
+
+  #Sound: true;
 }
 
 export default Sound;

@@ -295,9 +295,9 @@ export interface SettingConfig {
   "core.disableResolutionScaling": boolean;
   "core.fontSize": number;
   "core.fpsMeter": boolean;
-  "core.globalAmbientVolume": number;
-  "core.globalInterfaceVolume": number;
-  "core.globalPlaylistVolume": number;
+  "core.globalAmbientVolume": fields.AlphaField<{ required: true; initial: 0.5 }>;
+  "core.globalInterfaceVolume": fields.AlphaField<{ required: true; initial: 0.5 }>;
+  "core.globalPlaylistVolume": fields.AlphaField<{ required: true; initial: 0.5 }>;
   "core.keybindings": Record<string, foundry.helpers.interaction.ClientKeybindings.KeybindingActionBinding[]>;
   "core.language": fields.StringField<{
     required: true;

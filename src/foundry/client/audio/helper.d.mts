@@ -1,15 +1,36 @@
 import type Sound from "./sound.d.mts";
 import type AudioBufferCache from "./cache.d.mts";
-import type { Identity, InexactPartial, IntentionalPartial, NullishProps, ValueOf } from "#utils";
+import type { Identity, InexactPartial, ValueOf } from "#utils";
 
 /**
  * A helper class to provide common functionality for working with the Web Audio API.
  * https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
  * A singleton instance of this class is available as game#audio.
- * @see {@link Game.audio | `Game#audio`}
+ * @see {@linkcode Game.audio | Game#audio}
  */
 declare class AudioHelper {
+  /** @remarks Construction will throw if {@linkcode Game.audio | game.audio} is already instantiated */
   constructor();
+
+  /**
+   * Analyzers for each context, plus an internal ticker. Each context key holds data about its {@linkcode AnalyserNode},
+   * a {@linkcode Float32Array} for FFT data, and so on.
+   * @defaultValue
+   * ```js
+   * Object.seal({
+   *   music: {active: false, node: null, dataArray: null, lastUsed: 0, db: {}, bands: {}},
+   *   environment: {active: false, node: null, dataArray: null, lastUsed: 0, db: {}, bands: {}},
+   *   interface: {active: false, node: null, dataArray: null, lastUsed: 0, db: {}, bands: {}},
+   *   analysisLoopActive: false
+   * });
+   * ```
+   */
+  analyzer: AudioHelper.AnalysisData;
+
+  /**
+   * An array containing all possible audio context names.
+   */
+  static AUDIO_CONTEXTS: ReadonlyArray<AudioHelper.ContextName>;
 
   /**
    * The Native interval for the AudioHelper to analyse audio levels from streams
@@ -41,7 +62,7 @@ declare class AudioHelper {
    * Once a gesture is observed, we begin playing all elements of this Array.
    * @see {@linkcode Sound}
    * @defaultValue `[]`
-   * @remarks Foundry only populates this in one place, {@link SoundsLayer.refresh | `SoundsLayer#refresh`}
+   * @remarks Foundry only populates this in one place, {@linkcode SoundsLayer.refresh | SoundsLayer#refresh}
    */
   pending: (() => void)[];
 
@@ -59,29 +80,36 @@ declare class AudioHelper {
 
   /**
    * A singleton audio context used for playback of music
-   * @remarks Not initialized to a value, set in {@link AudioHelper._onFirstGesture | `AudioHelper#_onFirstGesture`};
-   * In practice, `undefined` until the first audio is played after page load
+   * @remarks Not initialized to a value, set in `AudioHelper##onFirstGesture`. In practice, this is `undefined` until
+   * the first audio is played after page load.
    */
   music: AudioContext | undefined;
 
   /**
    * A singleton audio context used for playback of environmental audio.
-   * @remarks Not initialized to a value, set in {@link AudioHelper._onFirstGesture | `AudioHelper#_onFirstGesture`};
-   * In practice, `undefined` until the first audio is played after page load
+   * @remarks Not initialized to a value, set in `AudioHelper##onFirstGesture`. In practice, this is `undefined` until
+   * the first audio is played after page load.
    */
   environment: AudioContext | undefined;
 
   /**
    * A singleton audio context used for playback of interface sounds and effects.
-   * @remarks Not initialized to a value, set in {@link AudioHelper._onFirstGesture | `AudioHelper#_onFirstGesture`};
-   * In practice, `undefined` until the first audio is played after page load
+   * @remarks Not initialized to a value, set in `AudioHelper##onFirstGesture`. In practice, this is `undefined` until
+   * the first audio is played after page load.
    */
   interface: AudioContext | undefined;
 
   /**
    * For backwards compatibility, AudioHelper#context refers to the context used for music playback.
    */
-  get context(): AudioContext | undefined;
+  get context(): this["music"];
+
+  /**
+   * A global mute which suppresses all 3 audio channels.
+   */
+  get globalMute(): boolean;
+
+  set globalMute(muted);
 
   /**
    * A singleton cache used for audio buffers.
@@ -115,7 +143,6 @@ declare class AudioHelper {
    * @param options - Additional options which configure playback
    * @returns The created Sound which is now playing
    */
-  // options: not null (destructured)
   play(src: string, options?: AudioHelper.PlayOptions): Promise<Sound>;
 
   /**
@@ -146,18 +173,18 @@ declare class AudioHelper {
   /**
    * Play a one-off sound effect which is not part of a Playlist
    *
-   * @param data - An object configuring the audio data to play
-   * @param socketOptions - Options which only apply when emitting playback over websocket.
-   *                        As a boolean, emits (true) or does not emit (false) playback to all other clients
-   *                        As an object, can configure which recipients should receive the event.
-   * @returns A Sound instance which controls audio playback.
+   * @param data          - An object configuring the audio data to play
+   * @param socketOptions - Options which only apply when emitting playback over websocket. As a boolean, emits (true)
+   * or does not emit (false) playback to all other clients. As an object, can configure which recipients (an array of
+   * User IDs) should receive the event (all clients by default). Default: `false`.
+   * @returns A Sound instance which controls audio playback, or nothing if `data.autoplay` is false.
    *
    * @example Play the sound of a locked door for all players
-   * ```typescript
+   * ```js
    * AudioHelper.play({src: "sounds/lock.wav", volume: 0.8, loop: false}, true);
    * ```
    */
-  static play(data: AudioHelper.PlayData, socketOptions?: boolean | AudioHelper.SocketOptions | null): Promise<Sound>;
+  static play(data: AudioHelper.PlayData, socketOptions?: boolean | AudioHelper.SocketOptions): Promise<Sound | void>;
 
   /**
    * Begin loading the sound for a provided source URL adding its
@@ -184,6 +211,12 @@ declare class AudioHelper {
   static volumeToInput(volume: number, order?: number): number;
 
   /**
+   * Converts a volume level to a human-readable percentage value.
+   * @param volume - Value in the interval [0, 1] of the volume level.
+   */
+  static volumeToPercentage(volume: number, options?: AudioHelper.VolumeToPercentageOptions): string;
+
+  /**
    * Returns a singleton AudioContext if one can be created.
    * An audio context may not be available due to limited resources or browser compatibility
    * in which case null will be returned
@@ -207,7 +240,6 @@ declare class AudioHelper {
    * @param smoothing - The smoothingTimeConstant to set on the audio analyser. (default: `0.1`)
    * @returns Returns whether listening to the stream was successful
    */
-  // interval, smoothing: not null (parameter default only)
   startLevelReports(
     id: string,
     stream: MediaStream,
@@ -224,13 +256,8 @@ declare class AudioHelper {
    */
   stopLevelReports(id: string): void;
 
-  /**
-   * Handle the first observed user gesture
-   * @param event   - The mouse-move event which enables playback
-   * @param resolve - The Promise resolution function
-   * @internal
-   */
-  protected _onFirstGesture(event: Event, resolve: () => void): void;
+  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
+  protected _onFirstGesture(event: never, resolve: never): never;
 
   /**
    * Log a debugging message if the audio debugging flag is enabled.
@@ -239,22 +266,62 @@ declare class AudioHelper {
   debug(message: string): void;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "`AudioHelper#getCache` is deprecated in favor of {@link AudioBufferCache | `AudioHelper#buffers#get`}"
+   * A static inactivity threshold for audio analysis, in milliseconds.
+   * If no band value is requested for a channel within this duration,
+   * the analyzer is disabled to conserve resources (unless the analyzer is enabled with the `keepAlive=true` option)
+   * @defaultValue `1000`
+   */
+  static ANALYSIS_TIMEOUT_MS: number;
+
+  /**
+   * Enable the analyzer for a given context (`music`, `environment`, `interface`), attaching an {@linkcode AnalyserNode} to its gain node if not already active.
+   */
+  enableAnalyzer(contextName: AudioHelper.ContextName, options?: AudioHelper.EnableAnalyzerOptions): void;
+
+  /**
+   * Disable the analyzer for a given context, disconnecting the {@linkcode AnalyserNode}.
+   */
+  disableAnalyzer(contextName: AudioHelper.ContextName): void;
+
+  /**
+   * Returns a normalized band value in [0,1].
+   * Optionally, we can subtract the actual gainNode (global) volume from the measurement.
+   * - Important:
+   *   - Local gain applied to {@linkcode foundry.audio.Sound} source can't be ignored.
+   *   - If this method needs to activate the analyzer, the latter requires a brief warm-up.
+   *     One or two frames may be needed before it produces meaningful values (instead of returning 0).
+   * @returns The normalized band value in [0,1].
+   */
+  getBandLevel(
+    contextName: AudioHelper.ContextName,
+    bandName: AudioHelper.BandName,
+    options?: AudioHelper.GetBandLevelOptions,
+  ): number;
+
+  /**
+   * Retrieve a single "peak" analyzer value across the three main audio contexts (music, environment, interface).
+   * This takes the maximum of the three normalized [0,1] values for a given frequency band.
+   * @param band - The frequency band for which to retrieve an analyzer value. (default: `"all"`)
+   * @returns A number in the [0,1] range representing the loudest band value among the three contexts.
+   */
+  getMaxBandLevel(band?: AudioHelper.BandName, options?: AudioHelper.GetMaxBandLevelOptions): number;
+
+  /**
+   * @deprecated "`AudioHelper#getCache` is deprecated in favor of {@linkcode AudioBufferCache | AudioHelper#buffers#get}" (since v12, until v14)
    */
   getCache(src: string): AudioBuffer | undefined;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "`AudioHelper#updateCache` is deprecated without replacement"
+   * @deprecated "`AudioHelper#updateCache` is deprecated without replacement" (since v12, until v14)
    */
   updateCache(src: string, playing: boolean): void;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "`AudioHelper#setCache` is deprecated in favor of {@link AudioBufferCache | `AudioHelper#buffers#set`}"
+   * @deprecated "`AudioHelper#setCache` is deprecated in favor of {@linkcode AudioBufferCache |`AudioHelper#buffers#set}" (since v12, until v14)
    */
   setCache(src: string, buffer: AudioBuffer): void;
+
+  #AudioHelper: true;
 }
 
 declare namespace AudioHelper {
@@ -263,41 +330,109 @@ declare namespace AudioHelper {
 
   type AUDIO_MIME_TYPES = ValueOf<typeof CONST.AUDIO_FILE_EXTENSIONS>;
 
+  interface AnalysisDataValueDB {
+    /** Average dB in ~20-200 Hz */
+    bass: number;
+
+    /** Average dB in ~200-2000 Hz */
+    mid: number;
+
+    /** Average dB in ~2000-8000 Hz */
+    treble: number;
+
+    /** Average dB in ~20-20000 Hz */
+    all: number;
+  }
+
+  interface AnalysisDataValueBands {
+    /** Normalized amplitude for low frequencies. */
+    bass: number;
+
+    /** Normalized amplitude for midrange frequencies. */
+    mid: number;
+
+    /** Normalized amplitude for high frequencies. */
+    treble: number;
+
+    /** Normalized amplitude for the entire audible range. */
+    all: number;
+  }
+
+  interface AnalysisDataValue {
+    /** Whether the analyzer is currently active. */
+    active: boolean;
+
+    /** If true, the analyzer remains active and will not be disabled after inactivity */
+    keepAlive: boolean;
+
+    /** The {@linkcode AnalyserNode} for this context, or `null` if inactive. */
+    node: AnalyserNode | null;
+
+    /** The FFT frequency data buffer used by the {@linkcode AnalyserNode}. */
+    dataArray: Float32Array | null;
+
+    /** Raw average decibel values for each frequency band. */
+    db: AnalysisDataValueDB;
+
+    /** Normalized [0,1] values for the same bands. */
+    bands: AnalysisDataValueBands;
+
+    /** The timestamp when data was last requested. */
+    lastUsed: number;
+  }
+
+  interface AnalysisData {
+    /** Analysis data for the music context. */
+    music: AnalysisDataValue;
+
+    /** Analysis data for the ambient/environment context. */
+    environment: AnalysisDataValue;
+
+    /** Analysis data for the interface context. */
+    interface: AnalysisDataValue;
+
+    /** Whether the internal RAQ loop is currently running. */
+    analysisLoopActive: boolean;
+  }
+
+  /** @privateRemarks Foundry has this in a `_types` as a union of literals, but it lines up with `AUDIO_CHANNELS` so is typed thusly */
+  type ContextName = keyof typeof CONST.AUDIO_CHANNELS;
+
+  type BandName = keyof AnalysisDataValueBands;
+
   /** @internal */
   type _SoundCreationOptions = InexactPartial<{
     /**
      * Additional options passed to the play method if autoplay is true
      * @defaultValue `{}`
-     * @remarks Can't be `null` as it only has a parameter default
      */
     autoplayOptions: Sound.PlaybackOptions;
-  }> &
-    NullishProps<{
-      /**
-       * A specific AudioContext to attach the sound to
-       * @remarks Has no default, but if it's falsey, the {@linkcode Sound} constructor
-       * (where this is forwarded) will use {@link AudioHelper.music | `game.audio.music`} instead
-       */
-      context: AudioContext;
 
-      /**
-       * Reuse an existing Sound for this source?
-       * @defaultValue `true`
-       */
-      singleton: boolean;
+    /**
+     * A specific AudioContext to attach the sound to
+     * @remarks Has no default, but if it's falsey, the {@linkcode Sound} constructor
+     * (where this is forwarded) will use {@linkcode AudioHelper.music | game.audio.music} instead
+     */
+    context: AudioContext;
 
-      /**
-       * Begin loading the audio immediately?
-       * @defaultValue `false`
-       */
-      preload: boolean;
+    /**
+     * Reuse an existing Sound for this source?
+     * @defaultValue `true`
+     */
+    singleton: boolean;
 
-      /**
-       * Begin playing the audio as soon as it is ready?
-       * @defaultValue `false`
-       */
-      autoplay: boolean;
-    }>;
+    /**
+     * Begin loading the audio immediately?
+     * @defaultValue `false`
+     */
+    preload: boolean;
+
+    /**
+     * Begin playing the audio as soon as it is ready?
+     * @defaultValue `false`
+     */
+    autoplay: boolean;
+  }>;
 
   interface SoundCreationOptions extends _SoundCreationOptions {
     /** The source URL for the audio file */
@@ -305,18 +440,39 @@ declare namespace AudioHelper {
   }
 
   /**
-   * {@linkcode AudioHelper#play} pulls `context` out of this object then forwards the rest to {@link Sound.play | `Sound#play`}
+   * {@linkcode AudioHelper#play} pulls `context` out of this object then forwards the rest to {@linkcode Sound.play | Sound#play}
    */
   interface PlayOptions extends Pick<SoundCreationOptions, "context">, Sound.PlaybackOptions {}
 
   /** @internal */
-  type _PlayData = IntentionalPartial<{
+  type _PlayData = InexactPartial<{
     /**
-     * An audio channel in CONST.AUDIO_CHANNELS where the sound should play
+     * The volume level at which to play the audio, between 0 and 1.
+     * @defaultValue `1.0`
+     * @privateRemarks Despite the initial default being via `mergeObject`, there's a second `??` default so it's allowed to be nullish
+     */
+    volume: number;
+
+    /**
+     * Loop the audio effect and continue playing it until it is manually stopped.
+     * @defaultValue `false`
+     * @privateRemarks Despite the default being via `mergeObject`, {@linkcode Sound.PlaybackOptions.loop | Sound.PlaybackOptions["loop"]} can be nullish, therefor so can this
+     */
+    loop: boolean;
+  }>;
+
+  interface PlayData extends _PlayData {
+    /**
+     * The audio source file path, either a public URL or a local path relative to the public directory
+     */
+    src: string;
+
+    /**
+     * An audio channel in {@linkcode CONST.AUDIO_CHANNELS} where the sound should play
      * @defaultValue `"interface"`
      * @remarks Can't be nullish as the only default is provided by `mergeObject`
      */
-    channel: keyof typeof CONST.AUDIO_CHANNELS;
+    channel?: AudioHelper.ContextName;
 
     /**
      * Begin playback of the audio effect immediately once it is loaded.
@@ -329,29 +485,7 @@ declare namespace AudioHelper {
      *
      * "// Backwards compatibility, if autoplay was passed as false take no further action"
      */
-    autoplay: false;
-  }> &
-    NullishProps<{
-      /**
-       * The volume level at which to play the audio, between 0 and 1.
-       * @defaultValue `1.0`
-       * @privateRemarks Despite the initial default being via `mergeObject`, there's a second `??` default so it's allowed to be nullish
-       */
-      volume: number;
-
-      /**
-       * Loop the audio effect and continue playing it until it is manually stopped.
-       * @defaultValue `false`
-       * @privateRemarks Despite the default being via `mergeObject`, {@link Sound.PlaybackOptions.loop | `Sound.PlaybackOptions["loop"]`} can be nullish, therefor so can this
-       */
-      loop: boolean;
-    }>;
-
-  interface PlayData extends _PlayData {
-    /**
-     * The audio source file path, either a public URL or a local path relative to the public directory
-     */
-    src: string;
+    autoplay?: false;
   }
 
   interface SocketOptions {
@@ -361,6 +495,48 @@ declare namespace AudioHelper {
      */
     recipients?: string[];
   }
+
+  /** @internal */
+  type _VolumeToPercentageOptions = InexactPartial<{
+    /**
+     * Prefix the returned tooltip with a localized 'Volume: ' label. This should be used if the returned string is intended for assistive
+     * technologies, such as the `aria-value` text attribute.
+     * @defaultValue `false`
+     */
+    label: boolean;
+
+    /**
+     * The number of decimal places to round the percentage to.
+     * @defaultValue `0`
+     */
+    decimalPlaces: number;
+  }>;
+
+  interface VolumeToPercentageOptions extends _VolumeToPercentageOptions {}
+
+  /** @internal */
+  type _EnableAnalyzerOptions = InexactPartial<{
+    /**
+     * If true, this analyzer will not auto-disable after inactivity.
+     * @defaultValue `false`
+     */
+    keepAlive: boolean;
+  }>;
+
+  interface EnableAnalyzerOptions extends _EnableAnalyzerOptions {}
+
+  /** @internal */
+  type _GetBandLevelOptions = InexactPartial<{
+    /**
+     * If true, remove the real-time channel volume from the measurement.
+     * @defaultValue `false`
+     */
+    ignoreVolume: boolean;
+  }>;
+
+  interface GetBandLevelOptions extends _GetBandLevelOptions {}
+
+  interface GetMaxBandLevelOptions extends _GetBandLevelOptions {}
 
   type LevelReportCallback = (maxDecibel: number, fftArray: Float32Array) => void;
 }
