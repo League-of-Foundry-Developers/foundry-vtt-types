@@ -110,7 +110,7 @@ expectTypeOf(clientSettings.get("core", "combatTrackerConfig")).toEqualTypeOf<
   MaybeEmpty<{ resource: string; skipDefeated: boolean }>
 >();
 expectTypeOf(clientSettings.get("core", "compendiumConfiguration")).toEqualTypeOf<
-  foundry.data.fields.DataField.InitializedTypeFor<foundry.documents.collections.CompendiumCollection.ConfigSetting.Field>
+  foundry.data.fields.DataField.InitializedTypeFor<foundry.documents.collections.CompendiumCollection.SettingField>
 >();
 
 expectTypeOf(clientSettings.get("core", "rollMode")).toEqualTypeOf<foundry.dice.Roll.Mode>();

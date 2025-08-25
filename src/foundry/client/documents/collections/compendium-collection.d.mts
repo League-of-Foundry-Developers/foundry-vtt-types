@@ -43,7 +43,7 @@ declare class CompendiumCollection<
   /**
    * The DataField definition for the configuration Setting
    */
-  static CONFIG_FIELD: CompendiumCollection.ConfigSetting.Field;
+  static CONFIG_FIELD: CompendiumCollection.SettingField;
 
   /** The canonical Compendium name - comprised of the originating package and the pack name */
   get collection(): this["metadata"]["id"];
@@ -64,7 +64,7 @@ declare class CompendiumCollection<
 
   /**
    * @remarks 1 less than in-world
-   * @defaultValue `CONST.FOLDER_MAX_DEPTH - 1`
+   * @defaultValue {@linkcode CONST.FOLDER_MAX_DEPTH}`- 1`
    */
   get maxFolderDepth(): number;
 
@@ -88,7 +88,7 @@ declare class CompendiumCollection<
   // Note(LukeAbby): The override for `_getVisibleTreeContents` become unreasonably long and don't add any changes and so has been omitted.
 
   /** Access the compendium configuration data for this pack */
-  get config(): CompendiumCollection.ConfigSetting.Entry | EmptyObject;
+  get config(): CompendiumCollection.Configuration | EmptyObject;
 
   get documentName(): Type;
 
@@ -144,21 +144,23 @@ declare class CompendiumCollection<
 
   /**
    * Load multiple documents from the Compendium pack using a provided query object.
-   * @param query - A database query used to retrieve documents from the underlying database
-   *                default: `{}`
+   * @param query - A database query used to retrieve documents from the underlying database (default: `{}`)
    * @returns The retrieved Document instances
    *
-   * @example Get Documents that match the given value only.
+   * @example
+   * Get Documents that match the given value only.
    * ```js
    * await pack.getDocuments({ type: "weapon" });
    * ```
    *
-   * @example Get several Documents by their IDs.
+   * @example
+   * Get several Documents by their IDs.
    * ```js
    * await pack.getDocuments({ _id__in: arrayOfIds });
    * ```
    *
-   * @example Get Documents by their sub-types.
+   * @example
+   * Get Documents by their sub-types.
    * ```js
    * await pack.getDocuments({ type__in: ["weapon", "armor"] });
    * ```
@@ -170,13 +172,12 @@ declare class CompendiumCollection<
    * @param user - The user being tested (default: `game.user`)
    * @returns The ownership level in {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}
    */
-  // user: not null (parameter default only)
   getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Compendium pack
    * @param user       - The User being tested
-   * @param permission - The permission level from DOCUMENT_OWNERSHIP_LEVELS to test
+   * @param permission - The permission level from {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS} to test
    * @param options    - Additional options involved in the permission test
    * @returns Does the user have this permission level over the Compendium pack?
    */
@@ -221,15 +222,14 @@ declare class CompendiumCollection<
   /**
    * Provide a dialog form that prompts the user to import the full contents of a Compendium pack into the World.
    * @param options - Additional options passed to the DialogV2.confirm method (default: `{}`)
-   * @returns A promise which resolves in the following ways: an array of imported
-   *          Documents if the "yes" button was pressed, false if the "no" button was pressed, or
-   *          null if the dialog was closed without making a choice.
+   * @returns A promise which resolves in the following ways: an array of imported Documents if the "yes" button was pressed,
+   * false if the "no" button was pressed, or null if the dialog was closed without making a choice.
    */
   importDialog(options?: DialogV2.ConfirmConfig): Promise<Document.StoredForName<Type>[] | null | false>;
 
   /**
    * Add a Document to the index, capturing it's relevant index attributes
-   * @param document -The document to index
+   * @param document - The document to index
    */
   indexDocument(document: Document.StoredForName<Type>): void;
 
@@ -250,7 +250,7 @@ declare class CompendiumCollection<
   /**
    * Create a new Compendium Collection using provided metadata.
    * @param metadata - The compendium metadata used to create the new pack
-   * @param options - Additional options which modify the Compendium creation request (default: `{}`)
+   * @param options  - Additional options which modify the Compendium creation request (default: `{}`)
    */
   static createCompendium<T extends CompendiumCollection.DocumentName>(
     this: abstract new (...args: never) => CompendiumCollection<NoInfer<T>>,
@@ -270,10 +270,10 @@ declare class CompendiumCollection<
    * @param configuration - The object of compendium settings to define (default: `{}`)
    * @returns A Promise which resolves once the setting is updated
    */
-  configure(configuration?: CompendiumCollection.ConfigSetting.PassableEntry): Promise<void>;
+  configure(configuration?: CompendiumCollection.PassableConfiguration): Promise<void>;
 
   /** @deprecated The `ownership` key is currently non-functional, see {@link https://github.com/foundryvtt/foundryvtt/issues/13283} */
-  configure(configuration: CompendiumCollection.ConfigSetting.PassableEntryBroken): Promise<void>;
+  configure(configuration: CompendiumCollection.PassableConfigurationBroken): Promise<void>;
 
   /**
    * Delete an existing world-level Compendium Collection.
@@ -303,7 +303,7 @@ declare class CompendiumCollection<
    * @remarks As the setting's {@linkcode foundry.helpers.ClientSettings.SettingConfig.onChange | onChange} function, this gets passed the new value after
    * it's been cleaned and validated by the field in `ClientSettings##cleanJSON`
    */
-  protected static _onConfigure(config: CompendiumCollection.ConfigSetting.Entry): void;
+  protected static _onConfigure(config: CompendiumCollection.Configuration): void;
 
   #CompendiumCollection: true;
 }
@@ -313,62 +313,57 @@ declare namespace CompendiumCollection {
 
   type DocumentName = CONST.COMPENDIUM_DOCUMENT_TYPES;
 
-  namespace ConfigSetting {
-    interface EntrySchema extends fields.DataSchema {
-      /**
-       * @defaultValue `undefined`
-       * @remarks The `id` of the folder this is in in the {@linkcode foundry.applications.sidebar.apps.Compendium | Compendium directory}.
-       * `undefined` and `null` should behave
-       */
-      folder: fields.StringField<{
-        required: false;
-        blank: false;
-        nullable: true;
-        validate: (value: unknown) => boolean;
-      }>;
-
-      /** @remarks Integer sort value, for if this pack is either not in a folder, or is in one set to manual sort */
-      sort: fields.NumberField<{
-        required: false;
-        nullable: false;
-        integer: true;
-        min: 0;
-        initial: undefined;
-      }>;
-
-      /** @remarks Is the compendium edit lock engaged? */
-      locked: fields.BooleanField<{ required: false; initial: undefined }>;
-
-      // Presumably the resolution to https://github.com/foundryvtt/foundryvtt/issues/13283 will be a CompendiumOwnershipField here
-    }
-
-    /** @internal */
-    type _Ownership = InexactPartial<{
-      /**
-       * @deprecated As of 13.347, an implementation change has rendered this key (presumably temporarily) non-functional
-       * (see {@link https://github.com/foundryvtt/foundryvtt/issues/13283}).
-       */
-      ownership: foundry.packages.BasePackage.OwnershipRecord;
+  interface ConfigSettingElementSchema extends fields.DataSchema {
+    /**
+     * @defaultValue `undefined`
+     * @remarks The `id` of the folder this is in in the {@linkcode foundry.applications.sidebar.apps.Compendium | Compendium directory}.
+     * `undefined` and `null` should behave
+     */
+    folder: fields.StringField<{
+      required: false;
+      blank: false;
+      nullable: true;
+      validate: (value: unknown) => boolean;
     }>;
 
-    interface Entry extends fields.SchemaField.InitializedData<EntrySchema> {}
+    /** @remarks Integer sort value, for if this pack is either not in a folder, or is in one set to manual sort */
+    sort: fields.NumberField<{
+      required: false;
+      nullable: false;
+      integer: true;
+      min: 0;
+      initial: undefined;
+    }>;
 
-    /** @remarks The partial'd interface for passing to {@linkcode CompendiumCollection.configure} */
-    interface PassableEntry extends InexactPartial<Entry> {}
+    /** @remarks Is the compendium edit lock engaged? */
+    locked: fields.BooleanField<{ required: false; initial: undefined }>;
 
-    /** @privateRemarks See {@linkcode _Ownership.ownership} */
-    interface PassableEntryBroken extends PassableEntry, _Ownership {}
-
-    type FieldElement = fields.SchemaField<EntrySchema>;
-
-    type Field = fields.TypedObjectField<FieldElement>;
-
-    interface Data
-      extends fields.TypedObjectField.InitializedType<FieldElement, fields.TypedObjectField.DefaultOptions> {}
+    // Presumably the resolution to https://github.com/foundryvtt/foundryvtt/issues/13283 will be a CompendiumOwnershipField here
   }
 
-  /** @deprecated Use {@linkcode CompendiumCollection.ConfigSetting.Entry} or {@linkcode CompendiumCollection.ConfigSetting.PassableEntry | PassableEntry} instead */
-  type Configuration = ConfigSetting.Entry;
+  interface Configuration extends fields.SchemaField.InitializedData<ConfigSettingElementSchema> {}
+
+  /** @remarks The partial'd interface for passing to {@linkcode CompendiumCollection.configure} */
+  interface PassableConfiguration extends InexactPartial<Configuration> {}
+
+  /** @internal */
+  type _Ownership = InexactPartial<{
+    /**
+     * @deprecated As of 13.347, an implementation change has rendered this key (presumably temporarily) non-functional
+     * (see {@link https://github.com/foundryvtt/foundryvtt/issues/13283}).
+     */
+    ownership: foundry.packages.BasePackage.OwnershipRecord;
+  }>;
+
+  /** @privateRemarks See {@linkcode _Ownership.ownership} */
+  interface PassableConfigurationBroken extends PassableConfiguration, _Ownership {}
+
+  type SettingFieldElement = fields.SchemaField<ConfigSettingElementSchema>;
+
+  type SettingField = fields.TypedObjectField<SettingFieldElement>;
+
+  interface SettingData
+    extends fields.TypedObjectField.InitializedType<SettingFieldElement, fields.TypedObjectField.DefaultOptions> {}
 
   // The type that's passed to `createCompendium`.
   interface CreateCompendiumMetadata<Type extends DocumentName> {
@@ -499,11 +494,11 @@ declare namespace CompendiumCollection {
     label?: string | undefined;
   }
 
-  /** @deprecated Use {@linkcode CompendiumCollection.ConfigSetting.Entry} instead. */
-  type WorldCompendiumPackConfiguration = ConfigSetting.Entry;
+  /** @deprecated Use {@linkcode CompendiumCollection.Configuration} instead. */
+  type WorldCompendiumPackConfiguration = CompendiumCollection.Configuration;
 
-  /** @deprecated Use {@linkcode CompendiumCollection.ConfigSetting.Data} instead. */
-  type WorldCompendiumConfiguration = ConfigSetting.Data;
+  /** @deprecated Use {@linkcode CompendiumCollection.SettingData} instead. */
+  type WorldCompendiumConfiguration = CompendiumCollection.SettingData;
 
   /** @internal */
   type _MigrateOptions = InexactPartial<{

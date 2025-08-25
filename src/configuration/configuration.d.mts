@@ -266,7 +266,7 @@ export interface SettingConfig {
   "core.chatBubbles": fields.BooleanField<{ initial: true }>;
   "core.chatBubblesPan": fields.BooleanField<{ initial: true }>;
   "core.combatTrackerConfig": MaybeEmpty<{ resource: string; skipDefeated: boolean }>;
-  "core.compendiumConfiguration": foundry.documents.collections.CompendiumCollection.ConfigSetting.Field;
+  "core.compendiumConfiguration": foundry.documents.collections.CompendiumCollection.SettingField;
   "core.gridTemplates": fields.BooleanField<{ initial: false }>;
   "core.coneTemplateType": "round" | "flat";
   "core.colorSchema": fields.StringField<{

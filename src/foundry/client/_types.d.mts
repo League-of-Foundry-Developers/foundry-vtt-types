@@ -81,9 +81,9 @@ type ManageCompendiumRequest = unknown;
 
 type ManageCompendiumResponse = unknown;
 
-type WorldCompendiumPackConfiguration = foundry.documents.collections.CompendiumCollection.ConfigSetting.PassableEntry;
+type WorldCompendiumPackConfiguration = foundry.documents.collections.CompendiumCollection.PassableConfiguration;
 
-type WorldCompendiumConfiguration = foundry.documents.collections.CompendiumCollection.ConfigSetting.Data;
+type WorldCompendiumConfiguration = foundry.documents.collections.CompendiumCollection.SettingData;
 
 type SettingConfig = foundry.helpers.ClientSettings.SettingConfig;
 
