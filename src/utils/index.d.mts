@@ -82,7 +82,7 @@ export type IntentionalPartial<T extends object> = Partial<T>;
  *
  * @example
  * ```ts
- * // The `const T` allows inference to be a bit more specific. This is useful for a utility type like this.`
+ * // The `const T` allows inference to be a bit more specific. This is useful for a utility type like this.
  * function takesNumber<const T>(input: OverlapsWith<T, number>): void {
  *   // This function body is an example of a method this might be useful for.
  *   // If the input isn't an number it simply returns in this case.
