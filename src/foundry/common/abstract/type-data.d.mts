@@ -210,9 +210,8 @@ declare abstract class AnyTypeDataModel extends TypeDataModel<any, any, any, any
  * Systems or Modules that provide DataModel implementations for sub-types of Documents (such as Actors or Items)
  * should subclass this class instead of the base DataModel class.
  *
- *
- * @example Registering a custom sub-type for a Module.
- *
+ * @example
+ * Registering a custom sub-type for a Module.
  * **module.json**
  * ```json
  * {
@@ -261,8 +260,8 @@ declare abstract class AnyTypeDataModel extends TypeDataModel<any, any, any, any
  * }
  * ```
  *
- * **en.json** To provide the localization for methods like {@link foundry.ClientDocument.createDialog |
- * ClientDocument.createDialog}
+ * **en.json** To provide the localization for methods like `ClientDocument.createDialog`
+ *
  * ```json
  * {
  *   "TYPES": {

@@ -4436,7 +4436,7 @@ declare class AnyField extends DataField<DataField.Options.Any, unknown, unknown
 }
 
 /**
- * A subclass of {@link foundry.data.fields.StringField | StringField} which contains a sanitized HTML string.
+ * A subclass of {@linkcode foundry.data.fields.StringField | StringField} which contains a sanitized HTML string.
  * This class does not override any StringField behaviors, but is used by the server-side to identify fields which
  * require sanitization of user input.
  *
