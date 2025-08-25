@@ -2,6 +2,7 @@ import type { AnyObject, FixedInstanceType, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { Drawing } from "#client/canvas/placeables/_module.d.mts";
+import type { SceneControls } from "#client/applications/ui/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -27,7 +28,7 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
 
   /**
    * @defaultValue
-   * ```
+   * ```js
    * mergeObject(super.layerOptions, {
    *   name: "drawings"
    *   controllableObjects: true,
@@ -56,6 +57,8 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
 
   override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
+  protected override _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): Drawing.Implementation[];
+
   /**
    * Render a configuration sheet to configure the default Drawing settings
    */
@@ -70,9 +73,10 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
    * Start with some global defaults, apply user default config, then apply mandatory overrides per tool.
    * @param origin - The initial coordinate
    * @returns The new drawing data
-   * @privateRemarks This isn't called externally (anymore?) but seems too useful to make protected without any indication on Foundry's side of such intent
    */
-  _getNewDrawingData(origin: Canvas.Point): DrawingDocument.CreateData;
+  protected _getNewDrawingData(origin: Canvas.Point): DrawingDocument.CreateData;
+
+  static override prepareSceneControls(): SceneControls.Control;
 
   protected override _onClickLeft(event: Canvas.Event.Pointer): void;
 
@@ -85,11 +89,7 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
 
   protected override _onDragLeftMove(event: Canvas.Event.Pointer): void;
 
-  /**
-   * Handling of mouse-up events which conclude a new object creation after dragging
-   * @private
-   */
-  protected _onDragLeftDrop(event: Canvas.Event.Pointer): void;
+  protected override _onDragLeftDrop(event: Canvas.Event.Pointer): void;
 
   protected override _onDragLeftCancel(event: Canvas.Event.Pointer): void;
 
@@ -97,14 +97,22 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
 
   /**
    * Use an adaptive precision depending on the size of the grid
-   * @deprecated since v12 until v14
+   * @deprecated [No deprecation message provided] (since v12 until v14)
    */
   get gridPrecision(): 0 | 8 | 16;
 }
 
 declare namespace DrawingsLayer {
-  interface Any extends AnyDrawingsLayer {}
-  interface AnyConstructor extends Identity<typeof AnyDrawingsLayer> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyDrawingsLayer {}
+    interface AnyConstructor extends Identity<typeof AnyDrawingsLayer> {}
+  }
 
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["drawings"]["layerClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}

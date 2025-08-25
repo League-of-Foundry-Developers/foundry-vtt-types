@@ -2,6 +2,7 @@ import type { AnyObject, FixedInstanceType, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { AmbientLight } from "#client/canvas/placeables/_module.d.mts";
+import type { SceneControls } from "#client/applications/ui/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -29,7 +30,7 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
 
   /**
    * @defaultValue
-   * ```
+   * ```js
    * foundry.utils.mergeObject(super.layerOptions, {
    *  name: "lighting",
    *  rotatableObjects: true,
@@ -52,6 +53,8 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
 
   protected override _activate(): void;
 
+  static override prepareSceneControls(): SceneControls.Control;
+
   protected override _canDragLeftStart(user: User.Implementation, event: Canvas.Event.Pointer): boolean;
 
   protected override _onDragLeftStart(event: Canvas.Event.Pointer): void;
@@ -67,11 +70,21 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
    * @param event - An event
    */
   protected _onDarknessChange(event: Canvas.Event.DarknessChange): void;
+
+  #LightingLayer: true;
 }
 
 declare namespace LightingLayer {
-  interface Any extends AnyLightingLayer {}
-  interface AnyConstructor extends Identity<typeof AnyLightingLayer> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyLightingLayer {}
+    interface AnyConstructor extends Identity<typeof AnyLightingLayer> {}
+  }
 
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["lighting"]["layerClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}

@@ -8,6 +8,9 @@ import type { LightData, TextureData } from "#common/data/data.mjs";
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
 import type DataModel from "#common/abstract/data.mjs";
 import type { TerrainData } from "#client/data/terrain-data.mjs";
+// Hooks only used for links
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { AllHooks } from "#client/hooks.mjs";
 
 import fields = foundry.data.fields;
 import Token = foundry.canvas.placeables.Token;
@@ -720,6 +723,28 @@ declare namespace TokenDocument {
 
   interface CompleteMovementWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {}
 
+  interface PlannedWaypoint extends Omit<MeasuredMovementWaypoint, "userID" | "movementId"> {}
+
+  interface PlannedMovement {
+    /** The found path, which goes through all but the unreachable waypoints */
+    foundPath: PlannedWaypoint[];
+
+    /** The unreachable waypoints, which are those that are not reached by the found path */
+    unreachableWaypoints: PlannedWaypoint[];
+
+    /** The movement history */
+    history: MeasuredMovementWaypoint[];
+
+    /** Is the path hidden? */
+    hidden: boolean;
+
+    /** Is the pathfinding still in progress? */
+    searching: boolean;
+  }
+
+  /** @remarks Keys are Token IDs */
+  type PlannedMovements = Record<string, PlannedMovement | null>;
+
   /**
    * The schema for {@linkcode TokenDocument}. This is the source of truth for how an TokenDocument document
    * must be structured.
@@ -799,12 +824,12 @@ declare namespace TokenDocument {
     hidden: fields.BooleanField;
 
     /**
-     * @remarks Foundry marked `@internal`
+     * @internal
      */
     _movementHistory: fields.ArrayField<fields.SchemaField<MeasuredMovementWaypointSchema>>;
 
     /**
-     * @remarks Foundry marked `@internal`
+     * @internal
      */
     _regions: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseRegion, { idOnly: true }>>;
   }
@@ -827,14 +852,66 @@ declare namespace TokenDocument {
     /** Options passed along in Update operations for TokenDocuments */
     interface Update
       extends foundry.abstract.types.DatabaseUpdateOperation<TokenDocument.UpdateData, TokenDocument.Parent> {
-      previousActorId?: string | null;
+      /** @remarks Added in {@linkcode TokenDocument._preUpdate | TokenDocument#_preUpdate} if `actorId` or `actorLink` in `changes` */
+      previousActorId?: TokenDocument.Implementation["actorId"];
+
+      /** @remarks Can't be `undefined` because it's checked for `=== false` in `TokenDocument##onUpdateAnimation` */
       animate?: boolean;
+
+      /**
+       * @remarks Added by the server's `Token#_preUpdate` if `changes` includes `_regions`. Keys are Token IDs, values are arrays of Region IDs
+       * (the regions the given token was in prior to this update)
+       */
       _priorRegions?: Record<string, string[]>;
-      _priorPosition?: Record<string, { x: number; y: number; elevation: number }>;
+
+      /** @deprecated Removed in v13. This warning will be removed in v14. */
+      _priorPosition?: never;
+
+      /**
+       * @deprecated "`DatabaseUpdateOperation#teleport` has been deprecated. Override {@linkcode TokenDocument._onUpdateMovement | TokenDocument#_onUpdateMovement}
+       * or hook {@linkcode AllHooks.moveToken | moveToken} to handle movement." (since v13, until v15)
+       */
       teleport?: boolean;
+
+      /**
+       * @deprecated "`DatabaseUpdateOperation#forced` has been deprecated. Override {@linkcode TokenDocument._onUpdateMovement | TokenDocument#_onUpdateMovement}
+       * or hook {@linkcode AllHooks.moveToken | moveToken} to handle movement." (since v13, until v15)
+       */
       forced?: boolean;
+
       // TODO: Type this accurately when going over the Token placeable
-      animation: AnyObject;
+      animation?: AnyObject;
+
+      /** @remarks Only set in `TokenDocument##preUpdateMovement` */
+      // TODO: flesh out properties of the inner object
+      _movement?: Record<string, AnyObject>;
+
+      /**
+       * @remarks Only passed in updates made by `TokenDocument##stopMovement`, is the relevant {@linkcode TokenDocument.MovementData.id}.
+       * Such updates will have an empty changes object.
+       */
+      _stopMovement?: string;
+
+      /**
+       * @remarks Only passed in updates made by `TokenDocument##pauseMovement`, is the relevant {@linkcode TokenDocument.MovementData.id}.
+       * Such updates will have an empty changes object.
+       */
+      _pauseMovement?: boolean;
+
+      /**
+       * @remarks Only passed in updates made by {@linkcode TokenDocument.resumeMovement | TokenDocument#resumeMovement}, is a tuple of the relevant
+       * {@linkcode TokenDocument.MovementData.id} and the key being used to reference the pause being resumed, that was originally passed to
+       * {@linkcode TokenDocument.pauseMovement | TokenDocument#pauseMovement}. Such updates will have an empty changes object.
+       */
+      _resumeMovement?: [movementId: string, pauseKey: string];
+
+      /**
+       * @remarks Passed in {@linkcode TokenDocument.clearMovementHistory | TokenDocument#clearMovementHistory} and the `clearMovementHistories` methods
+       * of {@linkcode Scene.clearMovementHistories | Scene} and {@linkcode Combat.clearMovementHistories | Combat}. Associated updates will only have
+       * `_id` properties, without other changes; `TokenDocument##preUpdateMovement` handles setting
+       * `update.`{@linkcode TokenDocument._movementHistory | _movementHistory}` = []`
+       */
+      _clearMovementHistory?: boolean;
     }
 
     /** Operation for {@linkcode TokenDocument.createDocuments} */
@@ -1427,6 +1504,8 @@ declare namespace TokenDocument {
 
   interface MovementOperation extends Omit<MovementData, "user" | "state" | "updateOptions"> {}
 
+  interface ActualMovementOperation extends Pick<MovementOperation, "autoRotate" | "showRuler" | "constrainOptions"> {}
+
   /**
    * The hexagonal offsets of a Token.
    */
@@ -1442,7 +1521,7 @@ declare namespace TokenDocument {
     odd: foundry.grid.BaseGrid.Offset2D[];
 
     /**
-     * The anchor in normalized coordiantes
+     * The anchor in normalized coordinates
      */
     anchor: foundry.canvas.Canvas.Point;
   }

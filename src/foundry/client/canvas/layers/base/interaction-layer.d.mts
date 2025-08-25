@@ -1,4 +1,4 @@
-import type { AnyObject, Identity, InexactPartial } from "#utils";
+import type { AnyObject, Identity, InexactPartial, MaybePromise } from "#utils";
 import type { CanvasLayer } from "../_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { SceneControls } from "#client/applications/ui/_module.d.mts";
@@ -79,7 +79,7 @@ declare abstract class InteractionLayer extends CanvasLayer {
    * Callback actions which occur on a single left-click event to assume control of the object
    * @param event - The triggering canvas interaction event
    */
-  protected _onClickLeft(event: Canvas.Event.Pointer): boolean | void;
+  protected _onClickLeft(event: Canvas.Event.Pointer): MaybePromise<void>;
 
   /**
    * Handle double left-click events which originate from the Canvas stage.

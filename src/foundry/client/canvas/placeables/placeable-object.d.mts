@@ -660,17 +660,13 @@ declare namespace PlaceableObject {
   interface ControlOptions {
     /**
      * Release any other controlled objects first
-     * @remarks Checked via `!== false`, so no nullish values allowed
+     * @remarks Can't be undefined because it's checked via `!== false` in {@linkcode PlaceableObject.control | PlaceableObject#control}
      */
     releaseOthers?: boolean;
   }
 
   /**
-   * @privateRemarks `PlaceableObject#_onDelete` is the only place in foundry code that calls `PlaceableObject#release` with any options at all,
-   * where it passes `{trigger: false}`. This is passed on to `PlaceableObject#_onRelease`, which does not check for any options, including trigger.
-   * `Drawing`, `Region`, and `Token` extend `_onRelease` and pass the options back to `super`, but do no further checks.
-   *
-   * As it is completely unused and has been removed in v13, it is not included in this interface
+   * @remarks As of 13.347, no placeable uses any options for `#release`
    */
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface ReleaseOptions {}

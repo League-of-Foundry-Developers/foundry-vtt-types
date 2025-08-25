@@ -141,7 +141,7 @@ export type ArrayOverlaps<Arr, T> =
  * merged into an interface. When the type does not conform then `ConformTo` is
  * used instead.
  *
- * See `MustConform` for a version that throws a compilation error when the type
+ * See {@linkcode MustConform} for a version that throws a compilation error when the type
  * cannot be statically known to conform.
  */
 export type MakeConform<T, ConformTo, D extends ConformTo = ConformTo> = [T] extends [ConformTo] ? T : D;

@@ -268,7 +268,12 @@ export interface SettingConfig {
   "core.combatTrackerConfig": MaybeEmpty<{ resource: string; skipDefeated: boolean }>;
   "core.compendiumConfiguration": foundry.documents.collections.CompendiumCollection.SettingField;
   "core.gridTemplates": fields.BooleanField<{ initial: false }>;
-  "core.coneTemplateType": "round" | "flat";
+  "core.coneTemplateType": fields.StringField<{
+    required: true;
+    blank: false;
+    initial: "round";
+    choices: { round: string; flat: string };
+  }>;
   "core.colorSchema": fields.StringField<{
     required: true;
     blank: true;
@@ -305,13 +310,13 @@ export interface SettingConfig {
     initial: NonNullable<typeof game.i18n>["lang"];
     choices: typeof CONFIG.supportedLanguages;
   }>;
-  "core.leftClickRelease": fields.BooleanField<{ initial: true }>;
+  "core.leftClickRelease": fields.BooleanField<{ initial: false }>;
   "core.lightAnimation": boolean;
   "core.maxFPS": number;
   "core.mipmap": boolean;
   "core.moduleConfiguration": Record<string, boolean>;
   "core.noCanvas": fields.BooleanField<{ initial: false }>;
-  "core.notesDisplayToggle": boolean;
+  "core.notesDisplayToggle": fields.BooleanField<{ initial: true }>;
   "core.nue.shownTips": boolean;
   "core.performanceMode": fields.NumberField<{
     required: true;

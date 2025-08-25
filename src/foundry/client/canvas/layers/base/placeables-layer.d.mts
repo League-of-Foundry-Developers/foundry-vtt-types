@@ -1,4 +1,13 @@
-import type { AnyObject, Brand, FixedInstanceType, Identity, InexactPartial, ToMethod } from "#utils";
+import type {
+  AnyObject,
+  Brand,
+  FixedInstanceType,
+  Identity,
+  InexactPartial,
+  IntentionalPartial,
+  MaybePromise,
+  ToMethod,
+} from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
@@ -428,7 +437,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
     options?: PlaceablesLayer.CreatePreviewOptions,
   ): Promise<Document.ObjectFor<DocumentName>>;
 
-  protected override _onClickLeft(event: Canvas.Event.Pointer): void;
+  protected override _onClickLeft(event: Canvas.Event.Pointer): MaybePromise<void>;
 
   protected override _canDragLeftStart(user: User.Implementation, event: Canvas.Event.Pointer): boolean;
 
@@ -459,7 +468,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * @param documents - The documents that will be deleted on confirmation.
    * @returns True if the deletion is confirmed to proceed.
    */
-  protected _confirmDeleteKey(documents: Document.ImplementationFor<DocumentName>[]): Promise<boolean>;
+  protected _confirmDeleteKey(documents: Document.ImplementationFor<DocumentName>[]): Promise<boolean | null>;
 
   protected override _onSelectAllKey(event: KeyboardEvent): boolean;
 
@@ -675,7 +684,7 @@ declare namespace PlaceablesLayer {
      * @remarks Update operation options for the given placeable. As of 13.346, core only provides this in
      * {@linkcode foundry.canvas.placeables.Token._prepareKeyboardMovementUpdates | Token#_prepareKeyboardMovementUpdates}
      */
-    options?: Document.Database.UpdateOptionsFor<DocumentName>,
+    options?: InexactPartial<Document.Database.UpdateOptionsFor<DocumentName>>,
   ];
 
   interface GetCopyableObjectsOptions {
@@ -707,19 +716,28 @@ declare namespace PlaceablesLayer {
   interface CreationHistoryEntry<DocumentName extends Document.PlaceableType> {
     type: "create";
     data: HistoryDataFor<"create", DocumentName>[];
-    options: Document.Database.DeleteOptionsFor<DocumentName>;
+
+    /** @remarks As of 13.1347 this will always be an empty object, see {@linkcode UpdateHistoryEntry.options} remarks */
+    options: AnyObject;
   }
 
   interface UpdateHistoryEntry<DocumentName extends Document.PlaceableType> {
     type: "update";
     data: HistoryDataFor<"update", DocumentName>[];
-    options: Document.Database.UpdateOptionsFor<DocumentName>;
+
+    /**
+     * @remarks As of 13.1347 this will always be an empty object, except in the case of a token update involving movement.
+     *
+     */
+    options: IntentionalPartial<Document.Database.UpdateOptionsFor<DocumentName>>;
   }
 
   interface DeletionHistoryEntry<DocumentName extends Document.PlaceableType> {
     type: "delete";
     data: HistoryDataFor<"delete", DocumentName>[];
-    options: Document.Database.CreateOptionsFor<DocumentName>;
+
+    /** @remarks As of 13.1347 this will always be an empty object, see {@linkcode UpdateHistoryEntry.options} remarks */
+    options: AnyObject;
   }
 
   /** @internal */

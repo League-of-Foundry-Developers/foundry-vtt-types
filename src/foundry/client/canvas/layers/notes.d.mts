@@ -2,6 +2,7 @@ import type { AnyObject, FixedInstanceType, Identity, InexactPartial, NullishPro
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
+import type { SceneControls } from "#client/applications/ui/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -22,7 +23,7 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
 
   /**
    * @defaultValue
-   * ```
+   * ```js
    * foundry.utils.mergeObject(super.layerOptions, {
    *  name: "notes",
    *  zIndex: 800
@@ -48,6 +49,8 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
   /** @defaultValue `game.settings.get("core", "notesDisplayToggle")` */
   override interactiveChildren: boolean;
 
+  protected override _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): Note.Implementation[];
+
   protected override _deactivate(): void;
 
   protected override _draw(options: AnyObject): Promise<void>;
@@ -58,9 +61,9 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
   static registerSettings(): void;
 
   /**
-   * Visually indicate in the Scene Controls that there are visible map notes present in the Scene.
+   * @deprecated Removed without replacement in v13. This warning will be removed in v14.
    */
-  hintMapNotes(): void;
+  hintMapNotes(): never;
 
   /**
    * Pan to a given note on the layer.
@@ -68,13 +71,11 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
    * @param options - Options which modify the pan operation.
    * @returns A Promise which resolves once the pan animation has concluded.
    */
-  panToNote(
-    note: Note.Implementation,
-    options?: NotesLayer.PanToNoteOptions, // not:null (destructured)
-  ): Promise<void>;
+  panToNote(note: Note.Implementation, options?: NotesLayer.PanToNoteOptions): Promise<void>;
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  protected override _onClickLeft(event: Canvas.Event.Pointer): Promise<Note.Implementation | void>;
+  static override prepareSceneControls(): SceneControls.Control;
+
+  protected override _onClickLeft(event: Canvas.Event.Pointer): Promise<void>;
 
   /**
    * Handle JournalEntry document drop data
@@ -83,8 +84,16 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
 }
 
 declare namespace NotesLayer {
-  interface Any extends AnyNotesLayer {}
-  interface AnyConstructor extends Identity<typeof AnyNotesLayer> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyNotesLayer {}
+    interface AnyConstructor extends Identity<typeof AnyNotesLayer> {}
+  }
 
   interface ImplementationClass extends Identity<CONFIG["Canvas"]["layers"]["notes"]["layerClass"]> {}
   interface Implementation extends FixedInstanceType<ImplementationClass> {}

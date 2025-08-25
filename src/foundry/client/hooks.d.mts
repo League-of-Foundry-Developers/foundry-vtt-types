@@ -498,6 +498,58 @@ export interface AllHooks extends DynamicHooks {
   /** Token */
 
   /**
+   * A hook event that fires for every Token document that is about to me moved before the conclusion of
+   * an update workflow. This hook only fires for the client who is initiating the update request.
+   * The waypoints of the movement are final and cannot be changed. The movement can only be rejected
+   * entirely by explicitly returning false.
+   * @param document  - The existing Document which was updated
+   * @param movement  - The pending movement of the Token
+   * @param operation - The update operation that contains the movement
+   * @returns If false, the movement is prevented
+   */
+  preMoveToken: (
+    document: TokenDocument.Implementation,
+    movement: TokenDocument.MovementOperation,
+    operation: TokenDocument.Database.PreUpdateOperation,
+  ) => boolean | void;
+
+  /**
+   * A hook event that fires for every Token document that was moved after conclusion of an update
+   * workflow. This hook fires for all connected clients after the update has been processed.
+   * @param document  - The existing TokenDocument which was updated
+   * @param movement  - The movement of the Token
+   * @param operation - The update operation that contains the movement
+   * @param user      - The User that requested the update operation
+   */
+  moveToken: (
+    document: TokenDocument.Implementation,
+    movement: TokenDocument.MovementOperation,
+    operation: TokenDocument.Database.UpdateOperation,
+    user: User.Implementation,
+  ) => void;
+
+  /**
+   * A hook event that fires when the current movement of a Token document is stopped.
+   * @param document - The TokenDocument whose movement was stopped
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  stopToken: (document: TokenDocument.Implementation) => void;
+
+  /**
+   * A hook event that fires when the current movement of a Token document is paused.
+   * @param document - The TokenDocument whose movement was paused
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  pauseToken: (document: TokenDocument.Implementation) => void;
+
+  /**
+   * A hook event that fires when the movement of a Token document is recorded or cleared.
+   * @param document - The TokenDocument whose movement was recorded or cleared
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  recordToken: (document: TokenDocument.Implementation) => void;
+
+  /**
    * A hook event that fires when a token {@linkcode Token} should apply a specific status effect.
    * @param token    - The token affected
    * @param statusId - The status effect ID being applied, from CONFIG.specialStatusEffects.

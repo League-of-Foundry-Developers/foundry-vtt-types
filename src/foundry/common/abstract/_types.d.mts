@@ -197,6 +197,9 @@ export interface DatabaseUpdateOperation<
    * A parent Document UUID provided when the parent instance is unavailable
    */
   parentUuid?: string | null;
+
+  /** @remarks  */
+  isUndo?: boolean;
 }
 
 export interface DatabaseDeleteOperation<Parent extends Document.Any | null = Document.Any | null>

@@ -2036,6 +2036,12 @@ declare namespace Document {
       | (DocumentType extends "Token" ? TokenDocument.Database.CreateOperation<Temporary> : never)
       | (DocumentType extends "Wall" ? WallDocument.Database.CreateOperation<Temporary> : never);
 
+    /** @remarks `parent` and `pack` are always overwritten to match the Document that {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} was called on. */
+    type EmbeddedCreateOperationForName<DocumentType extends Document.Type> = Omit<
+      CreateOperationForName<DocumentType>,
+      "parent" | "pack"
+    >;
+
     type UpdateOperationForName<DocumentType extends Document.Type> =
       | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.UpdateOperation : never)
       | (DocumentType extends "ActorDelta" ? ActorDelta.Database.UpdateOperation : never)
@@ -2072,6 +2078,12 @@ declare namespace Document {
       | (DocumentType extends "Token" ? TokenDocument.Database.UpdateOperation : never)
       | (DocumentType extends "Wall" ? WallDocument.Database.UpdateOperation : never);
 
+    /** @remarks `parent` and `pack` are always overwritten to match the Document that {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} was called on. */
+    type EmbeddedUpdateOperationForName<DocumentType extends Document.Type> = Omit<
+      UpdateOperationForName<DocumentType>,
+      "parent" | "pack"
+    >;
+
     type DeleteOperationForName<DocumentType extends Document.Type> =
       | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.DeleteOperation : never)
       | (DocumentType extends "ActorDelta" ? ActorDelta.Database.DeleteOperation : never)
@@ -2107,6 +2119,12 @@ declare namespace Document {
       | (DocumentType extends "Tile" ? TileDocument.Database.DeleteOperation : never)
       | (DocumentType extends "Token" ? TokenDocument.Database.DeleteOperation : never)
       | (DocumentType extends "Wall" ? WallDocument.Database.DeleteOperation : never);
+
+    /** @remarks `parent` and `pack` are always overwritten to match the Document that {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} was called on. */
+    type EmbeddedDeleteOperationForName<DocumentType extends Document.Type> = Omit<
+      DeleteOperationForName<DocumentType>,
+      "parent" | "pack"
+    >;
 
     type CreateOptionsFor<DocumentType extends Document.Type> =
       | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.CreateOptions : never)

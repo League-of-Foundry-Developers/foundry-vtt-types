@@ -170,7 +170,7 @@ declare namespace WeatherEffects {
   interface Implementation extends FixedInstanceType<ImplementationClass> {}
 
   interface LayerOptions extends CanvasLayer.LayerOptions {
-    /** @remarks This causes `WeatherEffect.instance` to be the `EffectsCanvasGroup` */
+    /** @remarks This causes {@linkcode WeatherEffect.instance} to be the {@linkcode foundry.canvas.groups.EffectsCanvasGroup.Implementation} */
     name: "effects";
   }
 
