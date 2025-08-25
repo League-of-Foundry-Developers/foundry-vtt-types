@@ -13,8 +13,8 @@ declare class AudioHelper {
   constructor();
 
   /**
-   * Analyzers for each context, plus an internal ticker. Each context key
-   * holds data about its AnalyserNode, a Float32Array for FFT data, and so on.
+   * Analyzers for each context, plus an internal ticker. Each context key holds data about its {@linkcode AnalyserNode},
+   * a {@linkcode Float32Array} for FFT data, and so on.
    * @defaultValue
    * ```js
    * Object.seal({
@@ -274,12 +274,12 @@ declare class AudioHelper {
   static ANALYSIS_TIMEOUT_MS: number;
 
   /**
-   * Enable the analyzer for a given context (`music`, `environment`, `interface`), attaching an AnalyserNode to its gain node if not already active.
+   * Enable the analyzer for a given context (`music`, `environment`, `interface`), attaching an {@linkcode AnalyserNode} to its gain node if not already active.
    */
   enableAnalyzer(contextName: AudioHelper.ContextName, options?: AudioHelper.EnableAnalyzerOptions): void;
 
   /**
-   * Disable the analyzer for a given context, disconnecting the AnalyserNode.
+   * Disable the analyzer for a given context, disconnecting the {@linkcode AnalyserNode}.
    */
   disableAnalyzer(contextName: AudioHelper.ContextName): void;
 
@@ -368,7 +368,7 @@ declare namespace AudioHelper {
     /** The {@linkcode AnalyserNode} for this context, or `null` if inactive. */
     node: AnalyserNode | null;
 
-    /** The FFT frequency data buffer used by the AnalyserNode. */
+    /** The FFT frequency data buffer used by the {@linkcode AnalyserNode}. */
     dataArray: Float32Array | null;
 
     /** Raw average decibel values for each frequency band. */
