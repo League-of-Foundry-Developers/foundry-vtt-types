@@ -173,8 +173,8 @@ declare namespace DoorMesh {
      * @remarks
      * - For `swing` and `swivel` it's a linear scale from 0 (no movement) to 2 (180 degrees)
      * - For `slide` it's door-lengths shifted
-     * - For `ascend` and `descend` it affects how much the texture grows/shrinks. For `ascend` there's also code in place that implies it should
-     * affect the texture `alpha` (down to a minimum of `0.6` at strength `2.0`), but it's non-functional as of 13.346: {@link https://github.com/foundryvtt/foundryvtt/issues/13157}
+     * - For `ascend` and `descend` it affects how much the texture grows/shrinks, and for `ascend`
+     * it also affects the texture `alpha` (down to a minimum of `0.5` at strength `2.0`)
      */
     strength: number;
 
@@ -218,6 +218,7 @@ declare namespace DoorMesh {
     scaleX: number;
     scaleY: number;
     tint: number;
+    alpha: number;
   }
 }
 

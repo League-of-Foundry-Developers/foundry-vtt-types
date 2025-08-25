@@ -15,7 +15,7 @@ expectTypeOf(baseSystem.strictDataCleaning).toEqualTypeOf<boolean>();
 expectTypeOf(baseSystem.version).toEqualTypeOf<string>();
 expectTypeOf(baseSystem.documentTypes).toEqualTypeOf<AdditionalTypesField.DocumentTypesConfiguration>();
 expectTypeOf(baseSystem.documentTypes.Actor["character"]).toEqualTypeOf<
-  AdditionalTypesField.ServerSanitationFields | undefined
+  AdditionalTypesField.ServerSanitizationFields | undefined
 >();
 expectTypeOf(baseSystem.background).toEqualTypeOf<string | undefined>();
 expectTypeOf(baseSystem.initiative).toEqualTypeOf<string | undefined>();

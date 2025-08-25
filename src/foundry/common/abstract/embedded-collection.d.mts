@@ -107,7 +107,7 @@ declare class EmbeddedCollection<
   ): void;
 
   /**
-   * Get an element from the EmbeddedCollection by its ID.
+   * Get a document from the EmbeddedCollection by its ID.
    * @param id      - The ID of the Embedded Document to retrieve.
    * @param options - Additional options to configure retrieval.
    */
@@ -129,21 +129,21 @@ declare class EmbeddedCollection<
   ): ContainedDocument | undefined;
 
   /**
-   * Get an element from the EmbeddedCollection by its ID.
+   * Get a document from the EmbeddedCollection by its ID.
    * @param id      - The ID of the Embedded Document to retrieve.
    * @param options - Additional options to configure retrieval.
    */
   get(id: string, options: { strict: true; invalid?: false }): ContainedDocument;
 
   /**
-   * Get an element from the EmbeddedCollection by its ID.
+   * Get a document from the EmbeddedCollection by its ID.
    * @param id      - The ID of the Embedded Document to retrieve.
    * @param options - Additional options to configure retrieval.
    */
   get(id: string, options: { strict?: boolean; invalid: true }): unknown;
 
   /**
-   * Add an item to the collection
+   * Add a document to the collection
    * @param key     - The embedded Document ID
    * @param value   - The embedded Document instance
    * @param options - Additional options to the set operation
@@ -168,6 +168,7 @@ declare class EmbeddedCollection<
   protected _set(key: string, value: ContainedDocument): void;
 
   /**
+   * Remove a document from the collection.
    * @param key     - The embedded Document ID.
    * @param options - Additional options to the delete operation.
    */

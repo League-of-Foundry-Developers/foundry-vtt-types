@@ -1125,6 +1125,12 @@ declare global {
   export import CanvasVisionMask = foundry.canvas.layers.CanvasVisionMask;
 
   /**
+   * @deprecated "You are accessing the global {@linkcode DarknessLevelContainer} which is now namespaced under {@linkcode foundry.canvas.layers.DarknessLevelContainer}"
+   * (since v13 will be removed in v15)
+   */
+  export import DarknessLevelContainer = foundry.canvas.layers.DarknessLevelContainer;
+
+  /**
    * @deprecated "You are accessing the global {@linkcode DrawingsLayer} which is now namespaced under {@linkcode foundry.canvas.layers.DrawingsLayer}"
    * (since v13 will be removed in v15)
    */
@@ -1255,6 +1261,12 @@ declare global {
    * (since v13 will be removed in v15)
    */
   export import UnboundTransform = foundry.canvas.geometry.UnboundTransform;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode ObservableTransform} which is now namespaced under {@linkcode foundry.canvas.geometry.ObservableTransform}"
+   * (since v13 will be removed in v15)
+   */
+  export import ObservableTransform = foundry.canvas.geometry.ObservableTransform;
 
   /**
    * @deprecated "You are accessing the global {@linkcode LimitedAnglePolygon} which is now namespaced under {@linkcode foundry.canvas.geometry.LimitedAnglePolygon}"
@@ -1591,6 +1603,18 @@ declare global {
    * (since v13 will be removed in v15)
    */
   export import VoidFilter = foundry.canvas.rendering.filters.VoidFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AlphaBlurFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.AlphaBlurFilter}"
+   * (since v13 will be removed in v15)
+   */
+  export import AlphaBlurFilter = foundry.canvas.rendering.filters.AlphaBlurFilter;
+
+  /**
+   * @deprecated "You are accessing the global {@linkcode AlphaBlurFilterPass} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.AlphaBlurFilterPass}"
+   * (since v13 will be removed in v15)
+   */
+  export import AlphaBlurFilterPass = foundry.canvas.rendering.filters.AlphaBlurFilterPass;
 
   /**
    * @deprecated "You are accessing the global {@linkcode WeatherOcclusionMaskFilter} which is now namespaced under {@linkcode foundry.canvas.rendering.filters.WeatherOcclusionMaskFilter}"

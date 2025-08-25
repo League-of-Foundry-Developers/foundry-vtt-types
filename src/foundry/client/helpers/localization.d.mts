@@ -46,43 +46,8 @@ declare class Localization {
    * @param model   - The DataModel class to localize
    * @param options - Options which configure how localization is performed
    *
-   * @example
-   * JavaScript class definition and localization call.
-   * ```js
-   * class MyDataModel extends foundry.abstract.DataModel {
-   *   static defineSchema() {
-   *     return {
-   *       foo: new foundry.data.fields.StringField(),
-   *       bar: new foundry.data.fields.NumberField()
-   *     };
-   *   }
-   *   static LOCALIZATION_PREFIXES = ["MYMODULE.MYDATAMODEL"];
-   * }
-   *
-   * Hooks.on("i18nInit", () => {
-   *   Localization.localizeDataModel(MyDataModel);
-   * });
-   * ```
-   *
-   * JSON localization file
-   * ```json
-   * {
-   *   "MYMODULE": {
-   *     "MYDATAMODEL": {
-   *       "FIELDS" : {
-   *         "foo": {
-   *           "label": "Foo",
-   *           "hint": "Instructions for foo"
-   *         },
-   *         "bar": {
-   *           "label": "Bar",
-   *           "hint": "Instructions for bar"
-   *         }
-   *       }
-   *     }
-   *   }
-   * }
-   * ```
+   * @see {@linkcode foundry.abstract.DataModel.LOCALIZATION_PREFIXES} for an example of the class definition and
+   * localization file structure.
    */
   static localizeDataModel(
     model: foundry.abstract.DataModel.AnyConstructor,
