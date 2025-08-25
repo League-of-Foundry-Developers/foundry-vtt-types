@@ -317,7 +317,7 @@ declare namespace CompendiumCollection {
     interface EntrySchema extends fields.DataSchema {
       /**
        * @defaultValue `undefined`
-       * @remarks The`id` of the folder this is in in the {@linkcode foundry.applications.sidebar.apps.Compendium | Compendium directory}.
+       * @remarks The `id` of the folder this is in in the {@linkcode foundry.applications.sidebar.apps.Compendium | Compendium directory}.
        * `undefined` and `null` should behave
        */
       folder: fields.StringField<{
