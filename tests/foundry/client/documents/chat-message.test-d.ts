@@ -83,7 +83,7 @@ expectTypeOf(chat.applyRollMode("custom-roll-mode")).toEqualTypeOf<void>();
 // Ensure that each usage of `rollModes` is compatible.
 declare const key: keyof typeof CONFIG.Dice.rollModes;
 expectTypeOf(chat.applyRollMode(key)).toEqualTypeOf<void>();
-expectTypeOf(chat.applyRollMode(game.settings!.get("core", "rollMode")!)).toEqualTypeOf<void>();
+expectTypeOf(chat.applyRollMode(game.settings!.get("core", "rollMode"))).toEqualTypeOf<void>();
 
 // @ts-expect-error "unknown-roll-mode" is not a valid roll mode
 chat.applyRollMode("unknown-roll-mode");

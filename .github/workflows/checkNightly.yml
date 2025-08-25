@@ -6,13 +6,13 @@ on:
   workflow_dispatch:
 
 env:
-  node_version: 23
+  node_version: 24
 
 jobs:
   verify-next:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js ${{ env.node_version }}
         uses: actions/setup-node@v4
         with:

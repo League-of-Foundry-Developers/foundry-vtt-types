@@ -218,6 +218,31 @@ test("blank choices", () => {
   expectTypeOf(model.blankChoices).toEqualTypeOf<"a" | "b" | "" | undefined>();
 });
 
+test("nullable SchemaField", () => {
+  const schema = () => ({
+    data: new foundry.data.fields.SchemaField(
+      {
+        max: new foundry.data.fields.StringField({ required: true }),
+        value: new foundry.data.fields.StringField({ required: true }),
+        editable: new foundry.data.fields.BooleanField({ required: true }),
+      },
+      { nullable: true },
+    ),
+  });
+
+  class NullableSchema extends foundry.abstract.DataModel<ReturnType<typeof schema>> {
+    static override defineSchema() {
+      return schema();
+    }
+  }
+
+  new NullableSchema({ data: undefined });
+
+  const nullableSchema = new NullableSchema({ data: null });
+
+  expectTypeOf(nullableSchema.data).toEqualTypeOf<{ max: string; value: string; editable: boolean } | null>();
+});
+
 // TODO(LukeAbby): Relevant once requisite circularities are fixed.
 // type ActorSchema = foundry.data.fields.SchemaField<Actor.Schema>;
 

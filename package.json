@@ -56,7 +56,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/League-of-Foundry-Developers/foundry-vtt-types"
+    "url": "git+https://github.com/League-of-Foundry-Developers/foundry-vtt-types.git"
   },
   "contributors": [
     {
@@ -152,7 +152,7 @@
     "eslint-config-prettier": "^10.0.1",
     "eslint-import-resolver-typescript": "^4.3.2",
     "eslint-plugin-import-x": "^4.6.1",
-    "eslint-plugin-jsdoc": "^52.0.0",
+    "eslint-plugin-jsdoc": "^54.0.0",
     "eslint-plugin-tsdoc": "^0.4.0",
     "globals": "^16.0.0",
     "husky": "^9.1.4",
@@ -164,14 +164,14 @@
     "type-fest": "^4.41.0",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.31.0",
-    "vitest": "^4.0.0-beta.1"
+    "vitest": "^4.0.0-beta.7"
   },
   "overrides": {
     "expect-type": "^1.2.2"
   },
   "peerDependencies": {
-    "typescript": "^5.4",
-    "@typescript/native-preview": "*"
+    "@typescript/native-preview": "*",
+    "typescript": "^5.4"
   },
   "peerDependenciesMeta": {
     "typescript": {

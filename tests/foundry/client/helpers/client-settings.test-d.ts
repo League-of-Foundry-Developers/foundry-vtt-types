@@ -15,6 +15,8 @@ expectTypeOf(clientSettings.sheet).toEqualTypeOf<SettingsConfig>();
 declare const subMenu: ClientSettings.RegisterSubmenu;
 expectTypeOf(clientSettings.registerMenu("foo", "bar", subMenu)).toEqualTypeOf<void>();
 
+const dataField = new fields.ArrayField(new fields.NumberField({ nullable: false, required: true }), {});
+
 // specify the settings we will use
 declare global {
   interface SettingConfig {
@@ -23,6 +25,7 @@ declare global {
     "some.stringSetting": string;
 
     "data-model.setting": Actor.ImplementationClass;
+    "data-field.setting": typeof dataField;
   }
 }
 
@@ -81,6 +84,11 @@ clientSettings.register("data-model", "setting", {
   type: Actor,
 });
 
+clientSettings.register("data-field", "setting", {
+  scope: "client",
+  type: dataField,
+});
+
 expectTypeOf(clientSettings.set("data-model", "setting", { type: "base", name: "Test Actor" })).toEqualTypeOf<
   Promise<Actor.Implementation>
 >();
@@ -106,4 +114,6 @@ expectTypeOf(clientSettings.get("core", "compendiumConfiguration")).toEqualTypeO
   foundry.data.fields.DataField.AssignmentTypeFor<foundry.documents.collections.CompendiumCollection.ConfigSetting.Field>
 >();
 
-expectTypeOf(clientSettings.get("core", "rollMode")).toEqualTypeOf<foundry.dice.Roll.Mode | null>();
+expectTypeOf(clientSettings.get("core", "rollMode")).toEqualTypeOf<foundry.dice.Roll.Mode>();
+
+expectTypeOf(clientSettings.get("data-field", "setting")).toEqualTypeOf<number[]>();
