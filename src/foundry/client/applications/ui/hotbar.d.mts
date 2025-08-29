@@ -58,6 +58,13 @@ declare class Hotbar<
   protected _getContextMenuOptions(): foundry.applications.ux.ContextMenu.Entry<HTMLElement>[];
 
   /**
+   * Update the presented state of toggle buttons.
+   * @internal
+   * @remarks Called externally in {@linkcode foundry.applications.sidebar.tabs.PlaylistDirectory._onGlobalVolume | PlaylistDirectory#_onGlobalVolume}
+   */
+  _updateToggles(): void;
+
+  /**
    * Change to a specific numbered page from 1 to 5
    * @param page - The page number to change to
    */
