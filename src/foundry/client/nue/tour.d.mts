@@ -40,7 +40,7 @@ declare class Tour {
 
   /**
    * The HTMLElement which is the focus of the current tour step.
-   * @remarks Only `undefined` prior to Tour {@linkcode start | starting}
+   * @remarks Only `undefined` prior to Tour {@linkcode start}
    */
   targetElement: HTMLElement | undefined | null;
 
