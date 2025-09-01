@@ -53,7 +53,7 @@ declare class CompendiumCollection<
 
   /**
    * A reference to the Application class which provides an interface to interact with this compendium content.
-   * @defaultValue `Compendium`
+   * @defaultValue {@linkcode foundry.applications.sidebar.apps.Compendium}
    */
   applicationClass: Application.AnyConstructor | ApplicationV2.AnyConstructor;
 
@@ -97,6 +97,7 @@ declare class CompendiumCollection<
 
   /**
    * The visibility configuration of this compendium pack.
+   * @remarks Foundry wants this to be {@linkcode CompendiumCollection.OwnershipData} (omitting the `NONE` key), but due to {@link https://github.com/foundryvtt/foundryvtt/issues/13354} it's not
    */
   get ownership(): BasePackage.OwnershipRecord;
 
@@ -272,9 +273,6 @@ declare class CompendiumCollection<
    */
   configure(configuration?: CompendiumCollection.Configuration): Promise<void>;
 
-  /** @deprecated The `ownership` key is currently non-functional, see {@link https://github.com/foundryvtt/foundryvtt/issues/13283} */
-  configure(configuration: CompendiumCollection.ConfigurationBroken): Promise<void>;
-
   /**
    * Delete an existing world-level Compendium Collection.
    * This action may only be performed for world-level packs by a Gamemaster User.
@@ -313,6 +311,16 @@ declare namespace CompendiumCollection {
 
   type DocumentName = CONST.COMPENDIUM_DOCUMENT_TYPES;
 
+  /** @internal */
+  type _OwnershipChoices = (keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS)[];
+
+  interface OwnershipFieldSchema extends fields.DataSchema {
+    GAMEMASTER: fields.StringField<{ required: true; choices: ["OWNER"]; initial: "OWNER" }>;
+    ASSISTANT: fields.StringField<{ required: true; choices: _OwnershipChoices; initial: "OWNER" }>;
+    TRUSTED: fields.StringField<{ required: true; choices: _OwnershipChoices; initial: "INHERIT" }>;
+    PLAYER: fields.StringField<{ required: true; choices: _OwnershipChoices; initial: "INHERIT" }>;
+  }
+
   interface ConfigSettingElementSchema extends fields.DataSchema {
     /**
      * @defaultValue `undefined`
@@ -338,7 +346,7 @@ declare namespace CompendiumCollection {
     /** @remarks Is the compendium edit lock engaged? */
     locked: fields.BooleanField<{ required: false; initial: undefined }>;
 
-    // Presumably the resolution to https://github.com/foundryvtt/foundryvtt/issues/13283 will be a CompendiumOwnershipField here
+    ownership: fields.SchemaField<OwnershipFieldSchema, { required: false; initial: undefined }>;
   }
 
   interface StoredConfiguration extends fields.SchemaField.InitializedData<ConfigSettingElementSchema> {}
@@ -346,24 +354,15 @@ declare namespace CompendiumCollection {
   /** @remarks The partial'd interface for passing to {@linkcode CompendiumCollection.configure}, if you want the stored interface see {@linkcode CompendiumCollection.StoredConfiguration} */
   interface Configuration extends InexactPartial<StoredConfiguration> {}
 
-  /** @internal */
-  type _Ownership = InexactPartial<{
-    /**
-     * @deprecated As of 13.347, an implementation change has rendered this key (presumably temporarily) non-functional
-     * (see {@link https://github.com/foundryvtt/foundryvtt/issues/13283}).
-     */
-    ownership: foundry.packages.BasePackage.OwnershipRecord;
-  }>;
-
-  /** @privateRemarks See {@linkcode _Ownership.ownership} */
-  interface ConfigurationBroken extends Configuration, _Ownership {}
-
   type SettingFieldElement = fields.SchemaField<ConfigSettingElementSchema>;
 
   type SettingField = fields.TypedObjectField<SettingFieldElement>;
 
   interface SettingData
     extends fields.TypedObjectField.InitializedType<SettingFieldElement, fields.TypedObjectField.DefaultOptions> {}
+
+  /** @remarks Currently unused due to {@link https://github.com/foundryvtt/foundryvtt/issues/13354} */
+  type OwnershipData = NonNullable<SettingData["ownership"]>;
 
   // The type that's passed to `createCompendium`.
   interface CreateCompendiumMetadata<Type extends DocumentName> {

@@ -635,6 +635,7 @@ declare global {
       // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     > = _ToCompendiumReturnType<DocumentName, Coalesce<Options, {}>>;
 
+    // TODO: `ownership` and the `_stats` sources are recursively removed from descendent document sources, not just the top level
     type _ToCompendiumReturnType<DocumentName extends Document.Type, Options extends ToCompendiumOptions> = _ClearFog<
       Options["clearState"],
       _ClearStats<

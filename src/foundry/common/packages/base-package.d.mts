@@ -83,9 +83,8 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
-  type OwnershipRecord = Record<
-    keyof typeof CONST.USER_ROLES,
-    keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | undefined
+  type OwnershipRecord = InexactPartial<
+    Record<keyof typeof CONST.USER_ROLES, keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>
   >;
 
   interface PackageCompendiumSchema extends DataSchema {
