@@ -1,4 +1,6 @@
-import type { ValueOf } from "#utils";
+import type { Identity, InexactPartial, ValueOf } from "#utils";
+import type { ClientKeybindings, TooltipManager } from "#client/helpers/interaction/_module.d.mts";
+import type { Localization } from "#client/helpers/_module.d.mts";
 
 /**
  * A Tour that shows a series of guided steps.
@@ -11,7 +13,8 @@ declare class Tour {
    */
   constructor(config: Tour.Config, options?: Tour.ConstructorOptions);
 
-  static STATUS: Tour.STATUS;
+  /** @remarks Frozen */
+  static STATUS: Tour.Status;
 
   /**
    * Indicates if a Tour is currently in progress.
@@ -26,8 +29,9 @@ declare class Tour {
   /**
    * Handle a movement action to either progress or regress the Tour
    * @param movementDirections - The Directions being moved in
+   * @remarks This method's one call in core is by full path name inside `ClientKeybindings##onPan`, so extending in subclasses has no effect
    */
-  static onMovementAction(movementDirections: string[]): true | void;
+  static onMovementAction(movementDirections: ClientKeybindings.MOVEMENT_DIRECTIONS[]): true | void;
 
   /**
    * Configuration of the tour. This object is cloned to avoid mutating the original configuration.
@@ -36,6 +40,7 @@ declare class Tour {
 
   /**
    * The HTMLElement which is the focus of the current tour step.
+   * @remarks Only `undefined` prior to Tour {@linkcode start | starting}
    */
   targetElement: HTMLElement | undefined | null;
 
@@ -111,7 +116,7 @@ declare class Tour {
 
   /**
    * Return whether this Tour is currently eligible to be started?
-   * This is useful for tours which can only be used in certain circumnstances, like if the canvas is active.
+   * This is useful for tours which can only be used in certain circumstances, like if the canvas is active.
    */
   get canStart(): boolean;
 
@@ -153,6 +158,8 @@ declare class Tour {
   /**
    * Progresses to a given Step
    * @param stepIndex - The step to progress to
+   * @remarks
+   * @throws If `stepIndex` is outside the range `[0, this.steps.length]`
    */
   progress(stepIndex: number): Promise<void>;
 
@@ -168,17 +175,20 @@ declare class Tour {
    * @param filepath - The path to the JSON file
    * @remarks Returns `new this()` so needs an override per subclass.
    */
-  static fromJSON(filepath: string): Promise<Tour>;
+  static fromJSON(filepath: string): Promise<Tour.Any>;
 
   /**
    * Set-up operations performed before a step is shown.
-   * @abstract
+   * @remarks Despite being marked `@abstract`, the base implementation is a no-op and doesn't throw.
+   * Implementation is therefor *not* required by subclasses, but most probably will do so anyway
    */
   protected _preStep(): Promise<void>;
 
   /**
    * Clean-up operations performed after a step is completed.
-   * @abstract
+   * @remarks Despite being marked `@abstract`, the base implementation is a method with a real body
+   * and doesn't throw. Implementation is therefor *not* required by subclasses; none of core's  do,
+   * and any that do must call `super._postStep()` in them
    */
   protected _postStep(): Promise<void>;
 
@@ -187,51 +197,96 @@ declare class Tour {
    */
   protected _renderStep(): Promise<void>;
 
+  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
+  protected _onButtonClick(event: never, buttons: never): never;
+
+  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
+  protected _saveProgress(): never;
+
+  /** @deprecated Made hard private in v13. This warning will be removed in v14. */
+  protected _loadProgress(): never;
+
   /**
    * Reloads the Tour's current step from the saved progress
    * @internal
    */
   _reloadProgress(): void;
 
-  #tour: true;
+  #Tour: true;
 }
 
 declare namespace Tour {
+  interface Any extends AnyTour {}
+  interface AnyConstructor extends Identity<typeof AnyTour> {}
+
+  /** @internal */
+  type _Config = InexactPartial<{
+    /** A human-readable description of this Tour. Localized. */
+    description: string;
+
+    /** A map of localizations for the Tour that should be merged into the default localizations */
+    localization: Localization.Translations;
+
+    /** Whether the Tour is restricted to the GM only. Defaults to false. */
+    restricted: boolean;
+
+    /** Whether the Tour should be displayed in the Manage Tours UI. Defaults to false. */
+    display: boolean;
+
+    /** Whether the Tour can be resumed or if it always needs to start from the beginning. Defaults to false. */
+    canBeResumed: boolean;
+
+    /**
+     * A list of namespaced Tours that might be suggested to the user when this Tour is completed. The first non-completed Tour in the array will be recommended.
+     * @remarks e.g. `["core.welcome"]`
+     */
+    suggestedNextTours: string[];
+  }>;
+
   /** Tour configuration data */
-  interface Config {
-    /** The namespace this Tour belongs to. Typically, the name of the package which implements the tour should be used */
+  interface Config extends _Config {
+    /**
+     * The namespace this Tour belongs to. Typically, the name of the package which implements the tour should be used
+     * @remarks Technically not required as long as the Tour is only constructed to be immediately passed
+     * {@linkcode foundry.nue.ToursCollection.register | ToursCollection#register}, which will use its argument instead.
+     * Core relies on this for all their tour definitions in `public/tours/*.json`, but it's safer and simpler from the
+     * types perspective to leave it required, as per their typedef
+     */
     namespace: string;
 
-    /** A machine-friendly id of the Tour, must be unique within the provided namespace */
+    /**
+     * A machine-friendly id of the Tour, must be unique within the provided namespace
+     * @remarks Technically not required as long as the Tour is only constructed to be immediately passed
+     * {@linkcode foundry.nue.ToursCollection.register | ToursCollection#register}, which will use its argument instead.
+     * Core relies on this for all their tour definitions in `public/tours/*.json`, but it's safer and simpler from the
+     * types perspective to leave it required, as per their typedef
+     */
     id: string;
 
-    /** A human-readable name for this Tour. Localized. */
+    /**
+     * A human-readable name for this Tour. Localized.
+     * @remarks As in, "this gets localized", not "must be passed pre-localized"
+     */
     title: string;
 
     /** The list of Tour Steps */
     steps: Tour.Step[];
-
-    /** A human-readable description of this Tour. Localized. */
-    description?: string | undefined;
-
-    /** A map of localizations for the Tour that should be merged into the default localizations */
-    localization?: foundry.helpers.Localization.Translations | undefined;
-
-    /** Whether the Tour is restricted to the GM only. Defaults to false. */
-    restricted?: boolean | undefined;
-
-    /** Whether the Tour should be displayed in the Manage Tours UI. Defaults to false. */
-    display?: boolean | undefined;
-
-    /** Whether the Tour can be resumed or if it always needs to start from the beginning. Defaults to false. */
-    canBeResumed?: boolean | undefined;
-
-    /** A list of namespaced Tours that might be suggested to the user when this Tour is completed. The first non-completed Tour in the array will be recommended. */
-    suggestedNextTours?: string[] | undefined;
   }
 
+  /** @internal */
+  type _Step = InexactPartial<{
+    /** A DOM selector which denotes an element to highlight during this step. If omitted, the step is displayed in the center of the screen. */
+    selector: string;
+
+    /** How the tooltip for the step should be displayed relative to the target element. If omitted, the best direction will be attempted to be auto-selected. */
+    tooltipDirection: TooltipManager.TOOLTIP_DIRECTIONS;
+
+    /** Whether the Step is restricted to the GM only. Defaults to false. */
+    restricted: boolean;
+  }>;
+
   /** A step in a Tour */
-  interface Step {
+  interface Step extends _Step {
     /** A machine-friendly id of the Tour Step */
     id: string;
 
@@ -240,37 +295,22 @@ declare namespace Tour {
 
     /** Raw HTML content displayed during the step */
     content: string;
-
-    /** A DOM selector which denotes an element to highlight during this step. If omitted, the step is displayed in the center of the screen. */
-    selector?: string | undefined;
-
-    /** How the tooltip for the step should be displayed relative to the target element. If omitted, the best direction will be attempted to be auto-selected. */
-    tooltipDirection?: foundry.helpers.interaction.TooltipManager.TOOLTIP_DIRECTIONS | undefined;
-
-    /** Whether the Step is restricted to the GM only. Defaults to false. */
-    restricted?: boolean | undefined;
-
-    /** Activates a particular sidebar tab. Usable in `SidebarTour` instances. */
-    sidebarTab?: string | undefined;
-
-    /** Activates a particular canvas layer and its respective control group. Usable in `CanvasTour` instances */
-    layer?: string | undefined;
-
-    /** Activates a particular tool. Usable in `CanvasTour` instances. */
-    tool?: string | undefined;
   }
 
-  type Status = ValueOf<STATUS>;
+  type STATUS = ValueOf<Status>;
 
-  interface ConstructorOptions {
-    /** A tour ID that supercedes `TourConfig#id` */
+  /** @internal */
+  type _ConstructorOptions = InexactPartial<{
+    /** A tour ID that supersedes `TourConfig#id` */
     id: string;
 
-    /** A tour namespace that supercedes `TourConfig#namespace` */
+    /** A tour namespace that supersedes `TourConfig#namespace` */
     namespace: string;
-  }
+  }>;
 
-  interface STATUS {
+  interface ConstructorOptions extends _ConstructorOptions {}
+
+  interface Status {
     readonly UNSTARTED: "unstarted";
     readonly IN_PROGRESS: "in-progress";
     readonly COMPLETED: "completed";
@@ -278,3 +318,7 @@ declare namespace Tour {
 }
 
 export default Tour;
+
+declare abstract class AnyTour extends Tour {
+  constructor(...args: never);
+}
