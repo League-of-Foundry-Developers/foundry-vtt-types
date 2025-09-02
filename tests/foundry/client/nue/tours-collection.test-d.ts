@@ -1,11 +1,19 @@
-import { expectTypeOf } from "vitest";
+import { describe, expectTypeOf, test } from "vitest";
 
-import Tour = foundry.nue.Tour;
 import ToursCollection = foundry.nue.ToursCollection;
+import Tour = foundry.nue.Tour;
 
 declare const tour: Tour;
-new ToursCollection();
-const tours = new foundry.nue.ToursCollection();
 
-expectTypeOf(tours.register("", "", tour)).toEqualTypeOf<void>();
-expectTypeOf(tours.set("", tour)).toEqualTypeOf<ToursCollection>();
+describe("ToursCollection Tests", () => {
+  test("Construction", () => {
+    new ToursCollection();
+  });
+
+  const tours = new ToursCollection();
+
+  test("Registration", () => {
+    expectTypeOf(tours.register("core", "welcome", tour)).toEqualTypeOf<void>();
+    expectTypeOf(tours.set("core.welcome", tour)).toEqualTypeOf<typeof tours>();
+  });
+});

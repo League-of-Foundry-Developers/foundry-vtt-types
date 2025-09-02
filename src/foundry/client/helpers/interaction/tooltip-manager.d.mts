@@ -1,4 +1,4 @@
-import type { Brand, Identity, InexactPartial, IntentionalPartial } from "#utils";
+import type { Identity, InexactPartial, IntentionalPartial, ValueOf } from "#utils";
 
 /**
  * A singleton Tooltip Manager class responsible for rendering and positioning a dynamic tooltip element which is
@@ -164,14 +164,14 @@ declare namespace TooltipManager {
   /**
    * The directions in which a tooltip can extend, relative to its tool-tipped element.
    */
-  type TOOLTIP_DIRECTIONS = Brand<string, "TooltipManager.TOOLTIP_DIRECTIONS">;
+  type TOOLTIP_DIRECTIONS = ValueOf<TooltipDirections>;
 
   interface TooltipDirections {
-    UP: "UP" & TOOLTIP_DIRECTIONS;
-    DOWN: "DOWN" & TOOLTIP_DIRECTIONS;
-    LEFT: "LEFT" & TOOLTIP_DIRECTIONS;
-    RIGHT: "RIGHT" & TOOLTIP_DIRECTIONS;
-    CENTER: "CENTER" & TOOLTIP_DIRECTIONS;
+    UP: "UP";
+    DOWN: "DOWN";
+    LEFT: "LEFT";
+    RIGHT: "RIGHT";
+    CENTER: "CENTER";
   }
 
   /** @internal */
