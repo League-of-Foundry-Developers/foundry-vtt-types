@@ -179,6 +179,7 @@ declare class Tour {
 
   /**
    * Set-up operations performed before a step is shown.
+   * @abstract
    * @remarks Despite being marked `@abstract`, the base implementation is a no-op and doesn't throw.
    * Implementation is therefor *not* required by subclasses, but most probably will do so anyway
    */
@@ -186,6 +187,7 @@ declare class Tour {
 
   /**
    * Clean-up operations performed after a step is completed.
+   * @abstract
    * @remarks Despite being marked `@abstract`, the base implementation is a method with a real body
    * and doesn't throw. Implementation is therefor *not* required by subclasses; none of core's  do,
    * and any that do must call `super._postStep()` in them
