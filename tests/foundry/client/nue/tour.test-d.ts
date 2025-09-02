@@ -79,7 +79,7 @@ describe("Tour Tests", () => {
       }>
     >();
     expectTypeOf(Tour.tourInProgress).toEqualTypeOf<boolean>();
-    expectTypeOf(Tour.activeTour).toEqualTypeOf<Tour | null>();
+    expectTypeOf(Tour.activeTour).toEqualTypeOf<Tour.Any | null>();
 
     expectTypeOf(tour.currentStep).toEqualTypeOf<Tour.Step | null>();
     expectTypeOf(tour.stepIndex).toEqualTypeOf<number | null>();

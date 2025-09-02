@@ -24,7 +24,7 @@ declare class Tour {
   /**
    * Returns the active Tour, if any
    */
-  static get activeTour(): Tour | null;
+  static get activeTour(): Tour.Any | null;
 
   /**
    * Handle a movement action to either progress or regress the Tour
