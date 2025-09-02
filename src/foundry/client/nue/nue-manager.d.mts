@@ -17,7 +17,7 @@ declare class NewUserExperienceManager {
    * Create a default scene for the new world.
    * @param sceneData - Additional data to merge with the default scene
    * @returns The created default scene
-   * @remarks Creates the default scene with the `{keepId: true}`, will be `"NUEDEFAULTSCENE0"` unless overwritten in `sceneData`
+   * @remarks Creates the default scene with `{keepId: true}`, will be `"NUEDEFAULTSCENE0"` unless overwritten in `sceneData`
    */
   createDefaultScene(sceneData?: Scene.UpdateData): Promise<Scene.Implementation>;
 
