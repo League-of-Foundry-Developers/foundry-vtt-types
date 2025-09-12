@@ -1971,7 +1971,7 @@ declare namespace StringField {
  * - InitialValue: `{}`
  */
 declare class ObjectField<
-  const Options extends DataField.Options<AnyObject> = ObjectField.DefaultOptions,
+  const Options extends DataField.Options<AnyMutableObject> = ObjectField.DefaultOptions,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   const AssignmentType = ObjectField.AssignmentType<Options>,
   const InitializedType = ObjectField.InitializedType<Options>,
@@ -1983,7 +1983,7 @@ declare class ObjectField<
   /** @defaultValue `false` */
   override nullable: boolean;
 
-  protected static override get _defaults(): DataField.Options<AnyObject>;
+  protected static override get _defaults(): DataField.Options<AnyMutableObject>;
 
   /** @remarks Returns `{}` if {@link DataField.getInitialValue | `super.getInitialValue`} returns `undefined` */
   override getInitialValue(data?: unknown): InitializedType;
@@ -2036,10 +2036,10 @@ declare namespace ObjectField {
    * A helper type for the given options type merged into the default options of the ObjectField class.
    * @template Options - the options that override the default options
    */
-  type MergedOptions<Options extends DataField.Options<AnyObject>> = SimpleMerge<DefaultOptions, Options>;
+  type MergedOptions<Options extends DataField.Options<AnyMutableObject>> = SimpleMerge<DefaultOptions, Options>;
 
   /** @internal */
-  type _EffectiveOptions<Options extends DataField.Options<AnyObject>> =
+  type _EffectiveOptions<Options extends DataField.Options<AnyMutableObject>> =
     MergedOptions<Options> extends { readonly initial: undefined }
       ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
         SimpleMerge<MergedOptions<Options>, { initial: {} }>
@@ -2053,8 +2053,8 @@ declare namespace ObjectField {
    * for more details.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type AssignmentType<Options extends DataField.Options<AnyObject>> = DataField.DerivedAssignmentType<
-    AnyObject,
+  type AssignmentType<Options extends DataField.Options<AnyMutableObject>> = DataField.DerivedAssignmentType<
+    AnyMutableObject,
     _EffectiveOptions<Options>
   >;
 
@@ -2062,8 +2062,8 @@ declare namespace ObjectField {
    * A shorthand for the initialized type of a ObjectField class.
    * @template Options - the options that override the default options
    */
-  type InitializedType<Options extends DataField.Options<AnyObject>> = DataField.DerivedInitializedType<
-    AnyObject,
+  type InitializedType<Options extends DataField.Options<AnyMutableObject>> = DataField.DerivedInitializedType<
+    AnyMutableObject,
     _EffectiveOptions<Options>
   >;
 }
