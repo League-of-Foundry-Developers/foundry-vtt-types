@@ -390,9 +390,9 @@ declare namespace ApplicationV2 {
     id: string;
     group: string;
     active: boolean;
-    cssClass: string;
-    icon?: string | null | undefined;
-    label?: string | null | undefined;
+    cssClass?: string | undefined;
+    icon?: string | undefined;
+    label?: string | undefined;
   }
 
   /** @remarks Used with `templates/generic/form-fields.hbs` */
