@@ -2,7 +2,7 @@ import { describe, expectTypeOf, test } from "vitest";
 
 import SmoothNoise = foundry.canvas.animation.SmoothNoise;
 
-describe("SmoothNoise Tests", () => {
+describe("SmoothNoise tests", () => {
   test("Construction", () => {
     new SmoothNoise();
     new SmoothNoise({
@@ -23,7 +23,7 @@ describe("SmoothNoise Tests", () => {
     maxReferences: 16, // must be power of 2
   });
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(mySN["_maxReferences"]).toBeNumber();
     expectTypeOf(mySN["_references"]).toEqualTypeOf<number[]>();
 

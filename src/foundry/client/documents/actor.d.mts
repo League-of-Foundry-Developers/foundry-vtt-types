@@ -696,8 +696,9 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   protected override _configure(options?: Document.ConfigureOptions): void;
 
   /**
-   * Maintain a list of Token Documents that represent this Actor, stored by Scene.
-   * @remarks Doesn't exist prior to being `defineProperty`'d in {@link Actor._configure | `Actor#_configure`}
+   * Maintain a list of Token Documents that represent this Actor, stored by Scene. This list may include unpersisted
+   * Token Documents (along with possibly unpersisted parent Scenes), including those with a null `_id`.
+   * @remarks `defineProperty`'d at construction with no options specified
    */
   protected _dependentTokens?: foundry.utils.IterableWeakMap<
     Scene.Implementation,

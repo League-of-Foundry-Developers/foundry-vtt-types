@@ -111,9 +111,9 @@ declare global {
 
       /**
        * Configured Roll class definitions
-       * @defaultValue `[Roll]`
+       * @defaultValue `[`{@linkcode foundry.dice.Roll}`]`
        */
-      rolls: Array<foundry.dice.Roll.AnyConstructor>;
+      rolls: Array<foundry.dice.Roll.Internal.AnyConstructor>;
 
       /**
        * Configured DiceTerm class definitions
@@ -326,8 +326,11 @@ declare global {
       /** @defaultValue `Actor` */
       documentClass: Document.ImplementationClassFor<"Actor">;
 
-      /** @defaultValue `Actors` */
-      collection: foundry.documents.collections.Actors.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.Actors}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.Actors;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -395,8 +398,11 @@ declare global {
      * Configuration for the Cards primary Document type
      */
     Cards: {
-      /** @defaultValue `CardStacks` */
-      collection: foundry.documents.collections.CardStacks.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.CardStacks}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.CardStacks;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -453,7 +459,7 @@ declare global {
         /** @defaultValue `"fa-duotone fa-layer-group"` */
         pile: string;
 
-        [x: string]: string;
+        [type: Brand<string, "CONFIG.Cards.typeIcons">]: string;
       };
     };
 
@@ -464,8 +470,11 @@ declare global {
       /** @defaultValue `ChatMessage` */
       documentClass: Document.ImplementationClassFor<"ChatMessage">;
 
-      /** @defaultValue `Messages` */
-      collection: foundry.documents.collections.ChatMessages.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.ChatMessages}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.ChatMessages;
 
       /** @defaultValue `"templates/sidebar/chat-message.html"` */
       template: string;
@@ -504,8 +513,11 @@ declare global {
       /** @defaultValue `Combat` */
       documentClass: Document.ImplementationClassFor<"Combat">;
 
-      /** @defaultValue `CombatEncounters` */
-      collection: foundry.documents.collections.CombatEncounters.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.CombatEncounters}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.CombatEncounters;
 
       /** @defaultValue `"fas fa-swords"` */
       sidebarIcon: string;
@@ -585,8 +597,11 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `FogExplorations` */
-      collection: foundry.documents.collections.FogExplorations.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.FogExplorations}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.FogExplorations;
     };
 
     /**
@@ -596,8 +611,11 @@ declare global {
       /** @defaultValue `Folder` */
       documentClass: Document.ImplementationClassFor<"Folder">;
 
-      /** @defaultValue `Folders` */
-      collection: foundry.documents.collections.Folders.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.Folders}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.Folders;
 
       /** @defaultValue `"fas fa-folder"` */
       sidebarIcon: string;
@@ -620,8 +638,11 @@ declare global {
       /** @defaultValue `Item` */
       documentClass: Document.ImplementationClassFor<"Item">;
 
-      /** @defaultValue `Items` */
-      collection: foundry.documents.collections.Items.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.Items}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.Items;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -667,8 +688,11 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `Journal` */
-      collection: foundry.documents.collections.Journal.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.Journal}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.Journal;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -780,8 +804,11 @@ declare global {
        */
       typeLabels?: Record<foundry.documents.BaseMacro.SubType, string>;
 
-      /** @defaultValue `Macros` */
-      collection: foundry.documents.collections.Macros.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.Macros}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.Macros;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -810,8 +837,11 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `Playlists` */
-      collection: foundry.documents.collections.Playlists.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.Playlists}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.Playlists;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -843,8 +873,11 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `RollTables` */
-      collection: foundry.documents.collections.RollTables.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.RollTables}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.RollTables;
 
       /** @defaultValue `["formula"]` */
       compendiumIndexFields: string[];
@@ -879,8 +912,11 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `Scenes` */
-      collection: foundry.documents.collections.Scenes.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.Scenes}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.Scenes;
 
       /** @defaultValue `[]` */
       compendiumIndexFields: string[];
@@ -906,8 +942,13 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `WorldSettings` */
-      collection: foundry.documents.collections.WorldSettings.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.WorldSettings}
+       * @remarks {@linkcode foundry.helpers.ClientSettings | ClientSettings#constructor} instantiates `WorldSettings` by name, without referring to this property.
+       * It's only purpose seems to be allowing a {@linkcode WorldCollection.instance | CONFIG[primaryType]?.collection?.instance} reference in
+       * {@linkcode foundry.utils.parseUuid} to work.
+       */
+      collection: foundry.documents.collections.WorldSettings.Internal.AnyConstructor;
     };
 
     /**
@@ -927,8 +968,11 @@ declare global {
        */
       typeLabels?: Record<"base", string>;
 
-      /** @defaultValue `Users` */
-      collection: foundry.documents.collections.Users.AnyConstructor;
+      /**
+       * @defaultValue {@linkcode foundry.documents.collections.Users}
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in {@linkcode Game.initializeDocuments | Game#initializeDocuments}
+       */
+      collection: typeof foundry.documents.collections.Users;
     };
 
     /**
@@ -963,7 +1007,7 @@ declare global {
      * Available Weather Effects implementations
      */
     weatherEffects: {
-      [key: string]: canvasLayers.WeatherEffects.AmbienceConfiguration;
+      [weatherEffectID: Brand<string, "CONFIG.weatherEffects">]: canvasLayers.WeatherEffects.AmbienceConfiguration;
 
       /**
        * @defaultValue
@@ -1581,18 +1625,18 @@ declare global {
       dataModels: Record<string, typeof DataModel<any, JournalEntryPage.Implementation>>;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor}
        */
       sheetClasses: Record<foundry.documents.BaseJournalEntryPage.SubType, Record<string, SheetClassConfig>>;
 
       /**
        * @defaultValue `{}`
-       * @remarks Initialized by `Localization#initialize`, is an empty object until `i18nInit`
+       * @remarks Initialized by {@linkcode foundry.helpers.Localization | Localization#initialize}, is an empty object until `i18nInit`
        */
       typeLabels: Record<foundry.documents.BaseJournalEntryPage.SubType, string>;
 
       typeIcons: {
-        [type: string]: string;
+        [type: Brand<string, "CONFIG.JournalEntryPage">]: string;
 
         /** @defaultValue `"fas fa-file-image"` */
         image: string;
@@ -2304,9 +2348,8 @@ declare global {
 
       /**
        * @defaultValue `FogManager`
-       * @remarks Can't be `AnyConstructor` because Foundry assumes it can call `new` with the same arguments FogManager accepts
+       * @remarks `typeof` instead of `AnyConstructor` because it's instantiated via `new` in `Canvas##initializeFogManager`
        */
-      // TODO: Widen to `.AnyConstructor`? Takes no arguments
       fogManager: typeof perception.FogManager;
 
       polygonBackends: Canvas.PolygonBackends;
@@ -2314,9 +2357,9 @@ declare global {
       /** @defaultValue `number` */
       darknessSourcePaddingMultiplier: number;
 
-      visibilityFilter: foundry.canvas.rendering.filters.VisibilityFilter.AnyConstructor;
+      visibilityFilter: foundry.canvas.rendering.filters.VisibilityFilter.Internal.AnyConstructor;
 
-      visualEffectsMaskingFilter: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.AnyConstructor;
+      visualEffectsMaskingFilter: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.Internal.AnyConstructor;
 
       /**
        * @defaultValue `Ruler`
@@ -2342,7 +2385,7 @@ declare global {
       /**
        * A registry of Scenes which are managed by a specific SceneManager class.
        * @remarks Keys are Scene IDs
-       * @privateRemarks Can't be `AnyConstructor` because it's instantiated expecting a compatible constructor
+       * @privateRemarks `typeof` over `AnyConstructor` because it's instantiated via `new` in {@linkcode Canvas.getSceneManager}
        */
       managedScenes: Record<string, typeof foundry.canvas.SceneManager>;
 
@@ -2356,12 +2399,6 @@ declare global {
       hoverFade: Canvas.HoverFade;
 
       /**
-       * Allow specific transcoders for assets
-       * @defaultValue `{ basis: false }`
-       */
-      transCoders: Canvas.TransCoders;
-
-      /**
        * The set of VisionMode definitions which are available to be used for Token vision.
        */
       visionModes: Canvas.VisionModes;
@@ -2370,10 +2407,17 @@ declare global {
        * The set of DetectionMode definitions which are available to be used for visibility detection.
        */
       detectionModes: Canvas.DetectionModes;
+
+      /**
+       * @deprecated "`CONFIG.Canvas.transcoders` has been deprecated without replacement. KTX2/Basis support is always enabled and this property has no effect anymore." (since v13, until v15)
+       */
+      get transcoders(): { basis: true };
     }
 
     namespace Canvas {
       interface Groups {
+        // TODO: Index signature?
+
         /** @defaultValue `{ groupClass: HiddenCanvasGroup, parent: "stage" }` */
         hidden: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.HiddenCanvasGroup>;
 
@@ -2399,11 +2443,33 @@ declare global {
         overlay: CONFIG.Canvas.GroupDefinition<typeof canvasGroups.OverlayCanvasGroup>;
       }
 
-      // This requires `CanvasGroupConstructor` because `Canvas##createGroups` assumes there's no parameters.
-      interface GroupDefinition<GroupClass extends CanvasGroupConstructor = CanvasGroupConstructor> {
+      /**
+       * @remarks `typeof MixedCanvasGroup` is used instead of {@linkcode CanvasGroupMixin.AnyMixedConstructor} because groups are
+       * instantiated via `new` in `Canvas##createGroups`
+       */
+      interface GroupDefinition<GroupClass extends typeof MixedCanvasGroup = typeof MixedCanvasGroup> {
+        /**
+         * @remarks The class that gets instantiated for this group. Must not take any arguments as Foundry doesn't pass any.
+         */
         groupClass: GroupClass;
-        parent: string;
+
+        /**
+         * @remarks Valid parents are {@linkcode foundry.canvas.Canvas.stage | "stage"} or any other defined Group
+         */
+        parent: "stage" | keyof typeof CONFIG.Canvas.groups;
+
+        /**
+         * @remarks Only used in `InterfaceCanvasGroup##createInterfaceDrawingsContainer`.
+         *
+         * Can't be `undefined` as it is directly assigned to {@linkcode PIXI.Container.zIndex | PIXI.Container#zIndex}
+         */
         zIndexDrawings?: number;
+
+        /**
+         * @remarks Only used in `InterfaceCanvasGroup##drawScrollingText`.
+         *
+         * Can't be `undefined` as it is directly assigned to {@linkcode PIXI.Container.zIndex | PIXI.Container#zIndex}
+         */
         zIndexScrollingText?: number;
       }
 
@@ -2415,7 +2481,7 @@ declare global {
         grid: LayerDefinition<typeof canvasLayers.GridLayer, "interface">;
 
         /** @defaultValue `{ layerClass: RegionLayer, group: "interface" }` */
-        // regions: LayerDefinition<typeof RegionLayer, "interface">;
+        regions: LayerDefinition<typeof canvasLayers.RegionLayer, "interface">;
 
         /** @defaultValue `{ layerClass: DrawingsLayer, group: "interface" }` */
         drawings: LayerDefinition<typeof canvasLayers.DrawingsLayer, "interface">;
@@ -2469,23 +2535,26 @@ declare global {
       }
 
       /**
-       * @privateRemarks Foundry types this as {@linkcode geometry.PointSourcePolygon | @enum PointSourcePolygon},
-       * but all the runtime defaults are {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}, and its
-       * types and methods are assumed in other canvas classes, so entries have been constrained to it over `PointSourcePolygon`.
-       * It is not impossible to add a new type of source, so the index signature is included, but this is unlikely to
-       * come up in real world code.
+       * @privateRemarks Foundry types this as {@linkcode geometry.PointSourcePolygon | @enum PointSourcePolygon}, but all the runtime defaults are
+       * {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}, and CSP types and methods are assumed in other canvas classes, so entries
+       * have been constrained to it instead of `PointSourcePolygon`.
+       *
+       * It is not impossible to add a new type of source, so the index signature is included, but this is unlikely to come up in real world code.
+       *
+       * `AnyConstructor` is used here because the expectation is that polygons are instantiated via {@linkcode geometry.ClockwiseSweepPolygon.create | .create},
+       * and the constructor has been made protected to enforce this.
        */
       interface PolygonBackends {
+        [polygonType: Brand<string, "CONFIG.Canvas.polygonBackends">]: geometry.ClockwiseSweepPolygon.AnyConstructor;
         sight: geometry.ClockwiseSweepPolygon.AnyConstructor;
         light: geometry.ClockwiseSweepPolygon.AnyConstructor;
         darkness: geometry.ClockwiseSweepPolygon.AnyConstructor;
         sound: geometry.ClockwiseSweepPolygon.AnyConstructor;
         move: geometry.ClockwiseSweepPolygon.AnyConstructor;
-        [K: string]: geometry.ClockwiseSweepPolygon.AnyConstructor;
       }
 
       interface GridStyles {
-        [key: string]: canvasLayers.GridLayer.GridStyle;
+        [gridStyle: Brand<string, "CONFIG.Canvas.gridStyles">]: canvasLayers.GridLayer.GridStyle;
 
         /**
          * @defaultValue
@@ -2579,7 +2648,7 @@ declare global {
           RenderedEffectSource._Seed {}
 
       interface LightAnimations {
-        [animationID: string]: LightSourceAnimationConfig;
+        [animationID: Brand<string, "CONFIG.Canvas.lightAnimations">]: LightSourceAnimationConfig;
         flame: LightAnimations.Flame;
         torch: LightAnimations.Torch;
         revolving: LightAnimations.Revolving;
@@ -2847,7 +2916,7 @@ declare global {
           RenderedEffectSource._Seed {}
 
       interface DarknessAnimations {
-        [animationID: string]: DarknessSourceAnimationConfig;
+        [animationID: Brand<string, "CONFIG.Canvas.darknessAnimations">]: DarknessSourceAnimationConfig;
         magicalGloom: DarknessAnimations.MagicalGloom;
         roiling: DarknessAnimations.Roiling;
         hole: DarknessAnimations.Hole;
@@ -2913,6 +2982,8 @@ declare global {
         }
 
         interface Styles {
+          [pingStyle: Brand<string, "CONFIG.Canvas.pings.styles">]: CONFIG.Canvas.Pings.Style;
+
           /** @defaultValue `{ class: AlertPing, color: "#ff0000", size: 1.5, duration: 900 }` */
           alert: CONFIG.Canvas.Pings.Style;
 
@@ -2924,8 +2995,6 @@ declare global {
 
           /** @defaultValue `{ class: PulsePing, size: 1.5, duration: 900 }` */
           pulse: CONFIG.Canvas.Pings.Style;
-
-          [key: string]: CONFIG.Canvas.Pings.Style;
         }
 
         interface Style {
@@ -2978,12 +3047,8 @@ declare global {
         duration: number;
       }
 
-      interface TransCoders {
-        [K: string]: boolean;
-      }
-
       interface VisionModes {
-        [key: string]: perception.VisionMode;
+        [visionMode: Brand<string, "CONFIG.Canvas.visionModes">]: perception.VisionMode;
 
         /**
          * Default (Basic) Vision
@@ -3157,7 +3222,7 @@ declare global {
       }
 
       interface DetectionModes {
-        [key: string]: perception.DetectionMode;
+        [detectionMode: Brand<string, "CONFIG.Canvas.detectionModes">]: perception.DetectionMode;
 
         lightPerception: perception.DetectionModeLightPerception;
 
@@ -3216,7 +3281,8 @@ declare global {
     }
 
     namespace Dice {
-      type RollMode = keyof RollModes;
+      /** @deprecated Use {@linkcode foundry.dice.Roll.Mode} instead */
+      type RollMode = foundry.dice.Roll.Mode;
 
       interface RollModes {
         [rollMode: Brand<string, "CONFIG.Dice.RollMode">]: RollModeConfig;
@@ -3470,10 +3536,8 @@ declare global {
         label: string;
       }
 
-      type DoorSound = Brand<string, "CONFIG.Wall.doorSounds">;
-
       interface DoorSounds {
-        [sound: DoorSound]: DoorSoundConfig;
+        [sound: Brand<string, "CONFIG.Wall.doorSounds">]: DoorSoundConfig;
 
         /**
          * @defaultValue
@@ -3796,10 +3860,8 @@ declare global {
         duration: number;
       }
 
-      type DoorAnimation = Brand<string, "CONFIG.Wall.animationTypes">;
-
       interface DoorAnimations {
-        [animationName: DoorAnimation]: DoorAnimationConfig;
+        [animationName: Brand<string, "CONFIG.Wall.animationTypes">]: DoorAnimationConfig;
 
         /**
          * @defaultValue
@@ -3893,17 +3955,11 @@ interface SheetClassConfig {
   label: string;
 }
 
-type PixiContainerConstructor = PIXI.Container.AnyConstructor;
-interface CanvasGroup extends PIXI.Container {
-  sortableChildren: boolean;
-}
+declare const Mixed: canvasGroups.CanvasGroupMixin.AnyMixedConstructor;
 
-interface CanvasGroupConstructor extends PixiContainerConstructor {
-  new (): CanvasGroup;
-
-  /**
-   * The name of this canvas group
-   * @remarks Can be undefined in some cases (e.g `EffectsCanvasGroup`) to prevent other groups using it as a parent
-   */
-  groupName?: string | undefined;
+/**
+ * @privateRemarks Used to enforce user-provided group classes taking no constructor arguments
+ */
+declare class MixedCanvasGroup extends Mixed {
+  constructor();
 }

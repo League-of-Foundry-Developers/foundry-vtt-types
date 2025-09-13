@@ -178,7 +178,7 @@ declare namespace PrimaryCanvasObjectMixin {
    * @remarks {@linkcode PrimaryCanvasObject._onAdded | PrimaryCanvasObject#_onAdded} throws if not passed a either {@linkcode PrimaryCanvasContainer}
    * or whatever {@linkcode canvas.primary} currently is, which presumably will be a {@linkcode PrimaryCanvasGroup}
    */
-  type Parent = PrimaryCanvasGroup.Any | primary.PrimaryCanvasContainer.Any;
+  type Parent = PrimaryCanvasGroup.Implementation | primary.PrimaryCanvasContainer.Any;
 
   /** @remarks See {@linkcode PrimaryCanvasObject.object | PrimaryCanvasObject#object} remarks */
   type OwningObject = placeables.PlaceableObject.Any | CanvasGroupMixin.AnyMixed;

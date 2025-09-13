@@ -58,8 +58,16 @@ declare class Users extends foundry.documents.abstract.WorldCollection<"User", "
 }
 
 declare namespace Users {
-  interface Any extends AnyUsers {}
-  interface AnyConstructor extends Identity<typeof AnyUsers> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyUsers {}
+    interface AnyConstructor extends Identity<typeof AnyUsers> {}
+  }
 
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"User"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"User"> {}

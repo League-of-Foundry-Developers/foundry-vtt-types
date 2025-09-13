@@ -15,7 +15,7 @@ import type ApplicationV2 from "#client/applications/api/application.d.mts";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
 
 declare class InternalClientDocument<DocumentName extends Document.Type> {
-  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**
@@ -117,15 +117,35 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   protected _safePrepareData(): void;
 
   /**
-   * Prepare data for the Document. This method is called automatically by the DataModel#_initialize workflow.
-   * This method provides an opportunity for Document classes to define special data preparation logic.
-   * The work done by this method should be idempotent. There are situations in which prepareData may be called more
-   * than once.
+   * Prepare data for the Document. This method provides an opportunity for Document classes to define special data
+   * preparation logic to compute values that don't need to be stored in the database, such as a "bloodied" hp value
+   * or the total carrying weight of items. The work done by this method should be idempotent per initialization.
+   * There are situations in which prepareData may be called more than once.
+   *
+   * By default, foundry calls the following methods in order whenever the document is created or updated.
+   * 1. {@linkcode foundry.abstract.DataModel.reset | reset} (Inherited from DataModel)
+   * 2. {@linkcode _initialize} (Inherited from DataModel)
+   * 3. {@linkcode prepareData}
+   * 4. {@linkcode foundry.abstract.TypeDataModel.prepareBaseData | TypeDataModel#prepareBaseData}
+   * 5. {@linkcode prepareBaseData}
+   * 6. {@linkcode prepareEmbeddedDocuments}
+   * 7. {@linkcode foundry.abstract.TypeDataModel.prepareDerivedData | TypeDataModel#prepareBaseData}
+   * 8. {@linkcode prepareDerivedData}
+   *
+   * Do NOT invoke database operations like {@linkcode Document.update | update} or {@linkcode Document.setFlag | setFlag} within data prep, as that can cause an
+   * infinite loop by re-triggering the data initialization process.
+   *
+   * If possible you should extend {@linkcode prepareBaseData} and {@linkcode prepareDerivedData} instead of this function
+   * directly, but some systems with more complicated calculations may want to override this function to add extra
+   * steps, such as to calculate certain item values after actor data prep.
    */
   prepareData(): void;
 
   /**
    * Prepare data related to this Document itself, before any embedded Documents or derived data is computed.
+   *
+   * If possible when modifying the `system` object you should use {@linkcode foundry.abstract.TypeDataModel.prepareBaseData | TypeDataModel#prepareBaseData} on
+   * your data models instead of this method directly on the document.
    */
   prepareBaseData(): void;
 
@@ -497,11 +517,16 @@ declare const _ClientDocument: _ClientDocumentType;
 // FIXME(LukeAbby): Unlike most mixins, `ClientDocumentMixin` actually requires a specific constructor, the same as `Document`.
 // This means that `BaseClass extends Document.Internal.Constructor` is actually too permissive.
 // However this easily leads to circularities.
-declare function ClientDocumentMixin<BaseClass extends Document.Internal.Constructor>(
+declare function ClientDocumentMixin<BaseClass extends ClientDocumentMixin.BaseClass>(
   Base: BaseClass,
 ): ClientDocumentMixin.Mix<BaseClass>;
 
 declare namespace ClientDocumentMixin {
+  interface AnyMixedConstructor extends ReturnType<typeof foundry.documents.abstract.ClientDocumentMixin<BaseClass>> {}
+  interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
+
+  type BaseClass = Document.Internal.Constructor;
+
   type Mix<BaseClass extends Document.Internal.Constructor> = Mixin<
     typeof InternalClientDocument<Document.NameFor<BaseClass>>,
     BaseClass
@@ -610,6 +635,7 @@ declare global {
       // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     > = _ToCompendiumReturnType<DocumentName, Coalesce<Options, {}>>;
 
+    // TODO: `ownership` and the `_stats` sources are recursively removed from descendent document sources, not just the top level
     type _ToCompendiumReturnType<DocumentName extends Document.Type, Options extends ToCompendiumOptions> = _ClearFog<
       Options["clearState"],
       _ClearStats<

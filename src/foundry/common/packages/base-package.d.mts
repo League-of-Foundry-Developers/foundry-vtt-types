@@ -83,9 +83,8 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
-  type OwnershipRecord = Record<
-    keyof typeof foundry.CONST.USER_ROLES,
-    keyof typeof foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | undefined
+  type OwnershipRecord = InexactPartial<
+    Record<keyof typeof CONST.USER_ROLES, keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>
   >;
 
   interface PackageCompendiumSchema extends DataSchema {
@@ -104,6 +103,13 @@ declare namespace BasePackage {
      */
     label: fields.StringField<{ required: true; blank: false }>;
 
+    /**
+     * A file path to a banner image that will be used in the Compendium sidebar. This should
+     * be hosted within your package, e.g. `modules/my-module/assets/banners/bestiary.webp`.
+     * The dimensions are 290 x 70; you can either have each be an individual landscape or
+     * slice them up to form a composite with your other compendiums, but keep in mind that
+     * users can reorder compendium packs as well as filter them to break up the composite.
+     */
     banner: fields.StringField<OptionalString>;
 
     /**
@@ -122,7 +128,9 @@ declare namespace BasePackage {
     }>;
 
     /**
-     * Denote that this compendium pack requires a specific game system to function properly
+     * Denote that this compendium pack requires a specific game system to function properly.
+     * Required for "Actor" and "Item" packs, but even others should keep in mind that system
+     * specific features and subtypes (e.g. JournalEntryPage) may present limitations.
      */
     system: fields.StringField<OptionalString>;
 

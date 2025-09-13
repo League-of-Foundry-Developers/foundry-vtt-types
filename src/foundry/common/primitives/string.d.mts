@@ -9,12 +9,13 @@ declare global {
 
     /**
      * Compare this string (x) with the other string (y) by comparing each character's Unicode code point value.
+     * Returns a negative Number if x \< y, a positive Number if x\> y, or a zero otherwise.
      * This is the same comparison function that used by Array#sort if the compare function argument is omitted.
      * The result is host/locale-independent.
      * @param other - The other string to compare this string to.
      * @returns A negative Number if x \< y, a positive Number if x \> y, or a zero otherwise.
      */
-    compare<S extends string>(this: S, other: string): number;
+    compare<S extends string>(this: S, other: string): -1 | 0 | 1;
 
     /**
      * Convert a string to Title Case where the first letter of each word is capitalized

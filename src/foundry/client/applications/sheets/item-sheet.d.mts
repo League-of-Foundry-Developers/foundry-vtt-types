@@ -12,7 +12,7 @@ declare module "#configuration" {
 /**
  * A base class for providing Item Sheet behavior using ApplicationV2.
  */
-export default class ItemSheetV2<
+declare class ItemSheetV2<
   RenderContext extends ItemSheetV2.RenderContext = ItemSheetV2.RenderContext,
   Configuration extends ItemSheetV2.Configuration = ItemSheetV2.Configuration,
   RenderOptions extends ItemSheetV2.RenderOptions = ItemSheetV2.RenderOptions,
@@ -46,3 +46,5 @@ declare abstract class AnyItemSheetV2 extends ItemSheetV2<
 > {
   constructor(...args: never);
 }
+
+export default ItemSheetV2;

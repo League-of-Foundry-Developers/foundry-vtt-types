@@ -91,8 +91,16 @@ declare class PointLightSource<
 }
 
 declare namespace PointLightSource {
-  interface Any extends AnyPointLightSource {}
-  interface AnyConstructor extends Identity<typeof AnyPointLightSource> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
+
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyPointLightSource {}
+    interface AnyConstructor extends Identity<typeof AnyPointLightSource> {}
+  }
 
   type Initialized<
     SourceData extends PointLightSource.SourceData = PointLightSource.SourceData,

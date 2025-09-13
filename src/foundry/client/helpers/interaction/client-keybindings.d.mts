@@ -1,4 +1,4 @@
-import type { Brand, Identity, InexactPartial } from "#utils";
+import type { Identity, InexactPartial, ValueOf } from "#utils";
 import type KeyboardManager from "./keyboard-manager.d.mts";
 
 /**
@@ -407,22 +407,22 @@ declare namespace ClientKeybindings {
    */
   interface ActionComparison extends Pick<KeybindingAction, "precedence" | "order"> {}
 
-  type MOVEMENT_DIRECTIONS = Brand<string, "ClientKeybindings.MOVEMENT_DIRECTIONS">;
+  type MOVEMENT_DIRECTIONS = ValueOf<MovementDirections>;
 
   interface MovementDirections {
-    UP: "up" & MOVEMENT_DIRECTIONS;
-    LEFT: "left" & MOVEMENT_DIRECTIONS;
-    DOWN: "down" & MOVEMENT_DIRECTIONS;
-    RIGHT: "right" & MOVEMENT_DIRECTIONS;
-    DESCEND: "descend" & MOVEMENT_DIRECTIONS;
-    ASCEND: "ascend" & MOVEMENT_DIRECTIONS;
+    UP: "up";
+    LEFT: "left";
+    DOWN: "down";
+    RIGHT: "right";
+    DESCEND: "descend";
+    ASCEND: "ascend";
   }
 
-  type ZOOM_DIRECTIONS = Brand<string, "ClientKeybindings.ZOOM_DIRECTIONS">;
+  type ZOOM_DIRECTIONS = ValueOf<ZoomDirections>;
 
   interface ZoomDirections {
-    IN: "in" & ZOOM_DIRECTIONS;
-    OUT: "out" & ZOOM_DIRECTIONS;
+    IN: "in";
+    OUT: "out";
   }
 }
 

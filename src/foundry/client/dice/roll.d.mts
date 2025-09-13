@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, FixedInstanceType, EmptyObject, Identity, ConcreteKeys } from "#utils";
+import type { AnyObject, InexactPartial, FixedInstanceType, EmptyObject, Identity } from "#utils";
 import type { RollParseNode } from "./_types.d.mts";
 import type DiceTerm from "./terms/dice.d.mts";
 import type PoolTerm from "./terms/pool.d.mts";
@@ -500,14 +500,14 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    * @param data - Unpacked data representing the Roll
    * @returns A reconstructed Roll instance
    */
-  static fromData<T extends Roll.AnyConstructor>(this: T, data: Roll.Data): FixedInstanceType<T>;
+  static fromData<T extends Roll.Internal.AnyConstructor>(this: T, data: Roll.Data): FixedInstanceType<T>;
 
   /**
    * Recreate a Roll instance using a provided JSON string
    * @param json - Serialized JSON data representing the Roll
    * @returns A reconstructed Roll instance
    */
-  static fromJSON<T extends Roll.AnyConstructor>(this: T, json: string): FixedInstanceType<T>;
+  static fromJSON<T extends Roll.Internal.AnyConstructor>(this: T, json: string): FixedInstanceType<T>;
 
   /**
    * Manually construct a Roll object by providing an explicit set of input terms
@@ -524,7 +524,7 @@ declare class Roll<D extends AnyObject = EmptyObject> {
    * roll.formula; // 4d8 + 8
    * ```
    */
-  static fromTerms<T extends Roll.AnyConstructor>(
+  static fromTerms<T extends Roll.Internal.AnyConstructor>(
     this: T,
     terms: RollTerm[],
     options?: Roll.Options,
@@ -532,10 +532,21 @@ declare class Roll<D extends AnyObject = EmptyObject> {
 }
 
 declare namespace Roll {
-  interface Any extends AnyRoll {}
-  interface AnyConstructor extends Identity<typeof AnyRoll> {}
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  type Any = Internal.Any;
 
-  type ConfiguredRollModes = ConcreteKeys<typeof CONFIG.Dice.rollModes>;
+  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  type AnyConstructor = Internal.AnyConstructor;
+
+  namespace Internal {
+    interface Any extends AnyRoll {}
+    interface AnyConstructor extends Identity<typeof AnyRoll> {}
+  }
+
+  /** @deprecated Use {@linkcode foundry.dice.Roll.Mode} instead */
+  type ConfiguredRollModes = Mode;
+
+  type Mode = keyof CONFIG.Dice.RollModes;
 
   // TODO: Make this actually configurable
   interface ImplementationClass extends Identity<CONFIG["Dice"]["rolls"][0]> {}

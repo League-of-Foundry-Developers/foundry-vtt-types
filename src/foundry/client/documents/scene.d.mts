@@ -528,42 +528,7 @@ declare namespace Scene {
     /**
      * Fog-exploration settings and other data
      */
-    fog: fields.SchemaField<{
-      /**
-       * Should fog exploration progress be tracked for this Scene?
-       * @defaultValue `true`
-       */
-      exploration: fields.BooleanField<{ initial: true }>;
-
-      /**
-       * The timestamp at which fog of war was last reset for this Scene.
-       * @defaultValue `undefined`
-       */
-      reset: fields.NumberField<{ required: false; initial: undefined }>;
-
-      /**
-       * A special overlay image or video texture which is used for fog of war
-       * @defaultValue `null`
-       */
-      overlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; virtual: true }>;
-
-      /**
-       * Fog-exploration coloration data
-       */
-      colors: fields.SchemaField<{
-        /**
-         * A color tint applied to explored regions of fog of war
-         * @defaultValue `null`
-         */
-        explored: fields.ColorField;
-
-        /**
-         * A color tint applied to unexplored regions of fog of war
-         * @defaultValue `null`
-         */
-        unexplored: fields.ColorField;
-      }>;
-    }>;
+    fog: fields.SchemaField<FogSchema>;
 
     /**
      * The environment data applied to the Scene.
@@ -689,9 +654,52 @@ declare namespace Scene {
     _stats: fields.DocumentStatsField;
   }
 
+  interface FogSchema extends DataSchema {
+    /**
+     * Should fog exploration progress be tracked for this Scene?
+     * @defaultValue `true`
+     */
+    exploration: fields.BooleanField<{ initial: true }>;
+
+    /**
+     * The timestamp at which fog of war was last reset for this Scene.
+     * @defaultValue `undefined`
+     */
+    reset: fields.NumberField<{ required: false; initial: undefined }>;
+
+    /**
+     * A special overlay image or video texture which is used for fog of war
+     * @defaultValue `null`
+     */
+    overlay: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; virtual: true }>;
+
+    /**
+     * Fog-exploration coloration data
+     */
+    colors: fields.SchemaField<FogColorSchema>;
+  }
+
+  interface FogData extends fields.SchemaField.InitializedData<FogSchema> {}
+
+  interface FogColorSchema extends DataSchema {
+    /**
+     * A color tint applied to explored regions of fog of war
+     * @defaultValue `null`
+     */
+    explored: fields.ColorField;
+
+    /**
+     * A color tint applied to unexplored regions of fog of war
+     * @defaultValue `null`
+     */
+    unexplored: fields.ColorField;
+  }
+
+  interface FogColorData extends fields.SchemaField.InitializedData<FogColorSchema> {}
+
   interface EnvironmentSchema extends DataSchema {
     /**
-     * The environment darkness level.
+     * The ambient darkness level in this Scene, where 0 represents midday (maximum illumination) and 1 represents midnight (maximum darkness)
      * @defaultValue `0`
      */
     darknessLevel: fields.AlphaField<{ initial: 0 }>;
@@ -713,64 +721,64 @@ declare namespace Scene {
       enabled: fields.BooleanField<{ required: true; initial: false }>;
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.alpha}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.alpha}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       alpha: LightData.Schema["alpha"];
 
       /**
        * Is the global light in bright mode?
        * @defaultValue `false`
-       * @remarks This is `boolean` here instead {@linkcode foundry.data.LightData} schema's `number`, because the global light has infinite range
+       * @remarks This is `boolean` here instead {@linkcode LightData} schema's `number`, because the global light has infinite range
        */
       bright: fields.BooleanField<{ required: true; initial: false }>;
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.color}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.color}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       color: LightData.Schema["color"];
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.coloration}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.coloration}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       coloration: LightData.Schema["coloration"];
 
       /**
        * The luminosity applied in the shader
        * @defaultValue `0`
-       * @remarks Doesn't pull from the {@linkcode foundry.data.LightData} schema, unlike its siblings, as it has a different `initial`
+       * @remarks Doesn't pull from the {@linkcode LightData} schema, unlike its siblings, as it has a different `initial`
        */
       luminosity: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; max: 1 }>;
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.saturation}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.saturation}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       saturation: LightData.Schema["saturation"];
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.contrast}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.contrast}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       contrast: LightData.Schema["contrast"];
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.shadows}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.shadows}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       shadows: LightData.Schema["shadows"];
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.darkness}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.darkness}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       darkness: LightData.Schema["darkness"];
     }>;
 
     /**
-     * If cycling between Night and Day is activated.
+     * If cycling between {@linkcode base} and {@linkcode dark} is activated.
      * @defaultValue `true`
      */
     cycle: fields.BooleanField<{ initial: true }>;
@@ -794,7 +802,7 @@ declare namespace Scene {
   interface GridSchema extends DataSchema {
     /**
      * The type of grid, a number from CONST.GRID_TYPES.
-     * @defaultValue `game.system.grid.type`
+     * @defaultValue {@linkcode foundry.packages.BaseSystem.grid | game.system.grid.type}
      */
     type: fields.NumberField<
       {

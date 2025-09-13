@@ -11,7 +11,7 @@ declare const waypoint: Ruler.Waypoint;
 // @ts-expect-error Ruler requires a passed user as of v13
 new Ruler();
 
-describe("BaseRuler Tests", () => {
+describe("BaseRuler tests", () => {
   test("Construction", () => {
     // @ts-expect-error Ruler requires a passed user as of v13
     new Ruler();
@@ -20,7 +20,7 @@ describe("BaseRuler Tests", () => {
 
   const ruler = new Ruler(user);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(Ruler.getSnappedPoint({ x: 50, y: 70 })).toEqualTypeOf<Canvas.Point>();
     expectTypeOf(Ruler.RENDER_FLAGS.refresh).toEqualTypeOf<
       foundry.canvas.interaction.RenderFlag<Ruler.RENDER_FLAGS, "refresh">
@@ -85,10 +85,10 @@ describe("BaseRuler Tests", () => {
   });
 });
 
-describe("Ruler Tests", () => {
+describe("Ruler tests", () => {
   const ruler = new Ruler(user);
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(Ruler.WAYPOINT_LABEL_TEMPLATE).toBeString();
 
     const outlineConfig = ruler["_configureOutline"]();

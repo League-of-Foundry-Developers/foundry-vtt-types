@@ -5,7 +5,7 @@ import CanvasAnimation = foundry.canvas.animation.CanvasAnimation;
 
 declare const animData: CanvasAnimation.AnimationData<ChevronPing>;
 
-describe("ChevronPing Tests", () => {
+describe("ChevronPing tests", () => {
   test("Construction", () => {
     // @ts-expect-error Must pass an origin
     new ChevronPing();
@@ -31,7 +31,7 @@ describe("ChevronPing Tests", () => {
     },
   );
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(ChevronPing.CHEVRON_PATH).toBeString();
   });
 

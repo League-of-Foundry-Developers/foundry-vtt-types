@@ -3,7 +3,7 @@ import { describe, expectTypeOf, test } from "vitest";
 import ControlIcon = foundry.canvas.containers.ControlIcon;
 import PreciseText = foundry.canvas.containers.PreciseText;
 
-describe("ControlIcon Tests", () => {
+describe("ControlIcon tests", () => {
   test("Construction", () => {
     // @ts-expect-error Must pass at least `options.texture`
     new ControlIcon();
@@ -25,7 +25,7 @@ describe("ControlIcon Tests", () => {
     tint: 0x373964,
   });
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(myControlIcon.iconSrc).toBeString();
     expectTypeOf(myControlIcon.size).toBeNumber();
     expectTypeOf(myControlIcon.rect).toEqualTypeOf<[number, number, number, number]>();

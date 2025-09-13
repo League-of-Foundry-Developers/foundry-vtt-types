@@ -1,6 +1,7 @@
 import type { DeepPartial, InterfaceToObject, MaybeEmpty } from "#utils";
 import type { fields } from "../foundry/common/data/_module.d.mts";
 import type Document from "../foundry/common/abstract/document.d.mts";
+import type * as documents from "./documents.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
 import Game = foundry.Game;
@@ -67,6 +68,35 @@ export interface AssumeHookRan {}
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface DocumentClassConfig {}
+
+/**
+ * Experimental: This config exists to stymy circularities.
+ */
+export interface DocumentInstanceConfig extends GetConfigured<_DocumentInstanceConfig> {}
+
+interface _DocumentInstanceConfig {
+  ActiveEffect: documents.ConfiguredActiveEffect<ActiveEffect.SubType>;
+  ActorDelta: documents.ConfiguredActorDelta<ActorDelta.SubType>;
+  Actor: documents.ConfiguredActor<Actor.SubType>;
+  Card: documents.ConfiguredCard<Card.SubType>;
+  Cards: documents.ConfiguredCards<Cards.SubType>;
+  ChatMessage: documents.ConfiguredChatMessage<ChatMessage.SubType>;
+  Combat: documents.ConfiguredCombat<Combat.SubType>;
+  Combatant: documents.ConfiguredCombatant<Combatant.SubType>;
+  CombatantGroup: documents.ConfiguredCombatantGroup<CombatantGroup.SubType>;
+  Folder: documents.ConfiguredFolder<Folder.SubType>;
+  Item: documents.ConfiguredItem<Item.SubType>;
+  JournalEntryPage: documents.ConfiguredJournalEntryPage<JournalEntryPage.SubType>;
+  Macro: documents.ConfiguredMacro<Macro.SubType>;
+  RegionBehavior: documents.ConfiguredRegionBehavior<RegionBehavior.SubType>;
+  TableResult: documents.ConfiguredTableResult<TableResult.SubType>;
+}
+
+type GetConfigured<T> = {
+  [K in keyof T as T[K] extends { document: unknown } ? K : never]: T[K] extends { document: infer Document }
+    ? Document
+    : never;
+};
 
 /**
  * This interface is used to configure the used object classes at a type
@@ -236,9 +266,7 @@ export interface SettingConfig {
   "core.chatBubbles": fields.BooleanField<{ initial: true }>;
   "core.chatBubblesPan": fields.BooleanField<{ initial: true }>;
   "core.combatTrackerConfig": MaybeEmpty<{ resource: string; skipDefeated: boolean }>;
-  "core.compendiumConfiguration": Partial<
-    Record<string, foundry.documents.collections.CompendiumCollection.Configuration>
-  >;
+  "core.compendiumConfiguration": foundry.documents.collections.CompendiumCollection.SettingField;
   "core.gridTemplates": fields.BooleanField<{ initial: false }>;
   "core.coneTemplateType": "round" | "flat";
   "core.colorSchema": fields.StringField<{
@@ -267,9 +295,9 @@ export interface SettingConfig {
   "core.disableResolutionScaling": boolean;
   "core.fontSize": number;
   "core.fpsMeter": boolean;
-  "core.globalAmbientVolume": number;
-  "core.globalInterfaceVolume": number;
-  "core.globalPlaylistVolume": number;
+  "core.globalAmbientVolume": fields.AlphaField<{ required: true; initial: 0.5 }>;
+  "core.globalInterfaceVolume": fields.AlphaField<{ required: true; initial: 0.5 }>;
+  "core.globalPlaylistVolume": fields.AlphaField<{ required: true; initial: 0.5 }>;
   "core.keybindings": Record<string, foundry.helpers.interaction.ClientKeybindings.KeybindingActionBinding[]>;
   "core.language": fields.StringField<{
     required: true;
@@ -314,9 +342,9 @@ export interface SettingConfig {
       choices: InterfaceToObject<typeof CONFIG.Dice.rollModes>;
     },
     // Note(LukeAbby): This override is necessary because the `initial` wasn't removing `null`.
-    CONFIG.Dice.RollMode | null | undefined,
-    CONFIG.Dice.RollMode,
-    CONFIG.Dice.RollMode
+    foundry.dice.Roll.Mode | null | undefined,
+    foundry.dice.Roll.Mode,
+    foundry.dice.Roll.Mode
   >;
   "core.rtcClientSettings": typeof AVSettings.schemaFields.client;
   "core.rtcWorldSettings": typeof AVSettings.schemaFields.world;

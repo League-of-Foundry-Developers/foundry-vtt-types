@@ -10,7 +10,7 @@ import type { PointVisionSource } from "#client/canvas/sources/_module.d.mts";
  */
 declare class DetectionModeDarkvision extends DetectionMode {
   protected override _canDetect(
-    visionSource: PointVisionSource.Any,
+    visionSource: PointVisionSource.Internal.Any,
     target: CanvasVisibility.TestObject | undefined,
   ): boolean;
 }

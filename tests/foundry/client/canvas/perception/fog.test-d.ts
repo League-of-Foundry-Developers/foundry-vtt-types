@@ -8,14 +8,14 @@ import TextureExtractor = foundry.canvas.TextureExtractor;
 declare const texture: PIXI.Texture;
 declare const user: User.Implementation;
 
-describe("FogManager Tests", () => {
+describe("FogManager tests", () => {
   test("Construction", () => {
     new FogManager();
   });
 
   const myFogManager = new FogManager();
 
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(FogManager.emittedEvents).toEqualTypeOf<readonly string[]>();
     expectTypeOf(myFogManager.tokenVision).toBeBoolean();
     expectTypeOf(myFogManager.fogExploration).toBeBoolean();

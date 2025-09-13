@@ -53,7 +53,7 @@ declare function CanvasDocumentMixin<BaseClass extends CanvasDocumentMixin.BaseC
 ): CanvasDocumentMixin.Mix<BaseClass>;
 
 declare namespace CanvasDocumentMixin {
-  interface AnyMixedConstructor extends ReturnType<typeof foundry.documents.abstract.ClientDocumentMixin<BaseClass>> {}
+  interface AnyMixedConstructor extends ReturnType<typeof foundry.documents.abstract.CanvasDocumentMixin<BaseClass>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type Mix<BaseClass extends CanvasDocumentMixin.BaseClass> = Mixin<

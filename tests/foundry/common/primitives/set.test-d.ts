@@ -1,37 +1,76 @@
-import { expectTypeOf } from "vitest";
+import { describe, expectTypeOf, test } from "vitest";
 
-declare const set: Set<string>;
-declare const set2: Set<string>;
-
-expectTypeOf(set.difference(set2)).toEqualTypeOf<Set<string>>();
-expectTypeOf(set.equals(set2)).toEqualTypeOf<boolean>();
-expectTypeOf(set.first()).toEqualTypeOf<string | undefined>();
-expectTypeOf(set.intersection(set2)).toEqualTypeOf<Set<string>>();
-expectTypeOf(set.intersects(set2)).toEqualTypeOf<boolean>();
-expectTypeOf(set.intersects(set2)).toEqualTypeOf<boolean>();
-expectTypeOf(set.toObject()).toEqualTypeOf<string[]>();
-expectTypeOf(set.every((_val: string, _idx: number, _set: Set<string>) => true)).toEqualTypeOf<boolean>();
-
-expectTypeOf(new Set<number | string>().filter((value): value is string => typeof value === "string")).toEqualTypeOf<
-  Set<string>
->();
-expectTypeOf(new Set<"a" | "b">().filter((value): value is "a" => value === "a")).toEqualTypeOf<Set<"a">>();
-
-expectTypeOf(new Set<number>().find((value) => value > 5)).toEqualTypeOf<number | undefined>();
-expectTypeOf(new Set<number | string>().find((value): value is number => typeof value === "number")).toEqualTypeOf<
-  number | undefined
->();
-expectTypeOf(new Set<"a" | "b">().find((value): value is "a" => value === "a")).toEqualTypeOf<"a" | undefined>();
-
-expectTypeOf(set.map((_v: string, _i: number, _s: Set<string>) => true)).toEqualTypeOf<Set<boolean>>();
+declare const stringSet: Set<string>;
+declare const stringSet2: Set<string>;
+declare const numberSet: Set<number>;
+declare const stringUnionSet: Set<"foo" | "bar">;
+declare const numberOrStringSet: Set<number | string>;
 
 type ReduceType = {
   foo: string;
 };
-expectTypeOf(
-  set.reduce((_a: ReduceType, _v: string, _i: number, _s: Set<string>): ReduceType => ({ foo: "a" }), {
-    foo: "a",
-  } as ReduceType),
-).toEqualTypeOf<ReduceType>();
 
-expectTypeOf(set.some((_v: string, _i: number, _s: Set<string>) => true)).toEqualTypeOf<boolean>();
+describe("Set Tests", () => {
+  test("Miscellaneous", () => {
+    expectTypeOf(stringSet.first()).toEqualTypeOf<string | undefined>();
+    expectTypeOf(numberSet.first()).toEqualTypeOf<number | undefined>();
+
+    expectTypeOf(stringSet.toObject()).toEqualTypeOf<string[]>();
+    expectTypeOf(numberSet.toObject()).toEqualTypeOf<number[]>();
+  });
+
+  test("Comparison", () => {
+    expectTypeOf(stringSet.equals(stringSet2)).toBeBoolean();
+    expectTypeOf(stringUnionSet.equals(stringSet)).toBeBoolean();
+    expectTypeOf(stringSet.equals(stringUnionSet)).toBeBoolean();
+    // This should be an error because a set cannot equal a set with an element type its does not overlap with, but
+    // due to OverlapsWith-based types breaking things, it is currently allowed
+    stringSet.equals(numberSet);
+
+    expectTypeOf(stringSet.intersects(stringSet2)).toBeBoolean();
+    expectTypeOf(stringUnionSet.intersects(stringSet)).toBeBoolean();
+    expectTypeOf(stringSet.intersects(stringUnionSet)).toBeBoolean();
+    // This should be an error because a set cannot intersect a set with an element type its does not overlap with, but
+    // due to OverlapsWith-based types breaking things, it is currently allowed
+    stringSet.intersects(numberSet);
+  });
+
+  test("Composition tests", () => {
+    expectTypeOf(stringSet.every((_val: string, _idx: number, _set: Set<string>) => true)).toEqualTypeOf<boolean>();
+
+    expectTypeOf(stringSet.some((_v: string, _i: number, _s: Set<string>) => true)).toEqualTypeOf<boolean>();
+  });
+
+  test("Search", () => {
+    expectTypeOf(numberOrStringSet.filter((value): value is string => typeof value === "string")).toEqualTypeOf<
+      Set<string>
+    >();
+    expectTypeOf(stringUnionSet.filter((value): value is "foo" => value === "foo")).toEqualTypeOf<Set<"foo">>();
+
+    expectTypeOf(numberSet.find((value) => value > 5)).toEqualTypeOf<number | undefined>();
+    expectTypeOf(numberOrStringSet.find((value): value is number => typeof value === "number")).toEqualTypeOf<
+      number | undefined
+    >();
+    expectTypeOf(stringUnionSet.find((value): value is "bar" => value === "bar")).toEqualTypeOf<"bar" | undefined>();
+  });
+
+  test("Transforms", () => {
+    expectTypeOf(stringSet.map((_v: string, _i: number, _s: Set<string>) => true)).toEqualTypeOf<Set<boolean>>();
+
+    expectTypeOf(
+      stringSet.reduce((_a: ReduceType, _v: string, _i: number, _s: Set<string>): ReduceType => ({ foo: "a" }), {
+        foo: "a",
+      } as ReduceType),
+    ).toEqualTypeOf<ReduceType>();
+  });
+
+  test("Deprecated", () => {
+    // Deprecated since v13, until v15
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    expectTypeOf(stringSet.isSubset(stringSet2)).toBeBoolean();
+    // This should be an error because a set cannot be a subset of a set with an element type its does not overlap with, but
+    // due to OverlapsWith-based types breaking things, it is currently allowed
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    stringSet.isSubset(numberSet);
+  });
+});

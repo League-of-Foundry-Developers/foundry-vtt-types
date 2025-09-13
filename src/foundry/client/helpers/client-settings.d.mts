@@ -242,7 +242,7 @@ declare namespace ClientSettings {
   type SettingCreateData<N extends Namespace, K extends KeyFor<N>> = ToSettingCreateData<ConfiguredType<N, K>>;
 
   type ToSettingCreateData<T extends Type> = ReplaceUndefinedWithNull<
-    | SettingType<T>
+    | SettingType<T, " __fvtt_types_internal_assignment_data">
     // TODO(LukeAbby): The `fromSource` function is called with `strict` which changes how fallback behaviour works. See `ClientSettings#set`
     | (T extends (abstract new (...args: infer _1) => infer Instance extends DataModel.Any)
         ? SchemaField.CreateData<DataModel.SchemaOf<Instance>>
@@ -254,7 +254,7 @@ declare namespace ClientSettings {
   >;
 
   type ToSettingInitializedType<T extends Type> = ReplaceUndefinedWithNull<
-    SettingType<T> | (T extends DataModel.Any ? T : never)
+    SettingType<T, " __fvtt_types_internal_initialized_data"> | (T extends DataModel.Any ? T : never)
   >;
 
   type Get<N extends Namespace, K extends KeyFor<N>, Doc extends boolean | undefined> = Doc extends true
@@ -467,12 +467,11 @@ type ConfiguredType<
   K extends ClientSettings.KeyFor<N>,
 > = globalThis.SettingConfig[`${N}.${K}` & keyof globalThis.SettingConfig];
 
-type SettingType<T extends ClientSettings.Type> =
+type SettingType<T extends ClientSettings.Type, K extends keyof DataField.Any> =
   // Note(LukeAbby): This isn't written as `T extends ClientSettings.TypeScriptType ? T : never` because then types like `DataField.Any` would be matched.
   | (T extends ClientSettings.RuntimeType ? never : T)
   // TODO(LukeAbby): The `validate` function is called with `strict` which changes how fallback behavior works. See `ClientSettings#set`
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  | (T extends DataField.Any ? DataField.AssignmentTypeFor<T> : never)
+  | (T extends DataField.Any ? T[K] : never)
   | (T extends SettingConstructor ? ConstructorToSettingType<T> : T extends SettingFunction ? ReturnType<T> : never);
 
 // TODO(LukeAbby): The exact semantics for when `undefined` is replaced with `null` are unclear.

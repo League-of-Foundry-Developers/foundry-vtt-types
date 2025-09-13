@@ -9,7 +9,7 @@ import GlowOverlayFilter = foundry.canvas.rendering.filters.GlowOverlayFilter;
 declare const visionSource: PointVisionSource.Initialized;
 declare const token: Token.Implementation;
 
-describe("DetectionModeInvisibility Tests", () => {
+describe("DetectionModeInvisibility tests", () => {
   const source = {
     id: "foo",
     label: "bar",

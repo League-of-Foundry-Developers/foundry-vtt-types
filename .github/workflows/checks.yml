@@ -12,20 +12,20 @@ on: # yamllint disable-line rule:truthy
   merge_group:
 
 env:
-  node_version: 23
+  node_version: 24
 
 jobs:
   typecheck:
     # Can run untrusted code so disable all permissions.
-    permissions: {}
     name: Type Check Code Base
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       # This pattern is reused a couple of times.
       # It's so verbose because of `pull_request_target`.
       # For security reasons by deafult it won't check out the branch the PR is coming from.
       - name: Checkout Branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
@@ -33,7 +33,7 @@ jobs:
           fetch-depth: 1
 
       - name: Install Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ env.node_version }}
 
@@ -59,12 +59,12 @@ jobs:
 
   lint:
     # Can run untrusted code so disable all permissions.
-    permissions: {}
     name: Lint Code Base
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
@@ -72,7 +72,7 @@ jobs:
           fetch-depth: 1
 
       - name: Install Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ env.node_version }}
 
@@ -92,13 +92,13 @@ jobs:
 
   test:
     # Can run untrusted code so disable all permissions.
-    permissions: {}
     name: Test Code Base
     runs-on: ubuntu-latest
     continue-on-error: true
+    permissions: {}
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
@@ -106,7 +106,7 @@ jobs:
           fetch-depth: 1
 
       - name: Install Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ env.node_version }}
 
@@ -132,10 +132,12 @@ jobs:
       - lint
       - test
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js ${{ env.node_version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ env.node_version }}
           registry-url: "https://registry.npmjs.org"
@@ -154,13 +156,13 @@ jobs:
       - name: Publish @league-of-foundry-developers/foundry-vtt-types
         run: |-
           npm version --git-tag-version false "$VERSION"
-          npm publish --ignore-scripts
+          npm publish --provenance --ignore-scripts --tag prerelease
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish fvtt-types
         run: |-
           jq '.name = "fvtt-types"' package.json > temp.json && mv temp.json package.json
           npm version --allow-same-version --git-tag-version false "$VERSION"
-          npm publish --ignore-scripts
+          npm publish --provenance --ignore-scripts --tag prerelease
         env:
           NODE_AUTH_TOKEN: ${{ secrets.FVTT_NPM_TOKEN }}

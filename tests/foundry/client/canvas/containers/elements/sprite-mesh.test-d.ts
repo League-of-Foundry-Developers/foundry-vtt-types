@@ -9,7 +9,7 @@ declare const tex: PIXI.Texture;
 declare const rect: PIXI.Rectangle;
 declare const renderer: PIXI.Renderer;
 
-describe("SpriteMesh Tests", () => {
+describe("SpriteMesh tests", () => {
   test("Creation by static method", () => {
     expectTypeOf(SpriteMesh.from(tex)).toEqualTypeOf<SpriteMesh>();
     expectTypeOf(
@@ -32,7 +32,7 @@ describe("SpriteMesh Tests", () => {
   });
 
   const mySpriteMesh = new SpriteMesh();
-  test("Uncategorized", () => {
+  test("Miscellaneous", () => {
     expectTypeOf(mySpriteMesh.isSprite).toBeBoolean();
     expectTypeOf(mySpriteMesh["_batchData"]).toEqualTypeOf<SpriteMesh.BatchData>();
     expectTypeOf(mySpriteMesh.indices).toEqualTypeOf<Uint16Array>();
