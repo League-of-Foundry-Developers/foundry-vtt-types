@@ -11,7 +11,7 @@ const compendiumCollection = await foundry.documents.collections.CompendiumColle
 });
 
 expectTypeOf(compendiumCollection).toEqualTypeOf<CompendiumCollection<"JournalEntry">>();
-expectTypeOf(compendiumCollection.metadata).toEqualTypeOf<CompendiumCollection.Metadata>();
+expectTypeOf(compendiumCollection.metadata).toEqualTypeOf<CompendiumCollection.Metadata<"JournalEntry">>();
 
 const metadata = {
   name: "plotholes",
@@ -42,7 +42,7 @@ const constructorMetadata = {
 const compendium2 = new CompendiumCollection(constructorMetadata);
 
 expectTypeOf(compendium2).toEqualTypeOf<CompendiumCollection<"JournalEntry">>();
-expectTypeOf(compendium2.metadata).toEqualTypeOf<CompendiumCollection.Metadata>();
+expectTypeOf(compendium2.metadata).toEqualTypeOf<CompendiumCollection.Metadata<"JournalEntry">>();
 
 expectTypeOf(compendiumCollection.get("", { strict: true })).toEqualTypeOf<JournalEntry.Stored>();
 // expectTypeOf(compendiumCollection.toJSON()).toEqualTypeOf<

@@ -20,7 +20,7 @@ declare class CompendiumCollection<
   constructor(metadata: CompendiumCollection.ConstructorMetadata<Type>);
 
   /** The compendium metadata which defines the compendium content and location */
-  metadata: CompendiumCollection.Metadata;
+  metadata: CompendiumCollection.Metadata<Type>;
 
   /** A subsidiary collection which contains the more minimal index of the pack */
   index: IndexTypeForMetadata<Type>;

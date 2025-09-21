@@ -119,6 +119,11 @@ expectTypeOf(item.collection).toEqualTypeOf<Collection<typeof item> | null>();
 item.collection = new Collection<typeof item>();
 
 expectTypeOf(item.compendium).toEqualTypeOf<CompendiumCollection<"Item">>();
+
+// Regression test for `Type` not being passed through to metadata.
+// Reported by @123499, see https://discord.com/channels/732325252788387980/803646399014109205/1419142467214770317.
+expectTypeOf(item.compendium.metadata.type).toEqualTypeOf<"Item">();
+
 // @ts-expect-error Only getter, no setter
 item.compendium = game.packs!.contents[0]!;
 
