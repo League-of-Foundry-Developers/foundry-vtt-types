@@ -3271,7 +3271,7 @@ declare global {
 
     namespace Font {
       interface Definition extends FontFaceDescriptors {
-        url: string[];
+        urls: string[];
       }
 
       interface FamilyDefinition {
