@@ -20,7 +20,6 @@ const metadata = {
   flags: {},
   id: "plotholes",
   system: "core",
-  package: "plotholes",
   packageName: "plotholes",
   packageType: "module",
   path: "path",

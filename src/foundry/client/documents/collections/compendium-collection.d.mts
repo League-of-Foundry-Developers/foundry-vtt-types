@@ -372,13 +372,15 @@ declare namespace CompendiumCollection {
   }
 
   // The type that's passed to `new CompendiumCollection(...)`
-  type ConstructorMetadata<Type extends CompendiumCollection.DocumentName> = Metadata<Type> & {
+  interface ConstructorMetadata<Type extends CompendiumCollection.DocumentName> extends Metadata<Type> {
     index: IndexTypeForMetadata<Type>;
-    folders: Folder.Implementation[];
-  };
+  }
 
-  // The type that appears in `compendium.metadata` after initialization.
-  interface Metadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName> {
+  /** The type that appears in `compendium.metadata` after initialization. */
+  // Note that the `Omit` is because `delete metadata.index` and `delete metadata.folder` is called.
+  // This also deletes in `game.data` since its passed uncloned.
+  interface Metadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName>
+    extends Omit<Game.Data.Pack, "index" | "folder"> {
     type: Type;
     label: string;
 
@@ -392,13 +394,6 @@ declare namespace CompendiumCollection {
     flags: Record<string, never>; // created by the server, but always empty and no way to change it in a way that is s
     ownership: foundry.packages.BasePackage.OwnershipRecord;
     path: string;
-    package: string;
-    system: string;
-
-    /** Added by PackageCompendiumPacks#initialize */
-    id: string;
-    packageType: string;
-    packageName: string;
   }
 
   interface GetIndexOptions<Type extends DocumentName> {

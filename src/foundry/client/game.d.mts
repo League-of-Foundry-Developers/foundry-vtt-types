@@ -716,7 +716,8 @@ declare namespace Game {
     warning: string[];
   }
 
-  type Data = {
+  /** @internal */
+  type _Data = {
     activeUsers: string[];
     addresses: {
       local: string;
@@ -755,17 +756,7 @@ declare namespace Game {
       updateChannel: string;
     };
     packageWarnings: Record<string, PackageWarning>;
-    packs: Array<
-      PackageCompendiumData & {
-        /** @deprecated since v11 */
-        private?: boolean;
-        system?: string | undefined;
-        type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
-        packageName: BasePackage["_source"]["id"];
-        packageType: BasePackage["type"];
-        id: string;
-      }
-    >;
+    packs: Array<Data.Pack>;
     paused: boolean;
     release: foundry.config.ReleaseData["_source"];
     system: foundry.packages.System["_source"];
@@ -787,6 +778,45 @@ declare namespace Game {
       Document.ImplementationClassFor<DocumentType>
     >["_source"][];
   };
+
+  interface Data extends _Data {}
+
+  namespace Data {
+    interface Pack extends PackageCompendiumData {
+      /** @deprecated since v11 */
+      private?: boolean | undefined;
+      system?: string | undefined;
+      type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+      packageName: BasePackage["_source"]["id"];
+      packageType: BasePackage["type"];
+      id: string;
+
+      /**
+       * @remarks This property is deleted right before `setup` is called, most likely inadvertently.
+       * This is ultimately because `CompendiumCollection` is passed a reference to an object in
+       * `game.data.packs` and calls `delete metadata.index` and `delete metadata.folders`.
+       *
+       * Specifically `Game#setupGame` calls `Game#setupPacks` and initializes `CompendiumCollection`
+       * with `new CompendiumCollection(metadata)` where `metadata` is defined from
+       * `for ( const metadata of this.data.packs ) {`.
+       */
+      // TODO(LukeAbby): Technically should be updated with compendium index types.
+      // It's probably not worth it because it is deleted after setup.
+      index?: { _id: string; uuid: string } & Record<string, unknown>;
+
+      /**
+       * @remarks This property is deleted after `setup`, most likely inadvertently.
+       * This is ultimately because `CompendiumCollection` is passed a reference to an object in
+       * `game.data.packs` and calls `delete metadata.index` and `delete metadata.folders`.
+       *
+       * Specifically `Game#setupGame` calls `Game#setupPacks` and initializes `CompendiumCollection`
+       * with `new CompendiumCollection(metadata)` where `metadata` is defined from
+       * `for ( const metadata of this.data.packs ) {`.
+       */
+      // TODO(LukeAbby): Technically a bit underspecified; may be more specific, though unlikely.
+      folders?: Folder.Source[];
+    }
+  }
 
   type Permissions = {
     [Key in keyof typeof foundry.CONST.USER_PERMISSIONS]: foundry.CONST.USER_ROLES[];
