@@ -261,6 +261,8 @@ declare namespace ClientSettings {
     ? Setting.Implementation
     : SettingInitializedType<N, K>;
 
+  type Scope = "world" | "client" | "user";
+
   /**
    * @internal
    */
@@ -281,7 +283,7 @@ declare namespace ClientSettings {
      * The scope the Setting is stored in, either World or Client
      * @defaultValue `"client"`
      */
-    scope: "world" | "client";
+    scope: Scope;
 
     /** Indicates if this Setting should render in the Config application */
     config?: boolean | undefined;
