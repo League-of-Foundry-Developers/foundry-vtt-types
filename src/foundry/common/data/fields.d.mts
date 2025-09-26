@@ -405,7 +405,11 @@ declare abstract class DataField<
    * @param change - The change to apply.
    * @returns The updated value.
    */
-  applyChange(value: InitializedType, model: DataModel.Any, change: ActiveEffect.ChangeData): InitializedType;
+  applyChange(
+    value: InitializedType,
+    model: DataModel.Any,
+    change: ActiveEffect.ChangeData,
+  ): InitializedType | undefined;
 
   /**
    * Cast a change delta into an appropriate type to be applied to this field.
