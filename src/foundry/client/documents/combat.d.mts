@@ -675,6 +675,11 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   get isActive(): boolean;
 
   /**
+   * Is this Combat currently being viewed?
+   */
+  get isView(): boolean;
+
+  /**
    * Set the current Combat encounter as active within the Scene.
    * Deactivate all other Combat encounters within the viewed Scene and set this one as active
    * @param options - Additional context to customize the update workflow
