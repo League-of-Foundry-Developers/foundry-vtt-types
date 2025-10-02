@@ -1658,28 +1658,16 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   /**
    * Pause the movement of this Token document. The movement can be resumed after being paused.
+   *
    * Only the User that initiated the movement can pause it.
-   * Returns a callback that can be used to resume the movement later.
+   *
+   * Returns a promise that resolves to true if the movement was resumed by {@linkcode TokenDocument.resumeMovement | TokenDocument#resumeMovement}
+   * with the same key that was passed to this function.
+   *
    * Only after all callbacks and keys have been called the movement of the Token is resumed.
+   *
    * If the callback is called within the update operation workflow, the movement is resumed after the workflow.
-   * @returns The callback to resume movement if the movement was or is paused,
-   *                                              otherwise null
-   * @example
-   * ```js
-   * // This is an Execute Script Region Behavior that makes the token invisible
-   * // On TOKEN_MOVE_IN...
-   * if ( !event.user.isSelf ) return;
-   * const resumeMovement = event.data.token.pauseMovement();
-   * event.data.token.toggleStatusEffect("invisible", {active: true});
-   * const resumed = await resumeMovement();
-   * ```
-   * Pause the movement of this Token document. The movement can be resumed after being paused.
-   * Only the User that initiated the movement can pause it.
-   * Returns a promise that resolves to true if the movement was resumed by
-   * {@link foundry.documents.TokenDocument.resumeMovement | `TokenDocument#resumeMovement`} with the same key that was passed to this function.
-   * Only after all callbacks and keys have been called the movement of the Token is resumed.
-   * If the callback is called within the update operation workflow, the movement is resumed after the workflow.
-   * @param key - The key to resume movement with {@link foundry.documents.TokenDocument.resumeMovement | `TokenDocument#resumeMovement`}
+   * @param key - The key to resume movement with {@linkcode TokenDocument.resumeMovement | TokenDocument#resumeMovement}
    * @returns The continuation promise if the movement was paused, otherwise null
    * @example
    * ```js
@@ -1689,6 +1677,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    *   event.data.token.pauseMovement(this.parent.uuid);
    * }
    * if ( game.user.isActiveGM ) {
+   *   if ( event.data.token.rendered ) await event.data.token.object.movementAnimationPromise;
    *   const trapUuid; // The Region Behavior UUID of the trap
    *   const trapBehavior = await fromUuid(trapUuid);
    *   await trapBehavior.update({disabled: false});

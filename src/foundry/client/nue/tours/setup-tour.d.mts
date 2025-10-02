@@ -1,6 +1,5 @@
 import type { Identity, InexactPartial } from "#utils";
 import type { Tour } from "#client/nue/_module.d.mts";
-import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { ApplicationV2 } from "#client/applications/api/_module.d.mts";
 
 /**
@@ -15,8 +14,9 @@ declare class SetupTour extends Tour {
 
   /**
    * Stores a currently open Application for future steps
+   * @remarks All Setup-view apps are v2 as of v13
    */
-  focusedApp: Application.Any | ApplicationV2.Any;
+  focusedApp: ApplicationV2.Any;
 
   override get canStart(): boolean;
 
