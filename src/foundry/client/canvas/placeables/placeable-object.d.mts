@@ -466,16 +466,21 @@ declare abstract class PlaceableObject<
    * @param event   - The triggering canvas interaction event
    * @param options - Options which customize event handling
    * @remarks {@link Wall._onHoverIn | `Wall#_onHoverIn`} can return `false`, otherwise this is always `void`
+   * @remarks This method barely does anything with the given event and can thus also just be given a {@link MouseEvent}.
    */
   // options: not null (destructured)
-  protected _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): false | void;
+  protected _onHoverIn(
+    event: Canvas.Event.Pointer | MouseEvent,
+    options?: PlaceableObject.HoverInOptions,
+  ): false | void;
 
   /**
    * Actions that should be taken for this Placeable Object when a mouseout event occurs
    * @see `MouseInteractionManager##handlePointerOut`
    * @param event - The triggering canvas interaction event
+   * @remarks The event is not used in the method.
    */
-  protected _onHoverOut(event: Canvas.Event.Pointer): void;
+  protected _onHoverOut(event?: Canvas.Event.Pointer): void;
 
   /**
    * Should the placeable propagate left click downstream?
