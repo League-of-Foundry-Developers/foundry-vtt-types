@@ -30,20 +30,22 @@ jobs:
           # This has been seen going in an infinite loop without `--legacy-peer-deps`.
           npm add --legacy-peer-deps --force -D typescript@next @typescript/native-preview
           npx tsc --version
-      - if: "!cancelled()"
+
+      # Parentheses due to https://github.com/github/vscode-github-actions/issues/60
+      - if: (!cancelled())
         run: npm run lint
 
       - name: Type Check (exactOptionalPropertyTypes = false)
-        if: "!cancelled()"
+        if: (!cancelled())
         run: npx tsc --exactOptionalPropertyTypes false
 
       - name: Type Check (TS Go)
-        if: "!cancelled()"
+        if: (!cancelled())
         run: npx tsgo
 
       - name: Type Check (TS Go, exactOptionalPropertyTypes = false)
-        if: "!cancelled()"
+        if: (!cancelled())
         run: npx tsgo --exactOptionalPropertyTypes false
 
-      - if: "!cancelled()"
+      - if: (!cancelled())
         run: npm run test
