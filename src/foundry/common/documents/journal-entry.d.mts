@@ -331,6 +331,7 @@ export default BaseJournalEntry;
 declare namespace BaseJournalEntry {
   export import Name = JournalEntry.Name;
   export import ConstructionContext = JournalEntry.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = JournalEntry.ConstructorArgs;
   export import Hierarchy = JournalEntry.Hierarchy;
   export import Metadata = JournalEntry.Metadata;

@@ -297,6 +297,7 @@ export default BaseNote;
 declare namespace BaseNote {
   export import Name = NoteDocument.Name;
   export import ConstructionContext = NoteDocument.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = NoteDocument.ConstructorArgs;
   export import Hierarchy = NoteDocument.Hierarchy;
   export import Metadata = NoteDocument.Metadata;

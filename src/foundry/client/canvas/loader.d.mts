@@ -71,7 +71,7 @@ declare class TextureLoader {
    * @param src     - The resource URL
    * @param options - Options to configure the loading behaviour.
    * @returns A Blob containing the loaded data
-   * @remarks As of v13, simply forwards to {@linkcode foundry.utils.fetchResource}; Foundry comments `TODO @deprecated in v14`
+   * @remarks As of v13, simply forwards to {@linkcode foundry.utils.fetchResource}; Foundry comments "TODO \@deprecated in v14"
    */
   static fetchResource(src: string, options?: TextureLoader.FetchResourceOptions): Promise<Blob>;
 
@@ -98,7 +98,7 @@ declare class TextureLoader {
    * Return a URL with a cache-busting query parameter appended.
    * @param src - The source URL being attempted
    * @returns The new URL, or false on a failure.
-   * @remarks As of v13, simply forwards to {@linkcode foundry.utils.getCacheBustURL}; Foundry comments `TODO @deprecated in v14`
+   * @remarks As of v13, simply forwards to {@linkcode foundry.utils.getCacheBustURL}; Foundry comments "TODO \@deprecated in v14"
    */
   static getCacheBustURL(src: string): string | false;
 
@@ -269,7 +269,7 @@ declare namespace TextureLoader {
  * Test whether a file source exists by performing a HEAD request against it
  * @param src - The source URL or path to test
  * @returns Does the file exist at the provided url?
- * @remarks As of v13, simply forwards to {@linkcode foundry.utils.srcExists}; Foundry comments `TODO @deprecated in v14`
+ * @remarks As of v13, simply forwards to {@linkcode foundry.utils.srcExists}; Foundry comments "TODO \@deprecated in v14"
  */
 export declare function srcExists(src: string): Promise<boolean>;
 
@@ -304,9 +304,11 @@ declare namespace loadTexture {
 declare global {
   namespace LoadTexture {
     /** @deprecated Use {@linkcode foundry.canvas.loadTexture.Return} instead */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     export import Return = loadTexture.Return;
 
     /** @deprecated Use {@linkcode foundry.canvas.loadTexture.Options} instead */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     export import Options = loadTexture.Options;
   }
 }

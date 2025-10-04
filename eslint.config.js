@@ -401,6 +401,8 @@ const rules = [
       "jsdoc/require-jsdoc": "off",
       "jsdoc/require-param": "off",
       "jsdoc/require-returns": "off",
+      "jsdoc/require-throws-type": "off",
+      "jsdoc/require-yields-type": "off",
       "jsdoc/tag-lines": "off",
 
       "tsdoc/syntax": "warn",

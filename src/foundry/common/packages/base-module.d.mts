@@ -1,5 +1,7 @@
 import type BasePackage from "./base-package.d.mts";
 
+import Module = foundry.packages.Module;
+
 declare namespace BaseModule {
   export import Source = Module.Source;
   export import CreateData = Module.CreateData;

@@ -328,6 +328,7 @@ export default BasePlaylist;
 declare namespace BasePlaylist {
   export import Name = Playlist.Name;
   export import ConstructionContext = Playlist.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = Playlist.ConstructorArgs;
   export import Hierarchy = Playlist.Hierarchy;
   export import Metadata = Playlist.Metadata;
