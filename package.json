@@ -164,7 +164,7 @@
     "type-fest": "^5.0.1",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.31.0",
-    "vitest": "^4.0.0-beta.7"
+    "vitest": "^4.0.0-beta.13"
   },
   "overrides": {
     "expect-type": "^1.2.2"
