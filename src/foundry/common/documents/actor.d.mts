@@ -350,6 +350,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 declare namespace BaseActor {
   export import Name = Actor.Name;
   export import ConstructionContext = Actor.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = Actor.ConstructorArgs;
   export import Hierarchy = Actor.Hierarchy;
   export import Metadata = Actor.Metadata;

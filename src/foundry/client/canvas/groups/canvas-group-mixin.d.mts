@@ -176,6 +176,7 @@ declare namespace CanvasGroupMixin {
   /**
    * @deprecated Replaced by {@linkcode CanvasGroupMixin.Mix}.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import Mixed = CanvasGroupMixin.Mix;
 }
 

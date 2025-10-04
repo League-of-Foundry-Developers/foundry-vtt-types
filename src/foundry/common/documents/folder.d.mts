@@ -296,6 +296,7 @@ export default BaseFolder;
 declare namespace BaseFolder {
   export import Name = Folder.Name;
   export import ConstructionContext = Folder.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = Folder.ConstructorArgs;
   export import Hierarchy = Folder.Hierarchy;
   export import Metadata = Folder.Metadata;

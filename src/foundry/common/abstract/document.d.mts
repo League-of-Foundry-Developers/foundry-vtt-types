@@ -2664,16 +2664,19 @@ declare namespace Document {
   /**
    * @deprecated Replaced with {@linkcode Document.SheetClassFor}
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConfiguredSheetClassFor = Document.SheetClassFor;
 
   /**
    * @deprecated Replaced with {@linkcode Document.ObjectClassFor}
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConfiguredObjectClassFor = Document.ObjectClassFor;
 
   /**
    * @deprecated Replaced with {@linkcode Document.LayerClassFor}
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConfiguredLayerClassFor = Document.LayerClassFor;
 
   /**

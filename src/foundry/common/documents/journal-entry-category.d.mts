@@ -281,6 +281,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
 declare namespace BaseJournalEntryCategory {
   export import Name = JournalEntry.Name;
   export import ConstructionContext = Item.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = JournalEntry.ConstructorArgs;
   export import Hierarchy = JournalEntry.Hierarchy;
   export import Metadata = JournalEntry.Metadata;

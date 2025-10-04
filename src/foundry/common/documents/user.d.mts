@@ -316,6 +316,7 @@ export default BaseUser;
 declare namespace BaseUser {
   export import Name = User.Name;
   export import ConstructionContext = User.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = User.ConstructorArgs;
   export import Hierarchy = User.Hierarchy;
   export import Metadata = User.Metadata;

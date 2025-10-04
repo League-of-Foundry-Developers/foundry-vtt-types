@@ -418,11 +418,13 @@ declare namespace ClientSettings {
   /**
    * @deprecated Replaced with {@linkcode ClientSettings.SettingInitializedType}.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import SettingAssignmentType = ClientSettings.SettingInitializedType;
 
   /**
    * @deprecated Replaced with {@linkcode ClientSettings.ToSettingInitializedType}.
    */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ToSettingAssignmentType = ClientSettings.ToSettingInitializedType;
 }
 

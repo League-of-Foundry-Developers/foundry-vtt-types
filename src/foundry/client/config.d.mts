@@ -2535,7 +2535,7 @@ declare global {
       }
 
       /**
-       * @privateRemarks Foundry types this as {@linkcode geometry.PointSourcePolygon | @enum PointSourcePolygon}, but all the runtime defaults are
+       * @privateRemarks Foundry types this as {@linkcode geometry.PointSourcePolygon | \@enum PointSourcePolygon}, but all the runtime defaults are
        * {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}, and CSP types and methods are assumed in other canvas classes, so entries
        * have been constrained to it instead of `PointSourcePolygon`.
        *

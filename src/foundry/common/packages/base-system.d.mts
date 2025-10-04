@@ -2,6 +2,8 @@ import type { AnyMutableObject } from "../../../utils/index.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type BasePackage from "./base-package.d.mts";
 
+import System = foundry.packages.System;
+
 declare namespace BaseSystem {
   export import Source = System.Source;
   export import CreateData = System.CreateData;

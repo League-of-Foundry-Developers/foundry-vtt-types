@@ -277,6 +277,7 @@ export default BaseAmbientLight;
 declare namespace BaseAmbientLight {
   export import Name = AmbientLightDocument.Name;
   export import ConstructionContext = AmbientLightDocument.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = AmbientLightDocument.ConstructorArgs;
   export import Hierarchy = AmbientLightDocument.Hierarchy;
   export import Metadata = AmbientLightDocument.Metadata;
