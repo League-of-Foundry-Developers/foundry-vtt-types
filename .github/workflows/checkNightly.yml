@@ -37,4 +37,7 @@ jobs:
       - name: Type Check (TS Go)
         run: npx tsgo
 
+      - name: Type Check (TS Go, exactOptionalPropertyTypes = false)
+        run: npx tsgo --exactOptionalPropertyTypes false
+
       - run: npm run test
