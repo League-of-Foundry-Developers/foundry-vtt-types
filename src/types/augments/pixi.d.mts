@@ -1039,6 +1039,15 @@ declare module "@pixi/events" {
      * @see {@link https://developer.mozilla.org/docs/Web/API/PointerEvent/azimuthAngle}
      */
     azimuthAngle: number;
+
+    /**
+     * The persistentDeviceId read-only property of the PointerEvent interface is a unique identifier
+     * for the pointing device generating the PointerEvent. This provides a secure, reliable way to
+     * identify multiple pointing devices (such as pens) interacting with the screen simultaneously.
+     *
+     * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/persistentDeviceId}
+     */
+    persistentDeviceId: number;
   }
 }
 
