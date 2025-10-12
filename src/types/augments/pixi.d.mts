@@ -1,4 +1,6 @@
 import type { Brand, Identity } from "#utils";
+import { Graphics as _Graphics } from "pixi.js";
+
 import * as _PIXI from "pixi.js";
 
 // Note(LukeAbby): The `smooth.d.mts` and `smooth.d.mts` files exist to make it DRY to selectively tweak PIXI sub-namespaces.
@@ -1052,7 +1054,8 @@ declare module "@pixi/events" {
 }
 
 declare module "pixi.js" {
-  export import LegacyGraphics = _PIXI.Graphics;
+  export interface LegacyGraphics extends _Graphics {}
+  export class LegacyGraphics extends _Graphics {}
 
   export enum BLEND_MODES {
     /**
