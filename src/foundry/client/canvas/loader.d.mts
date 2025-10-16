@@ -304,11 +304,9 @@ declare namespace loadTexture {
 declare global {
   namespace LoadTexture {
     /** @deprecated Use {@linkcode foundry.canvas.loadTexture.Return} instead */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
     export import Return = loadTexture.Return;
 
     /** @deprecated Use {@linkcode foundry.canvas.loadTexture.Options} instead */
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
     export import Options = loadTexture.Options;
   }
 }

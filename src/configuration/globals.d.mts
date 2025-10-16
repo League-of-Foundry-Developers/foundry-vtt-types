@@ -55,11 +55,9 @@ export import AlertPing = globalThis.AlertPing;
 // The two following are (possibly erroneously) not re-exported by their `_module.mjs`, despite being previously global and not `@internal`
 
 /** @deprecated No longer global as of v13.344, nor exported anywhere accessible */
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 export import AlphaBlurFilter = AlphaBlurFilter;
 
 /** @deprecated No longer global as of v13.344, nor exported anywhere accessible */
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 export import AlphaBlurFilterPass = AlphaBlurFilterPass;
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -164,7 +162,6 @@ export import ControlsLayer = globalThis.ControlsLayer;
 export import Cursor = globalThis.Cursor;
 
 /** @deprecated No longer global as of 13.345, nor exported anywhere accessible */
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 export import DarknessLevelContainer = DarknessLevelContainer;
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -294,7 +291,6 @@ export import NoteDocument = globalThis.NoteDocument;
 export import NotesLayer = globalThis.NotesLayer;
 
 /** @deprecated No deprecated global provided by foundry as of 13.345 */
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 export import ObservableTransform = foundry.canvas.geometry.ObservableTransform;
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -378,7 +374,6 @@ export import RegionShape = globalThis.RegionShape;
 export import RegionMesh = globalThis.RegionMesh;
 
 /** @deprecated Use {@linkcode foundry.canvas.interaction.RenderFlag} instead */
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 export import RenderFlag = foundry.canvas.interaction.RenderFlag;
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -406,7 +401,6 @@ export import Scenes = globalThis.Scenes;
 export import Setting = globalThis.Setting;
 
 /** @deprecated No longer global as of 13.345, nor exported anywhere accessible */
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 export import ShaderField = ShaderField;
 
 export import SimplePeer = globalThis.SimplePeer;
