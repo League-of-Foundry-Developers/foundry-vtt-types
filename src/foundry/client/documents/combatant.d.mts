@@ -587,7 +587,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   /**
    * Clear the movement history of the Combatant's Token.
    */
-  clearMovementHistory: Promise<void>;
+  clearMovementHistory(): Promise<void>;
 
   // DatabaseLifecycle Events are overridden but with no signature changes.
   // These are already covered in BaseCombatant
