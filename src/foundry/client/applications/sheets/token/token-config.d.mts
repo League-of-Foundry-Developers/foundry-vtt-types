@@ -1,3 +1,4 @@
+import type { PrototypeToken } from "#common/data/data.mjs";
 import type { Identity } from "#utils";
 import type DocumentSheetV2 from "../../api/document-sheet.d.mts";
 import type TokenApplicationMixin from "./mixin.d.mts";
@@ -23,7 +24,9 @@ declare class TokenConfig<
   RenderContext,
   Configuration,
   RenderOptions
-> {}
+> {
+  override get token(): TokenDocument.Implementation | PrototypeToken;
+}
 
 declare namespace TokenConfig {
   interface Any extends AnyTokenConfig {}
