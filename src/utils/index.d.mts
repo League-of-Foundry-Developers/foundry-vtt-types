@@ -33,11 +33,15 @@ export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";
 // - `T = never` might either distribute out or return `unknown`. The fix here is checking if `any` is assignable to it.
 // - `T = { prop?: U }` with `exactOptionalPropertyTypes` should return `U | undefined` not `U`.
 // - `T` has getters `GetKey` should still access it, this means checking `keyof T` is not helpful.
-export type GetKey<T, K extends PropertyKey, D = never> = [object] extends [T] // Handle `{}` and `object`
-  ? D
-  : [any] extends [T] // Handle never
-    ? _GetKey<T, K, D>
-    : D;
+export type GetKey<T, K extends PropertyKey, D = never> =
+  (<V>() => V extends object ? 1 : 0) extends <V>() => V extends T ? 1 : 0
+    ? D
+    : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      (<V>() => V extends {} ? 1 : 0) extends <V>() => V extends T ? 1 : 0
+      ? D
+      : [any] extends [T] // Handle never
+        ? _GetKey<T, K, D>
+        : D;
 
 // Note(LukeAbby): This uses `infer _V` specifically to avoid index signatures.
 // However it isn't `T extends { readonly [_ in K]?: infer V } ? V : D` as under
