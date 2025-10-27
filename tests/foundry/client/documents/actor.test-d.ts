@@ -46,7 +46,7 @@ expectTypeOf(actor.modifyTokenAttribute("", 2, true, true)).toEqualTypeOf<Promis
 
 expectTypeOf(actor.prepareEmbeddedDocuments()).toEqualTypeOf<void>();
 
-expectTypeOf(actor.rollInitiative()).toEqualTypeOf<Promise<void>>();
+expectTypeOf(actor.rollInitiative()).toEqualTypeOf<Promise<Combat.Implementation | null>>();
 expectTypeOf(actor.getDependentTokens()).toEqualTypeOf<TokenDocument.Implementation[]>();
 
 test("actor system update", () => {

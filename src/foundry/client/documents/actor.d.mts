@@ -849,7 +849,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param options - Configuration for how initiative for this Actor is rolled.
    * @returns A promise which resolves to the Combat document once rolls are complete.
    */
-  rollInitiative(options?: Actor.RollInitiativeOptions): Promise<void>;
+  rollInitiative(options?: Actor.RollInitiativeOptions): Promise<Combat.Implementation | null>;
 
   /**
    * Toggle a configured status effect for the Actor.
