@@ -1,10 +1,11 @@
 import type { AnyObject } from "#utils";
-import type { DatabaseAction, DatabaseOperation, DocumentSocketRequest } from "./_types.d.mts";
+import type { DatabaseBackend } from "#common/abstract/_module.d.mts";
+import type { DocumentSocketRequest } from "./_types.d.mts";
 
 /**
  * The data structure of a modifyDocument socket response.
  */
-declare class DocumentSocketResponse<Action extends DatabaseAction> {
+declare class DocumentSocketResponse<Action extends DatabaseBackend.DatabaseAction> {
   /**
    * Prepare a response for an incoming request.
    * @param request - The incoming request that is being responded to
@@ -21,7 +22,7 @@ declare class DocumentSocketResponse<Action extends DatabaseAction> {
   broadcast: boolean | undefined;
 
   /** The database operation that was requested. */
-  operation: DatabaseOperation | undefined;
+  operation: DatabaseBackend.DatabaseOperation | undefined;
 
   /** The identifier of the requesting user. */
   userId: string | undefined;

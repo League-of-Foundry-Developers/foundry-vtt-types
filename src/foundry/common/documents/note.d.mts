@@ -1,8 +1,6 @@
-import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Document definition for a Note.
@@ -96,7 +94,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<NoteDocument.Implementation | NoteDocument.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<NoteDocument.Database.Create<Temporary>>,
+    operation?: Document.Database.CreateDocumentsOperation<NoteDocument.Database.Create<Temporary>>,
   ): Promise<Array<NoteDocument.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
@@ -215,38 +213,6 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     operation: NoteDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
 
   /**
    * @deprecated since v12, will be removed in v14

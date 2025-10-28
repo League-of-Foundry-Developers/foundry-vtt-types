@@ -11,7 +11,7 @@ import type {
 } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { Application, FormApplication } from "#client/appv1/api/_module.d.mts";
-import type ApplicationV2 from "#client/applications/api/application.d.mts";
+import type { ApplicationV2 } from "#client/applications/api/_module.d.mts";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
 
 declare class InternalClientDocument<DocumentName extends Document.Type> {
@@ -238,6 +238,23 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param data       - The source data for new documents that are being created
    * @param options    - Options which modified the creation operation
    * @param userId     - The ID of the User who triggered the operation
+   *
+   * @remarks
+   * To make it possible for narrowing one parameter to jointly narrow other parameters
+   * this method must be overridden like so:
+   *
+   * ```ts
+   * class SwadeCards extends Cards {
+   *   protected override _preCreateDescendantDocuments(...args: Cards.PreCreateDescendantDocumentsArgs) {
+   *     super._preCreateDescendantDocuments(...args);
+   *
+   *     const [parent, collection, data, options, userId] = args;
+   *     if (collection === "cards") {
+   *         options; // Will be narrowed.
+   *     }
+   *   }
+   * }
+   * ```
    */
   protected _preCreateDescendantDocuments(
     parent: never,
@@ -255,6 +272,23 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param data       - The source data for new documents that were created
    * @param options    - Options which modified the creation operation
    * @param userId     - The ID of the User who triggered the operation
+   *
+   * @remarks
+   * To make it possible for narrowing one parameter to jointly narrow other parameters
+   * this method must be overridden like so:
+   *
+   * ```ts
+   * class GurpsCards extends Cards {
+   *   protected override _onCreateDescendantDocuments(...args: Cards.OnCreateDescendantDocumentsArgs) {
+   *     super._onCreateDescendantDocuments(...args);
+   *
+   *     const [parent, collection, documents, data, options, userId] = args;
+   *     if (collection === "cards") {
+   *         options; // Will be narrowed.
+   *     }
+   *   }
+   * }
+   * ```
    */
   protected _onCreateDescendantDocuments(
     parent: never,
@@ -272,6 +306,23 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param changes - The array of differential Document updates to be applied
    * @param options - Options which modified the update operation
    * @param userId - The ID of the User who triggered the operation
+   *
+   * @remarks
+   * To make it possible for narrowing one parameter to jointly narrow other parameters
+   * this method must be overridden like so:
+   *
+   * ```ts
+   * class LancerCards extends Cards {
+   *   protected override _preUpdateDescendantDocuments(...args: Cards.OnUpdateDescendantDocuments) {
+   *     super._preUpdateDescendantDocuments(...args);
+   *
+   *     const [parent, collection, changes, options, userId] = args;
+   *     if (collection === "cards") {
+   *         options; // Will be narrowed.
+   *     }
+   *   }
+   * }
+   * ```
    */
   protected _preUpdateDescendantDocuments(
     parent: never,
@@ -289,6 +340,23 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param changes - The array of differential Document updates which were applied
    * @param options - Options which modified the update operation
    * @param userId - The ID of the User who triggered the operation
+   *
+   * @remarks
+   * To make it possible for narrowing one parameter to jointly narrow other parameters
+   * this method must be overridden like so:
+   *
+   * ```ts
+   * class Ptr2eCards extends Cards {
+   *   protected override _onUpdateDescendantDocuments(...args: Cards.OnUpdateDescendantDocumentsArgs) {
+   *     super._onUpdateDescendantDocuments(...args);
+   *
+   *     const [parent, collection, documents, changes, options, userId] = args;
+   *     if (collection === "cards") {
+   *         options; // Will be narrowed.
+   *     }
+   *   }
+   * }
+   * ```
    */
   protected _onUpdateDescendantDocuments(
     parent: never,
@@ -306,6 +374,23 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param ids - The array of document IDs which were deleted
    * @param options - Options which modified the deletion operation
    * @param userId - The ID of the User who triggered the operation
+   *
+   * @remarks
+   * To make it possible for narrowing one parameter to jointly narrow other parameters
+   * this method must be overridden like so:
+   *
+   * ```ts
+   * class KultCards extends Cards {
+   *   protected override _preDeleteDescendantDocuments(...args: Cards.PreDeleteDescendantDocumentsArgs) {
+   *     super._preDeleteDescendantDocuments(...args);
+   *
+   *     const [parent, collection, ids, options, userId] = args;
+   *     if (collection === "cards") {
+   *         options; // Will be narrowed.
+   *     }
+   *   }
+   * }
+   * ```
    */
   protected _preDeleteDescendantDocuments(
     parent: never,
@@ -323,6 +408,23 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param ids - The array of document IDs which were deleted
    * @param options - Options which modified the deletion operation
    * @param userId - The ID of the User who triggered the operation
+   *
+   * @remarks
+   * To make it possible for narrowing one parameter to jointly narrow other parameters
+   * this method must be overridden like so:
+   *
+   * ```ts
+   * class BladesCards extends Cards {
+   *   protected override _onDeleteDescendantDocuments(...args: Cards.OnUpdateDescendantDocuments) {
+   *     super._onDeleteDescendantDocuments(...args);
+   *
+   *     const [parent, collection, documents, ids, options, userId] = args;
+   *     if (collection === "cards") {
+   *         options; // Will be narrowed.
+   *     }
+   *   }
+   * }
+   * ```
    */
   protected _onDeleteDescendantDocuments(
     parent: never,
@@ -342,6 +444,9 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * Gets the default new name for a Document
    * @param context - The context for which to create the Document name.
+   *
+   * @privateRemarks Specific document overrides for non-{@link CONST.PRIMARY_DOCUMENT_TYPES | primary} documents should make `context`
+   * required, as they require a passed `parent`
    */
   static defaultName(context: never): string;
 
@@ -352,31 +457,39 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param createOptions - Document creation options            (default: `{}`)
    * @param options       - Options forwarded to DialogV2.prompt (default: `{}`)
    * @returns A Promise which resolves to the created Document, or null if the dialog was closed.
-   * @throws If the document has
-   * @privateRemarks `| undefined` is included in the return types of the specific document overrides due to {@link Document.create | `Document.create`}
-   * possibly being `undefined` if creation is cancelled by preCreate methods or hooks
+   *
+   * @remarks
+   * @throws If the passed {@linkcode Document.CreateDialogOptions.types} whitelist does not contain any valid, non-{@linkcode CONST.BASE_DOCUMENT_TYPE}
+   * types.
+   *
+   * @privateRemarks `| undefined` is included in the return types of the specific document overrides due to {@linkcode Document.create}
+   * possibly being `undefined` if creation is cancelled by preCreate methods or hooks.
+   *
+   * Specific document overrides for non-{@link CONST.PRIMARY_DOCUMENT_TYPES | primary} documents should make `createOptions` required, as
+   * they require a passed `parent`
+   *
+   * This returns `Promise<unknown>` here because as of 13.350 there's a bug ({@link https://github.com/foundryvtt/foundryvtt/issues/13545})
+   * in {@linkcode Folder.createDialog}.
    */
-  static createDialog(data: never, createOptions: never, options?: never): Promise<unknown>;
+  static createDialog(data?: never, createOptions?: never, options?: never): Promise<unknown>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
-   * @param options   - Additional options passed to `DialogV2.confirm`
-   *                    (default: `{}`)
-   * @param operation - Document deletion options.
-   *                    (default: `{}`)
+   * @param options   - Additional options passed to {@linkcode DialogV2.confirm} (default: `{}`)
+   * @param operation - Document deletion options. (default: `{}`)
    * @returns A Promise that resolves to the deleted Document
+   *
+   * @remarks The only part of the {@linkcode DialogV2.ConfirmConfig} that one should be cautious passing is `"yes.callback"`, which actually does the delete.
+   *
+   * `"yes"` is in the computed return type because if deletion is cancelled by hook or {@linkcode Document._preDelete | Document#_preDelete}, the `yes` callback returns
+   * undefined, and when button callbacks return undefined, the button's action is returned.
    */
-  // options: not null (parameter default only)
-  deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-    operation?: never,
-  ): Promise<this | false | null | undefined>;
+  deleteDialog(options?: never, operation?: never): Promise<Document.DeleteDialogReturn<Document.Any, undefined>>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
-   * @param options - Additional options passed to the {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`} method
+   * @param options - Additional options passed to the {@linkcode ClientDocumentMixin.AnyMixed.toCompendium | ClientDocument#toCompendium} method
    */
-  // options: not null (destructured where forwarded)
   exportToJSON(options?: ClientDocument.ToCompendiumOptions): void;
 
   /**
@@ -391,14 +504,11 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * 2. A UUID
    *
    * @param data    - The data object extracted from a DataTransfer event
-   * @param options - Additional options which affect drop data behavior
    * @returns The resolved Document
    * @throws If a Document could not be retrieved from the provided data.
-   * @remarks Core's implementation in `ClientDocument` does not use `options` at all, no call passes any `options`
-   * anywhere in Foundry, and the JSDoc types it as simply `object`, so it cannot be typed more exactly than this.
    */
-  // options: not null (parameter default only)
-  static fromDropData(data: never, options?: Document.DropDataOptions): Promise<unknown>;
+  // data is `never` here because specific documents must override to be accurate
+  static fromDropData(data: never): Promise<unknown>;
 
   /**
    * Create the Document from the given source with migration applied to it.
@@ -417,7 +527,6 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param context - The model construction context passed to {@linkcode Document.fromSource}.
    *                  (default: `context.strict=true`) Strict validation is enabled by default.
    */
-  // context: allowed to be null because spreading a variable with the value `null` into an object is allowed
   static fromImport(source: never, context?: never): Promise<unknown>;
 
   /**
@@ -436,8 +545,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * Transform the Document data to be stored in a Compendium pack.
    * Remove any features of the data which are world-specific.
    * @param pack    - A specific pack being exported to
-   * @param options - Additional options which modify how the document is converted
-   *                  (default: `{}`)
+   * @param options - Additional options which modify how the document is converted (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import
    */
   // options: not null (destructured)
@@ -459,7 +567,6 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
    * @returns A representation of the Document as HTML content, or null if such a representation could not be generated.
    */
-  // options: not null (parameter default only)
   toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
@@ -673,13 +780,17 @@ declare global {
       : SourceData;
 
     /** @internal */
-    type _OnSheetChangeOptions = NullishProps<{
+    interface _OnSheetChangeOptions {
       /** Whether the sheet was originally open and needs to be re-opened. */
       sheetOpen: boolean;
-    }>;
+    }
 
-    interface OnSheetChangeOptions extends _OnSheetChangeOptions {}
+    interface OnSheetChangeOptions extends InexactPartial<_OnSheetChangeOptions> {}
   }
 }
+
+// declare class Foo<out DocumentName extends Document.Type> {
+//   x: Document.Database2.UpdateManyDocumentsOperationForName<DocumentName>;
+// }
 
 export { ClientDocumentMixin as default, InternalClientDocument };

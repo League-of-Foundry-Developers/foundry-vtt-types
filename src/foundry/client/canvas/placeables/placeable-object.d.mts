@@ -11,11 +11,6 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Token, Wall } from "./_module.d.mts";
 import type { ControlIcon } from "#client/canvas/containers/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseUpdateOperation,
-} from "#common/abstract/_types.d.mts";
 import {
   MouseInteractionManager,
   RenderFlagsMixin,
@@ -273,8 +268,8 @@ declare abstract class PlaceableObject<
    */
   // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _onCreate(
-    data: foundry.data.fields.SchemaField.CreateData<CanvasDocument["schema"]["fields"]>,
-    options: Document.Database.CreateOptions<DatabaseCreateOperation>,
+    data: Document.CreateDataForName<CanvasDocument["documentName"]>,
+    options: Document.Database2.OnCreateOptionsForName<CanvasDocument["documentName"]>,
     userId: string,
   ): void;
 
@@ -282,15 +277,18 @@ declare abstract class PlaceableObject<
    * Define additional steps taken when an existing placeable object of this type is updated with new data
    */
   protected _onUpdate(
-    changed: foundry.data.fields.SchemaField.UpdateData<CanvasDocument["schema"]["fields"]>,
-    options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
+    changed: Document.UpdateDataForName<CanvasDocument["documentName"]>,
+    options: Document.Database2.OnUpdateOptionsForName<CanvasDocument["documentName"]>,
     userId: string,
   ): void;
 
   /**
    * Define additional steps taken when an existing placeable object of this type is deleted
    */
-  protected _onDelete(options: Document.Database.DeleteOptions<DatabaseDeleteOperation>, userId: string): void;
+  protected _onDelete(
+    options: Document.Database2.OnDeleteOptionsForName<CanvasDocument["documentName"]>,
+    userId: string,
+  ): void;
 
   /**
    * Assume control over a PlaceableObject, flagging it as controlled and enabling downstream behaviors

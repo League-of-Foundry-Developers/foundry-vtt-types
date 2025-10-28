@@ -1,6 +1,6 @@
-import type { InexactPartial } from "#utils";
+import type { Identity, InexactPartial } from "#utils";
 import type _Collection from "../utils/collection.d.mts";
-import type { DatabaseAction, DatabaseOperation } from "./_types.d.mts";
+import type { DatabaseBackend } from "#common/abstract/_module.d.mts";
 import type Document from "./document.d.mts";
 
 // Fix for "Class 'Collection<ContainedDocument>' defines instance member property 'get',
@@ -22,8 +22,8 @@ declare const Collection: CollectionConstructor;
  * Used for the specific task of containing embedded Document instances within a parent Document.
  */
 declare class EmbeddedCollection<
-  ContainedDocument extends foundry.abstract.Document.Any,
-  ParentDocument extends foundry.abstract.Document.Any,
+  ContainedDocument extends Document.Any,
+  ParentDocument extends Document.Any,
 > extends Collection<ContainedDocument> {
   /**
    * @param name          - The name of this collection in the parent Document.
@@ -36,16 +36,26 @@ declare class EmbeddedCollection<
 
   /**
    * The Document implementation used to construct instances within this collection
+   * @remarks Defined via `Object.defineProperties` during construction with `{ writable: false }`
    */
   readonly documentClass: abstract new (arg0: never, ...args: never) => ContainedDocument;
 
   /**
+   * The Document name of Documents stored in this collection.
+   * @remarks Will probably always be a `string` in practice as it just gets the {@linkcode Document.documentName} from
+   * {@linkcode documentClass}, but it does optional chain.
+   */
+  get documentName(): string | undefined;
+
+  /**
    * The name of this collection in the parent Document.
+   * @remarks Defined via `Object.defineProperties` during construction with `{ writable: false }`
    */
   readonly name: string;
 
   /**
    * The parent DataModel to which this EmbeddedCollection instance belongs.
+   * @remarks Defined via `Object.defineProperties` during construction with `{ writable: false }`
    */
   readonly model: ParentDocument;
 
@@ -57,27 +67,29 @@ declare class EmbeddedCollection<
 
   /**
    * The source data array from which the embedded collection is created
+   * @remarks Foundry explicitly marks this `@public`.
+   *
+   * Defined via `Object.defineProperties` during construction with `{ writable: false }`
    */
-  protected readonly _source: ContainedDocument["_source"][];
+  readonly _source: ContainedDocument["_source"][];
 
   /**
    * Record the set of document ids where the Document was not initialized because of invalid source data
+   * @defaultValue `new Set()`
    */
   invalidDocumentIds: Set<string>;
 
   /**
-   * Instantiate a Document for inclusion in the Collection
+   * This collection's contents grouped by subtype, lazily (re-)computed as needed.
+   * If the document type does not support subtypes, all will be in the "base" group.
    */
-  createDocument(
-    data: ContainedDocument["_source"][],
-    context: Document.ConstructionContext<Document.Any | null>,
-  ): ContainedDocument;
+  get documentsByType(): Record<string, ContainedDocument[]>;
 
   /**
    * Initialize the EmbeddedCollection object by constructing its contained Document instances
    * @param options - Initialization options
    */
-  protected initialize(options: Document.ConstructionContext<ContainedDocument>): void;
+  protected initialize(options: EmbeddedCollection.InitializeOptions): void;
 
   /**
    * Initialize an embedded document and store it in the collection.
@@ -86,8 +98,16 @@ declare class EmbeddedCollection<
    */
   protected _initializeDocument(
     data: ContainedDocument["_source"][],
-    options: Document.ConstructionContext<ContainedDocument>,
+    options: EmbeddedCollection.InitializeDocumentOptions,
   ): void;
+
+  /**
+   * Instantiate a Document for inclusion in the Collection
+   */
+  createDocument(
+    data: Document.CreateDataForName<ContainedDocument["documentName"]>,
+    context: EmbeddedCollection.DocumentConstructionContext,
+  ): ContainedDocument;
 
   /**
    * Log warnings or errors when a Document is found to be invalid.
@@ -95,38 +115,14 @@ declare class EmbeddedCollection<
    * @param err     - The validation error
    * @param options - Options to configure invalid Document handling.
    */
-  _handleInvalidDocument(
-    id: string,
-    err: Error,
-    options: InexactPartial<{
-      /**
-       * Whether to throw an error or only log a warning.
-       */
-      strict: boolean;
-    }>,
-  ): void;
+  _handleInvalidDocument(id: string, err: Error, options: EmbeddedCollection.HandleInvalidDocumentOptions): void;
 
   /**
    * Get a document from the EmbeddedCollection by its ID.
    * @param id      - The ID of the Embedded Document to retrieve.
    * @param options - Additional options to configure retrieval.
    */
-  get(
-    key: string,
-    options?: InexactPartial<{
-      /**
-       * Throw an Error if the requested Embedded Document does not exist.
-       * @defaultValue `false`
-       */
-      strict: false;
-
-      /**
-       * Allow retrieving an invalid Embedded Document.
-       * @defaultValue `false`
-       */
-      invalid: false;
-    }>,
-  ): ContainedDocument | undefined;
+  get(id: string, options?: EmbeddedCollection.GetOptions): ContainedDocument | undefined;
 
   /**
    * Get a document from the EmbeddedCollection by its ID.
@@ -247,10 +243,10 @@ declare class EmbeddedCollection<
    * @internal
    */
   _onModifyContents(
-    action: DatabaseAction,
-    documents: foundry.abstract.Document.Any[],
+    action: DatabaseBackend.DatabaseAction,
+    documents: ContainedDocument[],
     result: unknown,
-    operation: DatabaseOperation,
+    operation: DatabaseBackend.DatabaseOperation,
     user: User.Implementation,
   ): void;
 
@@ -283,6 +279,80 @@ declare class EmbeddedCollection<
       exclude: string[];
     }>,
   ): ContainedDocument[];
+
+  #EmbeddedCollection: true;
+}
+
+declare namespace EmbeddedCollection {
+  interface Any extends AnyEmbeddedCollection {}
+  interface AnyConstructor extends Identity<typeof AnyEmbeddedCollection> {}
+
+  /**
+   * Options for {@linkcode EmbeddedCollection.initialize | EmbeddedCollection#initialize}, which get passed to
+   * {@linkcode EmbeddedCollection._initializeDocument | EmbeddedCollection#_initializeDocument}
+   */
+  interface InitializeOptions extends InitializeDocumentOptions {}
+
+  /**
+   * Options for {@linkcode EmbeddedCollection._initializeDocument | EmbeddedCollection#_initializeDocument}, which get passed to
+   * {@linkcode Document._initialize | Document#_initialize},
+   * {@linkcode EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}, and possibly
+   * {@linkcode EmbeddedCollection._handleInvalidDocument | EmbeddedCollection#_handleInvalidDocument}
+   */
+  interface InitializeDocumentOptions extends DocumentConstructionContext, HandleInvalidDocumentOptions {}
+
+  /**
+   * The context interface for {@linkcode EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}
+   * The omitted properties are defined after spreading the passed context into a new object, overwriting any passed values
+   */
+  interface DocumentConstructionContext
+    extends Omit<Document.ConstructionContext, "parent" | "parentCollection" | "pack"> {}
+
+  interface HandleInvalidDocumentOptions {
+    /**
+     * Whether to throw an error or only log a warning.
+     * @defaultValue `true`
+     */
+    // TODO: strip null when cleaning up DataModel types, this is only required because of a NullishProps somewhere
+    strict?: boolean | null | undefined;
+  }
+
+  /** @internal */
+  type _GetOptions = InexactPartial<{
+    /**
+     * Throw an Error if the requested Embedded Document does not exist.
+     * @defaultValue `false`
+     */
+    strict: boolean;
+
+    /**
+     * Allow retrieving an invalid Embedded Document.
+     * @defaultValue `false`
+     */
+    invalid: boolean;
+  }>;
+
+  interface GetOptions extends _GetOptions {}
+
+  type _SetOptions = InexactPartial<{
+    /**
+     * Whether to modify the collection's source as part of the operation.
+     */
+    modifySource: boolean;
+  }>;
+
+  /**
+   * Options for {@linkcode EmbeddedCollection.set | EmbeddedCollection#set}
+   *
+   * @privateRemarks Foundry collects keys other than `modifySource` as `...options` and passes them on to `this._set`; that method does not
+   * take `options` in `EmbeddedCollection`, but does in {@linkcode foundry.abstract.EmbeddedCollectionDelta | EmbeddedCollectionDelta}.
+   * Since that class also has a `#set` override, the extra property(s) are not included here.
+   */
+  interface SetOptions extends _SetOptions {}
 }
 
 export default EmbeddedCollection;
+
+declare abstract class AnyEmbeddedCollection extends EmbeddedCollection<Document.Any, Document.Any> {
+  constructor(...args: never);
+}

@@ -51,7 +51,7 @@ expectTypeOf(myMacro.folder).toEqualTypeOf<Folder.Stored | null>();
 expectTypeOf(myMacro.isOwner).toEqualTypeOf<boolean>();
 
 // static properties and functions of `ClientDocumentMixin`
-expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro.Stored | null | undefined>>();
+expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro.Stored | null | "ok">>();
 
 // properties of `Document`
 expectTypeOf(myMacro.parent).toEqualTypeOf<null>();
@@ -62,3 +62,15 @@ expectTypeOf(Macro.create({ name: "Some Macro" })).toEqualTypeOf<Promise<Macro.S
 expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
 expectTypeOf(Macro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Implementation[]>>();
 expectTypeOf(Macro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Implementation[]>>();
+
+expectTypeOf(await Macro.createDialog()).toEqualTypeOf<Macro.Stored | "ok" | null>();
+expectTypeOf(await Macro.createDialog({})).toEqualTypeOf<Macro.Stored | "ok" | null>();
+expectTypeOf(await Macro.createDialog({}, {}, { ok: { label: "YEP" } })).toEqualTypeOf<Macro.Stored | "ok" | null>();
+expectTypeOf(await Macro.createDialog({}, { temporary: true })).toEqualTypeOf<Macro.Implementation | "ok" | null>();
+
+expectTypeOf(await myMacro.deleteDialog()).toEqualTypeOf<Macro.Stored | null | false | "yes">();
+expectTypeOf(await myMacro.deleteDialog({})).toEqualTypeOf<Macro.Stored | null | false | "yes">();
+
+expectTypeOf(await myMacro.deleteDialog({ yes: { label: "KILL" } })).toEqualTypeOf<
+  Macro.Stored | null | false | "yes"
+>();

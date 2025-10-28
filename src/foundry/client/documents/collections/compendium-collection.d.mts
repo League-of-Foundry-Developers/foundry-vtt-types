@@ -1,4 +1,4 @@
-import type { DeepPartial, EmptyObject, InexactPartial, PrettifyType, SimpleMerge, UnionToIntersection } from "#utils";
+import type { DeepPartial, EmptyObject, InexactPartial, PrettifyType } from "#utils";
 import type { fields } from "#client/data/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
@@ -467,22 +467,30 @@ declare namespace CompendiumCollection {
     importParents?: boolean | undefined;
   }
 
-  type ImportAllOptions<Type extends CompendiumCollection.DocumentName> = SimpleMerge<
-    UnionToIntersection<Document.Database.CreateOperationForName<Type>>,
-    foundry.documents.abstract.WorldCollection.FromCompendiumOptions
-  > & {
+  /** @internal */
+  interface _ImportAllOptions {
     /**
      * An existing Folder _id to use.
      * @defaultValue `null`
      */
-    folderId?: string | null | undefined;
+    folderId: string | null;
 
     /**
      * A new Folder name to create.
      * @defaultValue `""`
      */
-    folderName?: string | undefined;
-  };
+    folderName: string;
+  }
+
+  /**
+   * The interface for passing to {@linkcode CompendiumCollection.importAll | CompendiumCollection#importAll}.
+   *
+   * @remarks Needs to be a type here because `CreateDocumentsOperationForName` doesn't have statically known keys
+   */
+  type ImportAllOptions<Type extends CompendiumCollection.DocumentName> =
+    foundry.documents.abstract.WorldCollection.FromCompendiumOptions &
+      Document.Database2.CreateDocumentsOperationForName<Type> &
+      InexactPartial<_ImportAllOptions>;
 
   interface DuplicateCompendiumOptions {
     label?: string | undefined;

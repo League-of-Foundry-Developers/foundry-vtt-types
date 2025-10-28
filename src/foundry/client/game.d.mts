@@ -6,6 +6,7 @@ import type { Canvas } from "#client/canvas/_module.d.mts";
 
 import AVMaster = foundry.av.AVMaster;
 import Module = foundry.packages.Module;
+import type ClientDatabaseBackend from "#client/data/client-backend.mjs";
 
 // Must be called with all hooks in a union.
 // Do not increase the complexity of this type. If you do Game related types may get complex enough to complain about not being statically known.
@@ -372,7 +373,7 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * Scopes are returned in the prioritization order that their content is loaded.
    * @returns An array of string package scopes
    */
-  getPackageScopes(): string[];
+  getPackageScopes(): ClientDatabaseBackend.FlagScopes[];
 
   /**
    * Initialize the Game for the current window location

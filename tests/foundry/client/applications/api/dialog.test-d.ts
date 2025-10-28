@@ -21,6 +21,14 @@ expectTypeOf(
     },
   }),
 ).toEqualTypeOf<false | number | null>();
+expectTypeOf(
+  await DialogV2.confirm({
+    yes: { callback: () => undefined },
+    no: { callback: async () => null },
+    buttons: [{ action: "foo", label: "Foo" }],
+    rejectClose: true,
+  }),
+).toEqualTypeOf<"yes" | "no" | "foo">();
 
 const distributivityTest = await DialogV2.confirm(
   Math.random() > 0.5 ? { yes: { callback: numberCallback } } : { window: {} },

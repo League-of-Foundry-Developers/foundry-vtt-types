@@ -1,4 +1,10 @@
+import type { InexactPartial } from "#utils";
 import type Document from "./document.d.mts";
+import type { DatabaseBackend } from "#common/abstract/_module.d.mts";
+
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 
 // A series of types used by the DatabaseBackend.
 // The operation object is picked apart and restructured several times within the DatabaseBackend and ClientDatabaseBackend methods
@@ -59,15 +65,69 @@ export interface DatabaseGetOperation<Parent extends Document.Any | null = Docum
   parentUuid?: string | undefined;
 }
 
-export interface DatabaseCreateOperation<
-  CreateData extends object | null | undefined = object | null | undefined,
-  Parent extends Document.Any | null = Document.Any | null,
-  Temporary extends boolean | undefined = boolean | undefined,
-> extends _Parent<Parent> {
+/** @internal */
+type _DatabaseCreateOperation<Temporary extends boolean | undefined = boolean | undefined> = InexactPartial<{
   /**
    * Whether the database operation is broadcast to other connected clients
+   * @remarks Behaves as if the default is `true`
+   * @privateRemarks Despite this being marked required in core's typedef, it is only ever set (to `false`) in the server-side
+   * `FogExploration._onXOperation` methods
    */
-  broadcast?: boolean | undefined;
+  broadcast: boolean;
+
+  /**
+   * Retain the `_id` values of provided data instead of generating new ids
+   */
+  keepId: boolean;
+
+  /**
+   * Retain the `_id` values of embedded document data instead of generating new ids for each embedded document
+   */
+  keepEmbeddedIds: boolean;
+
+  /**
+   * A parent Document UUID provided when the parent instance is unavailable
+   */
+  parentUuid: string | null;
+
+  /**
+   * Block the dispatch of hooks related to this operation
+   */
+  noHook: boolean;
+
+  /**
+   * A compendium collection ID which contains the Documents
+   */
+  pack: string | null;
+
+  /**
+   * @deprecated "It is no longer supported to create temporary documents using the {@linkcode Document.createDocuments}
+   * API. Use the `new Document()` constructor instead." (since v12, until v14)
+   */
+  temporary: Temporary;
+}>;
+
+/**
+ * @remarks This interface is typed such that it's accurate for the point where the most properties are guaranteed by core to exist
+ * (after `DatabaseBackend##configureCreate` and `##configureOperation`, before {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments})
+ */
+export interface DatabaseCreateOperation<
+  CreateData extends object = object,
+  Parent extends Document.Any | null = Document.Any | null,
+  Temporary extends boolean | undefined = boolean | undefined,
+> extends _DatabaseCreateOperation<Temporary> {
+  /**
+   * A parent Document within which Documents are embedded
+   * @remarks Passing either this property or {@linkcode parentUuid} is required for {@link Document.EmbeddedType | obligately embedded documents}.
+   * `parentUuid` takes precedence.
+   */
+  parent: Parent;
+
+  /**
+   * The action of this database operation
+   * @remarks Added to the operation object in `DatabaseBackend##configureCreate`
+   */
+  action: "create";
 
   /**
    * An array of data objects from which to create Documents
@@ -75,71 +135,27 @@ export interface DatabaseCreateOperation<
   data: CreateData[];
 
   /**
-   * Retain the _id values of provided data instead of generating new ids
-   */
-  keepId?: boolean | undefined;
-
-  /**
-   * Retain the _id values of embedded document data instead of generating
-   *    new ids for each embedded document
-   */
-  keepEmbeddedIds?: boolean | undefined;
-
-  /**
    * The timestamp when the operation was performed
-   * @remarks Set in DatabaseBackend##configureOperation
+   * @remarks Set in `DatabaseBackend##configureOperation`, overwriting anything passed. Omitted from the passable
+   * types (see {@linkcode Document.Database2.CreateDocumentsOperation})
    */
   modifiedTime: number;
 
   /**
-   * Block the dispatch of hooks related to this operation
-   */
-  noHook?: boolean | undefined;
-
-  /**
    * Re-render Applications whose display depends on the created Documents
    * @defaultValue `true`
+   * @remarks This is marked required here as it's guaranteed to be set before the operation hits {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments}.
+   * Not omitted from passable types as it's set with `??=`, not `=`.
    */
   render: boolean;
 
   /**
    * Render the sheet Application for any created Documents
    * @defaultValue `false`
+   * @remarks This is marked required here as it's guaranteed to be set before the operation hits {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments}.
+   * Not omitted from passable types as it's set with `??=`, not `=`.
    */
   renderSheet: boolean;
-
-  /**
-   * A compendium collection ID which contains the Documents
-   */
-  pack?: string | null | undefined;
-
-  /**
-   * A parent Document UUID provided when the parent instance is unavailable
-   */
-  parentUuid?: string | undefined;
-
-  /** @privateRemarks these are added from WorldCollection.importFromCompendium() */
-  fromCompendium?: boolean | undefined;
-
-  /**
-   * Clear the currently assigned folder
-   */
-  clearFolder?: boolean | null | undefined;
-
-  /**
-   * Clear the current sort order
-   */
-  clearSort?: boolean | null | undefined;
-
-  /**
-   * Clear Document ownership
-   */
-  clearOwnership?: boolean | null | undefined;
-
-  /**
-   * @deprecated `"It is no longer supported to create temporary documents using the Document.createDocuments API. Use the new Document() constructor instead."`
-   */
-  temporary?: Temporary | undefined;
 }
 
 export interface DatabaseUpdateOperation<
@@ -245,17 +261,16 @@ export interface DatabaseDeleteOperation<Parent extends Document.Any | null = Do
   parentUuid?: string | null;
 }
 
-export interface DatabaseOperationMap {
-  get: DatabaseGetOperation;
-  create: DatabaseCreateOperation;
-  update: DatabaseUpdateOperation;
-  delete: DatabaseDeleteOperation;
-}
+/** @deprecated Use {@linkcode DatabaseBackend.DatabaseOperationMap} instead. This type will cease being exported in v14. */
+export type DatabaseOperationMap = DatabaseBackend.DatabaseOperationMap;
 
-export type DatabaseAction = keyof DatabaseOperationMap;
-export type DatabaseOperation = DatabaseOperationMap[keyof DatabaseOperationMap];
+/** @deprecated Use {@linkcode DatabaseBackend.DatabaseAction} instead. This type will cease being exported in v14. */
+export type DatabaseAction = DatabaseBackend.DatabaseAction;
 
-export interface DocumentSocketRequest<Action extends DatabaseAction> {
+/** @deprecated Use {@linkcode DatabaseBackend.DatabaseAction} instead. This type will cease being exported in v14. */
+export type DatabaseOperation = DatabaseBackend.DatabaseOperation;
+
+export interface DocumentSocketRequest<Action extends DatabaseBackend.DatabaseAction> {
   /**
    * The type of Document being transacted
    */
@@ -269,7 +284,7 @@ export interface DocumentSocketRequest<Action extends DatabaseAction> {
   /**
    * Operation parameters for the request
    */
-  operation: DatabaseOperationMap[Action];
+  operation: DatabaseBackend.DatabaseOperationMap[Action];
 
   /**
    * The id of the requesting User

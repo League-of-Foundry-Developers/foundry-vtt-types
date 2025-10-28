@@ -1,6 +1,8 @@
 import type { AnyObject, DeepPartial, InexactPartial, GetKey } from "#utils";
-import type { DatabaseAction, DatabaseOperationMap, DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
-import type Document from "#common/abstract/document.d.mts";
+import type { DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
+/** @privateRemarks `DatabaseBackend` is only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
 import type Application from "#client/appv1/api/application-v1.d.mts";
 import type ApplicationV2 from "#client/applications/api/application.d.mts";
 
@@ -137,12 +139,15 @@ declare class DocumentCollection<
    * @param result    - The result of the database operation
    * @param operation - Database operation details
    * @param user      - The User who performed the operation
+   *
+   * @remarks Foundry types `action` as {@linkcode DatabaseBackend.DatabaseAction} but no path exists from a `get` operation to calling
+   * this method.
    */
-  _onModifyContents<A extends DatabaseAction>(
-    action: A,
+  _onModifyContents<Action extends Document.Database2.OperationAction>(
+    action: Action,
     documents: Document.StoredForName<DocumentType>[],
     result: readonly AnyObject[] | readonly string[],
-    operation: DatabaseOperationMap[A],
+    operation: DocumentCollection.OnOperationForActionAndName<Action, DocumentType>,
     user: User.Implementation,
   ): void;
 }
@@ -156,6 +161,14 @@ declare namespace DocumentCollection {
       options?: Options,
     ): DocumentCollection.GetReturnType<T, Options>;
   }
+
+  type OnOperationForActionAndName<
+    OpType extends Document.Database2.OperationAction,
+    DocumentName extends Document.Type,
+  > =
+    | (OpType extends "create" ? Document.Database2.OnCreateOperationForName<DocumentName> : never)
+    | (OpType extends "update" ? Document.Database2.OnUpdateOperationForName<DocumentName> : never)
+    | (OpType extends "delete" ? Document.Database2.OnDeleteOperationForName<DocumentName> : never);
 
   namespace RenderContext {
     interface Base<T extends Document.Type> {

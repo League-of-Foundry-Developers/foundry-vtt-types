@@ -1282,8 +1282,8 @@ declare global {
      * @remarks The name for this hook is dynamically created by joining "control" and the type name of the
      * PlaceableObject.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link PlaceableObject.control | `PlaceableObject#control`}
-     * @see {@link PlaceableObject.release | `PlaceableObject#release`}
+     * @see {@linkcode PlaceableObject.control | PlaceableObject#control}
+     * @see {@linkcode PlaceableObject.release | PlaceableObject#release}
      */
     type ControlObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (object: P, controlled: boolean) => void;
 
@@ -1296,8 +1296,8 @@ declare global {
      * @template P   - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining "hover" and the type name of the PlaceableObject.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link PlaceableObject._onHoverIn | `PlaceableObject#_onHoverIn`}
-     * @see {@link PlaceableObject._onHoverOut | `PlaceableObject#_onHoverOut`}
+     * @see {@linkcode PlaceableObject._onHoverIn | PlaceableObject#_onHoverIn}
+     * @see {@linkcode PlaceableObject._onHoverOut | PlaceableObject#_onHoverOut}
      */
     type HoverObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (object: P, hover: boolean) => void;
 
@@ -1319,13 +1319,11 @@ declare global {
      * @returns Explicitly return false to prevent creation of this Document
      * @remarks The name for this hook is dynamically created by joining "preCreate" with the name of the Document.
      * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@link ClientDatabaseBackend._preCreateDocumentArray | `ClientDatabaseBackend#_preCreateDocumentArray`}
-     * @see {@link TokenDocument._preUpdateTokenActor | `TokenDocument#_preUpdateTokenActor`}
      */
     type PreCreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       data: Document.CreateDataForName<D["documentName"]>,
-      options: Document.Database.PreCreateOptionsFor<D["documentName"]>,
+      options: Document.Database2.PreCreateOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1340,12 +1338,10 @@ declare global {
      * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "create" and the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link ClientDatabaseBackend._postCreateDocumentCallbacks | `ClientDatabaseBackend#_postCreateDocumentCallbacks`}
-     * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
      */
     type CreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.CreateOptionsFor<D["documentName"]>,
+      options: Document.Database2.OnCreateOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1365,13 +1361,11 @@ declare global {
      * @returns Explicitly return false to prevent update of this Document
      * @remarks The name for this hook is dynamically created by joining "preUpdate" with the type name of the Document.
      * @remarks This is called {@linkcode Hooks.call}.
-     * @see {@link ClientDatabaseBackend._preUpdateDocumentArray | `ClientDatabaseBackend#_preUpdateDocumentArray`}
-     * @see {@link TokenDocument._preUpdateTokenActor | `TokenDocument#_preUpdateTokenActor`}
      */
     type PreUpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       changed: Document.UpdateDataForName<D["documentName"]>,
-      options: Document.Database.PreUpdateOptionsFor<D["documentName"]>,
+      options: Document.Database2.PreUpdateOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1387,13 +1381,11 @@ declare global {
      * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "update" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link ClientDatabaseBackend._postUpdateDocumentCallbacks | `ClientDatabaseBackend#_postUpdateDocumentCallbacks`}
-     * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
      */
     type UpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       change: Document.UpdateDataForName<D["documentName"]>,
-      options: Document.Database.UpdateOptionsFor<D["documentName"]>,
+      options: Document.Database2.OnUpdateOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1412,12 +1404,10 @@ declare global {
      * @returns Explicitly return false to prevent deletion of this Document
      * @remarks The name for this hook is dynamically created by joining "preDelete" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@link ClientDatabaseBackend._preDeleteDocumentArray | `ClientDatabaseBackend#_preDeleteDocumentArray`}.
-     * @see {@link TokenDocument._preUpdateTokenActor | `TokenDocument#_preUpdateTokenActor`}
      */
     type PreDeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.PreDeleteOptionsFor<D["documentName"]>,
+      options: Document.Database2.PreDeleteOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1432,12 +1422,10 @@ declare global {
      * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "delete" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link ClientDatabaseBackend._postDeleteDocumentCallbacks | `ClientDatabaseBackend#_postDeleteDocumentCallbacks`}
-     * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
      */
     type DeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.DeleteOptionsFor<D["documentName"]>,
+      options: Document.Database2.OnDeleteOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 

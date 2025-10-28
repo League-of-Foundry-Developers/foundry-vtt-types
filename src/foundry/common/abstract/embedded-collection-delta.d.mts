@@ -21,7 +21,7 @@ export default class EmbeddedCollectionDelta<
   get syntheticCollection(): EmbeddedCollection<ContainedDocument, ParentDataModel>;
 
   override createDocument(
-    data: ContainedDocument["_source"][],
+    data: Document.CreateDataForName<ContainedDocument["documentName"]>,
     context: Document.ConstructionContext<Document.Any | null>,
   ): ContainedDocument;
 

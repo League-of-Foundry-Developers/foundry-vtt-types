@@ -1,4 +1,4 @@
-import type { Identity } from "#utils";
+import type { AnyFunction, Identity } from "#utils";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
 
@@ -35,7 +35,13 @@ declare namespace FolderConfig {
 
   interface Configuration
     extends HandlebarsApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<Folder.Implementation> {}
+      DocumentSheetV2.Configuration<Folder.Implementation> {
+    /**
+     * @deprecated This property should exist on this interface but due to a core bug
+     * ({@link https://github.com/foundryvtt/foundryvtt/issues/13545}), this is currently ignored.
+     */
+    resolve: AnyFunction;
+  }
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
 }

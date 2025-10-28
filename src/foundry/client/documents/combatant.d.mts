@@ -1,9 +1,18 @@
 import type { ConfiguredCombatant } from "#configuration";
-import type { Identity, InexactPartial, Merge } from "#utils";
+import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
+import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseCombatant from "#common/documents/combatant.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 import fields = foundry.data.fields;
 
@@ -24,14 +33,15 @@ declare namespace Combatant {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Combatant` document instance configured through `CONFIG.Combatant.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`} in fvtt-types.
+   * The implementation of the `Combatant` document instance configured through
+   * {@linkcode CONFIG.Combatant.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredCombatant | fvtt-types/configuration/ConfiguredCombatant} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Combatant` document configured through `CONFIG.Combatant.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Combatant` document configured through
+   * {@linkcode CONFIG.Combatant.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -166,7 +176,8 @@ declare namespace Combatant {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -192,52 +203,76 @@ declare namespace Combatant {
   type Stored<SubType extends Combatant.SubType = Combatant.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link Combatant._source | `Combatant#_source`}. This data is what was
+   * The data put in {@linkcode Combatant._source | Combatant#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Combatant.create}
-   * and {@link Combatant | `new Combatant(...)`}.
+   * and {@linkcode Combatant | new Combatant(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Combatant.name | `Combatant#name`}.
+   * Used in the {@linkcode Combatant.create} and {@linkcode Combatant.createDocuments} signatures, and
+   * {@linkcode Combatant.Database2.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Combatant.create}, returning (a single | an array of) (temporary | stored)
+   * `Combatant`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<Combatant.TemporaryIf<Temporary>>
+      : Combatant.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode Combatant.name | Combatant#name}.
    *
    * This is data transformed from {@linkcode Combatant.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Combatant.update | `Combatant#update`}.
-   * It is a distinct type from {@link Combatant.CreateData | `DeepPartial<Combatant.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Combatant.update | Combatant#update}.
+   * It is a distinct type from {@linkcode Combatant.CreateData | DeepPartial<Combatant.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode Combatant.update | Combatant#update} and
+   * {@linkcode Combatant.updateDocuments} signatures, and {@linkcode Combatant.Database2.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode Combatant}. This is the source of truth for how an Combatant document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Combatant}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-
   interface Schema extends DataSchema {
     /**
      * The _id which uniquely identifies this Combatant embedded document
@@ -311,6 +346,587 @@ declare namespace Combatant {
     _stats: fields.DocumentStatsField;
   }
 
+  namespace Database2 {
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `Combatant` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
+     */
+    interface GetOperation extends DatabaseBackend.GetOperation<Combatant.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Combatant.get}.
+     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     */
+    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Combatant` documents.
+     * @see {@linkcode Document.Database2.BackendGetOperation}
+     */
+    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `Combatant` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Combatant.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
+     */
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends DatabaseBackend.CreateOperation<Combatant.CreateInput, Combatant.Parent, Temporary> {}
+
+    /**
+     * The interface for passing to {@linkcode Combatant.create} or {@linkcode Combatant.createDocuments}.
+     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `Combatant` documents. (see {@linkcode Combatant.Parent})
+     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Combatant` documents.
+     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Combatant._preCreate | Combatant#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateCombatant` hook}.
+     * @see {@linkcode Document.Database2.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Combatant._preCreateOperation}.
+     * @see {@linkcode Document.Database2.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Combatant._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Combatant._onCreate | Combatant#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createCombatant` hook}.
+     * @see {@linkcode Document.Database2.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Combatant._onCreateOperation} and `Combatant`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database2.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `Combatant` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Combatant.update | Combatant#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Combatant.UpdateInput, Combatant.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Combatant.update | Combatant#update}.
+     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `Combatant` documents (see {@linkcode Combatant.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode Combatant.updateDocuments}.
+     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Combatant` documents.
+     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Combatant._preUpdate | Combatant#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateCombatant` hook}.
+     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Combatant._preUpdateOperation}.
+     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Combatant._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Combatant._onUpdate | Combatant#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateCombatant` hook}.
+     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Combatant._onUpdateOperation} and `Combatant`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `Combatant` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Combatant.delete | Combatant#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<Combatant.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Combatant.delete | Combatant#delete}.
+     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `Combatant` documents (see {@linkcode Combatant.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode Combatant.deleteDocuments}.
+     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Combatant` documents.
+     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Combatant._preDelete | Combatant#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteCombatant` hook}.
+     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Combatant._preDeleteOperation}.
+     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Combatant._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Combatant._onDelete | Combatant#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteCombatant` hook}.
+     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Combatant._onDeleteOperation} and `Combatant`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: Combatant.Database2.GetDocumentsOperation;
+        BackendGetOperation: Combatant.Database2.BackendGetOperation;
+        GetOperation: Combatant.Database2.GetOperation;
+
+        CreateDocumentsOperation: Combatant.Database2.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: Combatant.Database2.CreateEmbeddedOperation;
+        BackendCreateOperation: Combatant.Database2.BackendCreateOperation<Temporary>;
+        CreateOperation: Combatant.Database2.CreateOperation<Temporary>;
+        PreCreateOptions: Combatant.Database2.PreCreateOptions<Temporary>;
+        PreCreateOperation: Combatant.Database2.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: Combatant.Database2.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: Combatant.Database2.OnCreateOptions;
+        OnCreateOperation: Combatant.Database2.OnCreateOperation;
+
+        UpdateOneDocumentOperation: Combatant.Database2.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: Combatant.Database2.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Combatant.Database2.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Combatant.Database2.BackendUpdateOperation;
+        UpdateOperation: Combatant.Database2.UpdateOperation;
+        PreUpdateOptions: Combatant.Database2.PreUpdateOptions;
+        PreUpdateOperation: Combatant.Database2.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: Combatant.Database2.OnUpdateDocumentsOperation;
+        OnUpdateOptions: Combatant.Database2.OnUpdateOptions;
+        OnUpdateOperation: Combatant.Database2.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: Combatant.Database2.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: Combatant.Database2.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Combatant.Database2.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Combatant.Database2.BackendDeleteOperation;
+        DeleteOperation: Combatant.Database2.DeleteOperation;
+        PreDeleteOptions: Combatant.Database2.PreDeleteOptions;
+        PreDeleteOperation: Combatant.Database2.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: Combatant.Database2.OnDeleteDocumentsOperation;
+        OnDeleteOptions: Combatant.Database2.OnDeleteOptions;
+        OnDeleteOperation: Combatant.Database2.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
+  }
+
+  /**
+   * If `Temporary` is true then {@linkcode Combatant.Implementation}, otherwise {@linkcode Combatant.Stored}.
+   */
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Combatant.Implementation : Combatant.Stored;
+
   namespace Database {
     /** Options passed along in Get operations for Combatants */
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Combatant.Parent> {}
@@ -336,7 +952,7 @@ declare namespace Combatant {
 
     /** Operation for {@linkcode Combatant.createDocuments} */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Combatant.Database.Create<Temporary>> {}
+      extends Document.Database.CreateDocumentsOperation<Combatant.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode Combatant.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Combatant.Database.Update> {}
@@ -346,7 +962,7 @@ declare namespace Combatant {
 
     /** Operation for {@linkcode Combatant.create} */
     interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Combatant.Database.Create<Temporary>> {}
+      extends Document.Database.CreateDocumentsOperation<Combatant.Database.Create<Temporary>> {}
 
     /** Operation for {@link Combatant.update | `Combatant#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -426,13 +1042,6 @@ declare namespace Combatant {
   }
 
   /**
-   * If `Temporary` is true then `Combatant.Implementation`, otherwise `Combatant.Stored`.
-   */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Combatant.Implementation
-    : Combatant.Stored;
-
-  /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
   interface Flags extends Document.Internal.ConfiguredFlagsForName<Name> {}
@@ -454,28 +1063,85 @@ declare namespace Combatant {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
+  /** The interface {@linkcode Combatant.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Combatant.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode Combatant.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode Combatant.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Combatant.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database2.CreateDocumentsOperation<Temporary>,
+      Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Combatant.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
+   * The return type for {@linkcode Combatant.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Combatant.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Combatant.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Combatant.deleteDialog | Combatant#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Combatant.Stored,
+    PassedConfig
+  >;
+
+  /* ***********************************************
+   *          COMBATANT-SPECIFIC TYPES             *
+   *************************************************/
+
+  /**
    * @remarks
-   * This is typed based on what is reasonable to expect, rather than accurately, as accurately would mean `unknown` (Foundry's type is `object|null`).
+   * This is typed based on what is reasonable to expect, rather than accurately, as accurately would mean `unknown` (Foundry's type is
+   * `object|null`).
    *
-   * Technically this is the value of an arbitrary property path in the Combatant's Actor's `system` (using `getProperty`), and while that path can usually be
-   * assumed to have been set to something in the return of {@linkcode TokenDocument.getTrackedAttributes}, since that's what the {@linkcode CombatTrackerConfig}
-   * provides as options, the path is stored in the {@linkcode Combat.CONFIG_SETTING} which could be updated to be anything. Also, `TokenDocument.getTrackedAttributes`
-   * doesn't actually check what the type of `value` and `max` are for bar type attributes, so even sticking to those choices isn't guaranteed safe.
+   * Technically this is the value of an arbitrary property path in the Combatant's Actor's `system` (using `getProperty`), and while that
+   * path can usually be assumed to have been set to something in the return of {@linkcode TokenDocument.getTrackedAttributes}, since that's
+   * what the {@linkcode CombatTrackerConfig} provides as options, the path is stored in the {@linkcode Combat.CONFIG_SETTING} which could
+   * be updated to be anything. Also, `TokenDocument.getTrackedAttributes` doesn't actually check what the type of `value` and `max` are for
+   * bar type attributes, so even sticking to those choices isn't guaranteed safe.
    *
-   * There's clear intent that the value *should* be numeric or null, but nothing seems to do math on it in core, and it's simply output in the {@linkcode CombatEncounters}
-   * template as `{{resource}}`, so `string` has been allowed.
+   * There's clear intent that the value *should* be numeric or null, but nothing seems to do math on it in core, and it's simply output in
+   * the {@linkcode CombatEncounters} template as `{{resource}}`, so `string` has been allowed.
    *
-   * @privateRemarks Adding `boolean` is something that was discussed and decided against for now, but its plausible a system may request such in the future, and wouldn't
-   * make us any more wrong than currently.
+   * @privateRemarks Adding `boolean` is something that was discussed and decided against for now, but its plausible a system may request
+   * such in the future, and wouldn't make us any more wrong than currently.
    */
   type Resource = string | number | null;
 
@@ -606,25 +1272,51 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
 
   // Descendant Document operations have been left out because Combatant does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
-  static override defaultName(context: Combatant.DefaultNameContext): string;
+  static override defaultName(context?: Combatant.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
-    data: Combatant.CreateDialogData | undefined,
-    createOptions: Combatant.Database.DialogCreateOptions,
-    options?: Combatant.CreateDialogOptions,
-  ): Promise<Combatant.Stored | null | undefined>;
+  static override createDialog<
+    Temporary extends boolean | undefined = boolean | undefined,
+    Options extends Combatant.CreateDialogOptions | undefined = undefined,
+  >(
+    data?: Combatant.CreateDialogData,
+    createOptions?: Combatant.Database2.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Combatant.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Combatant">,
-  ): Promise<this | false | null | undefined>;
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Combatant.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = boolean | undefined,
+    Options extends Combatant.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Combatant.CreateDialogData,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    createOptions: Combatant.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Combatant.CreateDialogReturn<Temporary, Options>>;
 
-  static override fromDropData(
-    data: Combatant.DropData,
-    options?: Combatant.DropDataOptions,
-  ): Promise<Combatant.Implementation | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Combatant.Database2.DeleteOneDocumentOperation,
+  ): Promise<Combatant.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Combatant.Database2.DeleteOneDocumentOperation,
+  ): Promise<Combatant.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Combatant.DropData): Promise<Combatant.Implementation | undefined>;
 
   static override fromImport(
     source: Combatant.Source,

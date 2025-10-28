@@ -1,6 +1,5 @@
 import type { DeepPartial, GetKey, Identity, InexactPartial } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
-import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
 import type { AbstractSidebarTab, DocumentDirectory } from "#client/applications/sidebar/_module.mjs";
 
 import DocumentSheet = foundry.appv1.api.DocumentSheet;
@@ -47,35 +46,28 @@ declare abstract class WorldCollection<
    * Import a Document from a Compendium collection, adding it to the current World.
    * @param pack       - The CompendiumCollection instance from which to import
    * @param id         - The ID of the compendium entry to import
-   * @param updateData - Optional additional data used to modify the imported Document before it is created
-   *                     (default: `{}`)
-   * @param options    - Optional arguments passed to the {@linkcode WorldCollection.fromCompendium} and {@linkcode Document.create} methods
-   *                     (default: `{}`)
+   * @param updateData - Optional additional data used to modify the imported Document before it is created (default: `{}`)
+   * @param options    - Optional arguments passed to the {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium} and {@linkcode Document.create} methods (default: `{}`)
    * @returns The imported Document instance
+   * @remarks The `updateData` parameter is {@linkcode foundry.utils.mergeObject | merged} with the return of `WorldCollection#fromCompendium`
+   *
+   * As noted in the parameter description, `options` is passed to both methods without alteration, and thus is typed as an intersection of the relevant interfaces.
+   *
+   * The returned document might not be stored if `temporary: true` is passed in `options`
+   * TODO: Change return type to Document.Stored in v14
+   * TODO: Infer Document subtype from `updateData` if possible
    */
-
-  /**
-   * @privateRemarks We've added everything in WorldCollection.FromCompendiumOptions to DatabaseCreateOperation
-   * because they get passed through to Document.create() by this function.  So the
-   * union type isn't really needed.  Leaving it because it feels like foundry will pull
-   * those back out in the future (and we could miss it because we added them to
-   * DatabaseCreateOperation but the foundry typedef doesn't have them).
-   */
-  importFromCompendium(
+  importFromCompendium<Temporary extends boolean | undefined = boolean | undefined>(
     pack: WorldCollection.Pack<DocumentName>,
     id: string,
-    // The name `updateData` is a misnomer. It's merged with the create data.
     updateData?: DeepPartial<Document.CreateDataForName<DocumentName>>,
-    options?: InexactPartial<
-      Document.Database.CreateOperation<DatabaseCreateOperation> & WorldCollection.FromCompendiumOptions
-    >,
-  ): Promise<Document.StoredForName<DocumentName>>;
+    options?: WorldCollection.ImportFromCompendiumOptions<DocumentName, Temporary>,
+  ): Promise<Document.TemporaryIf<Document.ImplementationFor<DocumentName>, Temporary>>;
 
   /**
    * Apply data transformations when importing a Document from a Compendium pack
    * @param document - The source Document, or a plain data object
-   * @param options  - Additional options which modify how the document is imported
-   *                   (default: `{}`)
+   * @param options  - Additional options which modify how the document is imported (default: `{}`)
    * @returns The processed data ready for world Document creation
    * @remarks FromCompendiumOptions is inflated to account for expanded downstream use
    */
@@ -142,45 +134,66 @@ declare namespace WorldCollection {
           | undefined
           | null;
 
-  interface FromCompendiumOptions {
+  /** @internal */
+  type _FromCompendiumOptions = InexactPartial<{
     /**
-     * Clear the currently assigned folder
+     * Clear the currently assigned folder.
      * @defaultValue `false`
      */
-    clearFolder?: boolean | undefined;
+    clearFolder: boolean;
 
     /**
-     * Clear the currently sort order
+     * Clear the currently sort order.
+     * @defaultValue `true`
+     * @remarks Also sets `data.navigation = false` and deletes `navOrder` when passed to
+     * {@linkcode foundry.documents.collections.Scenes.fromCompendium | Scenes#fromCompendium}
+     */
+    clearSort: boolean;
+
+    /**
+     * Clear Document ownership (recursive).
      * @defaultValue `true`
      */
-    clearSort?: boolean | undefined;
+    clearOwnership: boolean;
 
     /**
-     * Clear Document ownership
-     * @defaultValue `true`
-     */
-    clearOwnership?: boolean | undefined;
-
-    /**
-     * Retain the Document ID from the source Compendium
+     * Retain the Document ID from the source Compendium.
      * @defaultValue `false`
      */
-    keepId?: boolean | undefined;
+    keepId: boolean;
 
-    /** @remarks used by Scenes#fromCompendium */
-    clearState?: boolean | undefined;
-  }
+    /**
+     * Clear fields which store Document state.
+     * @defaultValue `true`
+     */
+    clearState: boolean;
+  }>;
 
+  interface FromCompendiumOptions extends _FromCompendiumOptions {}
+
+  // TODO: Ownership is removed recursively
+  // TODO: why are both the `keepId` branches `never`
   type FromCompendiumReturnType<
     DocumentType extends Document.WorldType,
     Options extends FromCompendiumOptions | undefined,
   > = Omit<
     Document.SourceForName<DocumentType>,
     | ClientDocument._OmitProperty<GetKey<Options, "clearFolder", undefined>, false, "folder">
-    | ClientDocument._OmitProperty<GetKey<Options, "clearSort", undefined>, true, "sort" | "navigation" | "navOrder">
+    | ClientDocument._OmitProperty<GetKey<Options, "clearSort", undefined>, true, "sort" | "navOrder">
     | ClientDocument._OmitProperty<GetKey<Options, "clearOwnership", undefined>, true, "ownership">
+    | ClientDocument._OmitProperty<GetKey<Options, "clearState", undefined>, true, "active">
     | (GetKey<Options, "keepId", undefined> extends true ? never : never)
   >;
+
+  /**
+   * @remarks {@linkcode WorldCollection.importFromCompendium | WorldCollection#importFromCompendium} passes the same options object
+   * to both {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium} and {@linkcode Document.create}.
+   */
+  type ImportFromCompendiumOptions<
+    DocumentName extends Document.WorldType,
+    Temporary extends boolean | undefined = boolean | undefined,
+  > = Document.Database2.CreateDocumentsOperation<Document.Database2.CreateOperationForName<DocumentName, Temporary>> &
+    FromCompendiumOptions;
 
   type Pack<DocumentName extends Document.WorldType> =
     DocumentName extends foundry.documents.collections.CompendiumCollection.DocumentName

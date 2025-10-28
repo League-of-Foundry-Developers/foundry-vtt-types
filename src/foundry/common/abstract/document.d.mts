@@ -25,8 +25,10 @@ import type {
   AllKeysOf,
   Override,
   ConcreteKeys,
+  IntentionalPartial,
+  MaybeArray,
+  Coalesce,
 } from "#utils";
-import type * as CONST from "../constants.mts";
 import type {
   DataSchema,
   DataField,
@@ -36,19 +38,29 @@ import type {
   SchemaField,
   TypeDataField,
 } from "../data/fields.d.mts";
+import type { FormSelectOption } from "#client/applications/forms/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
-  DatabaseAction,
   DatabaseCreateOperation,
   DatabaseDeleteOperation,
   DatabaseGetOperation,
   DatabaseUpdateOperation,
   DocumentSocketRequest,
 } from "./_types.d.mts";
+import type { DatabaseBackend } from "#common/abstract/_module.d.mts";
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { SystemConfig } from "#configuration";
+
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin, DocumentCollection } from "#client/documents/abstract/_module.d.mts";
 
 export default Document;
 
@@ -57,6 +69,12 @@ type InexactPartialExcept<T extends object, RequiredKey> = {
 } & {
   [K in keyof T as Exclude<K, RequiredKey>]?: T[K] | undefined;
 };
+
+// type IntentionalPartialExcept<T extends object, RequiredKey> = {
+//   [K in keyof T as Extract<K, RequiredKey>]: T[K];
+// } & {
+//   [K in keyof T as Exclude<K, RequiredKey>]?: T[K];
+// };
 
 type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
 type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
@@ -104,16 +122,21 @@ declare abstract class Document<
 
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`
    */
   readonly parentCollection: Document.MetadataFor<DocumentName>["collection"] | null;
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`
    */
+  // TODO: Actually a getter, consider converting
+  // TODO: either way, propagate valid values to template (e.g `string` in `BaseAdventure`, `null` in `BaseChatMessage`)
   readonly pack: string | null;
 
   /**
    * A mapping of embedded Document collections which exist in this model.
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`
    */
   readonly collections: Document.CollectionRecord<Schema>;
 
@@ -197,6 +220,7 @@ declare abstract class Document<
 
   /**
    * Does this Document support additional subtypes?
+   * @remarks For all existing documents (as of 13.350), `Doc.metadata.hasTypeData` is either omitted or is `true`
    */
   static get hasTypeData(): undefined | true;
 
@@ -249,7 +273,7 @@ declare abstract class Document<
   static canUserCreate(user: User.Implementation): boolean;
 
   /**
-   * Get the explicit permission level that a User has over this Document, a value in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}.
+   * Get the explicit permission level that a User has over this Document, a value in {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}.
    * Compendium content ignores the ownership field in favor of User role-based ownership. Otherwise, Documents use
    * granular per-User ownership definitions and Embedded Documents defer to their parent ownership.
    *
@@ -267,13 +291,12 @@ declare abstract class Document<
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
    * @param user       - The User being tested
-   * @param permission - The permission level from DOCUMENT_PERMISSION_LEVELS to test
+   * @param permission - The permission level from {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS} to test
    * @param options    - Additional options involved in the permission test
    * @returns Does the user have this permission level over the Document?
    *
    * @privateRemarks Making this just `User.Implementation` causes circularities
    */
-  // options: not null (destructured)
   testUserPermission(
     user: User.Internal.Implementation,
     permission: Document.ActionPermission,
@@ -289,7 +312,6 @@ declare abstract class Document<
    *
    * @privateRemarks Making this just `User.Implementation` causes circularities
    */
-  // data: not null (parameter default only)
   canUserModify<Action extends "create" | "update" | "delete">(
     user: User.Internal.Implementation,
     action: Action,
@@ -303,8 +325,7 @@ declare abstract class Document<
    * @param context - Additional context options passed to the create method
    * @returns The cloned Document instance
    */
-  // data: not null (property access), context: not null (destructured)
-  override clone<Save extends boolean | null | undefined = undefined>(
+  override clone<Save extends boolean | undefined = undefined>(
     data?: SchemaField.UpdateData<Schema>,
     context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;
@@ -313,46 +334,49 @@ declare abstract class Document<
    * For Documents which include game system data, migrate the system data object to conform to its latest data model.
    * The data model is defined by the template.json specification included by the game system.
    * @returns The migrated system data object
+   * @remarks
    * @throws If this document type either doesn't have subtypes or it does but the one on this document is a DataModel
    */
   migrateSystemData(): object;
 
   /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
-  override toObject(source?: boolean | null): SchemaField.SourceData<Schema>;
+  override toObject(source?: boolean): SchemaField.SourceData<Schema>;
 
   /**
    * Create multiple Documents using provided input data.
    * Data is provided as an array of objects where each individual object becomes one new Document.
    *
-   * @param data    - An array of data objects or existing Documents to persist.
-   *                  (default: `[]`)
-   * @param operation - Parameters of the requested creation operation
-   *                  (default: `{}`)
+   * @param data      - An array of data objects or existing Documents to persist. (default: `[]`)
+   * @param operation - Parameters of the requested creation operation default: `{}`)
    * @returns An array of created Document instances
    *
-   * @example Create a single Document
-   * ```typescript
+   * @example
+   * Create a single Document
+   * ```js
    * const data = [{name: "New Actor", type: "character", img: "path/to/profile.jpg"}];
-   * const created = await Actor.createDocuments(data);
+   * const created = await Actor.implementation.createDocuments(data);
    * ```
    *
-   * @example Create multiple Documents
-   * ```typescript
-   * const data = [{name: "Tim", type: "npc"], [{name: "Tom", type: "npc"}];
-   * const created = await Actor.createDocuments(data);
+   * @example
+   * Create multiple Documents
+   * ```js
+   * const data = [{name: "Tim", type: "npc"}, {name: "Tom", type: "npc"}];
+   * const created = await Actor.implementation.createDocuments(data);
    * ```
    *
-   * @example Create multiple embedded Documents within a parent
-   * ```typescript
+   * @example
+   * Create multiple embedded Documents within a parent
+   * ```js
    * const actor = game.actors.getName("Tim");
    * const data = [{name: "Sword", type: "weapon"}, {name: "Breastplate", type: "equipment"}];
-   * const created = await Item.createDocuments(data, {parent: actor});
+   * const created = await Item.implementation.createDocuments(data, {parent: actor});
    * ```
    *
-   * @example Create a Document within a Compendium pack
-   * ```typescript
+   * @example
+   * Create a Document within a Compendium pack
+   * ```js
    * const data = [{name: "Compendium Actor", type: "character", img: "path/to/profile.jpg"}];
-   * const created = await Actor.createDocuments(data, {pack: "mymodule.mypack"});
+   * const created = await Actor.implementation.createDocuments(data, {pack: "mymodule.mypack"});
    * ```
    *
    * @remarks If a document is skipped by a hook or `_preCreate` then that element is skipped in the
@@ -365,35 +389,38 @@ declare abstract class Document<
    * Update multiple Document instances using provided differential data.
    * Data is provided as an array of objects where each individual object updates one existing Document.
    *
-   * @param updates - An array of differential data objects, each used to update a single Document
-   *                  (default: `[]`)
-   * @param operation - Parameters of the database update operation
-   *                  (default: `{}`)
+   * @param updates   - An array of differential data objects, each used to update a single Document (default: `[]`)
+   * @param operation - Parameters of the database update operation (default: `{}`)
    * @returns An array of updated Document instances
    *
-   * @example Update a single Document
-   * ```typescript
+   * @example
+   * Update a single Document
+   * ```js
    * const updates = [{_id: "12ekjf43kj2312ds", name: "Timothy"}];
-   * const updated = await Actor.updateDocuments(updates);
+   * const updated = await Actor.implementation.updateDocuments(updates);
    * ```
    *
-   * @example Update multiple Documents
-   * ```typescript
+   * @example
+   * Update multiple Documents
+   * ```js
    * const updates = [{_id: "12ekjf43kj2312ds", name: "Timothy"}, {_id: "kj549dk48k34jk34", name: "Thomas"}]};
-   * const updated = await Actor.updateDocuments(updates);
+   * const updated = await Actor.implementation.updateDocuments(updates);
    * ```
    *
-   * @example Update multiple embedded Documents within a parent
-   * ```typescript
+   * @example
+   * Update multiple embedded Documents within a parent
+   * ```js
    * const actor = game.actors.getName("Timothy");
    * const updates = [{_id: sword.id, name: "Magic Sword"}, {_id: shield.id, name: "Magic Shield"}];
-   * const updated = await Item.updateDocuments(updates, {parent: actor});
+   * const updated = await Item.implementation.updateDocuments(updates, {parent: actor});
    * ```
    *
-   * @example Update Documents within a Compendium pack
-   * ```typescript
+   * @example
+   * Update Documents within a Compendium pack
+   * ```js
    * const actor = await pack.getDocument(documentId);
-   * const updated = await Actor.updateDocuments([{_id: actor.id, name: "New Name"}], {pack: "mymodule.mypack"});
+   * const updated = await Actor.implementation.updateDocuments([{_id: actor.id, name: "New Name"}],
+   *   {pack: "mymodule.mypack"});
    * ```
    *
    * @remarks If a document is skipped by a hook or `_preCreate` then that element is skipped in the
@@ -406,86 +433,93 @@ declare abstract class Document<
    * Delete one or multiple existing Documents using an array of provided ids.
    * Data is provided as an array of string ids for the documents to delete.
    *
-   * @param ids - An array of string ids for the documents to be deleted
-   *              (default: `[]`)
-   * @param operation - Parameters of the database deletion operation
-   *                  (default: `{}`)
+   * @param ids       - An array of string ids for the documents to be deleted (default: `[]`)
+   * @param operation - Parameters of the database deletion operation (default: `{}`)
    * @returns An array of deleted Document instances
    *
-   * @example Delete a single Document
-   * ```typescript
+   * @example
+   * Delete a single Document
+   * ```js
    * const tim = game.actors.getName("Tim");
-   * const deleted = await Actor.deleteDocuments([tim.id]);
+   * const deleted = await Actor.implementation.deleteDocuments([tim.id]);
    * ```
    *
-   * @example Delete multiple Documents
-   * ```typescript
+   * @example
+   * Delete multiple Documents
+   * ```js
    * const tim = game.actors.getName("Tim");
    * const tom = game.actors.getName("Tom");
-   * const deleted = await Actor.deleteDocuments([tim.id, tom.id]);
+   * const deleted = await Actor.implementation.deleteDocuments([tim.id, tom.id]);
    * ```
    *
-   * @example Delete multiple embedded Documents within a parent
-   * ```typescript
+   * @example
+   * Delete multiple embedded Documents within a parent
+   * ```js
    * const tim = game.actors.getName("Tim");
    * const sword = tim.items.getName("Sword");
    * const shield = tim.items.getName("Shield");
-   * const deleted = await Item.deleteDocuments([sword.id, shield.id], parent: actor});
+   * const deleted = await Item.implementation.deleteDocuments([sword.id, shield.id], parent: actor});
    * ```
    *
-   * @example Delete Documents within a Compendium pack
-   * ```typescript
+   * @example
+   * Delete Documents within a Compendium pack
+   * ```js
    * const actor = await pack.getDocument(documentId);
-   * const deleted = await Actor.deleteDocuments([actor.id], {pack: "mymodule.mypack"});
+   * const deleted = await Actor.implementation.deleteDocuments([actor.id], {pack: "mymodule.mypack"});
    * ```
    *
    * @remarks If a document is skipped by a hook or `_preDelete` then that element is skipped in the
    * return type. This means that you receive only documents that were actually deleted.
+   *
+   * `ids` is required because despite it having a parameter default, passing no IDs is a nonsense call on its own; however, specific
+   * document overrides type `ids` as `| undefined` because the {@linkcode DatabaseBackend.DeleteOperation.deleteAll | deleteAll} operation
+   * property exists, but using it requires passing *something* to the first parameter.
    */
-  // Note: This uses `never` because it's unsound to try to pass the operation for `Document.deleteDocument`
-  static deleteDocuments(ids?: readonly string[], operation?: never): Promise<Document.Any[]>;
+  // Note: This uses `never` because it's unsound to try to call `Document.deleteDocument` rather than a specific document's method.
+  static deleteDocuments(ids: never, operation?: never): Promise<Document.Any[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
    * @see {@linkcode Document.createDocuments}
    * @param data      - Initial data used to create this Document, or a Document instance to persist.
-   * @param operation - Parameters of the creation operation
-   *                    (default: `{}`)
+   * @param operation - Parameters of the creation operation (default: `{}`)
    * @returns The created Document instance
    *
-   * @example Create a World-level Item
-   * ```typescript
+   * @example
+   * Create a World-level Item
+   * ```js
    * const data = [{name: "Special Sword", type: "weapon"}];
-   * const created = await Item.create(data);
+   * const created = await Item.implementation.create(data);
    * ```
    *
-   * @example Create an Actor-owned Item
-   * ```typescript
+   * @example
+   * Create an Actor-owned Item
+   * ```js
    * const data = [{name: "Special Sword", type: "weapon"}];
    * const actor = game.actors.getName("My Hero");
-   * const created = await Item.create(data, {parent: actor});
+   * const created = await Item.implementation.create(data, {parent: actor});
    * ```
    *
-   * @example Create an Item in a Compendium pack
-   * ```typescript
+   * @example
+   * Create an Item in a Compendium pack
+   * ```js
    * const data = [{name: "Special Sword", type: "weapon"}];
-   * const created = await Item.create(data, {pack: "mymodule.mypack"});
+   * const created = await Item.implementation.create(data, {pack: "mymodule.mypack"});
    * ```
    *
-   * @remarks If the document creation is skipped by a hook or `_preCreate` then `undefined` is
-   * returned.
+   * @remarks If the document creation is skipped by a hook or `_preCreate` then `undefined` is returned.
+   *
+   * `data` can be a `CreateData` object, an instance of this specific Document, or a possibly-mixed array of those types.
+   * If an array is passed, an array will be returned
    */
   // Note: This uses `never` because it's unsound to try to call `Document.create` directly.
-  // TODO: This can take an array of data and return an array of documents, in addition to its current typing
-  static create(data: never, operation?: never): Promise<Document.Any | undefined>;
+  static create(data: never, operation?: never): Promise<MaybeArray<Document.Any> | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
    * @see {@linkcode Document.updateDocuments}
-   * @param data      - Differential update data which modifies the existing values of this document data
-   *                    (default: `{}`)
-   * @param operation - Parameters of the update operation
-   *                    (default: `{}`)
+   * @param data      - Differential update data which modifies the existing values of this document data (default: `{}`)
+   * @param operation - Parameters of the update operation (default: `{}`)
    * @returns The updated Document instance
    *
    * @remarks If the document update is skipped by a hook or `_preUpdate` then `undefined` is
@@ -497,11 +531,10 @@ declare abstract class Document<
   /**
    * Delete this Document, removing it from the database.
    * @see {@linkcode Document.deleteDocuments}
-   * @param operation - Parameters of the deletion operation
-   *                    (default: `{}`)
+   * @param operation - Parameters of the deletion operation (default: `{}`)
    * @returns The deleted Document instance
    *
-   * @remarks If the document deletion is skipped by a hook or `_preUpdate` then `undefined` is
+   * @remarks If the document deletion is skipped by a hook or `_preDelete` then `undefined` is
    * returned.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#delete` directly.
@@ -513,12 +546,11 @@ declare abstract class Document<
    * @param operation  - Additional options which customize the request
    * @returns The retrieved Document, or null
    *
-   * @remarks If the Document is in a compendium (i.e `operation.pack` is provided), returns the index
-   * entry (or `null`), instead of the Document.
+   * @remarks Contrary to the above, this *can* be used to 'get' compendium documents by passing `operation.pack`, this will return the
+   * index entry (or `null`), instead of the Document.
    *
-   * {@link FogExploration.get | `FogExploration.get`} can possibly forward args and return to/from
-   * {@link FogExploration.load | `FogExploration.load`}, which accounts for the `Promise<>` part
-   * of the return; All other documents return `SomeDoc.Implementation | null`
+   * {@linkcode FogExploration.get} can possibly forward args and return to/from {@linkcode FogExploration.load},
+   * which accounts for the `Promise<>` part of the return; All other documents return `SomeDoc.Implementation | null`
    */
   // TODO: Type for possible index entry return
   static get(documentId: string, operation?: Document.Database.GetOptions): MaybePromise<Document.Any | null>;
@@ -528,15 +560,18 @@ declare abstract class Document<
    * @param name - An existing collection name or a document name.
    * @returns The provided collection name if it exists, the first available collection for the
    *          document name provided, or null if no appropriate embedded collection could be found.
-   * @example Passing an existing collection name.
+   *
+   * @example
+   * Passing an existing collection name.
    * ```js
-   * Actor.getCollectionName("items");
+   * Actor.implementation.getCollectionName("items");
    * // returns "items"
    * ```
    *
-   * @example Passing a document name.
+   * @example
+   * Passing a document name.
    * ```js
-   * Actor.getCollectionName("Item");
+   * Actor.implementation.getCollectionName("Item");
    * // returns "items"
    * ```
    */
@@ -546,6 +581,7 @@ declare abstract class Document<
    * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
    * @param embeddedName - The name of the embedded Document type
    * @returns The Collection instance of embedded Documents of the requested type
+   *
    * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
   // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedCollection` directly.
@@ -570,47 +606,37 @@ declare abstract class Document<
    * Create multiple embedded Document instances within this parent Document using provided input data.
    * @see {@linkcode Document.createDocuments}
    * @param embeddedName - The name of the embedded Document type
-   * @param data         - An array of data objects used to create multiple documents
-   *                       (default: `[]`)
-   * @param operation    - Parameters of the database creation workflow
-   *                       (default: `{}`)
+   * @param data         - An array of data objects used to create multiple documents (default: `[]`)
+   * @param operation    - Parameters of the database creation workflow (default: `{}`)
    * @returns An array of created Document instances
+   *
+   * @remarks `| undefined` is included in the specific document overrides' element type
+   * @privateRemarks `data` has a parameter default but passing no updates is nonsensical, so it's not marked optional here
    */
   // Note: This uses `never` because it's unsound to try to call `Document#createEmbeddedDocuments` directly.
   // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
-  createEmbeddedDocuments(
-    embeddedName: never,
-    // Note: Not optional because `createEmbeddedDocuments("Actor")` does effectively nothing.
-    data: never,
-    operation?: never,
-  ): unknown;
+  createEmbeddedDocuments(embeddedName: never, data: never, operation?: never): unknown;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
    * @see {@linkcode Document.updateDocuments}
    * @param embeddedName - The name of the embedded Document type
-   * @param updates      - An array of differential data objects, each used to update a single Document
-   *                       (default: `[]`)
-   * @param operation    - Parameters of the database update workflow
-   *                       (default: `{}`)
+   * @param updates      - An array of differential data objects, each used to update a single Document (default: `[]`)
+   * @param operation    - Parameters of the database update workflow (default: `{}`)
    * @returns An array of updated Document instances
+   *
+   * @privateRemarks `updates` has a parameter default but passing no updates is nonsensical, so it's not marked optional here
    */
   // Note: This uses `never` because it's unsound to try to call `Document#updateEmbeddedDocuments` directly.
   // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
-  updateEmbeddedDocuments(
-    embeddedName: never,
-    // Note: Not optional because `updateEmbeddedDocuments("Actor")` does effectively nothing.
-    updates: never,
-    context?: never,
-  ): unknown;
+  updateEmbeddedDocuments(embeddedName: never, updates: never, context?: never): unknown;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
    * @see {@linkcode Document.deleteDocuments}
    * @param embeddedName - The name of the embedded Document type
    * @param ids          - An array of string ids for each Document to be deleted
-   * @param operation    - Parameters of the database deletion workflow
-   *                       (default: `{}`)
+   * @param operation    - Parameters of the database deletion workflow (default: `{}`)
    * @returns An array of deleted Document instances
    */
   // Note: This uses `never` because it's unsound to try to call `Document#deleteEmbeddedDocuments` directly.
@@ -626,7 +652,7 @@ declare abstract class Document<
 
   /**
    * Get the value of a "flag" for this document
-   * See the setFlag method for more details on flags
+   * See the {@linkcode Document.setFlag | setFlag} method for more details on flags
    *
    * @param scope - The flag scope which namespaces the key
    * @param key   - The flag key
@@ -651,21 +677,27 @@ declare abstract class Document<
    * @param key   - The flag key
    * @param value - The flag value
    * @returns A Promise resolving to the updated document
+   *
+   * @remarks This method is a wrapper on {@linkcode Document.update | #update}, so it can return `undefined` if the update
+   * is cancelled by {@linkcode Document._preUpdate | #_preUpdate} or the associated hook.
    */
-  setFlag(scope: never, key: never, value: never): Promise<this>;
+  setFlag(scope: never, key: never, value: never): Promise<this | undefined>;
 
   /**
    * Remove a flag assigned to the document
    * @param scope - The flag scope which namespaces the key
    * @param key   - The flag key
    * @returns The updated document instance
+   *
+   * @remarks This method is a wrapper on {@linkcode Document.delete | #delete}, so it can return `undefined` if the update
+   * is cancelled by {@linkcode Document._preDelete | #_preDelete} or the associated hook.
    */
-  unsetFlag(scope: never, key: never): Promise<this>;
+  unsetFlag(scope: never, key: never): Promise<this | undefined>;
 
   /**
    * Pre-process a creation operation for a single Document instance.
    * Pre-operation events only occur for the client which requested the operation.
-   * Modifications to the pending Document instance must be performed using {@link Document.updateSource | `Document#updateSource`}.
+   * Modifications to the pending Document instance must be performed using {@linkcode Document.updateSource | Document#updateSource}.
    * @param data    - The initial data object provided to the document creation request
    * @param options - Additional options which modify the creation request
    * @param user    - The User requesting the document creation
@@ -686,11 +718,11 @@ declare abstract class Document<
    * Pre-process a creation operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document._preCreate | `Document#_preCreate`} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@linkcode Document._preCreate | Document#_preCreate} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to pending documents must mutate the documents array or alter individual document instances using
-   * {@link Document.updateSource | `Document#updateSource`}.
+   * {@linkcode Document.updateSource | Document#updateSource}.
    * @param documents - Pending document instances ot be created
    * @param operation - Parameters of the database creation operation
    * @param user      - The User requesting the creation operation
@@ -707,7 +739,7 @@ declare abstract class Document<
    * Post-process a creation operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document._onCreate | `Document#_onCreate`} workflows.
+   * This batch-wise workflow occurs after individual {@linkcode Document._onCreate | Document#_onCreate} workflows.
    *
    * @param documents - The Document instances which were created
    * @param operation - Parameters of the database creation operation
@@ -743,11 +775,11 @@ declare abstract class Document<
    * Pre-process an update operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document._preUpdate | `Document#_preUpdate`} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@linkcode Document._preUpdate | Document#_preUpdate} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to the requested updates are performed by mutating the data array of the operation.
-   * {@link Document.updateSource | `Document#updateSource`}.
+   * {@linkcode Document.updateSource | Document#updateSource}.
    *
    * @param documents - Document instances to be updated
    * @param operation - Parameters of the database update operation
@@ -765,7 +797,7 @@ declare abstract class Document<
    * Post-process an update operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document._onUpdate | `Document#_onUpdate`} workflows.
+   * This batch-wise workflow occurs after individual {@linkcode Document._onUpdate | Document#_onUpdate} workflows.
    *
    * @param documents - The Document instances which were updated
    * @param operation - Parameters of the database update operation
@@ -799,11 +831,11 @@ declare abstract class Document<
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document._preDelete | `Document#_preDelete`} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@linkcode Document._preDelete | Document#_preDelete} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to the requested deletions are performed by mutating the operation object.
-   * {@link Document.updateSource | `Document#updateSource`}.
+   * {@linkcode Document.updateSource | Document#updateSource}.
    *
    * @param documents - Document instances to be deleted
    * @param operation - Parameters of the database update operation
@@ -822,7 +854,7 @@ declare abstract class Document<
    * Post-process a deletion operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document._onDelete | `Document#_onDelete`} workflows.
+   * This batch-wise workflow occurs after individual {@linkcode Document._onDelete | Document#_onDelete} workflows.
    *
    * @param documents - The Document instances which were deleted
    * @param operation - Parameters of the database deletion operation
@@ -837,8 +869,13 @@ declare abstract class Document<
 
   /**
    * A reusable helper for adding migration shims.
+   * @param data    - The data object being shimmed
+   * @param shims   - The mapping of old keys to new keys
+   * @param options - Options passed to {@linkcode foundry.utils.logCompatibilityWarning}
+   * @internal
+   *
+   * @remarks See {@linkcode Document._addDataFieldShim} remarks
    */
-  // options: not null (parameter default only in _addDataFieldShim)
   protected static _addDataFieldShims(
     data: AnyMutableObject,
     shims: Record<string, string>,
@@ -847,8 +884,17 @@ declare abstract class Document<
 
   /**
    * A reusable helper for adding a migration shim
+   * The value of the data can be transformed during the migration by an optional application function.
+   * @param data    - The data object being shimmed
+   * @param oldKey  - The old field name
+   * @param newKey  - The new field name
+   * @param options - Options passed to {@linkcode foundry.utils.logCompatibilityWarning} (default: `{}`)
+   * @internal
+   *
+   * @remarks This method calls {@linkcode Document._logDataFieldMigration | this._logDataFieldMigration}, but that is the only reference to
+   * `this`, meaning if you're okay with nonsense being logged, it's valid to call for any data object, and if you provide your own
+   * `_logDataFieldMigration`, doing `Document._addDataFieldShim.call(MyClass, ...)` can avoid even that.
    */
-  // options: not null (parameter default only)
   protected static _addDataFieldShim(
     data: AnyMutableObject,
     oldKey: string,
@@ -863,16 +909,27 @@ declare abstract class Document<
    * @param oldKey - The old field name
    * @param newKey - The new field name
    * @param apply  - An application function, otherwise the old value is applied
-   * @remarks Foundry marked `@internal`
+   * @returns Whether a migration was applied.
+   * @internal
+   *
+   * @remarks This method has no references to `this` at all, and is not limited to operating on `Document` source data; it can be
+   * used as a helper on any data object, making it one of the few static methods on `Document` it's valid to call on the base
+   * class.
    */
-  protected static _addDataFieldMigration(
-    data: AnyMutableObject,
+  protected static _addDataFieldMigration<Data extends AnyMutableObject>(
+    data: Data,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyMutableObject) => unknown,
-  ): unknown;
+    apply?: (data: Data) => unknown,
+  ): boolean;
 
-  // options: not null (destructured where forwarded)
+  /**
+   * Log a compatibility warning for the data field migration.
+   * @param oldKey  - The old field name
+   * @param newKey  - The new field name
+   * @param options - Options passed to {@linkcode foundry.utils.logCompatibilityWarning} (default: `{}`)
+   * @internal
+   */
   protected static _logDataFieldMigration(
     oldKey: string,
     newKey: string,
@@ -880,34 +937,38 @@ declare abstract class Document<
   ): void;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * Clear the fields from the given Document data recursively.
+   * @param data       - The (partial) Document data
+   * @param fieldNames - The fields that are cleared
+   * @param options    - (default: `{}`)
+   * @internal
+   */
+  protected static _clearFieldsRecursively(
+    data: AnyMutableObject,
+    fieldNames: string[],
+    options?: Document.ClearFieldsRecursivelyOptions,
+  ): void;
+
+  /**
+   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
+   * (since v12, until v14)
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onCreateDocuments` directly.
-  protected static _onCreateDocuments(
-    documents: never,
-    context: Document.ModificationContext<Document.Any | null>,
-  ): Promise<void>;
+  protected static _onCreateDocuments(documents: never, context: never): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
+   * (since v12, until v14)
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onUpdateDocuments` directly.
-  protected static _onUpdateDocuments(
-    documents: never,
-    context: Document.ModificationContext<Document.Any | null>,
-  ): Promise<unknown>;
+  protected static _onUpdateDocuments(documents: never, context: never): Promise<unknown>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
+   * (since v12, until v14)
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onDeleteDocuments` directly.
-  protected static _onDeleteDocuments(
-    documents: never,
-    context: Document.ModificationContext<Document.Any | null>,
-  ): Promise<unknown>;
+  protected static _onDeleteDocuments(documents: never, context: never): Promise<unknown>;
 
   " fvtt_types_internal_document_name": DocumentName;
   " fvtt_types_internal_document_schema": Schema;
@@ -1097,8 +1158,8 @@ declare namespace Document {
     ChildDocument extends Document.Internal.Instance.Any,
   > = ParentDocument extends Internal.ParentFor<ChildDocument> ? true : false;
 
-  type SocketRequest<Action extends DatabaseAction> = DocumentSocketRequest<Action>;
-  type SocketResponse<Action extends DatabaseAction> = DocumentSocketResponse<Action>;
+  type SocketRequest<Action extends DatabaseBackend.DatabaseAction> = DocumentSocketRequest<Action>;
+  type SocketResponse<Action extends DatabaseBackend.DatabaseAction> = DocumentSocketResponse<Action>;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
@@ -1343,7 +1404,8 @@ declare namespace Document {
     // Note(LukeAbby): It's at times been very important for `GetFlag` to be covariant over `ConcreteSchema`.
     // If it isn't then issues arise where the `Document` type ends up becoming invariant.
     // Currently it is actually contravariant over `ConcreteSchema` and this may cause issues (because of the usage of `keyof`).
-    // Unfortunately it's not easy to avoid because the typical `GetKey` trick has issues between `never`, not defined at all, and `unknown` etc.
+    // Unfortunately it's not easy to avoid because the typical `GetKey` trick has issues between `never`, not defined at all, and `unknown`
+    // etc.
     type GetFlag<Flags extends object, S extends string, K extends string> = FlagGetKey<
       FlagGetKey<Flags & CoreFlags, S>,
       K
@@ -1631,6 +1693,7 @@ declare namespace Document {
     };
   }
 
+  // TODO: this does nothing, all parents currently extend null
   /** @internal */
   interface _ParentContext<Parent extends Document.Any | null>
     extends _DynamicBase<
@@ -1671,9 +1734,9 @@ declare namespace Document {
 
         /**
          * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
-         * @privateRemarks Omitted from the typedef, inferred from usage in {@link Document._configure | `Document#_configure`}
+         * @privateRemarks Omitted from the typedef, inferred from usage in {@linkcode Document._configure | Document#_configure}
          * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
-         * {@link foundry.abstract.EmbeddedCollection.createDocument | `EmbeddedCollection#createDocument`})
+         * {@linkcode foundry.abstract.EmbeddedCollection.createDocument | EmbeddedCollection#createDocument})
          */
         parentCollection: string;
       }> {}
@@ -1787,8 +1850,9 @@ declare namespace Document {
     deleteAll?: boolean | undefined;
   }
 
+  // TODO: properly test passing save: true and not
   /** @internal */
-  type _CloneContext<Save extends boolean | null | undefined = boolean | null | undefined> = NullishProps<{
+  type _CloneContext<Save extends boolean | undefined> = InexactPartial<{
     /**
      * Save the clone to the World database?
      * @defaultValue `false`
@@ -1809,12 +1873,25 @@ declare namespace Document {
   }>;
 
   /**
-   * @privateRemarks Since we've lost the ExtraConstructorOptions type param, we have to extend
-   * the (parentless) construction context
+   * The context for {@linkcode Document.clone | Document#close}. Since we've lost the `ExtraConstructorOptions` type param from
+   * {@linkcode DataModel}, we have to extend the construction context.
+   *
+   * If {@linkcode _CloneContext.save | save} is `true`, this gets passed to {@linkcode Document.create} as the operation.
+   *
+   * `parent`, `pack`, and `strict` are all overwritten with no respect to passed values, so they've been omitted from the extended types.
+   * This allows the use of a generic {@linkcode DatabaseBackend.CreateOperation}, since any document-specific properties are irrelevant
+   * (`data` doesn't go in a {@linkcode Document.Database2.CreateDocumentsOperation | CreateDocumentsOperation}).
+   *
+   * @privateRemarks `temporary` is not being supported here; returning a temporary doc is the default behaviour of `clone()`, passing
+   * `{ save: true, temporary: true }` is nonsensical.
    */
-  interface CloneContext<Save extends boolean | null | undefined = boolean | null | undefined>
+  interface CloneContext<Save extends boolean | undefined>
     extends _CloneContext<Save>,
-      Omit<Document.ConstructionContext, "parent"> {}
+      Omit<Document.ConstructionContext, "parent" | "strict">,
+      Omit<
+        Document.Database2.CreateDocumentsOperation<DatabaseBackend.CreateOperation>,
+        "parent" | "pack" | "keepId"
+      > {}
 
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
@@ -1871,6 +1948,812 @@ declare namespace Document {
 
   type LayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
 
+  namespace Database2 {
+    /** Database action types which make a change in the database */
+    type OperationAction = Exclude<DatabaseBackend.DatabaseAction, "get">;
+
+    /**
+     * The `(Pre|On)(Create|Update)Operation` interfaces all receive `data` or `update` params that have been `#toObject`ed. The `Extract`
+     * branch only exists to handle the deprecated {@linkcode Document._onCreateDocuments} method, which receives the final client-side
+     * mutated `operation` object, where `ClientDatabaseBackend##preCreateDocumentArray` has set `operation.data = documents`.
+     * @internal
+     */
+    // TODO: remove Extract branch in v14 when `_onCreateDocuments` goes away
+    type _RestrictToDataObjects<Operation extends object, Key extends keyof Operation, Excl extends boolean = true> =
+      Operation[Key] extends Array<infer Data>
+        ? Excl extends true
+          ? Omit<Operation, Key> & { [_ in Key]: Array<Exclude<Data, Document.Any>> }
+          : Omit<Operation, Key> & { [_ in Key]: Array<Extract<Data, Document.Any>> }
+        : never;
+
+    /* ***********************************************
+     *            GET OPERATION HELPERS              *
+     *************************************************/
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document.get}.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.GetOperation | GetOperation}, e.g
+     * {@linkcode Macro.Database2.GetOperation}.
+     *
+     * @remarks This type is identical to {@linkcode BackendGetOperation}. Core's implementation of `Document.get` only ever checks for, or
+     * makes use of, {@linkcode DatabaseBackend.GetOperation.pack | pack}, but they type its `operation` parameter as a full `GetOperation`,
+     * so that's what we allow.
+     */
+    type GetDocumentsOperation<BaseOperation extends DatabaseBackend.GetOperation> = BackendGetOperation<BaseOperation>;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode DatabaseBackend.get | DatabaseBackend#get}
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.GetOperation | GetOperation}, e.g
+     * {@linkcode Macro.Database2.GetOperation}.
+     *
+     * @remarks No properties are required here. `IntentionalPartial` because `undefined`-valued properties don't survive the socket.
+     */
+    type BackendGetOperation<BaseOperation extends DatabaseBackend.GetOperation> = IntentionalPartial<BaseOperation>;
+
+    /* ***********************************************
+     *                  GET LOOKUPS                  *
+     *************************************************/
+
+    /** @see {@linkcode DatabaseBackend.GetOperation} */
+    type GetOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["GetOperation"];
+
+    /** @see {@linkcode Document.Database2.GetDocumentsOperation} */
+    type GetDocumentsOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["GetDocumentsOperation"];
+
+    /** @see {@linkcode Document.Database2.BackendGetOperation} */
+    type BackendGetOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["BackendGetOperation"];
+
+    /* ***********************************************
+     *           CREATE OPERATION HELPERS            *
+     *************************************************/
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document.create} or
+     * {@linkcode Document.createDocuments | .createDocuments}. Unlike for `Update` or `Delete` operations, there is no one vs many
+     * distinction for `Create` ops, as `.create` will take either a single data object or instance, or an array of such, and it provides no
+     * guaranteed properties over `.createDocuments`.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     *
+     * @remarks `data` is omitted because it's passed to either method as a separate parameter.
+     *
+     * See {@linkcode BackendCreateOperation}'s remarks for more info.
+     */
+    type CreateDocumentsOperation<BaseOperation extends DatabaseBackend.CreateOperation> = Omit<
+      BackendCreateOperation<BaseOperation>,
+      "data"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to
+     * {@linkcode Document.createEmbeddedDocuments | Document#createEmbeddedDocuments}.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     *
+     * @remarks This type does the same omission as {@linkcode UpdateOneDocumentOperation} or {@linkcode DeleteOneDocumentOperation}, for
+     * similar reasons: the called method sets `pack` and `parent` to the values from the instance it's called on.
+     */
+    type CreateEmbeddedOperation<BaseOperation extends DatabaseBackend.CreateOperation> = Omit<
+      CreateDocumentsOperation<BaseOperation>,
+      "pack" | "parent"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode DatabaseBackend.create | DatabaseBackend#create}. This
+     * project assumes that that method has not been overridden, or, if it has, that the override calls `super` immediately.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     *
+     * @remarks Some properties are omitted because they are overwritten before the next opportunity for non-core code to interact with this
+     * object ({@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments}):
+     *
+     * - `action`: set in `DatabaseBackend##configureCreate`. Only the one possible value.
+     * - `modifiedTime`: set in `DatabaseBackend##configureOperation`
+     *
+     * For non-{@link CONST.PRIMARY_DOCUMENT_TYPES | primary} documents, one of `parent` or `parentUuid` are required; enforcing this at the
+     * type level would involve an annoying amount of work, which we chosen not to do for now.
+     *
+     * Use of `InexactPartialExcept` was required to properly reflect `data` being the only truly required property here
+     * (`DatabaseBackend##configureCreate` will throw if it isn't at least an array).
+     *
+     * Properties with values of explicit `undefined` will be passed to {@linkcode Document._preCreate | Document#_preCreate},
+     * {@linkcode Document._preCreateOperation}, and {@link Hooks.PreCreateDocument | the `preCreate[Document]` hook}, but will be stripped
+     * when sent over the socket, and will not appear in the object passed to {@linkcode Document._onCreate | Document#_onCreate},
+     * {@linkcode Document._onCreateOperation}, or {@link Hooks.CreateDocument | the `create[Document]` hook}.
+     */
+    type BackendCreateOperation<BaseOperation extends DatabaseBackend.CreateOperation> = InexactPartialExcept<
+      Omit<BaseOperation, "action" | "modifiedTime">,
+      "data"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document._preCreate | Document#_preCreate},
+     * {@link Hooks.PreCreateDocument | the `preCreate[Document]` hook}, and
+     * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
+     *
+     * This type assumes that any override of {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments}
+     * calls `super`, ensuring a call to `##preCreateDocumentArray`.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     *
+     * @remarks This type makes no optionality changes, only omits the keys that `ClientDatabaseBackend##preCreateDocumentArray` pulls out
+     * of `operation` before passing on the remainder as `options`.
+     */
+    type PreCreateOptions<BaseOperation extends DatabaseBackend.CreateOperation> = Omit<
+      BaseOperation,
+      "data" | "noHook" | "pack" | "parent"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document._preCreateOperation}.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     *
+     * @remarks The only change this type makes is to restrict the `CreateData` to source objects only;
+     * `ClientDatabaseBackend##preCreateDocumentArray` has called `#toObject` on all instances by this point.
+     */
+    type PreCreateOperation<BaseOperation extends DatabaseBackend.CreateOperation> = _RestrictToDataObjects<
+      BaseOperation,
+      "data"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onCreateDocuments} method. This will
+     * be removed in v14 along with that method.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     *
+     * @remarks Since this method is called inside {@linkcode Document.createDocuments}, but *after* the call to
+     * {@linkcode DatabaseBackend.create | DatabaseBackend#create}, it receives the final mutated version of the client-side `operation`
+     * object, and the last thing `ClientDatabaseBackend##preCreateDocumentArray` does is set `operation.data = documents`, this is the one
+     * use for the `false`/`Extract` branch in {@linkcode _RestrictToDataObjects}.
+     *
+     * `modifiedTime` will be the time sent from the client, same as in the `pre_` interfaces.
+     */
+    type OnCreateDocumentsOperation<BaseOperation extends DatabaseBackend.CreateOperation> = _RestrictToDataObjects<
+      BaseOperation,
+      "data",
+      false
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document._onCreate | Document#_onCreate},
+     * {@link Hooks.CreateDocument | the `create[Document]` hook}, and
+     * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ClientDocument._onCreateDescendantDocuments}.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     *
+     * @remarks This interface is created in `ClientDatabaseBackend##handleCreateDocuments`, which pulls out the omitted keys before passing
+     * the rest of the object along.
+     *
+     * `data` is omitted not because it gets pulled out but because it does not exist in the `operation` the socket returns. It is added
+     * back *after* `options` is defined, which is why it appears in {@linkcode Document.Database2.OnCreateOperation | OnCreateOperation}.
+     *
+     * See {@linkcode ActorDelta.Database2.CreateOperation.syntheticActorUpdate} for more on that key.
+     *
+     * `temporary` is omitted because any operation that included it would have short-circuited at the
+     * {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments} stage, skipping post-operation calls like
+     * this interface is used for.
+     */
+    type OnCreateOptions<BaseOperation extends DatabaseBackend.CreateOperation> = Omit<
+      BaseOperation,
+      "data" | "pack" | "parentUuid" | "syntheticActorUpdate" | "temporary"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document._onCreateOperation}, and
+     * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     *
+     * @remarks `ClientDatabaseBackend##handleCreateDocuments` sets `operation.data = response.result`, that being the array of data objects
+     * sent back from the server. No instances appear in it, regardless of initial input. This object is a new reference from the original
+     * `operation` at the head of this call stack.
+     *
+     * `temporary` is omitted because any operation that included it would have short-circuited at the
+     * {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments} stage, skipping post-operation calls like
+     * this interface is used for.
+     */
+    type OnCreateOperation<BaseOperation extends DatabaseBackend.CreateOperation> = Omit<
+      _RestrictToDataObjects<BaseOperation, "data">,
+      "temporary"
+    >;
+
+    /* ***********************************************
+     *               CREATE LOOKUPS                  *
+     *************************************************/
+
+    /**
+     * @remarks This previously found the interface for passing to the relevant {@linkcode Document.create}.
+     * {@linkcode CreateDocumentsOperationForName} performs that duty now, while this returns types valid
+     * for {@linkcode DatabaseBackend._createDocuments | DatabaseBackend#_createDocuments}.
+     */
+    type CreateOperationForName<
+      DocName extends Document.Type,
+      Temporary extends boolean | undefined = boolean | undefined,
+    > = Internal.Lookup<DocName, Temporary>["CreateOperation"];
+
+    /** @see {@linkcode Document.Database2.CreateDocumentsOperation} */
+    type CreateDocumentsOperationForName<
+      DocName extends Document.Type,
+      Temporary extends boolean | undefined = boolean | undefined,
+    > = Internal.Lookup<DocName, Temporary>["CreateDocumentsOperation"];
+
+    /** @see {@linkcode Document.Database2.CreateEmbeddedOperation} */
+    type CreateEmbeddedOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["CreateEmbeddedOperation"];
+
+    /** @see {@linkcode Document.Database2.BackendCreateOperation} */
+    type BackendCreateOperationForName<
+      DocName extends Document.Type,
+      Temporary extends boolean | undefined = boolean | undefined,
+    > = Internal.Lookup<DocName, Temporary>["BackendCreateOperation"];
+
+    /** @see {@linkcode Document.Database2.PreCreateOptions} */
+    type PreCreateOptionsForName<
+      DocName extends Document.Type,
+      Temporary extends boolean | undefined = boolean | undefined,
+    > = Internal.Lookup<DocName, Temporary>["PreCreateOptions"];
+
+    /** @see {@linkcode Document.Database2.PreCreateOperation} */
+    type PreCreateOperationForName<
+      DocName extends Document.Type,
+      Temporary extends boolean | undefined = boolean | undefined,
+    > = Internal.Lookup<DocName, Temporary>["PreCreateOperation"];
+
+    /** @see {@linkcode Document.Database2.OnCreateDocumentsOperation} */
+    type OnCreateDocumentsOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["OnCreateDocumentsOperation"];
+
+    /** @see {@linkcode Document.Database2.OnCreateOptions} */
+    type OnCreateOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnCreateOptions"];
+
+    /** @see {@linkcode Document.Database2.OnCreateOperation} */
+    type OnCreateOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnCreateOperation"];
+
+    /* ***********************************************
+     *           UPDATE OPERATION HELPERS            *
+     *************************************************/
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document.update | Document#update}, and, via aliases in the
+     * specific document namespaces (e.g {@linkcode NoteDocument.Database2.UpdateAsEmbeddedOperation}),
+     * {@linkcode Document.updateEmbeddedDocuments | Document#updateEmbeddedDocuments}.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.UpdateOperation}
+     *
+     * @remarks Since this interface is for the instance method only, `pack` and `parent` are omitted because they get set to the instance's
+     * values, and `updates` because it's passed to `#update` as the first parameter.
+     *
+     * See {@linkcode UpdateManyDocumentsOperation}'s remarks for more info.
+     */
+    type UpdateOneDocumentOperation<BaseOperation extends DatabaseBackend.UpdateOperation> = Omit<
+      UpdateManyDocumentsOperation<BaseOperation>,
+      "pack" | "parent"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document.updateDocuments}.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     *
+     * @remarks `updates` is omitted because it is set to what's passed as the first argument to the aforementioned methods before being
+     * passed on to {@linkcode DatabaseBackend.update | DatabaseBackend#update}.
+     *
+     * See {@linkcode BackendUpdateOperation}'s remarks for more info.
+     */
+    type UpdateManyDocumentsOperation<BaseOperation extends DatabaseBackend.UpdateOperation> = Omit<
+      BackendUpdateOperation<BaseOperation>,
+      "updates"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode DatabaseBackend.update | DatabaseBackend#update}. This
+     * project assumes that that method has not been overridden, or, if it has, that the override calls `super` immediately.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     *
+     * @remarks Some properties are omitted because they are overwritten before the next opportunity for non-core code to interact with this
+     * object ({@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments}):
+     *
+     * - `action`: set in `DatabaseBackend##configureUpdate`. Only the one possible value.
+     * - `modifiedTime`: set in `DatabaseBackend##configureOperation`
+     *
+     * For non-{@link CONST.PRIMARY_DOCUMENT_TYPES | primary} documents, one of `parent` or `parentUuid` are required; enforcing this at the
+     * type level would involve an annoying amount of work, which we chosen not to do for now.
+     *
+     * Use of `InexactPartialExcept` was required to properly reflect `updates` being the only truly required property here
+     * (`DatabaseBackend##configureUpdate` will throw if it isn't at least an array)
+     *
+     * Properties with values of explicit `undefined` will be passed to {@linkcode Document._preUpdate | Document#_preUpdate},
+     * {@linkcode Document._preUpdateOperation}, and {@link Hooks.PreUpdateDocument | the `preUpdate[Document]` hook}, but will be stripped
+     * when sent over the socket, and will not appear in the object passed to {@linkcode Document._onUpdate | Document#_onUpdate},
+     * {@linkcode Document._onUpdateOperation}, or {@link Hooks.UpdateDocument | the `update[Document]` hook}.
+     */
+    type BackendUpdateOperation<BaseOperation extends DatabaseBackend.UpdateOperation> = InexactPartialExcept<
+      Omit<BaseOperation, "action" | "modifiedTime">,
+      "updates"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document._preUpdate | Document#_preUpdate},
+     * {@link Hooks.PreUpdateDocument | the `preUpdate[Document]` hook}, and
+     * {@linkcode ClientDocumentMixin.AnyMixed._preUpdateDescendantDocuments | ClientDocument._preUpdateDescendantDocuments}.
+     *
+     * This type assumes that any override of {@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments}
+     * calls `super`, ensuring a call to `##preUpdateDocumentArray`.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     *
+     * @remarks This type makes no optionality changes, only omits the keys that `ClientDatabaseBackend##preUpdateDocumentArray` pulls out
+     * of `operation` before passing on the remainder as `options`.
+     *
+     * See {@linkcode Actor.Database2.UpdateOperation.restoreDelta} for more information on that property.
+     */
+    type PreUpdateOptions<BaseOperation extends DatabaseBackend.UpdateOperation> = Omit<
+      BaseOperation,
+      "updates" | "restoreDelta" | "noHook" | "pack" | "parent"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document._preUpdateOperation}.
+     *
+     * This type assumes that any override of {@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments}
+     * calls `super`, ensuring a call to `##preUpdateDocumentArray`.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     *
+     * @remarks The only change this type makes is to restrict the `UpdateData` to source objects only;
+     * `ClientDatabaseBackend##preUpdateDocumentArray` has called `#toObject` on all instances by this point.
+     */
+    type PreUpdateOperation<BaseOperation extends DatabaseBackend.UpdateOperation> = _RestrictToDataObjects<
+      BaseOperation,
+      "updates"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onUpdateDocuments} method. This
+     * interface will be removed in v14 along with that method.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     *
+     * @remarks This is effectively the same type as {@linkcode PreUpdateOperation}. Unlike {@linkcode OnCreateDocumentsOperation}, nothing
+     * modifies the object after {@linkcode Document._preUpdateOperation}.
+     *
+     * `modifiedTime` will be the time sent from the client, same as in the `pre_` interfaces.
+     */
+    type OnUpdateDocumentsOperation<BaseOperation extends DatabaseBackend.UpdateOperation> =
+      PreUpdateOperation<BaseOperation>;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document._onUpdate | Document#_onUpdate},
+     * {@link Hooks.UpdateDocument | the `update[Document]` hook}, and
+     * {@linkcode ClientDocumentMixin.AnyMixed._onUpdateDescendantDocuments | ClientDocument._onUpdateDescendantDocuments}.
+     *
+     * This type assumes that any override of {@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments}
+     * calls `super`, ensuring a call to `##preUpdateDocumentArray`.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     *
+     * @remarks This interface is created in `ClientDatabaseBackend##handleUpdateDocuments`, which pulls out the omitted keys before passing
+     * the rest of the object along.
+     *
+     * `updates` is omitted not because it gets pulled out but because it does not exist in the `operation` the socket returns. It is added
+     * back *after* `options` is defined, which is why it appears in {@linkcode Document.Database2.OnUpdateOperation | OnUpdateOperation}.
+     *
+     * See {@linkcode ActorDelta.Database2.UpdateOperation.syntheticActorUpdate} for more on that key.
+     */
+    type OnUpdateOptions<BaseOperation extends DatabaseBackend.UpdateOperation> = Omit<
+      BaseOperation,
+      "updates" | "pack" | "parentUuid" | "syntheticActorUpdate"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document._onUpdateOperation}, and
+     * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     *
+     * @remarks The only change this type makes is to restrict the `UpdateData` to source objects only;
+     * `ClientDatabaseBackend##preUpdateDocumentArray` has called `#toObject` on all instances by this point.
+     */
+    type OnUpdateOperation<BaseOperation extends DatabaseBackend.UpdateOperation> = _RestrictToDataObjects<
+      BaseOperation,
+      "updates"
+    >;
+
+    /* ***********************************************
+     *               UPDATE LOOKUPS                  *
+     *************************************************/
+
+    /**
+     * @remarks This previously found the interface for passing to the relevant {@linkcode Document.update | Document#update}.
+     * {@linkcode UpdateOneDocumentOperationForName} performs that duty now, while this returns types valid for
+     * {@linkcode DatabaseBackend._updateDocuments | DatabaseBackend#_updateDocuments}
+     */
+    type UpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["UpdateOperation"];
+
+    /** @see {@linkcode Document.Database2.UpdateOneDocumentOperation} */
+    type UpdateOneDocumentOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["UpdateOneDocumentOperation"];
+
+    /** @see {@linkcode Document.Database2.UpdateOneDocumentOperation} */
+    type UpdateEmbeddedOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["UpdateEmbeddedOperation"];
+
+    /** @see {@linkcode Document.Database2.UpdateManyDocumentsOperation} */
+    type UpdateManyDocumentsOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["UpdateManyDocumentsOperation"];
+
+    /** @see {@linkcode Document.Database2.BackendUpdateOperation} */
+    type BackendUpdateOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["BackendUpdateOperation"];
+
+    /** @see {@linkcode Document.Database2.PreUpdateOptions} */
+    type PreUpdateOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["PreUpdateOptions"];
+
+    /** @see {@linkcode Document.Database2.PreUpdateOperation} */
+    type PreUpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["PreUpdateOperation"];
+
+    /** @see {@linkcode Document.Database2.OnUpdateDocumentsOperation} */
+    type OnUpdateDocumentsOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["OnUpdateDocumentsOperation"];
+
+    /** @see {@linkcode Document.Database2.OnUpdateOptions} */
+    type OnUpdateOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnUpdateOptions"];
+
+    /** @see {@linkcode Document.Database2.OnUpdateOperation} */
+    type OnUpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnUpdateOperation"];
+
+    /* ***********************************************
+     *           DELETE OPERATION HELPERS            *
+     *************************************************/
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document.delete | Document#delete}, and, via aliases in the
+     * specific document namespaces (e.g {@linkcode NoteDocument.Database2.DeleteAsEmbeddedOperation}),
+     * {@linkcode Document.deleteEmbeddedDocuments | Document#deleteEmbeddedDocuments}.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     *
+     * @remarks Since this interface is for the instance method only, `pack` and `parent` are omitted as they get set to the instance's
+     * values.
+     *
+     * See {@linkcode DeleteManyDocumentsOperation}'s remarks for more info.
+     */
+    type DeleteOneDocumentOperation<BaseOperation extends DatabaseBackend.DeleteOperation> = Omit<
+      DeleteManyDocumentsOperation<BaseOperation>,
+      "pack" | "parent"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document.deleteDocuments}.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     *
+     * @remarks `ids` is omitted because it is set to what's passed as the first argument to the aforementioned methods before being passed
+     * on to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete}.
+     *
+     * See {@linkcode BackendDeleteOperation}'s remarks for more info.
+     */
+    type DeleteManyDocumentsOperation<BaseOperation extends DatabaseBackend.DeleteOperation> = Omit<
+      BackendDeleteOperation<BaseOperation>,
+      "ids"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete}. This
+     * project assumes that that method has not been overridden, or, if it has, that the override calls `super` immediately.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     *
+     * @remarks Some properties are omitted because they are overwritten before the next opportunity for non-core code to interact with this
+     * object ({@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments}):
+     *
+     * - `action`: set in `DatabaseBackend##configureDelete`. Only the one possible value.
+     * - `modifiedTime`: set in `DatabaseBackend##configureOperation`
+     *
+     * For non-{@link CONST.PRIMARY_DOCUMENT_TYPES | primary} documents, one of `parent` or `parentUuid` are required; enforcing this at the
+     * type level would involve an annoying amount of work, which we chosen not to do for now.
+     *
+     * Use of `InexactPartialExcept` was required to properly reflect `deletes` being the only truly required property here
+     * (`DatabaseBackend##configureDelete` will throw if it isn't at least an array)
+     *
+     * Properties with values of explicit `undefined` will be passed to {@linkcode Document._preDelete | Document#_preDelete},
+     * {@linkcode Document._preDeleteOperation}, and {@link Hooks.PreDeleteDocument | the `preDelete[Document]` hook}, but will be stripped
+     * when sent over the socket, and will not appear in the object passed to {@linkcode Document._onDelete | Document#_onDelete},
+     * {@linkcode Document._onDeleteOperation}, or {@link Hooks.DeleteDocument | the `delete[Document]` hook}.
+     */
+    type BackendDeleteOperation<BaseOperation extends DatabaseBackend.DeleteOperation> = InexactPartialExcept<
+      Omit<BaseOperation, "action" | "modifiedTime">,
+      "ids"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document._preDelete | Document#_preDelete},
+     * {@link Hooks.PreDeleteDocument | the `preDelete[Document]` hook}, and
+     * {@linkcode ClientDocumentMixin.AnyMixed._preDeleteDescendantDocuments | ClientDocument._preDeleteDescendantDocuments}.
+     *
+     * This type assumes that any override of {@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments}
+     * calls `super`, ensuring a call to `##preDeleteDocumentArray`.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     *
+     * @remarks This type makes no optionality changes, only omits the keys that `ClientDatabaseBackend##preDeleteDocumentArray` pulls out
+     * of `operation` before passing on the remainder as `options`.
+     */
+    type PreDeleteOptions<BaseOperation extends DatabaseBackend.DeleteOperation> = Omit<
+      BaseOperation,
+      "ids" | "deleteAll" | "noHook" | "pack" | "parent"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document._preDeleteOperation}.
+     *
+     * This type assumes that any override of {@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments}
+     * calls `super`, ensuring a call to `##preDeleteDocumentArray`.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     *
+     * @remarks This type is a no-op, here only for consistency of the operation interface 'type template'. Unlike create or update ops,
+     * there is no data property to restrict, just a list of IDs.
+     */
+    type PreDeleteOperation<BaseOperation extends DatabaseBackend.DeleteOperation> = BaseOperation;
+
+    /**
+     * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onDeleteDocuments} method. This
+     * interface will be removed in v14 along with that method.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     *
+     * @remarks This is effectively the same type as {@linkcode PreDeleteOperation}. Unlike {@linkcode OnCreateDocumentsOperation}, nothing
+     * modifies the object after {@linkcode Document._preDeleteOperation}.
+     *
+     * `modifiedTime` will be the time sent from the client, same as in the `pre_` interfaces.
+     */
+    type OnDeleteDocumentsOperation<BaseOperation extends DatabaseBackend.DeleteOperation> =
+      PreDeleteOperation<BaseOperation>;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document._onDelete | Document#_onDelete},
+     * {@link Hooks.DeleteDocument | the `delete[Document]` hook}, and
+     * {@linkcode ClientDocumentMixin.AnyMixed._onDeleteDescendantDocuments | ClientDocument._onDeleteDescendantDocuments}.
+     *
+     * This type assumes that any override of {@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments}
+     * calls `super`, ensuring a call to `##preDeleteDocumentArray`.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     *
+     * @remarks This interface is created in `ClientDatabaseBackend##handleDeleteDocuments`, which pulls out the omitted keys before passing
+     * the rest of the object along.
+     *
+     * `ids` is omitted not because it gets pulled out but because it does not exist in the `operation` the socket returns. It is added back
+     * _after_ `options` is defined, which is why it appears in {@linkcode Document.Database2.OnDeleteOperation | OnDeleteOperation}.
+     *
+     * See {@linkcode ActorDelta.Database2.DeleteOperation.syntheticActorUpdate} for more on that key.
+     */
+    type OnDeleteOptions<BaseOperation extends DatabaseBackend.DeleteOperation> = Omit<
+      BaseOperation,
+      "ids" | "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
+    >;
+
+    /**
+     * A helper type for defining the interface that gets passed to {@linkcode Document._onDeleteOperation}, and
+     * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}.
+     *
+     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     *
+     * @remarks This type is a no-op, here only for consistency of the operation interface 'type template'. Unlike create or update ops,
+     * there is no data property to restrict, just a list of IDs.
+     */
+    type OnDeleteOperation<BaseOperation extends DatabaseBackend.DeleteOperation> = BaseOperation;
+
+    /* ***********************************************
+     *               DELETE LOOKUPS                  *
+     *************************************************/
+
+    /**
+     * @remarks This previously found the interface for passing to the relevant {@linkcode Document.delete | Document#delete}.
+     * {@linkcode DeleteOneDocumentOperationForName} performs that duty now, while this returns types valid
+     * for {@linkcode DatabaseBackend._deleteDocuments | DatabaseBackend#_deleteDocuments}
+     */
+    type DeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["DeleteOperation"];
+
+    /** @see {@linkcode Document.Database2.DeleteOneDocumentOperation} */
+    type DeleteOneDocumentOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["DeleteOneDocumentOperation"];
+
+    /** @see {@linkcode Document.Database2.DeleteOneDocumentOperation} */
+    type DeleteEmbeddedOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["DeleteEmbeddedOperation"];
+
+    /** @see {@linkcode Document.Database2.DeleteManyDocumentsOperation} */
+    type DeleteManyDocumentsOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["DeleteManyDocumentsOperation"];
+
+    /** @see {@linkcode Document.Database2.BackendDeleteOperation} */
+    type BackendDeleteOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["BackendDeleteOperation"];
+
+    /** @see {@linkcode Document.Database2.PreDeleteOptions} */
+    type PreDeleteOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["PreDeleteOptions"];
+
+    /** @see {@linkcode Document.Database2.PreDeleteOperation} */
+    type PreDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["PreDeleteOperation"];
+
+    /** @see {@linkcode Document.Database2.OnDeleteDocumentsOperation} */
+    type OnDeleteDocumentsOperationForName<DocName extends Document.Type> =
+      Internal.Lookup<DocName>["OnDeleteDocumentsOperation"];
+
+    /** @see {@linkcode Document.Database2.OnDeleteOptions} */
+    type OnDeleteOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnDeleteOptions"];
+
+    /** @see {@linkcode Document.Database2.OnDeleteOperation} */
+    type OnDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnDeleteOperation"];
+
+    namespace Internal {
+      type Lookup<DocumentType extends Document.Type, Temporary extends boolean | undefined = boolean | undefined> =
+        | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "ActorDelta" ? ActorDelta.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Actor" ? Actor.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Adventure" ? Adventure.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "AmbientLight"
+            ? AmbientLightDocument.Database2.Internal.OperationNameMap<Temporary>
+            : never)
+        | (DocumentType extends "AmbientSound"
+            ? AmbientSoundDocument.Database2.Internal.OperationNameMap<Temporary>
+            : never)
+        | (DocumentType extends "Card" ? Card.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Cards" ? Cards.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "ChatMessage" ? ChatMessage.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Combat" ? Combat.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Combatant" ? Combatant.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "CombatantGroup"
+            ? CombatantGroup.Database2.Internal.OperationNameMap<Temporary>
+            : never)
+        | (DocumentType extends "Drawing" ? DrawingDocument.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "FogExploration"
+            ? FogExploration.Database2.Internal.OperationNameMap<Temporary>
+            : never)
+        | (DocumentType extends "Folder" ? Folder.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Item" ? Item.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "JournalEntryCategory"
+            ? JournalEntryCategory.Database2.Internal.OperationNameMap<Temporary>
+            : never)
+        | (DocumentType extends "JournalEntryPage"
+            ? JournalEntryPage.Database2.Internal.OperationNameMap<Temporary>
+            : never)
+        | (DocumentType extends "JournalEntry" ? JournalEntry.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Macro" ? Macro.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "MeasuredTemplate"
+            ? MeasuredTemplateDocument.Database2.Internal.OperationNameMap<Temporary>
+            : never)
+        | (DocumentType extends "Note" ? NoteDocument.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Playlist" ? Playlist.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "RegionBehavior"
+            ? RegionBehavior.Database2.Internal.OperationNameMap<Temporary>
+            : never)
+        | (DocumentType extends "Region" ? RegionDocument.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "RollTable" ? RollTable.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Scene" ? Scene.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Setting" ? Setting.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "TableResult" ? TableResult.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Tile" ? TileDocument.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Token" ? TokenDocument.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "User" ? User.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (DocumentType extends "Wall" ? WallDocument.Database2.Internal.OperationNameMap<Temporary> : never);
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode OperationAction} instead. This type will be removed in v14. */
+    type Operation = OperationAction;
+
+    /**
+     * @deprecated This type has been replaced with document-specific interfaces, e.g {@linkcode Macro.Database2.GetDocumentsOperation}.
+     * This type will be removed in v14.
+     *
+     * @see {@linkcode GetDocumentsOperation}
+     */
+    interface GetOptions extends Pick<DatabaseBackend.GetOperation, "pack"> {}
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateOneDocumentOperation} instead. This type will be removed in v14 */
+    type UpdateOperation<Op extends DatabaseBackend.UpdateOperation> = UpdateOneDocumentOperation<Op>;
+
+    /** @deprecated Use {@linkcode DeleteOneDocumentOperation} instead. This type will be removed in v14 */
+    type DeleteOperation<Op extends DatabaseBackend.DeleteOperation> = DeleteOneDocumentOperation<Op>;
+
+    /** @deprecated Use {@linkcode PreCreateOperation} instead. This type will be removed in v14 */
+    type PreCreateOperationStatic<Op extends DatabaseBackend.CreateOperation> = PreCreateOperation<Op>;
+
+    // PreCreateOptions didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions<Op extends DatabaseBackend.CreateOperation> = OnCreateOptions<Op>;
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation<Op extends DatabaseBackend.UpdateOperation> = UpdateManyDocumentsOperation<Op>;
+
+    /** @deprecated Use {@linkcode UpdateOneDocumentOperation} instead. This type will be removed in v14 */
+    type UpdateOperationInstance<Op extends DatabaseBackend.UpdateOperation> = UpdateOneDocumentOperation<Op>;
+
+    /** @deprecated Use {@linkcode PreUpdateOperation} instead. This type will be removed in v14 */
+    type PreUpdateOperationStatic<Op extends DatabaseBackend.UpdateOperation> = PreUpdateOperation<Op>;
+
+    // PreUpdateOptions didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions<Op extends DatabaseBackend.UpdateOperation> = OnUpdateOptions<Op>;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation<Op extends DatabaseBackend.DeleteOperation> = DeleteManyDocumentsOperation<Op>;
+
+    /** @deprecated Use {@linkcode DeleteOneDocumentOperation} instead. This type will be removed in v14 */
+    type DeleteOperationInstance<Op extends DatabaseBackend.DeleteOperation> = DeleteOneDocumentOperation<Op>;
+
+    /** @deprecated Use {@linkcode PreDeleteOperation} instead. This type will be removed in v14 */
+    type PreDeleteOperationStatic<Op extends DatabaseBackend.DeleteOperation> = PreDeleteOperation<Op>;
+
+    /** @deprecated Use {@linkcode PreDeleteOptions} instead. This type will be removed in v14 */
+    type PreDeleteOperationInstance<Op extends DatabaseBackend.DeleteOperation> = PreDeleteOptions<Op>;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions<Op extends DatabaseBackend.DeleteOperation> = OnDeleteOptions<Op>;
+
+    /** @deprecated Use {@linkcode CreateOperationForName} instead. This type will be removed in v14 */
+    type CreateForName<DocumentName extends Document.Type> = CreateOperationForName<DocumentName>;
+
+    /** @deprecated Use {@linkcode OnCreateOptionsForName} instead. This type will be removed in v14 */
+    type CreateOptionsFor<DocumentName extends Document.Type> = OnCreateOptionsForName<DocumentName>;
+
+    /** @deprecated Use {@linkcode OnUpdateOptionsForName} instead. This type will be removed in v14 */
+    type UpdateOptionsFor<DocumentName extends Document.Type> = OnUpdateOptionsForName<DocumentName>;
+
+    /** @deprecated Use {@linkcode OnDeleteOptionsForName} instead. This type will be removed in v14 */
+    type DeleteOptionsFor<DocumentName extends Document.Type> = OnDeleteOptionsForName<DocumentName>;
+
+    /** @deprecated Use {@linkcode PreCreateOptionsForName} instead. This type will be removed in v14 */
+    type PreCreateOptionsFor<DocumentName extends Document.Type> = PreCreateOptionsForName<DocumentName>;
+
+    /** @deprecated Use {@linkcode PreUpdateOptionsForName} instead. This type will be removed in v14 */
+    type PreUpdateOptionsFor<DocumentName extends Document.Type> = PreUpdateOptionsForName<DocumentName>;
+
+    /** @deprecated Use {@linkcode PreDeleteOptionsForName} instead. This type will be removed in v14 */
+    type PreDeleteOptionsFor<DocumentName extends Document.Type> = PreDeleteOptionsForName<DocumentName>;
+  }
+
   namespace Database {
     type Operation = "create" | "update" | "delete";
 
@@ -1881,7 +2764,7 @@ declare namespace Document {
     interface GetOptions extends Pick<DatabaseGetOperation, "pack"> {}
 
     /** Used for {@linkcode Document.createDocuments} */
-    type CreateOperation<Op extends DatabaseCreateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
+    type CreateDocumentsOperation<Op extends DatabaseCreateOperation> = NullishProps<Omit<Op, "data" | "modifiedTime">>;
 
     /** Used for {@linkcode Document.update} */
     type UpdateOperation<Op extends DatabaseUpdateOperation> = InexactPartial<Omit<Op, "updates">>;
@@ -1960,42 +2843,6 @@ declare namespace Document {
       Op,
       "ids" | "deleteAll" | "pack" | "parentUuid" | "syntheticActorUpdate"
     >;
-
-    type CreateForName<DocumentType extends Document.Type> =
-      | (DocumentType extends "ActiveEffect" ? ActiveEffect.Database.Create : never)
-      | (DocumentType extends "ActorDelta" ? ActorDelta.Database.Create : never)
-      | (DocumentType extends "Actor" ? Actor.Database.Create : never)
-      | (DocumentType extends "Adventure" ? Adventure.Database.Create : never)
-      | (DocumentType extends "Card" ? Card.Database.Create : never)
-      | (DocumentType extends "Cards" ? Cards.Database.Create : never)
-      | (DocumentType extends "ChatMessage" ? ChatMessage.Database.Create : never)
-      | (DocumentType extends "Combat" ? Combat.Database.Create : never)
-      | (DocumentType extends "Combatant" ? Combatant.Database.Create : never)
-      | (DocumentType extends "CombatantGroup" ? CombatantGroup.Database.Create : never)
-      | (DocumentType extends "FogExploration" ? FogExploration.Database.Create : never)
-      | (DocumentType extends "Folder" ? Folder.Database.Create : never)
-      | (DocumentType extends "Item" ? Item.Database.Create : never)
-      | (DocumentType extends "JournalEntryCategory" ? JournalEntryCategory.Database.Create : never)
-      | (DocumentType extends "JournalEntryPage" ? JournalEntryPage.Database.Create : never)
-      | (DocumentType extends "JournalEntry" ? JournalEntry.Database.Create : never)
-      | (DocumentType extends "Macro" ? Macro.Database.Create : never)
-      | (DocumentType extends "PlaylistSound" ? PlaylistSound.Database.Create : never)
-      | (DocumentType extends "Playlist" ? Playlist.Database.Create : never)
-      | (DocumentType extends "RegionBehavior" ? RegionBehavior.Database.Create : never)
-      | (DocumentType extends "RollTable" ? RollTable.Database.Create : never)
-      | (DocumentType extends "Scene" ? Scene.Database.Create : never)
-      | (DocumentType extends "Setting" ? Setting.Database.Create : never)
-      | (DocumentType extends "TableResult" ? TableResult.Database.Create : never)
-      | (DocumentType extends "User" ? User.Database.Create : never)
-      | (DocumentType extends "AmbientLight" ? AmbientLightDocument.Database.Create : never)
-      | (DocumentType extends "AmbientSound" ? AmbientSoundDocument.Database.Create : never)
-      | (DocumentType extends "Drawing" ? DrawingDocument.Database.Create : never)
-      | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Database.Create : never)
-      | (DocumentType extends "Note" ? NoteDocument.Database.Create : never)
-      | (DocumentType extends "Region" ? RegionDocument.Database.Create : never)
-      | (DocumentType extends "Tile" ? TileDocument.Database.Create : never)
-      | (DocumentType extends "Token" ? TokenDocument.Database.Create : never)
-      | (DocumentType extends "Wall" ? WallDocument.Database.Create : never);
 
     type CreateOperationForName<
       DocumentType extends Document.Type,
@@ -2325,21 +3172,76 @@ declare namespace Document {
       | (DocumentType extends "Wall" ? WallDocument.Database.PreDeleteOptions : never);
   }
 
-  interface DataFieldShimOptions {
+  type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  /** @internal */
+  type _TestUserPermissionsOptions = InexactPartial<{
     /**
-     * A string to log as a compatibility warning on accessing the `oldKey`
+     * Require the exact permission level requested?
+     * @defaultValue `false`
      */
-    warning?: string | null | undefined;
+    exact: boolean;
+  }>;
+
+  interface TestUserPermissionOptions extends _TestUserPermissionsOptions {}
+
+  type CanUserModifyData<Schema extends DataSchema, Action extends Document.Database2.OperationAction> =
+    | (Action extends "create" ? SchemaField.CreateData<Schema> : never)
+    | (Action extends "update" ? SchemaField.UpdateData<Schema> : never)
+    | (Action extends "delete" ? EmptyObject : never);
+
+  /** @internal */
+  type _GetEmbeddedDocumentOptions = InexactPartial<{
+    /**
+     * Throw an Error if the requested id does not exist. See {@linkcode Collection.get | Collection#get}
+     * @defaultValue `false`
+     */
+    strict: boolean;
 
     /**
+     * Allow retrieving an invalid Embedded Document.
+     * @defaultValue `false`
+     */
+    invalid: boolean;
+  }>;
+
+  /** This is passed on to {@linkcode EmbeddedCollection.get | EmbeddedCollection#get} */
+  interface GetEmbeddedDocumentOptions extends _GetEmbeddedDocumentOptions {}
+
+  /**
+   * Gets the hierarchical fields in the schema. Hardcoded to whatever Foundry fields are hierarchical
+   * as there is no way to access the a static property of a custom fields from an instance.
+   */
+  type HierarchyOf<Schema extends DataSchema> = PickValue<
+    Schema,
+    EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
+  >;
+
+  interface DataFieldShimOptions extends LogCompatibilityWarningOptions {
+    /** The deprecation message */
+    warning?: string | undefined;
+
+    /**
+     * The value of the shim
      * @remarks Foundry uses `if ("value" in options)` to determine whether to override the default value.
      */
     value?: unknown;
   }
 
+  type RecursiveFieldClearCallback = (data: AnyMutableObject, fieldName: string) => void;
+
+  interface ClearFieldsRecursivelyOptions {
+    /** A callback that is invoked on each field in order to clear it. */
+    callback?: RecursiveFieldClearCallback | undefined;
+  }
+
+  /* ***********************************************
+   *             CLIENT DOCUMENT TYPES             *
+   *************************************************/
+
   /**
-   * If a `parent` is required for a given Document's creation, its template must pass `NonNullable<X.Parent>` to `CreateDialogContext`
-   *
+   * If a `parent` is required for a given Document's creation, its template must pass `NonNullable<X.Parent>` to `CreateDialogOptions`,
+   * e.g {@linkcode JournalEntryPage.CreateDialogOptions}
    * @internal
    */
   type ParentContext<Parent extends Document.Any | null> = Parent extends null
@@ -2352,10 +3254,14 @@ declare namespace Document {
         parent: Parent;
       };
 
-  /** @internal */
+  /**
+   * Only allow passing a `type` to {@linkcode ClientDocumentMixin.AnyMixed.defaultName | ClientDocument#defaultName} if the Document in
+   * question has type data.
+   * @internal
+   */
   type _PossibleSubtypeContext<DocumentName extends Document.Type> =
     GetKey<Document.MetadataFor<DocumentName>, "hasTypeData"> extends true
-      ? NullishProps<{
+      ? InexactPartial<{
           /**
            * The sub-type of the document
            * @remarks Pulls from `CONFIG[documentName].typeLabels?.[type]` if provided. Ignored if falsey.
@@ -2367,6 +3273,10 @@ declare namespace Document {
           type?: never;
         };
 
+  /**
+   * A helper type for defining the interface passed to a specific Document's
+   * {@linkcode ClientDocumentMixin.AnyMixed.defaultName | ClientDocument#defaultName}.
+   */
   type DefaultNameContext<DocumentName extends Document.Type, Parent extends Document.Any | null> = InexactPartial<{
     /**
      * A compendium pack within which the Document should be created
@@ -2384,6 +3294,9 @@ declare namespace Document {
   }> &
     _PossibleSubtypeContext<DocumentName>;
 
+  /**
+   * The {@linkcode ClientDocumentMixin.AnyMixed.createDialog | ClientDocument.createDialog} method's default template
+   */
   // TODO(LukeAbby): Inline into each document.
   type CreateDialogData<CreateData extends object> = InexactPartial<{
     [K in keyof CreateData as Extract<K, "name" | "type" | "folder">]: CreateData[K];
@@ -2393,21 +3306,21 @@ declare namespace Document {
   /** @internal */
   type _PossibleSubtypesContext<DocumentName extends Document.Type> =
     GetKey<Document.MetadataFor<DocumentName>, "hasTypeData"> extends true
-      ? {
-          /** @deprecated This Document type does not support subtypes */
-          types?: never;
-        }
-      : NullishProps<{
+      ? InexactPartial<{
           /**
            * A restriction the selectable sub-types of the Dialog.
            * @remarks Only checked if the document has `static TYPES` of length \> 1 (i.e it both `hasTypeData` and has
-           * at least one non-`"base"` type registered). The computed list will always exclude {@link CONST.BASE_DOCUMENT_TYPE | `CONST.BASE_DOCUMENT_TYPE`},
+           * at least one non-`"base"` type registered). The computed list will always exclude {@linkcode CONST.BASE_DOCUMENT_TYPE},
            * so it is disallowed in this whitelist.
            */
           types: Exclude<Document.SubTypesOf<DocumentName>, "base">[];
-        }>;
+        }>
+      : {
+          /** @deprecated This Document type does not support subtypes */
+          types?: never;
+        };
 
-  /** @deprecated in favor of {@linkcode CreateDialogOptions} */
+  /** @deprecated in favor of {@linkcode CreateDialogOptions}. Will be removed in v14. */
   type CreateDialogContext<
     DocumentName extends Document.Type,
     Parent extends Document.Any | null,
@@ -2422,78 +3335,149 @@ declare namespace Document {
     _PossibleSubtypesContext<DocumentName> &
     ParentContext<Parent>;
 
-  type CreateDialogOptions<DocumentName extends Document.Type> =
-    InexactPartial<foundry.applications.api.DialogV2.PromptConfig> &
-      NullishProps<{
-        /**
-         * A template to use for the dialog contents instead of the default.
-         */
-        template: string;
+  /**
+   * Prior to v13, {@linkcode ClientDocumentMixin.AnyMixed.createDialog | ClientDocument.createDialog} took Dialog (V1) options in the same
+   * parameter as the {@linkcode Document.Database2.CreateDocumentsOperation | CreateDocumentsOperation}. In v13+, it still checks for a
+   * subset of those options that are relevant to DialogV2 (and also `jQuery`, for some reason) and, if they exist, reorganizes them to
+   * match V2 option format and adds them to the new `dialogOptions` object, which is a rest property on the new 3rd parameter.
+   *
+   * @privateRemarks This is `IntentionalPartial` because `.createDialog` checks for keys with `in`
+   * @internal
+   */
+  type _PartialDialogV1OptionsForCreateDialog = IntentionalPartial<
+    Pick<DialogV2.PromptConfig, "id" | "classes"> & {
+      /** @deprecated As of v13 these options are being passed to a {@linkcode DialogV2} so this property has no effect */
+      jQuery: boolean;
 
-        /**
-         * Additional render context to provide to the template.
-         */
-        context: AnyObject;
-      }> &
-      _PossibleSubtypesContext<DocumentName>;
+      title: string;
+    } & ApplicationV2.Position
+  >;
 
-  interface FromImportContext<Parent extends Document.Any | null> extends Omit<ConstructionContext<Parent>, "strict"> {
+  /** The interface for {@linkcode CreateDialogOptions.folders}, see remarks there */
+  interface CreateDialogFoldersChoices extends Omit<FormSelectOption, "value" | "label"> {
+    id: string;
+    name: string;
+  }
+
+  /**
+   * A helper type for defining the interface to pass to a specific document's {@linkcode ClientDocument.createDialog | .createDialog}'s
+   * second parameter.
+   */
+  type CreateDialogOptions<DocumentName extends Document.Type> = DialogV2.PromptConfig &
+    InexactPartial<{
+      /**
+       * Available folders in which the new Document can be placed
+       * @remarks This gets passed to a {@linkcode foundry.applications.handlebars.selectOptions | selectOptions} as the choices, with the
+       * default template having `valueAttr="id" labelAttr="name"`
+       */
+      folders: Array<CreateDialogFoldersChoices>;
+
+      /**
+       * A template to use for the dialog contents instead of the default.
+       * @remarks If nothing is passed for this, the default at `templates/sidebar/document-create.html` will be used
+       */
+      template: string;
+
+      /**
+       * Additional render context to provide to the template.
+       * @remarks Only relevant if passing a non-default {@linkcode template}
+       */
+      context: AnyObject;
+    }> &
+    _PossibleSubtypesContext<DocumentName>;
+
+  /**
+   * A helper type for generating the return for {@linkcode ClientDocumentMixin.AnyMixed.createDialog | ClientDocument.createDialog}.
+   *
+   * @remarks The passed config is {@linkcode foundry.utils.mergeObject | mergeObject}ed over an existing base config, which has an `ok`
+   * callback forwarding the return of {@linkcode Document.create} (but a call where we are sure that it's only being passed a  single
+   * data object).
+   */
+  type CreateDialogReturn<
+    Doc extends Document.Any,
+    PassedConfig extends DialogV2.PromptConfig | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  > = _CreateDialogReturn<Doc, Coalesce<PassedConfig, {}>>;
+
+  /**
+   * Nested `SimpleMerge`s is to avoid using the more complicated `Merge` type. Merging the `ok` object separately allows calls like
+   * ```js
+   * Actor.createDialog({}, {}, { ok: { label: "Something" }})
+   * ```
+   * to not knock out the `callback` from a types perspective, and more finesse isn't required because other properties that affect
+   * the return type are either top level or not included in the default config.
+   * @internal
+   */
+  type _CreateDialogReturn<
+    Doc extends Document.Any,
+    PassedConfig extends DialogV2.PromptConfig,
+  > = DialogV2.PromptReturn<
+    SimpleMerge<
+      PassedConfig,
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      { ok: SimpleMerge<{ callback: () => Promise<Doc | undefined> }, GetKey<PassedConfig, "ok", {}>> }
+    >
+  >;
+
+  /**
+   * A helper type for generating the return for {@linkcode ClientDocumentMixin.AnyMixed.deleteDialog | ClientDocument#deleteDialog}.
+   *
+   * @remarks The passed config is {@linkcode foundry.utils.mergeObject | mergeObject}ed over an existing base config, which has a `yes`
+   * callback forwarding the return of {@linkcode Document.delete | Document#delete}.
+   */
+  type DeleteDialogReturn<
+    Doc extends Document.Any,
+    PassedConfig extends DialogV2.ConfirmConfig | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  > = _DeleteDialogReturn<Doc, Coalesce<PassedConfig, {}>>;
+
+  /**
+   * Nested `SimpleMerge`s is to avoid using the more complicated `Merge` type. Merging the `yes` object separately allows calls like
+   * ```js
+   * someActor.deleteDialog({}, { yes: { label: "KILL" }})
+   * ```
+   * to not knock out the `callback` from a types perspective, and more finesse isn't required because other properties that affect
+   * the return type are either top level or not included in the default config.
+   * @internal
+   */
+  type _DeleteDialogReturn<
+    Doc extends Document.Any,
+    PassedConfig extends DialogV2.ConfirmConfig,
+  > = DialogV2.ConfirmReturn<
+    SimpleMerge<
+      PassedConfig,
+      {
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+        yes: SimpleMerge<{ callback: () => Promise<Doc | undefined> }, GetKey<PassedConfig, "yes", {}>>;
+      }
+    >
+  >;
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   *
+   * {@linkcode ClientDocumentMixin.AnyMixed.deleteDialog}'s first parameter is a {@linkcode DialogV2.ConfirmConfig}, but
+   * it will accept top level position-related keys with a deprecation warning and move them into the `position` object, where they
+   * should be in AppV2 configs.
+   */
+  interface DeleteDialogDeprecatedConfig extends DialogV2.ConfirmConfig, IntentionalPartial<ApplicationV2.Position> {}
+
+  /** This interface is necessitated by the change in default `strict` behaviour and nothing else */
+  interface FromImportContext<Parent extends Document.Any | null>
+    extends Omit<Document.ConstructionContext<Parent>, "strict"> {
     /**
      * Strict validation is enabled by default.
      * @defaultValue `true`
      * @remarks Not allowed to be `undefined` as that would produce `false`, not the expected default of `true`, due to being spread
-     * into an object with `strict: true`, then passed to {@link Document.fromSource | `Document.fromSource`}, where the parameter
-     * default is `false`
+     * into an object with `strict: true`, then passed to {@linkcode Document.fromSource}, where the parameter default is `false`
      */
-    strict?: boolean | null;
+    strict?: boolean;
   }
 
-  type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
-
-  /** @internal */
-  type _TestUserPermissionsOptions = NullishProps<{
-    /**
-     * Require the exact permission level requested?
-     * @defaultValue `false`
-     */
-    exact: boolean;
-  }>;
-
-  interface TestUserPermissionOptions extends _TestUserPermissionsOptions {}
-
-  type CanUserModifyData<Schema extends DataSchema, Action extends "create" | "update" | "delete"> =
-    | (Action extends "create" ? SchemaField.CreateData<Schema> : never)
-    | (Action extends "update" ? SchemaField.UpdateData<Schema> : never)
-    | (Action extends "delete" ? EmptyObject : never);
-
   /**
-   * @internal
+   * A helper type to define the args list for a specific document's
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ._preCreateDescendantDocuments}
    */
-  type _GetEmbeddedDocumentOptions = InexactPartial<{
-    /**
-     * Throw an Error if the requested id does not exist. See {@link Collection.get | `Collection#get`}
-     * @defaultValue `false`
-     */
-    strict: boolean;
-
-    /**
-     * Allow retrieving an invalid Embedded Document.
-     * @defaultValue `false`
-     */
-    invalid: boolean;
-  }>;
-
-  interface GetEmbeddedDocumentOptions extends _GetEmbeddedDocumentOptions {}
-
-  /**
-   * Gets the hierarchical fields in the schema. Hardcoded to whatever Foundry fields are hierarchical
-   * as there is no way to access the a static property of a custom fields from an instance.
-   */
-  type HierarchyOf<Schema extends DataSchema> = PickValue<
-    Schema,
-    EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
-  >;
-
   type PreCreateDescendantDocumentsArgs<
     Parent extends Document.AnyStored,
     DirectDescendant extends Document.Any,
@@ -2503,11 +3487,15 @@ declare namespace Document {
         parent: Parent,
         collection: Embedded[DirectDescendant["documentName"]],
         data: Document.CreateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database.CreateOptionsFor<DirectDescendant["documentName"]>,
+        options: Document.Database2.PreCreateOptionsForName<DirectDescendant["documentName"]>,
         userId: string,
       ]
     : never;
 
+  /**
+   * A helper type to define the args list for a specific document's
+   * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ._onCreateDescendantDocuments}
+   */
   type OnCreateDescendantDocumentsArgs<
     Parent extends Document.AnyStored,
     DirectDescendant extends Document.Any,
@@ -2518,11 +3506,15 @@ declare namespace Document {
         collection: Embedded[DirectDescendant["documentName"]],
         documents: DirectDescendant[],
         data: Document.CreateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database.CreateOptionsFor<DirectDescendant["documentName"]>,
+        options: Document.Database2.OnCreateOptionsForName<DirectDescendant["documentName"]>,
         userId: string,
       ]
     : never;
 
+  /**
+   * A helper type to define the args list for a specific document's
+   * {@linkcode ClientDocumentMixin.AnyMixed._preUpdateDescendantDocuments | ._preUpdateDescendantDocuments}
+   */
   type PreUpdateDescendantDocumentsArgs<
     Parent extends Document.AnyStored,
     DirectDescendant extends Document.Any,
@@ -2532,11 +3524,15 @@ declare namespace Document {
         parent: Parent,
         collection: Embedded[DirectDescendant["documentName"]],
         changes: Document.UpdateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database.UpdateOptionsFor<DirectDescendant["documentName"]>,
+        options: Document.Database2.PreUpdateOptionsForName<DirectDescendant["documentName"]>,
         userId: string,
       ]
     : never;
 
+  /**
+   * A helper type to define the args list for a specific document's
+   * {@linkcode ClientDocumentMixin.AnyMixed._onUpdateDescendantDocuments | ._onUpdateDescendantDocuments}
+   */
   type OnUpdateDescendantDocumentsArgs<
     Parent extends Document.AnyStored,
     DirectDescendant extends Document.Any,
@@ -2547,11 +3543,15 @@ declare namespace Document {
         collection: Embedded[DirectDescendant["documentName"]],
         documents: DirectDescendant[],
         changes: Document.UpdateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database.UpdateOptionsFor<DirectDescendant["documentName"]>,
+        options: Document.Database2.OnUpdateOptionsForName<DirectDescendant["documentName"]>,
         userId: string,
       ]
     : never;
 
+  /**
+   * A helper type to define the args list for a specific document's
+   * {@linkcode ClientDocumentMixin.AnyMixed._preDeleteDescendantDocuments | ._preDeleteDescendantDocuments}
+   */
   type PreDeleteDescendantDocumentsArgs<
     Parent extends Document.AnyStored,
     DirectDescendant extends Document.Any,
@@ -2561,11 +3561,15 @@ declare namespace Document {
         parent: Parent,
         collection: Embedded[DirectDescendant["documentName"]],
         ids: string[],
-        options: Document.Database.DeleteOptionsFor<DirectDescendant["documentName"]>,
+        options: Document.Database2.PreDeleteOptionsForName<DirectDescendant["documentName"]>,
         userId: string,
       ]
     : never;
 
+  /**
+   * A helper type to define the args list for a specific document's
+   * {@linkcode ClientDocumentMixin.AnyMixed._onDeleteDescendantDocuments | ._onDeleteDescendantDocuments}
+   */
   type OnDeleteDescendantDocumentsArgs<
     Parent extends Document.AnyStored,
     DirectDescendant extends Document.Any,
@@ -2576,20 +3580,24 @@ declare namespace Document {
         collection: Embedded[DirectDescendant["documentName"]],
         documents: DirectDescendant[],
         ids: string[],
-        options: Document.Database.DeleteOptionsFor<DirectDescendant["documentName"]>,
+        options: Document.Database2.OnDeleteOptionsForName<DirectDescendant["documentName"]>,
         userId: string,
       ]
     : never;
 
-  type Clone<This extends Document.Any, Save extends boolean | null | undefined> = Save extends true
-    ? Promise<This>
-    : This;
+  /**
+   * {@linkcode Document.clone} is not an async function, and its default behaviour is to return a constructed, temporary document directly,
+   * but if `{save: true}` is passed in `context`, it will forward the return of {@linkcode Document.create}.
+   */
+  type Clone<This extends Document.Any, Save extends boolean | undefined> =
+    true extends Extract<Save, true> ? Promise<Document.StoredForName<This["documentName"]>> : This;
 
   /**
-   * The options for `fromDropData`. Foundry never uses these so the interface is currently empty.
+   * @deprecated Foundry, prior to v13, had a completely unused `options` parameter in the
+   * {@linkcode ClientDocumentMixin.AnyMixed.fromDropData | ClientDocument.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface DropDataOptions {}
+  type DropDataOptions = AnyObject;
 
   type DropDataFor<Name extends Document.Type> = {
     ActiveEffect: ActiveEffect.DropData;
@@ -2629,29 +3637,34 @@ declare namespace Document {
   }[Name];
 
   /**
-   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
+   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged
+   * into `Stored`.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ToConfiguredStored<D extends Document.AnyConstructor> = Stored<ToConfiguredInstance<D>>;
 
   /**
-   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
+   * @deprecated This type should not be used directly. Use {@linkcode StoredForName} as this type does not account for anything declaration
+   * merged into `Stored`.
    */
   type Stored<D extends Document.Any> = Document.Internal.Stored<D>;
 
   /**
-   * @deprecated This type should not be used directly. Use `InvalidForName` as this type does not account for anything declaration merged into `Invalid`.
+   * @deprecated This type should not be used directly. Use `InvalidForName` as this type does not account for anything declaration merged
+   * into `Invalid`.
    */
   type Invalid<D extends Document.Any> = Document.Internal.Invalid<D>;
 
   /**
-   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
+   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged
+   * into `Stored`.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ToStored<D extends Document.AnyConstructor> = Stored<FixedInstanceType<D>>;
 
   /**
-   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
+   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged
+   * into `Stored`.
    */
   type ToStoredIf<D extends Document.AnyConstructor, Temporary extends boolean | undefined> = Temporary extends true
     ? FixedInstanceType<D>
@@ -2726,7 +3739,8 @@ declare namespace Document {
   }
 
   /**
-   * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use {@linkcode Document.ModuleSubType} instead.
+   * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use
+   * {@linkcode Document.ModuleSubType} instead.
    */
   type ModuleSubtype = ModuleSubType;
 
@@ -2758,8 +3772,9 @@ declare namespace Document {
     readonly flags?: DataField<Options, any>;
   }
 
-  // These types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
-  // This is much more complex than proving the constraint for `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
+  // These types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint
+  // `this extends Document.Any` has to be proved. This is much more complex than proving the constraint for
+  // `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
 
   /**
    * @deprecated This type is being made internal.
@@ -2791,9 +3806,6 @@ declare namespace Document {
     K
   >;
 
-  /**
-   * @deprecated Use the `TemporaryIf` available on each sub-document.
-   */
   type TemporaryIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true
     ? D
     : // eslint-disable-next-line @typescript-eslint/no-deprecated

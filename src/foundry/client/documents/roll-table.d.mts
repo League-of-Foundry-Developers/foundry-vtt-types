@@ -1,9 +1,18 @@
-import type { InexactPartial, Merge } from "#utils";
+import type { InexactPartial, MaybeArray, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
+import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseRollTable from "#common/documents/roll-table.mjs";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 import fields = foundry.data.fields;
 
@@ -24,14 +33,14 @@ declare namespace RollTable {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `RollTable` document instance configured through `CONFIG.RollTable.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredRollTable | `fvtt-types/configuration/ConfiguredRollTable`} in fvtt-types.
+   * The implementation of the `RollTable` document instance configured through
+   * {@linkcode CONFIG.RollTable.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `RollTable` document configured through `CONFIG.RollTable.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `RollTable` document configured through
+   * {@linkcode CONFIG.RollTable.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -156,7 +165,8 @@ declare namespace RollTable {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -182,48 +192,73 @@ declare namespace RollTable {
   type Stored = Document.Internal.Stored<RollTable.Implementation>;
 
   /**
-   * The data put in {@link RollTable._source | `RollTable#_source`}. This data is what was
+   * The data put in {@linkcode RollTable._source | RollTable#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode RollTable.create}
-   * and {@link RollTable | `new RollTable(...)`}.
+   * and {@linkcode RollTable | new RollTable(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link RollTable.name | `RollTable#name`}.
+   * Used in the {@linkcode RollTable.create} and {@linkcode RollTable.createDocuments} signatures, and
+   * {@linkcode RollTable.Database2.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode RollTable.create}, returning (a single | an array of) (temporary | stored)
+   * `RollTable`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<RollTable.TemporaryIf<Temporary>>
+      : RollTable.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode RollTable.name | RollTable#name}.
    *
    * This is data transformed from {@linkcode RollTable.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link RollTable.update | `RollTable#update`}.
-   * It is a distinct type from {@link RollTable.CreateData | `DeepPartial<RollTable.CreateData>`} because
+   * The data used to update a document, for example {@linkcode RollTable.update | RollTable#update}.
+   * It is a distinct type from {@linkcode RollTable.CreateData | DeepPartial<RollTable.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode RollTable.update | RollTable#update} and
+   * {@linkcode RollTable.updateDocuments} signatures, and {@linkcode RollTable.Database2.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode RollTable}. This is the source of truth for how an RollTable document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode RollTable}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -310,6 +345,596 @@ declare namespace RollTable {
     _stats: fields.DocumentStatsField;
   }
 
+  namespace Database2 {
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `RollTable` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
+     */
+    interface GetOperation extends DatabaseBackend.GetOperation<RollTable.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode RollTable.get}.
+     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     */
+    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `RollTable` documents.
+     * @see {@linkcode Document.Database2.BackendGetOperation}
+     */
+    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `RollTable` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode RollTable.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
+     */
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends DatabaseBackend.CreateOperation<RollTable.CreateInput, RollTable.Parent, Temporary> {}
+
+    /**
+     * The interface for passing to {@linkcode RollTable.create} or {@linkcode RollTable.createDocuments}.
+     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated `RollTable` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `RollTable` documents. (see {@linkcode RollTable.Parent})
+     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `RollTable` documents.
+     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode RollTable._preCreate | RollTable#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateRollTable` hook}.
+     * @see {@linkcode Document.Database2.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode RollTable._preCreateOperation}.
+     * @see {@linkcode Document.Database2.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode RollTable._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode RollTable._onCreate | RollTable#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createRollTable` hook}.
+     * @see {@linkcode Document.Database2.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RollTable._onCreateOperation} and `RollTable`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database2.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `RollTable` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode RollTable.update | RollTable#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<RollTable.UpdateInput, RollTable.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode RollTable.update | RollTable#update}.
+     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated `RollTable` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `RollTable` documents (see {@linkcode RollTable.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode RollTable.updateDocuments}.
+     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `RollTable` documents.
+     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RollTable._preUpdate | RollTable#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateRollTable` hook}.
+     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RollTable._preUpdateOperation}.
+     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode RollTable._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RollTable._onUpdate | RollTable#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateRollTable` hook}.
+     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RollTable._onUpdateOperation} and `RollTable`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `RollTable` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode RollTable.delete | RollTable#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<RollTable.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode RollTable.delete | RollTable#delete}.
+     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated `RollTable` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `RollTable` documents (see {@linkcode RollTable.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode RollTable.deleteDocuments}.
+     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `RollTable` documents.
+     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RollTable._preDelete | RollTable#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteRollTable` hook}.
+     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RollTable._preDeleteOperation}.
+     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode RollTable._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RollTable._onDelete | RollTable#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteRollTable` hook}.
+     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode RollTable._onDeleteOperation} and `RollTable`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: RollTable.Database2.GetDocumentsOperation;
+        BackendGetOperation: RollTable.Database2.BackendGetOperation;
+        GetOperation: RollTable.Database2.GetOperation;
+
+        CreateDocumentsOperation: RollTable.Database2.CreateDocumentsOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        CreateEmbeddedOperation: RollTable.Database2.CreateEmbeddedOperation;
+        BackendCreateOperation: RollTable.Database2.BackendCreateOperation<Temporary>;
+        CreateOperation: RollTable.Database2.CreateOperation<Temporary>;
+        PreCreateOptions: RollTable.Database2.PreCreateOptions<Temporary>;
+        PreCreateOperation: RollTable.Database2.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: RollTable.Database2.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: RollTable.Database2.OnCreateOptions;
+        OnCreateOperation: RollTable.Database2.OnCreateOperation;
+
+        UpdateOneDocumentOperation: RollTable.Database2.UpdateOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        UpdateEmbeddedOperation: RollTable.Database2.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: RollTable.Database2.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: RollTable.Database2.BackendUpdateOperation;
+        UpdateOperation: RollTable.Database2.UpdateOperation;
+        PreUpdateOptions: RollTable.Database2.PreUpdateOptions;
+        PreUpdateOperation: RollTable.Database2.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: RollTable.Database2.OnUpdateDocumentsOperation;
+        OnUpdateOptions: RollTable.Database2.OnUpdateOptions;
+        OnUpdateOperation: RollTable.Database2.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: RollTable.Database2.DeleteOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        DeleteEmbeddedOperation: RollTable.Database2.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: RollTable.Database2.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: RollTable.Database2.BackendDeleteOperation;
+        DeleteOperation: RollTable.Database2.DeleteOperation;
+        PreDeleteOptions: RollTable.Database2.PreDeleteOptions;
+        PreDeleteOperation: RollTable.Database2.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: RollTable.Database2.OnDeleteDocumentsOperation;
+        OnDeleteOptions: RollTable.Database2.OnDeleteOptions;
+        OnDeleteOperation: RollTable.Database2.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
+  }
+
+  /**
+   * If `Temporary` is true then {@linkcode RollTable.Implementation}, otherwise {@linkcode RollTable.Stored}.
+   */
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? RollTable.Implementation : RollTable.Stored;
+
   namespace Database {
     /** Options passed along in Get operations for RollTables */
     interface Get extends foundry.abstract.types.DatabaseGetOperation<RollTable.Parent> {}
@@ -326,7 +951,7 @@ declare namespace RollTable {
 
     /** Operation for {@linkcode RollTable.createDocuments} */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<RollTable.Database.Create<Temporary>> {}
+      extends Document.Database.CreateDocumentsOperation<RollTable.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode RollTable.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<RollTable.Database.Update> {}
@@ -336,7 +961,7 @@ declare namespace RollTable {
 
     /** Operation for {@linkcode RollTable.create} */
     interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<RollTable.Database.Create<Temporary>> {}
+      extends Document.Database.CreateDocumentsOperation<RollTable.Database.Create<Temporary>> {}
 
     /** Operation for {@link RollTable.update | `RollTable#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -416,28 +1041,6 @@ declare namespace RollTable {
   }
 
   /**
-   * An object containing the executed Roll and the produced results
-   */
-  interface Draw {
-    /**
-     * The Dice roll which generated the draw
-     */
-    roll: Roll;
-
-    /**
-     * An array of drawn TableResult documents
-     */
-    results: Document.ToConfiguredInstance<typeof foundry.documents.BaseTableResult>[];
-  }
-
-  /**
-   * If `Temporary` is true then `RollTable.Implementation`, otherwise `RollTable.Stored`.
-   */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? RollTable.Implementation
-    : RollTable.Stored;
-
-  /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
   interface Flags extends Document.Internal.ConfiguredFlagsForName<Name> {}
@@ -459,13 +1062,64 @@ declare namespace RollTable {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
-  interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
+  /** The interface {@linkcode RollTable.fromDropData} receives */
+  interface DropData extends Document.Internal.DropData<Name> {}
+
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode RollTable.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode RollTable.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode RollTable.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode RollTable.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database2.CreateDocumentsOperation<Temporary>,
+      Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode RollTable.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode RollTable.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends RollTable.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<RollTable.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode RollTable.deleteDialog | RollTable#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    RollTable.Stored,
+    PassedConfig
+  >;
 
   type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
     RollTable.Stored,
@@ -502,6 +1156,25 @@ declare namespace RollTable {
     RollTable.DirectDescendant,
     RollTable.Metadata.Embedded
   >;
+
+  /* ***********************************************
+   *          ROLL-TABLE-SPECIFIC TYPES            *
+   *************************************************/
+
+  /**
+   * An object containing the executed Roll and the produced results
+   */
+  interface Draw {
+    /**
+     * The Dice roll which generated the draw
+     */
+    roll: Roll;
+
+    /**
+     * An array of drawn TableResult documents
+     */
+    results: Document.ToConfiguredInstance<typeof foundry.documents.BaseTableResult>[];
+  }
 
   /**
    * Optional arguments which customize the draw
@@ -890,21 +1563,49 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
 
   static override defaultName(context?: RollTable.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = boolean | undefined,
+    Options extends RollTable.CreateDialogOptions | undefined = undefined,
+  >(
     data?: RollTable.CreateDialogData,
-    createOptions?: RollTable.Database.DialogCreateOptions,
-    options?: RollTable.CreateDialogOptions,
-  ): Promise<RollTable.Stored | null | undefined>;
+    createOptions?: RollTable.Database2.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<RollTable.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"RollTable">,
-  ): Promise<this | false | null | undefined>;
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode RollTable.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = boolean | undefined,
+    Options extends RollTable.CreateDialogOptions | undefined = undefined,
+  >(
+    data: RollTable.CreateDialogData,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    createOptions: RollTable.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<RollTable.CreateDialogReturn<Temporary, Options>>;
 
-  static override fromDropData(
-    data: RollTable.DropData,
-    options?: RollTable.DropDataOptions,
-  ): Promise<RollTable.Implementation | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: RollTable.Database2.DeleteOneDocumentOperation,
+  ): Promise<RollTable.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: RollTable.Database2.DeleteOneDocumentOperation,
+  ): Promise<RollTable.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: RollTable.DropData): Promise<RollTable.Implementation | undefined>;
 
   static override fromImport(
     source: RollTable.Source,

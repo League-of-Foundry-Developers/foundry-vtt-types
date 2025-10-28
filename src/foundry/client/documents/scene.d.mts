@@ -1,10 +1,19 @@
-import type { InexactPartial, Merge } from "#utils";
+import type { InexactPartial, MaybeArray, Merge } from "#utils";
 import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
+import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { LightData, TextureData } from "#common/data/data.d.mts";
 import type ImageHelper from "#client/helpers/media/image-helper.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 import fields = foundry.data.fields;
 
@@ -25,16 +34,17 @@ declare namespace Scene {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Scene` document instance configured through `CONFIG.Scene.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredScene | `fvtt-types/configuration/ConfiguredScene`} in fvtt-types.
+   * The implementation of the `Scene` document instance configured through
+   * {@linkcode CONFIG.Scene.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredScene | fvtt-types/configuration/ConfiguredScene} in fvtt-types.
    */
-  type Implementation = Document.ImplementationFor<"Scene">;
+  type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Scene` document configured through `CONFIG.Scene.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Scene` document configured through
+   * {@linkcode CONFIG.Scene.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
-  type ImplementationClass = Document.ImplementationClassFor<"Scene">;
+  type ImplementationClass = Document.ImplementationClassFor<Name>;
 
   /**
    * A document's metadata is special information about the document ranging anywhere from its name,
@@ -181,7 +191,8 @@ declare namespace Scene {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -207,40 +218,63 @@ declare namespace Scene {
   type Stored = Document.Internal.Stored<Scene.Implementation>;
 
   /**
-   * The data put in {@link Scene._source | `Scene#_source`}. This data is what was
+   * The data put in {@linkcode Scene._source | Scene#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Scene.create}
-   * and {@link Scene | `new Scene(...)`}.
+   * and {@linkcode Scene | new Scene(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Scene.name | `Scene#name`}.
+   * Used in the {@linkcode Scene.create} and {@linkcode Scene.createDocuments} signatures, and
+   * {@linkcode Scene.Database2.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Scene.create}, returning (a single | an array of) (temporary | stored)
+   * `Scene`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput> ? Array<Scene.TemporaryIf<Temporary>> : Scene.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode Scene.name | Scene#name}.
    *
    * This is data transformed from {@linkcode Scene.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Scene.update | `Scene#update`}.
-   * It is a distinct type from {@link Scene.CreateData | `DeepPartial<Scene.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Scene.update | Scene#update}.
+   * It is a distinct type from {@linkcode Scene.CreateData | DeepPartial<Scene.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode Scene.update | Scene#update} and
+   * {@linkcode Scene.updateDocuments} signatures, and {@linkcode Scene.Database2.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   interface EnvironmentDataSchemaDefaults {
     hue: number;
@@ -397,8 +431,8 @@ declare namespace Scene {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Scene}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -868,6 +902,596 @@ declare namespace Scene {
     units: fields.StringField<{ required: true; initial: () => string }>;
   }
 
+  namespace Database2 {
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `Scene` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
+     */
+    interface GetOperation extends DatabaseBackend.GetOperation<Scene.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Scene.get}.
+     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     */
+    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Scene` documents.
+     * @see {@linkcode Document.Database2.BackendGetOperation}
+     */
+    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `Scene` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Scene.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
+     */
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends DatabaseBackend.CreateOperation<Scene.CreateInput, Scene.Parent, Temporary> {}
+
+    /**
+     * The interface for passing to {@linkcode Scene.create} or {@linkcode Scene.createDocuments}.
+     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated `Scene` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `Scene` documents. (see {@linkcode Scene.Parent})
+     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Scene` documents.
+     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Scene._preCreate | Scene#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateScene` hook}.
+     * @see {@linkcode Document.Database2.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Scene._preCreateOperation}.
+     * @see {@linkcode Document.Database2.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Scene._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode Scene._onCreate | Scene#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createScene` hook}.
+     * @see {@linkcode Document.Database2.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Scene._onCreateOperation} and `Scene`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database2.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `Scene` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Scene.update | Scene#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Scene.UpdateInput, Scene.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Scene.update | Scene#update}.
+     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated `Scene` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `Scene` documents (see {@linkcode Scene.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode Scene.updateDocuments}.
+     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Scene` documents.
+     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Scene._preUpdate | Scene#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateScene` hook}.
+     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Scene._preUpdateOperation}.
+     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Scene._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Scene._onUpdate | Scene#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateScene` hook}.
+     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Scene._onUpdateOperation} and `Scene`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `Scene` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode Scene.delete | Scene#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<Scene.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode Scene.delete | Scene#delete}.
+     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated `Scene` documents are never embedded. This interface exists for consistency with other documents.
+     *
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `Scene` documents (see {@linkcode Scene.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode Scene.deleteDocuments}.
+     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Scene` documents.
+     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Scene._preDelete | Scene#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteScene` hook}.
+     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Scene._preDeleteOperation}.
+     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode Scene._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Scene._onDelete | Scene#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteScene` hook}.
+     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode Scene._onDeleteOperation} and `Scene`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: Scene.Database2.GetDocumentsOperation;
+        BackendGetOperation: Scene.Database2.BackendGetOperation;
+        GetOperation: Scene.Database2.GetOperation;
+
+        CreateDocumentsOperation: Scene.Database2.CreateDocumentsOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        CreateEmbeddedOperation: Scene.Database2.CreateEmbeddedOperation;
+        BackendCreateOperation: Scene.Database2.BackendCreateOperation<Temporary>;
+        CreateOperation: Scene.Database2.CreateOperation<Temporary>;
+        PreCreateOptions: Scene.Database2.PreCreateOptions<Temporary>;
+        PreCreateOperation: Scene.Database2.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: Scene.Database2.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: Scene.Database2.OnCreateOptions;
+        OnCreateOperation: Scene.Database2.OnCreateOperation;
+
+        UpdateOneDocumentOperation: Scene.Database2.UpdateOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        UpdateEmbeddedOperation: Scene.Database2.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Scene.Database2.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Scene.Database2.BackendUpdateOperation;
+        UpdateOperation: Scene.Database2.UpdateOperation;
+        PreUpdateOptions: Scene.Database2.PreUpdateOptions;
+        PreUpdateOperation: Scene.Database2.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: Scene.Database2.OnUpdateDocumentsOperation;
+        OnUpdateOptions: Scene.Database2.OnUpdateOptions;
+        OnUpdateOperation: Scene.Database2.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: Scene.Database2.DeleteOneDocumentOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        DeleteEmbeddedOperation: Scene.Database2.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Scene.Database2.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Scene.Database2.BackendDeleteOperation;
+        DeleteOperation: Scene.Database2.DeleteOperation;
+        PreDeleteOptions: Scene.Database2.PreDeleteOptions;
+        PreDeleteOperation: Scene.Database2.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: Scene.Database2.OnDeleteDocumentsOperation;
+        OnDeleteOptions: Scene.Database2.OnDeleteOptions;
+        OnDeleteOperation: Scene.Database2.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
+  }
+
+  /**
+   * If `Temporary` is true then {@linkcode Scene.Implementation}, otherwise {@linkcode Scene.Stored}.
+   */
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Scene.Implementation : Scene.Stored;
+
   namespace Database {
     /** Options passed along in Get operations for Scenes */
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Scene.Parent> {}
@@ -888,7 +1512,7 @@ declare namespace Scene {
 
     /** Operation for {@linkcode Scene.createDocuments} */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Scene.Database.Create<Temporary>> {}
+      extends Document.Database.CreateDocumentsOperation<Scene.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode Scene.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Scene.Database.Update> {}
@@ -898,7 +1522,7 @@ declare namespace Scene {
 
     /** Operation for {@linkcode Scene.create} */
     interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Scene.Database.Create<Temporary>> {}
+      extends Document.Database.CreateDocumentsOperation<Scene.Database.Create<Temporary>> {}
 
     /** Operation for {@link Scene.update | `Scene#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -978,13 +1602,6 @@ declare namespace Scene {
   }
 
   /**
-   * If `Temporary` is true then `Scene.Implementation`, otherwise `Scene.Stored`.
-   */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Scene.Implementation
-    : Scene.Stored;
-
-  /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
   interface Flags extends Document.Internal.ConfiguredFlagsForName<Name> {}
@@ -1006,13 +1623,64 @@ declare namespace Scene {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
-  interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
+  /** The interface {@linkcode Scene.fromDropData} receives */
+  interface DropData extends Document.Internal.DropData<Name> {}
+
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Scene.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode Scene.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode Scene.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Scene.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database2.CreateDocumentsOperation<Temporary>,
+      Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Scene.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Scene.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Scene.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Scene.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Scene.deleteDialog | Scene#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Scene.Stored,
+    PassedConfig
+  >;
 
   type PreCreateDescendantDocumentsArgs =
     | Document.PreCreateDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
@@ -1043,6 +1711,10 @@ declare namespace Scene {
     | Document.OnDeleteDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
     | TokenDocument.OnDeleteDescendantDocumentsArgs
     | RegionDocument.OnDeleteDescendantDocumentsArgs;
+
+  /* ***********************************************
+   *             SCENE-SPECIFIC TYPES              *
+   *************************************************/
 
   interface Dimensions {
     /** The width of the canvas. */
@@ -1222,7 +1894,7 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    * @param createData - (default: `{}`)
    * @param options    - (default: `{}`)
    */
-  override clone<Save extends boolean | null | undefined = false>(
+  override clone<Save extends boolean | undefined = false>(
     data?: Scene.CreateData,
     context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;
@@ -1233,7 +1905,7 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    * @remarks If `source` is falsey, and the grid is hexagonal with the `legacyHex` flag set,
    * does some conversion on `object.grid.size` (leaving it numeric, no type change) before returning
    */
-  override toObject(source?: boolean | null): fields.SchemaField.SourceData<Scene.Schema>;
+  override toObject(source?: boolean): Scene.Source;
 
   /**
    * @remarks
@@ -1423,21 +2095,49 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
 
   static override defaultName(context?: Scene.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = boolean | undefined,
+    Options extends Scene.CreateDialogOptions | undefined = undefined,
+  >(
     data?: Scene.CreateDialogData,
-    createOptions?: Scene.Database.DialogCreateOptions,
-    options?: Scene.CreateDialogOptions,
-  ): Promise<Scene.Stored | null | undefined>;
+    createOptions?: Scene.Database2.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Scene.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Scene">,
-  ): Promise<this | false | null | undefined>;
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Scene.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = boolean | undefined,
+    Options extends Scene.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Scene.CreateDialogData,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    createOptions: Scene.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Scene.CreateDialogReturn<Temporary, Options>>;
 
-  static override fromDropData(
-    data: Scene.DropData,
-    options?: Scene.DropDataOptions,
-  ): Promise<Scene.Implementation | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Scene.Database2.DeleteOneDocumentOperation,
+  ): Promise<Scene.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Scene.Database2.DeleteOneDocumentOperation,
+  ): Promise<Scene.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Scene.DropData): Promise<Scene.Implementation | undefined>;
 
   static override fromImport(
     source: Scene.Source,

@@ -1,4 +1,5 @@
 import type { Identity } from "#utils";
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 
 /**
@@ -8,7 +9,7 @@ import type Document from "#common/abstract/document.d.mts";
  * @see {@linkcode Scene} The Scene document
  * @see {@linkcode SceneDirectory} The SceneDirectory sidebar directory
  */
-declare class Scenes extends foundry.documents.abstract.WorldCollection<"Scene", "Scenes"> {
+declare class Scenes extends WorldCollection<"Scene", "Scenes"> {
   static documentName: "Scene";
 
   /**
@@ -31,8 +32,7 @@ declare class Scenes extends foundry.documents.abstract.WorldCollection<"Scene",
    * Handle pre-loading the art assets for a Scene
    *
    * @param sceneId - The Scene id to begin loading
-   * @param push    - Trigger other connected clients to also pre-load Scene resources
-   *                  (default: `false`)
+   * @param push    - Trigger other connected clients to also pre-load Scene resources (default: `false`)
    */
   preload(sceneId: string, push?: boolean): io.Socket | Promise<unknown[]>;
 
