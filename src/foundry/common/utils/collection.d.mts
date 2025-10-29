@@ -112,6 +112,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * c.getName("D", {strict: true}); // throws Error
    * ```
    */
+  // TODO: condense to conditional return
   getName(name: string, { strict }: { strict: true }): V;
   getName(name: string, { strict }?: { strict?: false }): V | undefined;
 

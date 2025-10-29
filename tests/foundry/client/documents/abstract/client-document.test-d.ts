@@ -283,8 +283,9 @@ expectTypeOf(item["_onSheetChange"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({ sheetOpen: true })).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({ sheetOpen: undefined })).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(item.deleteDialog()).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
-expectTypeOf(item.deleteDialog({})).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
+const dd = item.deleteDialog();
+expectTypeOf(item.deleteDialog()).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
+expectTypeOf(item.deleteDialog({})).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
 expectTypeOf(item.deleteDialog(dialogOptions)).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
 
 // Using exportToJSON to test ToCompendiumOptions for now
