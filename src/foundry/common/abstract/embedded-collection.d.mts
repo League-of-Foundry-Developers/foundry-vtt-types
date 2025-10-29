@@ -1,7 +1,7 @@
 import type { Identity, InexactPartial } from "#utils";
 import type _Collection from "../utils/collection.d.mts";
-import type { DatabaseBackend } from "#common/abstract/_module.d.mts";
 import type Document from "./document.d.mts";
+import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
 
 // Fix for "Class 'Collection<ContainedDocument>' defines instance member property 'get',
 // but extended class 'EmbeddedCollection<ContainedDocument, ParentDataModel>' defines it as instance member function."
@@ -38,7 +38,7 @@ declare class EmbeddedCollection<
    * The Document implementation used to construct instances within this collection
    * @remarks Defined via `Object.defineProperties` during construction with `{ writable: false }`
    */
-  readonly documentClass: abstract new (arg0: never, ...args: never) => ContainedDocument;
+  readonly documentClass: Document.ImplementationClassFor<ContainedDocument["documentName"]>;
 
   /**
    * The Document name of Documents stored in this collection.
@@ -87,26 +87,29 @@ declare class EmbeddedCollection<
 
   /**
    * Initialize the EmbeddedCollection object by constructing its contained Document instances
-   * @param options - Initialization options
+   * @param options - Initialization options (default: `{}`)
    */
-  protected initialize(options: EmbeddedCollection.InitializeOptions): void;
+  initialize(options?: EmbeddedCollection.InitializeOptions): void;
 
   /**
    * Initialize an embedded document and store it in the collection.
    * @param data    - The Document data.
    * @param options - Options to configure Document initialization.
+   *
+   * @remarks `options` doesn't have a parameter default, but it only passed to places that do, so it's optional here
    */
   protected _initializeDocument(
-    data: ContainedDocument["_source"][],
-    options: EmbeddedCollection.InitializeDocumentOptions,
+    data: ContainedDocument["_source"],
+    options?: EmbeddedCollection.InitializeDocumentOptions,
   ): void;
 
   /**
    * Instantiate a Document for inclusion in the Collection
+   * @remarks `parent`, `parentCollection`, and `pack` are overwritten, see {@linkcode EmbeddedCollection.DocumentConstructionContext}.
    */
   createDocument(
     data: Document.CreateDataForName<ContainedDocument["documentName"]>,
-    context: EmbeddedCollection.DocumentConstructionContext,
+    context?: EmbeddedCollection.DocumentConstructionContext,
   ): ContainedDocument;
 
   /**
@@ -115,28 +118,23 @@ declare class EmbeddedCollection<
    * @param err     - The validation error
    * @param options - Options to configure invalid Document handling.
    */
-  _handleInvalidDocument(id: string, err: Error, options: EmbeddedCollection.HandleInvalidDocumentOptions): void;
+  protected _handleInvalidDocument(
+    id: string,
+    err: Error,
+    options?: EmbeddedCollection.HandleInvalidDocumentOptions,
+  ): void;
 
   /**
    * Get a document from the EmbeddedCollection by its ID.
    * @param id      - The ID of the Embedded Document to retrieve.
    * @param options - Additional options to configure retrieval.
+   *
+   * @remarks @see {@linkcode EmbeddedCollection.GetReturn}
    */
-  get(id: string, options?: EmbeddedCollection.GetOptions): ContainedDocument | undefined;
-
-  /**
-   * Get a document from the EmbeddedCollection by its ID.
-   * @param id      - The ID of the Embedded Document to retrieve.
-   * @param options - Additional options to configure retrieval.
-   */
-  get(id: string, options: { strict: true; invalid?: false }): ContainedDocument;
-
-  /**
-   * Get a document from the EmbeddedCollection by its ID.
-   * @param id      - The ID of the Embedded Document to retrieve.
-   * @param options - Additional options to configure retrieval.
-   */
-  get(id: string, options: { strict?: boolean; invalid: true }): unknown;
+  get<Invalid extends boolean | undefined = undefined, Strict extends boolean | undefined = undefined>(
+    id: string,
+    options?: EmbeddedCollection.GetOptions<Invalid, Strict>,
+  ): EmbeddedCollection.GetReturn<ContainedDocument, Invalid, Strict>;
 
   /**
    * Add a document to the collection
@@ -144,17 +142,7 @@ declare class EmbeddedCollection<
    * @param value   - The embedded Document instance
    * @param options - Additional options to the set operation
    */
-  set(
-    key: string,
-    value: ContainedDocument,
-    options?: InexactPartial<{
-      /**
-       * Whether to modify the collection's source as part of the operation.
-       * @defaultValue `true`
-       */
-      modifySource: boolean;
-    }>,
-  ): this;
+  set(key: string, value: ContainedDocument, options?: EmbeddedCollection.SetOptions): this;
 
   /**
    * Modify the underlying source array to include the Document.
@@ -168,36 +156,16 @@ declare class EmbeddedCollection<
    * @param key     - The embedded Document ID.
    * @param options - Additional options to the delete operation.
    */
-  delete(
-    key: string,
-    options?: {
-      /**
-       * Whether to modify the collection's source as part of the operation.
-       */
-      modifySource?: boolean;
-    },
-  ): boolean;
+  delete(key: string, options?: EmbeddedCollection.DeleteOptions): boolean;
 
   /**
    * Remove the value from the underlying source array.
    * @param key     - The Document ID key.
    * @param options - Additional options to configure deletion behavior.
+   *
+   * @remarks This implementation makes no use of `options`
    */
-  protected _delete(key: string, options: Record<string, unknown>): void;
-
-  /**
-   * Update an EmbeddedCollection using an array of provided document data.
-   * @param changes - An array of provided Document data
-   * @param options - Additional options which modify how the collection is updated
-   */
-  update(changes: ContainedDocument["_source"][][], options?: Record<string, unknown>): void;
-
-  protected _createOrUpdate(
-    data: ContainedDocument["_source"][][],
-    options?: Parameters<ContainedDocument["updateSource"]>[1],
-  ): void;
-
-  // TODO: Improve typing on invalid documents
+  protected _delete(key: string, options?: EmbeddedCollection.DeleteOptions): void;
 
   /**
    * Obtain a temporary Document instance for a document id which currently has invalid source data.
@@ -206,32 +174,17 @@ declare class EmbeddedCollection<
    * @returns An in-memory instance for the invalid Document
    * @throws If strict is true and the requested ID is not in the set of invalid IDs for this collection.
    */
-  getInvalid(
+  getInvalid<Strict extends boolean | undefined = undefined>(
     id: string,
-    options?: {
-      /**
-       * Throw an Error if the requested ID is not in the set of invalid IDs for this collection
-       */
-      strict?: false;
-    },
-  ): unknown;
-  getInvalid(
-    id: string,
-    options: {
-      /**
-       * Throw an Error if the requested ID is not in the set of invalid IDs for this collection
-       */
-      strict: true;
-    },
-  ): unknown;
+    options?: EmbeddedCollection.GetInvalidOptions<Strict>,
+  ): EmbeddedCollection.GetInvalidReturn<ContainedDocument, Strict>;
 
   /**
    * Convert the EmbeddedCollection to an array of simple objects.
-   * @param source - Draw data for contained Documents from the underlying data source?
-   *                 (default: `true`)
+   * @param source - Draw data for contained Documents from the underlying data source? (default: `true`)
    * @returns The extracted array of primitive objects
    */
-  toObject(source?: boolean | null): ContainedDocument["_source"][];
+  toObject(source?: boolean): ContainedDocument["_source"][];
 
   /**
    * Follow-up actions to take when a database operation modifies Documents in this EmbeddedCollection.
@@ -242,43 +195,34 @@ declare class EmbeddedCollection<
    * @param user      - The User who performed the operation
    * @internal
    */
-  _onModifyContents(
-    action: DatabaseBackend.DatabaseAction,
+  _onModifyContents<Action extends Document.Database2.OperationAction>(
+    action: Action,
     documents: ContainedDocument[],
-    result: unknown,
-    operation: DatabaseBackend.DatabaseOperation,
-    user: User.Implementation,
+    result: EmbeddedCollection.OnModifyContentsResult<ContainedDocument, Action>,
+    operation: EmbeddedCollection.OnModifyContentsOperation<ContainedDocument, Action>,
+    user: User.Stored,
   ): void;
 
   /**
    * Find all Documents which match a given search term using a full-text search against their indexed HTML fields and their name.
    * If filters are provided, results are filtered to only those that match the provided values.
-   * @param search   - An object configuring the search
+   * @param search - An object configuring the search
    *
-   * @remarks This is added in `Game#setupGame` through monkeypatching; `foundry.abstract.EmbeddedCollection.prototype.search = DocumentCollection.prototype.search;`
-   * this technically means it's not set until right after init.
+   * @remarks This is added in `Game#setupGame` through monkeypatching:
+   * ```js
+   * foundry.abstract.EmbeddedCollection.prototype.search = DocumentCollection.prototype.search;
+   * ```
+   * This technically means it's not set until right after `init`/before `setup`.
+   *
+   * @see {@linkcode DocumentCollection.search | DocumentCollection#search}
+   *
+   * @privateRemarks While the `DocumentCollection` method has a TODO for index entries, because `EmbeddedCollection`s never have `index`es,
+   * `ContainedDocument[]` is the correct return type.
    */
-  search(
-    search?: InexactPartial<{
-      /**
-       * A case-insensitive search string
-       * @defaultValue `""`
-       */
-      query: string;
+  search(search: DocumentCollection.SearchOptions): ContainedDocument[];
 
-      /**
-       * An array of filters to apply
-       * @defaultValue `[]`
-       */
-      filters: foundry.applications.ux.SearchFilter.FieldFilter[];
-
-      /**
-       * An array of document IDs to exclude from search results
-       * @defaultValue `[]`
-       */
-      exclude: string[];
-    }>,
-  ): ContainedDocument[];
+  /** @deprecated Removed without replacement in v13. This method will be removed inv 14 */
+  protected _createOrUpdate(...args: never): never;
 
   #EmbeddedCollection: true;
 }
@@ -317,26 +261,42 @@ declare namespace EmbeddedCollection {
     strict?: boolean | null | undefined;
   }
 
-  /** @internal */
-  type _GetOptions = InexactPartial<{
+  interface GetOptions<Strict extends boolean | undefined, Invalid extends boolean | undefined> {
     /**
      * Throw an Error if the requested Embedded Document does not exist.
      * @defaultValue `false`
      */
-    strict: boolean;
+    strict?: Strict;
 
     /**
      * Allow retrieving an invalid Embedded Document.
      * @defaultValue `false`
      */
-    invalid: boolean;
-  }>;
+    invalid?: Invalid;
+  }
 
-  interface GetOptions extends _GetOptions {}
+  /**
+   * The return type for {@linkcode EmbeddedCollection.get | EmbeddedCollection#get}.
+   * - If `invalid` is true, the document half of the return is `InvalidForName`, otherwise it's the passed document
+   * (has to be passed because it's a type param on the class)
+   * - If `strict` is true, a completely absent ID will throw an error (so `never`), otherwise it's possible to return `undefined`.
+   */
+  type GetReturn<
+    ConcreteDocument extends Document.Any,
+    Strict extends boolean | undefined,
+    Invalid extends boolean | undefined,
+  > =
+    | (true extends Invalid ? Document.InvalidForName<ConcreteDocument["documentName"]> : ConcreteDocument)
+    | ([Strict] extends [true] ? never : undefined);
 
-  type _SetOptions = InexactPartial<{
+  /**
+   * Re-used with the same property description and default in both {@linkcode SetOptions} and {@linkcode DeleteOptions}
+   * @internal
+   */
+  type _ModifySource = InexactPartial<{
     /**
      * Whether to modify the collection's source as part of the operation.
+     * @defaultValue `true`
      */
     modifySource: boolean;
   }>;
@@ -344,11 +304,68 @@ declare namespace EmbeddedCollection {
   /**
    * Options for {@linkcode EmbeddedCollection.set | EmbeddedCollection#set}
    *
-   * @privateRemarks Foundry collects keys other than `modifySource` as `...options` and passes them on to `this._set`; that method does not
-   * take `options` in `EmbeddedCollection`, but does in {@linkcode foundry.abstract.EmbeddedCollectionDelta | EmbeddedCollectionDelta}.
-   * Since that class also has a `#set` override, the extra property(s) are not included here.
+   * @privateRemarks Foundry collects keys other than `modifySource` as `...options` and passes them on to `this._set`; this has no effect
+   * in `EmbeddedCollection`, as its `#_set` implementation takes no `options` param, but is made use of in
+   * {@linkcode foundry.abstract.EmbeddedCollectionDelta.set | EmbeddedCollectionDelta#set} and `#_set`.
+   *
+   * @see {@linkcode foundry.abstract.EmbeddedCollectionDelta.SetOptions}.
    */
-  interface SetOptions extends _SetOptions {}
+  interface SetOptions extends _ModifySource {}
+
+  /**
+   * Options for {@linkcode EmbeddedCollection.delete | EmbeddedCollection#_delete}
+   *
+   * @privateRemarks Foundry collects keys other than `modifySource` as `...options` and passes them on to `this._delete`; this has no
+   * effect in `EmbeddedCollection`, as its `#_delete` implementation makes no use of its `options` param, but is made use of in
+   * {@linkcode foundry.abstract.EmbeddedCollectionDelta.delete | EmbeddedCollectionDelta#delete} and `#_delete`.
+   *
+   * @see {@linkcode foundry.abstract.EmbeddedCollectionDelta.DeleteOptions}.
+   */
+  interface DeleteOptions extends _ModifySource {}
+
+  /**
+   * Options for {@linkcode EmbeddedCollection.getInvalid | EmbeddedCollection#getInvalid}.
+   *
+   * @remarks Unlike other EC methods, `strict` defaults to `true` here.
+   */
+  interface GetInvalidOptions<Strict extends boolean | undefined> {
+    /**
+     * Throw an Error if the requested ID is not in the set of invalid IDs for this collection.
+     * @defaultValue `true`
+     */
+    strict?: Strict;
+  }
+
+  /**
+   * The return type for {@linkcode EmbeddedCollection.getInvalid | EmbeddedCollection#getInvalid}.
+   *
+   * If `strict` is `true` (the default), passing anything that isn't a known invalid ID throws; if it's `false`, then the return can be
+   * `undefined`.
+   */
+  type GetInvalidReturn<ConcreteDocument extends Document.Any, Strict extends boolean | undefined> =
+    | Document.InvalidForName<ConcreteDocument["documentName"]>
+    | ([Strict] extends [false] ? undefined : never);
+
+  /**
+   * Type for the 3rd param of {@linkcode EmbeddedCollection._onModifyContents | EmbeddedCollection#_onModifyContents}.
+   *
+   *
+   */
+  type OnModifyContentsResult<
+    ConcreteDocument extends Document.Any,
+    Action extends Document.Database2.OperationAction,
+  > =
+    | (Action extends "create" ? Array<Document.CreateDataForName<ConcreteDocument["documentName"]>> : never)
+    | (Action extends "update" ? Array<Document.UpdateDataForName<ConcreteDocument["documentName"]>> : never)
+    | (Action extends "delete" ? string[] : never);
+
+  type OnModifyContentsOperation<
+    ConcreteDocument extends Document.Any,
+    Action extends Document.Database2.OperationAction,
+  > =
+    | (Action extends "create" ? Document.Database2.OnCreateOperationForName<ConcreteDocument["documentName"]> : never)
+    | (Action extends "update" ? Document.Database2.OnUpdateOperationForName<ConcreteDocument["documentName"]> : never)
+    | (Action extends "delete" ? Document.Database2.OnDeleteOperationForName<ConcreteDocument["documentName"]> : never);
 }
 
 export default EmbeddedCollection;

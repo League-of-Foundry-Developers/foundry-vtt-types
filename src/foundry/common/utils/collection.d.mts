@@ -68,8 +68,9 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * @see {@link Array.forEach | `Array#forEach`}
    * @param fn - The function to apply to each element
    *
-   * @example Apply a function to each value in the collection
-   * ```typescript
+   * @example
+   * Apply a function to each value in the collection
+   * ```ts
    * let c = new Collection([["a", {active: false}], ["b", {active: false}], ["c", {active: false}]]);
    * c.forEach(e => e.active = true);
    * ```
@@ -83,8 +84,9 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    *                  otherwise return undefined. (default: `false`)
    * @returns The retrieved entry value, if the key exists, otherwise undefined
    *
-   * @example Get an element from the Collection by key
-   * ```typescript
+   * @example
+   * Get an element from the Collection by key
+   * ```ts
    * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
    * c.get("a"); // "A"
    * c.get("d"); // null
@@ -101,8 +103,9 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    *                  otherwise return undefined. (default: `false`)
    * @returns The retrieved Entity, if one was found, otherwise undefined
    *
-   * @example Get an element from the Collection by name (if applicable)
-   * ```typescript
+   * @example
+   * Get an element from the Collection by name (if applicable)
+   * ```ts
    * let c = new Collection([["a", "Alfred"], ["b", "Bob"], ["c", "Cynthia"]]);
    * c.getName("Alfred"); // "Alfred"
    * c.getName("D"); // undefined
@@ -130,8 +133,9 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * @template A     - The type of the accumulator and the return value
    * @returns The accumulated result
    *
-   * @example Reduce a collection to an array of transformed values
-   * ```typescript
+   * @example
+   * Reduce a collection to an array of transformed values
+   * ```ts
    * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
    * let letters = c.reduce((s, l) => {
    *   return s + l;

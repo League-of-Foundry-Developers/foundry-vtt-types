@@ -110,18 +110,21 @@ declare class DocumentCollection<
   /**
    * Find all Documents which match a given search term using a full-text search against their indexed HTML fields and their name.
    * If filters are provided, results are filtered to only those that match the provided values.
-   * @param search   - An object configuring the search
+   * @param search - An object configuring the search
+   *
+   * @remarks `search` is required because it lacks a parameter default, but all of its properties *do* have defaults, so passing an empty
+   * object is sufficient, although it doesn't make much sense to pass no criteria to a search method.
    */
-  search(search?: DocumentCollection.SearchOptions): Document.ImplementationFor<DocumentType>[];
+  // TODO: CompendiumCollection doesn't override this method, and the method preferentially operates on `this.index` over `this.contents`,
+  // TODO: so the return type should include index entries
+  search(search: DocumentCollection.SearchOptions): Document.ImplementationFor<DocumentType>[];
 
   /**
    * Update all objects in this DocumentCollection with a provided transformation.
    * Conditionally filter to only apply to Entities which match a certain condition.
    * @param transformation - An object of data or function to apply to all matched objects
-   * @param condition      - A function which tests whether to target each object
-   *                         (default: `null`)
-   * @param options        - Additional options passed to Document.updateDocuments
-   *                         (default: `{}`)
+   * @param condition      - A function which tests whether to target each (default: `null`)
+   * @param options        - Additional options passed to Document.updateDocuments (default: `{}`)
    * @returns An array of updated data once the operation is complete
    */
   updateAll(
