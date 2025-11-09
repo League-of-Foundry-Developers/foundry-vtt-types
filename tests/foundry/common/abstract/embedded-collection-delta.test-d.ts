@@ -9,7 +9,7 @@ declare const itemSourceArray: Item.Source[];
 declare const itemCreateDataArray: Item.CreateData[];
 declare const sceneSourceArray: Scene.Source[];
 declare const itemUpdateData: Item.UpdateData;
-declare const itemImpl: Item.Implementation;
+declare const itemStored: Item.Stored;
 
 describe("EmbeddedCollectionDelta Tests", () => {
   test("Construction", () => {
@@ -18,35 +18,25 @@ describe("EmbeddedCollectionDelta Tests", () => {
     expectTypeOf(new EmbeddedCollectionDelta("items", actorDelta, itemSourceArray)).toEqualTypeOf<
       EmbeddedCollectionDelta<Document.Any, ActorDelta.Stored>
     >();
-    // CreateData is also passable with only inferred types
-    new EmbeddedCollectionDelta("items", actorDelta, itemCreateDataArray);
 
-    // @ts-expect-error Passing .Stored for the source doc type prevents passing source data
+    // Source is assignable to CreateData, so either is allowed
     new EmbeddedCollectionDelta<Item.Stored, ActorDelta.Stored>("items", actorDelta, itemSourceArray);
-    // @ts-expect-error Passing .Stored for the source doc type also prevents passing CreateData
     new EmbeddedCollectionDelta<Item.Stored, ActorDelta.Stored>("items", actorDelta, itemCreateDataArray);
-
-    // Passing Implementation for the source doc type works...
-    new EmbeddedCollectionDelta<Item.Implementation, ActorDelta.Stored>("items", actorDelta, itemSourceArray);
-    // @ts-expect-error ...But it prevents passing CreateData
-    new EmbeddedCollectionDelta<Item.Implementation, ActorDelta.Stored>("items", actorDelta, itemCreateDataArray);
 
     // Known limitation: nothing prevents passing incompatible parent and source doc types
     new EmbeddedCollectionDelta<Scene.Implementation, ActorDelta.Stored>("items", actorDelta, sceneSourceArray);
   });
 
-  const itemCollOnDelta = new EmbeddedCollectionDelta<Item.Implementation, ActorDelta.Stored>(
+  const itemCollOnDelta = new EmbeddedCollectionDelta<Item.Stored, ActorDelta.Stored>(
     "items",
     actorDelta,
     itemSourceArray,
   );
 
   test("Collection getters", () => {
-    expectTypeOf(itemCollOnDelta.baseCollection).toEqualTypeOf<
-      EmbeddedCollection<Item.Implementation, Actor.Implementation>
-    >();
+    expectTypeOf(itemCollOnDelta.baseCollection).toEqualTypeOf<EmbeddedCollection<Item.Stored, Actor.Implementation>>();
     expectTypeOf(itemCollOnDelta.syntheticCollection).toEqualTypeOf<
-      EmbeddedCollection<Item.Implementation, Actor.Implementation>
+      EmbeddedCollection<Item.Stored, Actor.Implementation>
     >();
   });
 
@@ -59,8 +49,8 @@ describe("EmbeddedCollectionDelta Tests", () => {
 
     // Neither of these methods are ever called in client code, and haven't been found in server code either.
     // They might be vestigial.
-    expectTypeOf(itemCollOnDelta.restoreDocument("ID")).toEqualTypeOf<Promise<Item.Implementation>>();
-    expectTypeOf(itemCollOnDelta.restoreDocuments(["ID1", "ID2"])).toEqualTypeOf<Promise<Item.Implementation[]>>();
+    expectTypeOf(itemCollOnDelta.restoreDocument("ID")).toEqualTypeOf<Promise<Item.Stored>>();
+    expectTypeOf(itemCollOnDelta.restoreDocuments(["ID1", "ID2"])).toEqualTypeOf<Promise<Item.Stored[]>>();
 
     expectTypeOf(itemCollOnDelta._prepareDeltaUpdate(itemUpdateData)).toBeVoid();
     expectTypeOf(itemCollOnDelta._prepareDeltaUpdate(itemUpdateData, {})).toBeVoid();
@@ -68,25 +58,25 @@ describe("EmbeddedCollectionDelta Tests", () => {
   });
 
   test("Setting", () => {
-    expectTypeOf(itemCollOnDelta.set("ID", itemImpl)).toEqualTypeOf<typeof itemCollOnDelta>();
-    expectTypeOf(itemCollOnDelta.set("ID", itemImpl, { modifySource: true, restoreDelta: true })).toEqualTypeOf<
-      typeof itemCollOnDelta
-    >();
+    // void return because https://github.com/foundryvtt/foundryvtt/issues/13565
+    expectTypeOf(itemCollOnDelta.set("ID", itemStored)).toBeVoid();
+    expectTypeOf(itemCollOnDelta.set("ID", itemStored, { modifySource: true, restoreDelta: true })).toBeVoid();
     expectTypeOf(
-      itemCollOnDelta.set("ID", itemImpl, { modifySource: undefined, restoreDelta: undefined }),
-    ).toEqualTypeOf<typeof itemCollOnDelta>();
+      itemCollOnDelta.set("ID", itemStored, { modifySource: undefined, restoreDelta: undefined }),
+    ).toBeVoid();
 
-    expectTypeOf(itemCollOnDelta["_set"]("ID", itemImpl)).toBeVoid();
-    expectTypeOf(itemCollOnDelta["_set"]("ID", itemImpl, { modifySource: true, restoreDelta: true })).toBeVoid();
+    expectTypeOf(itemCollOnDelta["_set"]("ID", itemStored)).toBeVoid();
+    expectTypeOf(itemCollOnDelta["_set"]("ID", itemStored, { modifySource: true, restoreDelta: true })).toBeVoid();
     expectTypeOf(
-      itemCollOnDelta["_set"]("ID", itemImpl, { modifySource: undefined, restoreDelta: undefined }),
+      itemCollOnDelta["_set"]("ID", itemStored, { modifySource: undefined, restoreDelta: undefined }),
     ).toBeVoid();
   });
 
   test("Deleting", () => {
-    expectTypeOf(itemCollOnDelta.delete("ID")).toBeBoolean();
-    expectTypeOf(itemCollOnDelta.delete("ID", { modifySource: true, restoreDelta: true })).toBeBoolean();
-    expectTypeOf(itemCollOnDelta.delete("ID", { modifySource: undefined, restoreDelta: undefined })).toBeBoolean();
+    // void return because https://github.com/foundryvtt/foundryvtt/issues/13565
+    expectTypeOf(itemCollOnDelta.delete("ID")).toBeVoid();
+    expectTypeOf(itemCollOnDelta.delete("ID", { modifySource: true, restoreDelta: true })).toBeVoid();
+    expectTypeOf(itemCollOnDelta.delete("ID", { modifySource: undefined, restoreDelta: undefined })).toBeVoid();
 
     expectTypeOf(itemCollOnDelta["_delete"]("ID")).toBeVoid();
     expectTypeOf(itemCollOnDelta["_delete"]("ID", { modifySource: true, restoreDelta: true })).toBeVoid();

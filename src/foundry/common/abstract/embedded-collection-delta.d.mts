@@ -13,7 +13,8 @@ import type EmbeddedCollection from "./embedded-collection.d.mts";
 export default class EmbeddedCollectionDelta<
   ContainedDocument extends Document.Any,
   ParentDataModel extends Document.Any,
-> extends EmbeddedCollection<ContainedDocument, ParentDataModel> {
+  Methods extends Collection.Methods.Any = EmbeddedCollectionDelta.Methods<ContainedDocument>,
+> extends EmbeddedCollection<ContainedDocument, ParentDataModel, Methods> {
   /**
    * A convenience getter to return the corresponding base collection.
    * @remarks This returns the version of this collection on the {@linkcode TokenDocument.Implementation.baseActor | baseActor}
@@ -48,7 +49,7 @@ export default class EmbeddedCollectionDelta<
   override createDocument(
     data: Document.CreateDataForName<ContainedDocument["documentName"]>,
     context: EmbeddedCollection.DocumentConstructionContext,
-  ): ContainedDocument;
+  ): Document.ImplementationFor<ContainedDocument["documentName"]>;
 
   /**
    * Restore a Document so that it is no longer managed by the collection delta and instead inherits from the base Document.
@@ -86,11 +87,11 @@ export default class EmbeddedCollectionDelta<
     options?: DataModel.UpdateOptions,
   ): void;
 
-  override set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): this;
+  set: Collection.Method<this, Methods, "set">;
 
   protected override _set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): void;
 
-  delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): boolean;
+  delete: Methods["delete"];
 
   protected override _delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): void;
 
@@ -108,6 +109,7 @@ declare namespace EmbeddedCollectionDelta {
   type _InitializeOptions = InexactPartial<{
     /**
      * @defaultValue `false`
+     *
      * @remarks Passing `true` {@linkcode Map.clear | clear}s the collection prior to initialization.
      *
      * @privateRemarks This property is pulled out of `options` before forwarding to
@@ -127,9 +129,33 @@ declare namespace EmbeddedCollectionDelta {
     restoreDelta: boolean;
   }>;
 
+  /**
+   * Options for {@linkcode EmbeddedCollectionDelta.set | EmbeddedCollectionDelta#set} and
+   * {@linkcode EmbeddedCollectionDelta._set | #_set}
+   */
   interface SetOptions extends EmbeddedCollection.SetOptions, _RestoreDelta {}
 
+  /**
+   * Options for {@linkcode EmbeddedCollectionDelta.delete | EmbeddedCollectionDelta#delete} and
+   * {@linkcode EmbeddedCollectionDelta._delete | #_delete}
+   */
   interface DeleteOptions extends EmbeddedCollection.DeleteOptions, _RestoreDelta {}
+
+  /**
+   * The method signatures for {@linkcode EmbeddedCollectionDelta}.
+   * @see {@linkcode Collection.Methods}
+   * @see {@linkcode Collection.Method}
+   *
+   * @remarks `#get` is not overridden in `EmbeddedCollectionDelta`
+   */
+  interface Methods<ContainedDocument extends Document.Any>
+    extends Pick<EmbeddedCollection.Methods<ContainedDocument>, "get"> {
+    self: unknown;
+
+    set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): void;
+
+    delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): void;
+  }
 }
 
 declare class AnyEmbeddedCollectionDelta extends EmbeddedCollectionDelta<Document.Any, Document.Any> {

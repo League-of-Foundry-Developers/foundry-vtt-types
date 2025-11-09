@@ -3073,7 +3073,10 @@ declare namespace EmbeddedCollectionField {
     ParentDataModel extends Document.Any,
     Opts extends Options<AssignmentElementType>,
   > = DataField.DerivedInitializedType<
-    EmbeddedCollection<Document.Internal.Instance.Complete<InitializedElementType>, ParentDataModel>,
+    EmbeddedCollection<
+      Document.StoredForName<InitializedElementType[" fvtt_types_internal_document_name"]>,
+      ParentDataModel
+    >,
     MergedOptions<AssignmentElementType, Opts>
   >;
 
@@ -3240,7 +3243,10 @@ declare namespace EmbeddedCollectionDeltaField {
     ParentDataModel extends Document.Any,
     Opts extends Options<AssignmentElementType>,
   > = DataField.DerivedInitializedType<
-    EmbeddedCollectionDelta<Document.Internal.Instance.Complete<InitializedElementType>, ParentDataModel>,
+    EmbeddedCollectionDelta<
+      Document.StoredForName<InitializedElementType[" fvtt_types_internal_document_name"]>,
+      ParentDataModel
+    >,
     MergedOptions<AssignmentElementType, Opts>
   >;
 

@@ -1,12 +1,19 @@
+import type { AnyArray, Coalesce, GetKey, Identity, InexactPartial } from "#utils";
+/** @privateRemarks `EmbeddedCollection` used only for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+/** @privateRemarks `DocumentCollection` used only for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
+
 // This class exists make it as sound as possible to override these parts of the class and make them
-
-import type { AnyArray, GetKey, Identity } from "#utils";
-
 // completely unrelated. It's done this way specifically to avoid situations with broken inheritance.
 declare class Map<K, V> extends globalThis.Map<K, V> {
   [Symbol.iterator](): any;
   forEach(...args: AnyArray): any;
   get(...args: AnyArray): any;
+  set(...args: AnyArray): any;
+  delete(...args: AnyArray): any;
 }
 
 /**
@@ -15,7 +22,12 @@ declare class Map<K, V> extends globalThis.Map<K, V> {
  * @template T - The type of the objects contained in the Collection
  */
 declare class Collection<V, Methods extends Collection.Methods.Any = Collection.Methods<V>> extends Map<string, V> {
-  constructor(entries?: Iterable<readonly [string, V]> | null);
+  /**
+   * This is to allow {@linkcode foundry.documents.abstract.DirectoryCollectionMixin | DirectoryCollectionMixin} (or any
+   * theoretical future/user mixins) clean access to the value type for this Collection.
+   * @internal
+   */
+  " __fvtt_types_internal_value": V;
 
   /**
    * When iterating over a Collection, we should iterate over its values instead of over its entries
@@ -29,7 +41,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Find an entry in the Map using an functional condition.
-   * @see {@link Array.find | `Array#find`}
+   * @see {@linkcode Array.find | Array#find}
    *
    * @param condition - The functional condition to test. Positional arguments are the value, the index of
    *                    iteration, and the collection being searched.
@@ -48,10 +60,10 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Filter the Collection, returning an Array of entries which match a functional condition.
-   * @see {@link Array.filter | `Array#filter`}
+   * @see {@linkcode Array.filter | Array#filter}
    *
-   * @param condition - The functional condition to test. Positional arguments are the value, the
-   *                    index of iteration, and the collection being filtered.
+   * @param condition - The functional condition to test. Positional arguments are the value,
+   * the index of iteration, and the collection being filtered.
    * @returns An Array of matched values
    *
    * @example Filter the Collection for specific entries
@@ -65,7 +77,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Apply a function to each element of the collection
-   * @see {@link Array.forEach | `Array#forEach`}
+   * @see {@linkcode Array.forEach | Array#forEach}
    * @param fn - The function to apply to each element
    *
    * @example
@@ -80,8 +92,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
   /**
    * Get an element from the Collection by its key.
    * @param key     - The key of the entry to retrieve
-   * @param strict  - Throw an Error if the requested key does not exist,
-   *                  otherwise return undefined. (default: `false`)
+   * @param strict  - Throw an Error if the requested key does not exist, otherwise return undefined. (default: `false`)
    * @returns The retrieved entry value, if the key exists, otherwise undefined
    *
    * @example
@@ -92,15 +103,33 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * c.get("d"); // null
    * c.get("d", {strict: true}); // throws Error
    * ```
+   *
+   * @remarks Foundry does actually override the base {@linkcode globalThis.Map.get | Map#get} method, unlike {@linkcode set | #set} and
+   * {@linkcode delete | #delete}
    */
-  get: Methods["get"];
+  override get: Collection.Method<this, Methods, "get">;
+
+  /**
+   * Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
+   *
+   * @see {@linkcode globalThis.Map.set | Map#set}
+   * @see {@linkcode Collection.Method}
+   */
+  override set: Collection.Method<this, Methods, "set">;
+
+  /**
+   * Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
+   *
+   * @see {@linkcode globalThis.Map.delete | Map#delete}
+   * @see {@linkcode Collection.Method}
+   */
+  override delete: Collection.Method<this, Methods, "delete">;
 
   /**
    * Get an entry from the Collection by name.
    * Use of this method assumes that the objects stored in the collection have a "name" attribute.
    * @param name    - The name of the entry to retrieve
-   * @param strict  - Throw an Error if the requested name does not exist,
-   *                  otherwise return undefined. (default: `false`)
+   * @param strict  - Throw an Error if the requested name does not exist, otherwise return undefined. (default: `false`)
    * @returns The retrieved Entity, if one was found, otherwise undefined
    *
    * @example
@@ -118,9 +147,9 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Transform each element of the Collection into a new form, returning an Array of transformed values
-   * @param transformer - A transformation function applied to each entry value. Positional arguments are the value, the
-   *                      index of iteration, and the collection being mapped.
-   * @template M       - The type of the mapped values
+   * @param transformer - A transformation function applied to each entry value. Positional arguments are the value,
+   * the index of iteration, and the collection being mapped.
+   * @template M        - The type of the mapped values
    * @returns An Array of transformed values
    */
   map<M>(/** @immediate */ transformer: (entity: V, index: number, collection: Collection<V>) => M): M[];
@@ -128,10 +157,10 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
   /**
    * Reduce the Collection by applying an evaluator function and accumulating entries
    * @see {@link Array.reduce | `Array#reduce`}
-   * @param reducer   - A reducer function applied to each entry value. Positional arguments are the accumulator, the
-   *                    value, the index of iteration, and the collection being reduced.
-   * @param initial   - An initial value which accumulates with each iteration
-   * @template A     - The type of the accumulator and the return value
+   * @param reducer - A reducer function applied to each entry value. Positional arguments are the accumulator,
+   * the value, the index of iteration, and the collection being reduced.
+   * @param initial - An initial value which accumulates with each iteration
+   * @template A    - The type of the accumulator and the return value
    * @returns The accumulated result
    *
    * @example
@@ -168,33 +197,149 @@ declare namespace Collection {
   interface Any extends AnyCollection {}
   interface AnyConstructor extends Identity<typeof AnyCollection> {}
 
-  interface GetOptions {
-    /**
-     * Throw an Error if the requested Embedded Document does not exist.
-     * @defaultValue `false`
-     */
-    strict?: boolean | undefined;
-  }
+  /**
+   * This type exists to allow the `set` method provided by a given Collection subclass to accurately provide a `this` return
+   */
+  type Method<This, Methods, Property extends keyof Methods> = ({ self: This } & Methods)[Property];
 
+  /**
+   * Method signatures for `Collection`
+   */
   interface Methods<V> {
-    get<Options extends foundry.documents.abstract.DocumentCollection.GetOptions | undefined = undefined>(
+    self: unknown;
+
+    get<Options extends Collection.GetOptions | undefined = undefined>(
       key: string,
-      { strict }?: Options,
-    ): Collection.GetReturnType<V, Options>;
+      options?: Options,
+    ): Collection.GetReturn<V, Options>;
+
+    set(key: string, value: V): this["self"];
+
+    delete(key: string): boolean;
   }
 
   namespace Methods {
+    /**
+     * The base requirements for a `Collection` subclass. `self` is a hack to allow a valid `this` return for `set`,
+     * see {@linkcode Collection.Method}
+     */
     interface Any {
+      self: unknown;
+
       get(key: string, options?: never): unknown;
+
+      set(key: string, value: unknown, options?: never): unknown;
+
+      delete(key: string, options?: never): unknown;
     }
   }
 
-  type GetReturnType<T, Options extends GetOptions | undefined> = _ApplyStrict<T, GetKey<Options, "strict", undefined>>;
-
   /** @internal */
-  type _ApplyStrict<ConcreteDocument, Strict extends boolean | undefined> =
-    | (Strict extends false | undefined ? undefined : never)
-    | ConcreteDocument;
+  type _GetOptions = InexactPartial<{
+    /**
+     * Throw an Error if the requested key does not exist.
+     * @defaultValue `false`
+     */
+    strict: boolean;
+  }>;
+
+  /** Options for {@linkcode Collection.get | Collection#get} */
+  interface GetOptions extends _GetOptions {}
+
+  /**
+   * Options for {@linkcode EmbeddedCollection.getInvalid | EmbeddedCollection#getInvalid} and
+   * {@linkcode DocumentCollection.getInvalid | DocumentCollection#getInvalid}.
+   *
+   * Only differs from {@linkcode _GetOptions} in property description. Wording and default are shared between subclasses,
+   * so put here for re-use.
+   * @internal
+   */
+  type _GetInvalidOptions = InexactPartial<{
+    /**
+     * Throw an Error if the requested ID is not in the set of invalid IDs for this collection.
+     * @defaultValue `true`
+     */
+    strict: boolean;
+  }>;
+
+  /**
+   *
+   * @internal
+   */
+  type _InvalidOption = InexactPartial<{
+    /**
+     * Allow retrieving an invalid Document.
+     * @defaultValue `false`
+     */
+    invalid: boolean;
+  }>;
+
+  /**
+   * The `#get` and `#getInvalid` methods of `Collection` and its various subclasses all take a `strict` boolean in their options, changing
+   * the behaviour of passing a non-existent ID:
+   * - `true`: throw an error
+   * - `false`: return `undefined`
+   * @internal
+   */
+  type _ApplyStrict<Options extends Readonly<_GetOptions> | undefined, StrictDefault extends boolean = false> =
+    false extends Coalesce<GetKey<Options, "strict", undefined>, StrictDefault> ? undefined : never;
+
+  /**
+   * The `Coalesce` is required to handle passing explicit `undefined`, either on its own or in a union.
+   * @internal
+   */
+  type _GetReturn<V, Options extends Readonly<_GetOptions> | undefined, StrictDefault extends boolean = false> =
+    | V
+    | _ApplyStrict<Options, StrictDefault>;
+
+  /** The return type for {@linkcode Collection.get | Collection#get}. */
+  type GetReturn<V, Options extends GetOptions | undefined> = _GetReturn<V, Options>;
+
+  /**
+   * Helper type for allowing invalid documents or not in {@linkcode DocumentCollection.get | DocumentCollection#get} and
+   * {@linkcode EmbeddedCollection.get | EmbeddedCollection#get}.
+   *
+   * This type assumes that all elements of the relevant collection are Stored documents; this is enforced at runtime in
+   * `DocumentCollection`s by its `#set` override, but not in {@linkcode EmbeddedCollection}.
+   *
+   * The `Coalesce` is required to handle passing explicit `undefined`, either on its own or in a union.
+   * @internal
+   */
+  type _ApplyInvalid<
+    DocumentName extends Document.Type,
+    Options extends Readonly<_InvalidOption> | undefined,
+    InvalidDefault extends boolean = false,
+  > =
+    | Document.StoredForName<DocumentName>
+    | (true extends Coalesce<GetKey<Options, "invalid", undefined>, InvalidDefault>
+        ? Document.InvalidForName<DocumentName>
+        : never);
+
+  /**
+   * Type for the 3rd param of {@linkcode EmbeddedCollection._onModifyContents | EmbeddedCollection#_onModifyContents} and
+   * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}. This is the primary data
+   * property of the relevant operation: `Create`/`UpdateData` for `"create"`/`"update"` respectively, and an array of IDs
+   * for `"delete"`.
+   */
+  type OnModifyContentsResult<DocumentName extends Document.Type, Action extends Document.Database2.OperationAction> =
+    | (Action extends "create" ? Array<Document.CreateDataForName<DocumentName>> : never)
+    | (Action extends "update" ? Array<Document.UpdateDataForName<DocumentName>> : never)
+    | (Action extends "delete" ? string[] : never);
+
+  /**
+   * Type for the 4th param of {@linkcode EmbeddedCollection._onModifyContents | EmbeddedCollection#_onModifyContents} and
+   * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}.
+   */
+  type OnModifyContentsOperation<
+    DocumentName extends Document.Type,
+    Action extends Document.Database2.OperationAction,
+  > =
+    | (Action extends "create" ? Document.Database2.OnCreateOperationForName<DocumentName> : never)
+    | (Action extends "update" ? Document.Database2.OnUpdateOperationForName<DocumentName> : never)
+    | (Action extends "delete" ? Document.Database2.OnDeleteOperationForName<DocumentName> : never);
+
+  /** @deprecated Use {@linkcode GetReturn} instead. This type will be removed in v14. */
+  type GetReturnType<V, Options extends GetOptions | undefined> = GetReturn<V, Options>;
 }
 
 declare abstract class AnyCollection extends Collection<unknown, Collection.Methods.Any> {

@@ -8,12 +8,16 @@ declare const user: User.Stored;
 declare const itemSourceArray: Item.Source[];
 declare const itemCreateDataArray: Item.CreateData[];
 declare const sceneSourceArray: Scene.Source[];
-declare const itemImpl: Item.Implementation;
 declare const itemStored: Item.Stored;
 declare const onItemCreateOperation: Item.Database2.OnCreateOperation;
 declare const onItemUpdateOperation: Item.Database2.OnUpdateOperation;
 declare const onItemDeleteOperation: Item.Database2.OnDeleteOperation;
 declare const onSceneUpdateOperation: Scene.Database2.OnUpdateOperation;
+declare const falseOrUndefined: false | undefined;
+declare const trueOrUndefined: true | undefined;
+declare const boolOrUndefined: boolean | undefined;
+
+actor.items;
 
 describe("EmbeddedCollection Tests", () => {
   test("Construction", () => {
@@ -22,152 +26,153 @@ describe("EmbeddedCollection Tests", () => {
     expectTypeOf(new EmbeddedCollection("items", actor, itemSourceArray)).toEqualTypeOf<
       EmbeddedCollection<Document.Any, Actor.Stored>
     >();
-    // CreateData is also passable with only inferred types
-    new EmbeddedCollection("items", actor, itemCreateDataArray);
 
-    // @ts-expect-error Passing .Stored for the source doc type prevents passing source data
+    // Source is assignable to CreateData, so either is allowed
     new EmbeddedCollection<Item.Stored, Actor.Stored>("items", actor, itemSourceArray);
-    // @ts-expect-error Passing .Stored for the source doc type also prevents passing CreateData
     new EmbeddedCollection<Item.Stored, Actor.Stored>("items", actor, itemCreateDataArray);
 
-    // Passing Implementation for the source doc type works...
-    new EmbeddedCollection<Item.Implementation, Actor.Stored>("items", actor, itemSourceArray);
-    // @ts-expect-error ...But it prevents passing CreateData
-    new EmbeddedCollection<Item.Implementation, Actor.Stored>("items", actor, itemCreateDataArray);
-
     // Known limitation: nothing prevents passing incompatible parent and source doc types
-    new EmbeddedCollection<Scene.Implementation, Actor.Stored>("items", actor, sceneSourceArray);
+    new EmbeddedCollection<ActiveEffect.Stored, Actor.Stored>("items", actor, sceneSourceArray);
   });
 
-  const itemCollOnActor = new EmbeddedCollection<Item.Implementation, Actor.Stored>("items", actor, itemSourceArray);
+  const ec = new EmbeddedCollection<Item.Stored, Actor.Stored>("items", actor, itemSourceArray);
 
   test("Initialization", () => {
-    expectTypeOf(itemCollOnActor.initialize()).toBeVoid();
-    expectTypeOf(itemCollOnActor.initialize({})).toBeVoid();
-    expectTypeOf(itemCollOnActor.initialize({ dropInvalidEmbedded: true, fallback: false, strict: true })).toBeVoid();
-    expectTypeOf(
-      itemCollOnActor.initialize({ dropInvalidEmbedded: undefined, fallback: undefined, strict: undefined }),
-    ).toBeVoid();
+    expectTypeOf(ec.initialize()).toBeVoid();
+    expectTypeOf(ec.initialize({})).toBeVoid();
+    expectTypeOf(ec.initialize({ dropInvalidEmbedded: true, fallback: false, strict: true })).toBeVoid();
+    expectTypeOf(ec.initialize({ dropInvalidEmbedded: undefined, fallback: undefined, strict: undefined })).toBeVoid();
 
-    expectTypeOf(itemCollOnActor["_initializeDocument"](itemSourceArray[0]!)).toBeVoid();
-    expectTypeOf(itemCollOnActor["_initializeDocument"](itemSourceArray[0]!, {})).toBeVoid();
+    expectTypeOf(ec["_initializeDocument"](itemSourceArray[0]!)).toBeVoid();
+    expectTypeOf(ec["_initializeDocument"](itemSourceArray[0]!, {})).toBeVoid();
     expectTypeOf(
-      itemCollOnActor["_initializeDocument"](itemSourceArray[0]!, {
+      ec["_initializeDocument"](itemSourceArray[0]!, {
         dropInvalidEmbedded: false,
         fallback: true,
         strict: false,
       }),
     ).toBeVoid();
     expectTypeOf(
-      itemCollOnActor["_initializeDocument"](itemSourceArray[0]!, {
+      ec["_initializeDocument"](itemSourceArray[0]!, {
         dropInvalidEmbedded: undefined,
         fallback: undefined,
         strict: undefined,
       }),
     ).toBeVoid();
 
-    expectTypeOf(itemCollOnActor.createDocument(itemSourceArray[0]!)).toEqualTypeOf<Item.Implementation>();
-    expectTypeOf(itemCollOnActor.createDocument(itemSourceArray[0]!, {})).toEqualTypeOf<Item.Implementation>();
+    expectTypeOf(ec.createDocument(itemSourceArray[0]!)).toEqualTypeOf<Item.Implementation>();
+    expectTypeOf(ec.createDocument(itemSourceArray[0]!, {})).toEqualTypeOf<Item.Implementation>();
     expectTypeOf(
-      itemCollOnActor.createDocument(itemSourceArray[0]!, {
+      ec.createDocument(itemSourceArray[0]!, {
         dropInvalidEmbedded: true,
         fallback: false,
         strict: true,
       }),
     ).toEqualTypeOf<Item.Implementation>();
     expectTypeOf(
-      itemCollOnActor.createDocument(itemSourceArray[0]!, {
+      ec.createDocument(itemSourceArray[0]!, {
         dropInvalidEmbedded: undefined,
         fallback: undefined,
         strict: undefined,
       }),
     ).toEqualTypeOf<Item.Implementation>();
 
-    expectTypeOf(itemCollOnActor["_handleInvalidDocument"]("ID", new Error())).toBeVoid();
-    expectTypeOf(itemCollOnActor["_handleInvalidDocument"]("ID", new Error(), {})).toBeVoid();
-    expectTypeOf(itemCollOnActor["_handleInvalidDocument"]("ID", new Error(), { strict: true })).toBeVoid();
-    expectTypeOf(itemCollOnActor["_handleInvalidDocument"]("ID", new Error(), { strict: undefined })).toBeVoid();
+    expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error())).toBeVoid();
+    expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error(), {})).toBeVoid();
+    expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error(), { strict: true })).toBeVoid();
+    expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error(), { strict: undefined })).toBeVoid();
   });
 
   test("Getting and Searching", () => {
-    expectTypeOf(itemCollOnActor.get("ID")).toEqualTypeOf<Item.Implementation | undefined>();
-    expectTypeOf(itemCollOnActor.get("ID", {})).toEqualTypeOf<Item.Implementation | undefined>();
-    expectTypeOf(itemCollOnActor.get("ID", { invalid: true })).toEqualTypeOf<Item.Invalid | undefined>();
-    expectTypeOf(itemCollOnActor.get("ID", { invalid: false })).toEqualTypeOf<Item.Implementation | undefined>();
-    expectTypeOf(itemCollOnActor.get("ID", { invalid: false, strict: true })).toEqualTypeOf<Item.Implementation>();
-    expectTypeOf(itemCollOnActor.get("ID", { invalid: true, strict: true })).toEqualTypeOf<Item.Invalid>();
+    expectTypeOf(ec.get("ID")).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(ec.get("ID", {})).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(ec.get("ID", { invalid: false, strict: false })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(ec.get("ID", { invalid: true, strict: true })).toEqualTypeOf<Item.Invalid | Item.Stored>();
+    expectTypeOf(ec.get("ID", { invalid: undefined, strict: undefined })).toEqualTypeOf<Item.Stored | undefined>();
 
-    expectTypeOf(itemCollOnActor.getInvalid("ID")).toEqualTypeOf<Item.Invalid>();
-    expectTypeOf(itemCollOnActor.getInvalid("ID", {})).toEqualTypeOf<Item.Invalid>();
-    expectTypeOf(itemCollOnActor.getInvalid("ID", { strict: false })).toEqualTypeOf<Item.Invalid | undefined>();
-    expectTypeOf(itemCollOnActor.getInvalid("ID", { strict: undefined })).toEqualTypeOf<Item.Invalid>();
+    // testing `invalid` (defaults `false`, preventing `.Invalid`s)
+    expectTypeOf(ec.get("ID", { invalid: true, strict: true })).toEqualTypeOf<Item.Invalid | Item.Stored>();
+    expectTypeOf(ec.get("ID", { invalid: false, strict: true })).toEqualTypeOf<Item.Stored>();
+    expectTypeOf(ec.get("ID", { invalid: undefined, strict: true })).toEqualTypeOf<Item.Stored>();
+    expectTypeOf(ec.get("ID", { invalid: falseOrUndefined, strict: true })).toEqualTypeOf<Item.Stored>();
+    expectTypeOf(ec.get("ID", { invalid: boolOrUndefined, strict: true })).toEqualTypeOf<Item.Invalid | Item.Stored>();
+    expectTypeOf(ec.get("ID", { invalid: trueOrUndefined, strict: true })).toEqualTypeOf<Item.Invalid | Item.Stored>();
+
+    // testing `strict` (defaults `false`, allowing `undefined`)
+    expectTypeOf(ec.get("ID", { invalid: false, strict: true })).toEqualTypeOf<Item.Stored>();
+    expectTypeOf(ec.get("ID", { invalid: false, strict: false })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(ec.get("ID", { invalid: false, strict: undefined })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(ec.get("ID", { invalid: false, strict: falseOrUndefined })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(ec.get("ID", { invalid: false, strict: boolOrUndefined })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(ec.get("ID", { invalid: false, strict: trueOrUndefined })).toEqualTypeOf<Item.Stored | undefined>();
+
+    expectTypeOf(ec.getInvalid("ID")).toEqualTypeOf<Item.Invalid>();
+    expectTypeOf(ec.getInvalid("ID", {})).toEqualTypeOf<Item.Invalid>();
+    expectTypeOf(ec.getInvalid("ID", { strict: false })).toEqualTypeOf<Item.Invalid | undefined>();
+    expectTypeOf(ec.getInvalid("ID", { strict: undefined })).toEqualTypeOf<Item.Invalid>();
+    expectTypeOf(ec.getInvalid("ID", { strict: trueOrUndefined })).toEqualTypeOf<Item.Invalid>();
+    expectTypeOf(ec.getInvalid("ID", { strict: falseOrUndefined })).toEqualTypeOf<Item.Invalid | undefined>();
+    expectTypeOf(ec.getInvalid("ID", { strict: boolOrUndefined })).toEqualTypeOf<Item.Invalid | undefined>();
 
     // @ts-expect-error search's one parameter lacks a default, despite `{}` being a valid input
-    itemCollOnActor.search();
-    expectTypeOf(itemCollOnActor.search({})).toEqualTypeOf<Item.Implementation[]>();
+    ec.search();
+    expectTypeOf(ec.search({})).toEqualTypeOf<Item.Stored[]>();
     // See `DocumentCollection` tests for through testing of this method, as it's actually from there in the first place
 
     // Inherited from Collection:
-    for (const item of itemCollOnActor) {
-      expectTypeOf(item).toEqualTypeOf<Item.Implementation>();
+    for (const item of ec) {
+      expectTypeOf(item).toEqualTypeOf<Item.Stored>();
     }
 
-    expectTypeOf(itemCollOnActor.contents).toEqualTypeOf<Item.Implementation[]>();
+    expectTypeOf(ec.contents).toEqualTypeOf<Item.Stored[]>();
   });
 
   test("Setting", () => {
-    expectTypeOf(itemCollOnActor.set("ID", itemImpl)).toEqualTypeOf<typeof itemCollOnActor>();
-    expectTypeOf(itemCollOnActor.set("ID", itemStored)).toEqualTypeOf<typeof itemCollOnActor>();
-    expectTypeOf(itemCollOnActor.set("ID", itemStored, {})).toEqualTypeOf<typeof itemCollOnActor>();
-    expectTypeOf(itemCollOnActor.set("ID", itemStored, { modifySource: false })).toEqualTypeOf<
-      typeof itemCollOnActor
-    >();
-    expectTypeOf(itemCollOnActor.set("ID", itemStored, { modifySource: undefined })).toEqualTypeOf<
-      typeof itemCollOnActor
-    >();
+    expectTypeOf(ec.set("ID", itemStored)).toEqualTypeOf<typeof ec>();
+    expectTypeOf(ec.set("ID", itemStored, {})).toEqualTypeOf<typeof ec>();
+    expectTypeOf(ec.set("ID", itemStored, { modifySource: false })).toEqualTypeOf<typeof ec>();
+    expectTypeOf(ec.set("ID", itemStored, { modifySource: undefined })).toEqualTypeOf<typeof ec>();
 
-    expectTypeOf(itemCollOnActor["_set"]("ID", itemImpl)).toBeVoid();
-    expectTypeOf(itemCollOnActor["_set"]("ID", itemStored)).toBeVoid();
+    expectTypeOf(ec["_set"]("ID", itemStored)).toBeVoid();
   });
 
   test("Deleting", () => {
-    expectTypeOf(itemCollOnActor.delete("ID")).toBeBoolean();
-    expectTypeOf(itemCollOnActor.delete("ID", {})).toBeBoolean();
-    expectTypeOf(itemCollOnActor.delete("ID", { modifySource: false })).toBeBoolean();
-    expectTypeOf(itemCollOnActor.delete("ID", { modifySource: undefined })).toBeBoolean();
+    expectTypeOf(ec.delete("ID")).toBeBoolean();
+    expectTypeOf(ec.delete("ID", {})).toBeBoolean();
+    expectTypeOf(ec.delete("ID", { modifySource: false })).toBeBoolean();
+    expectTypeOf(ec.delete("ID", { modifySource: undefined })).toBeBoolean();
 
     // same options interface as `#delete` above
-    expectTypeOf(itemCollOnActor["_delete"]("ID")).toBeVoid();
+    expectTypeOf(ec["_delete"]("ID")).toBeVoid();
   });
 
   test("Miscellaneous", () => {
-    expectTypeOf(itemCollOnActor.documentClass).toEqualTypeOf<Item.ImplementationClass>();
-    expectTypeOf(itemCollOnActor.model).toEqualTypeOf<Actor.Stored>();
-    expectTypeOf(itemCollOnActor.documentsByType).toEqualTypeOf<Record<string, Item.Implementation[]>>();
+    expectTypeOf(ec.documentClass).toEqualTypeOf<Item.ImplementationClass>();
+    expectTypeOf(ec.model).toEqualTypeOf<Actor.Stored>();
+    expectTypeOf(ec.documentsByType).toEqualTypeOf<Record<string, Item.Stored[]>>();
 
+    // we put the constraint on the constructor as `CreateData` and that gets directly assigned to `_source`, so this is correct
+    expectTypeOf(ec._source).toEqualTypeOf<Item.CreateData[]>();
+
+    // But `toObject` still returns `ContainedDocument["_source"][]`, so:
     // @ts-expect-error Currently .Source is not mapping to ["_source"] properly
-    expectTypeOf(itemCollOnActor._source).toEqualTypeOf<Item.Source[]>();
-    expectTypeOf(itemCollOnActor._source).toEqualTypeOf<Item.Implementation["_source"][]>();
-    // @ts-expect-error Currently .Source is not mapping to ["_source"] properly
-    expectTypeOf(itemCollOnActor.toObject()).toEqualTypeOf<Item.Source[]>();
-    expectTypeOf(itemCollOnActor.toObject()).toEqualTypeOf<Item.Implementation["_source"][]>();
+    expectTypeOf(ec.toObject()).toEqualTypeOf<Item.Source[]>();
+    expectTypeOf(ec.toObject()).toEqualTypeOf<Item.Stored["_source"][]>();
 
     // Inherited from Collection:
     // TODO: Waiting on a luke reduction
     // expectTypeOf(itemCollOnActor.toJSON()).toEqualTypeOf<Item.Source[]>();
   });
 
-  test("OnModifyContents", () => {
+  test("_onModifyContents", () => {
     // @ts-expect-error wrong document's operation type
-    itemCollOnActor._onModifyContents("update", [itemImpl], itemCreateDataArray, onSceneUpdateOperation);
+    ec._onModifyContents("update", [itemStored], itemCreateDataArray, onSceneUpdateOperation);
     expectTypeOf(
-      itemCollOnActor._onModifyContents("create", [itemImpl], itemCreateDataArray, onItemCreateOperation, user),
+      ec._onModifyContents("create", [itemStored], itemCreateDataArray, onItemCreateOperation, user),
     ).toBeVoid();
     expectTypeOf(
-      itemCollOnActor._onModifyContents("update", [itemImpl], itemCreateDataArray, onItemUpdateOperation, user),
+      ec._onModifyContents("update", [itemStored], itemCreateDataArray, onItemUpdateOperation, user),
     ).toBeVoid();
-    expectTypeOf(
-      itemCollOnActor._onModifyContents("delete", [itemImpl], ["ID"], onItemDeleteOperation, user),
-    ).toBeVoid();
+    expectTypeOf(ec._onModifyContents("delete", [itemStored], ["ID"], onItemDeleteOperation, user)).toBeVoid();
   });
 });

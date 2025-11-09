@@ -3341,7 +3341,7 @@ declare namespace Document {
    * subset of those options that are relevant to DialogV2 (and also `jQuery`, for some reason) and, if they exist, reorganizes them to
    * match V2 option format and adds them to the new `dialogOptions` object, which is a rest property on the new 3rd parameter.
    *
-   * @privateRemarks This is `IntentionalPartial` because `.createDialog` checks for keys with `in`
+   * This is `IntentionalPartial` because `.createDialog` checks for keys with `in`.
    * @internal
    */
   type _PartialDialogV1OptionsForCreateDialog = IntentionalPartial<
@@ -3354,7 +3354,7 @@ declare namespace Document {
   >;
 
   /** The interface for {@linkcode CreateDialogOptions.folders}, see remarks there */
-  interface CreateDialogFoldersChoices extends Omit<FormSelectOption, "value" | "label"> {
+  interface DialogFoldersChoices extends Omit<FormSelectOption, "value" | "label"> {
     id: string;
     name: string;
   }
@@ -3370,7 +3370,7 @@ declare namespace Document {
        * @remarks This gets passed to a {@linkcode foundry.applications.handlebars.selectOptions | selectOptions} as the choices, with the
        * default template having `valueAttr="id" labelAttr="name"`
        */
-      folders: Array<CreateDialogFoldersChoices>;
+      folders: Array<DialogFoldersChoices>;
 
       /**
        * A template to use for the dialog contents instead of the default.

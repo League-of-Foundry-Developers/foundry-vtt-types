@@ -21,6 +21,7 @@ expectTypeOf(Item.createDialog(item.toObject())).toEqualTypeOf<Promise<Item.Stor
 declare const itemCreateData: Item.CreateData;
 declare const macroCreateData: Macro.CreateData;
 declare const dialogOptions: InexactPartial<Dialog.Options>;
+
 expectTypeOf(Item.createDialog({}, {})).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 expectTypeOf(
   Item.createDialog(
@@ -286,7 +287,7 @@ expectTypeOf(item["_onSheetChange"]({ sheetOpen: undefined })).toEqualTypeOf<Pro
 const dd = item.deleteDialog();
 expectTypeOf(item.deleteDialog()).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
 expectTypeOf(item.deleteDialog({})).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
-expectTypeOf(item.deleteDialog(dialogOptions)).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
+expectTypeOf(await item.deleteDialog(dialogOptions)).toEqualTypeOf<typeof item | false | null | "yes">();
 
 // Using exportToJSON to test ToCompendiumOptions for now
 expectTypeOf(item.exportToJSON()).toBeVoid();

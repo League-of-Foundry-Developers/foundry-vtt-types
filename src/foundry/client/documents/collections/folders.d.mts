@@ -1,6 +1,5 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
-import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
 
 /**
  * The singleton collection of Folder documents which exist within the active World.
@@ -20,8 +19,8 @@ declare class Folders extends foundry.documents.abstract.WorldCollection<"Folder
   override _onModifyContents<Action extends Document.Database2.OperationAction>(
     action: Action,
     documents: Folder.Stored[],
-    result: readonly foundry.documents.BaseFolder.UpdateData[] | readonly string[],
-    operation: DocumentCollection.OnOperationForActionAndName<Action, "Folder">,
+    result: Collection.OnModifyContentsResult<"Folder", Action>,
+    operation: Collection.OnModifyContentsOperation<"Folder", Action>,
     user: User.Implementation,
   ): void;
 

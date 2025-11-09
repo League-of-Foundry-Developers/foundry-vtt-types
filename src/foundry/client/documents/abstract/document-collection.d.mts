@@ -1,24 +1,29 @@
-import type { AnyObject, DeepPartial, InexactPartial, GetKey } from "#utils";
-import type { DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
+import type { InexactPartial, Identity, DeepPartial } from "#utils";
 /** @privateRemarks `DatabaseBackend` is only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
 import type Application from "#client/appv1/api/application-v1.d.mts";
 import type ApplicationV2 from "#client/applications/api/application.d.mts";
+import type { SearchFilter } from "#client/applications/ux/_module.d.mts";
 
 /**
  * An abstract subclass of the Collection container which defines a collection of Document instances.
+ * @remarks The `data` passed to the constructor is *not* put unconditionally into the `Collection`, it's set as
+ * {@linkcode DocumentCollection._source | #_source} and then {@linkcode DocumentCollection._initialize | #initialize}
+ * adds valid documents to the `Collection` and invalid `id`s to {@linkcode DocumentCollection.invalidDocumentIds | #invalidDocumentIds}.
  */
-declare class DocumentCollection<
+declare abstract class DocumentCollection<
   DocumentType extends Document.Type,
   Methods extends Collection.Methods.Any = DocumentCollection.Methods<DocumentType>,
-> extends foundry.utils.Collection<Document.StoredForName<DocumentType>, Methods> {
-  constructor(data: Document.SourceForName<DocumentType>[]);
+> extends Collection<Document.StoredForName<DocumentType>, Methods> {
+  constructor(data?: Document.CreateDataForName<DocumentType>[]);
 
   /**
    * The source data array from which the Documents in the WorldCollection are created
+   * @remarks Created via `Object.defineProperty` during construction with `{ writable: false }`,
+   * and the `data` param from the constructor as `value`.
    */
-  _source: Document.SourceForName<DocumentType>[];
+  readonly _source: Document.CreateDataForName<DocumentType>[];
 
   /**
    * An Array of application references which will be automatically updated when the collection content changes
@@ -28,7 +33,6 @@ declare class DocumentCollection<
 
   /**
    * Initialize the DocumentCollection by constructing any initially provided Document instances
-   * @internal
    */
   protected _initialize(): void;
 
@@ -55,19 +59,20 @@ declare class DocumentCollection<
 
   /**
    * The Collection class name
+   * @remarks Returns `this.constructor.name`
    */
   get name(): string;
 
   /**
    * Instantiate a Document for inclusion in the Collection.
    * @param data    - The Document data
-   * @param context - Document creation context
+   * @param context - Document creation context (default: `{}`)
+   * @remarks Thin wrapper around `new this.documentClass()`, returns a temporary document.
    */
   createDocument(
     data: Document.CreateDataForName<DocumentType>,
-    // TODO: Should be `Document.ParentOf<T>` or some equivalent.
-    context: Document.ConstructionContext<Document.Any | null>,
-  ): DocumentType;
+    context?: Document.ConstructionContext<Document.ParentForName<DocumentType>>,
+  ): Document.ImplementationFor<DocumentType>;
 
   /**
    * Obtain a temporary Document instance for a document id which currently has invalid source data.
@@ -76,35 +81,54 @@ declare class DocumentCollection<
    * @returns An in-memory instance for the invalid Document
    * @throws If strict is true and the requested ID is not in the set of invalid IDs for this collection.
    */
-  getInvalid(id: string, options?: DocumentCollection.GetInvalidOptions): Document.InvalidForName<DocumentType>;
+  getInvalid<Options extends DocumentCollection.GetInvalidOptions | undefined = undefined>(
+    id: string,
+    options?: Options,
+  ): DocumentCollection.GetInvalidReturn<DocumentType, Options>;
 
+  /**
+   * Get an element from the `DocumentCollection` by its ID.
+   * @param id      - The ID of the Document to retrieve.
+   * @param options - Additional options to configure retrieval.
+   * @throws If strict is true and the Document cannot be found.
+   * @remarks Goto definition breaks here, see {@linkcode DocumentCollection.Methods.get} for the signature
+   */
   get: Methods["get"];
 
   /**
-   * @remarks The parameter `id` is ignored, instead `document.id` is used as the key.
+   * @remarks Foundry fails to return the super call here, leading to a `void` return rather than `this` as of 13.350
+   * ({@link https://github.com/foundryvtt/foundryvtt/issues/13565})
+   *
+   * The parameter `id` is ignored, instead `document.id` is used as the key. This guarantees that all values are stored documents.
+   *
+   * Goto definition breaks here, see {@linkcode DocumentCollection.Methods.set}
    */
-  set(id: string, document: Document.StoredForName<DocumentType>): this;
+  set: Methods["set"];
 
-  /** @remarks Actually returns void */
-  delete: (id: string) => boolean;
+  /**
+   * @remarks Goto definition breaks here, see {@linkcode DocumentCollection.Methods.delete}
+   */
+  delete: Methods["delete"];
 
   /**
    * Render any Applications associated with this DocumentCollection.
    * @param force   - Force rendering  (default: `false`)
    * @param options - Optional options (default: `{}`)
    */
-  render(force?: boolean, options?: Application.Options | ApplicationV2.RenderOptions): void;
+  render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
   /**
    * Get the searchable fields for a given document or index, based on its data model
    * @param documentName - The document name
    * @param type         - A document subtype
    * @returns A record of searchable DataField definitions
+   *
+   * @remarks Currently functional but bugged on 13.350: {@link https://github.com/foundryvtt/foundryvtt/issues/13568}
    */
   // TODO: Could significantly improve this with type defs
-  static getSearchableFields<T extends foundry.abstract.Document.Type>(
-    documentName: T,
-    type?: foundry.abstract.Document.SubTypesOf<T>,
+  static getSearchableFields<DocumentName extends Document.Type>(
+    documentName: DocumentName,
+    type?: Document.SubTypesOf<DocumentName>,
   ): Record<string, DocumentCollection.SearchableField>;
 
   /**
@@ -117,7 +141,7 @@ declare class DocumentCollection<
    */
   // TODO: CompendiumCollection doesn't override this method, and the method preferentially operates on `this.index` over `this.contents`,
   // TODO: so the return type should include index entries
-  search(search: DocumentCollection.SearchOptions): Document.ImplementationFor<DocumentType>[];
+  search(search: DocumentCollection.SearchOptions): Document.StoredForName<DocumentType>[];
 
   /**
    * Update all objects in this DocumentCollection with a provided transformation.
@@ -132,8 +156,8 @@ declare class DocumentCollection<
       | Document.UpdateDataForName<DocumentType>
       | ((doc: Document.StoredForName<DocumentType>) => Document.UpdateDataForName<DocumentType>),
     condition?: ((obj: Document.StoredForName<DocumentType>) => boolean) | null,
-    options?: Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation>,
-  ): ReturnType<this["documentClass"]["updateDocuments"]>;
+    options?: Document.Database2.UpdateManyDocumentsOperationForName<DocumentType>,
+  ): Promise<Document.StoredForName<DocumentType>[]>;
 
   /**
    * Follow-up actions to take when a database operation modifies Documents in this DocumentCollection.
@@ -142,6 +166,7 @@ declare class DocumentCollection<
    * @param result    - The result of the database operation
    * @param operation - Database operation details
    * @param user      - The User who performed the operation
+   * @internal
    *
    * @remarks Foundry types `action` as {@linkcode DatabaseBackend.DatabaseAction} but no path exists from a `get` operation to calling
    * this method.
@@ -149,57 +174,49 @@ declare class DocumentCollection<
   _onModifyContents<Action extends Document.Database2.OperationAction>(
     action: Action,
     documents: Document.StoredForName<DocumentType>[],
-    result: readonly AnyObject[] | readonly string[],
-    operation: DocumentCollection.OnOperationForActionAndName<Action, DocumentType>,
-    user: User.Implementation,
+    result: Collection.OnModifyContentsResult<DocumentType, Action>,
+    operation: Collection.OnModifyContentsOperation<DocumentType, Action>,
+    user: User.Stored,
   ): void;
+
+  static #DocumentCollection: true;
 }
 
 declare namespace DocumentCollection {
-  interface Any extends DocumentCollection<Document.Type, Collection.Methods.Any> {}
+  interface Any extends AnyDocumentCollection {}
+  interface AnyConstructor extends Identity<typeof AnyDocumentCollection> {}
 
-  interface Methods<T extends Document.Type> {
+  /**
+   * The method signatures for {@linkcode DocumentCollection}.
+   *
+   * {@linkcode Collection.Method} is not used on `set` here, as it returns `void` not `this` in `DocumentCollection`.
+   * ({@link https://github.com/foundryvtt/foundryvtt/issues/13565})
+   *
+   * @remarks The type param here is the `documentName` rather than the actual `V` of the `Collection`
+   * to allow for invalid document handling.
+   */
+  interface Methods<DocumentName extends Document.Type> {
+    self: unknown;
+
     get<Options extends DocumentCollection.GetOptions | undefined = undefined>(
       key: string,
       options?: Options,
-    ): DocumentCollection.GetReturnType<T, Options>;
+    ): DocumentCollection.GetReturn<DocumentName, Options>;
+
+    set(id: string, document: Document.StoredForName<DocumentName>): void;
+
+    delete(id: string): boolean;
   }
 
-  type OnOperationForActionAndName<
-    OpType extends Document.Database2.OperationAction,
-    DocumentName extends Document.Type,
-  > =
-    | (OpType extends "create" ? Document.Database2.OnCreateOperationForName<DocumentName> : never)
-    | (OpType extends "update" ? Document.Database2.OnUpdateOperationForName<DocumentName> : never)
-    | (OpType extends "delete" ? Document.Database2.OnDeleteOperationForName<DocumentName> : never);
-
-  namespace RenderContext {
-    interface Base<T extends Document.Type> {
-      documentType: T;
-      documents: Document.StoredForName<T>[];
-
-      /** @deprecated The "entities" render context is deprecated. Please use "documents" instead. */
-      get entities(): this["documents"];
-
-      /** @deprecated The "entityType" render context is deprecated. Please use "documentType" instead. */
-      get entityType(): this["documentType"];
-    }
-
-    interface Create<T extends Document.Type> extends Base<T> {
-      action: "create";
-      data: (Document.SourceForName<T> & { _id: string })[];
-    }
-
-    interface Update<T extends Document.Type> extends Base<T> {
-      action: "update";
-      data: (DeepPartial<Document.SourceForName<T>> & { _id: string })[];
-    }
-
-    interface Delete<T extends Document.Type> extends Base<T> {
-      action: "delete";
-      data: string[];
-    }
-  }
+  /**
+   * Options for {@linkcode DocumentCollection.render | DocumentCollection#render}.
+   *
+   * @remarks This is an intersection-like because the same object is copied and then passed to both
+   * {@linkcode Application.render | AppV1#render} and {@linkcode ApplicationV2.render | AppV2#render};
+   * in the latter case, `options.force` is overwritten with the first parameter of
+   * `DocumentCollection#render`.
+   */
+  interface RenderOptions extends DeepPartial<Application.Options & Omit<ApplicationV2.RenderOptions, "force">> {}
 
   /** @internal */
   interface _SearchOptions {
@@ -213,7 +230,7 @@ declare namespace DocumentCollection {
      * An array of filters to apply
      * @defaultValue `[]`
      */
-    filters: foundry.applications.ux.SearchFilter.FieldFilter[];
+    filters: SearchFilter.FieldFilter[];
 
     /**
      * An array of document IDs to exclude from search results
@@ -224,38 +241,51 @@ declare namespace DocumentCollection {
 
   interface SearchOptions extends InexactPartial<_SearchOptions> {}
 
+  /**
+   * Used in the {@linkcode DocumentCollection.getSearchableFields} return type.
+   *
+   * TODO: infer from schema all `StringField`s and subclasses that are `textSearch: true`
+   */
   type SearchableField =
-    | foundry.data.fields.DataField
+    | foundry.data.fields.StringField
     | {
         [K in string]: SearchableField;
       };
 
-  interface GetInvalidOptions {
-    /**
-     * Throw an Error if the requested ID is not in the set of invalid IDs for this collection.
-     */
-    strict?: boolean | undefined;
-  }
+  /** Options for {@linkcode DocumentCollection.getInvalid | DocumentCollection#getInvalid}. */
+  interface GetInvalidOptions extends Collection._GetInvalidOptions {}
 
-  interface GetOptions extends Collection.GetOptions {
-    /**
-     * Allow retrieving an invalid Embedded Document.
-     * @defaultValue `false`
-     */
-    invalid?: boolean | undefined;
-  }
+  /**
+   * The return type for {@linkcode DocumentCollection.getInvalid | DocumentCollection#getInvalid}.
+   *
+   * If `strict` is `true` (the default), passing anything that isn't a known invalid ID throws; if it's `false`, then the return can be
+   * `undefined`.
+   *
+   * @remarks Differs from {@linkcode Collection.GetReturn} only in the default value of `strict`
+   */
+  type GetInvalidReturn<
+    DocumentName extends Document.Type,
+    Options extends DocumentCollection.GetInvalidOptions | undefined,
+  > = Collection._GetReturn<Document.InvalidForName<DocumentName>, Options, true>;
 
-  type GetReturnType<DocumentType extends Document.Type, Options extends GetOptions | undefined> =
-    | _ApplyInvalid<DocumentType, GetKey<Options, "invalid", false>>
-    | _ApplyStrict<GetKey<Options, "strict", undefined>>;
+  /** Options for {@linkcode DocumentCollection.get | DocumentCollection#get}. */
+  interface GetOptions extends Collection.GetOptions, Collection._InvalidOption {}
 
-  /** @internal */
-  type _ApplyInvalid<DocumentType extends Document.Type, Invalid extends boolean | undefined> = Invalid extends true
-    ? Document.InvalidForName<DocumentType> | Document.StoredForName<DocumentType>
-    : Document.StoredForName<DocumentType>;
+  /** The return type for {@linkcode DocumentCollection.get | DocumentCollection#get}. */
+  type GetReturn<DocumentType extends Document.Type, Options extends GetOptions | undefined> = Collection._GetReturn<
+    Collection._ApplyInvalid<DocumentType, Options, false>,
+    Options
+  >;
 
-  /** @internal */
-  type _ApplyStrict<Strict extends boolean | undefined> = Strict extends true ? never : undefined;
+  /** @deprecated Use {@linkcode DocumentCollection.GetReturn} instead. This type will be removed in v14. */
+  type GetReturnType<DocumentType extends Document.Type, Options extends GetOptions | undefined> = GetReturn<
+    DocumentType,
+    Options
+  >;
+}
+
+declare class AnyDocumentCollection extends DocumentCollection<Document.Type, Collection.Methods.Any> {
+  constructor(...args: never);
 }
 
 export default DocumentCollection;

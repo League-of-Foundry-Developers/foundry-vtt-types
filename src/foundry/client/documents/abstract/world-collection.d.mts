@@ -38,8 +38,6 @@ declare abstract class WorldCollection<
    */
   static get instance(): WorldCollection<Document.WorldType, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
 
-  // Note(LukeAbby): Due to the usage of `this["contents"]` in the parent class the override has
-  // to stay like this.
   protected override _getVisibleTreeContents(): this["contents"];
 
   /**

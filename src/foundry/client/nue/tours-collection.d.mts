@@ -20,10 +20,10 @@ declare class ToursCollection extends Collection<Tour.Any> {
 
   /**
    * Set a Tour to the collection.
-   * @remarks Only checks to throw or not then calls super
-   * @throws If `key` doesn't match the Tour's `namespace` and `id`
+   * @remarks Only checks to throw or not, then calls {@link Collection.set | super}.
+   * @throws If `key` doesn't match the passed Tour's `namespace` and `id`
    */
-  set(key: string, tour: Tour.Any): this;
+  override set: Collection.Method<this, Collection.Methods<Tour.Any>, "set">;
 }
 
 declare namespace ToursCollection {}

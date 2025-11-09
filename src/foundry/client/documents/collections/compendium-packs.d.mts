@@ -11,7 +11,7 @@ declare class CompendiumPacks extends foundry.documents.abstract.DirectoryCollec
    */
   get folders(): Collection<Folder.Stored>;
 
-  protected override _getVisibleTreeContents(): foundry.documents.collections.CompendiumCollection.Any[];
+  protected override _getVisibleTreeContents(): this["contents"];
 
   protected static override _sortAlphabetical(
     a: CompendiumPacks.AlphabeticalSortEntry,

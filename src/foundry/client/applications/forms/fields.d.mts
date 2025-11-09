@@ -172,7 +172,7 @@ export function createNumberInput(config: NumberInputConfig): HTMLInputElement;
 /**
  * @remarks This interface doesn't automatically account for any use of {@linkcode SelectInputConfig.labelAttr} or
  * {@linkcode SelectInputConfig.valueAttr | .valueAttr}. If you need to use either, you'll have to declaration merge
- * them in, or make a wrapper like {@linkcode foundry.abstract.Document.CreateDialogFoldersChoices}.
+ * them in, or make a wrapper like {@linkcode foundry.abstract.Document.DialogFoldersChoices}.
  */
 export interface FormSelectOption {
   value: string;
