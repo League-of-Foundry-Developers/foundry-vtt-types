@@ -978,7 +978,11 @@ declare class ApplicationV2<
   bringToTop(): void;
 }
 
-declare abstract class AnyApplicationV2 extends ApplicationV2<any, any, any> {
+declare abstract class AnyApplicationV2 extends ApplicationV2<
+  object,
+  ApplicationV2.Configuration,
+  ApplicationV2.RenderOptions
+> {
   constructor(...args: never);
 }
 
