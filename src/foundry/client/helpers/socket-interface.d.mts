@@ -60,11 +60,6 @@ declare namespace SocketInterface {
      * Data returned as a result of the request
      */
     data?: RequestData | undefined;
-
-    /**
-     * An Array of created data objects
-     */
-    result?: AnyObject[] | readonly string[] | undefined;
   }
 }
 

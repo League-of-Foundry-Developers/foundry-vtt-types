@@ -4,7 +4,6 @@ import type Document from "#common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "#common/prosemirror/_module.d.mts";
 import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
-import type { DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
 import type CompendiumArt from "#client/helpers/media/compendium-art.d.mts";
 import type { Hooks as HookConfigs } from "#configuration";
 import type Hooks from "./helpers/hooks.d.mts";
@@ -18,6 +17,7 @@ import type {
 
 import type { Note, PlaceableObject, Token } from "#client/canvas/placeables/_module.d.mts";
 import type { TokenRingConfig } from "#client/canvas/placeables/tokens/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
 import Application = foundry.appv1.api.Application;
@@ -486,12 +486,14 @@ export interface AllHooks extends DynamicHooks {
    * @param options   - Additional options which modified the modification request
    * @param userId    - The ID of the User who triggered the modification workflow
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link foundry.documents.collections.CompendiumCollection._onModifyContents | `foundry.documents.collections.CompendiumCollection#_onModifyContents`}
+   *
+   * Since {@linkcode CompendiumCollection._onModifyContents | CompendiumCollection#_onModifyContents} does not forward the `action`, we
+   * can't know ahead of time if the `options` will be a `create`, `update`, or `delete` operation.
    */
-  updateCompendium: (
-    pack: foundry.documents.collections.CompendiumCollection.Any,
-    documents: Document.Any[],
-    options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
+  updateCompendium: <DocumentName extends CompendiumCollection.DocumentName>(
+    pack: CompendiumCollection<DocumentName>,
+    documents: Document.StoredForName<DocumentName>[],
+    options: Collection.OnModifyContentsOperation<DocumentName, Document.Database2.OperationAction>,
     userId: string,
   ) => void;
 

@@ -1,6 +1,5 @@
-import type { DeepPartial, Identity } from "#utils";
-import type ApplicationV2 from "../api/application.d.mts";
-import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
+import type { _DeepPartial, DeepPartial, Identity, InexactPartial } from "#utils";
+import type { ApplicationV2, HandlebarsApplicationMixin } from "#client/applications/api/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -14,7 +13,8 @@ declare module "#configuration" {
  * An Image Popout Application which features a single image in a lightbox style frame.
  * Furthermore, this application allows for sharing the display of an image with other connected players.
  *
- * @example Creating an Image Popout
+ * @example
+ * Creating an Image Popout
  * ```js
  * // Construct the Application instance
  * const ip = new ImagePopout({
@@ -29,7 +29,6 @@ declare module "#configuration" {
  * // Share the image with other connected players
  * ip.shareImage();
  * ```
- * @remarks TODO: Stub
  */
 declare class ImagePopout<
   RenderContext extends ImagePopout.RenderContext = ImagePopout.RenderContext,
@@ -38,8 +37,47 @@ declare class ImagePopout<
 > extends HandlebarsApplicationMixin(ApplicationV2)<RenderContext, Configuration, RenderOptions> {
   constructor(options: DeepPartial<Configuration> & { src: string });
 
+  /** @deprecated "An ImagePopout image path must be assigned to options.src." (since v13, until v15) */
+  constructor(options: string, _options: DeepPartial<Configuration>);
+
   // Fake override.
   static override DEFAULT_OPTIONS: ImagePopout.DefaultOptions;
+
+  static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
+
+  override get title(): string;
+
+  /**
+   * Whether the application should display video content.
+   */
+  get isVideo(): boolean;
+
+  /**
+   * Share the displayed image with other connected Users
+   * @remarks This is callable with no `options`, that will just produce a popup with a broken `img`
+   * (no `src` means the alt text is displayed) and no title. Not desirable, but not an error.
+   */
+  shareImage(options?: ImagePopout.ShareImageOptions): void;
+
+  protected override _initializeApplicationOptions(options: DeepPartial<Configuration>): Configuration;
+
+  protected override _prepareContext(
+    options: DeepPartial<RenderOptions> & { isFirstRender: boolean },
+  ): Promise<RenderContext>;
+
+  protected override _preFirstRender(
+    context: DeepPartial<RenderContext>,
+    options: DeepPartial<RenderOptions>,
+  ): Promise<void>;
+
+  /**
+   * Handle a received request to display an image.
+   * @param config - The image configuration data.
+   * @internal
+   */
+  static _handleShareImage(options?: ImagePopout.ShareImageConfig): ImagePopout.Any;
+
+  #ImagePopout: true;
 }
 
 declare namespace ImagePopout {
@@ -68,7 +106,7 @@ declare namespace ImagePopout {
     caption: string;
 
     /**
-     * The UUID of some related {@link foundry.abstract.Document|`Document`}.
+     * The UUID of some related {@linkcode Document}.
      * @defaultValue `null`
      */
     uuid: string | null | undefined;
@@ -84,6 +122,7 @@ declare namespace ImagePopout {
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
 
+  /** The interface for sending with a `"shareImage"` socket event. */
   interface ShareImageConfig {
     /**
      * The image URL to share.
@@ -96,7 +135,7 @@ declare namespace ImagePopout {
     title: string;
 
     /**
-     * The UUID of a {@linkcode foundry.abstract.Document} related to the image, used to determine permission to see the image title.
+     * The UUID of a {@linkcode Document} related to the image, used to determine permission to see the image title.
      */
     uuid?: string | undefined;
 
@@ -110,6 +149,11 @@ declare namespace ImagePopout {
      */
     users?: string[] | undefined;
   }
+
+  /**
+   * Options for {@linkcode ImagePopout.shareImage | ImagePopout#shareImage}.
+   */
+  interface ShareImageOptions extends InexactPartial<ShareImageConfig> {}
 }
 
 declare abstract class AnyImagePopout extends ImagePopout<

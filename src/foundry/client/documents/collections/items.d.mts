@@ -5,11 +5,11 @@ import type Document from "#common/abstract/document.d.mts";
  * The singleton collection of Item documents which exist within the active World.
  * This Collection is accessible within the Game object as game.items.
  *
- * @see {@linkcode Item} The Item document
- * @see {@linkcode ItemDirectory} The ItemDirectory sidebar directory
+ * @see {@linkcode foundry.documents.Item}: The Item document
+ * @see {@linkcode foundry.applications.sidebar.tabs.ItemDirectory}: The ItemDirectory sidebar directory
  */
 declare class Items extends foundry.documents.abstract.WorldCollection<"Item", "Items"> {
-  static documentName: "Item";
+  static override documentName: "Item";
 }
 
 declare namespace Items {
@@ -27,14 +27,10 @@ declare namespace Items {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Item"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Item"> {}
 
-  /**
-   * @deprecated Replaced by {@linkcode Items.ImplementationClass}.
-   */
+  /** @deprecated Replaced by {@linkcode Items.ImplementationClass}. */
   type ConfiguredClass = ImplementationClass;
 
-  /**
-   * @deprecated Replaced by {@linkcode Items.Implementation}.
-   */
+  /** @deprecated Replaced by {@linkcode Items.Implementation}. */
   type Configured = Implementation;
 }
 

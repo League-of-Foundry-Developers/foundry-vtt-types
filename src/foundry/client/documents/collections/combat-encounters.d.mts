@@ -1,15 +1,16 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 
 /**
  * The singleton collection of Combat documents which exist within the active World.
  * This Collection is accessible within the Game object as game.combats.
  *
- * @see {@linkcode Combat} The Combat document
- * @see {@linkcode CombatTracker} The CombatTracker sidebar directory
+ * @see {@linkcode foundry.documents.Combat}: The Combat document
+ * @see {@linkcode foundry.applications.sidebar.tabs.CombatTracker}: The CombatTracker sidebar directory
  */
-declare class CombatEncounters extends foundry.documents.abstract.WorldCollection<"Combat", "CombatEncounters"> {
-  static documentName: "Combat";
+declare class CombatEncounters extends WorldCollection<"Combat", "CombatEncounters"> {
+  static override documentName: "Combat";
 
   /**
    * Provide the settings object which configures the Combat document
@@ -21,24 +22,20 @@ declare class CombatEncounters extends foundry.documents.abstract.WorldCollectio
   /**
    * Get an Array of Combat instances which apply to the current canvas scene
    */
-  get combats(): ReturnType<this["filter"]>;
+  get combats(): Combat.Stored[];
 
   /**
    * The currently active Combat instance
    */
-  get active(): ReturnType<this["find"]>;
+  get active(): Combat.Stored | undefined;
 
   /**
    * The currently viewed Combat encounter
    */
   get viewed(): Combat.Stored | null;
 
-  /**
-   * When a Token is deleted, remove it as a combatant from any combat encounters which included the Token
-   * @param sceneId - The Scene id within which a Token is being deleted
-   * @param tokenId - The Token id being deleted
-   */
-  protected _onDeleteToken(sceneId: string, tokenId: string): Promise<void>;
+  /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
+  protected _onDeleteToken(...args: never): never;
 }
 
 declare namespace CombatEncounters {
@@ -56,14 +53,10 @@ declare namespace CombatEncounters {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Combat"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Combat"> {}
 
-  /**
-   * @deprecated Replaced by {@linkcode CombatEncounters.ImplementationClass}.
-   */
+  /** @deprecated Replaced by {@linkcode CombatEncounters.ImplementationClass}. */
   type ConfiguredClass = ImplementationClass;
 
-  /**
-   * @deprecated Replaced by {@linkcode CombatEncounters.Implementation}.
-   */
+  /** @deprecated Replaced by {@linkcode CombatEncounters.Implementation}. */
   type Configured = Implementation;
 }
 

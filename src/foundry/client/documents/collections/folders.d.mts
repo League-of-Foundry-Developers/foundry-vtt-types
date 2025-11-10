@@ -1,20 +1,21 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
+import type { WorldCollection, DocumentCollection } from "#client/documents/abstract/_module.d.mts";
 
 /**
  * The singleton collection of Folder documents which exist within the active World.
  * This Collection is accessible within the Game object as game.fog.
  *
- * @see {@linkcode Folder} The Folder document
+ * @see {@linkcode foundry.documents.Folder} The Folder document
  */
-declare class Folders extends foundry.documents.abstract.WorldCollection<"Folder", "Folders"> {
-  static documentName: "Folder";
+declare class Folders extends WorldCollection<"Folder", "Folders"> {
+  static override documentName: "Folder";
 
   /**
    * Track which Folders are currently expanded in the UI
    * @internal
    */
-  protected _expanded: Partial<Record<string, boolean>>;
+  _expanded: Record<string, boolean>;
 
   override _onModifyContents<Action extends Document.Database2.OperationAction>(
     action: Action,
@@ -24,13 +25,13 @@ declare class Folders extends foundry.documents.abstract.WorldCollection<"Folder
     user: User.Implementation,
   ): void;
 
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  /** @deprecated Foundry made this method truly private in v13. This warning will be removed in v14. */
   protected _refreshJournalEntrySheets(): never;
 
-  render(
-    force?: boolean,
-    context?: foundry.appv1.api.Application.Options | foundry.applications.api.ApplicationV2.RenderOptions,
-  ): void;
+  /** @remarks This is a no-op in {@linkcode Folders}, Foundry logs "The Folders collection is not directly rendered" as a warning.  */
+  render(force?: boolean, context?: DocumentCollection.RenderOptions): never;
+
+  #Folders: true;
 }
 
 declare namespace Folders {
@@ -48,14 +49,10 @@ declare namespace Folders {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Folder"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Folder"> {}
 
-  /**
-   * @deprecated Replaced by {@linkcode Folders.ImplementationClass}.
-   */
+  /** @deprecated Replaced by {@linkcode Folders.ImplementationClass}. */
   type ConfiguredClass = ImplementationClass;
 
-  /**
-   * @deprecated Replaced by {@linkcode Folders.Implementation}.
-   */
+  /** @deprecated Replaced by {@linkcode Folders.Implementation}. */
   type Configured = Implementation;
 }
 

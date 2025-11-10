@@ -6,6 +6,14 @@ import type Application from "#client/appv1/api/application-v1.d.mts";
 import type ApplicationV2 from "#client/applications/api/application.d.mts";
 import type { SearchFilter } from "#client/applications/ux/_module.d.mts";
 
+/** @privateRemarks `CompendiumCollection` and `CompendiumFolderCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { CompendiumCollection, CompendiumFolderCollection } from "#client/documents/collections/_module.d.mts";
+
+/** @privateRemarks `WorldCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
+
 /**
  * An abstract subclass of the Collection container which defines a collection of Document instances.
  * @remarks The `data` passed to the constructor is *not* put unconditionally into the `Collection`, it's set as
@@ -156,7 +164,7 @@ declare abstract class DocumentCollection<
       | Document.UpdateDataForName<DocumentType>
       | ((doc: Document.StoredForName<DocumentType>) => Document.UpdateDataForName<DocumentType>),
     condition?: ((obj: Document.StoredForName<DocumentType>) => boolean) | null,
-    options?: Document.Database2.UpdateManyDocumentsOperationForName<DocumentType>,
+    options?: DocumentCollection.UpdateAllOperation<DocumentType>,
   ): Promise<Document.StoredForName<DocumentType>[]>;
 
   /**
@@ -240,6 +248,20 @@ declare namespace DocumentCollection {
   }
 
   interface SearchOptions extends InexactPartial<_SearchOptions> {}
+
+  /**
+   * It wouldn't make sense to pass `pack` to {@linkcode WorldCollection.updateAll | WorldCollection#updateAll} for a world
+   * collection, and {@linkcode CompendiumCollection.updateAll | CompendiumCollection#updateAll} and
+   * {@linkcode CompendiumFolderCollection.updateAll | CompendiumFolderCollection#updateAll} force set `pack`, for obvious reasons;
+   * In either case, we omit `pack` from this operation interface. This is valid for core, as the above three classes are all that
+   * extend `DocumentCollection` in Foundry code.
+   *
+   * If you're a user that needs to be able to pass `pack` to your `DocumentCollection` subclass for some reason, please let us know.
+   */
+  type UpdateAllOperation<DocumentName extends Document.Type> = Omit<
+    Document.Database2.UpdateManyDocumentsOperationForName<DocumentName>,
+    "pack"
+  >;
 
   /**
    * Used in the {@linkcode DocumentCollection.getSearchableFields} return type.

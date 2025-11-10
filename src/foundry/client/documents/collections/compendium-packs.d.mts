@@ -1,6 +1,7 @@
-declare class CompendiumPacks extends foundry.documents.abstract.DirectoryCollectionMixin(
-  Collection,
-)<foundry.documents.collections.CompendiumCollection.Any> {
+import type { DirectoryCollectionMixin } from "#client/documents/abstract/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+
+declare class CompendiumPacks extends DirectoryCollectionMixin(Collection)<CompendiumCollection.Any> {
   /**
    * The Collection class name
    */
@@ -20,7 +21,9 @@ declare class CompendiumPacks extends foundry.documents.abstract.DirectoryCollec
 }
 
 declare namespace CompendiumPacks {
-  interface AlphabeticalSortEntry extends foundry.documents.abstract.DirectoryCollectionMixin.AlphabeticalSortEntry {
+  // No `Implementation`/`ImplementationClass`, as the `Game` constructor names the class directly, there's no `CONFIG` property.
+
+  interface AlphabeticalSortEntry extends DirectoryCollectionMixin.AlphabeticalSortEntry {
     metadata?: {
       label: string;
     };

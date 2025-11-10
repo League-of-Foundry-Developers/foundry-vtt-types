@@ -1,5 +1,6 @@
 import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+import type Document from "#common/abstract/document.mjs";
 import type { Identity } from "#utils";
 
 /**
@@ -18,16 +19,19 @@ declare class CompendiumFolderCollection<
 
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
-  // Possible this causes depth issues, this is just a small extension in the code with no meaningful transformations
-  // override updateAll(
-  //   transformation:
-  //     | Document.UpdateDataForName<DocumentName>
-  //     | ((doc: Document.StoredForName<DocumentName>) => Document.UpdateDataForName<DocumentName>),
-  //   condition?: ((obj: Document.StoredForName<DocumentName>) => boolean) | null,
-  //   options?: Document.Database.UpdateManyDocumentsOperationForName<DocumentName>,
-  // ): Promise<Document.StoredForName<DocumentName>[]>;
+  override updateAll( // TODO: StoredOfType
+    transformation: Folder.UpdateData | ((doc: Folder.Stored) => Folder.UpdateData),
+    condition?: ((doc: Folder.Stored) => boolean) | null,
+    options?: DocumentCollection.UpdateAllOperation<"Folder">,
+  ): Promise<Folder.Stored[]>;
 
-  // Note(LukeAbby): The override for `_onModifyContents` becomes unreasonably long and doesn't add any changes and so has been omitted.
+  override _onModifyContents<Action extends Document.Database2.OperationAction>(
+    action: Action,
+    documents: Folder.Stored[], // TODO: StoredOfType
+    result: Collection.OnModifyContentsResult<"Folder", Action>,
+    operation: Collection.OnModifyContentsOperation<"Folder", Action>,
+    user: User.Stored,
+  ): void;
 }
 
 declare namespace CompendiumFolderCollection {

@@ -1,20 +1,19 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
-
-import Game = foundry.Game;
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 
 /**
  * The singleton collection of FogExploration documents which exist within the active World.
- * @see {@linkcode FogExploration} The FogExploration document
+ * @see {@linkcode foundry.documents.FogExploration} The FogExploration document
  */
-declare class FogExplorations extends foundry.documents.abstract.WorldCollection<"FogExploration", "FogExplorations"> {
-  static documentName: "FogExploration";
+declare class FogExplorations extends WorldCollection<"FogExploration", "FogExplorations"> {
+  static override documentName: "FogExploration";
 
   /**
    * Activate Socket event listeners to handle for fog resets
    * @param socket - The active web socket connection
    */
-  static _activateSocketListeners(socket: Game["socket"]): void;
+  static _activateSocketListeners(socket: foundry.Game["socket"]): void;
 }
 
 declare namespace FogExplorations {
@@ -32,14 +31,10 @@ declare namespace FogExplorations {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"FogExploration"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"FogExploration"> {}
 
-  /**
-   * @deprecated Replaced by {@linkcode FogExplorations.ImplementationClass}.
-   */
+  /** @deprecated Replaced by {@linkcode FogExplorations.ImplementationClass}. */
   type ConfiguredClass = ImplementationClass;
 
-  /**
-   * @deprecated Replaced by {@linkcode FogExplorations.Implementation}.
-   */
+  /** @deprecated Replaced by {@linkcode FogExplorations.Implementation}. */
   type Configured = Implementation;
 }
 

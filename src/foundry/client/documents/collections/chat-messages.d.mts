@@ -1,19 +1,22 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 /**
  * The singleton collection of ChatMessage documents which exist within the active World.
- * This Collection is accessible within the Game object as game.messages.
+ * This Collection is accessible within the Game object as {@linkcode foundry.Game.messages | game.messages}.
  *
- * @see {@linkcode ChatMessage} The ChatMessage document
- * @see {@linkcode ChatLog} The ChatLog sidebar directory
+ * @see {@linkcode foundry.documents.ChatMessage}: The ChatMessage document
+ * @see {@linkcode foundry.applications.sidebar.tabs.ChatLog}: The ChatLog sidebar directory
  */
-declare class ChatMessages extends foundry.documents.abstract.WorldCollection<"ChatMessage", "Messages"> {
-  static documentName: "ChatMessage";
+declare class ChatMessages extends WorldCollection<"ChatMessage", "Messages"> {
+  static override documentName: "ChatMessage";
 
   override get directory(): typeof ui.chat;
 
-  render(force?: boolean): void;
+  /** @remarks This is a no-op in {@linkcode ChatMessages} */
+  override render(force?: boolean): void;
 
   /**
    * If requested, dispatch a Chat Bubble UI for the newly created message
@@ -28,9 +31,8 @@ declare class ChatMessages extends foundry.documents.abstract.WorldCollection<"C
 
   /**
    * Allow for bulk deletion of all chat messages, confirm first with a yes/no dialog.
-   * @see {@linkcode Dialog.confirm}
    */
-  flush(): Promise<Promise<ChatMessage.Stored[]> | false | null>;
+  flush(): Promise<ChatMessages.FlushDialogReturn>;
 }
 
 declare namespace ChatMessages {
@@ -48,14 +50,12 @@ declare namespace ChatMessages {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"ChatMessage"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"ChatMessage"> {}
 
-  /**
-   * @deprecated Replaced by {@linkcode ChatMessages.ImplementationClass}.
-   */
+  type FlushDialogReturn = DialogV2.ConfirmReturn<{ yes: { callback: () => Promise<void> } }>;
+
+  /** @deprecated Replaced by {@linkcode ChatMessages.ImplementationClass}. */
   type ConfiguredClass = ImplementationClass;
 
-  /**
-   * @deprecated Replaced by {@linkcode ChatMessages.Implementation}.
-   */
+  /** @deprecated Replaced by {@linkcode ChatMessages.Implementation}. */
   type Configured = Implementation;
 }
 

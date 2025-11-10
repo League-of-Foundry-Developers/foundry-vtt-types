@@ -19,6 +19,10 @@ import type { BasePackage } from "#common/packages/_module.d.mts";
 import type { DocumentCollection, DirectoryCollectionMixin } from "#client/documents/abstract/_module.d.mts";
 import type { CompendiumFolderCollection } from "#client/documents/collections/_module.d.mts";
 
+/** @privateRemarks `AllHooks` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { AllHooks } from "#client/hooks.mjs";
+
 /**
  * A collection of Document objects contained within a specific compendium pack.
  * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
@@ -280,11 +284,11 @@ declare class CompendiumCollection<
    * @param metadata - The compendium metadata used to create the new pack
    * @param options  - Additional options which modify the Compendium creation request (default: `{}`)
    */
-  static createCompendium<T extends CompendiumCollection.DocumentName>(
-    this: abstract new (...args: never) => CompendiumCollection<NoInfer<T>>,
-    metadata: CompendiumCollection.CreateCompendiumMetadata<T>,
-    options?: unknown,
-  ): Promise<CompendiumCollection<T>>;
+  static createCompendium<DocumentName extends CompendiumCollection.DocumentName>(
+    // this: abstract new (...args: never) => CompendiumCollection<NoInfer<T>>,
+    metadata: CompendiumCollection.CreateCompendiumMetadata<DocumentName>,
+    options?: CompendiumCollection.ManageCompendiumSocketOptions,
+  ): Promise<CompendiumCollection<DocumentName>>;
 
   /**
    * Generate a UUID for a given primary document ID within this Compendium pack
@@ -297,6 +301,8 @@ declare class CompendiumCollection<
    * Assign configuration metadata settings to the compendium pack
    * @param configuration - The object of compendium settings to define (default: `{}`)
    * @returns A Promise which resolves once the setting is updated
+   * @remarks Passing explicit `undefined` for any key of `configuration` will remove it from the stored config, reverting to default
+   * handling for that property.
    */
   configure(configuration?: CompendiumCollection.Configuration): Promise<void>;
 
@@ -319,16 +325,31 @@ declare class CompendiumCollection<
    */
   migrate(options?: CompendiumCollection.MigrateOptions): Promise<this>;
 
-  // Note(LukeAbby): The override for `updateAll` and `_onModifyContents` become unreasonably long and don't add any changes and so has been omitted.
+  override updateAll(
+    transformation:
+      | Document.UpdateDataForName<DocumentName>
+      | ((doc: Document.StoredForName<DocumentName>) => Document.UpdateDataForName<DocumentName>),
+    condition?: ((obj: Document.StoredForName<DocumentName>) => boolean) | null,
+    options?: DocumentCollection.UpdateAllOperation<DocumentName>,
+  ): Promise<Document.StoredForName<DocumentName>[]>;
 
-  override render(force?: boolean, options?: foundry.appv1.api.Application.Options | ApplicationV2.RenderOptions): void;
+  override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
+
+  /** @remarks Calls the {@linkcode AllHooks.updateCompendium | updateCompendium} hook via `callAll` */
+  override _onModifyContents<Action extends Document.Database2.OperationAction>(
+    action: Action,
+    documents: Document.StoredForName<DocumentName>[],
+    result: Collection.OnModifyContentsResult<DocumentName, Action>,
+    operation: Collection.OnModifyContentsOperation<DocumentName, Action>,
+    user: User.Stored,
+  ): void;
 
   /**
    * Handle changes to the world compendium configuration setting.
-   * @remarks As the setting's {@linkcode foundry.helpers.ClientSettings.SettingConfig.onChange | onChange} function, this gets passed the new value after
-   * it's been cleaned and validated by the field in `ClientSettings##cleanJSON`
+   * @remarks As the setting's {@linkcode foundry.helpers.ClientSettings.SettingConfig.onChange | onChange} function,
+   * this gets passed the new value after it's been cleaned and validated by the field in `ClientSettings##cleanJSON`
    */
-  protected static _onConfigure(config: CompendiumCollection.StoredConfiguration): void;
+  protected static _onConfigure(config: CompendiumCollection.SettingData): void;
 
   #CompendiumCollection: true;
 }
@@ -352,14 +373,15 @@ declare namespace CompendiumCollection {
   interface ConfigSettingElementSchema extends fields.DataSchema {
     /**
      * @defaultValue `undefined`
-     * @remarks The `id` of the folder this is in in the {@linkcode foundry.applications.sidebar.apps.Compendium | Compendium directory}.
-     * `undefined` and `null` should behave
+     * @remarks The `id` of the folder this is in in the
+     * {@linkcode foundry.applications.sidebar.tabs.CompendiumDirectory | Compendium directory}. `undefined` and `null` should behave
+     * identically.
      */
     folder: fields.StringField<{
-      required: false;
+      required: true;
       blank: false;
       nullable: true;
-      validate: (value: unknown) => boolean;
+      validate: typeof foundry.data.validators.isValidId;
     }>;
 
     /** @remarks Integer sort value, for if this pack is either not in a folder, or is in one set to manual sort */
@@ -379,7 +401,10 @@ declare namespace CompendiumCollection {
 
   interface StoredConfiguration extends fields.SchemaField.InitializedData<ConfigSettingElementSchema> {}
 
-  /** @remarks The partial'd interface for passing to {@linkcode CompendiumCollection.configure}, if you want the stored interface see {@linkcode CompendiumCollection.StoredConfiguration} */
+  /**
+   * The partialed interface for passing to {@linkcode CompendiumCollection.configure}, if you want the stored interface see
+   * {@linkcode CompendiumCollection.StoredConfiguration}
+   */
   interface Configuration extends InexactPartial<StoredConfiguration> {}
 
   type SettingFieldElement = fields.SchemaField<ConfigSettingElementSchema>;
@@ -420,9 +445,8 @@ declare namespace CompendiumCollection {
      */
     banner?: string | null | undefined;
     name: string;
-
     flags: Record<string, never>; // created by the server, but always empty and no way to change it in a way that is s
-    ownership: foundry.packages.BasePackage.OwnershipRecord;
+    ownership: BasePackage.OwnershipRecord;
     path: string;
   }
 
@@ -443,35 +467,47 @@ declare namespace CompendiumCollection {
 
   type ForDocument<Name extends DocumentName> = Name extends unknown ? CompendiumCollection<Name> : never;
 
-  interface ManageCompendiumRequest extends SocketInterface.SocketRequest {
-    /**
-     * The request action.
-     */
-    action: string;
+  type ManageCompendiumAction = "create" | "delete" | "migrate";
 
-    /**
-     * The compendium creation data, or the ID of the compendium to delete.
-     */
+  interface ManageCompendiumRequest extends SocketInterface.SocketRequest {
+    /** The request action. */
+    action: ManageCompendiumAction;
+
+    /** The compendium creation data, or the ID of the compendium to delete. */
     data: PackageCompendiumData | string;
 
-    /**
-     * Additional options.
-     */
-    options?: Record<string, unknown>;
+    /** Additional options. */
+    options?: ManageCompendiumSocketOptions;
   }
 
-  // @ts-expect-error Bad inheritance
   interface ManageCompendiumResponse extends SocketInterface.SocketResponse {
-    /**
-     * The original request.
-     */
+    /** The original request. */
     request: ManageCompendiumRequest;
 
-    /**
-     * The compendium creation data, or the collection name of the deleted compendium.
-     */
+    /** The compendium creation data, or the collection name of the deleted compendium. */
     result: PackageCompendiumData | string;
   }
+
+  /** @internal */
+  type _ManageCompendiumSocketOptions = InexactPartial<{
+    /**
+     * @remarks {@linkcode CompendiumCollection.duplicateCompendium | CompendiumCollection#duplicateCompendium} passes
+     * {@linkcode CompendiumCollection.collection | this.collection} when calling {@linkcode CompendiumCollection.createCompendium}.
+     */
+    source: string;
+  }>;
+
+  /**
+   * The interface for {@linkcode ManageCompendiumRequest.options}.
+   *
+   * @remarks If this were more complicated on the server side, we'd split this up into `CreateOptions`, `DeleteOptions`, and
+   * `MigrateOptions` (one for each {@linkcode ManageCompendiumAction}), but as of 13.350 the only valid `options` key for any operation is
+   * {@linkcode ManageCompendiumSocketOptions.source | source} for `create`, with `delete` using no options and `migrate` only taking an
+   * `onProgress` function that wouldn't survive the socket and {@linkcode MigrateOptions.notify | notify} which, since `migrate` operations
+   * don't return a response (inferred by reading the {@linkcode CompendiumCollection._activateSocketListeners} body), and it has no effect
+   * server-side, is pointless to allow.
+   */
+  interface ManageCompendiumSocketOptions extends _ManageCompendiumSocketOptions {}
 
   interface TestUserPermissionOptions extends Document._TestUserPermissionsOptions {}
 
@@ -553,15 +589,9 @@ declare namespace CompendiumCollection {
   >;
 
   interface DuplicateCompendiumOptions {
+    /** A new Compendium label */
     label?: string | undefined;
   }
-
-  /** @deprecated Use {@linkcode CompendiumCollection.StoredConfiguration} instead. */
-  type WorldCompendiumPackConfiguration = CompendiumCollection.StoredConfiguration;
-
-  /** @deprecated Use {@linkcode CompendiumCollection.SettingData} instead. */
-  type WorldCompendiumConfiguration = CompendiumCollection.SettingData;
-
   /** @internal */
   type _MigrateOptions = InexactPartial<{
     /**
@@ -594,6 +624,12 @@ declare namespace CompendiumCollection {
       [K in keyof T as K extends string ? (IsComparable<T[K]> extends true ? `${K}__ne` : never) : never]?: T[K];
     }
   >;
+
+  /** @deprecated Use {@linkcode CompendiumCollection.StoredConfiguration} instead. This type will be removed in v14. */
+  type WorldCompendiumPackConfiguration = CompendiumCollection.StoredConfiguration;
+
+  /** @deprecated Use {@linkcode CompendiumCollection.SettingData} instead. This type will be removed in v14. */
+  type WorldCompendiumConfiguration = CompendiumCollection.SettingData;
 }
 
 type IsComparable<T> = T extends boolean | string | number | bigint | symbol | null | undefined ? true : false;
