@@ -621,26 +621,37 @@ declare global {
 }
 
 declare namespace Game {
-  interface ModuleCollection extends Collection<foundry.packages.Module, ModuleCollectionMethods> {}
-
-  interface ModuleCollectionMethods {
+  /**
+   * This is just a regular {@linkcode Collection} at runtime, but here it gets its `#get` wired up to fvtt-types {@linkcode ModuleConfig}
+   * and {@linkcode RequiredModules} configuration interfaces.
+   */
+  interface ModuleCollection extends Collection<foundry.packages.Module, ModuleCollectionMethods> {
     /**
      * @remarks Gets the module requested for by ID
      * @see {@linkcode ModuleConfig} to add custom properties to modules, for example APIs.
      * @see {@linkcode RequiredModules} to remove `undefined` from the return type for a given module
      * @param id - The module ID to look up
+     *
+     * @privateRemarks The `Methods` hack does not pass through JSDoc, so we have this otherwise unnecessary override here.
      */
+    get: ModuleCollectionMethods["get"];
+  }
+
+  /**
+   * Methods for the {@linkcode ModuleCollection} fake class. Only `#get` needs a type override, the rest is inherited.
+   */
+  interface ModuleCollectionMethods extends Omit<Collection.Methods<foundry.packages.Module>, "get"> {
     get<T extends string, Options extends Collection.GetOptions | undefined = undefined>(
       id: T,
-      { strict }?: Options,
-    ): _ModuleCollectionGet<T, Options>;
+      options?: Options,
+    ): _ModuleCollectionGetReturn<T, Options>;
   }
 
   /** @internal */
-  type _ModuleCollectionGet<
+  type _ModuleCollectionGetReturn<
     Name extends string,
     Options extends Collection.GetOptions | undefined = undefined,
-  > = Name extends keyof RequiredModules ? _Module<Name> : Collection.GetReturnType<_MaybeActiveModule<Name>, Options>;
+  > = Name extends keyof RequiredModules ? _Module<Name> : Collection.GetReturn<_MaybeActiveModule<Name>, Options>;
 
   /** @internal */
   type _Module<Name extends string> =

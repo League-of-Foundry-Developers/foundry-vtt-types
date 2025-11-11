@@ -15,6 +15,7 @@ import type {
   ValueOf,
   AnyMutableObject,
   ConcreteKeys,
+  MaybeArray,
 } from "#utils";
 import type { DataModel } from "../abstract/data.mts";
 import type Document from "../abstract/document.mts";
@@ -985,7 +986,7 @@ declare class SchemaField<
    * @param fieldName - A field path like ["abilities", "strength"] or "abilities.strength"
    * @returns The corresponding DataField definition for that field, or undefined
    */
-  getField(fieldName: string | string[]): DataField.Unknown | undefined;
+  getField(fieldName: MaybeArray<string>): DataField.Unknown | undefined;
   // TODO(LukeAbby): Enabling this signatures causes a circularity but it would be ideal.
   // getField<FieldName extends SchemaField.FieldName<Fields>>(
   //   fieldName: FieldName,
@@ -3072,7 +3073,10 @@ declare namespace EmbeddedCollectionField {
     ParentDataModel extends Document.Any,
     Opts extends Options<AssignmentElementType>,
   > = DataField.DerivedInitializedType<
-    EmbeddedCollection<Document.Internal.Instance.Complete<InitializedElementType>, ParentDataModel>,
+    EmbeddedCollection<
+      Document.StoredForName<InitializedElementType[" fvtt_types_internal_document_name"]>,
+      ParentDataModel
+    >,
     MergedOptions<AssignmentElementType, Opts>
   >;
 
@@ -3239,7 +3243,10 @@ declare namespace EmbeddedCollectionDeltaField {
     ParentDataModel extends Document.Any,
     Opts extends Options<AssignmentElementType>,
   > = DataField.DerivedInitializedType<
-    EmbeddedCollectionDelta<Document.Internal.Instance.Complete<InitializedElementType>, ParentDataModel>,
+    EmbeddedCollectionDelta<
+      Document.StoredForName<InitializedElementType[" fvtt_types_internal_document_name"]>,
+      ParentDataModel
+    >,
     MergedOptions<AssignmentElementType, Opts>
   >;
 

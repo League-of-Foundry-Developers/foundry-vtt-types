@@ -74,9 +74,9 @@ expectTypeOf(
   (await itemCollection.getIndex({ fields: ["name", "effects", "system"] })).get("some id", { strict: true }),
 ).toEqualTypeOf<{ _id: string; uuid: string } & DeepPartial<Item.Source>>();
 
-expectTypeOf(await itemCollection.getDocuments()).toEqualTypeOf<Item.Implementation[]>(); // get all items
-expectTypeOf(await itemCollection.getDocuments({})).toEqualTypeOf<Item.Implementation[]>(); // get all items
-expectTypeOf(await itemCollection.getDocuments({ name: "foo" })).toEqualTypeOf<Item.Implementation[]>(); // get all items called "foo"
+expectTypeOf(await itemCollection.getDocuments()).toEqualTypeOf<Item.Stored[]>(); // get all items
+expectTypeOf(await itemCollection.getDocuments({})).toEqualTypeOf<Item.Stored[]>(); // get all items
+expectTypeOf(await itemCollection.getDocuments({ name: "foo" })).toEqualTypeOf<Item.Stored[]>(); // get all items called "foo"
 
 await itemCollection.getDocuments({
   name__in: ["baz", "bar"],

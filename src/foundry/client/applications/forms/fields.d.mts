@@ -1,4 +1,4 @@
-import type { NullishProps } from "#utils";
+import type { InexactPartial, NullishProps } from "#utils";
 
 export type CustomFormGroup = (
   field: foundry.data.fields.DataField,
@@ -114,7 +114,7 @@ interface _FormInputConfig<FormInputValue = unknown> {
   input: CustomFormInput;
 }
 
-export interface FormInputConfig<FormInputValue> extends NullishProps<_FormInputConfig<FormInputValue>> {
+export interface FormInputConfig<FormInputValue> extends InexactPartial<_FormInputConfig<FormInputValue>> {
   /**
    * The name of the form element
    *
@@ -169,6 +169,11 @@ export interface NumberInputConfig extends FormInputConfig<number> {
  */
 export function createNumberInput(config: NumberInputConfig): HTMLInputElement;
 
+/**
+ * @remarks This interface doesn't automatically account for any use of {@linkcode SelectInputConfig.labelAttr} or
+ * {@linkcode SelectInputConfig.valueAttr | .valueAttr}. If you need to use either, you'll have to declaration merge
+ * them in, or make a wrapper like {@linkcode foundry.abstract.Document.DialogFoldersChoices}.
+ */
 export interface FormSelectOption {
   value: string;
   label: string;
@@ -221,7 +226,7 @@ interface _SelectInputConfig {
 }
 
 // Compatible with multiple different types of FormInputConfig so this does *not* extend that interface
-export interface SelectInputConfig extends NullishProps<_SelectInputConfig> {
+export interface SelectInputConfig extends InexactPartial<_SelectInputConfig> {
   options: FormSelectOption[];
 }
 

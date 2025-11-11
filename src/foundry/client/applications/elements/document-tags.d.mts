@@ -1,3 +1,4 @@
+import type { MaybeArray } from "#utils";
 import type { FormInputConfig } from "../forms/fields.d.mts";
 import type AbstractFormInputElement from "./form-element.d.mts";
 
@@ -58,9 +59,9 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<Record<st
   // TODO: Fix once compendium index types are added.
   _validateDocument(document: foundry.abstract.Document.Any | Record<string, unknown>): void;
 
-  protected override _getValue(): string | string[];
+  protected override _getValue(): MaybeArray<string>;
 
-  protected override _setValue(value: string | string[]): void;
+  protected override _setValue(value: MaybeArray<string>): void;
 
   protected override _toggleDisabled(disabled: boolean): void;
 

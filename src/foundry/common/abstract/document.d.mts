@@ -36,6 +36,7 @@ import type {
   SchemaField,
   TypeDataField,
 } from "../data/fields.d.mts";
+import type { FormSelectOption } from "#client/applications/forms/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
   DatabaseAction,
@@ -2421,6 +2422,12 @@ declare namespace Document {
     }> &
     _PossibleSubtypesContext<DocumentName> &
     ParentContext<Parent>;
+
+  /** The interface for {@linkcode CreateDialogOptions.folders}, see remarks there */
+  interface DialogFoldersChoices extends Omit<FormSelectOption, "value" | "label"> {
+    id: string;
+    name: string;
+  }
 
   type CreateDialogOptions<DocumentName extends Document.Type> =
     InexactPartial<foundry.applications.api.DialogV2.PromptConfig> &

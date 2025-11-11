@@ -262,9 +262,15 @@ export interface ModuleConfig {}
 export interface RequiredModules {}
 
 export interface SettingConfig {
-  "core.animateRollTable": boolean;
+  "core.animateRollTable": fields.BooleanField<{ initial: true }>;
   "core.chatBubbles": fields.BooleanField<{ initial: true }>;
   "core.chatBubblesPan": fields.BooleanField<{ initial: true }>;
+
+  /** Registered with `type: Object`. */
+  "core.collectionSortingModes": Record<string, foundry.documents.abstract.DirectoryCollectionMixin.SortingMode>;
+
+  /** Registered with `type: Object`. */
+  "core.collectionSearchModes": Record<string, CONST.DIRECTORY_SEARCH_MODES>;
   "core.combatTrackerConfig": MaybeEmpty<{ resource: string; skipDefeated: boolean }>;
   "core.compendiumConfiguration": foundry.documents.collections.CompendiumCollection.SettingField;
   "core.gridTemplates": fields.BooleanField<{ initial: false }>;
