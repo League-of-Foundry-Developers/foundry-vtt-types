@@ -8,7 +8,7 @@ new RollTable.implementation({});
 
 const table = new RollTable.implementation({ name: "" });
 
-expectTypeOf(table.results.get("testing")).toEqualTypeOf<TableResult.Implementation | undefined>();
+expectTypeOf(table.results.get("testing")).toEqualTypeOf<TableResult.Stored | undefined>();
 
 expectTypeOf(await table.draw()).toEqualTypeOf<RollTable.Draw>();
 expectTypeOf((await table.roll()).results).toEqualTypeOf<TableResult.Implementation[]>();

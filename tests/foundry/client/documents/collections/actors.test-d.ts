@@ -13,4 +13,4 @@ expectTypeOf(actors.get("", { strict: false, invalid: true })).toEqualTypeOf<
 expectTypeOf(actors.get("", { strict: false, invalid: false })).toEqualTypeOf<Actor.Stored | undefined>();
 expectTypeOf(actors.toJSON()).toEqualTypeOf<Actor.Stored["_source"][]>();
 expectTypeOf(actors.directory).toEqualTypeOf<ActorDirectory.Any | undefined>();
-expectTypeOf(actors.tokens["foo"]).toEqualTypeOf<Actor.Implementation | undefined>();
+expectTypeOf(actors.tokens["foo"]).toEqualTypeOf<Actor.Stored | undefined>();

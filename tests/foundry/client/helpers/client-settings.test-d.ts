@@ -9,7 +9,7 @@ const clientSettings = new ClientSettings([]);
 
 expectTypeOf(clientSettings.settings).toEqualTypeOf<Map<keyof SettingConfig & string, ClientSettings.SettingConfig>>();
 expectTypeOf(clientSettings.menus).toEqualTypeOf<Map<string, ClientSettings.SettingSubmenuConfig>>();
-expectTypeOf(clientSettings.storage).toEqualTypeOf<Map<string, Storage | WorldSettings>>();
+expectTypeOf(clientSettings.storage).toEqualTypeOf<Map<string, Storage | WorldSettings.Implementation>>();
 expectTypeOf(clientSettings.sheet).toEqualTypeOf<SettingsConfig>();
 
 declare const subMenu: ClientSettings.RegisterSubmenu;

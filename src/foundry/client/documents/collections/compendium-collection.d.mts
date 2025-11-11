@@ -1,7 +1,6 @@
 import type {
   Coalesce,
   DeepPartial,
-  DotKeys,
   EmptyObject,
   GetKey,
   Identity,
@@ -444,7 +443,7 @@ declare namespace CompendiumCollection {
      * An array of fields to return as part of the index
      * @defaultValue `[]`
      */
-    fields?: DotKeys<Document.SourceForName<Type>>[] | undefined;
+    fields?: (keyof Document.SourceForName<Type>)[];
   }
 
   // TODO: Improve automatic index properties based on document type
