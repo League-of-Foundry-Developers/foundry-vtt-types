@@ -78,6 +78,17 @@ declare const _InternalDocument: (new (...args: any[]) => {
 }) &
   typeof DataModel;
 
+// Note(LukeAbby): Patterns of the form `interface Example<T> extends T {}` don't count as using `T`.
+// From tsc's point of view when calculating variance it may as well look like `interface Example<T> {}`.
+// Fundamentally this ordinarily means `Example<T>` will always be assignable to `Example<U>` and
+// vice versa.
+//
+// Obviously this is a problem, so `Uses` exists to add an unobtrusive covariant usage of the type
+// parameter, making `Example<T>` assignable to `Example<U>` only if `T` is a subtype of `U`.
+declare class Uses<T> {
+  #t?: T;
+}
+
 /**
  * An extension of the base DataModel which defines a Document.
  * Documents are special in that they are persisted to the database and referenced by _id.
@@ -1247,7 +1258,7 @@ declare namespace Document {
 
     /** @internal */
     // @ts-expect-error This pattern is inherently an error.
-    interface _InvalidSystem<D extends Document.Any> extends D {
+    interface _InvalidSystem<D extends Document.Any> extends D, Uses<D> {
       // `Record<string, unknown>` is used to allow arbitrary property access since `in` checks are
       // a nuisance.
       _source: Record<string, unknown>;
@@ -1257,7 +1268,7 @@ declare namespace Document {
 
     /** @internal */
     // @ts-expect-error This pattern is inherently an error.
-    interface _Invalid<D extends Document.Any> extends D {
+    interface _Invalid<D extends Document.Any> extends D, Uses<D> {
       _source: Record<string, unknown>;
       get invalid(): true;
     }
@@ -1738,7 +1749,7 @@ declare namespace Document {
     > {}
 
   // @ts-expect-error This pattern is inherently an error.
-  interface _DynamicBase<T extends object> extends T {}
+  interface _DynamicBase<T extends object> extends T, Uses<T> {}
 
   /** @internal */
   interface _ConstructionContext<Parent extends Document.Any | null>

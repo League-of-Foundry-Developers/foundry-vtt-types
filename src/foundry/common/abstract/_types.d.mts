@@ -5,8 +5,19 @@ import type Document from "./document.d.mts";
 // This means that actual functions must use helper types to properly omit properties or explicit undefined
 // Also, the _result property is intentionally left out as it is never present on the client
 
+// Note(LukeAbby): Patterns of the form `interface Example<T> extends T {}` don't count as using `T`.
+// From tsc's point of view when calculating variance it may as well look like `interface Example<T> {}`.
+// Fundamentally this ordinarily means `Example<T>` will always be assignable to `Example<U>` and
+// vice versa.
+//
+// Obviously this is a problem, so `Uses` exists to add an unobtrusive covariant usage of the type
+// parameter, making `Example<T>` assignable to `Example<U>` only if `T` is a subtype of `U`.
+declare class Uses<T> {
+  #t?: T;
+}
+
 // @ts-expect-error This pattern is inherently an error.
-interface _DynamicBase<T extends object> extends T {}
+interface _DynamicBase<T extends object> extends T, Uses<T> {}
 
 interface _Parent<Parent extends Document.Any | null>
   extends _DynamicBase<

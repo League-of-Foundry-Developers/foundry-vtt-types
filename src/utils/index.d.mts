@@ -676,6 +676,17 @@ type _MergePlainObject<T extends object, U extends object> = {
 
 interface _MergeComplexObject<T extends object, U extends object> extends _Override<T, _MergePlainObject<T, U>> {}
 
+// Note(LukeAbby): Patterns of the form `interface Example<T> extends T {}` don't count as using `T`.
+// From tsc's point of view when calculating variance it may as well look like `interface Example<T> {}`.
+// Fundamentally this ordinarily means `Example<T>` will always be assignable to `Example<U>` and
+// vice versa.
+//
+// Obviously this is a problem, so `Uses` exists to add an unobtrusive covariant usage of the type
+// parameter, making `Example<T>` assignable to `Example<U>` only if `T` is a subtype of `U`.
+declare class Uses<T> {
+  #t?: T;
+}
+
 /**
  * Overrides properties of `T` with properties in `U`. Be careful using this type as its internal
  * implementation is likely a bit shaky.
@@ -685,7 +696,7 @@ interface _MergeComplexObject<T extends object, U extends object> extends _Overr
 export type Override<T extends object, U extends object> = T extends unknown ? _Override<T, U> : never;
 
 // @ts-expect-error This pattern is inherently an error.
-interface _Override<T extends object, U extends object> extends U, T {}
+interface _Override<T extends object, U extends object> extends U, T, Uses<T>, Uses<U> {}
 
 /**
  * Returns whether the type is a plain object. Excludes functions, arrays, and constructors while still being friendly to interfaces.
@@ -1324,7 +1335,9 @@ interface DeepReadonlyComplex<T extends object> extends _DeepReadonlyComplex<T> 
 // However it gives a better type display as two levels.
 interface _DeepReadonlyComplex<T extends object, R extends object = { readonly [K in keyof T]: _DeepReadonly<T[K]> }>
   extends R,
-    T {}
+    T,
+    Uses<R>,
+    Uses<T> {}
 
 /**
  * Currently indistinguishable from `DotKeys` but will eventually avoid `readonly` keys.

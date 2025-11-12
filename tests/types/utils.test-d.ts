@@ -27,6 +27,7 @@ import type {
   // RemoveIndexSignatures,
   Titlecase,
   // Merge,
+  Override,
   // IsObject,
   // SimpleMerge,
   RequiredProps,
@@ -156,6 +157,29 @@ expectTypeOf<Titlecase<"FOOBAR">>().toEqualTypeOf<"Foobar">();
 expectTypeOf<Titlecase<"foo bar">>().toEqualTypeOf<"Foo Bar">();
 expectTypeOf<Titlecase<"foo  bar">>().toEqualTypeOf<"Foo  Bar">();
 expectTypeOf<Titlecase<"foo bar baz">>().toEqualTypeOf<"Foo Bar Baz">();
+
+let _overridden1: Override<{ foo: number; bar: string }, { foo: string }> = { foo: "foo", bar: "bar" };
+
+// @ts-expect-error - `overridden` should be essentially equivalent to `{ foo: string; bar: string }`
+_overridden1 = { foo: 123, bar: "bar" };
+
+let _overridden2: Override<{ foo: boolean[]; bar: string }, { foo: string }> = { foo: "foo", bar: "bar" };
+
+// @ts-expect-error - In principle this should work but the variance of `Override` is overly
+// conservative. We could force `Override` to have a structural comparison but I simply don't see
+// the point right now.
+_overridden1 = _overridden2;
+
+// @ts-expect-error - See above.
+_overridden2 = _overridden1;
+
+let _overridden3: Override<{ foo: 123; bar: "bar" }, { foo: "foo" }> = { foo: "foo", bar: "bar" };
+
+_overridden1 = _overridden3;
+
+// @ts-expect-error - `_overridden1` is wider than `_overridden3`.
+// This is essentially trying to assign `{ foo: string; bar: string }` to `{ foo: "foo"; bar: "bar" }`.
+_overridden3 = _overridden1;
 
 // TODO: Merge
 // TODO: IsObject
