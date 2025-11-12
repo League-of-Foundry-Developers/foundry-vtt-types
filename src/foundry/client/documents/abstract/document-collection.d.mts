@@ -123,9 +123,7 @@ declare class DocumentCollection<
    * @returns An array of updated data once the operation is complete
    */
   updateAll(
-    transformation:
-      | Document.UpdateDataForName<DocumentType>
-      | ((doc: Document.StoredForName<DocumentType>) => Document.UpdateDataForName<DocumentType>),
+    transformation: DocumentCollection.Transformation<DocumentType>,
     condition?: ((obj: Document.StoredForName<DocumentType>) => boolean) | null,
     options?: Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation>,
   ): ReturnType<this["documentClass"]["updateDocuments"]>;
@@ -240,6 +238,13 @@ declare namespace DocumentCollection {
 
   /** @internal */
   type _ApplyStrict<Strict extends boolean | undefined> = Strict extends true ? never : undefined;
+
+  type Transformation<DocumentName extends Document.Type> =
+    | Document.UpdateDataForName<DocumentName>
+    | {
+        // Note(LukeAbby): Written as a method to stay covariant over `DocumentName`.
+        transform(doc: Document.StoredForName<DocumentName>): Document.UpdateDataForName<DocumentName>;
+      }["transform"];
 }
 
 export default DocumentCollection;
