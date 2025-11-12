@@ -71,7 +71,12 @@ if (item) {
   expectTypeOf(Item.createDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Stored[]>>();
   expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
   expectTypeOf(Item.updateDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Implementation[]>>();
-  expectTypeOf(item.update(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
+
+  // `item.update` is effectively distributive because `item` itself is currently a union.
+  // This will change when `type` inference occurs.
+  type UpdatedUnion<Doc> = Doc extends unknown ? Promise<Doc | undefined> : never;
+
+  expectTypeOf(item.update(item.toObject())).toEqualTypeOf<UpdatedUnion<Item.Stored>>();
   expectTypeOf(item.clone(item.toObject())).toEqualTypeOf<Item.Stored>();
 }
 
