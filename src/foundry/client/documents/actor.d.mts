@@ -147,6 +147,12 @@ declare namespace Actor {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
+  type DirectDescendantName = "Item" | "ActiveEffect";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
   type DirectDescendant = Item.Stored | ActiveEffect.Stored;
 
   /**
@@ -511,27 +517,51 @@ declare namespace Actor {
   }
 
   type PreCreateDescendantDocumentsArgs =
-    | Document.PreCreateDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.PreCreateDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.PreCreateDescendantDocumentsArgs;
 
   type OnCreateDescendantDocumentsArgs =
-    | Document.OnCreateDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.OnCreateDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.OnCreateDescendantDocumentsArgs;
 
   type PreUpdateDescendantDocumentsArgs =
-    | Document.PreUpdateDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.PreUpdateDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.PreUpdateDescendantDocumentsArgs;
 
   type OnUpdateDescendantDocumentsArgs =
-    | Document.OnUpdateDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.OnUpdateDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.OnUpdateDescendantDocumentsArgs;
 
   type PreDeleteDescendantDocumentsArgs =
-    | Document.PreDeleteDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.PreDeleteDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.PreDeleteDescendantDocumentsArgs;
 
   type OnDeleteDescendantDocumentsArgs =
-    | Document.OnDeleteDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.OnDeleteDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.OnDeleteDescendantDocumentsArgs;
 
   interface DropData extends Document.Internal.DropData<Name> {}
