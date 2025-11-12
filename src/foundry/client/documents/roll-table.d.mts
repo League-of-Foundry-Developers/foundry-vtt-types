@@ -808,7 +808,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
   static fromFolder<Temporary extends boolean | undefined = undefined>(
     folder: Folder.Implementation,
     options?: RollTable.Database.CreateOperation<Temporary>,
-  ): Promise<WallDocument.TemporaryIf<Temporary> | undefined>;
+  ): Promise<RollTable.TemporaryIf<Temporary> | undefined>;
 
   /*
    * After this point these are not really overridden methods.
