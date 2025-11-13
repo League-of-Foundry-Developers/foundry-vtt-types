@@ -1,7 +1,10 @@
 import type { AnyArray, Coalesce, GetKey, Identity, InexactPartial } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
+
 /** @privateRemarks `EmbeddedCollection` used only for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
+
 /** @privateRemarks `DocumentCollection` used only for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
@@ -105,22 +108,25 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * c.get("d"); // null
    * c.get("d", {strict: true}); // throws Error
    * ```
+   *
+   * @remarks Go to definition breaks here, see {@linkcode Collection.Methods.get}
    */
   override get: Methods["get"];
 
   /**
-   * Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
+   * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
    *
+   * Go to definition breaks here, see {@linkcode Collection.Methods.set}
    * @see {@linkcode globalThis.Map.set | Map#set}
-   * @see {@linkcode Collection.Method}
+   * @see {@linkcode Collection.SetMethod}
    */
-  override set: Collection.Method<this, Methods, "set">;
+  override set: Collection.SetMethod<this, Methods>;
 
   /**
-   * Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
+   * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
    *
+   * Go to definition breaks here, see {@linkcode Collection.Methods.delete}
    * @see {@linkcode globalThis.Map.delete | Map#delete}
-   * @see {@linkcode Collection.Method}
    */
   override delete: Methods["delete"];
 
@@ -139,10 +145,13 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * c.getName("D"); // undefined
    * c.getName("D", {strict: true}); // throws Error
    * ```
+   *
+   * @remarks Will always return `undefined` if the `Collection`'s value isn't an object with a `name` property.
    */
-  // TODO: Condense to conditional return type
-  getName(name: string, { strict }: { strict: true }): V;
-  getName(name: string, { strict }?: { strict?: false }): V | undefined;
+  getName<Options extends Collection.GetOptions | undefined = undefined>(
+    name: string,
+    options?: Options,
+  ): Collection.GetReturn<V, Options>;
 
   /**
    * Transform each element of the Collection into a new form, returning an Array of transformed values
@@ -206,9 +215,11 @@ declare namespace Collection {
   }
 
   /**
-   * This type exists to allow the `set` method provided by a given Collection subclass to accurately provide a `this` return
+   * This type exists to allow the `set` method provided by a given Collection subclass to accurately provide a `this` return,
+   * if it does return `this` and isn't broken like all {@linkcode DocumentCollection} subclasses in 13.350
+   * ({@link https://github.com/foundryvtt/foundryvtt/issues/13565})
    */
-  type Method<This, Methods, Property extends keyof Methods> = ({ self: This } & Methods)[Property];
+  type SetMethod<This, Methods extends Collection.Methods.Any> = ({ self: This } & Methods)["set"];
 
   /** Method signatures for {@linkcode Collection} */
   interface Methods<V> {
@@ -227,7 +238,7 @@ declare namespace Collection {
   namespace Methods {
     /**
      * The base requirements for a `Collection` subclass. `self` is a hack to allow a valid `this` return for `set`,
-     * see {@linkcode Collection.Method}
+     * where it isn't broken, see {@linkcode Collection.SetMethod}
      */
     interface Any {
       self: unknown;
@@ -249,7 +260,6 @@ declare namespace Collection {
     strict: boolean;
   }>;
 
-  /** Options for {@linkcode Collection.get | Collection#get} */
   interface GetOptions extends _GetOptions {}
 
   /**
@@ -269,7 +279,7 @@ declare namespace Collection {
   }>;
 
   /**
-   *
+   * Used for {@linkcode EmbeddedCollection.GetOptions} and {@linkcode DocumentCollection.GetOptions}.
    * @internal
    */
   type _InvalidOption = InexactPartial<{
@@ -282,7 +292,7 @@ declare namespace Collection {
 
   /**
    * The `#get` and `#getInvalid` methods of `Collection` and its various subclasses all take a `strict` boolean in their options, changing
-   * the behaviour of passing a non-existent ID:
+   * the behaviour of passing a key that the collection doesn't contain:
    * - `true`: throw an error
    * - `false`: return `undefined`
    * @internal
@@ -291,6 +301,11 @@ declare namespace Collection {
     false extends Coalesce<GetKey<Options, "strict", undefined>, StrictDefault> ? undefined : never;
 
   /**
+   * See {@linkcode _ApplyStrict}.
+   *
+   * `StrictDefault` is a param because {@linkcode DocumentCollection.getInvalid | DocumentCollection#getInvalid} and
+   * {@linkcode EmbeddedCollection.getInvalid | EmbeddedCollection#getInvalid} default `strict` to `true`
+   *
    * The `Coalesce` is required to handle passing explicit `undefined`, either on its own or in a union.
    * @internal
    */

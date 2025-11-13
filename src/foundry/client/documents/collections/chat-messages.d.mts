@@ -13,6 +13,9 @@ import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 declare class ChatMessages extends WorldCollection<"ChatMessage", "Messages"> {
   static override documentName: "ChatMessage";
 
+  /** @privateRemarks Fake type override */
+  static override get instance(): ChatMessages.Implementation;
+
   override get directory(): typeof ui.chat;
 
   /** @remarks This is a no-op in {@linkcode ChatMessages} */

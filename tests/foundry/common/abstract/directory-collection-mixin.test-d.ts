@@ -3,6 +3,7 @@ import { test, describe, expectTypeOf } from "vitest";
 import DirectoryCollectionMixin = foundry.documents.abstract.DirectoryCollectionMixin;
 import DocumentCollection = foundry.documents.abstract.DocumentCollection;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
+import Document = foundry.abstract.Document;
 
 declare const actorCreateDataArray: Actor.CreateData[];
 declare const actorSourceDataArray: Actor.Source[];
@@ -44,6 +45,9 @@ describe("DirectoryCollectionMixin Tests", () => {
   });
 
   test("Miscellaneous", () => {
+    expectTypeOf(dcm["_formatFolderSelectOptions"]()).toExtend<{ id: string; name: string }[]>();
+    expectTypeOf(dcm["_formatFolderSelectOptions"]()).toEqualTypeOf<Document.DialogFoldersChoices[]>();
+
     expectTypeOf(DCMTestActors["_sortAlphabetical"]({ name: "foo" }, { name: "bar" })).toBeNumber();
     expectTypeOf(DCMTestActors["_sortStandard"]({ sort: 5 }, { sort: 7 })).toBeNumber();
   });

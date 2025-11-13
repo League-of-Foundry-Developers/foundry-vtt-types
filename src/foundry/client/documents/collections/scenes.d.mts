@@ -13,6 +13,9 @@ import type { Sound } from "#client/audio/_module.d.mts";
 declare class Scenes extends WorldCollection<"Scene", "Scenes"> {
   static override documentName: "Scene";
 
+  /** @privateRemarks Fake type override */
+  static override get instance(): Scenes.Implementation;
+
   /**
    * Return a reference to the Scene which is currently active
    */

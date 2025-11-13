@@ -10,6 +10,9 @@ import type Document from "#common/abstract/document.d.mts";
 declare class WorldSettings extends foundry.documents.abstract.WorldCollection<"Setting", "WorldSettings"> {
   static override documentName: "Setting";
 
+  /** @privateRemarks Fake type override */
+  static override get instance(): WorldSettings.Implementation;
+
   override get directory(): null;
 
   /**

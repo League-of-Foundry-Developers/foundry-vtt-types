@@ -11,6 +11,9 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
  */
 declare class Items extends WorldCollection<"Item", "Items"> {
   static override documentName: "Item";
+
+  /** @privateRemarks Fake type override */
+  static override get instance(): Items.Implementation;
 }
 
 declare namespace Items {

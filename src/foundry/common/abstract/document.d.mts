@@ -1357,10 +1357,10 @@ declare namespace Document {
     // Note(LukeAbby): Will be updated with the CONFIG revamp.
     type ConfiguredCollectionClass<Name extends Document.Type> = CONFIG extends {
       readonly [K in Name]: {
-        readonly documentClass?: infer DocumentClass;
+        readonly collection?: infer CollectionClass;
       };
     }
-      ? DocumentClass
+      ? CollectionClass
       : never;
 
     // Note(LukeAbby): Will be updated with the CONFIG revamp.

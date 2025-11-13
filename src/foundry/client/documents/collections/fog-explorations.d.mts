@@ -8,6 +8,9 @@ import type Document from "#common/abstract/document.d.mts";
 declare class FogExplorations extends foundry.documents.abstract.WorldCollection<"FogExploration", "FogExplorations"> {
   static override documentName: "FogExploration";
 
+  /** @privateRemarks Fake type override */
+  static override get instance(): FogExplorations.Implementation;
+
   /**
    * Activate Socket event listeners to handle for fog resets
    * @param socket - The active web socket connection

@@ -25,7 +25,7 @@ declare class SingletonEmbeddedCollection<
    * @throws If a second element is attempted to be set:
    * `Cannot create singleton embedded ${embeddedName} [${key}] in parent ${parentName} [${this.model.id}] as it already has one assigned.`
    */
-  override set: Collection.Method<this, EmbeddedCollection.Methods<ContainedDocument>, "set">;
+  override set: Collection.SetMethod<this, EmbeddedCollection.Methods<ContainedDocument>>;
 
   protected override _set(key: string, value: ContainedDocument): void;
 

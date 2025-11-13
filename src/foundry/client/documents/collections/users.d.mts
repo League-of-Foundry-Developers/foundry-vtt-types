@@ -26,6 +26,9 @@ declare class Users extends foundry.documents.abstract.WorldCollection<"User", "
 
   static override documentName: "User";
 
+  /** @privateRemarks Fake type override */
+  static override get instance(): Users.Implementation;
+
   /**
    * Get the users with player roles
    */

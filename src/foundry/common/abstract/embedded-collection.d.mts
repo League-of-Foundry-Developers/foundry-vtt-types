@@ -132,9 +132,9 @@ declare class EmbeddedCollection<
    * @param value   - The embedded Document instance
    * @param options - Additional options to the set operation
    *
-   * @remarks See {@linkcode EmbeddedCollection.Methods.set}, {@linkcode Collection.Method}
+   * @remarks See {@linkcode EmbeddedCollection.Methods.set}, {@linkcode Collection.SetMethod}
    */
-  override set: Collection.Method<this, Methods, "set">;
+  override set: Collection.SetMethod<this, Methods>;
 
   /**
    * Modify the underlying source array to include the Document.
@@ -280,11 +280,10 @@ declare namespace EmbeddedCollection {
     invalid?: boolean | undefined;
   }
 
-  /** The return type for {@linkcode EmbeddedCollection.get | EmbeddedCollection#get}. */
   type GetReturn<
     ConcreteDocument extends Document.Any,
     Options extends EmbeddedCollection.GetOptions | undefined,
-  > = Collection._GetReturn<Collection._ApplyInvalid<ConcreteDocument["documentName"], Options, false>, Options>;
+  > = Collection._GetReturn<Collection._ApplyInvalid<ConcreteDocument["documentName"], Options>, Options>;
 
   /**
    * Re-used with the same property description and default in both {@linkcode SetOptions} and {@linkcode DeleteOptions}
@@ -339,7 +338,7 @@ declare namespace EmbeddedCollection {
    * The method signatures for {@linkcode EmbeddedCollection}.
    *
    * @see {@linkcode Collection.Methods}
-   * @see {@linkcode Collection.Method}
+   * @see {@linkcode Collection.SetMethod}
    */
   interface Methods<ContainedDocument extends Document.Any> {
     self: unknown;

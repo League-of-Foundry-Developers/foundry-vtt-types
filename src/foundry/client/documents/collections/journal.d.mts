@@ -13,6 +13,9 @@ import type { ImagePopout } from "#client/applications/apps/_module.d.mts";
 declare class Journal extends WorldCollection<"JournalEntry", "Journal"> {
   static override documentName: "JournalEntry";
 
+  /** @privateRemarks Fake type override */
+  static override get instance(): Journal.Implementation;
+
   /**
    * Display a dialog which prompts the user to show a JournalEntry or JournalEntryPage to other players.
    * @param doc - The JournalEntry or JournalEntryPage to show.

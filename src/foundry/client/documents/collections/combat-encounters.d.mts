@@ -13,6 +13,9 @@ import type { ClientSettings } from "#client/helpers/_module.d.mts";
 declare class CombatEncounters extends WorldCollection<"Combat", "CombatEncounters"> {
   static override documentName: "Combat";
 
+  /** @privateRemarks Fake type override */
+  static override get instance(): CombatEncounters.Implementation;
+
   /** Provide the settings object which configures the Combat document */
   static get settings(): ClientSettings.SettingInitializedType<"core", Combat.CONFIG_SETTING>;
 

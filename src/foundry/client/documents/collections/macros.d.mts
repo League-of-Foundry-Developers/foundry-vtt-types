@@ -12,6 +12,9 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 declare class Macros extends WorldCollection<"Macro", "Macros"> {
   static override documentName: "Macro";
 
+  /** @privateRemarks Fake type override */
+  static override get instance(): Macros.Implementation;
+
   override get directory(): typeof ui.macros;
 
   override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(

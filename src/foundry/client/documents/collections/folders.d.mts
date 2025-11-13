@@ -12,6 +12,9 @@ import type { DocumentCollection, WorldCollection } from "#client/documents/abst
 declare class Folders extends WorldCollection<"Folder", "Folders"> {
   static override documentName: "Folder";
 
+  /** @privateRemarks Fake type override */
+  static override get instance(): Folders.Implementation;
+
   /**
    * Track which Folders are currently expanded in the UI
    * @internal

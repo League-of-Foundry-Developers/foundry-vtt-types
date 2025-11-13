@@ -24,6 +24,9 @@ declare class Actors extends WorldCollection<"Actor", "Actors"> {
 
   static override documentName: "Actor";
 
+  /** @privateRemarks Fake type override */
+  static override get instance(): Actors.Implementation;
+
   override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
     document: Actor.Implementation | Actor.CreateData,
     options?: Options,

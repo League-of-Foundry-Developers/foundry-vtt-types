@@ -14,6 +14,7 @@ declare const falseOrUndefined: false | undefined;
 declare const trueOrUndefined: true | undefined;
 declare const boolOrUndefined: boolean | undefined;
 
+// DocumentCollection is abstract
 class TestItemCollection extends DocumentCollection<"Item"> {}
 
 describe("DocumentCollection Tests", () => {
@@ -35,6 +36,19 @@ describe("DocumentCollection Tests", () => {
   test("Miscellaneous", () => {
     expectTypeOf(dc.documentClass).toEqualTypeOf<Item.ImplementationClass>();
     expectTypeOf(dc.documentName).toEqualTypeOf<"Item">();
+    expectTypeOf(dc._source).toEqualTypeOf<Item.CreateData[]>();
+
+    expectTypeOf(dc.createDocument(itemCreateDataArray[0]!)).toEqualTypeOf<Item.Implementation>();
+    expectTypeOf(dc.createDocument(itemCreateDataArray[0]!, {})).toEqualTypeOf<Item.Implementation>();
+    expectTypeOf(
+      dc.createDocument(itemCreateDataArray[0]!, {
+        dropInvalidEmbedded: true,
+        fallback: false,
+        // since this is returning a temporary document that doesn't automatically get put into the collection,
+        // passing a parent is perfectly valid, although there's no reason to make this call in particular
+        parent: actor,
+      }),
+    ).toEqualTypeOf<Item.Implementation>();
 
     expectTypeOf(dc.render()).toBeVoid();
     expectTypeOf(dc.render(true)).toBeVoid();
@@ -52,20 +66,8 @@ describe("DocumentCollection Tests", () => {
       }),
     ).toBeVoid();
 
-    // @ts-expect-error `force` in the render options is always overwritten by the value (after applying param default) of the first arg
+    // @ts-expect-error `force` in the render options is always overwritten with the first arg, so we omit it
     dc.render(undefined, { force: true });
-
-    expectTypeOf(dc.createDocument(itemCreateDataArray[0]!)).toEqualTypeOf<Item.Implementation>();
-    expectTypeOf(dc.createDocument(itemCreateDataArray[0]!, {})).toEqualTypeOf<Item.Implementation>();
-    expectTypeOf(
-      dc.createDocument(itemCreateDataArray[0]!, {
-        dropInvalidEmbedded: true,
-        fallback: false,
-        // since this is returning a temporary document that doesn't automatically get put into the collection,
-        // passing a parent is perfectly valid, although there's no reason to make this call in particular
-        parent: actor,
-      }),
-    ).toEqualTypeOf<Item.Implementation>();
   });
 
   test("Getting", () => {
@@ -98,6 +100,14 @@ describe("DocumentCollection Tests", () => {
     expectTypeOf(dc.getInvalid("ID", { strict: trueOrUndefined })).toEqualTypeOf<Item.Invalid>();
     expectTypeOf(dc.getInvalid("ID", { strict: falseOrUndefined })).toEqualTypeOf<Item.Invalid | undefined>();
     expectTypeOf(dc.getInvalid("ID", { strict: boolOrUndefined })).toEqualTypeOf<Item.Invalid | undefined>();
+
+    expectTypeOf(dc.getName("name")).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", {})).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", { strict: true })).toEqualTypeOf<Item.Stored>();
+    expectTypeOf(dc.getName("name", { strict: undefined })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", { strict: trueOrUndefined })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", { strict: falseOrUndefined })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", { strict: boolOrUndefined })).toEqualTypeOf<Item.Stored | undefined>();
   });
 
   test("Setting and Deleting", () => {
@@ -155,4 +165,6 @@ describe("DocumentCollection Tests", () => {
       }),
     ).toEqualTypeOf<Promise<Item.Stored[]>>();
   });
+
+  // TODO: _onModifyContents tests exist on the db-ops branch
 });

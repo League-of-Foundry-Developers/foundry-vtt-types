@@ -10,6 +10,9 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
  */
 declare class CardStacks extends WorldCollection<"Cards", "Cards"> {
   static override documentName: "Cards";
+
+  /** @privateRemarks Fake type override */
+  static override get instance(): CardStacks.Implementation;
 }
 
 declare namespace CardStacks {

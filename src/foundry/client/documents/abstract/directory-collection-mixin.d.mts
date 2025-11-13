@@ -1,8 +1,11 @@
 import type { AnyObject, FixedInstanceType, InitializedOn, Mixin } from "#utils";
+import type { Collection } from "#common/utils/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
-/** @privateRemarks `CompendiumPacks` only used for links */
+
+/** @privateRemarks `CompendiumCollection` and `CompendiumPacks` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { CompendiumCollection, CompendiumPacks } from "#client/documents/collections/_module.d.mts";
+
 /** @privateRemarks `WorldCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";

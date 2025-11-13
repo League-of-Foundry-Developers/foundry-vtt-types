@@ -12,6 +12,9 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 declare class RollTables extends WorldCollection<"RollTable", "RollTables"> {
   static override documentName: "RollTable";
 
+  /** @privateRemarks Fake type override */
+  static override get instance(): RollTables.Implementation;
+
   override get directory(): typeof ui.tables;
 
   /**

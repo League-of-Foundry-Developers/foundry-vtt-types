@@ -12,6 +12,9 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 declare class Playlists extends WorldCollection<"Playlist", "Playlists"> {
   static override documentName: "Playlist";
 
+  /** @privateRemarks Fake type override */
+  static override get instance(): Playlists.Implementation;
+
   /** Return the subset of Playlist documents which are currently playing */
   get playing(): Playlist.Stored[];
 

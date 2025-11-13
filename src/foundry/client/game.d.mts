@@ -3,6 +3,7 @@ import type { ValueOf, FixedInstanceType, InitializationHook, InitializedOn, Emp
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 
 import AVMaster = foundry.av.AVMaster;
 import Module = foundry.packages.Module;
@@ -112,12 +113,8 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * A mapping of WorldCollection instances, one per primary Document type.
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
-  // TODO(LukeAbby): Ideally this would be actually vary based upon `CollectionDocument`.
-  readonly collections: SimpleInitializedOn<
-    foundry.utils.Collection<foundry.documents.abstract.WorldCollection<Game.CollectionDocument, string>>,
-    "setup",
-    RunEvents
-  >;
+  // TODO: Make this a fake Collection subclass like game.modules, return the specific `.Implementation`s for the known keys
+  readonly collections: SimpleInitializedOn<Game.WorldCollectionsCollection, "setup", RunEvents>;
 
   /**
    * The collection of Actor documents which exists in the World.
@@ -627,7 +624,9 @@ declare namespace Game {
    */
   interface ModuleCollection extends Collection<foundry.packages.Module, ModuleCollectionMethods> {
     /**
-     * @remarks Gets the module requested for by ID
+     * @remarks Gets the module requested for by ID.
+     *
+     * Go to definition doesn't work here, see {@linkcode ModuleCollectionMethods.get}.
      * @see {@linkcode ModuleConfig} to add custom properties to modules, for example APIs.
      * @see {@linkcode RequiredModules} to remove `undefined` from the return type for a given module
      * @param id - The module ID to look up
@@ -663,6 +662,32 @@ declare namespace Game {
     | _Module<Name>
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     | ({ active: false } & Module & { [K in keyof GetKey<ModuleConfig, Name, {}>]?: never });
+
+  /** The type for {@linkcode Game.collections | game.collections} after initialization. */
+  interface WorldCollectionsCollection extends Collection<WorldCollection.Any, WorldCollectionsCollectionMethods> {
+    /**
+     * @remarks Returns the appropriate {@linkcode WorldCollection} implementation
+     * when passed a key in {@linkcode CONST.WORLD_DOCUMENT_TYPES}.
+     *
+     * Go to definition breaks here, see {@linkcode WorldCollectionsCollectionMethods.get}.
+     */
+    get: WorldCollectionsCollectionMethods["get"];
+  }
+
+  interface WorldCollectionsCollectionMethods extends Omit<Collection.Methods<WorldCollection.Any>, "get"> {
+    get<Key extends string, Options extends Collection.GetOptions | undefined>(
+      key: Key,
+      options?: Options,
+    ): _WorldCollectionsCollectionGetReturn<Key, Options>;
+  }
+
+  /** @internal */
+  type _WorldCollectionsCollectionGetReturn<
+    Key extends string,
+    Options extends Collection.GetOptions | undefined,
+  > = Key extends CONST.WORLD_DOCUMENT_TYPES
+    ? WorldCollection.ForName<Key>
+    : Collection._GetReturn<WorldCollection.Any, Options>;
 
   namespace Model {
     /**
@@ -849,21 +874,6 @@ declare namespace Game {
      */
     userId?: string | undefined;
   }
-
-  // Note(LukeAbby): See `Game#initializeDocuments`'s `initOrder`.
-  type CollectionDocument =
-    | "User"
-    | "Folder"
-    | "Actor"
-    | "Item"
-    | "Scene"
-    | "Combat"
-    | "JournalEntry"
-    | "Macro"
-    | "Playlist"
-    | "RollTable"
-    | "Cards"
-    | "ChatMessage";
 }
 
 declare global {

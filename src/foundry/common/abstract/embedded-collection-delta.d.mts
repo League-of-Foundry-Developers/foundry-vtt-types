@@ -92,7 +92,7 @@ declare class EmbeddedCollectionDelta<
     options?: DataModel.UpdateOptions,
   ): void;
 
-  override set: Collection.Method<this, Methods, "set">;
+  override set: Collection.SetMethod<this, Methods>;
 
   protected override _set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): void;
 
@@ -149,7 +149,7 @@ declare namespace EmbeddedCollectionDelta {
   /**
    * The method signatures for {@linkcode EmbeddedCollectionDelta}.
    * @see {@linkcode Collection.Methods}
-   * @see {@linkcode Collection.Method}
+   * @see {@linkcode Collection.SetMethod}
    *
    * @remarks `#get` is not overridden in `EmbeddedCollectionDelta`
    */

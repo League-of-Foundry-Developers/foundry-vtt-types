@@ -86,19 +86,15 @@ declare class CompendiumCollection<
 
   /**
    * Get the Folder that this Compendium is displayed within
-   * @privateRemarks This is `.Stored` instead of `.OfType<"Compendium">` because the latter can be assumed, and if you're accessing this,
-   * you likely want the ID.
    */
-  // TODO: StoredOfType<"Compendium">
-  get folder(): Folder.Stored | null;
+  get folder(): Folder.Stored<"Compendium"> | null;
 
   /**
    * Assign this CompendiumCollection to be organized within a specific Folder.
    * @param folder - The desired Folder within the World or null to clear the folder
    * @returns A promise which resolves once the transaction is complete
    */
-  // TODO: StoredOfType
-  setFolder(folder: Folder.OfType<"Compendium"> | string | null): Promise<void>;
+  setFolder(folder: Folder.Stored<"Compendium"> | string | null): Promise<void>;
 
   /**
    * Get the sort order for this Compendium
@@ -229,7 +225,7 @@ declare class CompendiumCollection<
    * @param folder  - The existing Folder you wish to import
    * @param options - Additional options which modify how the data is imported.
    */
-  importFolder(folder: Folder.OfType<DocumentName>, options?: CompendiumCollection.ImportFolderOptions): Promise<void>;
+  importFolder(folder: Folder.Stored<DocumentName>, options?: CompendiumCollection.ImportFolderOptions): Promise<void>;
 
   /**
    * Import an array of Folders into this Compendium Collection.
@@ -237,7 +233,7 @@ declare class CompendiumCollection<
    * @param options - Additional options which modify how the data is imported.
    */
   importFolders(
-    folders: Folder.OfType<DocumentName>[],
+    folders: Folder.Stored<DocumentName>[],
     options?: CompendiumCollection.ImportFoldersOptions,
   ): Promise<void>;
 
