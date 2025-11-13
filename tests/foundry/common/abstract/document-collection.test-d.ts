@@ -111,7 +111,7 @@ describe("DocumentCollection Tests", () => {
   });
 
   test("Setting and Deleting", () => {
-    // @ts-expect-error Document collections only contain stored documents
+    // @ts-expect-error `DocumentCollection`s only contain stored documents
     dc.set("ID", itemImpl);
     // returns void, for now (13.350): https://github.com/foundryvtt/foundryvtt/issues/13565
     expectTypeOf(dc.set("ID", itemStored)).toBeVoid();
