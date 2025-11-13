@@ -140,6 +140,12 @@ declare namespace ActorDelta {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
+  type DirectDescendantName = "Item" | "ActiveEffect";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
   type DirectDescendant = Item.Stored | ActiveEffect.Stored;
 
   /**
@@ -480,49 +486,49 @@ declare namespace ActorDelta {
   }
 
   type PreCreateDescendantDocumentsArgs =
-    | Document.PreCreateDescendantDocumentsArgs<
+    | Document.Internal.PreCreateDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.PreCreateDescendantDocumentsArgs;
 
   type OnCreateDescendantDocumentsArgs =
-    | Document.OnCreateDescendantDocumentsArgs<
+    | Document.Internal.OnCreateDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.OnCreateDescendantDocumentsArgs;
 
   type PreUpdateDescendantDocumentsArgs =
-    | Document.PreUpdateDescendantDocumentsArgs<
+    | Document.Internal.PreUpdateDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.PreUpdateDescendantDocumentsArgs;
 
   type OnUpdateDescendantDocumentsArgs =
-    | Document.OnUpdateDescendantDocumentsArgs<
+    | Document.Internal.OnUpdateDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.OnUpdateDescendantDocumentsArgs;
 
   type PreDeleteDescendantDocumentsArgs =
-    | Document.PreDeleteDescendantDocumentsArgs<
+    | Document.Internal.PreDeleteDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.PreDeleteDescendantDocumentsArgs;
 
   type OnDeleteDescendantDocumentsArgs =
-    | Document.OnDeleteDescendantDocumentsArgs<
+    | Document.Internal.OnDeleteDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.OnDeleteDescendantDocumentsArgs;
@@ -756,7 +762,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    * this method must be overridden like so:
    * ```typescript
    * class BladesActorDelta extends ActorDelta {
-   *   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocuments) {
+   *   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs) {
    *     super._onDeleteDescendantDocuments(...args);
    *
    *     const [parent, collection, documents, ids, options, userId] = args;

@@ -165,9 +165,7 @@ declare abstract class DocumentCollection<
    */
   // TODO: This is updated in the db-ops branch
   updateAll(
-    transformation:
-      | Document.UpdateDataForName<DocumentName>
-      | ((doc: Document.StoredForName<DocumentName>) => Document.UpdateDataForName<DocumentName>),
+    transformation: DocumentCollection.Transformation<DocumentName>,
     condition?: ((obj: Document.StoredForName<DocumentName>) => boolean) | null,
     options?: Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation>,
   ): Promise<Document.StoredForName<DocumentName>[]>;
@@ -286,6 +284,13 @@ declare namespace DocumentCollection {
     DocumentType,
     Options
   >;
+
+  type Transformation<DocumentName extends Document.Type> =
+    | Document.UpdateDataForName<DocumentName>
+    | {
+        // Note(LukeAbby): Written as a method to stay covariant over `DocumentName`.
+        transform(doc: Document.StoredForName<DocumentName>): Document.UpdateDataForName<DocumentName>;
+      }["transform"];
 }
 
 export default DocumentCollection;

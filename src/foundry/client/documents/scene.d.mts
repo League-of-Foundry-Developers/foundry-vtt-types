@@ -83,6 +83,21 @@ declare namespace Scene {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
+  type DirectDescendantName =
+    | "AmbientLight"
+    | "AmbientSound"
+    | "Drawing"
+    | "MeasuredTemplate"
+    | "Note"
+    | "Region"
+    | "Tile"
+    | "Token"
+    | "Wall";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
   type DirectDescendant =
     | AmbientLightDocument.Implementation
     | AmbientSoundDocument.Implementation
@@ -1015,32 +1030,56 @@ declare namespace Scene {
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   type PreCreateDescendantDocumentsArgs =
-    | Document.PreCreateDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
+    | Document.Internal.PreCreateDescendantDocumentsArgs<
+        Scene.Stored,
+        Scene.DirectDescendantName,
+        Scene.Metadata.Embedded
+      >
     | TokenDocument.PreCreateDescendantDocumentsArgs
     | RegionDocument.PreCreateDescendantDocumentsArgs;
 
   type OnCreateDescendantDocumentsArgs =
-    | Document.OnCreateDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
+    | Document.Internal.OnCreateDescendantDocumentsArgs<
+        Scene.Stored,
+        Scene.DirectDescendantName,
+        Scene.Metadata.Embedded
+      >
     | TokenDocument.OnCreateDescendantDocumentsArgs
     | RegionDocument.OnCreateDescendantDocumentsArgs;
 
   type PreUpdateDescendantDocumentsArgs =
-    | Document.PreUpdateDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
+    | Document.Internal.PreUpdateDescendantDocumentsArgs<
+        Scene.Stored,
+        Scene.DirectDescendantName,
+        Scene.Metadata.Embedded
+      >
     | TokenDocument.PreUpdateDescendantDocumentsArgs
     | RegionDocument.PreUpdateDescendantDocumentsArgs;
 
   type OnUpdateDescendantDocumentsArgs =
-    | Document.OnUpdateDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
+    | Document.Internal.OnUpdateDescendantDocumentsArgs<
+        Scene.Stored,
+        Scene.DirectDescendantName,
+        Scene.Metadata.Embedded
+      >
     | TokenDocument.OnUpdateDescendantDocumentsArgs
     | RegionDocument.OnUpdateDescendantDocumentsArgs;
 
   type PreDeleteDescendantDocumentsArgs =
-    | Document.PreDeleteDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
+    | Document.Internal.PreDeleteDescendantDocumentsArgs<
+        Scene.Stored,
+        Scene.DirectDescendantName,
+        Scene.Metadata.Embedded
+      >
     | TokenDocument.PreDeleteDescendantDocumentsArgs
     | RegionDocument.PreDeleteDescendantDocumentsArgs;
 
   type OnDeleteDescendantDocumentsArgs =
-    | Document.OnDeleteDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
+    | Document.Internal.OnDeleteDescendantDocumentsArgs<
+        Scene.Stored,
+        Scene.DirectDescendantName,
+        Scene.Metadata.Embedded
+      >
     | TokenDocument.OnDeleteDescendantDocumentsArgs
     | RegionDocument.OnDeleteDescendantDocumentsArgs;
 

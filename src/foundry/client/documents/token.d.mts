@@ -91,6 +91,12 @@ declare namespace TokenDocument {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
+  type DirectDescendantName = "ActorDelta";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
   type DirectDescendant = ActorDelta.Stored;
 
   /**
@@ -978,49 +984,49 @@ declare namespace TokenDocument {
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   type PreCreateDescendantDocumentsArgs =
-    | Document.PreCreateDescendantDocumentsArgs<
+    | Document.Internal.PreCreateDescendantDocumentsArgs<
         TokenDocument.Stored,
-        TokenDocument.DirectDescendant,
+        TokenDocument.DirectDescendantName,
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.PreCreateDescendantDocumentsArgs;
 
   type OnCreateDescendantDocumentsArgs =
-    | Document.OnCreateDescendantDocumentsArgs<
+    | Document.Internal.OnCreateDescendantDocumentsArgs<
         TokenDocument.Stored,
-        TokenDocument.DirectDescendant,
+        TokenDocument.DirectDescendantName,
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.OnCreateDescendantDocumentsArgs;
 
   type PreUpdateDescendantDocumentsArgs =
-    | Document.PreUpdateDescendantDocumentsArgs<
+    | Document.Internal.PreUpdateDescendantDocumentsArgs<
         TokenDocument.Stored,
-        TokenDocument.DirectDescendant,
+        TokenDocument.DirectDescendantName,
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.PreUpdateDescendantDocumentsArgs;
 
   type OnUpdateDescendantDocumentsArgs =
-    | Document.OnUpdateDescendantDocumentsArgs<
+    | Document.Internal.OnUpdateDescendantDocumentsArgs<
         TokenDocument.Stored,
-        TokenDocument.DirectDescendant,
+        TokenDocument.DirectDescendantName,
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.OnUpdateDescendantDocumentsArgs;
 
   type PreDeleteDescendantDocumentsArgs =
-    | Document.PreDeleteDescendantDocumentsArgs<
+    | Document.Internal.PreDeleteDescendantDocumentsArgs<
         TokenDocument.Stored,
-        TokenDocument.DirectDescendant,
+        TokenDocument.DirectDescendantName,
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.PreDeleteDescendantDocumentsArgs;
 
   type OnDeleteDescendantDocumentsArgs =
-    | Document.OnDeleteDescendantDocumentsArgs<
+    | Document.Internal.OnDeleteDescendantDocumentsArgs<
         TokenDocument.Stored,
-        TokenDocument.DirectDescendant,
+        TokenDocument.DirectDescendantName,
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.OnDeleteDescendantDocumentsArgs;
