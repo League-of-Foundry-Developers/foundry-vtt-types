@@ -27,7 +27,11 @@ declare class Actors extends WorldCollection<"Actor", "Actors"> {
   /** @privateRemarks Fake type override */
   static override get instance(): Actors.Implementation;
 
-  override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
+  /**
+   * @remarks This override doesn't change the type at all, just updates {@link ActiveEffect.origin | `ActiveEffect` origins} if
+   * {@linkcode WorldCollection.FromCompendiumOptions.keepId | keepId} is `true`
+   */
+  override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
     document: Actor.Implementation | Actor.CreateData,
     options?: Options,
   ): WorldCollection.FromCompendiumReturnType<"Actor", Options>;

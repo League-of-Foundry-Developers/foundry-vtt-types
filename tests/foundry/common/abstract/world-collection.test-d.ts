@@ -53,8 +53,8 @@ describe("WorldCollection Tests", () => {
     // User is not a valid Folder type, so we get never here
     expectTypeOf(wuc.folders).toEqualTypeOf<Collection<never>>();
 
-    // // @ts-expect-error Folder.Stored<"Actor"> should not be assignable to Folder.Stored<"Item">
-    // expectTypeOf(wic.folders).toEqualTypeOf<Collection<Folder.Stored<"Actor">>>();
+    // @ts-expect-error Folder.Stored<"Actor"> id not assignable to Folder.Stored<"Item">
+    expectTypeOf(wic.folders).toEqualTypeOf<Collection<Folder.Stored<"Actor">>>();
 
     expectTypeOf(wac.directory).toEqualTypeOf<foundry.applications.sidebar.tabs.ActorDirectory.Any | undefined>();
     expectTypeOf(wic.directory).toEqualTypeOf<foundry.applications.sidebar.tabs.ItemDirectory.Any | undefined>();
