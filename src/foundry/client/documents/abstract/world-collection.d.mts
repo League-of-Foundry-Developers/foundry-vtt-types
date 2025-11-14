@@ -15,13 +15,9 @@ import type { collections } from "#client/documents/_module.d.mts";
  * Each primary Document type has an associated subclass of WorldCollection which contains them.
  * @see {@linkcode foundry.Game.collections | Game#collections}
  */
-declare abstract class WorldCollection<
-  DocumentName extends Document.WorldType,
-  Name extends string,
-> extends DirectoryCollectionMixin(DocumentCollection)<DocumentName> {
-  // Note: This isn't a real override but it's here to make the type more specific.
-  override get name(): Name;
-
+declare abstract class WorldCollection<DocumentName extends Document.WorldType> extends DirectoryCollectionMixin(
+  DocumentCollection,
+)<DocumentName> {
   /**
    * Reference the set of Folders which contain documents in this collection
    */
@@ -271,6 +267,6 @@ declare namespace WorldCollection {
 
 export default WorldCollection;
 
-declare abstract class AnyWorldCollection extends WorldCollection<Document.WorldType, string> {
+declare abstract class AnyWorldCollection extends WorldCollection<Document.WorldType> {
   constructor(...args: never);
 }

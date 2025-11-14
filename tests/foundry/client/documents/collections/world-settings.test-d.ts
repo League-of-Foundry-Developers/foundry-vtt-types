@@ -29,7 +29,6 @@ describe("WorldSettings Tests", () => {
     expectTypeOf(WorldSettings.instance).toEqualTypeOf<WorldSettings.Implementation>();
     expectTypeOf(settings.folders).toEqualTypeOf<Collection<never>>();
     expectTypeOf(settings.directory).toEqualTypeOf<null>();
-    expectTypeOf(settings.name).toEqualTypeOf<"WorldSettings">();
   });
 
   test("Getting", () => {

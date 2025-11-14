@@ -30,7 +30,6 @@ describe("Playlists Tests", () => {
     expectTypeOf(Playlists.instance).toEqualTypeOf<Playlists.Implementation>();
     expectTypeOf(playlists.folders).toEqualTypeOf<Collection<Folder.Stored<"Playlist">>>();
     expectTypeOf(playlists.directory).toEqualTypeOf<typeof ui.playlists>();
-    expectTypeOf(playlists.name).toEqualTypeOf<"Playlists">();
 
     expectTypeOf(playlists.playing).toEqualTypeOf<Playlist.Stored[]>();
     expectTypeOf(playlists.initialize()).toEqualTypeOf<Promise<void>>();

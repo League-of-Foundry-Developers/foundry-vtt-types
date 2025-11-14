@@ -17,10 +17,10 @@ declare const actor: Actor.Implementation;
 declare const anyV1Sheet: Application.AnyConstructor;
 declare const anyV2Sheet: ApplicationV2.AnyConstructor;
 
-class TestActorsWorldCollection extends WorldCollection<"Actor", "Actors"> {}
-class TestItemsWorldCollection extends WorldCollection<"Item", "Items"> {}
-class TestUsersWorldCollection extends WorldCollection<"User", "Users"> {}
-class TestScenesWorldCollection extends WorldCollection<"Scene", "Scenes"> {}
+class TestActorsWorldCollection extends WorldCollection<"Actor"> {}
+class TestItemsWorldCollection extends WorldCollection<"Item"> {}
+class TestUsersWorldCollection extends WorldCollection<"User"> {}
+class TestScenesWorldCollection extends WorldCollection<"Scene"> {}
 
 describe("WorldCollection Tests", () => {
   test("Construction", () => {
@@ -45,10 +45,6 @@ describe("WorldCollection Tests", () => {
   const wuc = new TestUsersWorldCollection(itemCreateDataArray);
 
   test("Miscellaneous", () => {
-    expectTypeOf(wac.name).toEqualTypeOf<"Actors">();
-    expectTypeOf(wic.name).toEqualTypeOf<"Items">();
-    expectTypeOf(wuc.name).toEqualTypeOf<"Users">();
-
     expectTypeOf(wac.folders).toEqualTypeOf<Collection<Folder.Stored<"Actor">>>();
     expectTypeOf(wic.folders).toEqualTypeOf<Collection<Folder.Stored<"Item">>>();
     // User is not a valid Folder type, so we get never here

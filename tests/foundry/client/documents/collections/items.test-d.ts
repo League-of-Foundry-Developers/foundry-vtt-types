@@ -29,7 +29,6 @@ describe("Items Tests", () => {
     expectTypeOf(Items.instance).toEqualTypeOf<Items.Implementation>();
     expectTypeOf(items.folders).toEqualTypeOf<Collection<Folder.Stored<"Item">>>();
     expectTypeOf(items.directory).toEqualTypeOf<typeof ui.items>();
-    expectTypeOf(items.name).toEqualTypeOf<"Items">();
   });
 
   test("Getting", () => {

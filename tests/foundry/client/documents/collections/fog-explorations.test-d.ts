@@ -30,7 +30,6 @@ describe("FogExplorations Tests", () => {
     expectTypeOf(FogExplorations.instance).toEqualTypeOf<FogExplorations.Implementation>();
     expectTypeOf(fogs.folders).toEqualTypeOf<Collection<never>>();
     expectTypeOf(fogs.directory).toEqualTypeOf<DocumentDirectory<FogExploration.ImplementationClass> | undefined>();
-    expectTypeOf(fogs.name).toEqualTypeOf<"FogExplorations">();
 
     expectTypeOf(FogExplorations._activateSocketListeners(game.socket!)).toBeVoid();
   });

@@ -30,7 +30,6 @@ describe("Users Tests", () => {
     expectTypeOf(Users.instance).toEqualTypeOf<Users.Implementation>();
     expectTypeOf(users.folders).toEqualTypeOf<Collection<never>>();
     expectTypeOf(users.directory).toEqualTypeOf<DocumentDirectory<User.ImplementationClass> | undefined>();
-    expectTypeOf(users.name).toEqualTypeOf<"Users">();
 
     expectTypeOf(users.current).toEqualTypeOf<User.Stored | null>();
 

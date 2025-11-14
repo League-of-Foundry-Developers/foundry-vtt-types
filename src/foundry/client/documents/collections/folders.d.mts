@@ -9,7 +9,7 @@ import type { DocumentCollection, WorldCollection } from "#client/documents/abst
  *
  * @see {@link foundry.documents.Folder}: The Folder document
  */
-declare class Folders extends WorldCollection<"Folder", "Folders"> {
+declare class Folders extends WorldCollection<"Folder"> {
   static override documentName: "Folder";
 
   /** @privateRemarks Fake type override */

@@ -9,7 +9,7 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
  * @see {@linkcode foundry.documents.Playlist}: The Playlist document
  * @see {@linkcode foundry.applications.sidebar.tabs.PlaylistDirectory}: The PlaylistDirectory sidebar
  */
-declare class Playlists extends WorldCollection<"Playlist", "Playlists"> {
+declare class Playlists extends WorldCollection<"Playlist"> {
   static override documentName: "Playlist";
 
   /** @privateRemarks Fake type override */

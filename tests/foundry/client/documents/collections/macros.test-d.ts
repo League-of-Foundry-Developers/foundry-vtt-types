@@ -29,7 +29,6 @@ describe("Macros Tests", () => {
     expectTypeOf(Macros.instance).toEqualTypeOf<Macros.Implementation>();
     expectTypeOf(macros.folders).toEqualTypeOf<Collection<Folder.Stored<"Macro">>>();
     expectTypeOf(macros.directory).toEqualTypeOf<typeof ui.macros>();
-    expectTypeOf(macros.name).toEqualTypeOf<"Macros">();
   });
 
   test("Getting", () => {

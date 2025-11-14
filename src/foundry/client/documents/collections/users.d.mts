@@ -14,7 +14,7 @@ import type { AllHooks } from "#client/hooks.d.mts";
  *
  * @see {@linkcode foundry.documents.User} The User document
  */
-declare class Users extends WorldCollection<"User", "Users"> {
+declare class Users extends WorldCollection<"User"> {
   constructor(data?: User.CreateData[]);
 
   /**

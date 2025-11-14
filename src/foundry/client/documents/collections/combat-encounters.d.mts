@@ -10,7 +10,7 @@ import type { ClientSettings } from "#client/helpers/_module.d.mts";
  * @see {@linkcode foundry.documents.Combat}: The Combat document
  * @see {@linkcode foundry.applications.sidebar.tabs.CombatTracker}: The CombatTracker sidebar directory
  */
-declare class CombatEncounters extends WorldCollection<"Combat", "CombatEncounters"> {
+declare class CombatEncounters extends WorldCollection<"Combat"> {
   static override documentName: "Combat";
 
   /** @privateRemarks Fake type override */

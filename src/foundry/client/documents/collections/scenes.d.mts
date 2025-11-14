@@ -10,7 +10,7 @@ import type { Sound } from "#client/audio/_module.d.mts";
  * @see {@linkcode foundry.documents.Scene}: The Scene document
  * @see {@linkcode foundry.applications.sidebar.tabs.SceneDirectory}: The SceneDirectory sidebar directory
  */
-declare class Scenes extends WorldCollection<"Scene", "Scenes"> {
+declare class Scenes extends WorldCollection<"Scene"> {
   static override documentName: "Scene";
 
   /** @privateRemarks Fake type override */

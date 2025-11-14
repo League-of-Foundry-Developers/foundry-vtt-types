@@ -7,7 +7,7 @@ import type Document from "#common/abstract/document.d.mts";
  *
  * @see {@linkcode foundry.documents.Setting} The Setting document
  */
-declare class WorldSettings extends foundry.documents.abstract.WorldCollection<"Setting", "WorldSettings"> {
+declare class WorldSettings extends foundry.documents.abstract.WorldCollection<"Setting"> {
   static override documentName: "Setting";
 
   /** @privateRemarks Fake type override */

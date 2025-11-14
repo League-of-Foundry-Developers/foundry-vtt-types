@@ -9,7 +9,7 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
  * @see {@linkcode foundry.documents.Macro}: The Macro document
  * @see {@linkcode foundry.applications.sidebar.tabs.MacroDirectory}: The MacroDirectory sidebar directory
  */
-declare class Macros extends WorldCollection<"Macro", "Macros"> {
+declare class Macros extends WorldCollection<"Macro"> {
   static override documentName: "Macro";
 
   /** @privateRemarks Fake type override */

@@ -5,7 +5,7 @@ import type Document from "#common/abstract/document.d.mts";
  * The singleton collection of FogExploration documents which exist within the active World.
  * @see {@linkcode foundry.document.FogExploration} The FogExploration document
  */
-declare class FogExplorations extends foundry.documents.abstract.WorldCollection<"FogExploration", "FogExplorations"> {
+declare class FogExplorations extends foundry.documents.abstract.WorldCollection<"FogExploration"> {
   static override documentName: "FogExploration";
 
   /** @privateRemarks Fake type override */

@@ -29,7 +29,6 @@ describe("Journal Tests", () => {
     expectTypeOf(Journal.instance).toEqualTypeOf<Journal.Implementation>();
     expectTypeOf(journals.folders).toEqualTypeOf<Collection<Folder.Stored<"JournalEntry">>>();
     expectTypeOf(journals.directory).toEqualTypeOf<typeof ui.journal>();
-    expectTypeOf(journals.name).toEqualTypeOf<"Journal">();
 
     expectTypeOf(Journal._activateSocketListeners(game.socket!)).toBeVoid();
   });

@@ -9,7 +9,7 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
  * @see {@linkcode Item} The Item document
  * @see {@linkcode ItemDirectory} The ItemDirectory sidebar directory
  */
-declare class Items extends WorldCollection<"Item", "Items"> {
+declare class Items extends WorldCollection<"Item"> {
   static override documentName: "Item";
 
   /** @privateRemarks Fake type override */

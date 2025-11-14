@@ -29,7 +29,6 @@ describe("ChatMessages Tests", () => {
     expectTypeOf(ChatMessages.instance).toEqualTypeOf<ChatMessages.Implementation>();
     expectTypeOf(messages.folders).toEqualTypeOf<Collection<never>>();
     expectTypeOf(messages.directory).toEqualTypeOf<typeof ui.chat>();
-    expectTypeOf(messages.name).toEqualTypeOf<"ChatMessages">();
 
     expectTypeOf(messages.render()).toBeVoid(); // no-op in `ChatMessages`
 

@@ -29,7 +29,6 @@ describe("Actors Tests", () => {
     expectTypeOf(Actors.instance).toEqualTypeOf<Actors.Implementation>();
     expectTypeOf(actors.folders).toEqualTypeOf<Collection<Folder.Stored<"Actor">>>();
     expectTypeOf(actors.directory).toEqualTypeOf<typeof ui.actors>();
-    expectTypeOf(actors.name).toEqualTypeOf<"Actors">();
 
     expectTypeOf(actors.tokens).toEqualTypeOf<Record<string, Actor.Stored>>();
   });

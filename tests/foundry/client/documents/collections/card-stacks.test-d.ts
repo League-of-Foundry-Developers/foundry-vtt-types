@@ -29,7 +29,6 @@ describe("CardStacks Tests", () => {
     expectTypeOf(CardStacks.instance).toEqualTypeOf<CardStacks.Implementation>();
     expectTypeOf(stacks.folders).toEqualTypeOf<Collection<Folder.Stored<"Cards">>>();
     expectTypeOf(stacks.directory).toEqualTypeOf<typeof ui.cards>();
-    expectTypeOf(stacks.name).toEqualTypeOf<"CardStacks">();
   });
 
   test("Getting", () => {

@@ -9,7 +9,7 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
  * @see {@linkcode foundry.documents.RollTable}: The RollTable document
  * @see {@linkcode foundry.applications.sidebar.tabs.RollTableDirectory}: The RollTableDirectory
  */
-declare class RollTables extends WorldCollection<"RollTable", "RollTables"> {
+declare class RollTables extends WorldCollection<"RollTable"> {
   static override documentName: "RollTable";
 
   /** @privateRemarks Fake type override */

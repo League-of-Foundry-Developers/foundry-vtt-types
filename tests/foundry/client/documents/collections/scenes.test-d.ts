@@ -30,7 +30,6 @@ describe("Scenes Tests", () => {
     expectTypeOf(Scenes.instance).toEqualTypeOf<Scenes.Implementation>();
     expectTypeOf(scenes.folders).toEqualTypeOf<Collection<Folder.Stored<"Scene">>>();
     expectTypeOf(scenes.directory).toEqualTypeOf<typeof ui.scenes>();
-    expectTypeOf(scenes.name).toEqualTypeOf<"Scenes">();
 
     expectTypeOf(scenes.active).toEqualTypeOf<Scene.Stored | undefined>();
     expectTypeOf(scenes.current).toEqualTypeOf<Scene.Stored | undefined>();

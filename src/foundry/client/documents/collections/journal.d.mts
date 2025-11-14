@@ -10,7 +10,7 @@ import type { ImagePopout } from "#client/applications/apps/_module.d.mts";
  * @see {@linkcode foundry.documents.JournalEntry}: The JournalEntry document
  * @see {@linkcode foundry.applications.sidebar.tabs.JournalDirectory}: The JournalDirectory sidebar
  */
-declare class Journal extends WorldCollection<"JournalEntry", "Journal"> {
+declare class Journal extends WorldCollection<"JournalEntry"> {
   static override documentName: "JournalEntry";
 
   /** @privateRemarks Fake type override */

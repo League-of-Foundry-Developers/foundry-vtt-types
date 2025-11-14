@@ -29,7 +29,6 @@ describe("RollTables Tests", () => {
     expectTypeOf(RollTables.instance).toEqualTypeOf<RollTables.Implementation>();
     expectTypeOf(tables.folders).toEqualTypeOf<Collection<Folder.Stored<"RollTable">>>();
     expectTypeOf(tables.directory).toEqualTypeOf<typeof ui.tables>();
-    expectTypeOf(tables.name).toEqualTypeOf<"RollTables">();
 
     expectTypeOf(RollTables.registerSettings()).toBeVoid();
   });

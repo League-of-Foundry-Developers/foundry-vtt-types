@@ -8,7 +8,7 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
  * @see {@linkcode foundry.documents.Cards}: The Cards document
  * @see {@linkcode foundry.applications.sidebar.tabs.CardsDirectory}: The CardsDirectory sidebar directory
  */
-declare class CardStacks extends WorldCollection<"Cards", "CardStacks"> {
+declare class CardStacks extends WorldCollection<"Cards"> {
   static override documentName: "Cards";
 
   /** @privateRemarks Fake type override */

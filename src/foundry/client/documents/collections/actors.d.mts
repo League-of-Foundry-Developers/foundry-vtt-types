@@ -15,7 +15,7 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
  * let actor = game.actors.get(actorId);
  * ```
  */
-declare class Actors extends WorldCollection<"Actor", "Actors"> {
+declare class Actors extends WorldCollection<"Actor"> {
   /**
    * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
    * Each Actor is referenced by the Token.id.

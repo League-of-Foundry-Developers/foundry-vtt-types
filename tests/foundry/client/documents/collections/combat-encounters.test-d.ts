@@ -29,7 +29,6 @@ describe("CombatEncounters Tests", () => {
     expectTypeOf(CombatEncounters.instance).toEqualTypeOf<CombatEncounters.Implementation>();
     expectTypeOf(encounters.folders).toEqualTypeOf<Collection<never>>();
     expectTypeOf(encounters.directory).toEqualTypeOf<typeof ui.combat>();
-    expectTypeOf(encounters.name).toEqualTypeOf<"CombatEncounters">();
 
     expectTypeOf(CombatEncounters.settings).toEqualTypeOf<foundry.data.CombatConfiguration.SettingData>();
 

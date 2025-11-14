@@ -30,7 +30,6 @@ describe("Folders Tests", () => {
     expectTypeOf(Folders.instance).toEqualTypeOf<Folders.Implementation>();
     expectTypeOf(folders.folders).toEqualTypeOf<Collection<never>>();
     expectTypeOf(folders.directory).toEqualTypeOf<DocumentDirectory<Folder.ImplementationClass> | undefined>();
-    expectTypeOf(folders.name).toEqualTypeOf<"Folders">();
 
     expectTypeOf(folders._expanded).toEqualTypeOf<Record<string, boolean>>();
     expectTypeOf(folders.render()).toBeVoid(); // no-op in Folders
