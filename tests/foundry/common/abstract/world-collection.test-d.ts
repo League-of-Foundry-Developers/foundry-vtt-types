@@ -5,6 +5,7 @@ import WorldCollection = foundry.documents.abstract.WorldCollection;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
 import Application = foundry.appv1.api.Application;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
+import sidebar = foundry.applications.sidebar;
 
 declare const actorCreateDataArray: Actor.CreateData[];
 declare const itemCreateDataArray: Item.CreateData[];
@@ -56,9 +57,10 @@ describe("WorldCollection Tests", () => {
     // @ts-expect-error Folder.Stored<"Actor"> id not assignable to Folder.Stored<"Item">
     expectTypeOf(wic.folders).toEqualTypeOf<Collection<Folder.Stored<"Actor">>>();
 
-    expectTypeOf(wac.directory).toEqualTypeOf<foundry.applications.sidebar.tabs.ActorDirectory.Any | undefined>();
-    expectTypeOf(wic.directory).toEqualTypeOf<foundry.applications.sidebar.tabs.ItemDirectory.Any | undefined>();
-    expectTypeOf(wuc.directory).toEqualTypeOf<foundry.applications.sidebar.AbstractSidebarTab.Any | null | undefined>();
+    expectTypeOf(wac.directory).toEqualTypeOf<sidebar.tabs.ActorDirectory.Any | undefined>();
+    expectTypeOf(wic.directory).toEqualTypeOf<sidebar.tabs.ItemDirectory.Any | undefined>();
+    // `Users#directory` will be `undefined` at runtime, but we leave open the possibility of users registering one in `ui.users`
+    expectTypeOf(wuc.directory).toEqualTypeOf<sidebar.DocumentDirectory<User.ImplementationClass> | undefined>();
 
     // testing `.instance` is pointless because we have to fake override it per subclass
 

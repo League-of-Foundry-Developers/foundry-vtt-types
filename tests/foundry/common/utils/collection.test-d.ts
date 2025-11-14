@@ -16,7 +16,7 @@ describe("Collection Tests", () => {
     expectTypeOf(new Collection()).toEqualTypeOf<Collection<unknown>>();
     expectTypeOf(new Collection([["foo", 7]])).toEqualTypeOf<Collection<number>>();
 
-    // @ts-expect-error Collection won't infer a union value type
+    // @ts-expect-error Collection won't infer a union value type (prettier-ignore because of tsc/tsgo incompatibilities if formatted multiline)
     // prettier-ignore
     new Collection([["foo", 7], ["bar", "fizz"]]);
 

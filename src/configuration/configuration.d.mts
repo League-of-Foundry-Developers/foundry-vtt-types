@@ -271,7 +271,7 @@ export interface SettingConfig {
 
   /** Registered with `type: Object`. */
   "core.collectionSearchModes": Record<string, CONST.DIRECTORY_SEARCH_MODES>;
-  "core.combatTrackerConfig": MaybeEmpty<{ resource: string; skipDefeated: boolean }>;
+  "core.combatTrackerConfig": fields.SchemaField<foundry.data.CombatConfiguration.ConfigSettingSchema>;
   "core.compendiumConfiguration": foundry.documents.collections.CompendiumCollection.SettingField;
   "core.gridTemplates": fields.BooleanField<{ initial: false }>;
   "core.coneTemplateType": "round" | "flat";

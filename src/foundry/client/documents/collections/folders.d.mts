@@ -30,11 +30,11 @@ declare class Folders extends WorldCollection<"Folder", "Folders"> {
     user: User.Implementation,
   ): void;
 
+  /** @remarks This is a no-op in {@linkcode Folders}, Foundry logs "The Folders collection is not directly rendered" as a warning.  */
+  override render(force?: boolean, context?: DocumentCollection.RenderOptions): void;
+
   /** @deprecated Foundry made this method truly private in v13. This warning will be removed in v14. */
   protected _refreshJournalEntrySheets(): never;
-
-  /** @remarks This is a no-op in {@linkcode Folders}, Foundry logs "The Folders collection is not directly rendered" as a warning.  */
-  override render(force?: boolean, context?: DocumentCollection.RenderOptions): never;
 
   #Folders: true;
 }

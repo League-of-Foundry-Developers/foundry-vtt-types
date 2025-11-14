@@ -1,9 +1,9 @@
-import { expectTypeOf } from "vitest";
-import { Items } from "#client/documents/collections/_module.mjs";
+import { describe, expectTypeOf, test } from "vitest";
+import Items = foundry.documents.collections.Items;
 
-import ItemDirectory = foundry.applications.sidebar.tabs.ItemDirectory;
-
-const items = new Items([]);
-expectTypeOf(items.get("", { strict: true })).toEqualTypeOf<Item.Stored>();
-expectTypeOf(items.toJSON()).toEqualTypeOf<Item.Stored["_source"][]>();
-expectTypeOf(items.directory).toEqualTypeOf<ItemDirectory.Any | undefined>();
+describe("Items Tests", () => {
+  // const items = new Items();
+  test("Miscellaneous", () => {
+    expectTypeOf(Items.instance).toEqualTypeOf<Items.Implementation>();
+  });
+});

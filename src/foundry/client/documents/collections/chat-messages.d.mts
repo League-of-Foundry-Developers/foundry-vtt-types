@@ -10,7 +10,7 @@ import type { DialogV2 } from "#client/applications/api/_module.d.mts";
  * @see {@linkcode foundry.documents.ChatMessage}: The ChatMessage document
  * @see {@linkcode foundry.applications.sidebar.tabs.ChatLog}: The ChatLog sidebar directory
  */
-declare class ChatMessages extends WorldCollection<"ChatMessage", "Messages"> {
+declare class ChatMessages extends WorldCollection<"ChatMessage", "ChatMessages"> {
   static override documentName: "ChatMessage";
 
   /** @privateRemarks Fake type override */

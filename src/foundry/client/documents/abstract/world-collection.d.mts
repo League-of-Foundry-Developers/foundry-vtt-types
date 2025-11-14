@@ -2,7 +2,7 @@ import type { DeepPartial, GetKey, Identity, InexactPartial, InitializedOn } fro
 import type { Collection } from "#common/utils/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
-import type { AbstractSidebarTab, DocumentDirectory } from "#client/applications/sidebar/_module.mjs";
+import type { DocumentDirectory } from "#client/applications/sidebar/_module.mjs";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { ApplicationV2 } from "#client/applications/api/_module.d.mts";
 import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
@@ -29,11 +29,9 @@ declare abstract class WorldCollection<
 
   /**
    * Return a reference to the SidebarDirectory application for this WorldCollection.
-   * @remarks
-   * In the case where `Lowercase<Name>` is not a property of {@linkcode ui}, this actually always returns `undefined`,
-   * but {@linkcode RollTables} overrides this, so we need to allow a wider return type.
+   * @remarks This getter has several hardcoded special cases, see {@linkcode WorldCollection.Directory}
    */
-  get directory(): WorldCollection.Directory<DocumentName, Name>;
+  get directory(): WorldCollection.Directory<DocumentName>;
 
   /**
    * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
@@ -153,16 +151,43 @@ declare namespace WorldCollection {
     DocumentName extends Folder.DocumentType ? Folder.Stored<DocumentName> : never
   >;
 
-  type Directory<DocumentName extends Document.WorldType, Name extends string> =
-    Lowercase<Name> extends keyof typeof ui
-      ? (typeof ui)[Lowercase<Name>]
-      :
-          | (DocumentName extends CONST.FOLDER_DOCUMENT_TYPES
-              ? DocumentDirectory<Document.ImplementationClassFor<DocumentName>>
-              : never)
-          | AbstractSidebarTab.Any
-          | undefined
-          | null;
+  /**
+   * {@linkcode WorldCollection.directory | WorldCollection#directory} returns `ui[documentClass.metadata.collection]`, but several
+   * subclasses have overrides:
+   * - {@linkcode collections.ChatMessages.directory | ChatMessages#directory} returns {@linkcode ChatLog | ui.chat}, notably *not*
+   * extending {@linkcode DocumentDirectory}, which is what `WorldCollection#directory` is typed as by Foundry.
+   * - {@linkcode collections.CombatEncounters.directory | CombatEncounters#directory} returns {@linkcode CombatTracker | ui.combat}, also
+   * not extending `DocumentDirectory`.
+   * - {@linkcode collections.RollTables.directory | RollTables#directory} just uses a different key than its `metadata.collection`, and
+   * {@linkcode collections.Macros.directory | Macros#directory} unnecessarily returns `ui.macros`, which is what it would be anyway, but
+   * these are both at least `DocumentDirectory`s.
+   * - {@linkcode collections.WorldSettings.directory | WorldSettings#directory} returns `null`.
+   *
+   * All but the last are only guaranteed by the `ready` hook, which is baked into `typeof ui`.
+   */
+  type Directory<DocumentName extends Document.WorldType> = DocumentName extends "Setting"
+    ? null
+    : DocumentName extends "ChatMessage"
+      ? typeof ui.chat // instead of `messages`
+      : DocumentName extends "Combat"
+        ? typeof ui.combat // instead of `combats`
+        : _Directory<DocumentName, Document.MetadataFor<DocumentName>["collection"]>;
+
+  /**
+   * The fallback case is:
+   * - `DocumentDirectory` for the doc name, both because if `ui` gets borked its accurate-ish for existing directories, and because that's
+   * what Foundry types {@linkcode WorldCollection.directory | WorldCollection#directory} as, exceptions notwithstanding.
+   * - `| undefined` instead of `InitializedOn<..., "ready">` because {@linkcode collections.Users | Users} and
+   * {@linkcode collections.FogExplorations} have both no directories in core, but no overrides enforcing that like
+   * {@linkcode collections.WorldSettings | WorldSettings} has.
+   * @internal
+   */
+  type _Directory<
+    DocumentName extends Document.WorldType,
+    CollectionName extends string,
+  > = CollectionName extends keyof typeof ui
+    ? (typeof ui)[CollectionName]
+    : DocumentDirectory<Document.ImplementationClassFor<DocumentName>> | undefined;
 
   /** @internal */
   type _FromCompendiumOptions = InexactPartial<{
@@ -176,7 +201,7 @@ declare namespace WorldCollection {
      * Clear the currently sort order.
      * @defaultValue `true`
      * @remarks Also sets `data.navigation = false` and deletes `navOrder` when passed to
-     * {@linkcode foundry.documents.collections.Scenes.fromCompendium | Scenes#fromCompendium}
+     * {@linkcode collections.Scenes.fromCompendium | Scenes#fromCompendium}
      */
     clearSort: boolean;
 
@@ -247,5 +272,5 @@ declare namespace WorldCollection {
 export default WorldCollection;
 
 declare abstract class AnyWorldCollection extends WorldCollection<Document.WorldType, string> {
-  constructor(...args: never[]);
+  constructor(...args: never);
 }
