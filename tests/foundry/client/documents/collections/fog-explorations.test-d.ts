@@ -7,8 +7,8 @@ declare const fogCreateData: FogExploration.CreateData;
 declare const fogSource: FogExploration.Source;
 declare const stack: FogExploration.Stored;
 declare const fogImpl: FogExploration.Implementation;
-declare const actorCreateData: Actor.CreateData;
 declare const actor: Actor.Stored;
+declare const wallCreateData: WallDocument.CreateData;
 declare const falseOrUndefined: false | undefined;
 declare const trueOrUndefined: true | undefined;
 declare const boolOrUndefined: boolean | undefined;
@@ -19,8 +19,8 @@ describe("FogExplorations Tests", () => {
     new FogExplorations([fogCreateData]);
     new FogExplorations([fogSource]);
 
-    // This errors in all other world collections, but `FogExploration` has *nothing* required in its `CreateData`
-    new FogExplorations([actorCreateData]);
+    // This errors in most other world collections, but `FogExploration` has *nothing* required in its `CreateData`
+    new FogExplorations([wallCreateData]);
   });
 
   const fogs = new FogExplorations([fogCreateData]);

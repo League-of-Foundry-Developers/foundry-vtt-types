@@ -29,7 +29,7 @@ declare class WorldSettings extends foundry.documents.abstract.WorldCollection<"
    * @param user - For user-scoped settings, the user ID.
    * @returns The serialized setting string
    */
-  getItem(key: string, user?: string): string | null;
+  getItem(key: string, user?: string | null): string | null;
 }
 
 declare namespace WorldSettings {

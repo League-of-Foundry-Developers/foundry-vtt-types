@@ -43,6 +43,7 @@ declare class Journal extends WorldCollection<"JournalEntry", "Journal"> {
    * Share an image with connected players.
    * @param src    - The image URL to share.
    * @param config - Image sharing configuration.
+   * @remarks Despite having a parameter default, `config` is required as a valid `title` must be passed.
    */
   static showImage(src: string, config: Journal.ShowImageOptions): void;
 
@@ -55,8 +56,9 @@ declare class Journal extends WorldCollection<"JournalEntry", "Journal"> {
    * Handle a received request to show a JournalEntry or JournalEntryPage to the current client
    * @param uuid  - The UUID of the document to display for other players
    * @param force - Display the document regardless of normal permissions (default: `false`)
+   * @internal
    */
-  protected static _showEntry(uuid: string, force?: boolean): Promise<void>;
+  static _showEntry(uuid: string, force?: boolean): Promise<void>;
 }
 
 declare namespace Journal {

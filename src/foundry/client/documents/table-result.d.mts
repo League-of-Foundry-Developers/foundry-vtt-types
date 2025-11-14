@@ -273,10 +273,7 @@ declare namespace TableResult {
         max: 2;
         validate: (r: unknown) => r is [start: number, end: number];
         validationError: "must be a length-2 array of ascending integers";
-      },
-      [start: number, end: number],
-      [start: number, end: number],
-      [start: number, end: number]
+      }
     >;
 
     /**

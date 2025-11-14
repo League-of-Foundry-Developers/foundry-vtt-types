@@ -1,5 +1,6 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 /** @privateRemarks `AllHooks` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { AllHooks } from "#client/hooks.d.mts";
@@ -13,7 +14,7 @@ import type { AllHooks } from "#client/hooks.d.mts";
  *
  * @see {@linkcode foundry.documents.User} The User document
  */
-declare class Users extends foundry.documents.abstract.WorldCollection<"User", "Users"> {
+declare class Users extends WorldCollection<"User", "Users"> {
   constructor(data?: User.CreateData[]);
 
   /**
@@ -52,6 +53,8 @@ declare class Users extends foundry.documents.abstract.WorldCollection<"User", "
    * ```
    * @param condition - The condition the Users must satisfy
    * @returns The designated User or `null`
+   *
+   * @remarks {@linkcode String.compare | compare}ing the users `id`s is the final tiebreak
    */
   getDesignatedUser(condition: (user: User.Stored) => boolean): User.Stored | null;
 
