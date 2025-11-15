@@ -62,7 +62,7 @@ declare abstract class DocumentCollection<
   /**
    * The base Document type which is contained within this DocumentCollection
    */
-  static documentName: string;
+  static documentName: string | undefined;
 
   /**
    * Record the set of document ids where the Document was not initialized because of invalid source data

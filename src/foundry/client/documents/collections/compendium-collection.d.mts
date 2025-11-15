@@ -324,6 +324,10 @@ declare class CompendiumCollection<
 
   // TODO: `updateAll` and `_onModifyContents` are working on the db-ops branch
 
+  /**
+   * @remarks Calls {@linkcode DocumentCollection.render | super}, and, if the right `renderContext` is passed in `options`, calls
+   * {@linkcode foundry.documents.abstract.ClientDocumentMixin.AnyMixed.render | ClientDocument#render} for all contained Documents.
+   */
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
   /**

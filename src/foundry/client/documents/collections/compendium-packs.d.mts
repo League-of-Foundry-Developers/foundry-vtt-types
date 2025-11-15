@@ -10,21 +10,25 @@ declare class CompendiumPacks extends DirectoryCollectionMixin(Collection)<Compe
   /**
    * Get a Collection of Folders which contain Compendium Packs
    */
-  get folders(): Collection<Folder.Stored>;
+  get folders(): Collection<Folder.Stored<"Compendium">>;
 
+  /** @remarks Filters packs by {@linkcode CompendiumCollection.visible | #visible} */
   protected override _getVisibleTreeContents(): this["contents"];
 
-  protected static override _sortAlphabetical(
-    a: CompendiumPacks.AlphabeticalSortEntry,
-    b: CompendiumPacks.AlphabeticalSortEntry,
-  ): number;
+  protected static override _sortAlphabetical<
+    Sortable extends DirectoryCollectionMixin.AlphabeticalSortEntry | CompendiumPacks.AlphabeticalSortEntry,
+  >(a: Sortable, b: Sortable): number;
 }
 
 declare namespace CompendiumPacks {
-  // No `Implementation`/`ImplementationClass`, as the `Game` constructor names the class directly, there's no `CONFIG` property.
+  // No `Any`s/`Implementation`s as there's no generics, the `Game` constructor names the class directly, and there's no `CONFIG` property.
 
-  interface AlphabeticalSortEntry extends DirectoryCollectionMixin.AlphabeticalSortEntry {
-    metadata?: {
+  /**
+   * This does not extend {@linkcode DirectoryCollectionMixin.AlphabeticalSortEntry}, as the objects passed to
+   * {@linkcode CompendiumPacks._sortAlphabetical} need to both be of one type or the other.
+   */
+  interface AlphabeticalSortEntry {
+    metadata: {
       label: string;
     };
   }

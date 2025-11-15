@@ -14,6 +14,7 @@ declare class CompendiumFolderCollection<
 
   get documentName(): "Folder";
 
+  /** @remarks Forwards to {@linkcode CompendiumCollection.render | this.pack.render} */
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
   // TODO: `updateAll` and `_onModifyContents` are done on the db-ops branch
