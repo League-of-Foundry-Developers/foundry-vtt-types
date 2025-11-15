@@ -119,7 +119,7 @@ describe("Actors Tests", () => {
     actors.set("ID", actorImpl);
     // @ts-expect-error `Item`s are not `Actor`s
     actors.set("ID", item);
-    // returns void, for now (13.350): https://github.com/foundryvtt/foundryvtt/issues/13565
+    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
     expectTypeOf(actors.set("ID", actor)).toBeVoid();
 
     expectTypeOf(actors.delete("ID")).toBeBoolean();

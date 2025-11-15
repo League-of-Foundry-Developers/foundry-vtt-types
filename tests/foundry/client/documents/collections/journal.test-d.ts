@@ -148,7 +148,7 @@ describe("Journal Tests", () => {
     journals.set("ID", jeImpl);
     // @ts-expect-error `Actor`s are not `JournalEntry`s
     journals.set("ID", actor);
-    // returns void, for now (13.350): https://github.com/foundryvtt/foundryvtt/issues/13565
+    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
     expectTypeOf(journals.set("ID", je)).toBeVoid();
 
     expectTypeOf(journals.delete("ID")).toBeBoolean();

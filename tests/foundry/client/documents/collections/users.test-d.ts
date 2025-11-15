@@ -96,7 +96,7 @@ describe("Users Tests", () => {
     users.set("ID", userImpl);
     // @ts-expect-error `Actor`s are not `User`s
     users.set("ID", actor);
-    // returns void, for now (13.350): https://github.com/foundryvtt/foundryvtt/issues/13565
+    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
     expectTypeOf(users.set("ID", stack)).toBeVoid();
 
     expectTypeOf(users.delete("ID")).toBeBoolean();

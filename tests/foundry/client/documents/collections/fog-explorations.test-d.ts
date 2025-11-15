@@ -101,7 +101,7 @@ describe("FogExplorations Tests", () => {
     fogs.set("ID", fogImpl);
     // @ts-expect-error `Actor`s are not `FogExploration`s
     fogs.set("ID", actor);
-    // returns void, for now (13.350): https://github.com/foundryvtt/foundryvtt/issues/13565
+    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
     expectTypeOf(fogs.set("ID", stack)).toBeVoid();
 
     expectTypeOf(fogs.delete("ID")).toBeBoolean();

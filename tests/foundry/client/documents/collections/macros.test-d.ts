@@ -86,7 +86,7 @@ describe("Macros Tests", () => {
     macros.set("ID", macroImpl);
     // @ts-expect-error `Actor`s are not `Macro`s
     macros.set("ID", actor);
-    // returns void, for now (13.350): https://github.com/foundryvtt/foundryvtt/issues/13565
+    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
     expectTypeOf(macros.set("ID", macro)).toBeVoid();
 
     expectTypeOf(macros.delete("ID")).toBeBoolean();

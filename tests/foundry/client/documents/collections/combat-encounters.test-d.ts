@@ -96,7 +96,7 @@ describe("CombatEncounters Tests", () => {
     encounters.set("ID", combatImpl);
     // @ts-expect-error `Actor`s are not `Combat`s
     encounters.set("ID", actor);
-    // returns void, for now (13.350): https://github.com/foundryvtt/foundryvtt/issues/13565
+    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
     expectTypeOf(encounters.set("ID", combat)).toBeVoid();
 
     expectTypeOf(encounters.delete("ID")).toBeBoolean();

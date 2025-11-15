@@ -5,6 +5,7 @@ import type { CompendiumCollection } from "#client/documents/collections/_module
 /**
  * A Collection of Folder documents within a Compendium pack.
  */
+// TODO: find a way to allow specifying that this can contain `Folder.Stored<DocumentName>`s only
 declare class CompendiumFolderCollection<
   DocumentName extends CompendiumCollection.DocumentName,
 > extends DocumentCollection<"Folder"> {
