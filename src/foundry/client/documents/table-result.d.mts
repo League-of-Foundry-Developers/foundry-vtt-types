@@ -188,7 +188,10 @@ declare namespace TableResult {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends TableResult.SubType = TableResult.SubType>
+    extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -472,7 +475,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
    * @param data    - Initial data from which to construct the `TableResult`
    * @param context - Construction context options
    */
-  constructor(data: TableResult.CreateData, context?: TableResult.ConstructionContext);
+  constructor(data: TableResult.CreateData<SubType>, context?: TableResult.ConstructionContext);
 
   /**
    * A path reference to the icon image used to represent this result

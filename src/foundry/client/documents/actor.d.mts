@@ -278,7 +278,9 @@ declare namespace Actor {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Actor.SubType = Actor.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type: SubType;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -721,7 +723,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param data    - Initial data from which to construct the `Actor`
    * @param context - Construction context options
    */
-  constructor(data: Actor.CreateData, context?: Actor.ConstructionContext);
+  constructor(data: Actor.CreateData<SubType>, context?: Actor.ConstructionContext);
 
   protected override _configure(options?: Document.ConfigureOptions): void;
 

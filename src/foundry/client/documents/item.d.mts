@@ -275,7 +275,9 @@ declare namespace Item {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Item.SubType = Item.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type: SubType;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -581,7 +583,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    * @param data    - Initial data from which to construct the `Item`
    * @param context - Construction context options
    */
-  constructor(data: Item.CreateData, context?: Item.ConstructionContext);
+  constructor(data: Item.CreateData<SubType>, context?: Item.ConstructionContext);
 
   /**
    * A convenience alias of Item#parent which is more semantically intuitive

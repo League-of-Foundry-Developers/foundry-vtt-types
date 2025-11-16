@@ -185,7 +185,9 @@ declare namespace Folder {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Folder.SubType = Folder.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type: SubType;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -532,7 +534,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * @param data    - Initial data from which to construct the `Folder`
    * @param context - Construction context options
    */
-  constructor(data: Folder.CreateData, context?: Folder.ConstructionContext);
+  constructor(data: Folder.CreateData<SubType>, context?: Folder.ConstructionContext);
 
   /**
    * The depth of this folder in its sidebar tree

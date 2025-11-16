@@ -10,7 +10,7 @@ new Actor.implementation();
 new Actor.implementation({});
 
 const actor = new Actor.implementation({ name: "Beren", type: "base" });
-expectTypeOf(actor).toEqualTypeOf<Actor.Implementation>();
+expectTypeOf(actor).toEqualTypeOf<Actor.OfType<"base">>();
 
 expectTypeOf(actor.overrides).toEqualTypeOf<Record<string, unknown>>();
 expectTypeOf(actor.statuses).toEqualTypeOf<Set<string>>();
@@ -42,7 +42,7 @@ for (const effect of actor.allApplicableEffects()) {
 
 expectTypeOf(actor.getRollData()).toEqualTypeOf<AnyObject>();
 expectTypeOf(actor.getTokenImages()).toEqualTypeOf<Promise<string[]>>();
-expectTypeOf(actor.modifyTokenAttribute("", 2, true, true)).toEqualTypeOf<Promise<Actor.Implementation | undefined>>();
+expectTypeOf(actor.modifyTokenAttribute("", 2, true, true)).toEqualTypeOf<Promise<Actor.OfType<"base"> | undefined>>();
 
 expectTypeOf(actor.prepareEmbeddedDocuments()).toEqualTypeOf<void>();
 
