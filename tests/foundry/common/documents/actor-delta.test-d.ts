@@ -33,7 +33,7 @@ new TestAD(
   {
     _id: "XXXXXSomeIDXXXXX",
     name: "Foo the Specific Bandit",
-    type: "npc", // AD model doesn't enforce this being accurate
+    type: "character", // AD model doesn't enforce this being accurate
     img: "path/to/icon.webp",
     system: {},
     items: [

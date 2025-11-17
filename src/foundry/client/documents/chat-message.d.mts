@@ -206,7 +206,10 @@ declare namespace ChatMessage {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends ChatMessage.SubType = ChatMessage.SubType>
+    extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -678,7 +681,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * @param context - Construction context options
    */
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
-  constructor(data?: ChatMessage.CreateData, context?: ChatMessage.ConstructionContext);
+  constructor(data?: ChatMessage.CreateData<SubType>, context?: ChatMessage.ConstructionContext);
 
   /**
    * Is this ChatMessage currently displayed in the sidebar ChatLog?

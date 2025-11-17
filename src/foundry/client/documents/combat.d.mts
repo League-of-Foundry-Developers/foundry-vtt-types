@@ -280,7 +280,9 @@ declare namespace Combat {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Combat.SubType = Combat.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -634,7 +636,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param context - Construction context options
    */
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
-  constructor(data?: Combat.CreateData, context?: Combat.ConstructionContext);
+  constructor(data?: Combat.CreateData<SubType>, context?: Combat.ConstructionContext);
 
   /** Track the sorted turn order of this combat encounter */
   turns: Combatant.Implementation[];

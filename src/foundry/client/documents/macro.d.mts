@@ -195,7 +195,9 @@ declare namespace Macro {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Macro.SubType = Macro.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -547,7 +549,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    * @param data    - Initial data from which to construct the `Macro`
    * @param context - Construction context options
    */
-  constructor(data: Macro.CreateData, context?: Macro.ConstructionContext);
+  constructor(data: Macro.CreateData<SubType>, context?: Macro.ConstructionContext);
 
   /**
    * Is the current User the author of this macro?

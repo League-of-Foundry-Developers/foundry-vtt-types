@@ -1926,9 +1926,9 @@ declare namespace Document {
       [DocumentType in Document.Type]?: string;
     };
     readonly permissions: {
-      view: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
-      create: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
-      update: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
+      view: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: object) => boolean>;
+      create: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: object) => boolean>;
+      update: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: object) => boolean>;
       delete: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: EmptyObject) => boolean>;
     };
     readonly hasTypeData?: boolean;
