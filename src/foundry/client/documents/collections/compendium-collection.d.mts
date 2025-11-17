@@ -291,7 +291,7 @@ declare class CompendiumCollection<
    * @param options  - Additional options which modify the Compendium creation request (default: `{}`)
    */
   static createCompendium<Type extends CompendiumCollection.DocumentName>(
-    // this: abstract new (...args: never) => CompendiumCollection<NoInfer<T>>,
+    this: abstract new (...args: never) => CompendiumCollection<NoInfer<Type>>,
     metadata: CompendiumCollection.CreateCompendiumMetadata<Type>,
     options?: CompendiumCollection.ManageCompendiumSocketOptions,
   ): Promise<CompendiumCollection<Type>>;

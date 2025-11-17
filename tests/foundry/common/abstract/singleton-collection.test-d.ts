@@ -12,12 +12,13 @@ declare const boolOrUndefined: boolean | undefined;
 
 describe("SingletonEmbeddedCollection Tests", () => {
   test("Construction", () => {
+    // @ts-expect-error Currently ActorDelta.Source is not assignable to ActorDelta.CreateData
     new SingletonEmbeddedCollection<ActorDelta.Stored, TokenDocument.Stored>("delta", tokenDoc, [deltaSource]);
     new SingletonEmbeddedCollection<ActorDelta.Stored, TokenDocument.Stored>("delta", tokenDoc, [deltaCreateData]);
   });
 
   const sec = new SingletonEmbeddedCollection<ActorDelta.Stored, TokenDocument.Stored>("delta", tokenDoc, [
-    deltaSource,
+    deltaCreateData,
   ]);
 
   test("Getting", () => {
