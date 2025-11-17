@@ -5,6 +5,7 @@ import type {
   GetKey,
   Identity,
   InexactPartial,
+  IntentionalPartial,
   PrettifyType,
   SimpleMerge,
   UnionToIntersection,
@@ -21,18 +22,22 @@ import type { CompendiumFolderCollection } from "#client/documents/collections/_
 
 /** @privateRemarks `AllHooks` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { AllHooks } from "#client/hooks.mjs";
+import type { AllHooks } from "#client/hooks.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
 /**
  * A collection of Document objects contained within a specific compendium pack.
  * Each Compendium pack has its own associated instance of the CompendiumCollection class which contains its contents.
  *
- * @see {@linkcode foundry.Game.packs | Game#packs}
+ * @see {@linkcode Game.packs | Game#packs}
  */
 declare class CompendiumCollection<
   DocumentName extends CompendiumCollection.DocumentName,
 > extends DirectoryCollectionMixin(DocumentCollection)<DocumentName> {
-  /** @param metadata - The compendium metadata, an object provided by {@linkcode foundry.Game.data | game.data} */
+  /** @param metadata - The compendium metadata, an object provided by {@linkcode Game.data | game.data} */
   constructor(metadata: CompendiumCollection.ConstructorMetadata<DocumentName>);
 
   /** The compendium metadata which defines the compendium content and location */
@@ -64,8 +69,11 @@ declare class CompendiumCollection<
   /** The canonical Compendium name - comprised of the originating package and the pack name */
   get collection(): this["metadata"]["id"];
 
-  /** The banner image for this Compendium pack, or the default image for the pack type if no image is set. */
-  get banner(): string | null | void;
+  /**
+   * The banner image for this Compendium pack, or the default image for the pack type if no image is set.
+   * @remarks `undefined` in the metadata gets converted to `CONFIG[this.metadata.type]?.compendiumBanner`, which might, itself, be `undefined`
+   */
+  get banner(): string | null | undefined;
 
   /**
    * A reference to the Application class which provides an interface to interact with this compendium content.
@@ -144,7 +152,7 @@ declare class CompendiumCollection<
 
   /**
    * @remarks Since all documents will get flushed at the end of the cache timer anyway, this doesn't clear documents with currently
-   * rendered sheets in their {@linkcode foundry.documents.abstract.ClientDocumentMixin.AnyMixed.apps | #apps}
+   * rendered sheets in their {@linkcode ClientDocumentMixin.AnyMixed.apps | #apps}
    */
   override clear(): void;
 
@@ -152,13 +160,14 @@ declare class CompendiumCollection<
    * Load the Compendium index and cache it as the keys and values of the Collection.
    * @param options - Options which customize how the index is created
    */
-  getIndex(options?: CompendiumCollection.GetIndexOptions<DocumentName>): Promise<this["index"]>;
+  getIndex(options?: CompendiumCollection.GetIndexOptions): Promise<this["index"]>;
 
   /**
    * Get a single Document from this Compendium by ID.
    * The document may already be locally cached, otherwise it is retrieved from the server.
    * @param id - The requested Document `id`
    * @returns The retrieved Document instance
+   * @remarks A return of `undefined` is only possible if passing a falsey `id`. If the retrieval fails, returns `null`.
    */
   getDocument(id: string): Promise<Document.StoredForName<DocumentName> | undefined | null>;
 
@@ -189,7 +198,7 @@ declare class CompendiumCollection<
 
   /**
    * Get the ownership level that a User has for this Compendium pack.
-   * @param user - The user being tested (default: {@linkcode foundry.Game.user | game.user})
+   * @param user - The user being tested (default: {@linkcode Game.user | game.user})
    * @returns The ownership level in {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}
    */
   getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
@@ -211,14 +220,14 @@ declare class CompendiumCollection<
    * Import a Document into this Compendium Collection.
    * @param document - The existing Document you wish to import
    * @param options  - Additional options which modify how the data is imported.
-   * See {@linkcode foundry.documents.abstract.ClientDocumentMixin.AnyMixed.toCompendium | ClientDocument#toCompendium} (default: `{}`)
+   * See {@linkcode ClientDocumentMixin.AnyMixed.toCompendium | ClientDocument#toCompendium} (default: `{}`)
    * @returns The imported Document instance
    * @remarks Takes either the primary document type of this compendium or a `Folder` of the appropriate type.
    */
-  importDocument(
-    document: Document.ImplementationFor<DocumentName> | Folder.OfType<DocumentName>,
+  importDocument<Doc extends CompendiumCollection.DocOrFolder<DocumentName>>(
+    document: Doc,
     options?: ClientDocument.ToCompendiumOptions,
-  ): Promise<Document.StoredForName<DocumentName> | undefined>;
+  ): Promise<CompendiumCollection.ImportDocumentReturn<Doc> | undefined>;
 
   /**
    * Import a Folder into this Compendium Collection.
@@ -252,9 +261,9 @@ declare class CompendiumCollection<
    * @returns A promise which resolves in the following ways: an array of imported Documents if the "yes" button was pressed,
    * false if the "no" button was pressed, or null if the dialog was closed without making a choice.
    */
-  importDialog<Options extends CompendiumCollection.ImportDialogOptions>(
+  importDialog<Options extends CompendiumCollection.ImportDialogOptions | undefined = undefined>(
     options?: Options,
-  ): Promise<CompendiumCollection.ImportDialogReturn<DocumentName, Options> | null | false>;
+  ): Promise<CompendiumCollection.ImportDialogReturn<DocumentName, Options>>;
 
   /**
    * Add a Document to the index, capturing it's relevant index attributes
@@ -265,7 +274,7 @@ declare class CompendiumCollection<
   /**
    * Prompt the gamemaster with a dialog to configure ownership of this Compendium pack.
    * @returns The configured ownership for the pack
-   * @remarks As of 13.347, any choices made here will not be saved (see {@link https://github.com/foundryvtt/foundryvtt/issues/13283}).
+   * @privateRemarks Always returns `this.ownership`, not the dialog return
    */
   configureOwnershipDialog(): Promise<BasePackage.OwnershipRecord>;
 
@@ -281,11 +290,11 @@ declare class CompendiumCollection<
    * @param metadata - The compendium metadata used to create the new pack
    * @param options  - Additional options which modify the Compendium creation request (default: `{}`)
    */
-  static createCompendium<T extends CompendiumCollection.DocumentName>(
+  static createCompendium<Type extends CompendiumCollection.DocumentName>(
     // this: abstract new (...args: never) => CompendiumCollection<NoInfer<T>>,
-    metadata: CompendiumCollection.CreateCompendiumMetadata<T>,
+    metadata: CompendiumCollection.CreateCompendiumMetadata<Type>,
     options?: CompendiumCollection.ManageCompendiumSocketOptions,
-  ): Promise<CompendiumCollection<T>>;
+  ): Promise<CompendiumCollection<Type>>;
 
   /**
    * Generate a UUID for a given primary document ID within this Compendium pack
@@ -324,9 +333,12 @@ declare class CompendiumCollection<
 
   // TODO: `updateAll` and `_onModifyContents` are working on the db-ops branch
 
+  /** @privateRemarks Fake type override, see {@linkcode DocumentCollection.search | DocumentCollection#search} */
+  override search(search: DocumentCollection.SearchOptions): CompendiumCollection.IndexEntry<DocumentName>[];
+
   /**
    * @remarks Calls {@linkcode DocumentCollection.render | super}, and, if the right `renderContext` is passed in `options`, calls
-   * {@linkcode foundry.documents.abstract.ClientDocumentMixin.AnyMixed.render | ClientDocument#render} for all contained Documents.
+   * {@linkcode ClientDocumentMixin.AnyMixed.render | ClientDocument#render} for all contained Documents.
    */
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
@@ -344,7 +356,13 @@ declare namespace CompendiumCollection {
   interface Any extends AnyCompendiumCollection {}
   interface AnyConstructor extends Identity<typeof AnyCompendiumCollection> {}
 
+  // No `Implementation`, packs are always created by direct calls to `new CompendiumCollection`
+
   type DocumentName = CONST.COMPENDIUM_DOCUMENT_TYPES;
+
+  type DocOrFolder<DocumentName extends CompendiumCollection.DocumentName> =
+    | Document.ImplementationFor<DocumentName>
+    | Folder.OfType<DocumentName>;
 
   /** @internal */
   type _OwnershipChoices = (keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS)[];
@@ -391,8 +409,11 @@ declare namespace CompendiumCollection {
 
   interface StoredConfiguration extends fields.SchemaField.InitializedData<ConfigSettingElementSchema> {}
 
-  /** @remarks The partial'd interface for passing to {@linkcode CompendiumCollection.configure}, if you want the stored interface see {@linkcode CompendiumCollection.StoredConfiguration} */
-  interface Configuration extends InexactPartial<StoredConfiguration> {}
+  /**
+   * @remarks The partialed interface for passing to {@linkcode CompendiumCollection.configure | CompendiumCollection#configure},
+   * if you want the stored interface see {@linkcode CompendiumCollection.StoredConfiguration}
+   */
+  interface Configuration extends DeepPartial<StoredConfiguration> {}
 
   type SettingFieldElement = fields.SchemaField<ConfigSettingElementSchema>;
 
@@ -401,49 +422,65 @@ declare namespace CompendiumCollection {
   interface SettingData
     extends fields.TypedObjectField.InitializedType<SettingFieldElement, fields.TypedObjectField.DefaultOptions> {}
 
-  /** @remarks Currently (13.350) unused due to {@link https://github.com/foundryvtt/foundryvtt/issues/13354} */
+  /** @remarks Currently (13.351) unused due to {@link https://github.com/foundryvtt/foundryvtt/issues/13354} */
   type OwnershipData = NonNullable<SettingData["ownership"]>;
 
-  // The type that's passed to `createCompendium`.
-  interface CreateCompendiumMetadata<Type extends DocumentName> {
-    type: Type;
-    label: string;
-    name?: string | undefined;
-  }
+  /**
+   * Minimal metadata required for {@linkcode CompendiumCollection.createCompendium} calls.
+   *
+   * @remarks `IntentionalPartial` instead of `Inexact` because it's going over the socket, so `undefined`-value keys get dropped.
+   * Only `type` and `label` are required, with `name` being a slugified `label` if not passed. Other than those keys, only `flags`
+   * and `ownership` are respected and not replaced by the server.
+   *
+   */
+  interface CreateCompendiumMetadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName>
+    extends Pick<Metadata<Type>, "type" | "label">,
+      Pick<IntentionalPartial<Metadata<Type>>, "name" | "flags" | "ownership"> {}
 
-  // The type that's passed to `new CompendiumCollection(...)`
-  interface ConstructorMetadata<Type extends CompendiumCollection.DocumentName> extends Metadata<Type> {
-    index: IndexTypeForMetadata<Type>;
+  /**
+   * The type that's passed to `new CompendiumCollection(...)`
+   *
+   * @privateRemarks Construction technically doesn't error with only `type`, `index`, and `folders`, but that doesn't produce an actually
+   * valid pack. This type represents the data the server will be providing when construction happens, which users will never do directly.
+   */
+  interface ConstructorMetadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName>
+    extends Metadata<Type> {
+    /**
+     * @remarks The precomputed index sent from the server.
+     *
+     * @privateRemarks Omitted in {@linkcode Metadata} and re-added here with more specificity.
+     * See {@linkcode Game.Data.Pack.index}.
+     */
+    index: CompendiumCollection.IndexEntry<Type>[];
+
+    /**
+     * Source data for any folders inside the `CompendiumCollection`
+     *
+     * @privateRemarks Removed in {@linkcode Metadata} and re-added here in lieu of larger refactor.
+     * See {@linkcode Game.Data.Pack.folders}.
+     */
+    // TODO: Should eventually be `Folder.StoredSource<Type>[]`
+    folders: Folder.Source[];
   }
 
   /**
    * The type that appears in `compendium.metadata` after initialization.
-   * @privateRemarks Note that the `Omit` is because `delete metadata.index` and `delete metadata.folder` is called.
+   * @privateRemarks Note that the `Omit` is because `delete metadata.index` and `delete metadata.folders` are called during construction.
    * This also deletes in `game.data` since its passed uncloned.
    */
   interface Metadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName>
-    extends Omit<Game.Data.Pack, "index" | "folder"> {
+    extends Omit<Game.Data.Pack, "index" | "folders"> {
     type: Type;
-    label: string;
-
-    /**
-     * @remarks `undefined` is replaced with the default `CONFIG[this.metadata.type]?.compendiumBanner`
-     * but `null` passes through unchanged.
-     */
-    banner?: string | null | undefined;
-    name: string;
-
-    flags: Record<string, never>; // created by the server, but always empty and no way to change it in a way that is s
-    ownership: BasePackage.OwnershipRecord;
-    path: string;
   }
 
-  interface GetIndexOptions<Type extends DocumentName> {
+  interface GetIndexOptions {
     /**
      * An array of fields to return as part of the index
      * @defaultValue `[]`
      */
-    fields?: (keyof Document.SourceForName<Type>)[];
+    // TODO: Should really be `DotKeys<keyof Document.SourceForName<Type>>[]` here but that explodes the class with errors about union size,
+    // TODO: so for now we just allow anything.
+    fields?: string[] | undefined;
   }
 
   // TODO: Improve automatic index properties based on document type
@@ -453,31 +490,69 @@ declare namespace CompendiumCollection {
     Document.SourceForName<Type>
   >;
 
+  type ImportDocumentReturn<Doc extends DocOrFolder<CompendiumCollection.DocumentName>> =
+    Doc extends Folder.Implementation
+      ? Folder.Stored<Doc["type"]>
+      : Doc extends Document.Any
+        ? Document.StoredForName<Doc["documentName"]>
+        : never;
+
   type ForDocument<Name extends DocumentName> = Name extends unknown ? CompendiumCollection<Name> : never;
 
   type ManageCompendiumAction = "create" | "delete" | "migrate";
 
-  interface ManageCompendiumRequest extends SocketInterface.SocketRequest {
+  type ManageCompendiumData<
+    Action extends ManageCompendiumAction,
+    Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName,
+  > =
+    | (Action extends "create" ? CreateCompendiumMetadata<Type> : never)
+    | (Action extends "delete" | "migrate" ? string : never);
+
+  interface ManageCompendiumRequest<
+    Action extends ManageCompendiumAction = ManageCompendiumAction,
+    Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName,
+  > extends SocketInterface.SocketRequest {
     /** The request action. */
     action: ManageCompendiumAction;
 
-    /** The compendium creation data, or the ID of the compendium to delete. */
-    data: PackageCompendiumData | string;
+    /**
+     * The compendium creation data, or the ID of the compendium to delete.
+     * @remarks Also the ID for `migrate` actions, not just `delete`.
+     */
+    data: ManageCompendiumData<Action, Type>;
 
     /** Additional options. */
     options?: ManageCompendiumSocketOptions;
   }
 
-  interface ManageCompendiumResponse extends SocketInterface.SocketResponse {
-    /** The original request. */
-    request: ManageCompendiumRequest;
+  type ManageCompendiumResult<Action extends ManageCompendiumAction, Type extends CompendiumCollection.DocumentName> =
+    | (Action extends "create" ? ConstructorMetadata<Type> : never)
+    | (Action extends "delete" | "migrate" ? string : never);
 
-    /** The compendium creation data, or the collection name of the deleted compendium. */
-    result: PackageCompendiumData | string;
+  interface ManageCompendiumResponse<
+    Action extends ManageCompendiumAction = ManageCompendiumAction,
+    Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName,
+  > extends SocketInterface.SocketResponse {
+    /** @remarks "manageCompendium" socket returns always include this key */
+    userId: string;
+
+    /** The original request. */
+    request: ManageCompendiumRequest<Action, Type>;
+
+    /**
+     * The compendium creation data, or the collection name of the deleted compendium.
+     * @remarks `migrate` calls do not return a socket response, so the above is accurate.
+     */
+    result: ManageCompendiumResult<Action, Type>;
   }
 
-  /** @internal */
-  type _ManageCompendiumSocketOptions = InexactPartial<{
+  /**
+   * `IntentionalPartial` because this goes over the socket, where `undefined`-value keys get dropped. This type can't be folded into
+   * {@linkcode ManageCompendiumSocketOptions}; doing so causes errors about lack of index signature where
+   * {@linkcode ManageCompendiumRequest} extends {@linkcode SocketInterface.Request}.
+   * @internal
+   */
+  type _ManageCompendiumSocketOptions = IntentionalPartial<{
     /**
      * @remarks {@linkcode CompendiumCollection.duplicateCompendium | CompendiumCollection#duplicateCompendium} passes
      * {@linkcode CompendiumCollection.collection | this.collection} when calling {@linkcode CompendiumCollection.createCompendium}.
@@ -489,7 +564,7 @@ declare namespace CompendiumCollection {
    * The interface for {@linkcode ManageCompendiumRequest.options}.
    *
    * @remarks If this were more complicated on the server side, we'd split this up into `CreateOptions`, `DeleteOptions`, and
-   * `MigrateOptions` (one for each {@linkcode ManageCompendiumAction}), but as of 13.350 the only valid `options` key for any operation is
+   * `MigrateOptions` (one for each {@linkcode ManageCompendiumAction}), but as of 13.351 the only valid `options` key for any operation is
    * {@linkcode ManageCompendiumSocketOptions.source | source} for `create`, with `delete` using no options and `migrate` only taking an
    * `onProgress` function that wouldn't survive the socket and {@linkcode MigrateOptions.notify | notify} which, since `migrate` operations
    * don't return a response (inferred by reading the {@linkcode CompendiumCollection._activateSocketListeners} body), and it has no effect

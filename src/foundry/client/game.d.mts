@@ -818,14 +818,27 @@ declare namespace Game {
   interface Data extends _Data {}
 
   namespace Data {
-    interface Pack extends PackageCompendiumData {
-      /** @deprecated since v11 */
-      private?: boolean | undefined;
-      system?: string | undefined;
-      type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+    interface Pack extends BasePackage.SocketCompendiumData {
+      /**
+       * @remarks Not all packs are required to specify a `system`, and those that don't will not have this key in their data,
+       * presumably because the socket eats the `undefined`-valued property.
+       *
+       * Of packs with a `system`, only ones where it matches the current world's are sent to clients.
+       */
+      system?: foundry.packages.System.Id;
+
       packageName: BasePackage["_source"]["id"];
       packageType: BasePackage["type"];
+
+      /** @remarks `${package.id}.${pack.name}` */
       id: string;
+
+      /**
+       * @privateRemarks For some reason {@linkcode BasePackage.Schema.path} is `required: false`, so the `UndefinedToOptional` on
+       * {@linkcode BasePackage.SocketCompendiumData} makes it optional here, but a `path` will always be in the metadata sent by
+       * the server.
+       */
+      path: string;
 
       /**
        * @remarks This property is deleted right before `setup` is called, most likely inadvertently.
@@ -884,7 +897,7 @@ declare global {
   let canvas: InitializedOn<Canvas, "init">;
 }
 
-type ConfiguredCollectionClassForName<Name extends foundry.CONST.WORLD_DOCUMENT_TYPES> = FixedInstanceType<
+type ConfiguredCollectionClassForName<Name extends CONST.WORLD_DOCUMENT_TYPES> = FixedInstanceType<
   CONFIG[Name]["collection"]
 >;
 

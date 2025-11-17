@@ -15,7 +15,10 @@ declare const trueOrUndefined: true | undefined;
 declare const boolOrUndefined: boolean | undefined;
 
 // DocumentCollection is abstract
-class TestItemCollection extends DocumentCollection<"Item"> {}
+declare class TestItemCollection extends DocumentCollection<"Item"> {
+  // necessary type override, normally handled by WorldCollection
+  search(search: DocumentCollection.SearchOptions): Item.Stored[];
+}
 
 describe("DocumentCollection Tests", () => {
   test("Construction", () => {
@@ -127,7 +130,7 @@ describe("DocumentCollection Tests", () => {
       Record<string, DocumentCollection.SearchableField>
     >();
 
-    // @ts-expect-error `#search`'s one parameter has no default, but all its properties do
+    // @ts-expect-error `#search`'s one parameter has no default, but all its properties do; must pass at least an empty object
     dc.search();
 
     expectTypeOf(dc.search({})).toEqualTypeOf<Item.Stored[]>();

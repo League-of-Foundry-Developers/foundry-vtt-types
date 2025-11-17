@@ -1539,7 +1539,7 @@ declare namespace Document {
     | (DocumentType extends "Drawing" ? DrawingDocument.UpdateData : never)
     | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.UpdateData : never)
     | (DocumentType extends "Note" ? NoteDocument.UpdateData : never)
-    | (DocumentType extends "Region" ? NoteDocument.UpdateData : never)
+    | (DocumentType extends "Region" ? RegionDocument.UpdateData : never)
     | (DocumentType extends "Tile" ? TileDocument.UpdateData : never)
     | (DocumentType extends "Token" ? TokenDocument.UpdateData : never)
     | (DocumentType extends "Wall" ? WallDocument.UpdateData : never);
@@ -1575,7 +1575,7 @@ declare namespace Document {
     | (DocumentType extends "Drawing" ? DrawingDocument.Source : never)
     | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Source : never)
     | (DocumentType extends "Note" ? NoteDocument.Source : never)
-    | (DocumentType extends "Region" ? NoteDocument.Source : never)
+    | (DocumentType extends "Region" ? RegionDocument.Source : never)
     | (DocumentType extends "Tile" ? TileDocument.Source : never)
     | (DocumentType extends "Token" ? TokenDocument.Source : never)
     | (DocumentType extends "Wall" ? WallDocument.Source : never);
@@ -1611,7 +1611,7 @@ declare namespace Document {
     | (DocumentType extends "Drawing" ? DrawingDocument.Parent : never)
     | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Parent : never)
     | (DocumentType extends "Note" ? NoteDocument.Parent : never)
-    | (DocumentType extends "Region" ? NoteDocument.Parent : never)
+    | (DocumentType extends "Region" ? RegionDocument.Parent : never)
     | (DocumentType extends "Tile" ? TileDocument.Parent : never)
     | (DocumentType extends "Token" ? TokenDocument.Parent : never)
     | (DocumentType extends "Wall" ? WallDocument.Parent : never);
@@ -1659,7 +1659,7 @@ declare namespace Document {
     | (DocumentType extends "Drawing" ? DrawingDocument.Stored : never)
     | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Stored : never)
     | (DocumentType extends "Note" ? NoteDocument.Stored : never)
-    | (DocumentType extends "Region" ? NoteDocument.Stored : never)
+    | (DocumentType extends "Region" ? RegionDocument.Stored : never)
     | (DocumentType extends "Tile" ? TileDocument.Stored : never)
     | (DocumentType extends "Token" ? TokenDocument.Stored : never)
     | (DocumentType extends "Wall" ? WallDocument.Stored : never);
@@ -1695,7 +1695,7 @@ declare namespace Document {
     | (DocumentType extends "Drawing" ? DrawingDocument.Invalid : never)
     | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Invalid : never)
     | (DocumentType extends "Note" ? NoteDocument.Invalid : never)
-    | (DocumentType extends "Region" ? NoteDocument.Invalid : never)
+    | (DocumentType extends "Region" ? RegionDocument.Invalid : never)
     | (DocumentType extends "Tile" ? TileDocument.Invalid : never)
     | (DocumentType extends "Token" ? TokenDocument.Invalid : never)
     | (DocumentType extends "Wall" ? WallDocument.Invalid : never);

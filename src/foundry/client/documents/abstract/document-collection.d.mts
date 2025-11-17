@@ -150,10 +150,11 @@ declare abstract class DocumentCollection<
    * @remarks `search` is required because it lacks a parameter default, but all of its properties *do* have defaults, so passing an empty
    * object is sufficient. It doesn't make much sense to pass no criteria to a search method, but it will just return all Documents in the
    * collection.
+   *
+   * This method preferentially searches `this.index` over `this.collection`, so the return has to be just `object[]` here to allow for
+   * index entries in {@linkcode CompendiumCollection}. Fake type overrides are there and in {@linkcode WorldCollection}.
    */
-  // TODO: CompendiumCollection doesn't override this method, and the method preferentially operates on `this.index` over `this.contents`,
-  // TODO: so the return type here should include index entries
-  search(search: DocumentCollection.SearchOptions): Document.StoredForName<DocumentName>[];
+  search(search: DocumentCollection.SearchOptions): object[];
 
   /**
    * Update all objects in this DocumentCollection with a provided transformation.

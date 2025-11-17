@@ -61,6 +61,10 @@ describe("WorldCollection Tests", () => {
     // testing `.instance` is pointless because we have to fake override it per subclass
 
     expectTypeOf(wac["_getVisibleTreeContents"]()).toEqualTypeOf<Actor.Stored[]>();
+
+    expectTypeOf(wac.search({})).toEqualTypeOf<Actor.Stored[]>();
+    expectTypeOf(wic.search({})).toEqualTypeOf<Item.Stored[]>();
+    expectTypeOf(wuc.search({})).toEqualTypeOf<User.Stored[]>();
   });
 
   test("importFromCompendium", () => {

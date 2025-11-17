@@ -79,6 +79,9 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
     options?: Options,
   ): WorldCollection.FromCompendiumReturnType<DocumentName, Options>;
 
+  /** @privateRemarks Fake type override, see {@linkcode DocumentCollection.search | DocumentCollection#search} */
+  override search(search: DocumentCollection.SearchOptions): Document.StoredForName<DocumentName>[];
+
   /**
    * Register a Document sheet class as a candidate which can be used to display Documents of a given type.
    * See {@linkcode DocumentSheetConfig.registerSheet} for details.
