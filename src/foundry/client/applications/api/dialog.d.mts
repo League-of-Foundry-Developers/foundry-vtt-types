@@ -574,7 +574,7 @@ declare namespace DialogV2 {
           : never
         : undefined;
 
-    type OneButtonReturnType<Callback, Action> = Callback extends () => infer Return ? Return : Action;
+    type OneButtonReturnType<Callback, Action> = Callback extends (...args: never) => infer Return ? Return : Action;
 
     type ConfirmReturnType<Options extends ConfirmConfig<never> | undefined> =
       | (Options extends { readonly yes: { readonly callback: ButtonCallback<infer YesReturn> } }
