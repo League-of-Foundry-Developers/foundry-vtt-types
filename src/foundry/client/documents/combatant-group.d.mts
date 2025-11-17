@@ -203,7 +203,10 @@ declare namespace CombatantGroup {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends CombatantGroup.SubType = CombatantGroup.SubType>
+    extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * Used in the {@linkcode CombatantGroup.create} and {@linkcode CombatantGroup.createDocuments} signatures, and
@@ -1110,7 +1113,7 @@ declare class CombatantGroup<
    * @param data    - Initial data from which to construct the `CombatantGroup`
    * @param context - Construction context options
    */
-  constructor(data: CombatantGroup.CreateData, context?: CombatantGroup.ConstructionContext);
+  constructor(data: CombatantGroup.CreateData<SubType>, context?: CombatantGroup.ConstructionContext);
 
   /**
    * A group is considered defeated if all its members are defeated, or it has no members.

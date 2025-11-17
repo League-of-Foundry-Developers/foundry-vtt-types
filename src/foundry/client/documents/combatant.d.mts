@@ -219,7 +219,10 @@ declare namespace Combatant {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Combatant.SubType = Combatant.SubType>
+    extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * Used in the {@linkcode Combatant.create} and {@linkcode Combatant.createDocuments} signatures, and
@@ -1173,7 +1176,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    * @param context - Construction context options
    */
   // Note(LukeAbby): `data` is not actually required but `context.parent` is.
-  constructor(data: Combatant.CreateData | undefined, context: Combatant.ConstructionContext);
+  constructor(data: Combatant.CreateData<SubType> | undefined, context: Combatant.ConstructionContext);
 
   /**
    * The token video source image (if any)

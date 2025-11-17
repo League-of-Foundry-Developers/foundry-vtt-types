@@ -154,6 +154,12 @@ declare namespace Item {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
+  type DirectDescendantName = "ActiveEffect";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
   type DirectDescendant = ActiveEffect.Stored;
 
   /**
@@ -280,7 +286,9 @@ declare namespace Item {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Item.SubType = Item.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type: SubType;
+  }
 
   /**
    * Used in the {@linkcode Item.create} and {@linkcode Item.createDocuments} signatures, and
@@ -1174,39 +1182,39 @@ declare namespace Item {
     PassedConfig
   >;
 
-  type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+  type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     Item.Stored,
-    Item.DirectDescendant,
+    Item.DirectDescendantName,
     Item.Metadata.Embedded
   >;
 
-  type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+  type OnCreateDescendantDocumentsArgs = Document.Internal.OnCreateDescendantDocumentsArgs<
     Item.Stored,
-    Item.DirectDescendant,
+    Item.DirectDescendantName,
     Item.Metadata.Embedded
   >;
 
-  type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+  type PreUpdateDescendantDocumentsArgs = Document.Internal.PreUpdateDescendantDocumentsArgs<
     Item.Stored,
-    Item.DirectDescendant,
+    Item.DirectDescendantName,
     Item.Metadata.Embedded
   >;
 
-  type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+  type OnUpdateDescendantDocumentsArgs = Document.Internal.OnUpdateDescendantDocumentsArgs<
     Item.Stored,
-    Item.DirectDescendant,
+    Item.DirectDescendantName,
     Item.Metadata.Embedded
   >;
 
-  type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+  type PreDeleteDescendantDocumentsArgs = Document.Internal.PreDeleteDescendantDocumentsArgs<
     Item.Stored,
-    Item.DirectDescendant,
+    Item.DirectDescendantName,
     Item.Metadata.Embedded
   >;
 
-  type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+  type OnDeleteDescendantDocumentsArgs = Document.Internal.OnDeleteDescendantDocumentsArgs<
     Item.Stored,
-    Item.DirectDescendant,
+    Item.DirectDescendantName,
     Item.Metadata.Embedded
   >;
 
@@ -1249,7 +1257,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    * @param data    - Initial data from which to construct the `Item`
    * @param context - Construction context options
    */
-  constructor(data: Item.CreateData, context?: Item.ConstructionContext);
+  constructor(data: Item.CreateData<SubType>, context?: Item.ConstructionContext);
 
   /**
    * A convenience alias of Item#parent which is more semantically intuitive

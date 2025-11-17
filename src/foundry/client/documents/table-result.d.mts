@@ -199,7 +199,10 @@ declare namespace TableResult {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends TableResult.SubType = TableResult.SubType>
+    extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * Used in the {@linkcode TableResult.create} and {@linkcode TableResult.createDocuments} signatures, and
@@ -1133,7 +1136,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
    * @param data    - Initial data from which to construct the `TableResult`
    * @param context - Construction context options
    */
-  constructor(data: TableResult.CreateData, context?: TableResult.ConstructionContext);
+  constructor(data: TableResult.CreateData<SubType>, context?: TableResult.ConstructionContext);
 
   /**
    * A path reference to the icon image used to represent this result

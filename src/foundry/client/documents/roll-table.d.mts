@@ -82,6 +82,12 @@ declare namespace RollTable {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
+  type DirectDescendantName = "TableResult";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
   type DirectDescendant = TableResult.Stored;
 
   /**
@@ -1121,39 +1127,39 @@ declare namespace RollTable {
     PassedConfig
   >;
 
-  type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+  type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     RollTable.Stored,
-    RollTable.DirectDescendant,
+    RollTable.DirectDescendantName,
     RollTable.Metadata.Embedded
   >;
 
-  type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+  type OnCreateDescendantDocumentsArgs = Document.Internal.OnCreateDescendantDocumentsArgs<
     RollTable.Stored,
-    RollTable.DirectDescendant,
+    RollTable.DirectDescendantName,
     RollTable.Metadata.Embedded
   >;
 
-  type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+  type PreUpdateDescendantDocumentsArgs = Document.Internal.PreUpdateDescendantDocumentsArgs<
     RollTable.Stored,
-    RollTable.DirectDescendant,
+    RollTable.DirectDescendantName,
     RollTable.Metadata.Embedded
   >;
 
-  type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+  type OnUpdateDescendantDocumentsArgs = Document.Internal.OnUpdateDescendantDocumentsArgs<
     RollTable.Stored,
-    RollTable.DirectDescendant,
+    RollTable.DirectDescendantName,
     RollTable.Metadata.Embedded
   >;
 
-  type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+  type PreDeleteDescendantDocumentsArgs = Document.Internal.PreDeleteDescendantDocumentsArgs<
     RollTable.Stored,
-    RollTable.DirectDescendant,
+    RollTable.DirectDescendantName,
     RollTable.Metadata.Embedded
   >;
 
-  type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+  type OnDeleteDescendantDocumentsArgs = Document.Internal.OnDeleteDescendantDocumentsArgs<
     RollTable.Stored,
-    RollTable.DirectDescendant,
+    RollTable.DirectDescendantName,
     RollTable.Metadata.Embedded
   >;
 
@@ -1475,7 +1481,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
   static fromFolder<Temporary extends boolean | undefined = undefined>(
     folder: Folder.Implementation,
     options?: RollTable.Database.CreateOperation<Temporary>,
-  ): Promise<WallDocument.TemporaryIf<Temporary> | undefined>;
+  ): Promise<RollTable.TemporaryIf<Temporary> | undefined>;
 
   /*
    * After this point these are not really overridden methods.

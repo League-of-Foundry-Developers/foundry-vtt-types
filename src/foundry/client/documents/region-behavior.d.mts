@@ -228,7 +228,10 @@ declare namespace RegionBehavior {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends RegionBehavior.SubType = RegionBehavior.SubType>
+    extends fields.SchemaField.CreateData<Schema> {
+    type: SubType;
+  }
 
   /**
    * Used in the {@linkcode RegionBehavior.create} and {@linkcode RegionBehavior.createDocuments} signatures, and
@@ -1124,7 +1127,7 @@ declare class RegionBehavior<
    * @param data    - Initial data from which to construct the `RegionBehavior`
    * @param context - Construction context options
    */
-  constructor(data: RegionBehavior.CreateData, context?: RegionBehavior.ConstructionContext);
+  constructor(data: RegionBehavior.CreateData<SubType>, context?: RegionBehavior.ConstructionContext);
 
   /** A convenience reference to the RegionDocument which contains this RegionBehavior. */
   get region(): RegionDocument.Implementation | null;

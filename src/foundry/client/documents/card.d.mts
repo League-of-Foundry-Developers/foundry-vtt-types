@@ -218,7 +218,9 @@ declare namespace Card {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Card.SubType = Card.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * Used in the {@linkcode Card.create} and {@linkcode Card.createDocuments} signatures, and
@@ -1240,7 +1242,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @param data    - Initial data from which to construct the `Card`
    * @param context - Construction context options
    */
-  constructor(data: Card.CreateData, context?: Card.ConstructionContext);
+  constructor(data: Card.CreateData<SubType>, context?: Card.ConstructionContext);
 
   /**
    * The current card face

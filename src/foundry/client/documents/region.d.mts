@@ -292,6 +292,12 @@ declare namespace RegionDocument {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
+  type DirectDescendantName = "RegionBehavior";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
   type DirectDescendant = RegionBehavior.Stored;
 
   /**
@@ -1332,39 +1338,39 @@ declare namespace RegionDocument {
     PassedConfig
   >;
 
-  type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+  type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     RegionDocument.Stored,
-    RegionDocument.DirectDescendant,
+    RegionDocument.DirectDescendantName,
     RegionDocument.Metadata.Embedded
   >;
 
-  type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+  type OnCreateDescendantDocumentsArgs = Document.Internal.OnCreateDescendantDocumentsArgs<
     RegionDocument.Stored,
-    RegionDocument.DirectDescendant,
+    RegionDocument.DirectDescendantName,
     RegionDocument.Metadata.Embedded
   >;
 
-  type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+  type PreUpdateDescendantDocumentsArgs = Document.Internal.PreUpdateDescendantDocumentsArgs<
     RegionDocument.Stored,
-    RegionDocument.DirectDescendant,
+    RegionDocument.DirectDescendantName,
     RegionDocument.Metadata.Embedded
   >;
 
-  type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+  type OnUpdateDescendantDocumentsArgs = Document.Internal.OnUpdateDescendantDocumentsArgs<
     RegionDocument.Stored,
-    RegionDocument.DirectDescendant,
+    RegionDocument.DirectDescendantName,
     RegionDocument.Metadata.Embedded
   >;
 
-  type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+  type PreDeleteDescendantDocumentsArgs = Document.Internal.PreDeleteDescendantDocumentsArgs<
     RegionDocument.Stored,
-    RegionDocument.DirectDescendant,
+    RegionDocument.DirectDescendantName,
     RegionDocument.Metadata.Embedded
   >;
 
-  type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+  type OnDeleteDescendantDocumentsArgs = Document.Internal.OnDeleteDescendantDocumentsArgs<
     RegionDocument.Stored,
-    RegionDocument.DirectDescendant,
+    RegionDocument.DirectDescendantName,
     RegionDocument.Metadata.Embedded
   >;
 

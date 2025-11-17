@@ -219,7 +219,10 @@ declare namespace JournalEntryPage {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType>
+    extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * Used in the {@linkcode JournalEntryPage.create} and {@linkcode JournalEntryPage.createDocuments} signatures, and
@@ -1318,7 +1321,7 @@ declare class JournalEntryPage<
    * @param data    - Initial data from which to construct the `JournalEntryPage`
    * @param context - Construction context options
    */
-  constructor(data: JournalEntryPage.CreateData, context?: JournalEntryPage.ConstructionContext);
+  constructor(data: JournalEntryPage.CreateData<SubType>, context?: JournalEntryPage.ConstructionContext);
 
   /**
    * The cached table of contents for this JournalEntryPage.

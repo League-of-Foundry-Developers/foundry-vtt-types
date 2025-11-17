@@ -1,4 +1,4 @@
-import type { _DeepPartial, DeepPartial, Identity, InexactPartial } from "#utils";
+import type { DeepPartial, Identity, InexactPartial } from "#utils";
 import type { ApplicationV2, HandlebarsApplicationMixin } from "#client/applications/api/_module.d.mts";
 
 declare module "#configuration" {
@@ -38,7 +38,7 @@ declare class ImagePopout<
   constructor(options: DeepPartial<Configuration> & { src: string });
 
   /** @deprecated "An ImagePopout image path must be assigned to options.src." (since v13, until v15) */
-  constructor(options: string, _options: DeepPartial<Configuration>);
+  constructor(options: string, _options?: DeepPartial<Configuration>);
 
   // Fake override.
   static override DEFAULT_OPTIONS: ImagePopout.DefaultOptions;
@@ -54,8 +54,9 @@ declare class ImagePopout<
 
   /**
    * Share the displayed image with other connected Users
-   * @remarks This is callable with no `options`, that will just produce a popup with a broken `img`
-   * (no `src` means the alt text is displayed) and no title. Not desirable, but not an error.
+   * @remarks This is callable with no `options`, because {@linkcode ImagePopout.ShareImageConfig.image | image} will be provided by the
+   * instance's `this.options.src`, and the title fallback of `this.options.window.title` will always be at least an empty string,
+   * preventing errors.
    */
   shareImage(options?: ImagePopout.ShareImageOptions): void;
 
@@ -74,8 +75,9 @@ declare class ImagePopout<
    * Handle a received request to display an image.
    * @param config - The image configuration data.
    * @internal
+   * @remarks Despite having a parameter default, `options` is required to have at least valid `image` and `title` properties
    */
-  static _handleShareImage(options?: ImagePopout.ShareImageConfig): ImagePopout.Any;
+  static _handleShareImage(options: ImagePopout.HandleShareImageOptions): ImagePopout.Any;
 
   #ImagePopout: true;
 }
@@ -96,23 +98,27 @@ declare namespace ImagePopout {
     altText: string;
   }
 
+  // TODO: `caption` and `uuid` have defaults in `DEFAULT_OPTIONS`, but due to how config types work, `options.caption` is currently `| undefined`
   interface Configuration<ImagePopout extends ImagePopout.Any = ImagePopout.Any>
     extends HandlebarsApplicationMixin.Configuration,
       ApplicationV2.Configuration<ImagePopout> {
     /** The URL to the image or video file */
     src: string;
 
-    /** Caption text to display below the image. */
-    caption: string;
+    /**
+     * Caption text to display below the image.
+     * @defaultValue `""`
+     */
+    caption?: string;
 
     /**
      * The UUID of some related {@linkcode Document}.
      * @defaultValue `null`
      */
-    uuid: string | null | undefined;
+    uuid?: string | null;
 
     /** Force showing or hiding the title */
-    showTitle?: boolean | null | undefined;
+    showTitle?: boolean | undefined;
   }
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
@@ -124,36 +130,30 @@ declare namespace ImagePopout {
 
   /** The interface for sending with a `"shareImage"` socket event. */
   interface ShareImageConfig {
-    /**
-     * The image URL to share.
-     */
+    /** The image URL to share. */
     image: string;
 
-    /**
-     * The image title.
-     */
+    /** The image title. */
     title: string;
 
-    /**
-     * The UUID of a {@linkcode Document} related to the image, used to determine permission to see the image title.
-     */
-    uuid?: string | undefined;
+    /** Caption text to display below the image. */
+    caption?: string;
 
-    /**
-     * If this is provided, the permissions of the related Document will be ignored and the title will be shown based on this parameter.
-     */
-    showTitle?: string | undefined;
+    /** The UUID of a {@linkcode Document} related to the image, used to determine permission to see the image title. */
+    uuid?: string | null;
 
-    /**
-     * A list of user IDs to show the image to.
-     */
+    /** If this is provided, the permissions of the related Document will be ignored and the title will be shown based on this parameter. */
+    showTitle?: boolean | undefined;
+
+    /** A list of user IDs to show the image to. */
     users?: string[] | undefined;
   }
 
-  /**
-   * Options for {@linkcode ImagePopout.shareImage | ImagePopout#shareImage}.
-   */
+  /** Options for {@linkcode ImagePopout.shareImage | ImagePopout#shareImage}. */
   interface ShareImageOptions extends InexactPartial<ShareImageConfig> {}
+
+  /** Options for {@linkcode ImagePopout._handleShareImage}. `users` gets dropped from the socket return. */
+  interface HandleShareImageOptions extends Omit<ShareImageConfig, "users"> {}
 }
 
 declare abstract class AnyImagePopout extends ImagePopout<

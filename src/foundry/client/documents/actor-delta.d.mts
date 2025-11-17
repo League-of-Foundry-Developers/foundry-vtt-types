@@ -150,6 +150,12 @@ declare namespace ActorDelta {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
+  type DirectDescendantName = "Item" | "ActiveEffect";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
   type DirectDescendant = Item.Stored | ActiveEffect.Stored;
 
   /**
@@ -276,7 +282,10 @@ declare namespace ActorDelta {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends ActorDelta.SubType = ActorDelta.SubType>
+    extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * Used in the {@linkcode ActorDelta.create} and {@linkcode ActorDelta.createDocuments} signatures, and
@@ -1149,49 +1158,49 @@ declare namespace ActorDelta {
   >;
 
   type PreCreateDescendantDocumentsArgs =
-    | Document.PreCreateDescendantDocumentsArgs<
+    | Document.Internal.PreCreateDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.PreCreateDescendantDocumentsArgs;
 
   type OnCreateDescendantDocumentsArgs =
-    | Document.OnCreateDescendantDocumentsArgs<
+    | Document.Internal.OnCreateDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.OnCreateDescendantDocumentsArgs;
 
   type PreUpdateDescendantDocumentsArgs =
-    | Document.PreUpdateDescendantDocumentsArgs<
+    | Document.Internal.PreUpdateDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.PreUpdateDescendantDocumentsArgs;
 
   type OnUpdateDescendantDocumentsArgs =
-    | Document.OnUpdateDescendantDocumentsArgs<
+    | Document.Internal.OnUpdateDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.OnUpdateDescendantDocumentsArgs;
 
   type PreDeleteDescendantDocumentsArgs =
-    | Document.PreDeleteDescendantDocumentsArgs<
+    | Document.Internal.PreDeleteDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.PreDeleteDescendantDocumentsArgs;
 
   type OnDeleteDescendantDocumentsArgs =
-    | Document.OnDeleteDescendantDocumentsArgs<
+    | Document.Internal.OnDeleteDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.OnDeleteDescendantDocumentsArgs;
@@ -1238,7 +1247,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    * @param context - Construction context options
    */
   // Note(LukeAbby): `data` is not actually required but `context.parent` is.
-  constructor(data: ActorDelta.CreateData | undefined, context: ActorDelta.ConstructionContext);
+  constructor(data: ActorDelta.CreateData<SubType> | undefined, context: ActorDelta.ConstructionContext);
 
   protected override _configure(options?: Document.ConfigureOptions): void;
 

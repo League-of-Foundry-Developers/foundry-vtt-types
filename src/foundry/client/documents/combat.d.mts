@@ -159,6 +159,12 @@ declare namespace Combat {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
+  type DirectDescendantName = "Combatant";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
   type DirectDescendant = Combatant.Stored;
 
   /**
@@ -285,7 +291,9 @@ declare namespace Combat {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Combat.SubType = Combat.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * Used in the {@linkcode Combat.create} and {@linkcode Combat.createDocuments} signatures, and
@@ -1189,39 +1197,39 @@ declare namespace Combat {
     PassedConfig
   >;
 
-  type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+  type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     Combat.Stored,
-    Combat.DirectDescendant,
+    Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
 
-  type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+  type OnCreateDescendantDocumentsArgs = Document.Internal.OnCreateDescendantDocumentsArgs<
     Combat.Stored,
-    Combat.DirectDescendant,
+    Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
 
-  type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+  type PreUpdateDescendantDocumentsArgs = Document.Internal.PreUpdateDescendantDocumentsArgs<
     Combat.Stored,
-    Combat.DirectDescendant,
+    Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
 
-  type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+  type OnUpdateDescendantDocumentsArgs = Document.Internal.OnUpdateDescendantDocumentsArgs<
     Combat.Stored,
-    Combat.DirectDescendant,
+    Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
 
-  type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+  type PreDeleteDescendantDocumentsArgs = Document.Internal.PreDeleteDescendantDocumentsArgs<
     Combat.Stored,
-    Combat.DirectDescendant,
+    Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
 
-  type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+  type OnDeleteDescendantDocumentsArgs = Document.Internal.OnDeleteDescendantDocumentsArgs<
     Combat.Stored,
-    Combat.DirectDescendant,
+    Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
 
@@ -1300,7 +1308,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param context - Construction context options
    */
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
-  constructor(data?: Combat.CreateData, context?: Combat.ConstructionContext);
+  constructor(data?: Combat.CreateData<SubType>, context?: Combat.ConstructionContext);
 
   /** Track the sorted turn order of this combat encounter */
   turns: Combatant.Implementation[];

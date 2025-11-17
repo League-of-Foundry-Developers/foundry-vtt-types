@@ -160,9 +160,7 @@ declare abstract class DocumentCollection<
    * @returns An array of updated data once the operation is complete
    */
   updateAll(
-    transformation:
-      | Document.UpdateDataForName<DocumentType>
-      | ((doc: Document.StoredForName<DocumentType>) => Document.UpdateDataForName<DocumentType>),
+    transformation: DocumentCollection.Transformation<DocumentType>,
     condition?: ((obj: Document.StoredForName<DocumentType>) => boolean) | null,
     options?: DocumentCollection.UpdateAllOperation<DocumentType>,
   ): Promise<Document.StoredForName<DocumentType>[]>;
@@ -304,6 +302,13 @@ declare namespace DocumentCollection {
     DocumentType,
     Options
   >;
+
+  type Transformation<DocumentName extends Document.Type> =
+    | Document.UpdateDataForName<DocumentName>
+    | {
+        // Note(LukeAbby): Written as a method to stay covariant over `DocumentName`.
+        transform(doc: Document.StoredForName<DocumentName>): Document.UpdateDataForName<DocumentName>;
+      }["transform"];
 }
 
 declare class AnyDocumentCollection extends DocumentCollection<Document.Type, Collection.Methods.Any> {

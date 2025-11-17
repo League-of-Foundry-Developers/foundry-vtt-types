@@ -152,6 +152,12 @@ declare namespace Cards {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
+  type DirectDescendantName = "Card";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
   type DirectDescendant = Card.Stored;
 
   /**
@@ -278,7 +284,9 @@ declare namespace Cards {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Cards.SubType = Cards.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type: SubType;
+  }
 
   /**
    * Used in the {@linkcode Cards.create} and {@linkcode Cards.createDocuments} signatures, and
@@ -1211,39 +1219,39 @@ declare namespace Cards {
     PassedConfig
   >;
 
-  type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+  type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     Cards.Stored,
-    Cards.DirectDescendant,
+    Cards.DirectDescendantName,
     Cards.Metadata.Embedded
   >;
 
-  type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+  type OnCreateDescendantDocumentsArgs = Document.Internal.OnCreateDescendantDocumentsArgs<
     Cards.Stored,
-    Cards.DirectDescendant,
+    Cards.DirectDescendantName,
     Cards.Metadata.Embedded
   >;
 
-  type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+  type PreUpdateDescendantDocumentsArgs = Document.Internal.PreUpdateDescendantDocumentsArgs<
     Cards.Stored,
-    Cards.DirectDescendant,
+    Cards.DirectDescendantName,
     Cards.Metadata.Embedded
   >;
 
-  type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+  type OnUpdateDescendantDocumentsArgs = Document.Internal.OnUpdateDescendantDocumentsArgs<
     Cards.Stored,
-    Cards.DirectDescendant,
+    Cards.DirectDescendantName,
     Cards.Metadata.Embedded
   >;
 
-  type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+  type PreDeleteDescendantDocumentsArgs = Document.Internal.PreDeleteDescendantDocumentsArgs<
     Cards.Stored,
-    Cards.DirectDescendant,
+    Cards.DirectDescendantName,
     Cards.Metadata.Embedded
   >;
 
-  type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+  type OnDeleteDescendantDocumentsArgs = Document.Internal.OnDeleteDescendantDocumentsArgs<
     Cards.Stored,
-    Cards.DirectDescendant,
+    Cards.DirectDescendantName,
     Cards.Metadata.Embedded
   >;
 
@@ -1431,7 +1439,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    * @param data    - Initial data from which to construct the `Cards`
    * @param context - Construction context options
    */
-  constructor(data: Cards.CreateData, context?: Cards.ConstructionContext);
+  constructor(data: Cards.CreateData<SubType>, context?: Cards.ConstructionContext);
 
   /**
    * Provide a thumbnail image path used to represent this document.

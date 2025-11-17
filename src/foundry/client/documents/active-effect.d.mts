@@ -221,7 +221,10 @@ declare namespace ActiveEffect {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends ActiveEffect.SubType = ActiveEffect.SubType>
+    extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * Used in the {@linkcode ActiveEffect.create} and {@linkcode ActiveEffect.createDocuments} signatures, and
@@ -1362,7 +1365,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param data    - Initial data from which to construct the `ActiveEffect`
    * @param context - Construction context options
    */
-  constructor(data: ActiveEffect.CreateData, context?: ActiveEffect.ConstructionContext);
+  constructor(data: ActiveEffect.CreateData<SubType>, context?: ActiveEffect.ConstructionContext);
 
   /**
    * Create an ActiveEffect instance from some status effect ID.

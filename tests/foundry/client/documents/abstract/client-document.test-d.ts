@@ -121,7 +121,7 @@ expectTypeOf(item["_sheet"]).toEqualTypeOf<FixedInstanceType<Document.SheetClass
 // _initialize overridden with no signature changes
 
 // TODO This will also match `Item`, but not `Item.Implementation`
-expectTypeOf(item.collection).toEqualTypeOf<Collection<typeof item> | null>();
+expectTypeOf(item.collection).toEqualTypeOf<Collection<Item.Stored> | null>();
 // @ts-expect-error Only getter, no setter
 item.collection = new Collection<typeof item>();
 

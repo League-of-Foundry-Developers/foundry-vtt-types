@@ -169,6 +169,12 @@ declare namespace Actor {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
+  type DirectDescendantName = "Item" | "ActiveEffect";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
   type DirectDescendant = Item.Stored | ActiveEffect.Stored;
 
   /**
@@ -295,7 +301,9 @@ declare namespace Actor {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Actor.SubType = Actor.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type: SubType;
+  }
 
   /**
    * Used in the {@linkcode Actor.create} and {@linkcode Actor.createDocuments} signatures, and
@@ -1165,27 +1173,51 @@ declare namespace Actor {
   >;
 
   type PreCreateDescendantDocumentsArgs =
-    | Document.PreCreateDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.PreCreateDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.PreCreateDescendantDocumentsArgs;
 
   type OnCreateDescendantDocumentsArgs =
-    | Document.OnCreateDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.OnCreateDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.OnCreateDescendantDocumentsArgs;
 
   type PreUpdateDescendantDocumentsArgs =
-    | Document.PreUpdateDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.PreUpdateDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.PreUpdateDescendantDocumentsArgs;
 
   type OnUpdateDescendantDocumentsArgs =
-    | Document.OnUpdateDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.OnUpdateDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.OnUpdateDescendantDocumentsArgs;
 
   type PreDeleteDescendantDocumentsArgs =
-    | Document.PreDeleteDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.PreDeleteDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.PreDeleteDescendantDocumentsArgs;
 
   type OnDeleteDescendantDocumentsArgs =
-    | Document.OnDeleteDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.OnDeleteDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.OnDeleteDescendantDocumentsArgs;
 
   /* ***********************************************
@@ -1341,7 +1373,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param data    - Initial data from which to construct the `Actor`
    * @param context - Construction context options
    */
-  constructor(data: Actor.CreateData, context?: Actor.ConstructionContext);
+  constructor(data: Actor.CreateData<SubType>, context?: Actor.ConstructionContext);
 
   protected override _configure(options?: Document.ConfigureOptions): void;
 

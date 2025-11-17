@@ -93,6 +93,12 @@ declare namespace JournalEntry {
    * A document's direct descendants are documents that are contained directly within its schema.
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
+  type DirectDescendantName = "JournalEntryPage";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
   type DirectDescendant = JournalEntryPage.Stored;
 
   /**
@@ -1114,39 +1120,39 @@ declare namespace JournalEntry {
     PassedConfig
   >;
 
-  type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+  type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     JournalEntry.Stored,
-    JournalEntry.DirectDescendant,
+    JournalEntry.DirectDescendantName,
     JournalEntry.Metadata.Embedded
   >;
 
-  type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+  type OnCreateDescendantDocumentsArgs = Document.Internal.OnCreateDescendantDocumentsArgs<
     JournalEntry.Stored,
-    JournalEntry.DirectDescendant,
+    JournalEntry.DirectDescendantName,
     JournalEntry.Metadata.Embedded
   >;
 
-  type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+  type PreUpdateDescendantDocumentsArgs = Document.Internal.PreUpdateDescendantDocumentsArgs<
     JournalEntry.Stored,
-    JournalEntry.DirectDescendant,
+    JournalEntry.DirectDescendantName,
     JournalEntry.Metadata.Embedded
   >;
 
-  type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+  type OnUpdateDescendantDocumentsArgs = Document.Internal.OnUpdateDescendantDocumentsArgs<
     JournalEntry.Stored,
-    JournalEntry.DirectDescendant,
+    JournalEntry.DirectDescendantName,
     JournalEntry.Metadata.Embedded
   >;
 
-  type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+  type PreDeleteDescendantDocumentsArgs = Document.Internal.PreDeleteDescendantDocumentsArgs<
     JournalEntry.Stored,
-    JournalEntry.DirectDescendant,
+    JournalEntry.DirectDescendantName,
     JournalEntry.Metadata.Embedded
   >;
 
-  type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+  type OnDeleteDescendantDocumentsArgs = Document.Internal.OnDeleteDescendantDocumentsArgs<
     JournalEntry.Stored,
-    JournalEntry.DirectDescendant,
+    JournalEntry.DirectDescendantName,
     JournalEntry.Metadata.Embedded
   >;
 
