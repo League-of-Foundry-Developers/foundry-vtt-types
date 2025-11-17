@@ -9,6 +9,9 @@ import type { DatabaseAction, DatabaseOperation } from "./_types.d.mts";
 /**
  * An extension of the Collection.
  * Used for the specific task of containing embedded Document instances within a parent Document.
+ *
+ * @privateRemarks `ParentDocument` would ideally be `NonNullable<Document.ParentForName<ContainedDocument["documentName"]>>`, but this
+ * breaks the `AnyEmbeddedDocument` type, among other things.
  */
 declare class EmbeddedCollection<
   ContainedDocument extends Document.Any,
@@ -23,6 +26,7 @@ declare class EmbeddedCollection<
   constructor(
     name: string,
     parent: ParentDocument,
+    // TODO: revisit CreateData vs Source once the Source assignability investigation is complete
     sourceArray: Document.CreateDataForName<ContainedDocument["documentName"]>[],
   );
 
@@ -43,6 +47,7 @@ declare class EmbeddedCollection<
    * The name of this collection in the parent Document.
    * @remarks Defined via `Object.defineProperties` during construction with `{ writable: false }`
    */
+  // TODO: 4th type param? or 3rd, if we make this generic as a treat when we can remove Methods
   readonly name: string;
 
   /**
@@ -157,11 +162,9 @@ declare class EmbeddedCollection<
    * @param key     - The Document ID key.
    * @param options - Additional options to configure deletion behavior.
    *
-   * @remarks This implementation makes no use of `options`
+   * @remarks The `EmbeddedCollection` implementation makes no use of `options`
    */
   protected _delete(key: string, options?: EmbeddedCollection.DeleteOptions): void;
-
-  // TODO: Improve typing on invalid documents
 
   /**
    * Obtain a temporary Document instance for a document id which currently has invalid source data.
@@ -213,8 +216,7 @@ declare class EmbeddedCollection<
    *
    * @see {@linkcode DocumentCollection.search | DocumentCollection#search}
    *
-   * @privateRemarks While the `DocumentCollection` method has a TODO for index entries, because `EmbeddedCollection`s never have `index`es,
-   * `ContainedDocument[]` is the correct return type.
+   * @privateRemarks `EmbeddedCollection` doesn't have an `index`, so this return type is correct
    */
   search(search: DocumentCollection.SearchOptions): ContainedDocument[];
 

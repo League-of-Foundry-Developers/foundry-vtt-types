@@ -8,7 +8,7 @@ import type EmbeddedCollection from "./embedded-collection.d.mts";
  * embedded collection, and generate new embedded Documents by combining them.
  *
  * @privateRemarks `ParentDataModel` should be constrained to `extends ActorDelta.Implementation` as that's the only valid parent, but this
- * breaks fields because it makes `ECD` types not assignable to `EC` types
+ * breaks fields because it makes `EmbeddedCollectionDelta` types not assignable to `EmbeddedCollection` types
  */
 declare class EmbeddedCollectionDelta<
   ContainedDocument extends Document.Any,
@@ -19,7 +19,7 @@ declare class EmbeddedCollectionDelta<
    * A convenience getter to return the corresponding base collection.
    * @remarks This returns the version of this collection on the {@linkcode TokenDocument.Implementation.baseActor | baseActor}
    */
-  get baseCollection(): EmbeddedCollection<ContainedDocument, Actor.Implementation>;
+  get baseCollection(): EmbeddedCollection<ContainedDocument, Actor.Stored>;
 
   /**
    * A convenience getter to return the corresponding synthetic collection.
