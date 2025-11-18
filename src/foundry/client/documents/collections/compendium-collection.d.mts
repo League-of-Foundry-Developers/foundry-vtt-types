@@ -337,6 +337,9 @@ declare class CompendiumCollection<
     options?: DocumentCollection.UpdateAllOperation<DocumentName>,
   ): Promise<Document.StoredForName<DocumentName>[]>;
 
+  /** @privateRemarks Fake type override, see {@linkcode DocumentCollection.search | DocumentCollection#search} */
+  override search(search: DocumentCollection.SearchOptions): CompendiumCollection.IndexEntry<DocumentName>[];
+
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
   /** @remarks Calls the {@linkcode AllHooks.updateCompendium | updateCompendium} hook via `callAll` */
@@ -354,9 +357,6 @@ declare class CompendiumCollection<
    * this gets passed the new value after it's been cleaned and validated by the field in `ClientSettings##cleanJSON`
    */
   protected static _onConfigure(config: CompendiumCollection.SettingData): void;
-
-  /** @privateRemarks Fake type override, see {@linkcode DocumentCollection.search | DocumentCollection#search} */
-  override search(search: DocumentCollection.SearchOptions): CompendiumCollection.IndexEntry<DocumentName>[];
 
   #CompendiumCollection: true;
 }
