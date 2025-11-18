@@ -10,9 +10,6 @@ declare const falseOrUndefined: false | undefined;
 declare const trueOrUndefined: true | undefined;
 declare const boolOrUndefined: boolean | undefined;
 
-declare const actorInvalid: Actor.Invalid;
-const _x: Item.Invalid = actorInvalid;
-
 describe("SingletonEmbeddedCollection Tests", () => {
   test("Construction", () => {
     new SingletonEmbeddedCollection<ActorDelta.Stored, TokenDocument.Stored>("delta", tokenDoc, [deltaSource]);
@@ -20,7 +17,7 @@ describe("SingletonEmbeddedCollection Tests", () => {
   });
 
   const sec = new SingletonEmbeddedCollection<ActorDelta.Stored, TokenDocument.Stored>("delta", tokenDoc, [
-    deltaSource,
+    deltaCreateData,
   ]);
 
   test("Getting", () => {

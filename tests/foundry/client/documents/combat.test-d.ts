@@ -50,6 +50,7 @@ class MyCombatDocumentSubclass extends Combat {
 
     switch (collection) {
       case "combatants":
+        // @ts-expect-error TODO: specific document doc ops props
         expectTypeOf(options.combatTurn).toEqualTypeOf<number | undefined>();
         for (const d of data) {
           expectTypeOf(d.initiative).toEqualTypeOf<number | null | undefined>();

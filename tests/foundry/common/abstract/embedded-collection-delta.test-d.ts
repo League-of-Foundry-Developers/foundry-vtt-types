@@ -34,7 +34,7 @@ describe("EmbeddedCollectionDelta Tests", () => {
   );
 
   test("Collection getters", () => {
-    expectTypeOf(itemCollOnDelta.baseCollection).toEqualTypeOf<EmbeddedCollection<Item.Stored, Actor.Implementation>>();
+    expectTypeOf(itemCollOnDelta.baseCollection).toEqualTypeOf<EmbeddedCollection<Item.Stored, Actor.Stored>>();
     expectTypeOf(itemCollOnDelta.syntheticCollection).toEqualTypeOf<
       EmbeddedCollection<Item.Stored, Actor.Implementation>
     >();
@@ -48,7 +48,8 @@ describe("EmbeddedCollectionDelta Tests", () => {
     // ^ no type changes from the method in super, see there for thorough tests
 
     // Neither of these methods are ever called in client code, and haven't been found in server code either.
-    // They might be vestigial.
+    // They appear vestigial, but we have word from staff they're not. Not sure if there's a secret use or they
+    // were just wrong.
     expectTypeOf(itemCollOnDelta.restoreDocument("ID")).toEqualTypeOf<Promise<Item.Stored>>();
     expectTypeOf(itemCollOnDelta.restoreDocuments(["ID1", "ID2"])).toEqualTypeOf<Promise<Item.Stored[]>>();
 
@@ -56,6 +57,8 @@ describe("EmbeddedCollectionDelta Tests", () => {
     expectTypeOf(itemCollOnDelta._prepareDeltaUpdate(itemUpdateData, {})).toBeVoid();
     // ^ 2nd arg is the DataModel.UpdateOptions interface, see DataModel tests for more complete coverage
   });
+
+  // No type changes to `get` from `EmbeddedCollection`
 
   test("Setting", () => {
     // void return because https://github.com/foundryvtt/foundryvtt/issues/13565

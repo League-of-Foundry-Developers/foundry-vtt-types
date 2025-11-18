@@ -67,9 +67,9 @@ expectTypeOf(await Macro.createDialog({})).toEqualTypeOf<Macro.Stored | "ok" | n
 expectTypeOf(await Macro.createDialog({}, {}, { ok: { label: "YEP" } })).toEqualTypeOf<Macro.Stored | "ok" | null>();
 expectTypeOf(await Macro.createDialog({}, { temporary: true })).toEqualTypeOf<Macro.Implementation | "ok" | null>();
 
-expectTypeOf(await myMacro.deleteDialog()).toEqualTypeOf<Macro.Stored | null | false | "yes">();
-expectTypeOf(await myMacro.deleteDialog({})).toEqualTypeOf<Macro.Stored | null | false | "yes">();
+expectTypeOf(await script.deleteDialog()).toEqualTypeOf<Macro.Stored | null | false | "yes">();
+expectTypeOf(await script.deleteDialog({})).toEqualTypeOf<Macro.Stored | null | false | "yes">();
 
-expectTypeOf(await myMacro.deleteDialog({ yes: { label: "KILL" } })).toEqualTypeOf<
+expectTypeOf(await script.deleteDialog({ yes: { label: "KILL" } })).toEqualTypeOf<
   Macro.Stored | null | false | "yes"
 >();

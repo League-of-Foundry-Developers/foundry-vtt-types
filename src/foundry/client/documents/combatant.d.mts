@@ -1278,7 +1278,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   static override defaultName(context?: Combatant.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Combatant.CreateDialogOptions | undefined = undefined,
   >(
     data?: Combatant.CreateDialogData,
@@ -1293,7 +1293,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    * @see {@linkcode Combatant.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Combatant.CreateDialogOptions | undefined = undefined,
   >(
     data: Combatant.CreateDialogData,

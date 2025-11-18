@@ -1132,7 +1132,7 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
   constructor(data?: NoteDocument.CreateData, context?: NoteDocument.ConstructionContext);
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends NoteDocument.CreateDialogOptions | undefined = undefined,
   >(
     data?: NoteDocument.CreateDialogData,
@@ -1147,7 +1147,7 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
    * @see {@linkcode NoteDocument.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends NoteDocument.CreateDialogOptions | undefined = undefined,
   >(
     data: NoteDocument.CreateDialogData,

@@ -205,7 +205,7 @@ expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER")).toBeBoolean();
 expectTypeOf(fullTestAE.testUserPermission(someUser, CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED)).toBeBoolean();
 expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", {})).toBeBoolean();
 expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: true })).toBeBoolean();
-expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: null })).toBeBoolean();
+expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: undefined })).toBeBoolean();
 
 // migrateData and shimData overridden with no signature changes
 
@@ -263,7 +263,7 @@ const effect = someItem.effects.get("effect")!;
 expectTypeOf(
   TestActiveEffect["_preCreateOperation"](
     [effect, nonBaseAE],
-    { data: createDataArray, modifiedTime: 0, render: false, renderSheet: false },
+    { action: "create", data: createDataArray, modifiedTime: 0, render: false, renderSheet: false, parent: someItem },
     user,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
@@ -271,7 +271,7 @@ expectTypeOf(
 expectTypeOf(
   TestActiveEffect["_onCreateOperation"](
     [effect, nonBaseAE],
-    { data: createDataArray, modifiedTime: 0, render: false, renderSheet: false },
+    { action: "create", data: createDataArray, modifiedTime: 0, render: false, renderSheet: false, parent: someItem },
     user,
   ),
 ).toEqualTypeOf<Promise<void>>();
@@ -649,10 +649,6 @@ expectTypeOf(
       renderSheet: false,
       animate: false,
       broadcast: true,
-      clearFolder: true,
-      clearOwnership: true,
-      clearSort: true,
-      fromCompendium: false,
       keepEmbeddedIds: true,
       keepId: false,
       parentUuid: "someParent",
@@ -669,10 +665,6 @@ expectTypeOf(
       renderSheet: false, // required
       animate: undefined,
       broadcast: undefined,
-      clearFolder: undefined,
-      clearOwnership: undefined,
-      clearSort: undefined,
-      fromCompendium: undefined,
       keepEmbeddedIds: undefined,
       keepId: undefined,
       parentUuid: undefined,
@@ -689,9 +681,6 @@ expectTypeOf(
       renderSheet: false, // required
       // animate not allowed to be null
       // broadcast not allowed to be null
-      clearFolder: null,
-      clearOwnership: null,
-      clearSort: null,
       // fromCompendium not allowed to be null
       // keepEmbeddedIds not allowed to be null
       // keepId not allowed to be null
@@ -705,16 +694,13 @@ expectTypeOf(
   fullTestAE["_onCreate"](
     fullSource,
     {
+      action: "create",
       data: [fullSource],
       modifiedTime: 73,
       render: false,
       renderSheet: false,
       animate: true,
       broadcast: false,
-      clearFolder: true,
-      clearOwnership: false,
-      clearSort: true,
-      fromCompendium: true,
       keepEmbeddedIds: false,
       keepId: true,
       noHook: true,
@@ -731,6 +717,7 @@ expectTypeOf(
   fullTestAE["_onCreate"](
     fullSource,
     {
+      action: "create",
       data: [fullSource], // required
       modifiedTime: 73, // required
       render: false, // required
@@ -757,15 +744,13 @@ expectTypeOf(
   fullTestAE["_onCreate"](
     fullSource,
     {
+      action: "create",
       data: [fullSource],
       modifiedTime: 73,
       render: false,
       renderSheet: false,
       // animate will never be null
       // broadcast will never be null
-      clearFolder: null,
-      clearOwnership: null,
-      clearSort: null,
       // fromCompendium will never be null
       // keepEmbeddedIds will never be null
       // keepId will never be null

@@ -1284,7 +1284,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   static override defaultName(context?: Macro.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Macro.CreateDialogOptions | undefined = undefined,
   >(
     data?: Macro.CreateDialogData,
@@ -1299,7 +1299,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    * @remarks @see {@linkcode Macro.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Macro.CreateDialogOptions | undefined = undefined,
   >(
     data: Macro.CreateDialogData,

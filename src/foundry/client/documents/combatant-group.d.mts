@@ -1154,7 +1154,7 @@ declare class CombatantGroup<
   static override defaultName(context?: CombatantGroup.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends CombatantGroup.CreateDialogOptions | undefined = undefined,
   >(
     data?: CombatantGroup.CreateDialogData,
@@ -1169,7 +1169,7 @@ declare class CombatantGroup<
    * @see {@linkcode CombatantGroup.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends CombatantGroup.CreateDialogOptions | undefined = undefined,
   >(
     data: CombatantGroup.CreateDialogData,

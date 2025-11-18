@@ -1504,7 +1504,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   static override defaultName(context?: ChatMessage.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends ChatMessage.CreateDialogOptions | undefined = undefined,
   >(
     data?: ChatMessage.CreateDialogData,
@@ -1519,7 +1519,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * @see {@linkcode ChatMessage.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends ChatMessage.CreateDialogOptions | undefined = undefined,
   >(
     data: ChatMessage.CreateDialogData,

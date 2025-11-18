@@ -1,3 +1,5 @@
+import type { fields } from "#client/data/_module.d.mts";
+
 /**
  * A configuration class managing the Combat Turn Markers.
  * @remarks TODO: Stub
@@ -9,6 +11,21 @@ declare class CombatConfiguration {
 }
 
 declare namespace CombatConfiguration {
+  interface TurnMarkerSchema extends fields.DataSchema {
+    enabled: fields.BooleanField<{ required: true; initial: true }>;
+    animation: fields.StringField<{ initial: "spin" }>;
+    src: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"]; blank: true; initial: "" }>;
+    disposition: fields.BooleanField;
+  }
+
+  interface ConfigSettingSchema extends fields.DataSchema {
+    resource: fields.StringField<{ required: true; blank: true; initial: "" }>;
+    skipDefeated: fields.BooleanField<{ required: true; initial: false }>;
+    turnMarker: fields.SchemaField<TurnMarkerSchema>;
+  }
+
+  type SettingData = fields.SchemaField.InitializedData<ConfigSettingSchema>;
+
   /** Default combat tracker settings used in Foundry VTT. */
   interface Data {
     /**

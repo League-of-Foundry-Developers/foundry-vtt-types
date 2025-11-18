@@ -1570,7 +1570,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
   static override defaultName(context?: RollTable.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends RollTable.CreateDialogOptions | undefined = undefined,
   >(
     data?: RollTable.CreateDialogData,
@@ -1585,7 +1585,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * @see {@linkcode RollTable.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends RollTable.CreateDialogOptions | undefined = undefined,
   >(
     data: RollTable.CreateDialogData,

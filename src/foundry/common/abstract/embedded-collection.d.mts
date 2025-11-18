@@ -4,10 +4,14 @@ import type Collection from "../utils/collection.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Document, EmbeddedCollectionDelta } from "#common/abstract/_module.d.mts";
 import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
+import type { DatabaseAction, DatabaseOperation } from "./_types.d.mts";
 
 /**
  * An extension of the Collection.
  * Used for the specific task of containing embedded Document instances within a parent Document.
+ *
+ * @privateRemarks `ParentDocument` would ideally be `NonNullable<Document.ParentForName<ContainedDocument["documentName"]>>`, but this
+ * breaks the `AnyEmbeddedDocument` type, among other things.
  */
 declare class EmbeddedCollection<
   ContainedDocument extends Document.Any,
@@ -22,6 +26,7 @@ declare class EmbeddedCollection<
   constructor(
     name: string,
     parent: ParentDocument,
+    // TODO: revisit CreateData vs Source once the Source assignability investigation is complete
     sourceArray: Document.CreateDataForName<ContainedDocument["documentName"]>[],
   );
 
@@ -36,12 +41,13 @@ declare class EmbeddedCollection<
    * @remarks Will probably always be a `string` in practice as it just gets the {@linkcode Document.documentName} from
    * {@linkcode documentClass}, but it does optional chain.
    */
-  get documentName(): string | undefined;
+  get documentName(): Document.Type | undefined;
 
   /**
    * The name of this collection in the parent Document.
    * @remarks Defined via `Object.defineProperties` during construction with `{ writable: false }`
    */
+  // TODO: 4th type param? or 3rd, if we make this generic as a treat when we can remove Methods
   readonly name: string;
 
   /**
@@ -86,7 +92,7 @@ declare class EmbeddedCollection<
    * @param data    - The Document data.
    * @param options - Options to configure Document initialization.
    *
-   * @remarks `options` doesn't have a parameter default, but it only passed to places that do, so it's optional here
+   * @remarks `options` doesn't have a parameter default, but it's only passed to places that do, so it's optional here
    */
   protected _initializeDocument(
     data: Document.CreateDataForName<ContainedDocument["documentName"]>,
@@ -131,9 +137,9 @@ declare class EmbeddedCollection<
    * @param value   - The embedded Document instance
    * @param options - Additional options to the set operation
    *
-   * @remarks See {@linkcode EmbeddedCollection.Methods.set}
+   * @remarks See {@linkcode EmbeddedCollection.Methods.set}, {@linkcode Collection.SetMethod}
    */
-  override set: Collection.Method<this, Methods, "set">;
+  override set: Collection.SetMethod<this, Methods>;
 
   /**
    * Modify the underlying source array to include the Document.
@@ -156,7 +162,7 @@ declare class EmbeddedCollection<
    * @param key     - The Document ID key.
    * @param options - Additional options to configure deletion behavior.
    *
-   * @remarks This implementation makes no use of `options`
+   * @remarks The `EmbeddedCollection` implementation makes no use of `options`
    */
   protected _delete(key: string, options?: EmbeddedCollection.DeleteOptions): void;
 
@@ -209,12 +215,14 @@ declare class EmbeddedCollection<
    *
    * @see {@linkcode DocumentCollection.search | DocumentCollection#search}
    *
-   * @privateRemarks While the `DocumentCollection` method has a TODO for index entries, because `EmbeddedCollection`s never have `index`es,
-   * `ContainedDocument[]` is the correct return type.
+   * @privateRemarks `EmbeddedCollection` doesn't have an `index`, so this return type is correct
    */
   search(search: DocumentCollection.SearchOptions): ContainedDocument[];
 
-  /** @deprecated Removed without replacement in v13. This method will be removed inv 14 */
+  /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
+  update(...args: never): never;
+
+  /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
   protected _createOrUpdate(...args: never): never;
 
   #EmbeddedCollection: true;
@@ -256,7 +264,6 @@ declare namespace EmbeddedCollection {
 
   /**
    * Options for {@linkcode EmbeddedCollection.get | EmbeddedCollection#get}.
-   *
    * @privateRemarks Despite extending interfaces containing only the keys `strict` and `invalid`,
    * both are redefined here for the more specific property description.
    */
@@ -274,11 +281,10 @@ declare namespace EmbeddedCollection {
     invalid?: boolean | undefined;
   }
 
-  /** The return type for {@linkcode EmbeddedCollection.get | EmbeddedCollection#get}. */
   type GetReturn<
     ConcreteDocument extends Document.Any,
     Options extends EmbeddedCollection.GetOptions | undefined,
-  > = Collection._GetReturn<Collection._ApplyInvalid<ConcreteDocument["documentName"], Options, false>, Options>;
+  > = Collection._GetReturn<Collection._ApplyInvalid<ConcreteDocument["documentName"], Options>, Options>;
 
   /**
    * Re-used with the same property description and default in both {@linkcode SetOptions} and {@linkcode DeleteOptions}
@@ -333,7 +339,7 @@ declare namespace EmbeddedCollection {
    * The method signatures for {@linkcode EmbeddedCollection}.
    *
    * @see {@linkcode Collection.Methods}
-   * @see {@linkcode Collection.Method}
+   * @see {@linkcode Collection.SetMethod}
    */
   interface Methods<ContainedDocument extends Document.Any> {
     self: unknown;

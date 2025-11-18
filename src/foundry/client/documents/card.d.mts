@@ -1351,7 +1351,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
   static override defaultName(context?: Card.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Card.CreateDialogOptions | undefined = undefined,
   >(
     data?: Card.CreateDialogData,
@@ -1366,7 +1366,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @see {@linkcode Card.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Card.CreateDialogOptions | undefined = undefined,
   >(
     data: Card.CreateDialogData,

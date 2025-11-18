@@ -1161,7 +1161,7 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
   static override defaultName(context: TileDocument.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends TileDocument.CreateDialogOptions | undefined = undefined,
   >(
     data?: TileDocument.CreateDialogData,
@@ -1176,7 +1176,7 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
    * @see {@linkcode TileDocument.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends TileDocument.CreateDialogOptions | undefined = undefined,
   >(
     data: TileDocument.CreateDialogData,

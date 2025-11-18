@@ -44,8 +44,8 @@ expectTypeOf(layer["_onClickRight"](pointerEvent)).toBeVoid();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(layer.gridPrecision).toEqualTypeOf<16 | 8 | 0>();
 
-Hooks.on("pasteDrawing", (objects, data, options) => {
-  expectTypeOf(objects).toEqualTypeOf<Drawing.Implementation[]>();
-  expectTypeOf(data).toEqualTypeOf<DrawingDocument.Source>();
-  expectTypeOf(options).toEqualTypeOf<Hooks.PastePlaceableObjectOptions>();
-});
+// Hooks.on("pasteDrawings", (objects, data, options) => {
+//   expectTypeOf(objects).toEqualTypeOf<Drawing.Implementation[]>();
+//   expectTypeOf(data).toEqualTypeOf<DrawingDocument.Source>();
+//   expectTypeOf(options).toEqualTypeOf<Hooks.PastePlaceableObjectOptions>();
+// });

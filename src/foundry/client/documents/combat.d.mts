@@ -1644,7 +1644,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   static override defaultName(context?: Combat.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Combat.CreateDialogOptions | undefined = undefined,
   >(
     data?: Combat.CreateDialogData,
@@ -1659,7 +1659,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @see {@linkcode Combat.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Combat.CreateDialogOptions | undefined = undefined,
   >(
     data: Combat.CreateDialogData,

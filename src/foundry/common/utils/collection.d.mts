@@ -1,7 +1,10 @@
 import type { AnyArray, Coalesce, GetKey, Identity, InexactPartial } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
+
 /** @privateRemarks `EmbeddedCollection` used only for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
+
 /** @privateRemarks `DocumentCollection` used only for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
@@ -44,11 +47,12 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * @see {@linkcode Array.find | Array#find}
    *
    * @param condition - The functional condition to test. Positional arguments are the value, the index of
-   *                    iteration, and the collection being searched.
+   * iteration, and the collection being searched.
    * @returns The value, if found, otherwise undefined
    *
-   * @example Create a new Collection and reference its contents
-   * ```typescript
+   * @example
+   * Create a new Collection and reference its contents
+   * ```ts
    * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
    * c.get("a") === c.find(entry => entry === "A"); // true
    * ```
@@ -62,12 +66,13 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * Filter the Collection, returning an Array of entries which match a functional condition.
    * @see {@linkcode Array.filter | Array#filter}
    *
-   * @param condition - The functional condition to test. Positional arguments are the value,
-   * the index of iteration, and the collection being filtered.
+   * @param condition - The functional condition to test. Positional arguments are the value, the
+   * index of iteration, and the collection being filtered.
    * @returns An Array of matched values
    *
-   * @example Filter the Collection for specific entries
-   * ```typescript
+   * @example
+   * Filter the Collection for specific entries
+   * ```ts
    * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
    * let hasA = c.filters(entry => entry.slice(0) === "A");
    * ```
@@ -104,26 +109,26 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * c.get("d", {strict: true}); // throws Error
    * ```
    *
-   * @remarks Foundry does actually override the base {@linkcode globalThis.Map.get | Map#get} method, unlike {@linkcode set | #set} and
-   * {@linkcode delete | #delete}
+   * @remarks Go to definition breaks here, see {@linkcode Collection.Methods.get}
    */
-  override get: Collection.Method<this, Methods, "get">;
+  override get: Methods["get"];
 
   /**
-   * Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
+   * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
    *
+   * Go to definition breaks here, see {@linkcode Collection.Methods.set}
    * @see {@linkcode globalThis.Map.set | Map#set}
-   * @see {@linkcode Collection.Method}
+   * @see {@linkcode Collection.SetMethod}
    */
-  override set: Collection.Method<this, Methods, "set">;
+  override set: Collection.SetMethod<this, Methods>;
 
   /**
-   * Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
+   * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
    *
+   * Go to definition breaks here, see {@linkcode Collection.Methods.delete}
    * @see {@linkcode globalThis.Map.delete | Map#delete}
-   * @see {@linkcode Collection.Method}
    */
-  override delete: Collection.Method<this, Methods, "delete">;
+  override delete: Methods["delete"];
 
   /**
    * Get an entry from the Collection by name.
@@ -140,13 +145,17 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * c.getName("D"); // undefined
    * c.getName("D", {strict: true}); // throws Error
    * ```
+   *
+   * @remarks Will always return `undefined` if the `Collection`'s value isn't an object with a `name` property.
    */
-  // TODO: condense to conditional return
-  getName(name: string, { strict }: { strict: true }): V;
-  getName(name: string, { strict }?: { strict?: false }): V | undefined;
+  getName<Options extends Collection.GetOptions | undefined = undefined>(
+    name: string,
+    options?: Options,
+  ): Collection.GetReturn<V, Options>;
 
   /**
    * Transform each element of the Collection into a new form, returning an Array of transformed values
+   * @see {@linkcode Array.map | Array#map}
    * @param transformer - A transformation function applied to each entry value. Positional arguments are the value,
    * the index of iteration, and the collection being mapped.
    * @template M        - The type of the mapped values
@@ -156,7 +165,7 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Reduce the Collection by applying an evaluator function and accumulating entries
-   * @see {@link Array.reduce | `Array#reduce`}
+   * @see {@linkcode Array.reduce | Array#reduce}
    * @param reducer - A reducer function applied to each entry value. Positional arguments are the accumulator,
    * the value, the index of iteration, and the collection being reduced.
    * @param initial - An initial value which accumulates with each iteration
@@ -179,9 +188,9 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Test whether a condition is met by some entry in the Collection.
-   * @see {@link Array.some | `Array#some`}
+   * @see {@linkcode Array.some | Array#some}
    * @param condition - The functional condition to test. Positional arguments are the value, the index of iteration,
-   *                    and the collection being tested.
+   * and the collection being tested.
    * @returns Was the test condition passed by at least one entry?
    */
   some(/** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => boolean): boolean;
@@ -203,8 +212,13 @@ declare namespace Collection {
   type Method<This, Methods, Property extends keyof Methods> = ({ self: This } & Methods)[Property];
 
   /**
-   * Method signatures for `Collection`
+   * This type exists to allow the `set` method provided by a given Collection subclass to accurately provide a `this` return,
+   * if it does return `this` and isn't broken like all {@linkcode DocumentCollection} subclasses in 13.350
+   * ({@link https://github.com/foundryvtt/foundryvtt/issues/13565})
    */
+  type SetMethod<This, Methods extends Collection.Methods.Any> = ({ self: This } & Methods)["set"];
+
+  /** Method signatures for {@linkcode Collection} */
   interface Methods<V> {
     self: unknown;
 
@@ -221,7 +235,7 @@ declare namespace Collection {
   namespace Methods {
     /**
      * The base requirements for a `Collection` subclass. `self` is a hack to allow a valid `this` return for `set`,
-     * see {@linkcode Collection.Method}
+     * where it isn't broken, see {@linkcode Collection.SetMethod}
      */
     interface Any {
       self: unknown;
@@ -243,7 +257,6 @@ declare namespace Collection {
     strict: boolean;
   }>;
 
-  /** Options for {@linkcode Collection.get | Collection#get} */
   interface GetOptions extends _GetOptions {}
 
   /**
@@ -263,7 +276,7 @@ declare namespace Collection {
   }>;
 
   /**
-   *
+   * Used for {@linkcode EmbeddedCollection.GetOptions} and {@linkcode DocumentCollection.GetOptions}.
    * @internal
    */
   type _InvalidOption = InexactPartial<{
@@ -276,7 +289,7 @@ declare namespace Collection {
 
   /**
    * The `#get` and `#getInvalid` methods of `Collection` and its various subclasses all take a `strict` boolean in their options, changing
-   * the behaviour of passing a non-existent ID:
+   * the behaviour of passing a key that the collection doesn't contain:
    * - `true`: throw an error
    * - `false`: return `undefined`
    * @internal
@@ -285,6 +298,11 @@ declare namespace Collection {
     false extends Coalesce<GetKey<Options, "strict", undefined>, StrictDefault> ? undefined : never;
 
   /**
+   * See {@linkcode _ApplyStrict}.
+   *
+   * `StrictDefault` is a param because {@linkcode DocumentCollection.getInvalid | DocumentCollection#getInvalid} and
+   * {@linkcode EmbeddedCollection.getInvalid | EmbeddedCollection#getInvalid} default `strict` to `true`
+   *
    * The `Coalesce` is required to handle passing explicit `undefined`, either on its own or in a union.
    * @internal
    */
@@ -342,8 +360,8 @@ declare namespace Collection {
   type GetReturnType<V, Options extends GetOptions | undefined> = GetReturn<V, Options>;
 }
 
+export default Collection;
+
 declare abstract class AnyCollection extends Collection<unknown, Collection.Methods.Any> {
   constructor(...args: never);
 }
-
-export default Collection;

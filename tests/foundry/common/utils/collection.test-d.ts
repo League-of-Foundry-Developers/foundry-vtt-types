@@ -12,7 +12,24 @@ function isString(e: CollectionValue): e is string {
 }
 
 describe("Collection Tests", () => {
+  test("Construction", () => {
+    expectTypeOf(new Collection()).toEqualTypeOf<Collection<unknown>>();
+    expectTypeOf(new Collection([["foo", 7]])).toEqualTypeOf<Collection<number>>();
+
+    // @ts-expect-error Collection won't infer a union value type (prettier-ignore because of tsc/tsgo incompatibilities if formatted multiline)
+    // prettier-ignore
+    new Collection([["foo", 7], ["bar", "fizz"]]);
+
+    expectTypeOf(
+      new Collection<string | number>([
+        ["foo", 7],
+        ["bar", "fizz"],
+      ]),
+    ).toEqualTypeOf<Collection<string | number>>();
+  });
+
   const c = new Collection<CollectionValue>();
+
   test("Getting/Contents", () => {
     expectTypeOf(c.contents).toEqualTypeOf<CollectionValue[]>();
 
@@ -24,10 +41,11 @@ describe("Collection Tests", () => {
     expectTypeOf(c.get("key", { strict: trueOrUndefined })).toEqualTypeOf<CollectionValue | undefined>();
     expectTypeOf(c.get("key", { strict: falseOrUndefined })).toEqualTypeOf<CollectionValue | undefined>();
 
-    expectTypeOf(c.getName("key")).toEqualTypeOf<CollectionValue | undefined>();
-    expectTypeOf(c.getName("key", {})).toEqualTypeOf<CollectionValue | undefined>();
-    expectTypeOf(c.getName("key", { strict: false })).toEqualTypeOf<CollectionValue | undefined>();
-    expectTypeOf(c.getName("key", { strict: true })).toEqualTypeOf<CollectionValue>();
+    // These would all be `undefined` at runtime because `CollectionValue` is never an object with a `name` property
+    expectTypeOf(c.getName("name")).toEqualTypeOf<CollectionValue | undefined>();
+    expectTypeOf(c.getName("name", {})).toEqualTypeOf<CollectionValue | undefined>();
+    expectTypeOf(c.getName("name", { strict: false })).toEqualTypeOf<CollectionValue | undefined>();
+    expectTypeOf(c.getName("name", { strict: true })).toEqualTypeOf<CollectionValue>();
   });
 
   test("Setting and Deleting", () => {
@@ -59,6 +77,13 @@ describe("Collection Tests", () => {
         return typeof each === "string";
       }),
     ).toEqualTypeOf<string | undefined>();
+
+    const cn = new Collection<string | null>();
+    expectTypeOf(cn.filter((each) => typeof each === "string")).toEqualTypeOf<Array<string>>();
+    expectTypeOf(cn.find((each) => typeof each === "string")).toEqualTypeOf<string | undefined>();
+
+    expectTypeOf(cn.filter(isString)).toEqualTypeOf<string[]>();
+    expectTypeOf(cn.find(isString)).toEqualTypeOf<string | undefined>();
   });
 
   test("Iteration", () => {
@@ -72,7 +97,7 @@ describe("Collection Tests", () => {
       }),
     ).toBeVoid();
 
-    // expectTypeOf(c.some(e => e))
+    expectTypeOf(c.some((e) => !!e)).toBeBoolean();
   });
 
   test("Transforms", () => {
@@ -128,6 +153,8 @@ describe("Collection Tests", () => {
   });
 
   test("toJSON", () => {
+    expectTypeOf(c.toJSON()).toEqualTypeOf<CollectionValue[]>();
+
     const itemCol = new Collection<Item.Implementation>();
 
     expectTypeOf(itemCol.toJSON()).toEqualTypeOf<ReturnType<Item.Implementation["toJSON"]>[]>();
@@ -135,40 +162,34 @@ describe("Collection Tests", () => {
     // @ts-expect-error This should pass but currently doesn't
     // TODO: part of document source type investigation
     expectTypeOf(itemCol.toJSON()).toEqualTypeOf<Item.Source[]>();
+
+    const c2 = new Collection<{
+      toJSON(): boolean;
+    }>();
+
+    expectTypeOf(c2.toJSON()).toEqualTypeOf<boolean[]>();
   });
-});
-const c = new Collection<string>();
 
-expectTypeOf(c.toJSON()).toEqualTypeOf<string[]>();
+  // This is a regression test for the error:
+  //    Class '...' defines instance member property '...', but extended class '...' defines it as instance member function.
+  // This occurred because of how `Map` was patched to allow the unsound subclassing of `Collection`.
+  test("custom Collection Map overrides regression test", () => {
+    class CustomCollection extends Collection<string> {
+      override clear(): void {}
+    }
 
-const c2 = new Collection<{
-  toJSON(): boolean;
-}>();
+    const customCollection = new CustomCollection();
 
-expectTypeOf(c2.toJSON()).toEqualTypeOf<boolean[]>();
+    if (customCollection instanceof Map) {
+      expectTypeOf(customCollection).toEqualTypeOf<CustomCollection>();
+    }
+  });
 
-const cn = new Collection<string | null>();
-expectTypeOf(cn.filter((each) => typeof each === "string")).toEqualTypeOf<Array<string>>();
-expectTypeOf(cn.find((each) => typeof each === "string")).toEqualTypeOf<string | undefined>();
-
-expectTypeOf(cn.filter(isString)).toEqualTypeOf<string[]>();
-expectTypeOf(cn.find(isString)).toEqualTypeOf<string | undefined>();
-
-// This is a regression test for the error:
-//    Class '...' defines instance member property '...', but extended class '...' defines it as instance member function.
-// This occurred because of how `Map` was patched to allow the unsound subclassing of `Collection`.
-test("custom Collection Map overrides regression test", () => {
-  class CustomCollection extends Collection<string> {
-    override clear(): void {}
-
-    // override delete(_key: string): boolean {
-    //   return true;
-    // }
-  }
-
-  const customCollection = new CustomCollection();
-
-  if (customCollection instanceof Map) {
-    expectTypeOf(customCollection).toEqualTypeOf<CustomCollection>();
-  }
+  test("Inherited from Map", () => {
+    expectTypeOf(c.entries()).toEqualTypeOf<MapIterator<[string, CollectionValue]>>();
+    expectTypeOf(c.keys()).toEqualTypeOf<MapIterator<string>>();
+    expectTypeOf(c.values()).toEqualTypeOf<MapIterator<CollectionValue>>();
+    expectTypeOf(c.has("key")).toBeBoolean();
+    expectTypeOf(c.clear()).toBeVoid();
+  });
 });

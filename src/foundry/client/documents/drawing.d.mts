@@ -1224,7 +1224,7 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
   static override defaultName(context?: DrawingDocument.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends DrawingDocument.CreateDialogOptions | undefined = undefined,
   >(
     data?: DrawingDocument.CreateDialogData,
@@ -1239,7 +1239,7 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
    * @see {@linkcode DrawingDocument.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends DrawingDocument.CreateDialogOptions | undefined = undefined,
   >(
     data: DrawingDocument.CreateDialogData,

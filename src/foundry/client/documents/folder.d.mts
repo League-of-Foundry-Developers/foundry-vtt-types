@@ -1273,7 +1273,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
 
   /** @remarks Creates and renders a {@link FolderConfig | `FolderConfig`} instead of a simple Dialog */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Folder.CreateDialogOptions | undefined = undefined,
   >(
     data?: Folder.CreateDialogData,
@@ -1291,7 +1291,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * As of 13.350, that class does nothing with the passed promise resolver, and so this actually returns a promise that never returns.
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Folder.CreateDialogOptions | undefined = undefined,
   >(
     data: Folder.CreateDialogData,

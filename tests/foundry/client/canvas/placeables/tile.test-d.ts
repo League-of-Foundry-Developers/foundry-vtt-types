@@ -4,6 +4,7 @@ import { PlaceableObject, Tile, Token } from "#client/canvas/placeables/_module.
 import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
 
 declare const doc: TileDocument.Stored;
+declare const scene: Scene.Stored;
 
 expectTypeOf(Tile.embeddedName).toEqualTypeOf<"Tile">();
 expectTypeOf(Tile.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
@@ -87,7 +88,11 @@ expectTypeOf(tile["_refreshVideo"]()).toBeVoid();
 expectTypeOf(tile.activateListeners()).toBeVoid();
 
 expectTypeOf(
-  tile["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+  tile["_onCreate"](
+    doc.toObject(),
+    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 expectTypeOf(
@@ -99,12 +104,14 @@ expectTypeOf(
       restrictions: { weather: false },
       flags: { core: { sheetLock: true } },
     },
-    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(tile["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
+expectTypeOf(
+  tile["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
 
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 

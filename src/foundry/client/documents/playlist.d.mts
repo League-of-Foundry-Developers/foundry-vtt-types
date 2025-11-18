@@ -1388,7 +1388,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   static override defaultName(context?: Playlist.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Playlist.CreateDialogOptions | undefined = undefined,
   >(
     data?: Playlist.CreateDialogData,
@@ -1403,7 +1403,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * @see {@linkcode Playlist.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Playlist.CreateDialogOptions | undefined = undefined,
   >(
     data: Playlist.CreateDialogData,

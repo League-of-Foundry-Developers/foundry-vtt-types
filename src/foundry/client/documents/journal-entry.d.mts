@@ -1248,7 +1248,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
   static override defaultName(context?: JournalEntry.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends JournalEntry.CreateDialogOptions | undefined = undefined,
   >(
     data?: JournalEntry.CreateDialogData,
@@ -1263,7 +1263,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    * @see {@linkcode JournalEntry.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends JournalEntry.CreateDialogOptions | undefined = undefined,
   >(
     data: JournalEntry.CreateDialogData,

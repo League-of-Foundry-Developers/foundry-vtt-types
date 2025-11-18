@@ -1642,7 +1642,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
   static override defaultName(context?: ActiveEffect.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends ActiveEffect.CreateDialogOptions | undefined = undefined,
   >(
     data?: ActiveEffect.CreateDialogData,
@@ -1657,7 +1657,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @see {@linkcode ActiveEffect.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends ActiveEffect.CreateDialogOptions | undefined = undefined,
   >(
     data: ActiveEffect.CreateDialogData,

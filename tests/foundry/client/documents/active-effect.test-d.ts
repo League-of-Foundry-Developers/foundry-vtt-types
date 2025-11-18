@@ -50,17 +50,17 @@ expectTypeOf(ActiveEffect.getInitialDuration()).toEqualTypeOf<ActiveEffect.GetIn
 
 declare const someItem: Item.Implementation;
 
-// @ts-expect-error `defaultName` requires a `pack` or `parent`.
+// // @ts-expect-error `defaultName` requires a `pack` or `parent`.
 ActiveEffect.defaultName();
 
 expectTypeOf(ActiveEffect.defaultName({ pack: "some.pack", parent: someItem, type: "base" })).toBeString();
 expectTypeOf(ActiveEffect.defaultName({ pack: undefined, parent: undefined, type: undefined })).toBeString();
-expectTypeOf(ActiveEffect.defaultName({ pack: null, parent: null, type: null })).toBeString();
+expectTypeOf(ActiveEffect.defaultName({ pack: null, parent: null, type: undefined })).toBeString();
 
 // Note: this call will fail at runtime but a validator function to require `pack` or `parent` has not yet been written.
 expectTypeOf(ActiveEffect.defaultName({})).toBeString();
 
-// @ts-expect-error `ActiveEffect.createDialog` requires `createOptions` for pack information.
+// // @ts-expect-error `ActiveEffect.createDialog` requires `createOptions` for pack information.
 await ActiveEffect.createDialog({});
 
 declare const someActor: Actor.Implementation;
@@ -71,7 +71,7 @@ expectTypeOf(
       parent: someActor,
     },
   ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null | "ok">>();
 expectTypeOf(
   ActiveEffect.createDialog(
     createData,
@@ -84,7 +84,7 @@ expectTypeOf(
       //types: [],
     },
   ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null | "ok">>();
 expectTypeOf(
   ActiveEffect.createDialog(
     {},
@@ -93,13 +93,13 @@ expectTypeOf(
       pack: undefined,
     },
   ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null | "ok">>();
 expectTypeOf(
   ActiveEffect.createDialog(createData, {
     parent: someActor,
     pack: null,
   }),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null | "ok">>();
 
 declare const aeSource: ActiveEffect.Source;
 expectTypeOf(
@@ -113,12 +113,9 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
 expectTypeOf(
-  ActiveEffect.fromDropData(
-    {
-      data: aeSource,
-    },
-    {}, // options is vestigial, this is AnyObject
-  ),
+  ActiveEffect.fromDropData({
+    data: aeSource,
+  }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
 
 expectTypeOf(ActiveEffect.fromImport(aeSource)).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
@@ -150,7 +147,7 @@ expectTypeOf(
     pack: null,
     parent: null,
     parentCollection: null,
-    strict: null,
+    strict: false,
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
 

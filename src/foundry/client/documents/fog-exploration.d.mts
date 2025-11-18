@@ -1139,7 +1139,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   static override defaultName(context?: FogExploration.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends FogExploration.CreateDialogOptions | undefined = undefined,
   >(
     data?: FogExploration.CreateDialogData,
@@ -1154,7 +1154,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
    * @see {@linkcode FogExploration.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends FogExploration.CreateDialogOptions | undefined = undefined,
   >(
     data: FogExploration.CreateDialogData,

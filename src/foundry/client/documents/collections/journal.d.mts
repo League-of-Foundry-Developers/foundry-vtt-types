@@ -5,13 +5,16 @@ import type { ImagePopout } from "#client/applications/apps/_module.d.mts";
 
 /**
  * The singleton collection of JournalEntry documents which exist within the active World.
- * This Collection is accessible within the Game object as game.journal.
+ * This Collection is accessible within the Game object as {@linkcode foundry.Game.journal | game.journal}.
  *
  * @see {@linkcode foundry.documents.JournalEntry}: The JournalEntry document
  * @see {@linkcode foundry.applications.sidebar.tabs.JournalDirectory}: The JournalDirectory sidebar
  */
-declare class Journal extends WorldCollection<"JournalEntry", "Journal"> {
-  static documentName: "JournalEntry";
+declare class Journal extends WorldCollection<"JournalEntry"> {
+  static override documentName: "JournalEntry";
+
+  /** @privateRemarks Fake type override */
+  static override get instance(): Journal.Implementation;
 
   /**
    * Display a dialog which prompts the user to show a JournalEntry or JournalEntryPage to other players.
@@ -29,7 +32,7 @@ declare class Journal extends WorldCollection<"JournalEntry", "Journal"> {
    * @throws If the user does not own the document they are trying to show.
    *
    * @remarks Foundry types the returned `Promise` as including `| void`, but that only occurs if a non-`JournalEntry`,
-   * non-`JournalEntryPage` value is passed to `doc`, so it is prevented by typescript.
+   * non-`JournalEntryPage` value is passed for `doc`, so it is prevented by typescript.
    */
   static show<Doc extends JournalEntry.Implementation | JournalEntryPage.Implementation>(
     doc: Doc,
@@ -40,30 +43,35 @@ declare class Journal extends WorldCollection<"JournalEntry", "Journal"> {
    * Share an image with connected players.
    * @param src    - The image URL to share.
    * @param config - Image sharing configuration.
-   *
-   * @remarks Requires a `title` to be passed in config, or player clients receiving the socket message will error.
+   * @remarks Despite having a parameter default, `config` is required as a valid `title` must be passed.
    */
   static showImage(src: string, config: Journal.ShowImageOptions): void;
 
   /**
    * Open Socket listeners which transact JournalEntry data
-   * @remarks This is not marked as protected because it is used in {@link Game.activateSocketListeners | `Game#activateSocketListeners`}
    */
-  protected static _activateSocketListeners(socket: io.Socket): void;
+  static _activateSocketListeners(socket: io.Socket): void;
 
   /**
    * Handle a received request to show a JournalEntry or JournalEntryPage to the current client
-   * @param uuid - The UUID of the document to display for other players
-   * @param force   - Display the document regardless of normal permissions (default: `true`)
+   * @param uuid  - The UUID of the document to display for other players
+   * @param force - Display the document regardless of normal permissions (default: `false`)
+   * @internal
    */
-  protected static _showEntry(uuid: string, force?: boolean): Promise<void>;
+  static _showEntry(uuid: string, force?: boolean): Promise<void>;
 }
 
 declare namespace Journal {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Journal.Implementation} instead. This will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Journal.ImplementationClass} instead. This will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -77,11 +85,13 @@ declare namespace Journal {
   type _ShowOptions = InexactPartial<{
     /**
      * Display the entry to all players regardless of normal permissions.
+     * @defaultValue `false`
      */
     force: boolean;
 
     /**
      * An optional list of user IDs to show the document to. Otherwise it will be shown to all connected clients.
+     * @defaultValue `[]`
      */
     users: string[];
   }>;
@@ -89,19 +99,20 @@ declare namespace Journal {
   interface ShowOptions extends _ShowOptions {}
 
   /**
-   * @remarks `image` is provided by the first param of {@linkcode Journal.showImage}.
+   * Options for {@linkcode Journal.showImage}.
+   * @remarks `image` is provided by the first param of `.showImage`.
    */
   interface ShowImageOptions extends Omit<ImagePopout.ShareImageConfig, "image"> {}
 
-  /**  @deprecated Replaced by {@linkcode Journal.ImplementationClass}. */
+  /** @deprecated Replaced by {@linkcode Journal.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;
 
-  /** @deprecated Replaced by {@linkcode Journal.Implementation}. */
+  /** @deprecated Replaced by {@linkcode Journal.Implementation}. Will be removed in v15. */
   type Configured = Implementation;
 }
+
+export default Journal;
 
 declare abstract class AnyJournal extends Journal {
   constructor(...args: never);
 }
-
-export default Journal;

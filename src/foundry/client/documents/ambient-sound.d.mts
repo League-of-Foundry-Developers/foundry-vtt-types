@@ -1159,7 +1159,7 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
   static override defaultName(context?: AmbientSoundDocument.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends AmbientSoundDocument.CreateDialogOptions | undefined = undefined,
   >(
     data?: AmbientSoundDocument.CreateDialogData,
@@ -1174,7 +1174,7 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
    * @see {@linkcode AmbientSoundDocument.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends AmbientSoundDocument.CreateDialogOptions | undefined = undefined,
   >(
     data: AmbientSoundDocument.CreateDialogData,

@@ -15,7 +15,7 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
  * let actor = game.actors.get(actorId);
  * ```
  */
-declare class Actors extends WorldCollection<"Actor", "Actors"> {
+declare class Actors extends WorldCollection<"Actor"> {
   /**
    * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
    * Each Actor is referenced by the Token.id.
@@ -24,17 +24,30 @@ declare class Actors extends WorldCollection<"Actor", "Actors"> {
 
   static override documentName: "Actor";
 
-  override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
+  /** @privateRemarks Fake type override */
+  static override get instance(): Actors.Implementation;
+
+  /**
+   * @remarks This override doesn't change the type at all, just updates {@link ActiveEffect.origin | `ActiveEffect` origins} if
+   * {@linkcode WorldCollection.FromCompendiumOptions.keepId | keepId} is `true`
+   */
+  override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
     document: Actor.Implementation | Actor.CreateData,
     options?: Options,
   ): WorldCollection.FromCompendiumReturnType<"Actor", Options>;
 }
 
 declare namespace Actors {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Actors.Implementation} instead. This will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Actors.ImplementationClass} instead. This will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -50,15 +63,15 @@ declare namespace Actors {
     clearPrototypeToken?: never;
   }
 
-  /** @deprecated Replaced by {@linkcode Actors.ImplementationClass}. */
+  /** @deprecated Replaced by {@linkcode Actors.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;
 
-  /** @deprecated Replaced by {@linkcode Actors.Implementation}. */
+  /** @deprecated Replaced by {@linkcode Actors.Implementation}. Will be removed in v15. */
   type Configured = Implementation;
 }
+
+export default Actors;
 
 declare abstract class AnyActors extends Actors {
   constructor(...args: never);
 }
-
-export default Actors;

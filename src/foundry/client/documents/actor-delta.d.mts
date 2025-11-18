@@ -272,7 +272,10 @@ declare namespace ActorDelta {
    * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
-  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  interface Source<SubType extends ActorDelta.SubType = ActorDelta.SubType>
+    extends fields.SchemaField.SourceData<Schema> {
+    type: SubType | null;
+  }
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode ActorDelta.create}
@@ -1350,7 +1353,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   static override defaultName(context?: ActorDelta.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends ActorDelta.CreateDialogOptions | undefined = undefined,
   >(
     data?: ActorDelta.CreateDialogData,
@@ -1365,7 +1368,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    * @see {@linkcode ActorDelta.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends ActorDelta.CreateDialogOptions | undefined = undefined,
   >(
     data: ActorDelta.CreateDialogData,

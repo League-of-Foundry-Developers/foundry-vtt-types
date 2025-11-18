@@ -128,7 +128,11 @@ declare namespace ImagePopout {
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, ApplicationV2.RenderOptions {}
 
-  /** The interface for sending with a `"shareImage"` socket event. */
+  /**
+   * The interface for sending with a `"shareImage"` socket event. Only `users` is allowed to be `| undefined`
+   * because it isn't sent over the socket, where the other properties all are, where `undefined` values get
+   * pruned.
+   */
   interface ShareImageConfig {
     /** The image URL to share. */
     image: string;
@@ -143,7 +147,7 @@ declare namespace ImagePopout {
     uuid?: string | null;
 
     /** If this is provided, the permissions of the related Document will be ignored and the title will be shown based on this parameter. */
-    showTitle?: boolean | undefined;
+    showTitle?: boolean;
 
     /** A list of user IDs to show the image to. */
     users?: string[] | undefined;

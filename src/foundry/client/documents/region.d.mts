@@ -175,7 +175,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   static override defaultName(context?: RegionDocument.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends RegionDocument.CreateDialogOptions | undefined = undefined,
   >(
     data?: RegionDocument.CreateDialogData,
@@ -190,7 +190,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * @see {@linkcode RegionDocument.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends RegionDocument.CreateDialogOptions | undefined = undefined,
   >(
     data: RegionDocument.CreateDialogData,

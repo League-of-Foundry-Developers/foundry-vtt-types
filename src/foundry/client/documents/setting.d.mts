@@ -1092,7 +1092,7 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
   static override defaultName(context?: Setting.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Setting.CreateDialogOptions | undefined = undefined,
   >(
     data?: Setting.CreateDialogData,
@@ -1107,7 +1107,7 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
    * @see {@linkcode Setting.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Setting.CreateDialogOptions | undefined = undefined,
   >(
     data: Setting.CreateDialogData,

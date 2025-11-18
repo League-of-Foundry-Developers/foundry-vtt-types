@@ -4,21 +4,17 @@ import DocumentCollection = foundry.documents.abstract.DocumentCollection;
 import SearchFilter = foundry.applications.ux.SearchFilter;
 
 declare const actor: Actor.Stored;
-declare const user: User.Stored;
 declare const itemSourceArray: Item.Source[];
 declare const itemCreateDataArray: Item.CreateData[];
 declare const itemMixedDataArray: (Item.Source | Item.CreateData)[];
 declare const actorCreateDataArray: Actor.CreateData[];
 declare const itemImpl: Item.Implementation;
 declare const itemStored: Item.Stored;
-declare const onItemCreateOperation: Item.Database2.OnCreateOperation;
-declare const onItemUpdateOperation: Item.Database2.OnUpdateOperation;
-declare const onItemDeleteOperation: Item.Database2.OnDeleteOperation;
-declare const onSceneUpdateOperation: Scene.Database2.OnUpdateOperation;
 declare const falseOrUndefined: false | undefined;
 declare const trueOrUndefined: true | undefined;
 declare const boolOrUndefined: boolean | undefined;
 
+// DocumentCollection is abstract
 declare class TestItemCollection extends DocumentCollection<"Item"> {
   // necessary type override, normally handled by WorldCollection
   search(search: DocumentCollection.SearchOptions): Item.Stored[];
@@ -43,6 +39,19 @@ describe("DocumentCollection Tests", () => {
   test("Miscellaneous", () => {
     expectTypeOf(dc.documentClass).toEqualTypeOf<Item.ImplementationClass>();
     expectTypeOf(dc.documentName).toEqualTypeOf<"Item">();
+    expectTypeOf(dc._source).toEqualTypeOf<Item.CreateData[]>();
+
+    expectTypeOf(dc.createDocument(itemCreateDataArray[0]!)).toEqualTypeOf<Item.Implementation>();
+    expectTypeOf(dc.createDocument(itemCreateDataArray[0]!, {})).toEqualTypeOf<Item.Implementation>();
+    expectTypeOf(
+      dc.createDocument(itemCreateDataArray[0]!, {
+        dropInvalidEmbedded: true,
+        fallback: false,
+        // since this is returning a temporary document that doesn't automatically get put into the collection,
+        // passing a parent is perfectly valid, although there's no reason to make this call in particular
+        parent: actor,
+      }),
+    ).toEqualTypeOf<Item.Implementation>();
 
     expectTypeOf(dc.render()).toBeVoid();
     expectTypeOf(dc.render(true)).toBeVoid();
@@ -60,20 +69,8 @@ describe("DocumentCollection Tests", () => {
       }),
     ).toBeVoid();
 
-    // @ts-expect-error `force` in the render options is always overwritten by the value (after applying param default) of the first arg
+    // @ts-expect-error `force` in the render options is always overwritten with the first arg, so we omit it
     dc.render(undefined, { force: true });
-
-    expectTypeOf(dc.createDocument(itemCreateDataArray[0]!)).toEqualTypeOf<Item.Implementation>();
-    expectTypeOf(dc.createDocument(itemCreateDataArray[0]!, {})).toEqualTypeOf<Item.Implementation>();
-    expectTypeOf(
-      dc.createDocument(itemCreateDataArray[0]!, {
-        dropInvalidEmbedded: true,
-        fallback: false,
-        // since this is returning a temporary document that doesn't automatically get put into the collection,
-        // passing a parent is perfectly valid, although there's no reason to make this call in particular
-        parent: actor,
-      }),
-    ).toEqualTypeOf<Item.Implementation>();
   });
 
   test("Getting", () => {
@@ -106,12 +103,20 @@ describe("DocumentCollection Tests", () => {
     expectTypeOf(dc.getInvalid("ID", { strict: trueOrUndefined })).toEqualTypeOf<Item.Invalid>();
     expectTypeOf(dc.getInvalid("ID", { strict: falseOrUndefined })).toEqualTypeOf<Item.Invalid | undefined>();
     expectTypeOf(dc.getInvalid("ID", { strict: boolOrUndefined })).toEqualTypeOf<Item.Invalid | undefined>();
+
+    expectTypeOf(dc.getName("name")).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", {})).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", { strict: true })).toEqualTypeOf<Item.Stored>();
+    expectTypeOf(dc.getName("name", { strict: undefined })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", { strict: trueOrUndefined })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", { strict: falseOrUndefined })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", { strict: boolOrUndefined })).toEqualTypeOf<Item.Stored | undefined>();
   });
 
   test("Setting and Deleting", () => {
-    // @ts-expect-error Document collections only contain stored documents
+    // @ts-expect-error `DocumentCollection`s only contain stored documents
     dc.set("ID", itemImpl);
-    // returns void, for now (13.350): https://github.com/foundryvtt/foundryvtt/issues/13565
+    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
     expectTypeOf(dc.set("ID", itemStored)).toBeVoid();
 
     expectTypeOf(dc.delete("ID")).toBeBoolean();
@@ -125,7 +130,7 @@ describe("DocumentCollection Tests", () => {
       Record<string, DocumentCollection.SearchableField>
     >();
 
-    // @ts-expect-error `#search`'s one parameter has no default, but all its properties do
+    // @ts-expect-error `#search`'s one parameter has no default, but all its properties do; must pass at least an empty object
     dc.search();
 
     expectTypeOf(dc.search({})).toEqualTypeOf<Item.Stored[]>();
@@ -164,15 +169,5 @@ describe("DocumentCollection Tests", () => {
     ).toEqualTypeOf<Promise<Item.Stored[]>>();
   });
 
-  test("_onModifyContents", () => {
-    // @ts-expect-error wrong document's operation type
-    dc._onModifyContents("update", [itemStored], itemCreateDataArray, onSceneUpdateOperation);
-    expectTypeOf(
-      dc._onModifyContents("create", [itemStored], itemCreateDataArray, onItemCreateOperation, user),
-    ).toBeVoid();
-    expectTypeOf(
-      dc._onModifyContents("update", [itemStored], itemCreateDataArray, onItemUpdateOperation, user),
-    ).toBeVoid();
-    expectTypeOf(dc._onModifyContents("delete", [itemStored], ["ID"], onItemDeleteOperation, user)).toBeVoid();
-  });
+  // TODO: _onModifyContents tests exist on the db-ops branch
 });

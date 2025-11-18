@@ -1153,7 +1153,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
   static override defaultName(context?: MeasuredTemplateDocument.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends MeasuredTemplateDocument.CreateDialogOptions | undefined = undefined,
   >(
     data?: MeasuredTemplateDocument.CreateDialogData,
@@ -1168,7 +1168,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
    * @see {@linkcode MeasuredTemplateDocument.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends MeasuredTemplateDocument.CreateDialogOptions | undefined = undefined,
   >(
     data: MeasuredTemplateDocument.CreateDialogData,

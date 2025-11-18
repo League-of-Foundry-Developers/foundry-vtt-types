@@ -313,8 +313,11 @@ declare namespace TableResult {
         validate: (r: unknown) => r is [start: number, end: number];
         validationError: "must be a length-2 array of ascending integers";
       },
+      number,
+      number,
       [start: number, end: number],
       [start: number, end: number],
+      number,
       [start: number, end: number]
     >;
 
@@ -1181,7 +1184,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
   static override defaultName(context: TableResult.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends TableResult.CreateDialogOptions | undefined = undefined,
   >(
     data?: TableResult.CreateDialogData,
@@ -1196,7 +1199,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
    * @see {@linkcode TableResult.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends TableResult.CreateDialogOptions | undefined = undefined,
   >(
     data: TableResult.CreateDialogData,

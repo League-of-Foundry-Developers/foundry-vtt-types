@@ -1617,7 +1617,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   static override defaultName(context?: Actor.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Actor.CreateDialogOptions | undefined = undefined,
   >(
     data?: Actor.CreateDialogData,
@@ -1632,7 +1632,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @see {@linkcode Actor.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Actor.CreateDialogOptions | undefined = undefined,
   >(
     data: Actor.CreateDialogData,

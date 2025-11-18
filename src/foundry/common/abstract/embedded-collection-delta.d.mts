@@ -8,9 +8,9 @@ import type EmbeddedCollection from "./embedded-collection.d.mts";
  * embedded collection, and generate new embedded Documents by combining them.
  *
  * @privateRemarks `ParentDataModel` should be constrained to `extends ActorDelta.Implementation` as that's the only valid parent, but this
- * breaks fields because it makes `ECD` types not assignable to `EC` types
+ * breaks fields because it makes `EmbeddedCollectionDelta` types not assignable to `EmbeddedCollection` types
  */
-export default class EmbeddedCollectionDelta<
+declare class EmbeddedCollectionDelta<
   ContainedDocument extends Document.Any,
   ParentDataModel extends Document.Any,
   Methods extends Collection.Methods.Any = EmbeddedCollectionDelta.Methods<ContainedDocument>,
@@ -19,7 +19,7 @@ export default class EmbeddedCollectionDelta<
    * A convenience getter to return the corresponding base collection.
    * @remarks This returns the version of this collection on the {@linkcode TokenDocument.Implementation.baseActor | baseActor}
    */
-  get baseCollection(): EmbeddedCollection<ContainedDocument, Actor.Implementation>;
+  get baseCollection(): EmbeddedCollection<ContainedDocument, Actor.Stored>;
 
   /**
    * A convenience getter to return the corresponding synthetic collection.
@@ -58,7 +58,9 @@ export default class EmbeddedCollectionDelta<
    *
    * @remarks This is a thin wrapper around {@linkcode EmbeddedCollectionDelta.restoreDocuments | #restoreDocuments}.
    *
-   * @privateRemarks Never called by core code, always errors in limited runtime testing, possibly vestigial?
+   * @privateRemarks This method is never called by core code, including the server, and always errors in limited runtime testing, but we
+   * have a positive claim from Foundry staff that it's "not vestigial":
+   * {@link https://discord.com/channels/170995199584108546/811676497965613117/1437588519177551892}
    */
   restoreDocument(id: string): Promise<ContainedDocument>;
 
@@ -68,8 +70,9 @@ export default class EmbeddedCollectionDelta<
    * @param ids - The IDs of the Documents to restore.
    * @returns An array of updated Document instances.
    *
-   * @privateRemarks Never called by core code (except {@linkcode restoreDocument}), always errors in limited runtime testing, possibly
-   * vestigial?
+   * @privateRemarks This method is never called by core code (except {@linkcode restoreDocument}), including the server, and always errors
+   * in limited runtime testing, but we have a positive claim from Foundry staff that it's "not vestigial":
+   * {@link https://discord.com/channels/170995199584108546/811676497965613117/1437588519177551892}
    */
   restoreDocuments(ids: string[]): Promise<ContainedDocument[]>;
 
@@ -79,7 +82,9 @@ export default class EmbeddedCollectionDelta<
    * @param options -  Options which determine how the new data is merged.
    * @internal
    *
-   * @remarks This method does nothing with `options`, but foundry types it as {@linkcode DataModel.UpdateOptions}, and it will get passed
+   * @remarks Mutates `changes`.
+   *
+   * This method does nothing with `options`, but foundry types it as {@linkcode DataModel.UpdateOptions}, and it will get passed
    * those via the chain starting at {@linkcode ActorDelta.updateSource | ActorDelta#updateSource}
    */
   _prepareDeltaUpdate(
@@ -87,7 +92,7 @@ export default class EmbeddedCollectionDelta<
     options?: DataModel.UpdateOptions,
   ): void;
 
-  set: Collection.Method<this, Methods, "set">;
+  override set: Collection.SetMethod<this, Methods>;
 
   protected override _set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): void;
 
@@ -144,7 +149,7 @@ declare namespace EmbeddedCollectionDelta {
   /**
    * The method signatures for {@linkcode EmbeddedCollectionDelta}.
    * @see {@linkcode Collection.Methods}
-   * @see {@linkcode Collection.Method}
+   * @see {@linkcode Collection.SetMethod}
    *
    * @remarks `#get` is not overridden in `EmbeddedCollectionDelta`
    */
@@ -157,6 +162,8 @@ declare namespace EmbeddedCollectionDelta {
     delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): void;
   }
 }
+
+export default EmbeddedCollectionDelta;
 
 declare class AnyEmbeddedCollectionDelta extends EmbeddedCollectionDelta<Document.Any, Document.Any> {
   constructor(...args: never);

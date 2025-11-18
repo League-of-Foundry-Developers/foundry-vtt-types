@@ -1211,7 +1211,7 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
   static override defaultName(context?: Adventure.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Adventure.CreateDialogOptions | undefined = undefined,
   >(
     data?: Adventure.CreateDialogData,
@@ -1226,7 +1226,7 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
    * @see {@linkcode Adventure.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Adventure.CreateDialogOptions | undefined = undefined,
   >(
     data: Adventure.CreateDialogData,

@@ -1437,7 +1437,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
   static override defaultName(context?: User.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends User.CreateDialogOptions | undefined = undefined,
   >(
     data?: User.CreateDialogData,
@@ -1452,7 +1452,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @see {@linkcode User.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends User.CreateDialogOptions | undefined = undefined,
   >(
     data: User.CreateDialogData,

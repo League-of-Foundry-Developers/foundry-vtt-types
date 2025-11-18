@@ -17,8 +17,6 @@ declare const falseOrUndefined: false | undefined;
 declare const trueOrUndefined: true | undefined;
 declare const boolOrUndefined: boolean | undefined;
 
-actor.items;
-
 describe("EmbeddedCollection Tests", () => {
   test("Construction", () => {
     // EmbeddedCollections must be constructed with explicit type parameters.
@@ -38,6 +36,8 @@ describe("EmbeddedCollection Tests", () => {
   const ec = new EmbeddedCollection<Item.Stored, Actor.Stored>("items", actor, itemSourceArray);
 
   test("Initialization", () => {
+    expectTypeOf(ec["_initialized"]).toBeBoolean();
+
     expectTypeOf(ec.initialize()).toBeVoid();
     expectTypeOf(ec.initialize({})).toBeVoid();
     expectTypeOf(ec.initialize({ dropInvalidEmbedded: true, fallback: false, strict: true })).toBeVoid();
@@ -81,6 +81,26 @@ describe("EmbeddedCollection Tests", () => {
     expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error(), {})).toBeVoid();
     expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error(), { strict: true })).toBeVoid();
     expectTypeOf(ec["_handleInvalidDocument"]("ID", new Error(), { strict: undefined })).toBeVoid();
+  });
+
+  test("Miscellaneous", () => {
+    expectTypeOf(ec.documentClass).toEqualTypeOf<Item.ImplementationClass>();
+    expectTypeOf(ec.model).toEqualTypeOf<Actor.Stored>();
+
+    // we put the constraint on the constructor as `CreateData` and that gets directly assigned to `_source`, so this is correct
+    expectTypeOf(ec._source).toEqualTypeOf<Item.CreateData[]>();
+
+    expectTypeOf(ec.invalidDocumentIds).toEqualTypeOf<Set<string>>();
+    expectTypeOf(ec.documentsByType).toEqualTypeOf<Record<string, Item.Stored[]>>();
+
+    // But `toObject` still returns `ContainedDocument["_source"][]`, so:
+    // @ts-expect-error Currently .Source is not mapping to ["_source"] properly
+    expectTypeOf(ec.toObject()).toEqualTypeOf<Item.Source[]>();
+    expectTypeOf(ec.toObject()).toEqualTypeOf<Item.Stored["_source"][]>();
+
+    // Inherited from Collection:
+    // TODO: Waiting on a luke reduction
+    // expectTypeOf(itemCollOnActor.toJSON()).toEqualTypeOf<Item.Source[]>();
   });
 
   test("Getting and Searching", () => {
@@ -144,24 +164,6 @@ describe("EmbeddedCollection Tests", () => {
 
     // same options interface as `#delete` above
     expectTypeOf(ec["_delete"]("ID")).toBeVoid();
-  });
-
-  test("Miscellaneous", () => {
-    expectTypeOf(ec.documentClass).toEqualTypeOf<Item.ImplementationClass>();
-    expectTypeOf(ec.model).toEqualTypeOf<Actor.Stored>();
-    expectTypeOf(ec.documentsByType).toEqualTypeOf<Record<string, Item.Stored[]>>();
-
-    // we put the constraint on the constructor as `CreateData` and that gets directly assigned to `_source`, so this is correct
-    expectTypeOf(ec._source).toEqualTypeOf<Item.CreateData[]>();
-
-    // But `toObject` still returns `ContainedDocument["_source"][]`, so:
-    // @ts-expect-error Currently .Source is not mapping to ["_source"] properly
-    expectTypeOf(ec.toObject()).toEqualTypeOf<Item.Source[]>();
-    expectTypeOf(ec.toObject()).toEqualTypeOf<Item.Stored["_source"][]>();
-
-    // Inherited from Collection:
-    // TODO: Waiting on a luke reduction
-    // expectTypeOf(itemCollOnActor.toJSON()).toEqualTypeOf<Item.Source[]>();
   });
 
   test("_onModifyContents", () => {

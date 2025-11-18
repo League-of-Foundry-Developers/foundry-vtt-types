@@ -1101,7 +1101,7 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
   static override defaultName(context?: AmbientLightDocument.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends AmbientLightDocument.CreateDialogOptions | undefined = undefined,
   >(
     data?: AmbientLightDocument.CreateDialogData,
@@ -1116,7 +1116,7 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
    * @see {@linkcode AmbientLightDocument.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends AmbientLightDocument.CreateDialogOptions | undefined = undefined,
   >(
     data: AmbientLightDocument.CreateDialogData,

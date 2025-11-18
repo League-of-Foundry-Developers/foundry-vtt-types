@@ -20,6 +20,8 @@ expectTypeOf(Note.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
 >();
 
 declare const doc: NoteDocument.Stored;
+declare const scene: Scene.Stored;
+
 const note = new CONFIG.Note.objectClass(doc);
 
 expectTypeOf(note.controlIcon).toEqualTypeOf<ControlIcon | null>();
@@ -64,19 +66,25 @@ expectTypeOf(note["_refreshPosition"]()).toBeVoid();
 expectTypeOf(note["_refreshElevation"]()).toBeVoid();
 
 expectTypeOf(
-  note["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+  note["_onCreate"](
+    doc.toObject(),
+    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 expectTypeOf(
   note["_onUpdate"](
     // partial source data
     { elevation: 20, entryId: "YYYYYSomeIDYYYYY", fontSize: 60, flags: { core: { sheetLock: true } } },
-    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(note["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
+expectTypeOf(
+  note["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
 
 declare const someUser: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;

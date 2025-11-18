@@ -8,15 +8,24 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
  * @see {@linkcode foundry.documents.Cards}: The Cards document
  * @see {@linkcode foundry.applications.sidebar.tabs.CardsDirectory}: The CardsDirectory sidebar directory
  */
-declare class CardStacks extends WorldCollection<"Cards", "Cards"> {
+declare class CardStacks extends WorldCollection<"Cards"> {
   static override documentName: "Cards";
+
+  /** @privateRemarks Fake type override */
+  static override get instance(): CardStacks.Implementation;
 }
 
 declare namespace CardStacks {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode CardStacks.Implementation} instead. This will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode CardStacks.ImplementationClass} instead. This will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -27,15 +36,15 @@ declare namespace CardStacks {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Cards"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Cards"> {}
 
-  /** @deprecated Replaced by {@linkcode CardStacks.ImplementationClass}. */
+  /** @deprecated Replaced by {@linkcode CardStacks.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;
 
-  /** @deprecated Replaced by {@linkcode CardStacks.Implementation}. */
+  /** @deprecated Replaced by {@linkcode CardStacks.Implementation}. Will be removed in v15. */
   type Configured = Implementation;
 }
+
+export default CardStacks;
 
 declare abstract class AnyCardStacks extends CardStacks {
   constructor(...args: never);
 }
-
-export default CardStacks;

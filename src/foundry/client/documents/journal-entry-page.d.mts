@@ -1499,7 +1499,7 @@ declare class JournalEntryPage<
   static override defaultName(context?: JournalEntryPage.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends JournalEntryPage.CreateDialogOptions | undefined = undefined,
   >(
     data?: JournalEntryPage.CreateDialogData,
@@ -1514,7 +1514,7 @@ declare class JournalEntryPage<
    * @see {@linkcode JournalEntryPage.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends JournalEntryPage.CreateDialogOptions | undefined = undefined,
   >(
     data: JournalEntryPage.CreateDialogData,

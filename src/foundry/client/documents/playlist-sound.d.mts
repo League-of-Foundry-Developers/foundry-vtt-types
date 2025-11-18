@@ -1191,7 +1191,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
 
   // Note: `context` is required because otherwise a `collection` cannot be found.
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends PlaylistSound.CreateDialogOptions | undefined = undefined,
   >(
     data?: PlaylistSound.CreateDialogData,
@@ -1206,7 +1206,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
    * @see {@linkcode PlaylistSound.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends PlaylistSound.CreateDialogOptions | undefined = undefined,
   >(
     data: PlaylistSound.CreateDialogData,

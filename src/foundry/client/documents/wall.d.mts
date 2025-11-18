@@ -1262,7 +1262,7 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
   static override defaultName(context?: WallDocument.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends WallDocument.CreateDialogOptions | undefined = undefined,
   >(
     data?: WallDocument.CreateDialogData,
@@ -1277,7 +1277,7 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
    * @see {@linkcode WallDocument.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends WallDocument.CreateDialogOptions | undefined = undefined,
   >(
     data: WallDocument.CreateDialogData,

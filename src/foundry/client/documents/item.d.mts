@@ -1315,7 +1315,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
   static override defaultName(context?: Item.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Item.CreateDialogOptions | undefined = undefined,
   >(
     data?: Item.CreateDialogData,
@@ -1330,7 +1330,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    * @see {@linkcode Item.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Item.CreateDialogOptions | undefined = undefined,
   >(
     data: Item.CreateDialogData,

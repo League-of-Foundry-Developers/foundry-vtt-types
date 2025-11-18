@@ -18,7 +18,7 @@ expectTypeOf(doc.compendium).toEqualTypeOf<null>(); // TODO: Determine if embedd
 expectTypeOf(AmbientLightDocument.documentName).toEqualTypeOf<"AmbientLight">(); // Document
 expectTypeOf(
   AmbientLightDocument.createDialog({}, { parent: new Scene.implementation({ name: "Scene" }) }),
-).toEqualTypeOf<Promise<AmbientLightDocument.Stored | null | undefined>>(); // ClientDocumentMixin
+).toEqualTypeOf<Promise<AmbientLightDocument.Stored | null | "ok">>(); // ClientDocumentMixin
 
 // Test the props
 expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Implementation | null>();

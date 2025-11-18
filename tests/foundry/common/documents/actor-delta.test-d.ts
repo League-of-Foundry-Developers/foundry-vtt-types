@@ -98,10 +98,8 @@ expectTypeOf(myDelta.type).toEqualTypeOf<ActorDelta.SubType>();
 expectTypeOf(myDelta.img).toEqualTypeOf<string | null>();
 // overridden in template, ActorDelta's `system` field is just an ObjectField
 expectTypeOf(myDelta.system).toEqualTypeOf<BaseActorDelta.SystemOfType<BaseActorDelta.SubType>>();
-expectTypeOf(myDelta.items).toEqualTypeOf<EmbeddedCollectionDelta<Item.Implementation, ActorDelta.Implementation>>();
-expectTypeOf(myDelta.effects).toEqualTypeOf<
-  EmbeddedCollectionDelta<ActiveEffect.Implementation, ActorDelta.Implementation>
->();
+expectTypeOf(myDelta.items).toEqualTypeOf<EmbeddedCollectionDelta<Item.Stored, ActorDelta.Implementation>>();
+expectTypeOf(myDelta.effects).toEqualTypeOf<EmbeddedCollectionDelta<ActiveEffect.Stored, ActorDelta.Implementation>>();
 expectTypeOf(myDelta.ownership).toEqualTypeOf<Record<string, CONST.DOCUMENT_OWNERSHIP_LEVELS> | null>();
 expectTypeOf(myDelta.flags).toEqualTypeOf<InterfaceToObject<Document.CoreFlags>>();
 
@@ -117,7 +115,7 @@ expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER")).toBeBoolean();
 expectTypeOf(myDelta.testUserPermission(someUser, CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED)).toBeBoolean();
 expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", {})).toBeBoolean();
 expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", { exact: true })).toBeBoolean();
-expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", { exact: null })).toBeBoolean();
+expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", { exact: undefined })).toBeBoolean();
 
 // @ts-expect-error Tile is not a valid name of an embedded document of Actor
 myDelta.getBaseCollection("Tile");

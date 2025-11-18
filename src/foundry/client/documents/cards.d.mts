@@ -1582,7 +1582,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
   resetDialog(): Promise<this | false | null>;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Cards.CreateDialogOptions | undefined = undefined,
   >(
     data?: Cards.CreateDialogData,
@@ -1597,7 +1597,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    * @see {@linkcode Cards.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Cards.CreateDialogOptions | undefined = undefined,
   >(
     data: Cards.CreateDialogData,

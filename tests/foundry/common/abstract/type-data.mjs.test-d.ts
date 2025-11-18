@@ -3,14 +3,6 @@ import type { DeepPartial, EmptyObject } from "fvtt-types/utils";
 
 import TypeDataModel = foundry.abstract.TypeDataModel;
 
-// Import necessary as this is otherwise inaccessible.
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import type {
-  DatabaseCreateOperation,
-  DatabaseUpdateOperation,
-} from "../../../../src/foundry/common/abstract/_types.d.mts";
-
-import Document = foundry.abstract.Document;
 import fields = foundry.data.fields;
 
 /* attempting to use the example as a test */
@@ -126,7 +118,7 @@ class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementat
 
   protected override async _preCreate(
     data: TypeDataModel.ParentAssignmentType<QuestSchema, JournalEntryPage.Implementation>,
-    _options: Document.Database.PreCreateOptions<DatabaseCreateOperation>,
+    _options: JournalEntryPage.Database2.PreCreateOptions,
     _user: User.Implementation,
   ): Promise<boolean | void> {
     expectTypeOf(data.system.steps).toEqualTypeOf<string[]>();
@@ -134,7 +126,7 @@ class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementat
 
   protected override async _preUpdate(
     changes: DeepPartial<TypeDataModel.ParentAssignmentType<QuestSchema, JournalEntryPage.Implementation>>,
-    _options: Document.Database.PreUpdateOptions<DatabaseUpdateOperation>,
+    _options: JournalEntryPage.Database2.PreUpdateOptions,
     _user: User.Implementation,
   ): Promise<boolean | void> {
     expectTypeOf(changes.system?.steps).toEqualTypeOf<string[] | undefined>();

@@ -51,6 +51,7 @@ class MySceneDocumentSubclass extends Scene {
 
     switch (collection) {
       case "tokens":
+        // @ts-expect-error specific document operation properties not yet done in doc-ops-v3
         expectTypeOf(options.animate).toEqualTypeOf<boolean | undefined>();
         for (const d of changes) {
           expectTypeOf(d.name).toEqualTypeOf<string | null | undefined>();

@@ -1157,7 +1157,7 @@ declare class RegionBehavior<
   protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends RegionBehavior.CreateDialogOptions | undefined = undefined,
   >(
     data?: RegionBehavior.CreateDialogData,
@@ -1172,7 +1172,7 @@ declare class RegionBehavior<
    * @see {@linkcode RegionBehavior.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends RegionBehavior.CreateDialogOptions | undefined = undefined,
   >(
     data: RegionBehavior.CreateDialogData,

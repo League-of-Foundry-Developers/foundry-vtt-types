@@ -10,8 +10,11 @@ import type { DialogV2 } from "#client/applications/api/_module.d.mts";
  * @see {@linkcode foundry.documents.ChatMessage}: The ChatMessage document
  * @see {@linkcode foundry.applications.sidebar.tabs.ChatLog}: The ChatLog sidebar directory
  */
-declare class ChatMessages extends WorldCollection<"ChatMessage", "Messages"> {
+declare class ChatMessages extends WorldCollection<"ChatMessage"> {
   static override documentName: "ChatMessage";
+
+  /** @privateRemarks Fake type override */
+  static override get instance(): ChatMessages.Implementation;
 
   override get directory(): typeof ui.chat;
 
@@ -36,10 +39,16 @@ declare class ChatMessages extends WorldCollection<"ChatMessage", "Messages"> {
 }
 
 declare namespace ChatMessages {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ChatMessages.Implementation} instead. This will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ChatMessages.ImplementationClass} instead. This will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -52,15 +61,15 @@ declare namespace ChatMessages {
 
   type FlushDialogReturn = DialogV2.ConfirmReturn<{ yes: { callback: () => Promise<void> } }>;
 
-  /** @deprecated Replaced by {@linkcode ChatMessages.ImplementationClass}. */
+  /** @deprecated Replaced by {@linkcode ChatMessages.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;
 
-  /** @deprecated Replaced by {@linkcode ChatMessages.Implementation}. */
+  /** @deprecated Replaced by {@linkcode ChatMessages.Implementation}. Will be removed in v15. */
   type Configured = Implementation;
 }
+
+export default ChatMessages;
 
 declare abstract class AnyChatMessages extends ChatMessages {
   constructor(...args: never);
 }
-
-export default ChatMessages;

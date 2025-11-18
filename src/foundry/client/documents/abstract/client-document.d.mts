@@ -663,6 +663,7 @@ declare global {
 
     /** @internal */
     type _OmitProperty<
+      // TODO: probably remove null from Omit
       Omit extends boolean | null | undefined,
       Default extends boolean,
       ToOmit extends string,

@@ -15,6 +15,7 @@ expectTypeOf(folder.displayed).toEqualTypeOf<boolean>();
 expectTypeOf(folder.expanded).toEqualTypeOf<boolean>();
 expectTypeOf(folder.ancestors).toEqualTypeOf<Folder.Stored[]>();
 
-expectTypeOf(await Folder.createDialog()).toEqualTypeOf<Folder.Stored | undefined | null>();
+// bugged in 13.351: https://github.com/foundryvtt/foundryvtt/issues/13545
+expectTypeOf(Folder.createDialog()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(folder.getSubfolders(true)).toEqualTypeOf<Folder.Stored<"JournalEntry">[]>();
 expectTypeOf(folder.getParentFolders()).toEqualTypeOf<Folder.Stored<"JournalEntry">[]>();

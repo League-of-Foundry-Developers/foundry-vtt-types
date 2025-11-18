@@ -1,8 +1,11 @@
 import type { AnyObject, FixedInstanceType, InitializedOn, Mixin } from "#utils";
+import type { Collection } from "#common/utils/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
-/** @privateRemarks `CompendiumPacks` only used for links */
+
+/** @privateRemarks `CompendiumCollection` and `CompendiumPacks` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { CompendiumCollection, CompendiumPacks } from "#client/documents/collections/_module.d.mts";
+
 /** @privateRemarks `WorldCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
@@ -35,7 +38,6 @@ declare class DirectoryCollection {
    * @remarks Only `undefined` prior to first {@linkcode initializeTree | #initializeTree} call, which happens just before the `"setup"`
    * hook in {@linkcode foundry.Game.initializeTrees | Game#initializeTrees} via {@linkcode foundry.Game.setupGame | Game#setupGame}
    */
-  // TODO: wire into HooksRun?
   get tree(): InitializedOn<DirectoryCollectionMixin.TreeNode<this[" __fvtt_types_internal_value"]>, "setup">;
 
   /**
@@ -51,7 +53,6 @@ declare class DirectoryCollection {
   /**
    * The current sort mode used to order the top level entries in this collection
    */
-  // TODO: Should have a helper type for these sorting modes or something
   get sortingMode(): DirectoryCollectionMixin.SortingMode;
 
   /**
@@ -142,7 +143,7 @@ declare class DirectoryCollection {
  * @param BaseCollection - The base collection class to extend
  * @returns A Collection mixed with DirectoryCollection functionality
  */
-declare function DirectoryCollectionMixin<BaseCollection extends Collection.AnyConstructor>(
+declare function DirectoryCollectionMixin<BaseCollection extends DirectoryCollectionMixin.BaseClass>(
   BaseCollection: BaseCollection,
 ): Mixin<typeof DirectoryCollection, BaseCollection>;
 

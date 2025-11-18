@@ -2696,7 +2696,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   static override defaultName(context?: TokenDocument.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends TokenDocument.CreateDialogOptions | undefined = undefined,
   >(
     data?: TokenDocument.CreateDialogData,
@@ -2711,7 +2711,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @see {@linkcode TokenDocument.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends TokenDocument.CreateDialogOptions | undefined = undefined,
   >(
     data: TokenDocument.CreateDialogData,

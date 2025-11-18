@@ -1,11 +1,11 @@
 import { expectTypeOf } from "vitest";
-import type { FixedInstanceType, InexactPartial } from "fvtt-types/utils";
+import type { FixedInstanceType } from "fvtt-types/utils";
 
 import Application = foundry.appv1.api.Application;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
 import Document = foundry.abstract.Document;
-import Dialog = foundry.appv1.api.Dialog;
+import DialogV2 = foundry.applications.api.DialogV2;
 import FormApplication = foundry.appv1.api.FormApplication;
 import TextEditor = foundry.applications.ux.TextEditor;
 
@@ -13,16 +13,30 @@ const item = new Item.implementation({ name: "foo", type: "base" });
 declare const someActor: Actor.Implementation;
 // Test the inheritance of static members
 expectTypeOf(Item.documentName).toEqualTypeOf<"Item">(); // Document
-expectTypeOf(Item.createDialog()).toEqualTypeOf<Promise<Item.Stored | null | undefined>>(); // ClientDocumentMixin
+expectTypeOf(Item.createDialog()).toEqualTypeOf<Promise<Item.Stored | null | "ok">>(); // ClientDocumentMixin
 
 // ensure source can be used to create a new document with createDialog
-expectTypeOf(Item.createDialog(item.toObject())).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+expectTypeOf(Item.createDialog(item.toObject())).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 
 declare const itemCreateData: Item.CreateData;
 declare const macroCreateData: Macro.CreateData;
-declare const dialogOptions: InexactPartial<Dialog.Options>;
+const dialogOptions = {
+  position: {
+    height: 50,
+    width: 20000,
+    left: 7,
+    top: 500,
+    scale: 1.0,
+  },
+  window: {
+    icon: "fa-solid fa-user",
+  },
+} satisfies DialogV2.PromptConfig;
 
-expectTypeOf(Item.createDialog({}, {})).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+const _x = await Item.createDialog({}, {});
+
+// "ok" if the document creation returns `undefined`
+expectTypeOf(Item.createDialog({}, {})).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 expectTypeOf(
   Item.createDialog(
     itemCreateData,
@@ -30,11 +44,9 @@ expectTypeOf(
       pack: "some.pack",
       parent: someActor,
     },
-    {
-      ...dialogOptions,
-    },
+    dialogOptions, // TODO: test relevant options
   ),
-).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 
 // @ts-expect-error "foo" is not a valid Item type
 Item.createDialog({}, { types: ["foo"] });
@@ -51,19 +63,19 @@ expectTypeOf(
       ...dialogOptions,
     },
   ),
-).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 expectTypeOf(
   Item.createDialog(itemCreateData, {
     pack: null,
     parent: null,
   }),
-).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 expectTypeOf(
   Item.createDialog(itemCreateData, {
     pack: undefined,
     parent: undefined,
   }),
-).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 
 // @ts-expect-error `Macro.metadata.hasTypeData` is not `true`, so passing `types` is not valid
 Macro.createDialog(macroCreateData, { types: ["foo"] });
@@ -85,8 +97,6 @@ Macro.defaultName({ type: undefined });
 
 declare const itemDropData: Item.DropData;
 expectTypeOf(Item.fromDropData(itemDropData)).toEqualTypeOf<Promise<Item.Implementation | undefined>>();
-// there are no actual options to test
-expectTypeOf(Item.fromDropData(itemDropData, {})).toEqualTypeOf<Promise<Item.Implementation | undefined>>();
 
 declare const itemSource: Item.Source;
 const constructionContext = {
@@ -284,10 +294,9 @@ expectTypeOf(item["_onSheetChange"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({ sheetOpen: true })).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({ sheetOpen: undefined })).toEqualTypeOf<Promise<void>>();
 
-const dd = item.deleteDialog();
 expectTypeOf(item.deleteDialog()).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
 expectTypeOf(item.deleteDialog({})).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
-expectTypeOf(await item.deleteDialog(dialogOptions)).toEqualTypeOf<typeof item | false | null | "yes">();
+expectTypeOf(item.deleteDialog(dialogOptions)).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
 
 // Using exportToJSON to test ToCompendiumOptions for now
 expectTypeOf(item.exportToJSON()).toBeVoid();

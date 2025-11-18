@@ -2135,7 +2135,7 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
   static override defaultName(context?: Scene.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Scene.CreateDialogOptions | undefined = undefined,
   >(
     data?: Scene.CreateDialogData,
@@ -2150,7 +2150,7 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    * @see {@linkcode Scene.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends Scene.CreateDialogOptions | undefined = undefined,
   >(
     data: Scene.CreateDialogData,

@@ -1,25 +1,22 @@
-import type { DeepPartial, GetKey, Identity, InexactPartial } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
-import type { AbstractSidebarTab, DocumentDirectory } from "#client/applications/sidebar/_module.mjs";
+import type { DeepPartial, GetKey, Identity, InexactPartial, InitializedOn } from "#utils";
+import type { Collection } from "#common/utils/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { DocumentDirectory } from "#client/applications/sidebar/_module.mjs";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { ApplicationV2 } from "#client/applications/api/_module.d.mts";
 import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+import type { DirectoryCollectionMixin, DocumentCollection } from "#client/documents/abstract/_module.d.mts";
+import type { collections } from "#client/documents/_module.d.mts";
 
 /**
  * A collection of world-level Document objects with a singleton instance per primary Document type.
  * Each primary Document type has an associated subclass of WorldCollection which contains them.
  * @see {@linkcode foundry.Game.collections | Game#collections}
  */
-declare abstract class WorldCollection<
-  DocumentName extends Document.WorldType,
-  Name extends string,
-> extends foundry.documents.abstract.DirectoryCollectionMixin(
-  foundry.documents.abstract.DocumentCollection,
+declare abstract class WorldCollection<DocumentName extends Document.WorldType> extends DirectoryCollectionMixin(
+  DocumentCollection,
 )<DocumentName> {
-  // Note: This isn't a real override but it's here to make the type more specific.
-  override get name(): Name;
-
   /**
    * Reference the set of Folders which contain documents in this collection
    */
@@ -27,16 +24,16 @@ declare abstract class WorldCollection<
 
   /**
    * Return a reference to the SidebarDirectory application for this WorldCollection.
-   * @remarks
-   * In the case where `Lowercase<Name>` is not a property of {@linkcode ui}, this actually always returns `undefined`,
-   * but {@linkcode RollTables} overrides this, so we need to allow a wider return type.
+   * @remarks This getter has several hardcoded special cases, see {@linkcode WorldCollection.Directory}
    */
-  get directory(): WorldCollection.Directory<DocumentName, Name>;
+  get directory(): WorldCollection.Directory<DocumentName>;
 
   /**
    * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
    */
-  static get instance(): WorldCollection<Document.WorldType, any>; // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class, which allows accessing the the static this type to use the `documentName`.
+  // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class,
+  // TODO: which allows accessing the the static this type to use the `documentName`.
+  static get instance(): InitializedOn<WorldCollection.Any, "setup">;
 
   protected override _getVisibleTreeContents(): this["contents"];
 
@@ -48,6 +45,7 @@ declare abstract class WorldCollection<
    * @param options    - Optional arguments passed to the {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium} and
    * {@linkcode Document.create} methods (default: `{}`)
    * @returns The imported Document instance
+   *
    * @remarks The `updateData` parameter is {@link foundry.utils.mergeObject | merged} with the return of `WorldCollection#fromCompendium`,
    * before being passed to `.create`, making the `DeepPartial<CreateData>` more correct than `UpdateData`.
    *
@@ -58,7 +56,7 @@ declare abstract class WorldCollection<
    * TODO: Change return type to Document.Stored in v14
    * TODO: Infer Document subtype from `updateData` if possible
    */
-  importFromCompendium<Temporary extends boolean | undefined = boolean | undefined>(
+  importFromCompendium<Temporary extends boolean | undefined = undefined>(
     pack: WorldCollection.Pack<DocumentName>,
     id: string,
     updateData?: DeepPartial<Document.CreateDataForName<DocumentName>>,
@@ -70,17 +68,18 @@ declare abstract class WorldCollection<
    * @param document - The source Document, or a plain data object
    * @param options  - Additional options which modify how the document is imported (default: `{}`)
    * @returns The processed data ready for world Document creation
-   * @remarks FromCompendiumOptions is inflated to account for expanded downstream use
    */
-  fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined>(
+  fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
     document: Document.ImplementationFor<DocumentName> | Document.CreateDataForName<DocumentName>,
     options?: Options,
   ): WorldCollection.FromCompendiumReturnType<DocumentName, Options>;
 
+  /** @privateRemarks Fake type override, see {@linkcode DocumentCollection.search | DocumentCollection#search} */
+  override search(search: DocumentCollection.SearchOptions): Document.StoredForName<DocumentName>[];
+
   /**
    * Register a Document sheet class as a candidate which can be used to display Documents of a given type.
    * See {@linkcode DocumentSheetConfig.registerSheet} for details.
-   * @see {@linkcode DocumentSheetConfig.registerSheet}
    *
    * @example
    * Register a new ActorSheet subclass for use with certain Actor types.
@@ -93,14 +92,13 @@ declare abstract class WorldCollection<
    */
   static registerSheet(
     scope: string,
-    sheetClass: Application.Any | ApplicationV2.Any,
+    sheetClass: Application.AnyConstructor | ApplicationV2.AnyConstructor,
     options?: DocumentSheetConfig.SheetRegistrationOptions,
   ): void;
 
   /**
    * Unregister a Document sheet class, removing it from the list of available sheet Applications to use.
    * See {@linkcode DocumentSheetConfig.unregisterSheet} for details.
-   * @see {@linkcode DocumentSheetConfig.unregisterSheet}
    *
    * @example
    * Deregister the default ActorSheet subclass to replace it with others.
@@ -124,24 +122,66 @@ declare namespace WorldCollection {
   interface Any extends AnyWorldCollection {}
   interface AnyConstructor extends Identity<typeof AnyWorldCollection> {}
 
+  type ForName<DocumentName extends CONST.WORLD_DOCUMENT_TYPES> =
+    | (DocumentName extends "Actor" ? collections.Actors.Implementation : never)
+    | (DocumentName extends "Cards" ? collections.CardStacks.Implementation : never)
+    | (DocumentName extends "ChatMessage" ? collections.ChatMessages.Implementation : never)
+    | (DocumentName extends "Combat" ? collections.CombatEncounters.Implementation : never)
+    | (DocumentName extends "FogExploration" ? collections.FogExplorations.Implementation : never)
+    | (DocumentName extends "Item" ? collections.Items.Implementation : never)
+    | (DocumentName extends "JournalEntry" ? collections.Journal.Implementation : never)
+    | (DocumentName extends "Macro" ? collections.Macros.Implementation : never)
+    | (DocumentName extends "Playlist" ? collections.Playlists.Implementation : never)
+    | (DocumentName extends "RollTable" ? collections.RollTables.Implementation : never)
+    | (DocumentName extends "Scene" ? collections.Scenes.Implementation : never)
+    | (DocumentName extends "Setting" ? collections.WorldSettings.Implementation : never)
+    | (DocumentName extends "User" ? collections.Users.Implementation : never);
+
   /**
    * This type exists because there are {@link Document.WorldType | world documents}
-   * that are not valid {@linkcode CONST.FOLDER_DOCUMENT_TYPES}.
+   * that are not valid {@link CONST.FOLDER_DOCUMENT_TYPES | Folder types}.
    */
   type Folders<DocumentName extends Document.WorldType> = Collection<
     DocumentName extends Folder.DocumentType ? Folder.Stored<DocumentName> : never
   >;
 
-  type Directory<DocumentName extends Document.WorldType, Name extends string> =
-    Lowercase<Name> extends keyof typeof ui
-      ? (typeof ui)[Lowercase<Name>]
-      :
-          | (DocumentName extends CONST.FOLDER_DOCUMENT_TYPES
-              ? DocumentDirectory<Document.ImplementationClassFor<DocumentName>>
-              : never)
-          | AbstractSidebarTab.Any
-          | undefined
-          | null;
+  /**
+   * {@linkcode WorldCollection.directory | WorldCollection#directory} returns `ui[documentClass.metadata.collection]`, but several
+   * subclasses have overrides:
+   * - {@linkcode collections.ChatMessages.directory | ChatMessages#directory} returns {@linkcode ChatLog | ui.chat}, notably *not*
+   * extending {@linkcode DocumentDirectory}, which is what `WorldCollection#directory` is typed as by Foundry.
+   * - {@linkcode collections.CombatEncounters.directory | CombatEncounters#directory} returns {@linkcode CombatTracker | ui.combat}, also
+   * not extending `DocumentDirectory`.
+   * - {@linkcode collections.RollTables.directory | RollTables#directory} just uses a different key than its `metadata.collection`, and
+   * {@linkcode collections.Macros.directory | Macros#directory} unnecessarily returns `ui.macros`, which is what it would be anyway, but
+   * these are both at least `DocumentDirectory`s.
+   * - {@linkcode collections.WorldSettings.directory | WorldSettings#directory} returns `null`.
+   *
+   * All but the last are only guaranteed by the `ready` hook, which is baked into `typeof ui`.
+   */
+  type Directory<DocumentName extends Document.WorldType> = DocumentName extends "Setting"
+    ? null
+    : DocumentName extends "ChatMessage"
+      ? typeof ui.chat // instead of `messages`
+      : DocumentName extends "Combat"
+        ? typeof ui.combat // instead of `combats`
+        : _Directory<DocumentName, Document.MetadataFor<DocumentName>["collection"]>;
+
+  /**
+   * The fallback case is:
+   * - `DocumentDirectory` for the doc name, both because if `ui` gets borked its accurate-ish for existing directories, and because that's
+   * what Foundry types {@linkcode WorldCollection.directory | WorldCollection#directory} as, exceptions notwithstanding.
+   * - `| undefined` instead of `InitializedOn<..., "ready">` because {@linkcode collections.Users | Users} and
+   * {@linkcode collections.FogExplorations} have both no directories in core, but no overrides enforcing that like
+   * {@linkcode collections.WorldSettings | WorldSettings} has.
+   * @internal
+   */
+  type _Directory<
+    DocumentName extends Document.WorldType,
+    CollectionName extends string,
+  > = CollectionName extends keyof typeof ui
+    ? (typeof ui)[CollectionName]
+    : DocumentDirectory<Document.ImplementationClassFor<DocumentName>> | undefined;
 
   /** @internal */
   type _FromCompendiumOptions = InexactPartial<{
@@ -155,7 +195,7 @@ declare namespace WorldCollection {
      * Clear the currently sort order.
      * @defaultValue `true`
      * @remarks Also sets `data.navigation = false` and deletes `navOrder` when passed to
-     * {@linkcode foundry.documents.collections.Scenes.fromCompendium | Scenes#fromCompendium}
+     * {@linkcode collections.Scenes.fromCompendium | Scenes#fromCompendium}
      */
     clearSort: boolean;
 
@@ -186,7 +226,14 @@ declare namespace WorldCollection {
     addFlags?: never;
   }
 
-  // TODO: Ownership is removed recursively
+  /**
+   * The return type for {@linkcode WorldCollection.fromCompendium | WorldCollection#fromCompendium}.
+   *
+   * @privateRemarks As of 13.350, the only core subclass that would change this type in any way is
+   * {@linkcode foundry.documents.collections.Scenes.fromCompendium | Scenes#fromCompendium},
+   * and its removal of `navOrder` on `clearSort` is baked in.
+   */
+  // TODO: Ownership is removed recursively; probably not worth modeling?
   // TODO: why are both the `keepId` branches `never`
   type FromCompendiumReturnType<
     DocumentType extends Document.WorldType,
@@ -197,7 +244,7 @@ declare namespace WorldCollection {
     | ClientDocument._OmitProperty<GetKey<Options, "clearSort", undefined>, true, "sort" | "navOrder">
     | ClientDocument._OmitProperty<GetKey<Options, "clearOwnership", undefined>, true, "ownership">
     | ClientDocument._OmitProperty<GetKey<Options, "clearState", undefined>, true, "active">
-    | (GetKey<Options, "keepId", undefined> extends true ? never : never)
+    | (GetKey<Options, "keepId", undefined> extends true ? never : "_id")
   >;
 
   /**
@@ -215,8 +262,8 @@ declare namespace WorldCollection {
     : never;
 }
 
-declare abstract class AnyWorldCollection extends WorldCollection<Document.WorldType, string> {
-  constructor(...args: never[]);
-}
-
 export default WorldCollection;
+
+declare abstract class AnyWorldCollection extends WorldCollection<Document.WorldType> {
+  constructor(...args: never);
+}

@@ -6,22 +6,22 @@ import type { Identity } from "#utils";
 /**
  * A Collection of Folder documents within a Compendium pack.
  */
+// TODO: find a way to allow specifying that this can contain `Folder.Stored<DocumentName>`s only
 declare class CompendiumFolderCollection<
   DocumentName extends CompendiumCollection.DocumentName,
 > extends DocumentCollection<"Folder"> {
   constructor(pack: CompendiumCollection<DocumentName>, data?: Folder.CreateData[]);
 
-  // TODO: overrides for everything enforcing this collection's `Folder`s are all of `Type` *and* Stored?
-
   pack: CompendiumCollection<DocumentName>;
 
   get documentName(): "Folder";
 
+  /** @remarks Forwards to {@linkcode CompendiumCollection.render | this.pack.render} */
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
   override updateAll( // TODO: StoredOfType
-    transformation: Folder.UpdateData | ((doc: Folder.Stored) => Folder.UpdateData),
-    condition?: ((doc: Folder.Stored) => boolean) | null,
+    transformation: DocumentCollection.Transformation<"Folder">,
+    condition?: ((doc: Folder.Stored<DocumentName>) => boolean) | null,
     options?: DocumentCollection.UpdateAllOperation<"Folder">,
   ): Promise<Folder.Stored[]>;
 
@@ -39,8 +39,8 @@ declare namespace CompendiumFolderCollection {
   interface AnyConstructor extends Identity<typeof AnyCompendiumFolderCollection> {}
 }
 
+export default CompendiumFolderCollection;
+
 declare abstract class AnyCompendiumFolderCollection extends CompendiumFolderCollection<CompendiumCollection.DocumentName> {
   constructor(...args: never);
 }
-
-export default CompendiumFolderCollection;

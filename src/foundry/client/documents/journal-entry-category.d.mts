@@ -1040,7 +1040,7 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
   static override defaultName(context?: JournalEntryCategory.DefaultNameContext): string;
 
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends JournalEntryCategory.CreateDialogOptions | undefined = undefined,
   >(
     data?: JournalEntryCategory.CreateDialogData,
@@ -1055,7 +1055,7 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
    * @see {@linkcode JournalEntryCategory.CreateDialogDeprecatedOptions}
    */
   static override createDialog<
-    Temporary extends boolean | undefined = boolean | undefined,
+    Temporary extends boolean | undefined = undefined,
     Options extends JournalEntryCategory.CreateDialogOptions | undefined = undefined,
   >(
     data: JournalEntryCategory.CreateDialogData,
