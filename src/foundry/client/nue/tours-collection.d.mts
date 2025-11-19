@@ -20,10 +20,12 @@ declare class ToursCollection extends Collection<Tour.Any> {
 
   /**
    * Set a Tour to the collection.
-   * @remarks Only checks to throw or not then calls super
-   * @throws If `key` doesn't match the Tour's `namespace` and `id`
+   * @remarks Only checks to throw or not, then calls {@link Collection.set | super}.
+   *
+   * Go to definition breaks here, see {@linkcode Collection.Methods.set} and {@linkcode Collection.SetMethod}
+   * @throws If `key` doesn't match the passed Tour's `namespace` and `id`
    */
-  set(key: string, tour: Tour.Any): this;
+  override set: Collection.SetMethod<this, Collection.Methods<Tour.Any>>;
 }
 
 declare namespace ToursCollection {}

@@ -24,6 +24,9 @@ declare class System extends ClientPackageMixin(foundry.packages.BaseSystem) {
 }
 
 declare namespace System {
+  /** The configured System ID, if any */
+  type Id = GetKey<SystemNameConfig, "name", string>;
+
   /**
    * The data put in {@linkcode DataModel._source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.

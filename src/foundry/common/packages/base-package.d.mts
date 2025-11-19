@@ -1,4 +1,13 @@
-import type { GetKey, AnyObject, InexactPartial, AnyMutableObject, Identity, AnyArray, NullishProps } from "#utils";
+import type {
+  GetKey,
+  AnyObject,
+  InexactPartial,
+  AnyMutableObject,
+  Identity,
+  AnyArray,
+  NullishProps,
+  PrettifyType,
+} from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type { ReleaseData } from "../config.d.mts";
 import type * as fields from "../data/fields.d.mts";
@@ -83,6 +92,7 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
+  // TODO: (esheyw) does this need to be `InexactPartial`ed here? Explicit `undefined` values for any key fail validation.
   type OwnershipRecord = InexactPartial<
     Record<keyof typeof CONST.USER_ROLES, keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>
   >;
@@ -94,7 +104,7 @@ declare namespace BasePackage {
     name: fields.StringField<{
       required: true;
       blank: false;
-      validate: (n: string) => boolean;
+      validate: (typeof BasePackage)["validateId"];
       validationError: "may not contain periods";
     }>;
 
@@ -109,8 +119,11 @@ declare namespace BasePackage {
      * The dimensions are 290 x 70; you can either have each be an individual landscape or
      * slice them up to form a composite with your other compendiums, but keep in mind that
      * users can reorder compendium packs as well as filter them to break up the composite.
+     *
+     * @remarks `undefined` is replaced with the default `CONFIG[this.metadata.type]?.compendiumBanner`
+     * but `null` passes through unchanged.
      */
-    banner: fields.StringField<OptionalString>;
+    banner: fields.StringField<OptionalString & { nullable: true }>;
 
     /**
      * The local relative path to the compendium source directory. The filename should match the name attribute
@@ -123,7 +136,7 @@ declare namespace BasePackage {
     type: fields.StringField<{
       required: true;
       blank: false;
-      choices: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES[];
+      choices: CONST.COMPENDIUM_DOCUMENT_TYPES[];
       validationError: "must be a value in CONST.COMPENDIUM_DOCUMENT_TYPES";
     }>;
 
@@ -134,10 +147,15 @@ declare namespace BasePackage {
      */
     system: fields.StringField<OptionalString>;
 
+    /** @remarks Be careful when setting this; an empty object will prevent even a GM from seeing it in the directory. */
     ownership: CompendiumOwnershipField;
 
     flags: fields.ObjectField;
   }
+
+  interface PackageCompendiumData extends fields.SchemaField.InitializedData<PackageCompendiumSchema> {}
+
+  interface SocketCompendiumData extends UndefinedToOptional<PackageCompendiumData> {}
 
   interface PackageLanguageSchema extends DataSchema {
     /**
@@ -454,7 +472,7 @@ declare namespace BasePackage {
   }
 
   interface PackageManifestData {
-    availability: foundry.CONST.PACKAGE_AVAILABILITY_CODES;
+    availability: CONST.PACKAGE_AVAILABILITY_CODES;
     locked: boolean;
     exclusive: boolean;
     owned: boolean;
@@ -777,8 +795,29 @@ declare class BasePackage<
   ): Promise<never>;
 }
 
+export default BasePackage;
+
 declare abstract class AnyBasePackage extends foundry.packages.BasePackage<any> {
   constructor(...args: never);
 }
 
-export default BasePackage;
+/**
+ * A helper for converting a type with properties that are required but can be `undefined`
+ * into that type after going over a socket, where properties with explicit `undefined`
+ * values are dropped.
+ *
+ * See {@linkcode Game.Data.Pack}.
+ */
+type UndefinedToOptional<T extends object> = _UndefinedToOptional<T>;
+
+type _UndefinedToOptional<T> = T extends object
+  ? T extends AnyArray
+    ? { [K in keyof T]: _UndefinedToOptional<T[K]> }
+    : PrettifyType<
+        {
+          [K in keyof T as undefined extends T[K] ? never : K]: _UndefinedToOptional<T[K]>;
+        } & {
+          [K in keyof T as undefined extends T[K] ? K : never]?: _UndefinedToOptional<Exclude<T[K], undefined>>;
+        }
+      >
+  : T;
