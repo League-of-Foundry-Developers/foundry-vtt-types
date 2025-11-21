@@ -410,9 +410,8 @@ export interface AllHooks extends DynamicHooks {
    * @param controls - The SceneControl configurations
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@link SceneControls._getControlButtons | `SceneControls#_getControlButtons`}
-   * TODO: This saw a major rework in v13 and needs individual attention
    */
-  // getSceneControlButtons: (controls: foundry.applications.ui.SceneControls.Control[]) => void;
+  getSceneControlButtons: (controls: Record<string, foundry.applications.ui.SceneControls.Control>) => void;
 
   /**
    * A hook event that fires whenever data is dropped into a Hotbar slot.
