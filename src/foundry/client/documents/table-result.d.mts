@@ -492,7 +492,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
   /**
    * Prepare a string representation for this result.
    */
-  getHTML: Promise<string>;
+  getHTML(): Promise<string>;
 
   /**
    * Create a content-link anchor from this Result's referenced Document.
