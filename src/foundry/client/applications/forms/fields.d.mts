@@ -1,14 +1,25 @@
-import type { InexactPartial, NullishProps } from "#utils";
+import type { InexactPartial } from "#utils";
+import type { DataField } from "#common/data/fields.d.mts";
 
+/**
+ * @remarks A callback for {@linkcode DataField.toFormGroup | DataField#toFormGroup} to use in place of
+ * {@linkcode foundry.applications.fields.createFormGroup}. Note that it will be called before `#toFormGroup`
+ * applies its defaults for `label`, `hint`, and `input`.
+ *
+ */
 export type CustomFormGroup = (
-  field: foundry.data.fields.DataField,
+  field: DataField.Any,
   groupConfig: FormGroupConfig,
   inputConfig: FormInputConfig<unknown>,
 ) => HTMLDivElement;
 
-export type CustomFormInput = (
-  field: foundry.data.fields.DataField,
-  config: FormInputConfig<unknown>,
+/**
+ * @remarks A callback to be used in place of a field's {@linkcode DataField#_toInput | #_toInput}
+ * @see {@linkcode DataField.toInput | DataField#toInput}
+ */
+export type CustomFormInput<FormInputValue = never> = (
+  field: DataField.Any,
+  config: FormInputConfig<FormInputValue>,
 ) => HTMLElement | HTMLCollection;
 
 interface _FormGroupConfig {
@@ -20,39 +31,43 @@ interface _FormGroupConfig {
   /**
    * Hint text displayed as part of the form group
    */
-  hint: string | null | undefined;
+  hint: string;
 
   /**
-   * Some parent CSS id within which field names are unique. If provided,
-   *                     this root ID is used to automatically assign "id" attributes to input
-   *                     elements and "for" attributes to corresponding labels
+   * Some parent CSS id within which field names are unique. If provided, this root ID is used to automatically
+   * assign "id" attributes to input elements and "for" attributes to corresponding labels
    */
-  rootId: string | null | undefined;
+  rootId: string;
 
   /**
    * An array of CSS classes applied to the form group element
    */
-  classes: string[] | null | undefined;
+  classes: string[];
 
   /**
    * Is the "stacked" class applied to the form group
+   * @defaultValue `false`
    */
-  stacked: boolean | null | undefined;
+  stacked: boolean;
 
   /**
-   * Should labels or other elements within this form group be
-   *            automatically localized?
+   * Should labels or other elements within this form group be automatically localized?
+   * @defaultValue `false`
    */
-  localize: boolean | null | undefined;
+  localize: boolean;
 
   /**
-   * A custom form group widget function which replaces the default
-   *            group HTML generation
+   * The value of the form group's hidden attribute
+   * @defaultValue `false`
    */
-  widget: CustomFormGroup | null | undefined;
+
+  /**
+   * A custom form group widget function which replaces the default group HTML generation
+   */
+  widget: CustomFormGroup;
 }
 
-export interface FormGroupConfig extends NullishProps<_FormGroupConfig> {
+export interface FormGroupConfig extends InexactPartial<_FormGroupConfig> {
   /**
    * A text label to apply to the form group
    */
@@ -70,6 +85,11 @@ interface _FormInputConfig<FormInputValue = unknown> {
    * The current value of the form element
    */
   value: FormInputValue;
+
+  /**
+   * An id to assign to the element
+   */
+  id: string;
 
   /**
    * Is the field required?
@@ -107,11 +127,25 @@ interface _FormInputConfig<FormInputValue = unknown> {
   dataset: Record<string, string>;
 
   /**
+   * Aria attributes to assign to the input
+   */
+  aria: Record<string, string>;
+
+  /**
    * A placeholder value, if supported by the element type
    */
   placeholder: string;
 
-  input: CustomFormInput;
+  /**
+   * Space-delimited class names to apply to the input
+   */
+  classes: string;
+
+  /**
+   * @remarks Used with {@linkcode DataField.toFormGroup | DataField#toFormGroup}/{@linkcode DataField.toInput | #toInput}: if provided,
+   * this function will be used instead of the field's {@linkcode DataField._toInput | #_toInput}.
+   */
+  input: CustomFormInput<FormInputValue>;
 }
 
 export interface FormInputConfig<FormInputValue> extends InexactPartial<_FormInputConfig<FormInputValue>> {

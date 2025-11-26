@@ -1,9 +1,11 @@
+import type { Identity } from "#utils";
+
 /**
  * An abstract custom HTMLElement designed for use with form inputs.
  * @remarks Fires input  - An "input" event when the value of the input changes
  * @remarks Fires change - A "change" event when the value of the element changes
  */
-export default abstract class AbstractFormInputElement<FormInputValueType> extends HTMLElement {
+declare abstract class AbstractFormInputElement<FormInputValueType> extends HTMLElement {
   constructor();
 
   /**
@@ -17,50 +19,66 @@ export default abstract class AbstractFormInputElement<FormInputValueType> exten
   static formAssociated: boolean;
 
   /**
+   * Attributes requiring change notifications
+   * @defaultValue `"disabled"`
+   */
+  static observedAttributes: string[];
+
+  /**
    * Attached ElementInternals which provides form handling functionality.
+   * @remarks Initialized at construction
    */
   protected _internals: ElementInternals;
 
   /**
+   * The primary input (if any). Used to determine what element should receive focus when an associated label is clicked
+   * on.
+   */
+  protected _primaryInput: HTMLElement | undefined;
+
+  /**
    * The form this element belongs to.
    */
-  get form(): HTMLFormElement;
-  set name(value: string);
+  get form(): HTMLFormElement | null;
 
   /**
    * The input element name.
    */
-  get name(): string;
-  set value(value: FormInputValueType);
+  get name(): string | null;
+
+  set name(value: string);
 
   /**
    * The value of the input element.
    */
-  get value(): FormInputValueType;
+  get value(): FormInputValueType | undefined;
+
+  set value(value: FormInputValueType);
 
   /**
    * The underlying value of the element.
    */
-  protected _value: FormInputValueType;
+  protected _value: FormInputValueType | undefined;
 
   /**
    * Return the value of the input element which should be submitted to the form.
    */
-  protected _getValue(): FormInputValueType;
+  protected _getValue(): FormInputValueType | undefined;
 
   /**
    * Translate user-provided input value into the format that should be stored.
    * @param value - A new value to assign to the element
    * @throws An error if the provided value is invalid
+   * @remarks Doesn't do any checking or throwing in `AbstractFormInputElement`, just assigns to {@linkcode this._value}.
    */
   protected _setValue(value: FormInputValueType): void;
-
-  set disabled(value: boolean);
 
   /**
    * Is this element disabled?
    */
   get disabled(): boolean;
+
+  set disabled(value: boolean);
 
   /**
    * Is this field editable? The field can be neither disabled nor readonly.
@@ -70,13 +88,40 @@ export default abstract class AbstractFormInputElement<FormInputValueType> exten
   /**
    * Special behaviors that the subclass should implement when toggling the disabled state of the input.
    * @param disabled - The new disabled state
+   * @remarks No-op in `AbstractFormInputElement`
    */
   protected _toggleDisabled(disabled: boolean): void;
+
+  /**
+   * An AbortSignal that can be passed to event listeners registered in subclasses. The signal will ensure that the
+   * listener is removed when the element is disconnected from the DOM. Not available in the constructor.
+   */
+  get abortSignal(): AbortSignal | undefined;
 
   /**
    * Initialize the custom element, constructing its HTML.
    */
   connectedCallback(): void;
+
+  /** @privateRemarks Erroneously marked `@override` in Foundry JSDoc */
+  disconnectedCallback(): void;
+
+  /** @privateRemarks Erroneously marked `@override` in Foundry JSDoc */
+  formDisabledCallback(disabled: boolean): void;
+
+  /**
+   * @remarks No-op in `AbstractFormInputElement`
+   * @privateRemarks Erroneously marked `@override` in Foundry JSDoc, see
+   * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes}
+   */
+  attributeChangedCallback<AttrType>(attrName: string, oldValue: AttrType, newValue: AttrType): void;
+
+  /**
+   * A method provided for subclasses to perform tear-down workflows as an alternative to overriding
+   * disconnectedCallback.
+   * @remarks No-op in `AbstractFormInputElement`
+   */
+  protected _disconnect(): void;
 
   /**
    * Create the HTML elements that should be included in this custom element.
@@ -86,6 +131,7 @@ export default abstract class AbstractFormInputElement<FormInputValueType> exten
 
   /**
    * Refresh the active state of the custom element.
+   * @remarks No-op in `AbstractFormInputElement`
    */
   protected _refresh(): void;
 
@@ -97,12 +143,28 @@ export default abstract class AbstractFormInputElement<FormInputValueType> exten
 
   /**
    * Activate event listeners which add dynamic behavior to the custom element.
+   * @remarks No-op in `AbstractFormInputElement`
    */
   protected _activateListeners(): void;
 
   /**
    * Special handling when the custom element is clicked. This should be implemented to transfer focus to an
    * appropriate internal element.
+   * @remarks `AbstractFormInputElement` implementation focuses the {@linkcode AbstractFormInputElement._primaryInput | _primaryInput} by
+   * default.
    */
   protected _onClick(event: PointerEvent): void;
+
+  #AbstractFormInputElement: true;
+}
+
+declare namespace AbstractFormInputElement {
+  interface Any extends AnyAbstractFormInputElement {}
+  interface AnyConstructor extends Identity<typeof AnyAbstractFormInputElement> {}
+}
+
+export default AbstractFormInputElement;
+
+declare abstract class AnyAbstractFormInputElement extends AbstractFormInputElement<unknown> {
+  constructor(...args: never);
 }

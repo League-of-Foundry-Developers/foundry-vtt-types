@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { fields } from "./_module.d.mts";
+import type { elements, fields as applicationFields } from "#client/applications/_module.d.mts";
 
 // After seeing that none of these types add anything or are even exported a
 // very reasonable question may be: Why on earth does this file exist?
@@ -17,15 +18,15 @@ type DataFieldOptions = fields.DataField.Options.Any;
 
 type DataFieldContext = fields.DataField.ConstructionContext;
 
-type FormGroupConfig = unknown;
+type FormGroupConfig = applicationFields.FormGroupConfig;
 
-type FormInputConfig = unknown;
+type FormInputConfig = applicationFields.FormInputConfig<unknown>;
 
 type StringFieldInputConfig = unknown;
 
-type CodeMirrorLanguage = unknown;
+type CodeMirrorLanguage = elements.HTMLCodeMirrorElement.Language;
 
-type CodeMirrorInputConfig = unknown;
+type CodeMirrorInputConfig = elements.HTMLCodeMirrorElement.Config;
 
 type LightAnimationData = foundry.data.LightData.AnimationData;
 

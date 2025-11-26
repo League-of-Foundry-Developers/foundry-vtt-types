@@ -869,11 +869,17 @@ declare namespace DataField {
     | ToInputConfigWithChoices<InitializedType, Choices>;
 
   /**
-   * `label`, `hint`, and `input` are all provided defaults.
+   * @remarks `label`, `hint`, and `input` are all provided defaults by {@linkcode DataField.toFormGroup | DataField#toFormGroup}
+   * @privateRemarks This could have been `InexactPartial<Pick<>>`, but this lets us provide relevant info on defaults.
    */
   interface GroupConfig extends Omit<FormGroupConfig, "label" | "hint" | "input"> {
+    /** @defaultValue {@linkcode DataField.label | this.label}` ?? `{@linkcode DataField.fieldPath | this.fieldPath} */
     label?: FormGroupConfig["label"] | undefined;
+
+    /** @defaultValue {@linkcode DataField.hint | this.hint} */
     hint?: FormGroupConfig["hint"] | undefined;
+
+    /** @defaultValue {@linkcode DataField.toInput | this.toInput(inputConfig)} */
     input?: FormGroupConfig["input"] | undefined;
   }
 }
