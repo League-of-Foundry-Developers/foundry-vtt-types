@@ -869,11 +869,26 @@ declare namespace DataField {
     | ToInputConfigWithChoices<InitializedType, Choices>;
 
   /**
-   * `label`, `hint`, and `input` are all provided defaults.
+   * @remarks `label`, `hint`, and `input` are all provided defaults by {@linkcode DataField.toFormGroup | DataField#toFormGroup}
+   * @privateRemarks This could have been `InexactPartial<Pick<>>`, but this lets us provide relevant info on defaults.
    */
   interface GroupConfig extends Omit<FormGroupConfig, "label" | "hint" | "input"> {
+    /**
+     * A text label to apply to the form group
+     * @defaultValue {@linkcode DataField.label | this.label}` ?? `{@linkcode DataField.fieldPath | this.fieldPath}
+     */
     label?: FormGroupConfig["label"] | undefined;
+
+    /**
+     * Hint text displayed as part of the form group
+     * @defaultValue {@linkcode DataField.hint | this.hint}
+     */
     hint?: FormGroupConfig["hint"] | undefined;
+
+    /**
+     * An HTML element or collection of elements which provide the inputs for the group
+     * @defaultValue {@linkcode DataField.toInput | this.toInput(inputConfig)}
+     */
     input?: FormGroupConfig["input"] | undefined;
   }
 }
@@ -4552,9 +4567,12 @@ declare namespace HTMLField {
    */
   type InitializedType<Options extends StringField.Options> = StringField.InitializedType<MergedOptions<Options>>;
 
-  // `HTMLField#toFormGroup` provides a default by way of `groupConfig.stacked ??= true`.
   interface GroupConfig extends Omit<DataField.GroupConfig, "stacked"> {
-    stacked?: DataField.GroupConfig["stacked"] | null | undefined;
+    /**
+     * Is the "stacked" class applied to the form group
+     * @defaultValue `true`
+     */
+    stacked?: DataField.GroupConfig["stacked"] | undefined;
   }
 }
 
@@ -5518,9 +5536,12 @@ declare namespace JavaScriptField {
     }
   >;
 
-  // `JavaScriptField#toFormGroup` provides a default by way of `groupConfig.stacked ??= true`.
   interface GroupConfig extends Omit<DataField.GroupConfig, "stacked"> {
-    stacked?: DataField.GroupConfig["stacked"] | null | undefined;
+    /**
+     * Is the "stacked" class applied to the form group
+     * @defaultValue `true`
+     */
+    stacked?: DataField.GroupConfig["stacked"] | undefined;
   }
 
   interface ToInputConfig<InitializedType>

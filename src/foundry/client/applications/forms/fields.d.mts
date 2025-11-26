@@ -1,15 +1,22 @@
-import type { InexactPartial, NullishProps } from "#utils";
+import type { InexactPartial } from "#utils";
+import type { DataField } from "#common/data/fields.d.mts";
 
+/**
+ * @remarks A callback for {@linkcode DataField.toFormGroup | DataField#toFormGroup} to use in place of
+ * {@linkcode foundry.applications.fields.createFormGroup}. Note that it will be called before `#toFormGroup`
+ * applies its defaults for `label`, `hint`, and `input`.
+ */
 export type CustomFormGroup = (
-  field: foundry.data.fields.DataField,
+  field: DataField.Any,
   groupConfig: FormGroupConfig,
   inputConfig: FormInputConfig<unknown>,
 ) => HTMLDivElement;
 
-export type CustomFormInput = (
-  field: foundry.data.fields.DataField,
-  config: FormInputConfig<unknown>,
-) => HTMLElement | HTMLCollection;
+/**
+ * @remarks A callback to be used in place of a field's {@linkcode DataField#_toInput | #_toInput}
+ * @see {@linkcode DataField.toInput | DataField#toInput}
+ */
+export type CustomFormInput = (field: DataField.Any, config: FormInputConfig<unknown>) => HTMLElement | HTMLCollection;
 
 interface _FormGroupConfig {
   /**
@@ -20,47 +27,53 @@ interface _FormGroupConfig {
   /**
    * Hint text displayed as part of the form group
    */
-  hint: string | null | undefined;
+  hint: string;
 
   /**
-   * Some parent CSS id within which field names are unique. If provided,
-   *                     this root ID is used to automatically assign "id" attributes to input
-   *                     elements and "for" attributes to corresponding labels
+   * Some parent CSS id within which field names are unique. If provided, this root ID is used to automatically
+   * assign "id" attributes to input elements and "for" attributes to corresponding labels
    */
-  rootId: string | null | undefined;
+  rootId: string;
 
   /**
    * An array of CSS classes applied to the form group element
    */
-  classes: string[] | null | undefined;
+  classes: string[];
 
   /**
    * Is the "stacked" class applied to the form group
+   * @defaultValue `false`
    */
-  stacked: boolean | null | undefined;
+  stacked: boolean;
 
   /**
-   * Should labels or other elements within this form group be
-   *            automatically localized?
+   * Should labels or other elements within this form group be automatically localized?
+   * @defaultValue `false`
    */
-  localize: boolean | null | undefined;
+  localize: boolean;
 
   /**
-   * A custom form group widget function which replaces the default
-   *            group HTML generation
+   * The value of the form group's hidden attribute
+   * @defaultValue `false`
+   * @remarks Nothing appears to set this to `"until-found"` in core code; the only reference to that string outside the typedef is in CSS.
    */
-  widget: CustomFormGroup | null | undefined;
+  hidden: boolean | "until-found";
+
+  /**
+   * A custom form group widget function which replaces the default group HTML generation
+   * @remarks See {@linkcode CustomFormGroup}
+   */
+  widget: CustomFormGroup;
 }
 
-export interface FormGroupConfig extends NullishProps<_FormGroupConfig> {
+export interface FormGroupConfig extends InexactPartial<_FormGroupConfig> {
   /**
    * A text label to apply to the form group
    */
   label: string;
 
   /**
-   * An HTML element or collection of elements which provide the inputs
-   * for the group
+   * An HTML element or collection of elements which provide the inputs for the group
    */
   input: HTMLElement | HTMLCollection;
 }
@@ -111,17 +124,17 @@ interface _FormInputConfig<FormInputValue = unknown> {
    */
   placeholder: string;
 
+  /**
+   * @remarks Used with {@linkcode DataField.toFormGroup | DataField#toFormGroup}/{@linkcode DataField.toInput | #toInput}: if provided,
+   * this function will be used instead of the field's {@linkcode DataField._toInput | #_toInput}.
+   */
   input: CustomFormInput;
 }
 
 export interface FormInputConfig<FormInputValue> extends InexactPartial<_FormInputConfig<FormInputValue>> {
   /**
    * The name of the form element
-   *
-   * @remarks
-   *
-   * An explicit `undefined` is not allowed here because of the line
-   * `{name: this.fieldPath, ...config};` in `DataField#toInput`.
+   * @remarks An explicit `undefined` is not allowed here because of the line `{name: this.fieldPath, ...config};` in `DataField#toInput`.
    */
   name?: string;
 }

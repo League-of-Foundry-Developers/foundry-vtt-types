@@ -1,10 +1,70 @@
-import { expectTypeOf } from "vitest";
+import { describe, expectTypeOf, test } from "vitest";
+
+import AbstractFormInputElement = foundry.applications.elements.AbstractFormInputElement;
+
+describe("AbstractFormInputElement Tests", () => {
+  class TestFIE extends AbstractFormInputElement<number> {}
+
+  const el = new TestFIE();
+  const input = document.createElement("input");
+  const clickEv = new PointerEvent("click");
+
+  test("Miscellaneous", () => {
+    expectTypeOf(TestFIE.tagName).toBeString();
+    expectTypeOf(TestFIE.formAssociated).toBeBoolean();
+    expectTypeOf(TestFIE.observedAttributes).toEqualTypeOf<string[]>();
+
+    expectTypeOf(el["_applyInputAttributes"](input)).toBeVoid();
+
+    expectTypeOf(el["_internals"]).toEqualTypeOf<ElementInternals>();
+    expectTypeOf(el["_primaryInput"]).toEqualTypeOf<HTMLElement | undefined>();
+
+    expectTypeOf(el.form).toEqualTypeOf<HTMLFormElement | null>();
+    expectTypeOf(el.name).toEqualTypeOf<string | null>();
+    el.name = "foo"; // Setter
+    // @ts-expect-error The element might be misconfigured (has no name), but it's a ostensibly a form element, so disallow setting null
+    el.name = null;
+
+    expectTypeOf(el.value).toEqualTypeOf<number | undefined>();
+    el.value = 7; // Setter
+
+    expectTypeOf(el["_value"]).toEqualTypeOf<number | undefined>();
+    expectTypeOf(el["_getValue"]()).toEqualTypeOf<number | undefined>();
+    expectTypeOf(el["_setValue"](7)).toBeVoid();
+    // @ts-expect-error This is a number input, can't set a string on it
+    el["_setValue"]("bar");
+
+    expectTypeOf(el.disabled).toBeBoolean();
+    el.disabled = false; // Setter
+
+    expectTypeOf(el.editable).toBeBoolean();
+
+    expectTypeOf(el.abortSignal).toEqualTypeOf<AbortSignal | undefined>();
+  });
+
+  test("Callbacks", () => {
+    expectTypeOf(el.connectedCallback()).toBeVoid();
+    expectTypeOf(el.disconnectedCallback()).toBeVoid();
+    expectTypeOf(el.formDisabledCallback(true)).toBeVoid();
+    expectTypeOf(el["_toggleDisabled"](true)).toBeVoid();
+    expectTypeOf(el.attributeChangedCallback("disabled", true, false)).toBeVoid();
+
+    // @ts-expect-error We can't infer the real type from the name, but we enforce the same type for `oldValue` and `newValue`
+    // This might be an unsafe assumption, if the real type is `| null`.
+    el.attributeChangedCallback("foo", 7, "bar");
+
+    expectTypeOf(el["_disconnect"]()).toBeVoid();
+
+    expectTypeOf(el["_buildElements"]()).toEqualTypeOf<HTMLElement[]>();
+
+    expectTypeOf(el["_refresh"]()).toBeVoid();
+    expectTypeOf(el["_activateListeners"]()).toBeVoid();
+
+    expectTypeOf(el["_onClick"](clickEv)).toBeVoid();
+  });
+});
 
 declare const formInput: foundry.applications.elements.AbstractFormInputElement<number>;
-
-expectTypeOf(formInput.form).toEqualTypeOf<HTMLFormElement>();
-expectTypeOf(formInput.name).toEqualTypeOf<string>();
-expectTypeOf(formInput.value).toEqualTypeOf<number>();
 expectTypeOf(formInput.disabled).toEqualTypeOf<boolean>();
 expectTypeOf(formInput.editable).toEqualTypeOf<boolean>();
 expectTypeOf(formInput.connectedCallback()).toEqualTypeOf<void>();
