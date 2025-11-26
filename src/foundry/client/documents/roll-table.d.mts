@@ -516,30 +516,30 @@ declare namespace RollTable {
     /**
      * An existing Roll instance to use for drawing from the table
      */
-    roll: Roll;
+    roll?: Roll | undefined;
 
     /**
      * Allow drawing recursively from inner RollTable results
      * @defaultValue `true`
      */
-    recursive: boolean;
+    recursive?: boolean | undefined;
 
     /**
      * One or more table results which have been drawn
      * @defaultValue `[]`
      */
-    results: TableResult.Implementation[];
+    results?: TableResult.Implementation[] | undefined;
 
     /**
      * Whether to automatically display the results in chat
      * @defaultValue `true`
      */
-    displayChat: boolean;
+    displayChat?: boolean | undefined;
 
     /**
      * The chat roll mode to use when displaying the result
      */
-    rollMode: ChatMessage.PassableRollMode;
+    rollMode?: ChatMessage.PassableRollMode | undefined;
   }
 
   /**
@@ -645,7 +645,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * @param options - Optional arguments which customize the draw
    * @returns The drawn results
    */
-  drawMany(number: number, options?: InexactPartial<RollTable.DrawOptions>): Promise<RollTable.Draw>;
+  drawMany(number: number, options?: RollTable.DrawOptions): Promise<RollTable.Draw>;
 
   /**
    * Normalize the probabilities of rolling each item in the RollTable based on their assigned weights
