@@ -848,6 +848,7 @@ declare namespace DataField {
    */
   interface InitializeOptions extends Document.InitializeOptions {}
 
+  // TODO: why is this wrapping of FormInputConfig here?
   interface ToInputConfig<InitializedType> extends FormInputConfig<InitializedType> {}
 
   interface ToInputConfigWithOptions<InitializedType> extends FormInputConfig<InitializedType>, SelectInputConfig {}
@@ -869,10 +870,30 @@ declare namespace DataField {
     | ToInputConfigWithChoices<InitializedType, Choices>;
 
   /**
+   * @remarks A callback for {@linkcode DataField.toFormGroup | DataField#toFormGroup} to use in place of
+   * {@linkcode foundry.applications.fields.createFormGroup}. Note that it will be called before `#toFormGroup`
+   * applies its defaults for `label`, `hint`, and `input`.
+   */
+  type CustomFormGroup = (
+    field: DataField.Any,
+    groupConfig: FormGroupConfig,
+    inputConfig: FormInputConfig<unknown>,
+  ) => HTMLDivElement;
+
+  /** @internal */
+  interface _GroupConfig {
+    /**
+     * A custom form group widget function which replaces the default group HTML generation
+     * @remarks See {@linkcode CustomFormGroup}
+     */
+    widget: CustomFormGroup;
+  }
+
+  /**
    * @remarks `label`, `hint`, and `input` are all provided defaults by {@linkcode DataField.toFormGroup | DataField#toFormGroup}
    * @privateRemarks This could have been `InexactPartial<Pick<>>`, but this lets us provide relevant info on defaults.
    */
-  interface GroupConfig extends Omit<FormGroupConfig, "label" | "hint" | "input"> {
+  interface GroupConfig extends InexactPartial<_GroupConfig>, Omit<FormGroupConfig, "label" | "hint" | "input"> {
     /**
      * A text label to apply to the form group
      * @defaultValue {@linkcode DataField.label | this.label}` ?? `{@linkcode DataField.fieldPath | this.fieldPath}
@@ -1921,6 +1942,7 @@ declare namespace StringField {
   /** @internal */
   type _ValidChoice<Choices> = Choices extends (...args: infer _1) => infer C ? FixedChoice<C> : FixedChoice<Choices>;
 
+  /** @internal */
   type _ApplyBlank<Choices, Result> = Choices extends { readonly blank: true } ? Result | "" : Result;
 
   type FixedChoice<Choices> =
@@ -1964,6 +1986,17 @@ declare namespace StringField {
 
   type Choices = BaseChoices | (() => BaseChoices);
 
+  /** @remarks The possible element types returned by {@linkcode StringField._toInput | StringField#_toInput} */
+  type InputType = "input" | "textarea" | "prose-mirror" | "code-mirror";
+
+  interface _StringFieldInputConfig {
+    /**
+     * The element to create for this form field
+     * @defaultValue `"input"`
+     */
+    elementType: InputType;
+  }
+
   /** @internal */
   type _PrepareChoiceConfig = InexactPartial<
     Pick<_FormInputConfig, "localize"> & Pick<SelectInputConfig, "labelAttr" | "valueAttr">
@@ -1973,7 +2006,7 @@ declare namespace StringField {
     choices: DataField.AnyChoices;
   }
 
-  /** @deprecated Replaced with {@linkcode PrepareChoiceConfig} in v13 */
+  /** @deprecated Replaced with {@linkcode PrepareChoiceConfig} in v13. */
   interface GetChoicesOptions extends PrepareChoiceConfig {}
 }
 

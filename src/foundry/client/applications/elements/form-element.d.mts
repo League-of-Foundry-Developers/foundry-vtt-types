@@ -114,7 +114,7 @@ declare abstract class AbstractFormInputElement<FormInputValueType> extends HTML
    * @privateRemarks Erroneously marked `@override` in Foundry JSDoc, see
    * {@link https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements#responding_to_attribute_changes}
    */
-  attributeChangedCallback<AttrType>(attrName: string, oldValue: AttrType, newValue: AttrType): void;
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void;
 
   /**
    * A method provided for subclasses to perform tear-down workflows as an alternative to overriding

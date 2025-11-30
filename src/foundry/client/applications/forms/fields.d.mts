@@ -1,16 +1,12 @@
-import type { InexactPartial } from "#utils";
-import type { DataField } from "#common/data/fields.d.mts";
+import type { GetKey, InexactPartial } from "#utils";
+import type {
+  HTMLMultiSelectElement,
+  HTMLMultiCheckboxElement,
+} from "#client/applications/elements/multi-select.d.mts";
 
-/**
- * @remarks A callback for {@linkcode DataField.toFormGroup | DataField#toFormGroup} to use in place of
- * {@linkcode foundry.applications.fields.createFormGroup}. Note that it will be called before `#toFormGroup`
- * applies its defaults for `label`, `hint`, and `input`.
- */
-export type CustomFormGroup = (
-  field: DataField.Any,
-  groupConfig: FormGroupConfig,
-  inputConfig: FormInputConfig<unknown>,
-) => HTMLDivElement;
+/** @privateRemarks `NumberField` is only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { DataField, NumberField } from "#common/data/fields.d.mts";
 
 /**
  * @remarks A callback to be used in place of a field's {@linkcode DataField#_toInput | #_toInput}
@@ -32,6 +28,26 @@ interface _FormGroupConfig {
   /**
    * Some parent CSS id within which field names are unique. If provided, this root ID is used to automatically
    * assign "id" attributes to input elements and "for" attributes to corresponding labels
+   * @remarks e.g a document ID, or `this.id` for use within {@linkcode foundry.applications.api.ApplicationV2 | AppV2}s.
+   * @example
+   *
+   * ```js
+   * const sf = new foundry.data.fields.StringField();
+   * foundry.applications.fields.createFormGroup({
+   *   label: "A Label",
+   *   input: sf.toInput({name: "system.foo", value: "buzz"}),
+   *   rootId: "HYIwO4kkI2XOzf99",
+   * })
+   * ```
+   * Produces
+   * ```html
+   * <div class="form-group">
+   *  <label for="bar-fizz">A Label</label>
+   *  <div class="form-fields">
+   *    <input type="text" name="system.foo" value="buzz" id="HYIwO4kkI2XOzf99-system.foo">
+   *  </div>
+   * </div>
+   * ```
    */
   rootId: string;
 
@@ -59,11 +75,7 @@ interface _FormGroupConfig {
    */
   hidden: boolean | "until-found";
 
-  /**
-   * A custom form group widget function which replaces the default group HTML generation
-   * @remarks See {@linkcode CustomFormGroup}
-   */
-  widget: CustomFormGroup;
+  // `widget` omitted here and added in DataField.GroupConfig
 }
 
 export interface FormGroupConfig extends InexactPartial<_FormGroupConfig> {
@@ -134,8 +146,8 @@ interface _FormInputConfig<FormInputValue = unknown> {
 export interface FormInputConfig<FormInputValue> extends InexactPartial<_FormInputConfig<FormInputValue>> {
   /**
    * The name of the form element
-   * @remarks An explicit `undefined` is not allowed here because of the line `{name: this.fieldPath, ...config};` in `DataField#toInput`.
    */
+  // TODO: make required without breaking things
   name?: string;
 }
 
@@ -149,31 +161,70 @@ export function createFormGroup(config: FormGroupConfig): HTMLDivElement;
  */
 export function createCheckboxInput(config: FormInputConfig<boolean>): HTMLInputElement;
 
-export interface EditorInputConfig extends FormInputConfig<string> {
+/** @internal */
+interface _EditorInputConfig {
   /** @defaultValue `"prosemirror"` */
-  engine?: string;
-  height?: number;
-  editable?: boolean;
-  button?: boolean;
-  collaborate?: boolean;
+  engine: string;
+
+  height: number;
+
+  /** @defaultValue `true` */
+  editable: boolean;
+
+  /** @defaultValue `false` */
+  button: boolean;
+
+  /** @defaultValue `false` */
+  collaborate: boolean;
 }
+
+export interface EditorInputConfig extends FormInputConfig<string>, InexactPartial<_EditorInputConfig> {}
 
 /**
  * Create a `<div class="editor">` element for a StringField.
  */
 export function createEditorInput(config: EditorInputConfig): HTMLDivElement;
 
-interface MultiSelectInputConfig extends FormInputConfig<string[]>, Omit<SelectInputConfig, "blank"> {}
+export interface MultiSelectInputConfig
+  extends FormInputConfig<string[] | number[]>,
+    Omit<SelectInputConfig, "blank"> {}
 
 /**
- * Create a `<multi-select>` element for a StringField.
+ * {@linkcode createMultiSelectInput}'s returned element is only dependent on whether {@linkcode MultiSelectInputConfig.type | config.type}
+ * is `"checkboxes"` or not.
  */
-export function createMultiSelectInput(config: MultiSelectInputConfig): HTMLSelectElement;
+export type MultiSelectInputReturn<Config extends MultiSelectInputConfig> = _MultiSelectInputReturn<
+  GetKey<Config, "type", undefined>
+>;
+
+/** @internal */
+type _MultiSelectInputReturn<Type extends SelectInputConfig["type"]> = Type extends "checkboxes"
+  ? HTMLMultiCheckboxElement
+  : Type extends Exclude<SelectInputConfig["type"], "checkboxes">
+    ? HTMLMultiSelectElement
+    : never;
+
+/**
+ * Create a `<multi-select>` or `<multi-checkbox>` element for fields supporting multiple choices.
+ */
+export function createMultiSelectInput<Config extends MultiSelectInputConfig>(
+  config: Config,
+): MultiSelectInputReturn<Config>;
 
 export interface NumberInputConfig extends FormInputConfig<number> {
   min?: number;
   max?: number;
+
+  /** @remarks Any non-number value is replaced with `"any"` */
   step?: number | "any";
+
+  /**
+   * @remarks In {@linkcode NumberField._toInput | NumberField#_toInput}, if {@linkcode min}, {@linkcode max}, and {@linkcode step} are all
+   * provided, passing `"number"` will prevent the output from being a `<range-picker>`. Passing `"range"` has no effect, the presence of
+   * the other three properties is all that matters.
+   *
+   * This is entirely unused in {@linkcode createNumberInput}.
+   */
   type?: "range" | "number";
 }
 
@@ -197,15 +248,19 @@ export interface FormSelectOption {
   dataset?: Record<string, string>;
 }
 
+/** @internal */
 interface _SelectInputConfig {
   /**
-   * An option to control the order and display of optgroup elements. The order of
-   * strings defines the displayed order of optgroup elements.
-   * A blank string may be used to define the position of ungrouped options.
-   * If not defined, the order of groups corresponds to the order of options.
+   * An option to control the order and display of optgroup elements. The order of strings defines the displayed order of optgroup elements.
+   * A blank string may be used to define the position of ungrouped options. If not defined, the order of groups corresponds to the order of
+   * options.
    */
   groups: string[];
 
+  /**
+   * @remarks If the provided {@linkcode SelectInputConfig.options | options} don't include an option with a value of `""`, providing this
+   * property will cause one to be created at the top of the options list with this value as its label.
+   */
   blank: string;
 
   /**
@@ -220,20 +275,20 @@ interface _SelectInputConfig {
 
   /**
    * Localize value labels
-   *
    * @defaultValue `false`
    */
   localize: boolean;
 
   /**
    * Sort options alphabetically by label within groups
-   *
    * @defaultValue `false`
    */
   sort: boolean;
 
   /**
    * Customize the type of select that is created
+   * @remarks This is only used in {@linkcode createMultiSelectInput}, which only checks this for `=== "checkboxes"`. If true, a
+   * {@linkcode HTMLMultiCheckboxElement} is returned; all other values lead to a {@linkcode HTMLMultiSelectElement}
    */
   type: "single" | "multi" | "checkboxes";
 }
@@ -249,7 +304,14 @@ export interface SelectInputConfig extends InexactPartial<_SelectInputConfig> {
 export function createSelectInput(config: SelectInputConfig & FormInputConfig<string>): HTMLSelectElement;
 
 export interface TextAreaInputConfig extends FormInputConfig<string> {
-  rows: number;
+  /**
+   * The number of visible text lines for the `<textarea>`
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#rows}
+   * @remarks Foundry provides no support for
+   * {@linkcode https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/textarea#cols | cols}
+   * @privateRemarks Foundry incorrectly types this as required in 13.351 and 14.352
+   */
+  rows?: number;
 }
 
 /**
@@ -275,11 +337,23 @@ export function createTextInput(config: FormInputConfig<string>): HTMLInputEleme
  * const groups = ["Good Options", "Bad Options", "Unused Options"];
  * const optgroups = foundry.applications.fields.prepareSelectOptionGroups({options, groups, blank: true, sort: true});
  * ```
+ * @remarks
  */
-export function prepareSelectOptionGroups(config: FormInputConfig<unknown> & SelectInputConfig): {
+export function prepareSelectOptionGroups(
+  config: FormInputConfig<unknown> & SelectInputConfig,
+): PreparedSelectOptionGroup[];
+
+/**
+ * {@linkcode prepareSelectOptionGroups} adds an undocumented, and seemingly unused, `type` property that is always set to `"option"`
+ */
+interface PreparedFormSelectOption extends Required<FormSelectOption> {
+  type: "option";
+}
+
+export interface PreparedSelectOptionGroup {
   group: string;
-  options: FormSelectOption[];
-}[];
+  options: PreparedFormSelectOption[];
+}
 
 /**
  * Apply standard attributes to all input elements.
@@ -287,3 +361,49 @@ export function prepareSelectOptionGroups(config: FormInputConfig<unknown> & Sel
  * @param config - Configuration for the element
  */
 export function setInputAttributes(input: HTMLElement, config: FormInputConfig<unknown>): void;
+
+/**
+ * Create an HTML element for a FontAwesome icon
+ * @param glyph   - A FontAwesome glyph name, such as "file" or "user"
+ * @param options - Additional options to configure the icon
+ * @returns The configured FontAwesome icon element
+ * @see {@link https://fontawesome.com/v6/search}
+ * @remarks While Foundry has a license to use the FontAwesome Pro icons, you, the user reading this, do not, by default. For legal reasons,
+ * if you don't positively know you're licensed to use more, stick to the `Free` list on the page linked above (you used to be able to link
+ * directly to a page showing only free icons, but FA broke that recently; the button is top right above the icon grid at time of writing).
+ * Said link has been changed from Foundry's to point to the FA v6.7.2 list, as that's what's shipped with Foundry in both 13.351 and 14.352.
+ *
+ * `glyph` will take identifiers with or without the `fa-` prefix.
+ */
+export function createFontAwesomeIcon(glyph: string, options?: CreateFontAwesomeIconOptions): HTMLElement;
+
+export type FontAwesomeStyle = "solid" | "regular" | "duotone";
+
+/** @internal */
+interface _CreateFontAwesomeIconOptions {
+  /**
+   * The style name for the icon
+   * @defaultValue `"solid"`
+   */
+  style: FontAwesomeStyle;
+
+  /**
+   * Should the icon be fixed-width?
+   * @defaultValue `false`
+   */
+  fixedWidth: boolean;
+
+  /**
+   * Additional classes to append to the class list
+   * @defaultValue `[]`
+   */
+  classes: string[];
+}
+
+export interface CreateFontAwesomeIconOptions extends InexactPartial<_CreateFontAwesomeIconOptions> {}
+
+/**
+ * @deprecated Since this type is only used by {@linkcode DataField.toFormGroup | DataField#toFormGroup}, and not by any of the functions in
+ * this file, it has moved to {@linkcode DataField.CustomFormGroup}. This alias will be removed in v15.
+ */
+export type CustomFormGroup = DataField.CustomFormGroup;

@@ -84,7 +84,7 @@ declare class HTMLCodeMirrorElement extends AbstractFormInputElement<string> {
 
   protected override _buildElements(): HTMLElement[];
 
-  override attributeChangedCallback(attrName: string, oldValue: unknown, newValue: unknown): void;
+  override attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void;
 
   override disconnectedCallback(): void;
 
@@ -99,16 +99,18 @@ declare class HTMLCodeMirrorElement extends AbstractFormInputElement<string> {
 }
 
 declare namespace HTMLCodeMirrorElement {
-  type _Options = InexactPartial<{
+  /** @internal */
+  interface _Options {
     /** The initial editor contents. */
     value: string;
-  }>;
+  }
 
-  interface Options extends _Options {}
+  interface Options extends InexactPartial<_Options> {}
 
   type Language = "javascript" | "json" | "html" | "markdown" | "" | "plain";
 
-  type _Config = InexactPartial<{
+  /** @internal */
+  interface _Config {
     /**
      * The value's language
      * @defaultValue `""`
@@ -120,13 +122,13 @@ declare namespace HTMLCodeMirrorElement {
      * @defaultValue `2`
      */
     indent: number;
-  }>;
+  }
 
   /**
    * @remarks {@linkcode HTMLCodeMirrorElement.create} only makes use of only the `value` and `name` properties of `FormInputConfig`, plus
    * what {@linkcode foundry.applications.fields.setInputAttributes | setInputAttributes} uses.
    */
-  interface Config extends FormInputConfig<string>, _Config {}
+  interface Config extends FormInputConfig<string>, InexactPartial<_Config> {}
 }
 
 export default HTMLCodeMirrorElement;
