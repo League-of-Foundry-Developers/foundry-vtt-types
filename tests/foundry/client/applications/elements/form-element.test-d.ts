@@ -42,7 +42,7 @@ describe("AbstractFormInputElement Tests", () => {
     expectTypeOf(el.abortSignal).toEqualTypeOf<AbortSignal | undefined>();
   });
 
-  test("Callbacks", () => {
+  test("Element API and lifecycle methods", () => {
     expectTypeOf(el.connectedCallback()).toBeVoid();
     expectTypeOf(el.disconnectedCallback()).toBeVoid();
     expectTypeOf(el.formDisabledCallback(true)).toBeVoid();

@@ -7,6 +7,7 @@ import type {
   InexactPartial,
   FixedInstanceType,
   Identity,
+  IntentionalPartial,
   PrettifyType,
   InterfaceToObject,
   AnyArray,
@@ -28,7 +29,7 @@ import type {
   FormGroupConfig,
   FormInputConfig,
   MultiSelectInputConfig,
-  SelectInputConfig,
+  _SelectInputConfig,
   TextAreaInputConfig,
 } from "#client/applications/forms/fields.d.mts";
 
@@ -848,10 +849,27 @@ declare namespace DataField {
    */
   interface InitializeOptions extends Document.InitializeOptions {}
 
-  // TODO: why is this wrapping of FormInputConfig here?
-  interface ToInputConfig<InitializedType> extends FormInputConfig<InitializedType> {}
+  /**
+   * @remarks A callback to be used in place of a field's {@linkcode DataField#_toInput | #_toInput}
+   * @see {@linkcode DataField.toInput | DataField#toInput}
+   */
+  type CustomFormInput = (field: DataField.Any, config: FormInputConfig<unknown>) => HTMLElement | HTMLCollection;
 
-  interface ToInputConfigWithOptions<InitializedType> extends FormInputConfig<InitializedType>, SelectInputConfig {}
+  /**
+   * {@linkcode DataField.toInput | DataField#toInput} provides a default for {@linkcode FormInputConfig.name | name} (the only required
+   * property of `FormInputConfig`) via spread operator, we `IntentionalPartial` the config .
+   *
+   * Foundry includes `input` in `FormInputConfig`, but it is only used by `DataField#_toInput`, so we move it here instead.
+   */
+  interface ToInputConfig<InitializedType> extends IntentionalPartial<FormInputConfig<InitializedType>> {
+    /**
+     * @remarks Used with {@linkcode DataField.toFormGroup | DataField#toFormGroup}/{@linkcode DataField.toInput | #toInput}: if provided,
+     * this function will be used instead of the field's {@linkcode DataField._toInput | #_toInput}.
+     */
+    input?: CustomFormInput | undefined;
+  }
+
+  interface ToInputConfigWithOptions<InitializedType> extends ToInputConfig<InitializedType>, _SelectInputConfig {}
 
   type AnyChoices = StringField.Choices | NumberField.Choices;
 
@@ -863,11 +881,6 @@ declare namespace DataField {
           choices?: StringField.PrepareChoiceConfig["choices"] | undefined;
         }
   >;
-
-  type SelectableToInputConfig<InitializedType, Choices extends StringField.Choices | undefined> =
-    | ToInputConfig<InitializedType>
-    | ToInputConfigWithOptions<InitializedType>
-    | ToInputConfigWithChoices<InitializedType, Choices>;
 
   /**
    * @remarks A callback for {@linkcode DataField.toFormGroup | DataField#toFormGroup} to use in place of
@@ -1999,9 +2012,10 @@ declare namespace StringField {
 
   /** @internal */
   type _PrepareChoiceConfig = InexactPartial<
-    Pick<_FormInputConfig, "localize"> & Pick<SelectInputConfig, "labelAttr" | "valueAttr">
+    Pick<_FormInputConfig, "localize"> & Pick<_SelectInputConfig, "labelAttr" | "valueAttr">
   >;
 
+  /** Foundry's type `ChoiceInputConfig` includes both `choices` and `options` */
   interface PrepareChoiceConfig extends _PrepareChoiceConfig {
     choices: DataField.AnyChoices;
   }
@@ -3610,9 +3624,9 @@ declare namespace DocumentUUIDField {
     extends Omit<DataField.ToInputConfig<InitializedType>, "type" | "single"> {}
 
   /** @internal */
-  type _Choices = Omit<SelectInputConfig, "options"> & StringField.PrepareChoiceConfig;
+  type _Choices = Omit<_SelectInputConfig, "options"> & StringField.PrepareChoiceConfig;
 
-  interface ToInputConfigWithOptions<InitializedType> extends RootToInputConfig<InitializedType>, SelectInputConfig {}
+  interface ToInputConfigWithOptions<InitializedType> extends RootToInputConfig<InitializedType>, _SelectInputConfig {}
   interface ToInputConfigWithChoices<InitializedType>
     extends SimpleMerge<RootToInputConfig<InitializedType>, _Choices> {}
 

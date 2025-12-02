@@ -7,7 +7,11 @@ import type { FormInputConfig } from "#client/applications/forms/fields.mjs";
  * A custom HTML element responsible for displaying a CodeMirror rich text editor.
  */
 declare class HTMLCodeMirrorElement extends AbstractFormInputElement<string> {
-  constructor(options?: HTMLCodeMirrorElement.Options);
+  /**
+   * @remarks This constructor is protected because additional work must be done after creation for this element to be valid in the DOM.
+   * Use {@linkcode HTMLCodeMirrorElement.create} instead.
+   */
+  protected constructor(options?: HTMLCodeMirrorElement.Options);
 
   /** @defaultValue `"code-mirror"` */
   static override tagName: string;

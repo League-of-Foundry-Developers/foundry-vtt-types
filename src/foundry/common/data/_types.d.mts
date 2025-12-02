@@ -18,11 +18,13 @@ type DataFieldOptions = fields.DataField.Options.Any;
 
 type DataFieldContext = fields.DataField.ConstructionContext;
 
+type DataFieldValidationOptions = unknown;
+
 type FormGroupConfig = applicationFields.FormGroupConfig;
 
 type FormInputConfig = applicationFields.FormInputConfig<unknown>;
 
-type StringFieldInputConfig = unknown;
+type StringFieldInputConfig = fields.StringField._StringFieldInputConfig;
 
 type CodeMirrorLanguage = elements.HTMLCodeMirrorElement.Language;
 
@@ -34,13 +36,13 @@ type NumberFieldOptions = fields.NumberField.Options;
 
 type StringFieldOptions = fields.StringField.Options;
 
-type ChoiceInputConfig = unknown;
+type ChoiceInputConfig = fields.StringField.PrepareChoiceConfig;
 
 type ArrayFieldOptions = fields.ArrayField.Options<unknown>;
 
 type DocumentUUIDFieldOptions = fields.DocumentUUIDField.Options;
 
-type FilePathFieldOptions = fields.FilePathField;
+type FilePathFieldOptions = fields.FilePathField.Options;
 
 type DocumentFlags = Record<string, Record<string, unknown>>;
 
