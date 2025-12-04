@@ -1,5 +1,9 @@
 import type { Identity } from "#utils";
 
+/** @privateRemarks `FormInputConfig` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { FormInputConfig } from "../forms/fields.d.mts";
+
 /**
  * An abstract custom HTMLElement designed for use with form inputs.
  * @remarks Fires input  - An "input" event when the value of the input changes
@@ -43,14 +47,20 @@ declare abstract class AbstractFormInputElement<FormInputValueType> extends HTML
 
   /**
    * The input element name.
+   * @privateRemarks This type intentionally doesn't account for the possibility of a total lack of `name`, leading to a `null` return.
+   * Since `name` is required in {@linkcode FormInputConfig}, this class is abstract, and all subclasses have had their constructors
+   * protected in favour of static `.create` methods and/or functions in {@linkcode foundry.applications.fields}, this is close enough
+   * to accurate.
    */
-  get name(): string | null;
+  get name(): string;
 
-  set name(value: string);
+  set name(value);
 
   /**
    * The value of the input element.
+   * @privateRemarks This
    */
+  // TODO: finish above remarks and remove |undefined from values, move to including in specific element type params
   get value(): FormInputValueType | undefined;
 
   set value(value: FormInputValueType);

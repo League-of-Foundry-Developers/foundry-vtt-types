@@ -20,10 +20,8 @@ describe("AbstractFormInputElement Tests", () => {
     expectTypeOf(el["_primaryInput"]).toEqualTypeOf<HTMLElement | undefined>();
 
     expectTypeOf(el.form).toEqualTypeOf<HTMLFormElement | null>();
-    expectTypeOf(el.name).toEqualTypeOf<string | null>();
+    expectTypeOf(el.name).toBeString();
     el.name = "foo"; // Setter
-    // @ts-expect-error The element might be misconfigured (has no name), but it's a ostensibly a form element, so disallow setting null
-    el.name = null;
 
     expectTypeOf(el.value).toEqualTypeOf<number | undefined>();
     el.value = 7; // Setter

@@ -7,7 +7,7 @@ describe("AbstractMultiSelectElementTests", () => {
   class TestAMSE extends elements.AbstractMultiSelectElement {}
   const mse = new TestAMSE();
 
-  test("Miscellaneous", () => {
+  test("Element API and lifecycle methods", () => {
     expectTypeOf(mse.connectedCallback()).toBeVoid();
   });
 
@@ -61,7 +61,9 @@ describe("HTMLMultiSelectElement Tests", () => {
   test("Miscellaneous", () => {
     // tag names are just `string`s for ease of subclassing
     expectTypeOf(elements.HTMLMultiSelectElement.tagName).toBeString();
+  });
 
+  test("Element API and lifecycle methods", () => {
     expectTypeOf(mse["_buildElements"]()).toEqualTypeOf<HTMLElement[]>();
     expectTypeOf(mse["_refresh"]()).toBeVoid();
     expectTypeOf(mse["_activateListeners"]()).toBeVoid();
@@ -88,7 +90,9 @@ describe("HTMLMultiCheckboxElement Tests", () => {
   test("Miscellaneous", () => {
     // tag names are just `string`s for ease of subclassing
     expectTypeOf(elements.HTMLMultiCheckboxElement.tagName).toBeString();
+  });
 
+  test("Element API and lifecycle methods", () => {
     expectTypeOf(mce["_buildElements"]()).toEqualTypeOf<HTMLElement[]>();
     expectTypeOf(mce["_refresh"]()).toBeVoid();
     expectTypeOf(mce["_activateListeners"]()).toBeVoid();
