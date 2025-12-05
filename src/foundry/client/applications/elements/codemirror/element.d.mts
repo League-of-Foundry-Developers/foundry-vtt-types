@@ -9,7 +9,7 @@ import type { FormInputConfig } from "#client/applications/forms/fields.mjs";
 declare class HTMLCodeMirrorElement extends AbstractFormInputElement<string> {
   /**
    * @remarks This constructor is protected because additional work must be done after creation for this element to be valid in the DOM.
-   * Use {@linkcode HTMLCodeMirrorElement.create} instead.
+   * Use {@linkcode HTMLCodeMirrorElement.create}  instead.
    */
   protected constructor(options?: HTMLCodeMirrorElement.Options);
 
@@ -18,12 +18,6 @@ declare class HTMLCodeMirrorElement extends AbstractFormInputElement<string> {
 
   /** @defaultValue `["disabled", "language", "indent", "nowrap"]` */
   static override observedAttributes: string[];
-
-  /** @privateRemarks Fake type override. See {@linkcode HTMLCodeMirrorElement._getValue | HTMLCodeMirrorElement#_getValue}'s remarks. */
-  protected override _value: string;
-
-  /** @privateRemarks Fake type override. See {@linkcode HTMLCodeMirrorElement._getValue | HTMLCodeMirrorElement#_getValue}'s remarks. */
-  override get value(): string;
 
   /**
    * The position of the cursor.
@@ -64,10 +58,6 @@ declare class HTMLCodeMirrorElement extends AbstractFormInputElement<string> {
 
   protected override _toggleDisabled(disabled: boolean): void;
 
-  /**
-   * @remarks No `| undefined` here as {@linkcode _value} gets set to {@linkcode HTMLElement.innerText | this.innerText}
-   *  during construction, which appears to always be at least an empty string, even if not in the DOM.
-   */
   protected override _getValue(): string;
 
   protected override _setValue(value: string): void;

@@ -5,8 +5,8 @@ import HTMLColorPickerElement = foundry.applications.elements.HTMLColorPickerEle
 describe("HTMLColorPickerElement Tests", () => {
   const config = {
     name: "system.color",
-    // This element's config is an unextended `FormInputConfig`. Thorough testing of that interface
-    // can be found in the `client/applications/forms/fields.mjs` tests.
+    value: "#000000",
+    // Thorough testing of the rest of `FormInputConfig` can be found in the `client/applications/forms/fields.mjs` tests.
   } satisfies HTMLColorPickerElement.Config;
 
   test("Construction", () => {
@@ -21,6 +21,15 @@ describe("HTMLColorPickerElement Tests", () => {
 
   test("Miscellaneous", () => {
     expectTypeOf(HTMLColorPickerElement.tagName).toBeString();
+  });
+
+  test("Value", () => {
+    expectTypeOf(el.value).toEqualTypeOf<string | null>();
+    el.value = "#ABFEDC"; // Setter
+
+    expectTypeOf(el["_value"]).toEqualTypeOf<string | null>();
+    expectTypeOf(el["_getValue"]()).toEqualTypeOf<string | null>();
+    expectTypeOf(el["_setValue"]("#FFF000")).toBeVoid();
   });
 
   test("Element API and lifecycle methods", () => {

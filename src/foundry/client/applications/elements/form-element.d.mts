@@ -58,30 +58,41 @@ declare abstract class AbstractFormInputElement<FormInputValueType> extends HTML
 
   /**
    * The value of the input element.
-   * @privateRemarks This
+   * @privateRemarks This type does not consider the case where no value is provided at construction/creation/in the markup, in which case
+   * it can be `undefined`, as neither this nor {@linkcode AbstractFormInputElement._setValue | AbstractFormInputElement#setValue} do any
+   * casting or coalescing. Most Foundry-provided subclasses *do*, though, so for ease of use, `| undefined` has been added to the
+   * `FormInputValueType` type param for those elements.
    */
   // TODO: finish above remarks and remove |undefined from values, move to including in specific element type params
-  get value(): FormInputValueType | undefined;
+  get value(): FormInputValueType;
 
-  set value(value: FormInputValueType);
+  /**
+   * @privateRemarks Setting an element's `value` to `null` or `undefined` makes no sense at runtime, but some of Foundry's elements will
+   * have nullish values before entering the DOM even as the result of a `.create` call, and we've typed those accurately (see the `value`
+   * getter's private remarks), so we clean up here.
+   */
+  set value(value: NonNullable<FormInputValueType>);
 
   /**
    * The underlying value of the element.
+   * @privateRemarks See {@linkcode value} getter private remarks
    */
-  protected _value: FormInputValueType | undefined;
+  protected _value: FormInputValueType;
 
   /**
    * Return the value of the input element which should be submitted to the form.
+   * @privateRemarks See {@linkcode value} getter private remarks
    */
-  protected _getValue(): FormInputValueType | undefined;
+  protected _getValue(): FormInputValueType;
 
   /**
    * Translate user-provided input value into the format that should be stored.
    * @param value - A new value to assign to the element
    * @throws An error if the provided value is invalid
    * @remarks Doesn't do any checking or throwing in `AbstractFormInputElement`, just assigns to {@linkcode this._value}.
+   * @privateRemarks See {@linkcode AbstractFormInputElement.value | #value} (getter) private remarks.
    */
-  protected _setValue(value: FormInputValueType): void;
+  protected _setValue(value: NonNullable<FormInputValueType>): void;
 
   /**
    * Is this element disabled?

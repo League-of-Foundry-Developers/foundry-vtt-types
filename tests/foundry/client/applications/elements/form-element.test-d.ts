@@ -3,7 +3,13 @@ import { describe, expectTypeOf, test } from "vitest";
 import AbstractFormInputElement = foundry.applications.elements.AbstractFormInputElement;
 
 describe("AbstractFormInputElement Tests", () => {
-  class TestFIE extends AbstractFormInputElement<number> {}
+  class TestFIE extends AbstractFormInputElement<number> {
+    // example constructor in foundry's style, prevents nullish `this.value`s
+    constructor({ value }: { value?: number | undefined } = {}) {
+      super();
+      this._setValue(value ?? 0);
+    }
+  }
 
   const el = new TestFIE();
   const input = document.createElement("input");
@@ -23,21 +29,23 @@ describe("AbstractFormInputElement Tests", () => {
     expectTypeOf(el.name).toBeString();
     el.name = "foo"; // Setter
 
-    expectTypeOf(el.value).toEqualTypeOf<number | undefined>();
-    el.value = 7; // Setter
-
-    expectTypeOf(el["_value"]).toEqualTypeOf<number | undefined>();
-    expectTypeOf(el["_getValue"]()).toEqualTypeOf<number | undefined>();
-    expectTypeOf(el["_setValue"](7)).toBeVoid();
-    // @ts-expect-error This is a number input, can't set a string on it
-    el["_setValue"]("bar");
-
     expectTypeOf(el.disabled).toBeBoolean();
     el.disabled = false; // Setter
 
     expectTypeOf(el.editable).toBeBoolean();
 
     expectTypeOf(el.abortSignal).toEqualTypeOf<AbortSignal | undefined>();
+  });
+
+  test("Value", () => {
+    expectTypeOf(el.value).toEqualTypeOf<number>();
+    el.value = 7; // Setter
+
+    expectTypeOf(el["_value"]).toEqualTypeOf<number>();
+    expectTypeOf(el["_getValue"]()).toEqualTypeOf<number>();
+    expectTypeOf(el["_setValue"](7)).toBeVoid();
+    // @ts-expect-error This is a number input, can't set a string on it
+    el["_setValue"]("bar");
   });
 
   test("Element API and lifecycle methods", () => {

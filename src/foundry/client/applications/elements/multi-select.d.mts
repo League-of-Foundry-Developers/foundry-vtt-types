@@ -6,7 +6,7 @@ import type AbstractFormInputElement from "./form-element.d.mts";
  * Multi-select components return an array of values as part of form submission.
  * Different implementations may provide different experiences around how inputs are presented to the user.
  * @privateRemarks Union for the `FormInputElementType` is required due to the split nature of getting and setting in this class. See
- * {@linkcode AbstractMultiSelectElement._value | _value}, {@linkcode AbstractMultiSelectElement.value | value},
+ * {@linkcode AbstractMultiSelectElement._value | _value}, {@linkcode AbstractMultiSelectElement.value | value} (getter and setter),
  * {@linkcode AbstractMultiSelectElement._getValue | _getValue}, and {@linkcode AbstractMultiSelectElement._setValue | _setValue}.
  */
 export abstract class AbstractMultiSelectElement extends AbstractFormInputElement<Set<string> | string[]> {
@@ -24,18 +24,18 @@ export abstract class AbstractMultiSelectElement extends AbstractFormInputElemen
    */
   protected _choices: Record<string, string>;
 
-  /** @remarks Initialized to `new Set()` in the class body, removing {@linkcode AbstractFormInputElement._value | super}'s `| undefined` */
+  /** @remarks Initialized to `new Set()` in the class body */
   protected override _value: Set<string>;
 
   /**
-   * @privateRemarks Fake type override. {@linkcode AbstractMultiSelectElement._value | AbstractMultiSelectElement#_value} is initialized
-   * in the class body, so no `| undefined`.
+   * @privateRemarks Fake type override because of the class type param being a union;
+   * getting will always return a `Set`, but setting only takes arrays.
    */
   override get value(): Set<string>;
 
   /**
    * @privateRemarks Fake type override. Since the {@linkcode AbstractFormInputElement.value AbstractFormInputElement#value} setter forwards
-   * to {@linkcode AbstractMultiSelectElement._setValue | this._setValue}, the passed value must be an Array, specifically.
+   * to {@linkcode AbstractMultiSelectElement._setValue | this._setValue}, the passed value must be an array.
    */
   override set value(value: string[]);
 

@@ -50,11 +50,13 @@ describe("HTMLCodeMirrorElement Tests", () => {
     expectTypeOf(el.nowrap).toBeBoolean();
   });
 
-  test("Value overrides", () => {
+  test("Value", () => {
     expectTypeOf(el.value).toBeString();
+    el.value = "console.log('log')"; // Setter
+
     expectTypeOf(el["_value"]).toBeString();
     expectTypeOf(el["_getValue"]()).toBeString();
-    expectTypeOf(el["_setValue"]("/* some code */")).toBeVoid();
+    expectTypeOf(el["_setValue"]("ui.notifications.error('oops')")).toBeVoid();
   });
 
   test("Position", () => {

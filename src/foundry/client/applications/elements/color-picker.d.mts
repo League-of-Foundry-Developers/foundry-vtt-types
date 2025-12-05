@@ -3,11 +3,13 @@ import type AbstractFormInputElement from "./form-element.d.mts";
 
 /**
  * A custom HTMLElement used to select a color using a linked pair of input fields.
- * @privateRemarks The constructor's fallback value is `this.getAttribute("value")`, which will be `null` if there's no value provided at
- * construction/{@link HTMLColorPickerElement.create | creation}, in the latter case despite `.create` calling
- * `setAttribute("value", config.value ?? "")`, since this happens after construction
+ * @privateRemarks The constructor's fallback for `value` is `this.getAttribute("value")`, which will be `null` if there's no value provided
+ * at construction/{@link HTMLColorPickerElement.create | creation}/in the markup, so we must include `null` in the value type param. It has
+ * been exposed in case user subclasses want to improve this situation.
  */
-declare class HTMLColorPickerElement extends AbstractFormInputElement<string | null> {
+declare class HTMLColorPickerElement<
+  FormInputValueType extends string | null = string | null,
+> extends AbstractFormInputElement<FormInputValueType> {
   /**
    * @remarks This constructor is protected because additional work must be done after creation for this element to be valid in the DOM.
    * Use {@linkcode HTMLColorPickerElement.create} instead.
@@ -33,6 +35,12 @@ declare class HTMLColorPickerElement extends AbstractFormInputElement<string | n
    * Create a HTMLColorPickerElement using provided configuration data.
    */
   static create(config: HTMLColorPickerElement.Config): HTMLColorPickerElement;
+
+  /**
+   * @deprecated This was removed without replacement at some point after v12 became stable but before v13.
+   * This warning will be removed in v14.
+   */
+  protected override _onClick(event: never): never;
 
   #HTMLColorPickerElement: true;
 }
