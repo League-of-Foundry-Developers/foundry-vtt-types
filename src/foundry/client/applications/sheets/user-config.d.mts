@@ -1,7 +1,7 @@
 import type { DeepPartial, Identity } from "#utils";
 import type DocumentSheetV2 from "../api/document-sheet.d.mts";
 import type HandlebarsApplicationMixin from "../api/handlebars-application.d.mts";
-import type { CustomFormGroup } from "../forms/fields.d.mts";
+import type { DataField } from "#common/data/fields.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -48,7 +48,7 @@ declare namespace UserConfig {
     user: User.Implementation;
     source: foundry.documents.BaseUser.Source;
     fields: foundry.documents.BaseUser.Schema;
-    characterWidget: CustomFormGroup;
+    characterWidget: DataField.CustomFormGroup;
   }
 
   interface Configuration
