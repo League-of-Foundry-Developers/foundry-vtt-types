@@ -79,7 +79,7 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<
   protected _initializeTags(values?: string[]): void;
 
   /**
-   * @remarks Returns `[HTMLDivElement, HTMLInputElement, HTMLButtonElement]` in `HTMLDocumentTagsElement`.
+   * @remarks Returns `[tags: HTMLDivElement, input: HTMLInputElement, button: HTMLButtonElement]` in `HTMLDocumentTagsElement`.
    * @privateRemarks Return type left wide for ease of subclassing.
    */
   protected override _buildElements(): HTMLElement[];

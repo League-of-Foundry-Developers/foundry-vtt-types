@@ -13,10 +13,16 @@ declare class HTMLRangePickerElement extends AbstractFormInputElement<number> {
 
   /**
    * The value of the input element.
+   * @remarks This just returns {@linkcode HTMLRangePickerElement._getValue | this._getValue()}, making it redundant with the non-overridden
+   * {@linkcode HTMLRangePickerElement.value | #value} getter.
    */
   get valueAsNumber(): number;
 
-  protected override _buildElements(): HTMLInputElement[];
+  /**
+   * @remarks Returns `[rangeInput: HTMLInputElement, numberInput: HTMLInputElement]` in {@linkcode HTMLColorPickerElement}.
+   * @privateRemarks Return type left wide for ease of subclassing.
+   */
+  protected override _buildElements(): HTMLElement[];
 
   protected override _setValue(value: number): void;
 
@@ -30,9 +36,12 @@ declare class HTMLRangePickerElement extends AbstractFormInputElement<number> {
    * Create a HTMLRangePickerElement using provided configuration data.
    */
   static create(config: HTMLRangePickerElement.Config): HTMLRangePickerElement;
+
+  #HTMLRangePickerElement: true;
 }
 
 declare namespace HTMLRangePickerElement {
+  /** @internal */
   interface _Options {
     /** The slider minimum value*/
     min: number;
@@ -52,13 +61,14 @@ declare namespace HTMLRangePickerElement {
 
   interface Options extends InexactPartial<_Options> {}
 
-  interface Config extends Options, Omit<FormInputConfig<number>, "value"> {}
+  /** @privateRemarks `Options` extended first to use its `value`, which has an accurate `defaultValue` */
+  interface Config extends Options, FormInputConfig<number> {}
 
-  interface RangePickerInputConfig extends FormInputConfig<number> {
-    min: number;
-    max: number;
-    step?: number;
-  }
+  /**
+   * @deprecated This interface has been renamed for consistency with other elements.
+   * Use {@linkcode HTMLRangePickerElement.Config} instead. This alias will be removed in v15.
+   */
+  type RangePickerInputConfig = Config;
 }
 
 export default HTMLRangePickerElement;

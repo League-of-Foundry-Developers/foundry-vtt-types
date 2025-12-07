@@ -55,7 +55,7 @@ declare class HTMLFilePickerElement<
   set noupload(value);
 
   /**
-   * @remarks Returns `[HTMLInputElement, HTMLButtonElement]` in `HTMLFilePickerElement`.
+   * @remarks Returns `[input: HTMLInputElement, button?: HTMLButtonElement]` in `HTMLFilePickerElement`.
    * @privateRemarks Return type left wide for ease of subclassing.
    */
   protected override _buildElements(): HTMLElement[];

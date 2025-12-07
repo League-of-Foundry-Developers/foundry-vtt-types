@@ -17,7 +17,7 @@ declare class HTMLHueSelectorSlider extends AbstractFormInputElement<number> {
   static override tagName: string;
 
   /**
-   * @remarks Returns `[HTMLInputElement]` in {@linkcode HTMLHueSelectorSlider}.
+   * @remarks Returns `[input: HTMLInputElement]` in {@linkcode HTMLHueSelectorSlider}.
    * @privateRemarks Return type left wide for ease of subclassing.
    */
   protected override _buildElements(): HTMLElement[];

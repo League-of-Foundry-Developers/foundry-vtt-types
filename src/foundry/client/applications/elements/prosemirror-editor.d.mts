@@ -34,7 +34,7 @@ declare class HTMLProseMirrorElement extends AbstractFormInputElement<string> {
   override disconnectedCallback(): void;
 
   /**
-   * @remarks Returns `[HTMLDivElement, HTMLButtonElement?]` in {@linkcode HTMLProseMirrorElement}.
+   * @remarks Returns `[content: HTMLDivElement, button?: HTMLButtonElement]` in {@linkcode HTMLProseMirrorElement}.
    * @privateRemarks Return type left wide for ease of subclassing.
    */
   protected override _buildElements(): HTMLElement[];
@@ -125,6 +125,10 @@ declare namespace HTMLProseMirrorElement {
 
   interface Config extends InexactPartial<_Config>, FormInputConfig<string> {}
 
+  /**
+   * @deprecated This interface has been renamed for consistency with other elements.
+   * Use {@linkcode HTMLProseMirrorElement.Config} instead. This alias will be removed in v15.
+   */
   type ProseMirrorInputConfig = Config;
 }
 
