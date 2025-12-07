@@ -71,11 +71,3 @@ describe("AbstractFormInputElement Tests", () => {
     expectTypeOf(el["_onClick"](clickEv)).toBeVoid();
   });
 });
-
-declare const formInput: foundry.applications.elements.AbstractFormInputElement<number>;
-expectTypeOf(formInput.disabled).toEqualTypeOf<boolean>();
-expectTypeOf(formInput.editable).toEqualTypeOf<boolean>();
-expectTypeOf(formInput.connectedCallback()).toEqualTypeOf<void>();
-
-expectTypeOf(foundry.applications.elements.AbstractFormInputElement.tagName).toEqualTypeOf<string>();
-expectTypeOf(foundry.applications.elements.AbstractFormInputElement.formAssociated).toEqualTypeOf<boolean>();

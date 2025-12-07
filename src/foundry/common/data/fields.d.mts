@@ -853,7 +853,7 @@ declare namespace DataField {
    * @remarks A callback to be used in place of a field's {@linkcode DataField#_toInput | #_toInput}
    * @see {@linkcode DataField.toInput | DataField#toInput}
    */
-  type CustomFormInput = (field: DataField.Any, config: FormInputConfig<unknown>) => HTMLElement | HTMLCollection;
+  type CustomFormInput = (field: DataField.Any, config: FormInputConfig) => HTMLElement | HTMLCollection;
 
   /**
    * {@linkcode DataField.toInput | DataField#toInput} provides a default for {@linkcode FormInputConfig.name | name} (the only required
@@ -890,7 +890,7 @@ declare namespace DataField {
   type CustomFormGroup = (
     field: DataField.Any,
     groupConfig: FormGroupConfig,
-    inputConfig: FormInputConfig<unknown>,
+    inputConfig: FormInputConfig,
   ) => HTMLDivElement;
 
   /** @internal */

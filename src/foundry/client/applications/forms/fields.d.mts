@@ -148,7 +148,7 @@ interface _FormInputConfig<FormInputValue = unknown> {
   // `input` omitted here and added in `DataField.ToFormInput`
 }
 
-export interface FormInputConfig<FormInputValue> extends InexactPartial<_FormInputConfig<FormInputValue>> {
+export interface FormInputConfig<FormInputValue = unknown> extends InexactPartial<_FormInputConfig<FormInputValue>> {
   /**
    * The name of the form element
    */
@@ -492,4 +492,4 @@ export type CustomFormGroup = DataField.CustomFormGroup;
  * @deprecated Since this type is only used by {@linkcode DataField.toInput | DataField#toInput}, and not by any of the functions in
  * this file, it has moved to {@linkcode DataField.CustomFormInput}. This alias will be removed in v15.
  */
-export type CustomFormInput = DataField.CustomFormGroup;
+export type CustomFormInput = DataField.CustomFormInput;
