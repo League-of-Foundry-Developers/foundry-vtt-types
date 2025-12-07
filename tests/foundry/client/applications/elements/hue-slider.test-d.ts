@@ -23,11 +23,11 @@ describe("HTMLHueSelectorSlider Tests", () => {
   });
 
   test("Value", () => {
-    expectTypeOf(el.value).toEqualTypeOf<number | undefined>();
+    expectTypeOf(el.value).toBeNumber();
     el.value = 0.234; // Setter
 
-    expectTypeOf(el["_value"]).toEqualTypeOf<number | undefined>();
-    expectTypeOf(el["_getValue"]()).toEqualTypeOf<number | undefined>();
+    expectTypeOf(el["_value"]).toBeNumber();
+    expectTypeOf(el["_getValue"]()).toBeNumber();
     expectTypeOf(el["_setValue"](0.5)).toBeVoid();
   });
 

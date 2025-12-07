@@ -5,9 +5,9 @@ import type AbstractFormInputElement from "./form-element.d.mts";
  * An abstract base class designed to standardize the behavior for a multi-select UI component.
  * Multi-select components return an array of values as part of form submission.
  * Different implementations may provide different experiences around how inputs are presented to the user.
- * @privateRemarks Union for the `FormInputElementType` is required due to the split nature of getting and setting in this class. See
- * {@linkcode AbstractMultiSelectElement._value | _value}, {@linkcode AbstractMultiSelectElement.value | value} (getter and setter),
- * {@linkcode AbstractMultiSelectElement._getValue | _getValue}, and {@linkcode AbstractMultiSelectElement._setValue | _setValue}.
+ * @privateRemarks Union for the `FormInputElementType` is required due to {@linkcode AbstractMultiSelectElement._value | #_value} being a
+ * `Set<string>`, but {@linkcode AbstractMultiSelectElement.value | #value}, {@linkcode AbstractMultiSelectElement._getValue | #_getValue},
+ * and {@linkcode AbstractMultiSelectElement._setValue | #_setValue} all take/return `string[]`s.
  */
 export abstract class AbstractMultiSelectElement extends AbstractFormInputElement<Set<string> | string[]> {
   /**
@@ -27,16 +27,10 @@ export abstract class AbstractMultiSelectElement extends AbstractFormInputElemen
   /** @remarks Initialized to `new Set()` in the class body */
   protected override _value: Set<string>;
 
-  /**
-   * @privateRemarks Fake type override because of the class type param being a union;
-   * getting will always return a `Set`, but setting only takes arrays.
-   */
-  override get value(): Set<string>;
+  /** @privateRemarks Fake type override because of the class type param being a union. */
+  override get value(): string[];
 
-  /**
-   * @privateRemarks Fake type override. Since the {@linkcode AbstractFormInputElement.value AbstractFormInputElement#value} setter forwards
-   * to {@linkcode AbstractMultiSelectElement._setValue | this._setValue}, the passed value must be an array.
-   */
+  /** @privateRemarks Fake type override because of the class type param being a union. */
   override set value(value: string[]);
 
   override connectedCallback(): void;

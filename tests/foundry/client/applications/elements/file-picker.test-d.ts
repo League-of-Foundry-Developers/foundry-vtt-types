@@ -18,6 +18,10 @@ describe("HTMLFilePickerElement Tests", () => {
     // @ts-expect-error Custom elements with `static create` functions have protected constructors
     new HTMLFilePickerElement({ value: "path/to/something.ext" });
     expectTypeOf(HTMLFilePickerElement.create(config)).toEqualTypeOf<HTMLFilePickerElement>();
+    expectTypeOf(HTMLFilePickerElement.create({ ...config, type: "image" })).toEqualTypeOf<HTMLFilePickerElement>();
+    expectTypeOf(HTMLFilePickerElement.create({ ...config, type: "font" })).toEqualTypeOf<HTMLFilePickerElement>();
+    // @ts-expect-error "foo" is not a valid picker type
+    HTMLFilePickerElement.create({ ...config, type: "foo" });
   });
 
   const el = HTMLFilePickerElement.create(config);

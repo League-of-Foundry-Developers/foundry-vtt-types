@@ -16,7 +16,7 @@ describe("AbstractMultiSelectElementTests", () => {
 
     expectTypeOf(mse["_value"]).toEqualTypeOf<Set<string>>();
 
-    expectTypeOf(mse.value).toEqualTypeOf<Set<string>>();
+    expectTypeOf(mse.value).toEqualTypeOf<string[]>();
     mse.value = stringArray;
     // @ts-expect-error The getter is a Set, but the setter only takes arrays
     mse.value = new Set(stringArray);

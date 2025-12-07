@@ -20,8 +20,8 @@ declare class HTMLColorPickerElement<
   static override tagName: string;
 
   /**
-   * @remarks Returns `[colorString: HTMLInputElement, colorSelector: HTMLInputElement]` in {@linkcode HTMLColorPickerElement}
-   * @privateRemarks Return type left wide for ease of subclassing
+   * @remarks Returns `[colorString: HTMLInputElement, colorSelector: HTMLInputElement]` in {@linkcode HTMLColorPickerElement}.
+   * @privateRemarks Return type left wide for ease of subclassing.
    */
   protected override _buildElements(): HTMLElement[];
 
@@ -47,7 +47,9 @@ declare class HTMLColorPickerElement<
 
 declare namespace HTMLColorPickerElement {
   interface Options {
-    /** A hexadecimal string representation of the color. */
+    /**
+     * A hexadecimal string representation of the color.
+     */
     value: string;
   }
 

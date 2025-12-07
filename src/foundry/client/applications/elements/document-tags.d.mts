@@ -78,7 +78,10 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<
    */
   protected _initializeTags(values?: string[]): void;
 
-  /** @remarks Returns `[HTMLDivElement, HTMLInputElement, HTMLButtonElement]` in `HTMLDocumentTagsElement`. */
+  /**
+   * @remarks Returns `[HTMLDivElement, HTMLInputElement, HTMLButtonElement]` in `HTMLDocumentTagsElement`.
+   * @privateRemarks Return type left wide for ease of subclassing.
+   */
   protected override _buildElements(): HTMLElement[];
 
   protected override _refresh(): void;
@@ -133,7 +136,7 @@ declare namespace HTMLDocumentTagsElement {
   interface _Config {
     /**
      * A specific document type in {@linkcode CONST.ALL_DOCUMENT_TYPES}
-     * @remarks If not passed, UUIDs of any document are allowed.
+     * @remarks If not passed, UUIDs of any document type are allowed.
      */
     type: CONST.ALL_DOCUMENT_TYPES;
 
@@ -154,7 +157,8 @@ declare namespace HTMLDocumentTagsElement {
      * The current value of the form element.
      *
      * @remarks {@linkcode HTMLDocumentTagsElement.create} will accept these types for `value`; `Set`s get `Array.from`ed, and naked strings
-     * get wrapped in `[]` before being passed to the constructor. Use `[]` to indicate no value; `""` will be treated as an invalid UUID.
+     * get wrapped in `[]` before being passed to the constructor. Use `[]` to indicate no value; Avoid `""` as it will be treated as an
+     * invalid UUID.
      *
      * @privateRemarks This is omitted and redefined as required/non-nullish because allowing an `undefined` here leads to a value of
      * `["undefined"]` on the element, which is not a valid UUID.

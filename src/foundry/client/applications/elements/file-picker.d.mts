@@ -7,9 +7,11 @@ import type { InexactPartial } from "#utils";
  * A custom HTML element responsible for rendering a file input field and associated FilePicker button.
  * @privateRemarks This element's value type has `| undefined` in it because it both has no real constructor implementation (where it might
  * have set a fallback), and fails to set value in `.create` beyond a `setAttribute` call, so until it is in the DOM, its value will be
- * `undefined`.
+ * `undefined`. It has been exposed in case user subclasses want to improve this situation.
  */
-declare class HTMLFilePickerElement extends AbstractFormInputElement<string | undefined> {
+declare class HTMLFilePickerElement<
+  FormInputValueType extends string | undefined = string | undefined,
+> extends AbstractFormInputElement<FormInputValueType> {
   /**
    * @remarks This constructor is protected because additional work must be done after creation for this element to be valid in the DOM.
    * Use {@linkcode HTMLFilePickerElement.create} instead.
@@ -52,7 +54,10 @@ declare class HTMLFilePickerElement extends AbstractFormInputElement<string | un
 
   set noupload(value);
 
-  /** @remarks Returns `[HTMLInputElement, HTMLButtonElement]` in `HTMLFilePickerElement` */
+  /**
+   * @remarks Returns `[HTMLInputElement, HTMLButtonElement]` in `HTMLFilePickerElement`.
+   * @privateRemarks Return type left wide for ease of subclassing.
+   */
   protected override _buildElements(): HTMLElement[];
 
   protected override _refresh(): void;
@@ -87,6 +92,7 @@ declare namespace HTMLFilePickerElement {
   }
 
   interface Config extends InexactPartial<_Config>, FormInputConfig<string> {
+    /** @remarks The type of file this picker is limited to. */
     type: FilePicker.Type;
   }
 
