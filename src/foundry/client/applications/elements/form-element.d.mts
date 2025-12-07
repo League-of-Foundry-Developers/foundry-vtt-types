@@ -124,7 +124,11 @@ declare abstract class AbstractFormInputElement<FormInputValueType> extends HTML
    */
   connectedCallback(): void;
 
-  /** @privateRemarks Erroneously marked `@override` in Foundry JSDoc */
+  /**
+   * Actions to take when the custom element is removed from the document.
+   * @privateRemarks Erroneously marked `@override` in Foundry JSDoc, description taken from
+   * {@linkcode foundry.applications.elements.HTMLProseMirrorElement.disconnectedCallback | HTMLProseMirrorElement#disconnectedCallback}.
+   */
   disconnectedCallback(): void;
 
   /** @privateRemarks Erroneously marked `@override` in Foundry JSDoc */

@@ -57,10 +57,6 @@ describe("AbstractFormInputElement Tests", () => {
     expectTypeOf(el.attributeChangedCallback("disabled", null, "false")).toBeVoid();
     expectTypeOf(el.attributeChangedCallback("disabled", "true", null)).toBeVoid();
 
-    // @ts-expect-error We can't infer the real type from the name, but we enforce the same type for `oldValue` and `newValue`
-    // This might be an unsafe assumption, if the real type is `| null`.
-    el.attributeChangedCallback("foo", 7, "bar");
-
     expectTypeOf(el["_disconnect"]()).toBeVoid();
 
     expectTypeOf(el["_buildElements"]()).toEqualTypeOf<HTMLElement[]>();

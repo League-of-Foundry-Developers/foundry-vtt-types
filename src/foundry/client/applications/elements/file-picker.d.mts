@@ -71,12 +71,6 @@ declare class HTMLFilePickerElement<
    */
   static create(config: HTMLFilePickerElement.Config): HTMLFilePickerElement;
 
-  /**
-   * @deprecated This was removed without replacement at some point after v12 became stable but before v13.
-   * This warning will be removed in v14.
-   */
-  protected override _onClick(event: never): never;
-
   #HTMLFilePickerElement: true;
 }
 

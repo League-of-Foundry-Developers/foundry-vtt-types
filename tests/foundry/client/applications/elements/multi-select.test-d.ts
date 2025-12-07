@@ -75,7 +75,8 @@ describe("HTMLMultiCheckboxElement Tests", () => {
   test("Construction", () => {
     // @ts-expect-error Custom elements with `static create` functions have protected constructors
     new elements.HTMLMultiCheckboxElement();
-    // HTMLMultiCheckboxElement doesn't have its own `.create` in 13.351, proper creation is only available by external helper function
+    // HTMLMultiCheckboxElement doesn't have its own `.create` in 13.351, proper creation is only available via `createMultiSelectInput`
+    // tests for which can be found in `tests/client/applications/forms/fields.mjs`
   });
 
   const mce = foundry.applications.fields.createMultiSelectInput({

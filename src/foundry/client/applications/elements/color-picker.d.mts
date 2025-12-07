@@ -36,12 +36,6 @@ declare class HTMLColorPickerElement<
    */
   static create(config: HTMLColorPickerElement.Config): HTMLColorPickerElement;
 
-  /**
-   * @deprecated This was removed without replacement at some point after v12 became stable but before v13.
-   * This warning will be removed in v14.
-   */
-  protected override _onClick(event: never): never;
-
   #HTMLColorPickerElement: true;
 }
 

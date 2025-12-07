@@ -6,6 +6,7 @@ describe("HTMLHueSelectorSlider Tests", () => {
   const config = {
     name: "system.hue",
     value: 0.789,
+    // Thorough testing of the rest of `FormInputConfig` can be found in the `client/applications/forms/fields.mjs` tests.
   } satisfies HTMLHueSelectorSlider.Config;
 
   test("Construction", () => {
