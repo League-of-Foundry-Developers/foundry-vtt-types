@@ -121,8 +121,14 @@ jobs:
 
       - run: npm ci --cache .npm --prefer-offline
 
-      - name: Execute Tests
-        run: npm test -- --reporter default --reporter github-actions
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Browser Tests
+        run: npm run test
+
+      - name: Test Types
+        run: npm run test-types -- --reporter default --reporter github-actions
 
   publishPrerelease:
     name: Publish prerelease
