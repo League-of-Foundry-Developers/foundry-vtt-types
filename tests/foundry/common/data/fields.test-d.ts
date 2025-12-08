@@ -69,7 +69,7 @@ expectTypeOf(JEPSystemTypes).toEqualTypeOf<
 
 declare const myJournalEntryPage: JournalEntryPage.Implementation;
 if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
-  myJournalEntryPage.system?.prepareBaseData();
+  myJournalEntryPage.system.prepareBaseData();
 }
 
 /** EmbeddedDataField */

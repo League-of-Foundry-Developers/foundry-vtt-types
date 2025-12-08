@@ -54,16 +54,27 @@ class TextureDataTestModel extends DataModel<TextureDataTestSchema> {
   }
 }
 const testModel = new TextureDataTestModel();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.src).toEqualTypeOf<string | null>();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.anchorX).toEqualTypeOf<number>();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.anchorY).toEqualTypeOf<number>();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.offsetX).toEqualTypeOf<number>();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.offsetY).toEqualTypeOf<number>();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.fit).toEqualTypeOf<ValueOf<typeof CONST.TEXTURE_DATA_FIT_MODES>>();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.scaleX).toEqualTypeOf<number>();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.scaleY).toEqualTypeOf<number>();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.rotation).toEqualTypeOf<number>();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.tint).toEqualTypeOf<Color>();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 expectTypeOf(testModel.textureData.alphaThreshold).toEqualTypeOf<number>();
 
 /******************************************************************/
