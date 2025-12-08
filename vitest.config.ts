@@ -1,5 +1,6 @@
 // eslint-disable-next-line import-x/extensions
 import { defineConfig } from "vitest/config";
+import { customPool } from "./tests/pool.ts";
 
 export default defineConfig({
   test: {
@@ -7,5 +8,6 @@ export default defineConfig({
       tsconfig: "./tests/tsconfig.json",
       checker: "tsgo",
     },
+    pool: customPool,
   },
 });

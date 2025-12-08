@@ -1,53 +1,11 @@
-// Vite doesn't understand this as an import, ironically.
-/// <reference types="vite/types/importMeta.d.ts" />
-
-// eslint-disable-next-line import-x/no-extraneous-dependencies
-import { type Test, type VitestRunner, getFn, startTests } from "@vitest/runner";
-import type { SerializedConfig, TestAnnotation } from "vitest";
-
+import type { SerializedConfig, WorkerGlobalState } from "vitest";
 // eslint-disable-next-line import-x/extensions
 import { VitestTestRunner } from "vitest/runners";
+import { collectTests, startTests } from "@vitest/runner";
 
-declare global {
-  interface Window {
-    testWaitingForReady: {
-      reset(): void;
-      waitForReady(): Promise<void>;
-      setReady(): void;
-      testWaiting(): Promise<void>;
-    };
-  }
-}
-
-function createReadyWaiter() {
-  const { promise: waitForReady, resolve: c } = Promise.withResolvers<void>();
-  const { promise: testWaiting, resolve: startWaiting } = Promise.withResolvers<void>();
-
-  return {
-    waitForReady: () => {
-      startWaiting();
-      return waitForReady;
-    },
-    setReady: c,
-    testWaiting() {
-      return testWaiting;
-    },
-    reset() {
-      const readyWaiter = createReadyWaiter();
-      this.waitForReady = readyWaiter.waitForReady;
-      this.setReady = readyWaiter.setReady;
-      this.testWaiting = readyWaiter.testWaiting;
-    },
-  };
-}
-
-window.testWaitingForReady = createReadyWaiter();
-
-const tests = import.meta.glob("/tests/**/*.test.ts");
-
-const config = await window.__get_serialized_config__();
-
-if (!config.snapshotOptions.snapshotEnvironment) {
+let runner: Runner | undefined;
+function setup(config: SerializedConfig) {
+  // The snapshot environment will not be set up.
   config.snapshotOptions.snapshotEnvironment = {
     getVersion(): string {
       return "1";
@@ -61,7 +19,9 @@ if (!config.snapshotOptions.snapshotEnvironment) {
       return null;
     },
 
-    async saveSnapshotFile(_filepath: string, _snapshot: string): Promise<void> {},
+    async saveSnapshotFile(_filepath: string, _snapshot: string): Promise<void> {
+      // Noop, for now.
+    },
 
     async resolvePath(filepath: string): Promise<string> {
       return filepath;
@@ -71,64 +31,84 @@ if (!config.snapshotOptions.snapshotEnvironment) {
       return rawPath;
     },
 
-    async removeSnapshotFile(_filepath: string): Promise<void> {},
+    async removeSnapshotFile(_filepath: string): Promise<void> {
+      // Noop, for now.
+    },
   };
-}
 
-// @ts-expect-error - Vitest needs this global to exist but then doesn't type it.
-window.__vitest_worker__ = {
-  ctx: { pool: config.pool },
-  config,
-  onCleanup() {},
-};
+  const state = {
+    ctx: {
+      // rpc: null as any,
+      pool: "browser",
+      workerId: 1,
+      config,
+      projectName: config.name ?? "",
+      files: [],
+      environment: {
+        name: "browser",
+        options: null,
+      },
+      // this is populated before tests run
+      providedContext: {},
+      invalidates: [],
+    },
+    // onCancel: null as any,
+    config,
+    environment: {
+      name: "browser",
+      viteEnvironment: "client",
+      setup() {
+        throw new Error("Not called in the browser");
+      },
+    },
+    // onCleanup: (fn) => getBrowserState().cleanups.push(fn),
+    onCleanup: () => {
+      // Noop, for now.
+    },
+    // evaluatedModules: new EvaluatedModules(),
+    // resolvingModules: new Set(),
+    moduleExecutionInfo: new Map(),
+    // metaEnv: null as any,
+    // rpc: null as any,
+    durations: {
+      environment: 0,
+      prepare: performance.now(),
+    },
+    providedContext: {},
+  } as unknown as WorkerGlobalState;
+
+  // @ts-expect-error Vitest wants this global to exist but doesn't type it.
+  globalThis.__vitest_browser__ = true;
+  // @ts-expect-error Vitest wants this global to exist but doesn't type it.
+  globalThis.__vitest_worker__ = state;
+
+  runner = new Runner(config);
+}
 
 class Runner extends VitestTestRunner {
-  constructor(
-    config: SerializedConfig,
-    public modules: Record<string, () => Promise<unknown>>,
-  ) {
-    super(config);
+  override trace = <T>(name: string, attributes: Record<string, unknown> | (() => T), cb?: () => T): T => {
+    return typeof attributes === "function" ? attributes() : cb!();
+  };
+
+  override async importFile(filePath: string) {
+    await import(/* @vite-ignore */ filePath);
   }
 
-  override async importFile(filepath: string): Promise<void> {
-    const m = this.modules[filepath];
-    if (m == null) {
-      throw new Error(`Could not find module at ${filepath}`);
-    }
-
-    await m();
+  override async onAfterRunSuite() {
+    // Noop, for now.
   }
-
-  ready = false;
-  setReady() {
-    this.ready = true;
-  }
-
-  async runTask(test: Test): Promise<void> {
-    const fn = getFn(test);
-    await fn();
-  }
-
-  async onTestAnnotate(test: Test, annotation: TestAnnotation): Promise<TestAnnotation> {
-    return annotation;
-  }
-
-  override onAfterRunTask(test: Test) {
-    if (test.result?.errors) {
-      console.log("Test failed", test.name, test.result.errors);
-    }
-  }
-
-  override async onAfterRunSuite() {}
 }
 
-const runner = new Runner(config, tests);
+function getRunner() {
+  if (runner == null) {
+    throw new Error("Could not get runner! Setup must be run first.");
+  }
 
-Hooks.once("ready", () => {
-  runner.setReady();
+  return runner;
+}
 
-  const allTests = Object.keys(tests);
-  startTests(allTests, runner as VitestRunner).then(window.__set_done__);
-});
-
-window.loadFoundry();
+window.__foundry_vitest__ = {
+  setup: setup,
+  run: (context) => startTests(context.files, getRunner()),
+  collect: (context) => collectTests(context.files, getRunner()),
+};
