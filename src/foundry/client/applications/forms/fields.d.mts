@@ -170,13 +170,14 @@ export interface NumberInputConfig extends FormInputConfig<number> {
 export function createNumberInput(config: NumberInputConfig): HTMLInputElement;
 
 /**
- * @remarks This interface doesn't automatically account for any use of {@linkcode SelectInputConfig.labelAttr} or
- * {@linkcode SelectInputConfig.valueAttr | .valueAttr}. If you need to use either, you'll have to declaration merge
- * them in, or make a wrapper like {@linkcode foundry.abstract.Document.DialogFoldersChoices}.
+ * @remarks Foundry types `value` and `label` as required, but that doesn't account for the use of
+ * {@linkcode _SelectInputConfig.valueAttr | valueAttr} or {@linkcode _SelectInputConfig.labelAttr | labelAttr} in the config containing
+ * them to change which properties are used for the value and label, respectively, of the resulting `<option>`. To allow their use, `value`
+ * and `label` have been made optional here, despite being required if `valueAttr`/`labelAttr` are *not* provided.
  */
 export interface FormSelectOption {
-  value: string;
-  label: string;
+  value?: string;
+  label?: string;
   group?: string;
   disabled?: boolean;
   selected?: boolean;
