@@ -36,6 +36,9 @@ declare class HTMLHueSelectorSlider extends AbstractFormInputElement<number> {
 
   protected override _toggleDisabled(disabled: boolean): void;
 
+  /**
+   * Create a {@linkcode HTMLHueSelectorSlider} using provided configuration data.
+   */
   static create(config: HTMLHueSelectorSlider.Config): HTMLHueSelectorSlider;
 
   #HTMLHueSelectorSlider: true;

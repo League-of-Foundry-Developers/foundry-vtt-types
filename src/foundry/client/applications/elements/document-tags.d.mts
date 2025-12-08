@@ -79,7 +79,7 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<
   protected _initializeTags(values?: string[]): void;
 
   /**
-   * @remarks Returns `[tags: HTMLDivElement, input: HTMLInputElement, button: HTMLButtonElement]` in `HTMLDocumentTagsElement`.
+   * @remarks Returns `[tags: HTMLDivElement, input: HTMLInputElement, button: HTMLButtonElement]` in {@linkcode HTMLDocumentTagsElement}.
    * @privateRemarks Return type left wide for ease of subclassing.
    */
   protected override _buildElements(): HTMLElement[];
@@ -107,7 +107,7 @@ declare class HTMLDocumentTagsElement extends AbstractFormInputElement<
   protected override _toggleDisabled(disabled: boolean): void;
 
   /**
-   * Create a `HTMLDocumentTagsElement` using provided configuration data.
+   * Create a {@linkcode HTMLDocumentTagsElement} using provided configuration data.
    */
   static create(config: HTMLDocumentTagsElement.Config): HTMLDocumentTagsElement;
 

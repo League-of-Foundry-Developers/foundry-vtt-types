@@ -6,6 +6,10 @@ import type { InexactPartial } from "#utils";
  * A custom HTML element responsible selecting a value on a range slider with a linked number input field.
  */
 declare class HTMLRangePickerElement extends AbstractFormInputElement<number> {
+  /**
+   * @remarks This constructor is protected because additional work must be done after creation for this element to be valid in the DOM.
+   * Use {@linkcode HTMLRangePickerElement.create} instead.
+   */
   protected constructor(options?: HTMLRangePickerElement.Options);
 
   /** @defaultValue `"range-picker"` */
@@ -19,7 +23,7 @@ declare class HTMLRangePickerElement extends AbstractFormInputElement<number> {
   get valueAsNumber(): number;
 
   /**
-   * @remarks Returns `[rangeInput: HTMLInputElement, numberInput: HTMLInputElement]` in {@linkcode HTMLColorPickerElement}.
+   * @remarks Returns `[rangeInput: HTMLInputElement, numberInput: HTMLInputElement]` in {@linkcode HTMLRangePickerElement}.
    * @privateRemarks Return type left wide for ease of subclassing.
    */
   protected override _buildElements(): HTMLElement[];
@@ -33,7 +37,7 @@ declare class HTMLRangePickerElement extends AbstractFormInputElement<number> {
   protected override _toggleDisabled(disabled: boolean): void;
 
   /**
-   * Create a HTMLRangePickerElement using provided configuration data.
+   * Create a {@linkcode HTMLRangePickerElement} using provided configuration data.
    */
   static create(config: HTMLRangePickerElement.Config): HTMLRangePickerElement;
 

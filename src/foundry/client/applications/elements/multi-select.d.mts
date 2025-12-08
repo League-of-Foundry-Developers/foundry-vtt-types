@@ -106,7 +106,7 @@ export class HTMLMultiSelectElement extends AbstractMultiSelectElement {
   protected override _toggleDisabled(disabled: boolean): void;
 
   /**
-   * Create a HTMLMultiSelectElement using provided configuration data.
+   * Create a {@linkcode HTMLMultiSelectElement} using provided configuration data.
    * @remarks Just forwards to {@linkcode foundry.applications.fields.createMultiSelectInput} in 13.351
    */
   static create(config: MultiSelectInputConfig): HTMLMultiSelectElement;

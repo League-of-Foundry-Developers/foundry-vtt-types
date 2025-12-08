@@ -3,6 +3,10 @@ import type { InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { FormInputConfig } from "#client/applications/forms/fields.mjs";
 
+/** @privateRemarks `fields` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { fields } from "#common/data/_module.d.mts";
+
 /**
  * A custom HTML element responsible for displaying a CodeMirror rich text editor.
  */
@@ -83,6 +87,8 @@ declare class HTMLCodeMirrorElement extends AbstractFormInputElement<string> {
   override disconnectedCallback(): void;
 
   /**
+   * Create an {@linkcode HTMLCodeMirrorElement} element for a {@linkcode fields.StringField | StringField}
+   * (typically a {@linkcode fields.JSONField | JSONField} or {@linkcode fields.JavascriptField | JavascriptField}).
    * @remarks `config` lacks a parameter default, but has no required properties per our types.
    * Foundry types {@linkcode FormInputConfig.name} as required, but the element construction
    * works without one, as useless as that is generally.

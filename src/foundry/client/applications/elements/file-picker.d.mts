@@ -55,7 +55,7 @@ declare class HTMLFilePickerElement<
   set noupload(value);
 
   /**
-   * @remarks Returns `[input: HTMLInputElement, button?: HTMLButtonElement]` in `HTMLFilePickerElement`.
+   * @remarks Returns `[input: HTMLInputElement, button?: HTMLButtonElement]` in {@linkcode HTMLFilePickerElement}.
    * @privateRemarks Return type left wide for ease of subclassing.
    */
   protected override _buildElements(): HTMLElement[];
@@ -67,7 +67,7 @@ declare class HTMLFilePickerElement<
   protected override _activateListeners(): void;
 
   /**
-   * Create a HTMLFilePickerElement using provided configuration data.
+   * Create a {@linkcode HTMLFilePickerElement} using provided configuration data.
    */
   static create(config: HTMLFilePickerElement.Config): HTMLFilePickerElement;
 

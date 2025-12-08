@@ -32,7 +32,7 @@ declare class HTMLColorPickerElement<
   protected override _toggleDisabled(disabled: boolean): void;
 
   /**
-   * Create a HTMLColorPickerElement using provided configuration data.
+   * Create a {@linkcode HTMLColorPickerElement} using provided configuration data.
    */
   static create(config: HTMLColorPickerElement.Config): HTMLColorPickerElement;
 

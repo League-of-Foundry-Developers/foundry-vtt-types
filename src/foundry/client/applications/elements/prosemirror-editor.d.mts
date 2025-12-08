@@ -58,7 +58,7 @@ declare class HTMLProseMirrorElement extends AbstractFormInputElement<string> {
   isDirty(): boolean;
 
   /**
-   * Create a `HTMLProseMirrorElement` using provided configuration data.
+   * Create a {@linkcode HTMLProseMirrorElement} using provided configuration data.
    */
   static create(config: HTMLProseMirrorElement.Config): HTMLProseMirrorElement;
 
