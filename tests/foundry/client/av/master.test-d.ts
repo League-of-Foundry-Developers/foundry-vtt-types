@@ -47,5 +47,5 @@ expectTypeOf(avMaster.client).toEqualTypeOf<CustomAVCLient>();
 expectTypeOf(avMaster.client.customProperty).toEqualTypeOf<string>();
 
 if (game instanceof Game) {
-  expectTypeOf(game?.webrtc?.client.customProperty).toEqualTypeOf<string | undefined>();
+  expectTypeOf(game.webrtc?.client.customProperty).toEqualTypeOf<string | undefined>();
 }
