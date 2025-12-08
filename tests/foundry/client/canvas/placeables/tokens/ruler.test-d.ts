@@ -88,21 +88,20 @@ class DrawSteelTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
 
     if (!this.token.inCombat) return context;
 
-    state.segmentWaypoints ??= [];
     state.segmentWaypoints.push(waypoint);
 
     if (!context) return;
 
     const _points = this.token.document.getCompleteMovementPath(state.segmentWaypoints);
 
-    const startedNear = state.endPointEnemies ?? new Set();
+    const startedNear = state.endPointEnemies;
     // Actual code has some Token Document methods to fetch relevant info, not included in test to reduce scope
     const endPointEnemies = new Set<TokenDocument.Implementation>();
     const passedBy = new Set<TokenDocument.Implementation>().union(startedNear);
     const delta = waypoint.actionConfig.teleport ? 0 : passedBy.difference(endPointEnemies).size;
     const strikes = {
       delta,
-      total: delta + (state.strikes?.total ?? 0),
+      total: delta + state.strikes.total,
     };
 
     state.endPointEnemies = endPointEnemies;
@@ -138,12 +137,12 @@ class DrawSteelTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
       // actual code calls a token document getter
       const movementTypes = new Set(["strings"]);
       if (!movementTypes.has("teleport")) return style;
-      const value = (foundry.utils.getProperty(this, "token.document.actor.system.movement.teleport") as number) ?? 0;
+      const value = (foundry.utils.getProperty(this, "token.document.actor.system.movement.teleport") as number | null) ?? 0;
       const index = waypoint.cost > value ? 2 : 0;
       style.color = colors[index];
     } else {
       const value =
-        (foundry.utils.getProperty(this, "token.document.actor.system.movement.value") as number) ?? Infinity;
+        (foundry.utils.getProperty(this, "token.document.actor.system.movement.value") as number | null) ?? Infinity;
       // Total cost, up to 1x is green, up to 2x is yellow, over that is red
       const index = Math.clamp(Math.floor((waypoint.measurement.cost - 1) / value), 0, 2) as 0 | 2;
       style.color = colors[index];
