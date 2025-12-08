@@ -2,6 +2,7 @@ import { test, describe, expectTypeOf } from "vitest";
 
 import DocumentCollection = foundry.documents.abstract.DocumentCollection;
 import SearchFilter = foundry.applications.ux.SearchFilter;
+import Document = foundry.abstract.Document;
 
 declare const actor: Actor.Stored;
 declare const itemSourceArray: Item.Source[];
@@ -39,6 +40,7 @@ describe("DocumentCollection Tests", () => {
   test("Miscellaneous", () => {
     expectTypeOf(dc.documentClass).toEqualTypeOf<Item.ImplementationClass>();
     expectTypeOf(dc.documentName).toEqualTypeOf<"Item">();
+    expectTypeOf(TestItemCollection.documentName).toEqualTypeOf<Document.Type | undefined>();
     expectTypeOf(dc._source).toEqualTypeOf<Item.CreateData[]>();
 
     expectTypeOf(dc.createDocument(itemCreateDataArray[0]!)).toEqualTypeOf<Item.Implementation>();

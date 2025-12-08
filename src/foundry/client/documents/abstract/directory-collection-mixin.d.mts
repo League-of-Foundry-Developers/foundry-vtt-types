@@ -22,7 +22,7 @@ declare class DirectoryCollection {
    * in this mixin.
    * @internal
    */
-  " __fvtt_types_internal_value": DirectoryCollectionMixin.ValidElementType;
+  " __fvtt_types_internal_value": unknown;
 
   /**
    * Reference the set of Folders which contain documents in this collection
@@ -155,8 +155,6 @@ declare namespace DirectoryCollectionMixin {
    */
   type BaseClass = Collection.AnyConstructor;
 
-  type ValidElementType = Document.ImplementationFor<Folder.DocumentType> | CompendiumCollection.Any;
-
   /** A helper type to prevent exposing the internal property directly to users. */
   type GetElementType<Collection extends DirectoryCollection> = Collection[" __fvtt_types_internal_value"];
 
@@ -175,17 +173,11 @@ declare namespace DirectoryCollectionMixin {
     "setup"
   >;
 
-  type _FolderTypeFor<ElementType extends ValidElementType> = ElementType extends CompendiumCollection.Any
-    ? "Compendium"
-    : ElementType extends { documentName: infer DocumentName }
-      ? DocumentName
-      : never;
-
-  interface TreeNode<T extends ValidElementType> {
+  interface TreeNode<T> {
     children: TreeNode<T>[];
     depth: number;
     entries: T[];
-    folder: _FolderTypeFor<T>;
+    folder: Folder.Stored; // TODO: Folder.Stored<T["documentName"] | "Compendium">, but in a way that doesn't make circularities
     root: boolean;
     visible: boolean;
   }

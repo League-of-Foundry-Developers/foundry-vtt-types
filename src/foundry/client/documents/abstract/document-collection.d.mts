@@ -62,7 +62,7 @@ declare abstract class DocumentCollection<
   /**
    * The base Document type which is contained within this DocumentCollection
    */
-  static documentName: string | undefined;
+  static documentName: Document.Type | undefined;
 
   /**
    * Record the set of document ids where the Document was not initialized because of invalid source data
@@ -229,7 +229,9 @@ declare namespace DocumentCollection {
    * {@linkcode Application.render | AppV1#render} and {@linkcode ApplicationV2.render | AppV2#render}; in the latter case,
    * `options.force` is overwritten with the first parameter of `DocumentCollection#render`, so it is omitted here.
    */
-  interface RenderOptions extends DeepPartial<Application.Options & Omit<ApplicationV2.RenderOptions, "force">> {}
+  interface RenderOptions
+    extends DeepPartial<Application.Options>,
+      DeepPartial<Omit<ApplicationV2.RenderOptions, "force">> {}
 
   /** @internal */
   interface _SearchOptions {
