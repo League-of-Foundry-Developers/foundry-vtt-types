@@ -13,8 +13,9 @@ import type AbstractFormInputElement from "./form-element.d.mts";
  * - {@linkcode HTMLDocumentTagsElement._value | #_getValue} (and therefore the `value` getter) returns the `Object.keys()` of `_value`, so
  * `string[]`, *unless* the element's been configured with {@linkcode HTMLDocumentTagsElement.single | single: true}, in which case it
  * returns `string | null`
- * - {@linkcode HTMLDocumentTagsElement._setValue | #_setValue} (and therefor the `value` setter) will take single `string`s, but tries to
- * iterate over all other truthy values, so `| Iterable<string>`.
+ * - {@linkcode HTMLDocumentTagsElement._setValue | #_setValue} (and therefor the `value` setter) will take and properly handle `string`
+ * literals, but tries to iterate over all *other* truthy values, so we can use `| Iterable<string>` without erroneously adding anything we
+ * don't mean to, unlike in {@linkcode foundry.applications.elements.HTMLStringTagsElement}..
  */
 declare class HTMLDocumentTagsElement extends AbstractFormInputElement<
   Record<string, string> | string | Iterable<string> | null

@@ -14,7 +14,7 @@ describe("HTMLDocumentTagsElement Test", () => {
     // @ts-expect-error Custom elements with `static create` functions have protected constructors
     new HTMLDocumentTagsElement();
     // @ts-expect-error Custom elements with `static create` functions have protected constructors
-    new HTMLDocumentTagsElement({ value: "Actor.1234567890ABCDEF" });
+    new HTMLDocumentTagsElement({ values: ["Actor.1234567890ABCDEF"] });
 
     expectTypeOf(HTMLDocumentTagsElement.create({ ...config, value: [] })).toEqualTypeOf<HTMLDocumentTagsElement>();
     expectTypeOf(
@@ -35,7 +35,7 @@ describe("HTMLDocumentTagsElement Test", () => {
 
     expectTypeOf(el.type).toEqualTypeOf<CONST.ALL_DOCUMENT_TYPES | null>();
     el.type = "Actor"; // Setter
-    el.type = null; // No required type
+    el.type = null; // `null` type means any valid world UUID allowed
     // @ts-expect-error "foo" is not a document type
     el.type = "foo";
 

@@ -14,14 +14,15 @@ import type { InexactPartial } from "#utils";
  * {@linkcode HTMLStringTagsElement._initializeTags | #_initializeTags} for examples.
  *
  * @privateRemarks Unlike {@linkcode HTMLDocumentTagsElement}, there's no `single` option here, so no method ever returns/takes
- * `string | null`; `Iterable<string>` covers everything:
+ * `string | null`; `Iterable<string>` *almost* covers everything:
  * - {@linkcode HTMLStringTagsElement._value | #_value} is a `Set<string>`
- * - {@linkcode HTMLStringTagsElement.value | #value} (getter) and {@linkcode HTMLStringTagsElement._getValue | #_getValue}
+ * - {@linkcode HTMLStringTagsElement._getValue | #_getValue} (and therefore the {@linkcode HTMLStringTagsElement.value | #value} getter)
  * always return `string[]`
- * - {@linkcode HTMLStringTagsElement.value | #value} (setter) and {@linkcode HTMLStringTagsElement._setValue | #_setValue}
- * take any `Iterable<string>`, with no facility for wrapping naked primitives.
+ * - {@linkcode HTMLStringTagsElement._setValue | #_setValue} (and therefore the {@linkcode HTMLStringTagsElement.value | #value} setter)
+ * take any `Iterable<string>`, but since that type will allow `string` literals, and `_setValue` does no wrapping of naked primitives, we
+ * are forced to use a narrower type; `string[] | Set<string>` covers the vast majority of use cases.
  */
-declare class HTMLStringTagsElement extends AbstractFormInputElement<Iterable<string>> {
+declare class HTMLStringTagsElement extends AbstractFormInputElement<string[] | Set<string>> {
   /**
    * @remarks This constructor is protected because additional work must be done after creation for this element to be valid in the DOM.
    * Use {@linkcode HTMLStringTagsElement.create} instead.
@@ -37,18 +38,18 @@ declare class HTMLStringTagsElement extends AbstractFormInputElement<Iterable<st
 
   /**
    * @remarks Initialized to `new Set()` in the class body *and* the constructor (for extra freshness).
-   * @privateRemarks Also necessary to narrow from `Iterable`
+   * @privateRemarks Also necessary to narrow from the value type param.
    */
   protected override _value: Set<string>;
 
   /**
-   * @privateRemarks Fake type override to narrow from `Iterable`. {@linkcode HTMLStringTagsElement._getValue | #_getValue}
+   * @privateRemarks Fake type override to narrow from the value type param. {@linkcode HTMLStringTagsElement._getValue | #_getValue}
    * always returns `string[]`.
    */
   override get value(): string[];
 
   /** @privateRemarks Fake type override, to the type it would be anyway, that only becomes necessary once the getter override exists. */
-  override set value(value: Iterable<string>);
+  override set value(value: string[] | Set<string>);
 
   /**
    * Initialize innerText or an initial value attribute of the element as a comma-separated list of currently assigned
@@ -100,8 +101,7 @@ declare class HTMLStringTagsElement extends AbstractFormInputElement<Iterable<st
   /** @remarks `Array.from(`{@linkcode HTMLStringTagsElement._value | this._value}`)` */
   protected override _getValue(): string[];
 
-  /** @remarks Does no checks before iterating `value` */
-  protected override _setValue(value: Iterable<string>): void;
+  protected override _setValue(value: string[] | Set<string>): void;
 
   protected override _toggleDisabled(disabled: boolean): void;
 
@@ -163,7 +163,7 @@ declare namespace HTMLStringTagsElement {
 
   /**
    * @remarks Value type is `string[]` because {@linkcode HTMLStringTagsElement.create} does no massaging of `value` and it must be passable
-   * to the constructor, and therefore passable to {@linkcode HTMLStringTagsElement._initializeTags | #_initializeTags}.
+   * to the constructor, and therefore to {@linkcode HTMLStringTagsElement._initializeTags | #_initializeTags}.
    */
   interface Config extends Pick<Options, "slug">, FormInputConfig<string[]> {}
 

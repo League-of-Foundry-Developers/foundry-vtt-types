@@ -54,12 +54,11 @@ export abstract class AbstractMultiSelectElement extends AbstractFormInputElemen
    */
   unselect(value: string): void;
 
-  /** @remarks `Array.from(`{@linkcode AbstractMultiSelectElement._value | this._value}`)` */
   protected override _getValue(): string[];
 
   /**
    * @remarks
-   * @throws If `value` is not an Array, or if any element is not in {@linkcode AbstractMultiSelectElement._choices | this._choices}
+   * @throws If any element passed is not in {@linkcode AbstractMultiSelectElement._choices | this._choices}
    */
   protected override _setValue(value: string[]): void;
 }

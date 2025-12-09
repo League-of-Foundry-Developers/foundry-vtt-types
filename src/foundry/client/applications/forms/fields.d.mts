@@ -195,7 +195,7 @@ export function createEditorInput(config: EditorInputConfig): HTMLDivElement;
 
 /**
  * @remarks This is the value type for methods which pass their config through {@linkcode prepareSelectOptionGroups}, which will:
- * - Iterate over anything iterable passed
+ * - Iterate over anything iterable (and `typeof === "object"`, preventing iterating string literals) passed
  * - Wrap lone primitives in an array
  * - Run every value through `String()`
  *

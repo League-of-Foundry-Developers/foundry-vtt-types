@@ -13,7 +13,7 @@ describe("HTMLStringTagsElement Tests", () => {
     // @ts-expect-error Custom elements with `static create` functions have protected constructors
     new HTMLStringTagsElement();
     // @ts-expect-error Custom elements with `static create` functions have protected constructors
-    new HTMLStringTagsElement({ values: ["tag-one", "tag two", "TagThree"] });
+    new HTMLStringTagsElement({ slug: false, values: ["tag-one", "tag two", "TagThree"] });
     expectTypeOf(HTMLStringTagsElement.create(config)).toEqualTypeOf<HTMLStringTagsElement>();
   });
 
@@ -21,21 +21,29 @@ describe("HTMLStringTagsElement Tests", () => {
 
   test("Miscellaneous", () => {
     expectTypeOf(HTMLStringTagsElement.tagName).toBeString();
+    expectTypeOf(HTMLStringTagsElement.icons.add).toBeString();
+    expectTypeOf(HTMLStringTagsElement.labels.placeholder).toBeString();
+
+    expectTypeOf(el["_initializeTags"]()).toBeVoid();
+    expectTypeOf(el["_initializeTags"](["tag-one", "tag two", "TagThree"])).toBeVoid();
+    expectTypeOf(el["_initializeTags"]()).toBeVoid();
+
+    expectTypeOf(el["_validateTag"]("foo")).toBeVoid();
+
+    expectTypeOf(HTMLStringTagsElement.renderTag("foo")).toEqualTypeOf<HTMLDivElement>();
+    expectTypeOf(HTMLStringTagsElement.renderTag("foo", "A Label for Foo")).toEqualTypeOf<HTMLDivElement>();
+    expectTypeOf(HTMLStringTagsElement.renderTag("foo", "A Label for Foo", false)).toEqualTypeOf<HTMLDivElement>();
   });
 
   test("Value", () => {
     expectTypeOf(el.value).toEqualTypeOf<string[]>();
     el.value = ["tag-one", "tag two", "TagThree"]; // Setter
     el.value = new Set(["tag-one", "tag two", "TagThree"]);
-    el.value = new Collection([
-      ["1", "tag-one"],
-      ["2", "tag two"],
-      ["3", "TagThree"],
-    ]);
 
     expectTypeOf(el["_value"]).toEqualTypeOf<Set<string>>();
     expectTypeOf(el["_getValue"]()).toEqualTypeOf<string[]>();
-    expectTypeOf(el["_setValue"]("assets/icons/foo.png")).toBeVoid();
+    expectTypeOf(el["_setValue"](["tag-one", "tag two", "TagThree"])).toBeVoid();
+    expectTypeOf(el["_setValue"](new Set(["tag-one", "tag two", "TagThree"]))).toBeVoid();
   });
 
   test("Element API and lifecycle methods", () => {
@@ -45,5 +53,3 @@ describe("HTMLStringTagsElement Tests", () => {
     expectTypeOf(el["_toggleDisabled"](true)).toBeVoid();
   });
 });
-
-const _x: Iterable<string> = "foo";
