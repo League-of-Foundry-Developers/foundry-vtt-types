@@ -7,11 +7,14 @@ import {
   type PoolWorker,
   type WorkerRequest,
   type WorkerResponse,
+  type Vitest,
   // eslint-disable-next-line import-x/extensions
 } from "vitest/node";
-import dotenv from "dotenv";
 import getPort from "get-port";
 import pathe from "pathe";
+import urlJoin from "url-join";
+import normalizeUrl from "normalize-url";
+import * as stackTraceParser from "stacktrace-parser";
 import { EventEmitter } from "node:events";
 import os from "node:os";
 import net from "node:net";
@@ -32,25 +35,44 @@ declare global {
 const defaultFoundryUrl = "http://localhost:30000";
 
 interface BrowserData {
+  viteUrl: string;
   browser: Browser;
   server: ViteDevServer;
   context: BrowserContext;
+  page: Page;
 }
 
 let browserData: BrowserData | undefined;
 
-async function setupBrowser(): Promise<BrowserData> {
-  if (browserData) {
-    return browserData;
+// This may seem unnecessarily duplicative but `setup` is called effectively in a `Promise.race`.
+// This is to allow all racing workers to only get the browser once whereas `browserData` is for sync access.
+let _browserData: Promise<BrowserData> | undefined;
+
+async function setupBrowser(vitest: Vitest): Promise<BrowserData | undefined> {
+  if (_browserData != null) {
+    // Throw away the error so only the first one logs.
+    return _browserData.catch(() => undefined);
   }
 
-  loadEnv();
+  _browserData = _setupBrowser(vitest);
+  browserData = await _browserData;
+  return browserData;
+}
 
+// No need to log that the page closed with ctrl+c
+let expectedClose = false;
+
+process.on("SIGINT", () => {
+  expectedClose = true;
+});
+
+async function _setupBrowser(vitest: Vitest): Promise<BrowserData> {
   const foundryUrl = await getFoundryUrl();
 
   const headless = process.env["HEADLESS"] !== "false";
 
-  const args: string[] = [];
+  // Enable hardware acceleration (for performance).
+  const args = ["--enable-gpu", "--ignore-gpu-blocklist"];
   let viewport: { width: number; height: number } | null;
   if (headless) {
     viewport = {
@@ -58,8 +80,7 @@ async function setupBrowser(): Promise<BrowserData> {
       height: 768,
     };
   } else {
-    // Enable hardware acceleration (for performance) and start maximized.
-    args.push("--enable-gpu", "--ignore-gpu-blocklist", "--start-maximized");
+    args.push("--start-maximized");
     viewport = null;
   }
 
@@ -79,30 +100,280 @@ async function setupBrowser(): Promise<BrowserData> {
       hmr: false,
       watch: null,
     },
-    build: {
-      sourcemap: "inline",
-    },
   });
 
   await server.listen();
 
-  browserData = { browser, server, context };
-  return browserData;
-}
+  const { resolvedUrls } = server;
+  if (resolvedUrls == null) {
+    throw new Error("Vite did not resolve any urls!");
+  }
 
-function loadEnv() {
-  const { error } = dotenv.config({ path: ".env.local", quiet: true });
-  if (error != null) {
-    // dotenv mistypes the error as `dotenv.DotenvError` but fs errors like `ENOENT` can creep in.
-    const realError = error as unknown;
-    if (realError instanceof Error) {
-      if ("code" in realError && realError.code === "ENOENT") {
-        return;
-      }
+  const viteUrl = resolvedUrls.local[0] ?? resolvedUrls.network[0];
+  if (viteUrl == null) {
+    throw new Error("Could not get Vite url");
+  }
+
+  const page = await context.newPage();
+  const showFoundryLogs = process.env["LOG_FOUNDRY_MJS"] === "true";
+  const showNativeWarnings = process.env["LOG_NATIVE_MESSAGES"] === "true";
+
+  await page.addInitScript(() => {
+    const {
+      assert,
+      clear,
+      count,
+      debug,
+      dir,
+      dirxml,
+      groupEnd,
+      error,
+      info,
+      log,
+      profile,
+      profileEnd,
+      group,
+      groupCollapsed,
+      table,
+      timeEnd,
+      trace,
+      warn,
+    } = console;
+
+    function sendLog(type: string, args: unknown[], stack: string) {
+      args = args.map((arg) => {
+        if (typeof arg === "function") {
+          // Functions would display as "null" rather confusingly.
+          return arg.toString();
+        } else if (arg instanceof HTMLElement) {
+          // Nodes would display as "Ref@node" or the like.
+          return arg.outerHTML;
+        }
+
+        return arg;
+      });
+
+      // @ts-expect-error - Untyped global.
+      // eslint-disable-next-line
+      window.__send_log__(type, args, stack);
     }
 
-    throw error;
+    console.assert = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("assert", args, stack.stack);
+      assert.call(this, ...args);
+    };
+
+    console.clear = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("clear", args, stack.stack);
+      clear.call(this, ...args);
+    };
+
+    console.count = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("count", args, stack.stack);
+      count.call(this, ...args);
+    };
+
+    console.debug = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("debug", args, stack.stack);
+      debug.call(this, ...args);
+    };
+
+    console.dir = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("dir", args, stack.stack);
+      dir.call(this, ...args);
+    };
+
+    console.dirxml = function (...args: unknown[]) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("dirxml", args, stack.stack);
+      dirxml.call(this, ...args);
+    };
+
+    console.groupEnd = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("groupEnd", args, stack.stack);
+      groupEnd.call(this, ...args);
+    };
+
+    console.error = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("error", args, stack.stack);
+      error.call(this, ...args);
+    };
+
+    console.info = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("info", args, stack.stack);
+      info.call(this, ...args);
+    };
+
+    console.log = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("log", args, stack.stack);
+      log.call(this, ...args);
+    };
+
+    console.profile = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("profile", args, stack.stack);
+      profile.call(this, ...args);
+    };
+
+    console.profileEnd = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("profileEnd", args, stack.stack);
+      profileEnd.call(this, ...args);
+    };
+
+    console.group = function (...args: unknown[]) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("group", args, stack.stack);
+      group.call(this, ...args);
+    };
+
+    console.groupCollapsed = function (...args: unknown[]) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("groupCollapsed", args, stack.stack);
+      groupCollapsed.call(this, ...args);
+    };
+
+    console.table = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("table", args, stack.stack);
+      table.call(this, ...args);
+    };
+
+    console.timeEnd = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("timeEnd", args, stack.stack);
+      timeEnd.call(this, ...args);
+    };
+
+    console.trace = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("trace", args, stack.stack);
+      trace.call(this, ...args);
+    };
+
+    console.warn = function (...args) {
+      const stack = { stack: "" };
+      Error.captureStackTrace(stack);
+      sendLog("warn", args, stack.stack);
+      warn.call(this, ...args);
+    };
+  });
+
+  const foundryMjs = normalizeUrl(urlJoin(foundryUrl, "scripts/foundry.mjs"));
+
+  await page.exposeFunction("__send_log__", (type: string, args: unknown[], stack: string) => {
+    const frames = stackTraceParser.parse(stack);
+    const callerFile = frames[1]?.file;
+    const isFoundryMJS = callerFile === foundryMjs;
+
+    if (isFoundryMJS && !showFoundryLogs) {
+      return;
+    }
+
+    if (type === "clear") {
+      console.log("[Browser cleared log]");
+    } else {
+      // eslint-disable-next-line
+      (console as any)[type](...args);
+    }
+  });
+
+  page.on("console", (message) => {
+    const location = message.location();
+
+    if (location.lineNumber === 0 && location.columnNumber === 0) {
+      const messageType = message.type();
+
+      if (messageType === "error") {
+        console.error(message.text(), message.location().url);
+      } else if (showNativeWarnings) {
+        if (messageType in console) {
+          // eslint-disable-next-line
+          (console as any)[messageType](message.text());
+        } else if (messageType === "warning") {
+          console.warn("[native] " + message.text());
+        } else {
+          console.log("[native] " + message.text());
+        }
+      }
+    }
+  });
+
+  // TODO: See if we can capture within the context of the test.
+  page.on("pageerror", (err: Error) => {
+    throw err;
+  });
+
+  page.on("close", () => {
+    if (expectedClose) {
+      return;
+    }
+
+    throw new Error("Page unexpectedly closed!");
+  });
+
+  page.on("crash", () => {
+    throw new Error("Page crashed!");
+  });
+
+  vitest.onClose(async () => {
+    expectedClose = true;
+    await page.close();
+    await context.close();
+    await browser.close();
+    await server.close();
+  });
+
+  await page.goto("/");
+
+  const pageUrl = new URL(page.url());
+  if (!pageUrl.pathname.endsWith("/join")) {
+    throw new Error(`Expected to be redirected to /join but got pathname ${pageUrl.pathname}`);
   }
+
+  await page.selectOption("[name=userid]", "Test User");
+  await page.click("[name=join]");
+  await page.waitForURL("/game");
+  await page.waitForFunction(() => typeof game !== "undefined" && game.ready);
+
+  const throttleCanvas = process.env["THROTTLE_CANVAS"] === "true";
+  if (throttleCanvas) {
+    // Lower the performance and fps so tests run quicker.
+    await page.evaluate(async () => {
+      canvas!.app!.ticker.maxFPS = PIXI.Ticker.shared.maxFPS = 0.25;
+      canvas!.performance!.fps = 0.25;
+      canvas!.performance!.msaa = false;
+      canvas!.performance!.smaa = false;
+    });
+  }
+
+  return { viteUrl, browser, server, context, page };
 }
 
 async function getFoundryUrl(): Promise<string> {
@@ -218,7 +489,7 @@ function tcpPing(host: string, port: number, timeout = 3000) {
   });
 }
 
-let isCloseSetup = false;
+let isSetup = false;
 
 class CustomBrowserWorker implements PoolWorker {
   name = "custom-browser-worker";
@@ -239,7 +510,14 @@ class CustomBrowserWorker implements PoolWorker {
     const { vitest } = this.options.project;
 
     if (requestType === "start") {
-      const viteUrl = this.viteUrl;
+      if (isSetup) {
+        return {
+          __vitest_worker_response__: true,
+          type: "started",
+        };
+      }
+
+      const viteUrl = browserData?.viteUrl;
       if (viteUrl == null) {
         throw new Error("No Vite URL! This is a bug, please contact LukeAbby.");
       }
@@ -256,12 +534,15 @@ class CustomBrowserWorker implements PoolWorker {
         [testerUrl, request.context.config] as const,
       );
 
+      isSetup = true;
+
       return {
         __vitest_worker_response__: true,
         type: "started",
       };
     } else if (requestType === "run") {
       const page = this.getPage();
+
       const files = await page.evaluate(async (context) => {
         return await window.__foundry_vitest__.run(context);
       }, request.context);
@@ -323,58 +604,32 @@ class CustomBrowserWorker implements PoolWorker {
   }
 
   viteUrl: string | undefined;
-  page: Page | undefined;
   getPage() {
-    if (this.page == null) {
+    if (browserData == null) {
       throw new Error("Could not get the page! This is a bug, please contact LukeAbby.");
     }
 
-    return this.page;
+    return browserData.page;
   }
 
   async start() {
-    const browserData = await setupBrowser();
-
-    if (!isCloseSetup) {
-      this.options.project.vitest.onClose(async () => {
-        await browserData.context.close();
-        await browserData.browser.close();
-        await browserData.server.close();
-      });
-      isCloseSetup = true;
+    if (browserData != null) {
+      return;
     }
 
-    const page = await browserData.context.newPage();
-
-    await page.goto("/");
-
-    const pageUrl = new URL(page.url());
-    if (!pageUrl.pathname.endsWith("/join")) {
-      throw new Error(`Expected to be redirected to /join but got pathname ${pageUrl.pathname}`);
+    try {
+      const browserData = await setupBrowser(this.options.project.vitest);
+      if (!browserData) {
+        return; // Another worker errored, return with no error.
+      }
+    } catch (e) {
+      // Workaround for https://github.com/vitest-dev/vitest/issues/9207
+      console.error(e);
+      throw e;
     }
-
-    await page.selectOption("[name=userid]", "Test User");
-    await page.click("[name=join]");
-    await page.waitForURL("/game");
-    await page.waitForFunction(() => typeof game !== "undefined" && game.ready);
-
-    const { resolvedUrls } = browserData.server;
-    if (resolvedUrls == null) {
-      throw new Error("Vite did not resolve any urls!");
-    }
-
-    const viteUrl = resolvedUrls.local[0] ?? resolvedUrls.network[0];
-    if (viteUrl == null) {
-      throw new Error("Could not get Vite url");
-    }
-
-    this.viteUrl = viteUrl;
-    this.page = page;
   }
 
-  async stop() {
-    this.getPage().close();
-  }
+  async stop() {}
 
   canReuse() {
     // All workers are fungible and shell off to the same array of browsers.
