@@ -39,7 +39,7 @@ describe("Users Tests", () => {
     expectTypeOf(users.activeGM).toEqualTypeOf<User.Stored | null>();
 
     expectTypeOf(
-      users.getDesignatedUser((u) => u.active && !!u.flags?.core?.sheetLock),
+      users.getDesignatedUser((u) => u.active && !!u.flags.core?.sheetLock),
     ).toEqualTypeOf<User.Stored | null>();
 
     expectTypeOf(Users._activateSocketListeners(game.socket!)).toBeVoid();
