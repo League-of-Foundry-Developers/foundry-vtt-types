@@ -137,7 +137,8 @@ class DrawSteelTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
       // actual code calls a token document getter
       const movementTypes = new Set(["strings"]);
       if (!movementTypes.has("teleport")) return style;
-      const value = (foundry.utils.getProperty(this, "token.document.actor.system.movement.teleport") as number | null) ?? 0;
+      const value =
+        (foundry.utils.getProperty(this, "token.document.actor.system.movement.teleport") as number | null) ?? 0;
       const index = waypoint.cost > value ? 2 : 0;
       style.color = colors[index];
     } else {

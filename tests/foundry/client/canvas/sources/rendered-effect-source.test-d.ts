@@ -45,7 +45,7 @@ expectTypeOf(mySource.animation).toEqualTypeOf<RenderedEffectSource.AnimationCon
 expectTypeOf(mySource.layers).toEqualTypeOf<RenderedEffectSource.Layers>();
 // @ts-expect-error RenderedEffectSource provides no layers as of v13
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-mySource.layers.background.mesh
+mySource.layers.background.mesh;
 
 expectTypeOf(mySource.colorRGB).toEqualTypeOf<Color.RGBColorVector | null>();
 expectTypeOf(mySource["_geometry"]).toEqualTypeOf<PIXI.Geometry | null>();
