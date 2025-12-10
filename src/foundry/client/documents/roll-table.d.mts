@@ -39,20 +39,19 @@ declare namespace RollTable {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "RollTable";
-        collection: "tables";
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        label: string;
-        labelPlural: string;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "RollTable";
+      collection: "tables";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -321,8 +320,8 @@ declare namespace RollTable {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<RollTable.Parent> {}
 
     /** Options passed along in Create operations for RollTables */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<RollTable.CreateData, RollTable.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<RollTable.CreateData, RollTable.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for RollTables */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RollTable.Parent> {}
@@ -331,8 +330,9 @@ declare namespace RollTable {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<RollTable.UpdateData, RollTable.Parent> {}
 
     /** Operation for {@linkcode RollTable.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<RollTable.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      RollTable.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode RollTable.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<RollTable.Database.Update> {}
@@ -341,8 +341,9 @@ declare namespace RollTable {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<RollTable.Database.Delete> {}
 
     /** Operation for {@linkcode RollTable.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<RollTable.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      RollTable.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link RollTable.update | `RollTable#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

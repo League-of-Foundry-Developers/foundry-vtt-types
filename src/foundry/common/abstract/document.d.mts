@@ -1731,30 +1731,30 @@ declare namespace Document {
   }
 
   /** @internal */
-  interface _ParentContext<Parent extends Document.Any | null>
-    extends _DynamicBase<
-      Parent extends null
-        ? {
-            /**
-             * The parent Document of this one, if this one is embedded
-             * @defaultValue `null`
-             */
-            parent?: Parent | undefined;
-          }
-        : {
-            /**
-             * The parent Document of this one, if this one is embedded
-             */
-            parent: Parent;
-          }
-    > {}
+  interface _ParentContext<Parent extends Document.Any | null> extends _DynamicBase<
+    Parent extends null
+      ? {
+          /**
+           * The parent Document of this one, if this one is embedded
+           * @defaultValue `null`
+           */
+          parent?: Parent | undefined;
+        }
+      : {
+          /**
+           * The parent Document of this one, if this one is embedded
+           */
+          parent: Parent;
+        }
+  > {}
 
   // @ts-expect-error This pattern is inherently an error.
   interface _DynamicBase<T extends object> extends T, Uses<T> {}
 
   /** @internal */
   interface _ConstructionContext<Parent extends Document.Any | null>
-    extends _ParentContext<Parent>,
+    extends
+      _ParentContext<Parent>,
       NullishProps<{
         /**
          * The compendium collection ID which contains this Document, if any
@@ -1785,8 +1785,7 @@ declare namespace Document {
    * description takes precedence.
    */
   interface ConstructionContext<Parent extends Document.Any | null = Document.Any | null>
-    extends Omit<DataModel._ConstructionContext, "strict">,
-      _ConstructionContext<Parent> {}
+    extends Omit<DataModel._ConstructionContext, "strict">, _ConstructionContext<Parent> {}
 
   /** `DataModel#constructor` pulls `parent` and `strict` out of the passed context before forwarding to `#_configure` */
   interface ConfigureOptions extends Omit<ConstructionContext, "parent" | "strict"> {}
@@ -1912,8 +1911,7 @@ declare namespace Document {
    * the (parentless) construction context
    */
   interface CloneContext<Save extends boolean | null | undefined = boolean | null | undefined>
-    extends _CloneContext<Save>,
-      Omit<Document.ConstructionContext, "parent"> {}
+    extends _CloneContext<Save>, Omit<Document.ConstructionContext, "parent"> {}
 
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 

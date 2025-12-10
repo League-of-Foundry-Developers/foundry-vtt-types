@@ -100,8 +100,7 @@ declare namespace ImagePopout {
 
   // TODO: `caption` and `uuid` have defaults in `DEFAULT_OPTIONS`, but due to how config types work, `options.caption` is currently `| undefined`
   interface Configuration<ImagePopout extends ImagePopout.Any = ImagePopout.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<ImagePopout> {
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<ImagePopout> {
     /** The URL to the image or video file */
     src: string;
 

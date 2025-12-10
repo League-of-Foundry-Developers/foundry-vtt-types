@@ -38,20 +38,19 @@ declare namespace PlaylistSound {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "PlaylistSound";
-        collection: "sounds";
-        indexed: true;
-        label: string;
-        labelPlural: string;
-        compendiumIndexFields: ["name", "sort"];
-        schemaVersion: string;
-        permissions: Metadata.Permissions;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "PlaylistSound";
+      collection: "sounds";
+      indexed: true;
+      label: string;
+      labelPlural: string;
+      compendiumIndexFields: ["name", "sort"];
+      schemaVersion: string;
+      permissions: Metadata.Permissions;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -251,35 +250,35 @@ declare namespace PlaylistSound {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<PlaylistSound.Parent> {}
 
     /** Options passed along in Create operations for PlaylistSounds */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        PlaylistSound.CreateData,
-        PlaylistSound.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<PlaylistSound.CreateData, PlaylistSound.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for PlaylistSounds */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<PlaylistSound.Parent> {}
 
     /** Options passed along in Update operations for PlaylistSounds */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<PlaylistSound.UpdateData, PlaylistSound.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      PlaylistSound.UpdateData,
+      PlaylistSound.Parent
+    > {}
 
     /** Operation for {@linkcode PlaylistSound.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<PlaylistSound.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      PlaylistSound.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode PlaylistSound.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<PlaylistSound.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<PlaylistSound.Database.Update> {}
 
     /** Operation for {@linkcode PlaylistSound.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<PlaylistSound.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<PlaylistSound.Database.Delete> {}
 
     /** Operation for {@linkcode PlaylistSound.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<PlaylistSound.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      PlaylistSound.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link PlaylistSound.update | `PlaylistSound#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

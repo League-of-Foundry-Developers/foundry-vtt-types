@@ -230,8 +230,9 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
-  interface RelatedPackageSchema<PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES>
-    extends DataSchema {
+  interface RelatedPackageSchema<
+    PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES,
+  > extends DataSchema {
     /**
      * The id of the related package
      */

@@ -251,8 +251,10 @@ declare namespace EmbeddedCollection {
    * The context interface for {@linkcode EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}
    * The omitted properties are defined after spreading the passed context into a new object, overwriting any passed values
    */
-  interface DocumentConstructionContext
-    extends Omit<Document.ConstructionContext, "parent" | "parentCollection" | "pack"> {}
+  interface DocumentConstructionContext extends Omit<
+    Document.ConstructionContext,
+    "parent" | "parentCollection" | "pack"
+  > {}
 
   interface HandleInvalidDocumentOptions {
     /**

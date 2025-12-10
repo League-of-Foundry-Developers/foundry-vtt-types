@@ -321,19 +321,18 @@ declare namespace RegionDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Region";
-        collection: "regions";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        embedded: Metadata.Embedded;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Region";
+      collection: "regions";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      embedded: Metadata.Embedded;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -604,35 +603,35 @@ declare namespace RegionDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<RegionDocument.Parent> {}
 
     /** Options passed along in Create operations for Regions */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        RegionDocument.CreateData,
-        RegionDocument.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<RegionDocument.CreateData, RegionDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Regions */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RegionDocument.Parent> {}
 
     /** Options passed along in Update operations for Regions */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<RegionDocument.UpdateData, RegionDocument.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      RegionDocument.UpdateData,
+      RegionDocument.Parent
+    > {}
 
     /** Operation for {@linkcode RegionDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<RegionDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      RegionDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode RegionDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<RegionDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<RegionDocument.Database.Update> {}
 
     /** Operation for {@linkcode RegionDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<RegionDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<RegionDocument.Database.Delete> {}
 
     /** Operation for {@linkcode RegionDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<RegionDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      RegionDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link RegionDocument.update | `RegionDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

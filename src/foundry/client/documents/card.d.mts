@@ -39,21 +39,20 @@ declare namespace Card {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Card";
-        collection: "cards";
-        hasTypeData: true;
-        indexed: true;
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        compendiumIndexFields: ["name", "type", "suit", "sort"];
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Card";
+      collection: "cards";
+      hasTypeData: true;
+      indexed: true;
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      compendiumIndexFields: ["name", "type", "suit", "sort"];
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -102,15 +101,14 @@ declare namespace Card {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredCard<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Card<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredCard<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Card<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Card` subtype.
@@ -388,8 +386,8 @@ declare namespace Card {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Card.Parent> {}
 
     /** Options passed along in Create operations for Card Documents */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Card.CreateData, Card.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Card.CreateData, Card.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Card Documents */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Card.Parent> {}
@@ -398,8 +396,9 @@ declare namespace Card {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Card.UpdateData, Card.Parent> {}
 
     /** Operation for {@linkcode Card.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Card.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Card.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Card.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Card.Database.Update> {}
@@ -408,8 +407,9 @@ declare namespace Card {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Card.Database.Delete> {}
 
     /** Operation for {@linkcode Card.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Card.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Card.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Card.update | `Card#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

@@ -327,8 +327,11 @@ declare namespace ClientSettings {
    * @remarks Copied from `client/_types.mjs`
    * @remarks Not to be confused with {@linkcode globalThis.SettingConfig} which is how you register setting types in this project
    */
-  interface SettingConfig<T extends Type = (value: unknown) => unknown>
-    extends _SettingConfig<ToRuntimeType<T>, ToSettingInitializedType<T>, ToSettingCreateData<T>> {}
+  interface SettingConfig<T extends Type = (value: unknown) => unknown> extends _SettingConfig<
+    ToRuntimeType<T>,
+    ToSettingInitializedType<T>,
+    ToSettingCreateData<T>
+  > {}
 
   /**
    * A Client Setting Submenu
@@ -405,13 +408,11 @@ declare namespace ClientSettings {
 
   /** @internal */
   interface _SetOptionsCreate<Doc extends boolean | undefined>
-    extends _SetOptions<Doc>,
-      Setting.Database.CreateOperation<undefined | false> {}
+    extends _SetOptions<Doc>, Setting.Database.CreateOperation<undefined | false> {}
 
   /** @internal */
   interface _SetOptionsUpdate<Doc extends boolean | undefined>
-    extends _SetOptions<Doc>,
-      Setting.Database.UpdateOperation {}
+    extends _SetOptions<Doc>, Setting.Database.UpdateOperation {}
 
   type SetOptions<Doc extends boolean | undefined = undefined> = _SetOptionsCreate<Doc> | _SetOptionsUpdate<Doc>;
 

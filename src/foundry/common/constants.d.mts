@@ -1861,7 +1861,8 @@ export type GRAPHICS_FILE_EXTENSIONS = keyof typeof GRAPHICS_FILE_EXTENSIONS;
  * @privateRemarks Video is spread in after audio, so its `ogg` and `webm` keys override
  */
 interface _UPLOADABLE_FILE_EXTENSIONS
-  extends Identity<typeof IMAGE_FILE_EXTENSIONS>,
+  extends
+    Identity<typeof IMAGE_FILE_EXTENSIONS>,
     Omit<typeof AUDIO_FILE_EXTENSIONS, "ogg" | "webm">,
     Identity<typeof VIDEO_FILE_EXTENSIONS>,
     Identity<typeof TEXT_FILE_EXTENSIONS>,

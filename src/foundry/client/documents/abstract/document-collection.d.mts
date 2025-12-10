@@ -230,8 +230,7 @@ declare namespace DocumentCollection {
    * `options.force` is overwritten with the first parameter of `DocumentCollection#render`, so it is omitted here.
    */
   interface RenderOptions
-    extends DeepPartial<Application.Options>,
-      DeepPartial<Omit<ApplicationV2.RenderOptions, "force">> {}
+    extends DeepPartial<Application.Options>, DeepPartial<Omit<ApplicationV2.RenderOptions, "force">> {}
 
   /** @internal */
   interface _SearchOptions {

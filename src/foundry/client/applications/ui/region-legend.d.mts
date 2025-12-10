@@ -83,8 +83,7 @@ declare namespace RegionLegend {
   }
 
   interface Configuration<RegionLegend extends RegionLegend.Any = RegionLegend.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<RegionLegend> {}
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<RegionLegend> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

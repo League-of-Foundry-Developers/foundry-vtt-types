@@ -41,22 +41,21 @@ declare namespace Actor {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Actor";
-        collection: "actors";
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        hasTypeData: true;
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Actor";
+      collection: "actors";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      hasTypeData: true;
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -112,15 +111,14 @@ declare namespace Actor {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredActor<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Actor<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredActor<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Actor<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Actor` subtype.
@@ -389,8 +387,8 @@ declare namespace Actor {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Actor.Parent> {}
 
     /** Options passed along in Create operations for Actors */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Actor.CreateData, Actor.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Actor.CreateData, Actor.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Actors */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Actor.Parent> {}
@@ -399,8 +397,9 @@ declare namespace Actor {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Actor.UpdateData, Actor.Parent> {}
 
     /** Operation for {@linkcode Actor.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Actor.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Actor.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Actor.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Actor.Database.Update> {}
@@ -409,8 +408,9 @@ declare namespace Actor {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Actor.Database.Delete> {}
 
     /** Operation for {@linkcode Actor.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Actor.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Actor.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Actor.update | `Actor#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

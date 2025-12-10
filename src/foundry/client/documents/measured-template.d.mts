@@ -38,19 +38,18 @@ declare namespace MeasuredTemplateDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "MeasuredTemplate";
-        collection: "templates";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "MeasuredTemplate";
+      collection: "templates";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -290,38 +289,35 @@ declare namespace MeasuredTemplateDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<MeasuredTemplateDocument.Parent> {}
 
     /** Options passed along in Create operations for MeasuredTemplateDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        MeasuredTemplateDocument.CreateData,
-        MeasuredTemplateDocument.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<MeasuredTemplateDocument.CreateData, MeasuredTemplateDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for MeasuredTemplateDocuments */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<MeasuredTemplateDocument.Parent> {}
 
     /** Options passed along in Update operations for MeasuredTemplateDocuments */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<
-        MeasuredTemplateDocument.UpdateData,
-        MeasuredTemplateDocument.Parent
-      > {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      MeasuredTemplateDocument.UpdateData,
+      MeasuredTemplateDocument.Parent
+    > {}
 
     /** Operation for {@linkcode MeasuredTemplateDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<MeasuredTemplateDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      MeasuredTemplateDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode MeasuredTemplateDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<MeasuredTemplateDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<MeasuredTemplateDocument.Database.Update> {}
 
     /** Operation for {@linkcode MeasuredTemplateDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<MeasuredTemplateDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<MeasuredTemplateDocument.Database.Delete> {}
 
     /** Operation for {@linkcode MeasuredTemplateDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<MeasuredTemplateDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      MeasuredTemplateDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link MeasuredTemplateDocument.update | `MeasuredTemplateDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -338,8 +334,8 @@ declare namespace MeasuredTemplateDocument {
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode MeasuredTemplateDocument._preCreateOperation} */
-    interface PreCreateOperation
-      extends Document.Database.PreCreateOperationStatic<MeasuredTemplateDocument.Database.Create> {}
+    interface PreCreateOperation extends Document.Database
+      .PreCreateOperationStatic<MeasuredTemplateDocument.Database.Create> {}
 
     /** Operation for {@link MeasuredTemplateDocument._onCreateOperation | `MeasuredTemplateDocument#_onCreateOperation`} */
     interface OnCreateOperation extends MeasuredTemplateDocument.Database.Create {}

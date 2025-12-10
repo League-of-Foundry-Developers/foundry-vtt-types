@@ -31,8 +31,7 @@ declare namespace PrototypeTokenConfig {
   interface RenderContext extends TokenApplicationMixin.RenderContext<PrototypeToken>, ApplicationV2.RenderContext {}
 
   interface Configuration<PrototypeTokenConfig extends PrototypeTokenConfig.Any = PrototypeTokenConfig.Any>
-    extends TokenApplicationMixin.Configuration,
-      ApplicationV2.Configuration<PrototypeTokenConfig> {}
+    extends TokenApplicationMixin.Configuration, ApplicationV2.Configuration<PrototypeTokenConfig> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

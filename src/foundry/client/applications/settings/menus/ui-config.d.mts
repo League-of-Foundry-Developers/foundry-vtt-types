@@ -30,8 +30,7 @@ declare namespace UIConfig {
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
 
   interface Configuration<UIConfig extends UIConfig.Any = UIConfig.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<UIConfig> {}
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<UIConfig> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
