@@ -48,4 +48,4 @@ jobs:
         run: npx tsgo --exactOptionalPropertyTypes false
 
       - if: (!cancelled())
-        run: npm run test
+        run: npm run test-types

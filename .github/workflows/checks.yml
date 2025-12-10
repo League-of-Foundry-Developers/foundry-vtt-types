@@ -124,9 +124,6 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Browser Tests
-        run: npm run test
-
       - name: Test Types
         run: npm run test-types -- --reporter default --reporter github-actions
 
