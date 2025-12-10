@@ -48,9 +48,11 @@
     "eslint:fix": "eslint --cache --fix .",
     "prettier:fix": "prettier -l -w .",
     "eslint:report": "eslint --cache --output-file eslint_report.json --format json .",
-    "test": "node tests/run.ts",
+    "test": "vitest --run",
+    "test:watch": "vitest --run --watch",
     "test-types": "vitest --typecheck --run --exclude '**/*.test.ts'",
-    "test-types:watch": "vitest --typecheck",
+    "test-all": "vitest --run --typecheck",
+    "test-all:watch": "vitest --run --typecheck --watch",
     "typecheck": "tsgo",
     "typecheck:all": "tsgo --project tsconfig.all.json",
     "prepare": "npm-run-all -c prepare1 prepare2",
@@ -142,6 +144,7 @@
   "devDependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
+    "@ark/attest": "^0.56.0",
     "@codemirror/lint": "^6.9.2",
     "@eslint/compat": "^2.0.0",
     "@eslint/js": "^9.19.0",
@@ -153,6 +156,7 @@
     "@typescript-eslint/scope-manager": "^8.31.0",
     "@typescript-eslint/utils": "^8.31.0",
     "@typescript/native-preview": "^7.0.0-dev.20251012.1",
+    "@vitest/runner": "^4.0.15",
     "dotenv": "^17.2.3",
     "esbuild": "^0.27.0",
     "eslint": "^9.19.0",
@@ -178,7 +182,7 @@
     "typescript-eslint": "^8.31.0",
     "url-join": "^5.0.0",
     "vite": "^7.2.6",
-    "vitest": "^4.0.0-beta.13"
+    "vitest": "^4.0.15"
   },
   "overrides": {
     "expect-type": "^1.2.2"

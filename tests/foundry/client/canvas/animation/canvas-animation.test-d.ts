@@ -55,7 +55,7 @@ describe("CanvasAnimation tests", () => {
         name: "darknessShift",
         wait: somePromise,
         ontick: (dt, data) => {
-          const firstAttribute = data.attributes?.[0];
+          const firstAttribute = data.attributes[0];
           if (firstAttribute && firstAttribute.attribute !== "color") {
             expectTypeOf(firstAttribute.attribute).toEqualTypeOf<"darkness">();
           }
@@ -90,7 +90,7 @@ describe("CanvasAnimation tests", () => {
       {
         ontick: (dt, data) => {
           const firstAttribute = data.attributes[0]!;
-          if (/** firstAttribute.parent === animationParent2 && */ firstAttribute?.attribute !== "fizz") {
+          if (/** firstAttribute.parent === animationParent2 && */ firstAttribute.attribute !== "fizz") {
             // @ts-expect-error we currently do not have a way to narrow by parent
             expectTypeOf(firstAttribute.attribute).toEqualTypeOf<"buzz">();
             expectTypeOf(firstAttribute.attribute).toEqualTypeOf<"foo" | "bar" | "buzz">();

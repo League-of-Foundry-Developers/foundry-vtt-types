@@ -1,5 +1,5 @@
 diff --git a/node_modules/@vitest/runner/dist/types.d.ts b/node_modules/@vitest/runner/dist/types.d.ts
-index 787f7b5..f94d800 100644
+index 2d019b3..6f7d7aa 100644
 --- a/node_modules/@vitest/runner/dist/types.d.ts
 +++ b/node_modules/@vitest/runner/dist/types.d.ts
 @@ -9,26 +9,26 @@ import '@vitest/utils';

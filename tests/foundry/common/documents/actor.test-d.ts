@@ -221,7 +221,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
 
     expectTypeOf(this.extra.deep.check.propA).toEqualTypeOf<string>();
     expectTypeOf(this.extra.deep.check.deepDerivedProp).toEqualTypeOf<number | undefined>();
-    expectTypeOf(this.extra.deep.derived?.prop).toEqualTypeOf<string | undefined>();
+    expectTypeOf(this.extra.deep.derived.prop).toEqualTypeOf<string | undefined>();
 
     expectTypeOf(this.derivedString).toEqualTypeOf<string | undefined>();
   }

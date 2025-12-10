@@ -767,6 +767,9 @@ declare namespace Canvas {
     /** Whether to apply MSAA at the overall canvas level */
     msaa: boolean;
 
+    /** Whether to apply SMAA at the overall canvas level */
+    smaa: boolean;
+
     /** Maximum framerate which should be the render target */
     fps: number;
 

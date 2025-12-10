@@ -313,7 +313,7 @@ export interface SettingConfig {
   }>;
   "core.leftClickRelease": fields.BooleanField<{ initial: true }>;
   "core.lightAnimation": boolean;
-  "core.maxFPS": number;
+  "core.maxFPS": fields.NumberField<{ required: true; min: 10; max: 60; step: 10; initial: 60 }>;
   "core.mipmap": boolean;
   "core.moduleConfiguration": Record<string, boolean>;
   "core.noCanvas": fields.BooleanField<{ initial: false }>;
