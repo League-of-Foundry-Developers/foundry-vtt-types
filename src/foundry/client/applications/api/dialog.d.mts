@@ -455,7 +455,6 @@ declare namespace DialogV2 {
 
   type FormContent<FormData extends object> = (string | HTMLDivElement) & { " __fvtt_types_form_data": FormData };
 
-  /** @typeParam FD - The form data */
   interface InputConfig<Dialog extends DialogV2.Any = DialogV2.Any> extends PromptConfig<Dialog> {}
 
   type Type = "prompt" | "confirm" | "wait" | "input";
