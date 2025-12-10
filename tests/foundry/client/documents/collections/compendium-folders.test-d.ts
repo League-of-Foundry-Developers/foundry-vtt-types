@@ -31,7 +31,7 @@ describe("CompendiumFolderCollection Tests", () => {
     expectTypeOf(apf.pack).toEqualTypeOf<CompendiumCollection<"Actor">>();
 
     // `CompendiumFolderCollection` doesn't set its `static documentName`, so it'll always be `undefined` at runtime
-    expectTypeOf(CompendiumFolderCollection.documentName).toEqualTypeOf<string | undefined>();
+    expectTypeOf(CompendiumFolderCollection.documentName).toEqualTypeOf<CONST.ALL_DOCUMENT_TYPES | undefined>();
     // It does have an override for the instance getter though
     expectTypeOf(apf.documentName).toEqualTypeOf<"Folder">();
 
