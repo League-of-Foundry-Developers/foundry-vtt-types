@@ -206,7 +206,7 @@ declare class EmbeddedCollection<
   /**
    * Find all Documents which match a given search term using a full-text search against their indexed HTML fields and their name.
    * If filters are provided, results are filtered to only those that match the provided values.
-   *  @param search - An object configuring the search
+   * @param search - An object configuring the search
    *
    * @remarks This is added in {@linkcode foundry.Game.setupGame | Game#setupGame} through monkeypatching:
    * ```js

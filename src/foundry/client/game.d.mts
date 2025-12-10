@@ -619,8 +619,10 @@ declare global {
 
 declare namespace Game {
   /**
-   * This is just a regular {@linkcode Collection} at runtime, but here it gets its `#get` wired up to fvtt-types {@linkcode ModuleConfig}
-   * and {@linkcode RequiredModules} configuration interfaces.
+   * The special interface for {@linkcode Game.modules | game.modules}.
+   *
+   * This is not a subclass of {@linkcode Collection} at runtime, just a type override to provide specificity where we can know which types
+   * certain keys refer to due to FVTT-Types's configuration interfaces {@linkcode ModuleConfig} and {@linkcode RequiredModules}.
    */
   interface ModuleCollection extends Collection<foundry.packages.Module, ModuleCollectionMethods> {
     /**
@@ -830,7 +832,7 @@ declare namespace Game {
       packageName: BasePackage["_source"]["id"];
       packageType: BasePackage["type"];
 
-      /** @remarks `${package.id}.${pack.name}` */
+      /** @remarks In the format `${package.id}.${pack.name}` */
       id: string;
 
       /**

@@ -92,7 +92,7 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
-  // TODO: (esheyw) does this need to be `InexactPartial`ed here? Explicit `undefined` values for any key fail validation.
+  // TODO(esheyw): does this need to be `InexactPartial`ed here? Explicit `undefined` values for any key fail validation.
   type OwnershipRecord = InexactPartial<
     Record<keyof typeof CONST.USER_ROLES, keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>
   >;
@@ -104,7 +104,7 @@ declare namespace BasePackage {
     name: fields.StringField<{
       required: true;
       blank: false;
-      validate: (typeof BasePackage)["validateId"];
+      validate: typeof BasePackage.validateId;
       validationError: "may not contain periods";
     }>;
 

@@ -79,7 +79,7 @@ declare class EmbeddedCollectionDelta<
   /**
    * Prepare changes to this delta collection.
    * @param changes - Candidate source changes.
-   * @param options -  Options which determine how the new data is merged.
+   * @param options - Options which determine how the new data is merged.
    * @internal
    *
    * @remarks Mutates `changes`.
