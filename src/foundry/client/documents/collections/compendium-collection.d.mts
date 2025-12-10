@@ -358,8 +358,10 @@ declare namespace CompendiumCollection {
 
   type SettingField = fields.TypedObjectField<SettingFieldElement>;
 
-  interface SettingData
-    extends fields.TypedObjectField.InitializedType<SettingFieldElement, fields.TypedObjectField.DefaultOptions> {}
+  interface SettingData extends fields.TypedObjectField.InitializedType<
+    SettingFieldElement,
+    fields.TypedObjectField.DefaultOptions
+  > {}
 
   /** @remarks Currently unused due to {@link https://github.com/foundryvtt/foundryvtt/issues/13354} */
   type OwnershipData = NonNullable<SettingData["ownership"]>;
@@ -379,8 +381,10 @@ declare namespace CompendiumCollection {
   /** The type that appears in `compendium.metadata` after initialization. */
   // Note that the `Omit` is because `delete metadata.index` and `delete metadata.folder` is called.
   // This also deletes in `game.data` since its passed uncloned.
-  interface Metadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName>
-    extends Omit<Game.Data.Pack, "index" | "folder"> {
+  interface Metadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName> extends Omit<
+    Game.Data.Pack,
+    "index" | "folder"
+  > {
     type: Type;
     label: string;
 

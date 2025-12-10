@@ -345,8 +345,7 @@ declare namespace PointSourcePolygon {
   }>;
 
   interface TestCollisionOptions<Mode extends CollisionModes | undefined = undefined>
-    extends _TestCollisionOptions<Mode>,
-      TestCollisionConfig {}
+    extends _TestCollisionOptions<Mode>, TestCollisionConfig {}
 
   /** @internal */
   interface _CollisionTypesReturnMap {

@@ -436,8 +436,7 @@ declare namespace DialogV2 {
 
   /** @internal */
   interface _PartialButtons<Dialog extends DialogV2.Any = DialogV2.Any>
-    extends Omit<WaitOptions<Dialog>, "buttons">,
-      InexactPartial<Pick<WaitOptions<Dialog>, "buttons">> {}
+    extends Omit<WaitOptions<Dialog>, "buttons">, InexactPartial<Pick<WaitOptions<Dialog>, "buttons">> {}
 
   // Note(LukeAbby): `IntentionalPartial` is used for all the buttons because `mergeObject` is
   // called. For example `{ action: undefined }` would be a logical bug.

@@ -19,26 +19,26 @@ declare class Uses<T> {
 // @ts-expect-error This pattern is inherently an error.
 interface _DynamicBase<T extends object> extends T, Uses<T> {}
 
-interface _Parent<Parent extends Document.Any | null>
-  extends _DynamicBase<
-    Parent extends null
-      ? {
-          /**
-           * A parent Document within which Documents are embedded
-           * @defaultValue `null`
-           */
-          parent?: Parent | null | undefined;
-        }
-      : {
-          /**
-           * A parent Document within which Documents are embedded
-           */
-          parent: Parent;
-        }
-  > {}
+interface _Parent<Parent extends Document.Any | null> extends _DynamicBase<
+  Parent extends null
+    ? {
+        /**
+         * A parent Document within which Documents are embedded
+         * @defaultValue `null`
+         */
+        parent?: Parent | null | undefined;
+      }
+    : {
+        /**
+         * A parent Document within which Documents are embedded
+         */
+        parent: Parent;
+      }
+> {}
 
-export interface DatabaseGetOperation<Parent extends Document.Any | null = Document.Any | null>
-  extends _Parent<Parent> {
+export interface DatabaseGetOperation<
+  Parent extends Document.Any | null = Document.Any | null,
+> extends _Parent<Parent> {
   /**
    * A query object which identifies the set of Documents retrieved
    */
@@ -210,8 +210,9 @@ export interface DatabaseUpdateOperation<
   parentUuid?: string | null;
 }
 
-export interface DatabaseDeleteOperation<Parent extends Document.Any | null = Document.Any | null>
-  extends _Parent<Parent> {
+export interface DatabaseDeleteOperation<
+  Parent extends Document.Any | null = Document.Any | null,
+> extends _Parent<Parent> {
   /**
    * Whether the database operation is broadcast to other connected clients
    */

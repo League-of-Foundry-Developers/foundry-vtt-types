@@ -321,8 +321,7 @@ declare namespace FilePicker {
   }
 
   interface Configuration<FilePicker extends FilePicker.Any = FilePicker.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<FilePicker> {
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<FilePicker> {
     /**
      * A type of file to target.
      * @defaultValue `"any"`

@@ -110,8 +110,9 @@ declare function DirectoryCollectionMixin<BaseCollection extends foundry.utils.C
 ): Mixin<typeof DirectoryCollection, BaseCollection>;
 
 declare namespace DirectoryCollectionMixin {
-  interface AnyMixedConstructor
-    extends ReturnType<typeof DirectoryCollectionMixin<foundry.utils.Collection.AnyConstructor>> {}
+  interface AnyMixedConstructor extends ReturnType<
+    typeof DirectoryCollectionMixin<foundry.utils.Collection.AnyConstructor>
+  > {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = foundry.utils.Collection.AnyConstructor;

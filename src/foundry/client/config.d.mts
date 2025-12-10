@@ -2642,7 +2642,8 @@ declare global {
       }
 
       interface LightSourceAnimationConfig
-        extends RenderedEffectSource._AnimationConfigBase,
+        extends
+          RenderedEffectSource._AnimationConfigBase,
           Pick<RenderedEffectSource._AnimationConfigLightingShaders, "colorationShader">,
           InexactPartial<Omit<RenderedEffectSource._AnimationConfigLightingShaders, "colorationShader">>,
           RenderedEffectSource._Seed {}
@@ -2911,7 +2912,8 @@ declare global {
       }
 
       interface DarknessSourceAnimationConfig
-        extends RenderedEffectSource._AnimationConfigBase,
+        extends
+          RenderedEffectSource._AnimationConfigBase,
           RenderedEffectSource._AnimationConfigDarknessShaders,
           RenderedEffectSource._Seed {}
 
@@ -3370,11 +3372,10 @@ declare global {
         segment: TokenDocument.MovementSegmentData,
       ) => number;
 
-      interface AnimationOptions
-        extends Pick<
-          foundry.canvas.placeables.Token.AnimateOptions,
-          "duration" | "movementSpeed" | "easing" | "ontick"
-        > {}
+      interface AnimationOptions extends Pick<
+        foundry.canvas.placeables.Token.AnimateOptions,
+        "duration" | "movementSpeed" | "easing" | "ontick"
+      > {}
 
       interface _MovementActionConfig {
         /**

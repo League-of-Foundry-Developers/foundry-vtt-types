@@ -31,8 +31,7 @@ declare namespace CameraPopout {
   }
 
   interface Configuration<CameraPopout extends CameraPopout.Any = CameraPopout.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<CameraPopout> {
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<CameraPopout> {
     user: User.Implementation;
   }
 

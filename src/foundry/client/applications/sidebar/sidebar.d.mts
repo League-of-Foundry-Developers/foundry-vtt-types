@@ -106,8 +106,7 @@ declare namespace Sidebar {
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
 
   interface Configuration<Sidebar extends Sidebar.Any = Sidebar.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<Sidebar> {}
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<Sidebar> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

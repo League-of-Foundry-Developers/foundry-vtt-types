@@ -39,23 +39,22 @@ declare namespace Cards {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Cards";
-        collection: "cards";
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "description", "img", "type", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        hasTypeData: true;
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        coreTypes: ["deck", "hand", "pile"];
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Cards";
+      collection: "cards";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "description", "img", "type", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      hasTypeData: true;
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      coreTypes: ["deck", "hand", "pile"];
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -107,15 +106,14 @@ declare namespace Cards {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredCards<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Cards<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredCards<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Cards<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Cards` subtype.
@@ -408,8 +406,8 @@ declare namespace Cards {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Cards.Parent> {}
 
     /** Options passed along in Create operations for Cards Documents */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Cards.CreateData, Cards.Parent, Temporary> {
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Cards.CreateData, Cards.Parent, Temporary> {
       animate?: boolean;
     }
 
@@ -424,8 +422,9 @@ declare namespace Cards {
     }
 
     /** Operation for {@linkcode Cards.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Cards.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Cards.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Cards.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Cards.Database.Update> {}
@@ -434,8 +433,9 @@ declare namespace Cards {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Cards.Database.Delete> {}
 
     /** Operation for {@linkcode Cards.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Cards.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Cards.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Cards.update | `Cards#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

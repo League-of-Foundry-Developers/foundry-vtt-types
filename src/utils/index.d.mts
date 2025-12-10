@@ -1334,10 +1334,7 @@ interface DeepReadonlyComplex<T extends object> extends _DeepReadonlyComplex<T> 
 // Note(LukeAbby): The two levels here, `DeepReadonlyComplex` and `_DeepReadonlyComplex`, could just be one.
 // However it gives a better type display as two levels.
 interface _DeepReadonlyComplex<T extends object, R extends object = { readonly [K in keyof T]: _DeepReadonly<T[K]> }>
-  extends R,
-    T,
-    Uses<R>,
-    Uses<T> {}
+  extends R, T, Uses<R>, Uses<T> {}
 
 /**
  * Currently indistinguishable from `DotKeys` but will eventually avoid `readonly` keys.

@@ -6,23 +6,22 @@ import type { InvertObject } from "#common/utils/helpers.d.mts";
 declare namespace AdjustDarknessLevelRegionBehaviorType {
   type MODES = Brand<number, "AdjustDarknessLevelRegionBehaviorType.MODES">;
 
-  interface Modes
-    extends Readonly<{
-      /**
-       * Override the darkness level with the modifier.
-       */
-      OVERRIDE: 0 & MODES;
+  interface Modes extends Readonly<{
+    /**
+     * Override the darkness level with the modifier.
+     */
+    OVERRIDE: 0 & MODES;
 
-      /**
-       * Brighten the darkness level: `darknessLevel * (1 - modifier)`
-       */
-      BRIGHTEN: 1 & MODES;
+    /**
+     * Brighten the darkness level: `darknessLevel * (1 - modifier)`
+     */
+    BRIGHTEN: 1 & MODES;
 
-      /**
-       * Darken the darkness level: `1 - (1 - darknessLevel) * (1 - modifier)`.
-       */
-      DARKEN: 2 & MODES;
-    }> {}
+    /**
+     * Darken the darkness level: `1 - (1 - darknessLevel) * (1 - modifier)`.
+     */
+    DARKEN: 2 & MODES;
+  }> {}
 
   interface Schema extends foundry.data.fields.DataSchema {
     mode: fields.NumberField<{
