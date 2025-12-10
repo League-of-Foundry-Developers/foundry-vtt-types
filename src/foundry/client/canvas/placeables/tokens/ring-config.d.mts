@@ -232,8 +232,10 @@ declare namespace TokenRingConfig {
 
   interface SourceCoreRings extends Record<CoreRingIDs, SourceCoreRingData> {}
 
-  interface MaybeCoreRings
-    extends Record<CoreRingIDs, RequiredProps<Partial<SourceCoreRingData>, "id" | "label" | "spritesheet">> {}
+  interface MaybeCoreRings extends Record<
+    CoreRingIDs,
+    RequiredProps<Partial<SourceCoreRingData>, "id" | "label" | "spritesheet">
+  > {}
 
   /**
    * Core token rings used in Foundry VTT.

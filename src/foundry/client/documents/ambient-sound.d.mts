@@ -37,18 +37,17 @@ declare namespace AmbientSoundDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "AmbientSound";
-        collection: "sounds";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "AmbientSound";
+      collection: "sounds";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      schemaVersion: string;
+    }>
+  > {}
 
   // No need for Metadata namespace
 
@@ -288,38 +287,35 @@ declare namespace AmbientSoundDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<AmbientSoundDocument.Parent> {}
 
     /** Options passed along in Create operations for AmbientSoundDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        AmbientSoundDocument.CreateData,
-        AmbientSoundDocument.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<AmbientSoundDocument.CreateData, AmbientSoundDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for AmbientSoundDocuments */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<AmbientSoundDocument.Parent> {}
 
     /** Options passed along in Update operations for AmbientSoundDocuments */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<
-        AmbientSoundDocument.UpdateData,
-        AmbientSoundDocument.Parent
-      > {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      AmbientSoundDocument.UpdateData,
+      AmbientSoundDocument.Parent
+    > {}
 
     /** Operation for {@linkcode AmbientSoundDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<AmbientSoundDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      AmbientSoundDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode AmbientSoundDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<AmbientSoundDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<AmbientSoundDocument.Database.Update> {}
 
     /** Operation for {@linkcode AmbientSoundDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<AmbientSoundDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<AmbientSoundDocument.Database.Delete> {}
 
     /** Operation for {@linkcode AmbientSoundDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<AmbientSoundDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      AmbientSoundDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link AmbientSoundDocument.update | `AmbientSoundDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -336,8 +332,8 @@ declare namespace AmbientSoundDocument {
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode AmbientSoundDocument._preCreateOperation} */
-    interface PreCreateOperation
-      extends Document.Database.PreCreateOperationStatic<AmbientSoundDocument.Database.Create> {}
+    interface PreCreateOperation extends Document.Database
+      .PreCreateOperationStatic<AmbientSoundDocument.Database.Create> {}
 
     /** Operation for {@link AmbientSoundDocument._onCreateOperation | `AmbientSoundDocument#_onCreateOperation`} */
     interface OnCreateOperation extends AmbientSoundDocument.Database.Create {}

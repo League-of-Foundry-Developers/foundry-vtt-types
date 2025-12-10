@@ -44,20 +44,19 @@ declare namespace TokenDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Token";
-        collection: "tokens";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        embedded: TokenDocument.Metadata.Embedded;
-        permissions: TokenDocument.Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Token";
+      collection: "tokens";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      embedded: TokenDocument.Metadata.Embedded;
+      permissions: TokenDocument.Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -721,8 +720,9 @@ declare namespace TokenDocument {
 
   interface MeasuredMovementWaypoint extends SchemaField.InitializedData<MeasuredMovementWaypointSchema> {}
 
-  interface GetCompleteMovementPathWaypoint
-    extends InexactPartial<Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost">> {}
+  interface GetCompleteMovementPathWaypoint extends InexactPartial<
+    Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost">
+  > {}
 
   interface CompleteMovementWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {}
 
@@ -820,19 +820,17 @@ declare namespace TokenDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<TokenDocument.Parent> {}
 
     /** Options passed along in Create operations for TokenDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        TokenDocument.CreateData,
-        TokenDocument.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<TokenDocument.CreateData, TokenDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for TokenDocuments */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TokenDocument.Parent> {}
 
     /** Options passed along in Update operations for TokenDocuments */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<TokenDocument.UpdateData, TokenDocument.Parent> {
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      TokenDocument.UpdateData,
+      TokenDocument.Parent
+    > {
       previousActorId?: string | null;
       animate?: boolean;
       _priorRegions?: Record<string, string[]>;
@@ -844,20 +842,22 @@ declare namespace TokenDocument {
     }
 
     /** Operation for {@linkcode TokenDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      TokenDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode TokenDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<TokenDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<TokenDocument.Database.Update> {}
 
     /** Operation for {@linkcode TokenDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<TokenDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<TokenDocument.Database.Delete> {}
 
     /** Operation for {@linkcode TokenDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      TokenDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link TokenDocument.update | `TokenDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1166,11 +1166,15 @@ declare namespace TokenDocument {
 
   interface ResizeOptions extends InexactPartial<Omit<TokenDocument.Database.UpdateOperation, "updates">> {}
 
-  interface MovementWaypoint
-    extends Omit<MeasuredMovementWaypoint, "terrain" | "intermediate" | "userId" | "movementId" | "cost"> {}
+  interface MovementWaypoint extends Omit<
+    MeasuredMovementWaypoint,
+    "terrain" | "intermediate" | "userId" | "movementId" | "cost"
+  > {}
 
-  interface MovementSegmentData
-    extends Pick<MeasuredMovementWaypoint, "width" | "height" | "shape" | "action" | "terrain"> {
+  interface MovementSegmentData extends Pick<
+    MeasuredMovementWaypoint,
+    "width" | "height" | "shape" | "action" | "terrain"
+  > {
     actionConfig: CONFIG.Token.MovementActionConfig;
     teleport: boolean;
   }
@@ -1416,20 +1420,19 @@ declare namespace TokenDocument {
     segment: MovementSegmentData,
   ) => number;
 
-  interface MeasureMovementPathOptions
-    extends InexactPartial<{
-      /**
-       * The function that returns the cost for a given move between grid spaces
-       * (default is the distance travelled along the direct path)
-       */
-      cost: MovementCostFunction;
+  interface MeasureMovementPathOptions extends InexactPartial<{
+    /**
+     * The function that returns the cost for a given move between grid spaces
+     * (default is the distance travelled along the direct path)
+     */
+    cost: MovementCostFunction;
 
-      /**
-       * The cost aggregator.
-       * @defaultValue `CONFIG.Token.movement.costAggregator`
-       */
-      aggregator: MovementCostAggregator;
-    }> {}
+    /**
+     * The cost aggregator.
+     * @defaultValue `CONFIG.Token.movement.costAggregator`
+     */
+    aggregator: MovementCostAggregator;
+  }> {}
 
   interface MovementOperation extends Omit<MovementData, "user" | "state" | "updateOptions"> {}
 
@@ -1454,16 +1457,16 @@ declare namespace TokenDocument {
   }
 
   interface PreMovementOptions
-    extends DeepReadonly<Omit<MovementOperation, "autoRotate" | "showRuler">>,
+    extends
+      DeepReadonly<Omit<MovementOperation, "autoRotate" | "showRuler">>,
       Pick<MovementOperation, "autoRotate" | "showRuler"> {}
 
-  interface SegmentizeMovementWaypoint
-    extends InexactPartial<
-      Pick<
-        MeasuredMovementWaypoint,
-        "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped"
-      >
-    > {}
+  interface SegmentizeMovementWaypoint extends InexactPartial<
+    Pick<
+      MeasuredMovementWaypoint,
+      "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped"
+    >
+  > {}
 
   /**
    * The arguments to construct the document.

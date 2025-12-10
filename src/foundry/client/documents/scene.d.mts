@@ -40,21 +40,20 @@ declare namespace Scene {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Scene";
-        collection: "scenes";
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "thumb", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        label: string;
-        labelPlural: string;
-        preserveOnImport: ["_id", "sort", "ownership", "active"];
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Scene";
+      collection: "scenes";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "thumb", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      label: string;
+      labelPlural: string;
+      preserveOnImport: ["_id", "sort", "ownership", "active"];
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -888,8 +887,8 @@ declare namespace Scene {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Scene.Parent> {}
 
     /** Options passed along in Create operations for Scenes */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Scene.CreateData, Scene.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Scene.CreateData, Scene.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Scenes */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Scene.Parent> {}
@@ -902,8 +901,9 @@ declare namespace Scene {
     }
 
     /** Operation for {@linkcode Scene.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Scene.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Scene.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Scene.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Scene.Database.Update> {}
@@ -912,8 +912,9 @@ declare namespace Scene {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Scene.Database.Delete> {}
 
     /** Operation for {@linkcode Scene.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Scene.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Scene.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Scene.update | `Scene#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

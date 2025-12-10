@@ -30,12 +30,10 @@ declare namespace GridConfig {
   interface AnyConstructor extends Identity<typeof AnyGridConfig> {}
 
   interface RenderContext
-    extends HandlebarsApplicationMixin.RenderContext,
-      DocumentSheetV2.RenderContext<Scene.Implementation> {}
+    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<Scene.Implementation> {}
 
   interface Configuration
-    extends HandlebarsApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<Scene.Implementation> {}
+    extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<Scene.Implementation> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
 }

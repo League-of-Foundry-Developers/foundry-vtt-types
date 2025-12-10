@@ -57,8 +57,7 @@ declare namespace PermissionConfig {
   }
 
   interface Configuration<PermissionConfig extends PermissionConfig.Any = PermissionConfig.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<PermissionConfig> {}
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<PermissionConfig> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

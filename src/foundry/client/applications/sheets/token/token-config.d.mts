@@ -30,12 +30,12 @@ declare namespace TokenConfig {
   interface AnyConstructor extends Identity<typeof AnyTokenConfig> {}
 
   interface RenderContext
-    extends TokenApplicationMixin.RenderContext<TokenDocument.Implementation>,
+    extends
+      TokenApplicationMixin.RenderContext<TokenDocument.Implementation>,
       DocumentSheetV2.RenderContext<TokenDocument.Implementation> {}
 
   interface Configuration
-    extends TokenApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<TokenDocument.Implementation> {}
+    extends TokenApplicationMixin.Configuration, DocumentSheetV2.Configuration<TokenDocument.Implementation> {}
 
   interface RenderOptions extends TokenApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
 }

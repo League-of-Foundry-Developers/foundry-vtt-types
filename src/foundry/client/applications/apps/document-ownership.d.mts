@@ -19,8 +19,8 @@ declare module "#configuration" {
 declare class DocumentOwnershipConfig<
   Document extends Document.Any = Document.Any,
   RenderContext extends object = DocumentOwnershipConfig.RenderContext<Document>,
-  Configuration extends
-    DocumentOwnershipConfig.Configuration<Document> = DocumentOwnershipConfig.Configuration<Document>,
+  Configuration extends DocumentOwnershipConfig.Configuration<Document> =
+    DocumentOwnershipConfig.Configuration<Document>,
   RenderOptions extends DocumentOwnershipConfig.RenderOptions = DocumentOwnershipConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {}
 
@@ -29,12 +29,10 @@ declare namespace DocumentOwnershipConfig {
   interface AnyConstructor extends Identity<typeof AnyDocumentOwnershipConfig> {}
 
   interface RenderContext<Document extends Document.Any = Document.Any>
-    extends HandlebarsApplicationMixin.RenderContext,
-      DocumentSheetV2.RenderContext<Document> {}
+    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<Document> {}
 
   interface Configuration<Document extends Document.Any = Document.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<Document> {}
+    extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<Document> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
 }

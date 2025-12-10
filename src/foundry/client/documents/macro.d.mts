@@ -40,21 +40,20 @@ declare namespace Macro {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Macro";
-        collection: "macros";
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
-        label: string;
-        labelPlural: string;
-        coreTypes: ["script", "chat"]; // This isn't `CONST.MACRO_TYPES[]` due to the semantics of `Merge`.
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Macro";
+      collection: "macros";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
+      label: string;
+      labelPlural: string;
+      coreTypes: ["script", "chat"]; // This isn't `CONST.MACRO_TYPES[]` due to the semantics of `Merge`.
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -105,15 +104,14 @@ declare namespace Macro {
   type OfType<Type extends SubType> = _OfType[Type];
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredMacro<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Macro<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredMacro<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Macro<Type>
+      : never;
+  }> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -318,8 +316,8 @@ declare namespace Macro {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Macro.Parent> {}
 
     /** Options passed along in Create operations for Macros */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Macro.CreateData, Macro.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Macro.CreateData, Macro.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Macros */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Macro.Parent> {}
@@ -328,8 +326,9 @@ declare namespace Macro {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Macro.UpdateData, Macro.Parent> {}
 
     /** Operation for {@linkcode Macro.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Macro.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Macro.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Macro.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Macro.Database.Update> {}
@@ -338,8 +337,9 @@ declare namespace Macro {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Macro.Database.Delete> {}
 
     /** Operation for {@linkcode Macro.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Macro.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Macro.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Macro.update | `Macro#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

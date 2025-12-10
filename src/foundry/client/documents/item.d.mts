@@ -39,22 +39,21 @@ declare namespace Item {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Item";
-        collection: "items";
-        hasTypeData: true;
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Item";
+      collection: "items";
+      hasTypeData: true;
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -109,15 +108,14 @@ declare namespace Item {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredItem<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Item<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredItem<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Item<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Item` subtype.
@@ -377,8 +375,8 @@ declare namespace Item {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Item.Parent> {}
 
     /** Options passed along in Create operations for Items */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Item.CreateData, Item.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Item.CreateData, Item.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Items */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Item.Parent> {}
@@ -387,8 +385,9 @@ declare namespace Item {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Item.UpdateData, Item.Parent> {}
 
     /** Operation for {@linkcode Item.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Item.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Item.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Item.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Item.Database.Update> {}
@@ -397,8 +396,9 @@ declare namespace Item {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Item.Database.Delete> {}
 
     /** Operation for {@linkcode Item.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Item.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Item.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Item.update | `Item#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

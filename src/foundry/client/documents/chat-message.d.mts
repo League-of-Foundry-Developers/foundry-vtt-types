@@ -40,20 +40,19 @@ declare namespace ChatMessage {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "ChatMessage";
-        collection: "messages";
-        label: string;
-        labelPlural: string;
-        hasTypeData: true;
-        isPrimary: true;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "ChatMessage";
+      collection: "messages";
+      label: string;
+      labelPlural: string;
+      hasTypeData: true;
+      isPrimary: true;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -101,15 +100,14 @@ declare namespace ChatMessage {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredChatMessage<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            ChatMessage<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredChatMessage<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          ChatMessage<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `ChatMessage` subtype.
@@ -206,8 +204,8 @@ declare namespace ChatMessage {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData<SubType extends ChatMessage.SubType = ChatMessage.SubType>
-    extends fields.SchemaField.CreateData<Schema> {
+  interface CreateData<SubType extends ChatMessage.SubType = ChatMessage.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
     type?: SubType | null | undefined;
   }
 
@@ -379,8 +377,8 @@ declare namespace ChatMessage {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<ChatMessage.Parent> {}
 
     /** Options passed along in Create operations for ChatMessages */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<ChatMessage.CreateData, ChatMessage.Parent, Temporary> {
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<ChatMessage.CreateData, ChatMessage.Parent, Temporary> {
       rollMode?: foundry.dice.Roll.Mode;
       chatBubble?: boolean;
     }
@@ -389,24 +387,28 @@ declare namespace ChatMessage {
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ChatMessage.Parent> {}
 
     /** Options passed along in Update operations for ChatMessages */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<ChatMessage.UpdateData, ChatMessage.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      ChatMessage.UpdateData,
+      ChatMessage.Parent
+    > {}
 
     /** Operation for {@linkcode ChatMessage.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<ChatMessage.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      ChatMessage.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode ChatMessage.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<ChatMessage.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<ChatMessage.Database.Update> {}
 
     /** Operation for {@linkcode ChatMessage.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<ChatMessage.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<ChatMessage.Database.Delete> {}
 
     /** Operation for {@linkcode ChatMessage.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<ChatMessage.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      ChatMessage.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link ChatMessage.update | `ChatMessage#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

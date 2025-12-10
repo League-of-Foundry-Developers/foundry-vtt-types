@@ -30,12 +30,10 @@ declare namespace DrawingConfig {
   interface AnyConstructor extends Identity<typeof AnyDrawingConfig> {}
 
   interface RenderContext
-    extends HandlebarsApplicationMixin.RenderContext,
-      DocumentSheetV2.RenderContext<DrawingDocument.Implementation> {}
+    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<DrawingDocument.Implementation> {}
 
   interface Configuration
-    extends HandlebarsApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<DrawingDocument.Implementation> {}
+    extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<DrawingDocument.Implementation> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
 }

@@ -975,8 +975,9 @@ declare namespace Canvas {
       fixed: boolean;
     }>;
 
-    interface InteractionData<ObjectFor extends PIXI.DisplayObject = PIXI.DisplayObject>
-      extends _InteractionData<ObjectFor> {}
+    interface InteractionData<
+      ObjectFor extends PIXI.DisplayObject = PIXI.DisplayObject,
+    > extends _InteractionData<ObjectFor> {}
 
     /** @internal */
     interface _Base<

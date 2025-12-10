@@ -146,8 +146,9 @@ declare namespace Sound {
   interface PlaybackOptionsPositional extends Omit<PlaybackOptions, "volume"> {}
 
   /** @remarks The keys omitted are generated from other data passed to {@linkcode Sound.playAtPosition | Sound#playAtPosition} */
-  interface PartialSourceData
-    extends IntentionalPartial<Omit<PointSoundSource.SourceData, "x" | "y" | "elevation" | "radius" | "walls">> {}
+  interface PartialSourceData extends IntentionalPartial<
+    Omit<PointSoundSource.SourceData, "x" | "y" | "elevation" | "radius" | "walls">
+  > {}
 
   /** @internal */
   type _PlayAtPositionOptions = InexactPartial<{
