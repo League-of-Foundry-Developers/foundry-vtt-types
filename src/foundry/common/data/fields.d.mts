@@ -655,12 +655,12 @@ declare namespace DataField {
     | Exclude<BaseAssignmentType, null | undefined> // Always include the base type
     | (Options["nullable"] extends true // determine whether null is in the union
         ? // when nullable, both `null` and `undefined` can safely be passed
-          null | undefined
+            null | undefined
         : never)
     | (Options["required"] extends true // determine whether undefined is in the union
         ? never
         : // when not required, both `null` and `undefined` can safely be passed
-          null | undefined)
+            null | undefined)
     | ("initial" extends keyof Options
         ? // TODO(LukeAbby): This should possibly actually be distributive.
           Options["initial"] extends undefined
@@ -945,13 +945,13 @@ declare abstract class AnyDataField extends DataField<any, any, any, any> {
  * - PersistedType: `SchemaField.PersistedType<Fields>`
  */
 declare class SchemaField<
-    const Fields extends DataSchema,
-    const Options extends SchemaField.Options<Fields> = SchemaField.DefaultOptions,
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    const AssignmentType = SchemaField.Internal.AssignmentType<Fields, Options>,
-    const InitializedType = SchemaField.Internal.InitializedType<Fields, Options>,
-    const PersistedType extends AnyObject | null | undefined = SchemaField.Internal.PersistedType<Fields, Options>,
-  >
+  const Fields extends DataSchema,
+  const Options extends SchemaField.Options<Fields> = SchemaField.DefaultOptions,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentType = SchemaField.Internal.AssignmentType<Fields, Options>,
+  const InitializedType = SchemaField.Internal.InitializedType<Fields, Options>,
+  const PersistedType extends AnyObject | null | undefined = SchemaField.Internal.PersistedType<Fields, Options>,
+>
   extends DataField<Options, AssignmentType, InitializedType, PersistedType>
   implements DataField.Internal.NestedFieldImplementation
 {
@@ -1741,8 +1741,7 @@ declare namespace NumberField {
   >;
 
   interface ToInputConfigWithOptions<InitializedType>
-    extends DataField.ToInputConfigWithOptions<InitializedType>,
-      _ToInputConfig<InitializedType> {}
+    extends DataField.ToInputConfigWithOptions<InitializedType>, _ToInputConfig<InitializedType> {}
 
   type ToInputConfig<InitializedType, Choices extends NumberField.Choices | undefined> =
     | _ToInputConfig<InitializedType>
@@ -2311,20 +2310,20 @@ type ArrayFieldElement<ElementFieldType extends DataField.Any | Document.AnyCons
  * - InitialValue: `[]`
  */
 declare class ArrayField<
-    const ElementFieldType extends DataField.Any | Document.AnyConstructor,
-    const Options extends ArrayField.AnyOptions = ArrayField.DefaultOptions,
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    const AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
-    const InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    const AssignmentType = ArrayField.AssignmentType<AssignmentElementType, Options>,
-    const InitializedType = ArrayField.InitializedType<InitializedElementType, Options>,
-    const PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
-    const PersistedType extends PersistedElementType[] | null | undefined = ArrayField.PersistedType<
-      PersistedElementType,
-      Options
-    >,
-  >
+  const ElementFieldType extends DataField.Any | Document.AnyConstructor,
+  const Options extends ArrayField.AnyOptions = ArrayField.DefaultOptions,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentElementType = ArrayField.AssignmentElementType<ElementFieldType>,
+  const InitializedElementType = ArrayField.InitializedElementType<ElementFieldType>,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentType = ArrayField.AssignmentType<AssignmentElementType, Options>,
+  const InitializedType = ArrayField.InitializedType<InitializedElementType, Options>,
+  const PersistedElementType = ArrayField.PersistedElementType<ElementFieldType>,
+  const PersistedType extends PersistedElementType[] | null | undefined = ArrayField.PersistedType<
+    PersistedElementType,
+    Options
+  >,
+>
   extends DataField<Options, AssignmentType, InitializedType, PersistedType>
   implements DataField.Internal.ElementFieldImplementation
 {
@@ -2771,7 +2770,7 @@ declare namespace SetField {
     ? // If the field has `choices` then you _must_ provide options for `createMultiSelectInput`.
       DataField.ToInputConfig<InitializedType> & MultiSelectInputConfig
     : // Otherwise it's optional to provide.
-      DataField.ToInputConfig<InitializedType> | (DataField.ToInputConfig<InitializedType> & MultiSelectInputConfig);
+        DataField.ToInputConfig<InitializedType> | (DataField.ToInputConfig<InitializedType> & MultiSelectInputConfig);
 }
 
 /**
@@ -2926,8 +2925,8 @@ declare class EmbeddedCollectionField<
   const Options extends EmbeddedCollectionField.Options<any> = EmbeddedCollectionField.DefaultOptions,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   const AssignmentElementType = EmbeddedCollectionField.AssignmentElementType<ElementFieldType>,
-  const InitializedElementType extends
-    Document.Internal.Instance.Any = EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
+  const InitializedElementType extends Document.Internal.Instance.Any =
+    EmbeddedCollectionField.InitializedElementType<ElementFieldType>,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   const AssignmentType = EmbeddedCollectionField.AssignmentType<AssignmentElementType, Options>,
   const InitializedType = EmbeddedCollectionField.InitializedType<
@@ -3179,8 +3178,8 @@ declare class EmbeddedCollectionDeltaField<
   const Options extends EmbeddedCollectionDeltaField.Options<any> = EmbeddedCollectionDeltaField.DefaultOptions,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   const AssignmentElementType = EmbeddedCollectionDeltaField.AssignmentElementType<ElementFieldType>,
-  const InitializedElementType extends
-    Document.Internal.Instance.Any = EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
+  const InitializedElementType extends Document.Internal.Instance.Any =
+    EmbeddedCollectionDeltaField.InitializedElementType<ElementFieldType>,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   const AssignmentType = EmbeddedCollectionDeltaField.AssignmentType<AssignmentElementType, Options>,
   const InitializedType = EmbeddedCollectionDeltaField.InitializedType<
@@ -3620,15 +3619,19 @@ declare namespace DocumentUUIDField {
     }
   >;
 
-  interface RootToInputConfig<InitializedType>
-    extends Omit<DataField.ToInputConfig<InitializedType>, "type" | "single"> {}
+  interface RootToInputConfig<InitializedType> extends Omit<
+    DataField.ToInputConfig<InitializedType>,
+    "type" | "single"
+  > {}
 
   /** @internal */
   type _Choices = Omit<_SelectInputConfig, "options"> & StringField.PrepareChoiceConfig;
 
   interface ToInputConfigWithOptions<InitializedType> extends RootToInputConfig<InitializedType>, _SelectInputConfig {}
-  interface ToInputConfigWithChoices<InitializedType>
-    extends SimpleMerge<RootToInputConfig<InitializedType>, _Choices> {}
+  interface ToInputConfigWithChoices<InitializedType> extends SimpleMerge<
+    RootToInputConfig<InitializedType>,
+    _Choices
+  > {}
 
   /**
    * @remarks `DocumentUUIDField#_toInput` writes `Object.assign(config, {type: this.type, single: true});` which is why they have been removed as options.
@@ -4295,10 +4298,8 @@ declare class DocumentOwnershipField<
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   const AssignmentType = DocumentOwnershipField.AssignmentType<Options>,
   const InitializedType = DocumentOwnershipField.InitializedType<Options>,
-  const PersistedType extends
-    | Record<string, DOCUMENT_OWNERSHIP_LEVELS>
-    | null
-    | undefined = DocumentOwnershipField.InitializedType<Options>,
+  const PersistedType extends Record<string, DOCUMENT_OWNERSHIP_LEVELS> | null | undefined =
+    DocumentOwnershipField.InitializedType<Options>,
 > extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `{default: DOCUMENT_OWNERSHIP_LEVELS.NONE}` */
   override initial: DataField.Options.InitialType<InitializedType>;
@@ -5327,13 +5328,13 @@ declare namespace TypeDataField {
  * A subclass of {@linkcode DataField} which allows to typed schemas.
  */
 declare class TypedSchemaField<
-    const Types extends TypedSchemaField.Types,
-    const Options extends TypedSchemaField.Options<Types> = TypedSchemaField.DefaultOptions,
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    const AssignmentType = TypedSchemaField.AssignmentType<Types, Options>,
-    const InitializedType = TypedSchemaField.InitializedType<Types, Options>,
-    const PersistedType = TypedSchemaField.PersistedType<Types, Options>,
-  >
+  const Types extends TypedSchemaField.Types,
+  const Options extends TypedSchemaField.Options<Types> = TypedSchemaField.DefaultOptions,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  const AssignmentType = TypedSchemaField.AssignmentType<Types, Options>,
+  const InitializedType = TypedSchemaField.InitializedType<Types, Options>,
+  const PersistedType = TypedSchemaField.PersistedType<Types, Options>,
+>
   extends DataField<Options, AssignmentType, InitializedType, PersistedType>
   implements DataField.Internal.NestedFieldImplementation
 {
@@ -5591,8 +5592,10 @@ declare namespace JavaScriptField {
     stacked?: DataField.GroupConfig["stacked"] | undefined;
   }
 
-  interface ToInputConfig<InitializedType>
-    extends SimpleMerge<DataField.ToInputConfig<InitializedType>, TextAreaInputConfig> {}
+  interface ToInputConfig<InitializedType> extends SimpleMerge<
+    DataField.ToInputConfig<InitializedType>,
+    TextAreaInputConfig
+  > {}
 }
 
 export {

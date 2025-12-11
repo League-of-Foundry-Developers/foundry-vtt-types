@@ -171,6 +171,24 @@ const placeables = [
   "Wall",
 ];
 
+// TODO: Wire up what parts of this work. These classes only have `.instance` getters, no `.implementation` equivalent; point users toward CONFIG[documentName].collection
+const _worldCollections = [
+  "Actors",
+  "CardStacks",
+  "ChatMessages",
+  "CombatEncounters",
+  "FogExplorations",
+  "Folders",
+  "Items",
+  "Journal", // singular on purpose, grr foundry
+  "Macros",
+  "Playlists",
+  "RollTables",
+  "Scenes",
+  "Users",
+  "WorldSettings",
+];
+
 /** @type {{ selector: string; message: string }[]} */
 const noRestrictedSyntax = [];
 

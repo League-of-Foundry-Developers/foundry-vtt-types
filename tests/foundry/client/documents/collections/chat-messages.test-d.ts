@@ -1,28 +1,39 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import ChatMessages = foundry.documents.collections.ChatMessages;
 
-declare const messageCreateData: ChatMessage.CreateData;
-declare const messageSource: ChatMessage.Source;
-declare const message: ChatMessage.Stored;
-declare const messageImpl: ChatMessage.Implementation;
-declare const actorCreateData: Actor.CreateData;
-declare const actor: Actor.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("ChatMessages Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("ChatMessages Tests", () => {
+  const message = await ChatMessage.implementation.create({});
+  if (!message) throw new Error("Failed to create test ChatMessage.");
+  docsToCleanUp.add(message);
+
+  const messageSource = message.toObject();
+  const messageImpl = new ChatMessage.implementation();
+
+  const actor = await Actor.implementation.create({
+    name: "ChatMessages Collection Test Actor",
+    type: "base",
+  });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const actorSource = actor.toObject();
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new ChatMessages();
-    new ChatMessages([messageCreateData]);
     new ChatMessages([messageSource]);
 
     // @ts-expect-error `Actor` data not assignable to `ChatMessage` data
-    new ChatMessages([actorCreateData]);
+    new ChatMessages([actorSource]);
   });
 
-  const messages = new ChatMessages([messageCreateData]);
+  const messages = new ChatMessages([messageSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(ChatMessages.documentName).toEqualTypeOf<"ChatMessage">();
@@ -110,5 +121,9 @@ describe("ChatMessages Tests", () => {
     expectTypeOf(messages.set("ID", message)).toBeVoid();
 
     expectTypeOf(messages.delete("ID")).toBeBoolean();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

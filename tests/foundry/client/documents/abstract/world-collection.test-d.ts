@@ -1,4 +1,4 @@
-import { test, describe, expectTypeOf } from "vitest";
+import { afterAll, test, describe, expectTypeOf } from "vitest";
 
 import WorldCollection = foundry.documents.abstract.WorldCollection;
 // Collection is a blessed global so doesn't need to be imported
@@ -7,42 +7,56 @@ import Application = foundry.appv1.api.Application;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import sidebar = foundry.applications.sidebar;
 
-declare const actorCreateDataArray: Actor.CreateData[];
-declare const itemCreateDataArray: Item.CreateData[];
-declare const userCreateDataArray: User.CreateData[];
-declare const templateCreateDataArray: MeasuredTemplateDocument.CreateData[];
-declare const actorPack: CompendiumCollection<"Actor">;
-declare const scene: Scene.Implementation;
-declare const actor: Actor.Implementation;
-declare const anyV1Sheet: Application.AnyConstructor;
-declare const anyV2Sheet: ApplicationV2.AnyConstructor;
+describe("WorldCollection Tests", async () => {
+  class TestActorsWorldCollection extends WorldCollection<"Actor"> {}
+  class TestItemsWorldCollection extends WorldCollection<"Item"> {}
+  class TestUsersWorldCollection extends WorldCollection<"User"> {}
+  class TestScenesWorldCollection extends WorldCollection<"Scene"> {}
 
-class TestActorsWorldCollection extends WorldCollection<"Actor"> {}
-class TestItemsWorldCollection extends WorldCollection<"Item"> {}
-class TestUsersWorldCollection extends WorldCollection<"User"> {}
-class TestScenesWorldCollection extends WorldCollection<"Scene"> {}
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("WorldCollection Tests", () => {
+  const actor = await Actor.implementation.create({ name: "WorldCollection Test Actor", type: "base" });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const scene = await Scene.implementation.create({ name: "WorldCollection Test Scene" });
+  if (!scene) throw new Error("Failed to create test Scene");
+  docsToCleanUp.add(scene);
+
+  const actorPack = await CompendiumCollection.createCompendium({
+    label: "WorldCollection Test Compendium",
+    type: "Actor",
+  });
+
+  const actorSource: Actor.Source = actor.toObject();
+  const userSource: User.Source = new User.implementation({ name: "WorldCollection Test User" }).toObject();
+  const sceneSource: Scene.Source = new Scene.implementation({ name: "WorldCollection Test User" }).toObject();
+  const templateSource: MeasuredTemplateDocument.Source = new MeasuredTemplateDocument.implementation().toObject();
+  const itemSource: Item.Source = new Item.implementation({
+    name: "WorldCollection Test Item",
+    type: "base",
+  }).toObject();
+
+  const anyV1Sheet: Application.AnyConstructor = foundry.appv1.api.Application;
+  const anyV2Sheet: ApplicationV2.AnyConstructor = foundry.applications.api.ApplicationV2;
+
   test("Construction", () => {
     // no data need be passed
     new TestActorsWorldCollection();
 
-    new TestActorsWorldCollection(actorCreateDataArray);
-    new TestItemsWorldCollection(itemCreateDataArray);
-    new TestUsersWorldCollection(userCreateDataArray);
+    new TestActorsWorldCollection([actorSource]);
+    new TestItemsWorldCollection([itemSource]);
+    new TestUsersWorldCollection([userSource]);
 
     // @ts-expect-error wrong document create data
-    new TestActorsWorldCollection(itemCreateDataArray);
+    new TestActorsWorldCollection([itemSource]);
     // @ts-expect-error wrong document create data
-    new TestItemsWorldCollection(templateCreateDataArray);
-
-    // This passes because users only require a `name`, which `Item.CreateData` provides
-    new TestUsersWorldCollection(itemCreateDataArray);
+    new TestItemsWorldCollection([templateSource]);
   });
 
-  const wac = new TestActorsWorldCollection(actorCreateDataArray);
-  const wic = new TestItemsWorldCollection(itemCreateDataArray);
-  const wuc = new TestUsersWorldCollection(itemCreateDataArray);
+  const wac = new TestActorsWorldCollection([actorSource]);
+  const wic = new TestItemsWorldCollection([itemSource]);
+  const wuc = new TestUsersWorldCollection([userSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(wac.folders).toEqualTypeOf<Collection<Folder.Stored<"Actor">>>();
@@ -76,9 +90,12 @@ describe("WorldCollection Tests", () => {
     // Scenes are the only document whose Source contains all properties operated on
     const wsc = new TestScenesWorldCollection();
 
+    const sceneOrSource: Scene.Stored | Scene.Source = sceneSource;
+    const actorOrSource: Actor.Stored | Actor.Source = actorSource;
+
     // no deletions with these options
     expectTypeOf(
-      wsc.fromCompendium(scene, {
+      wsc.fromCompendium(sceneOrSource, {
         clearFolder: false,
         clearOwnership: false,
         clearSort: false,
@@ -89,7 +106,7 @@ describe("WorldCollection Tests", () => {
 
     // clearFolder only
     expectTypeOf(
-      wsc.fromCompendium(scene, {
+      wsc.fromCompendium(sceneOrSource, {
         clearFolder: true,
         clearOwnership: false,
         clearSort: false,
@@ -100,7 +117,7 @@ describe("WorldCollection Tests", () => {
 
     // clearOwnership only
     expectTypeOf(
-      wsc.fromCompendium(scene, {
+      wsc.fromCompendium(sceneOrSource, {
         clearFolder: false,
         clearOwnership: true,
         clearSort: false,
@@ -111,7 +128,7 @@ describe("WorldCollection Tests", () => {
 
     // clearSort only
     expectTypeOf(
-      wsc.fromCompendium(scene, {
+      wsc.fromCompendium(sceneOrSource, {
         clearFolder: false,
         clearOwnership: false,
         clearSort: true,
@@ -122,7 +139,7 @@ describe("WorldCollection Tests", () => {
 
     // clearSort only - Actors don't have `navOrder`, so its irrelevant that it's omitted
     expectTypeOf(
-      wac.fromCompendium(actor, {
+      wac.fromCompendium(actorOrSource, {
         clearFolder: false,
         clearOwnership: false,
         clearSort: true,
@@ -133,7 +150,7 @@ describe("WorldCollection Tests", () => {
 
     // clearState only
     expectTypeOf(
-      wsc.fromCompendium(scene, {
+      wsc.fromCompendium(sceneOrSource, {
         clearFolder: false,
         clearOwnership: false,
         clearSort: false,
@@ -144,7 +161,7 @@ describe("WorldCollection Tests", () => {
 
     // clearState only - Actors don't have 'active', so its irrelevant that it's omitted
     expectTypeOf(
-      wac.fromCompendium(actor, {
+      wac.fromCompendium(actorOrSource, {
         clearFolder: false,
         clearOwnership: false,
         clearSort: false,
@@ -155,7 +172,7 @@ describe("WorldCollection Tests", () => {
 
     // keepId only
     expectTypeOf(
-      wsc.fromCompendium(scene, {
+      wsc.fromCompendium(sceneOrSource, {
         clearFolder: false,
         clearOwnership: false,
         clearSort: false,
@@ -166,7 +183,7 @@ describe("WorldCollection Tests", () => {
 
     // everything
     expectTypeOf(
-      wsc.fromCompendium(scene, {
+      wsc.fromCompendium(sceneOrSource, {
         clearFolder: true,
         clearOwnership: true,
         clearSort: true,
@@ -176,14 +193,14 @@ describe("WorldCollection Tests", () => {
     ).toEqualTypeOf<Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership" | "folder">>();
 
     // default case - all deletions enabled except `folder`
-    expectTypeOf(wsc.fromCompendium(scene)).toEqualTypeOf<
+    expectTypeOf(wsc.fromCompendium(sceneOrSource)).toEqualTypeOf<
       Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">
     >();
-    expectTypeOf(wsc.fromCompendium(scene, {})).toEqualTypeOf<
+    expectTypeOf(wsc.fromCompendium(sceneOrSource, {})).toEqualTypeOf<
       Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">
     >();
     expectTypeOf(
-      wsc.fromCompendium(scene, {
+      wsc.fromCompendium(sceneOrSource, {
         clearFolder: undefined,
         clearOwnership: undefined,
         clearSort: undefined,
@@ -203,5 +220,10 @@ describe("WorldCollection Tests", () => {
     expectTypeOf(TestActorsWorldCollection.registeredSheets).toEqualTypeOf<
       Array<typeof anyV1Sheet | typeof anyV2Sheet>
     >();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
+    await actorPack.deleteCompendium();
   });
 });

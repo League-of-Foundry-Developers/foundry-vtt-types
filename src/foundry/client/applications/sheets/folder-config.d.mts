@@ -30,12 +30,10 @@ declare namespace FolderConfig {
   interface AnyConstructor extends Identity<typeof AnyFolderConfig> {}
 
   interface RenderContext
-    extends HandlebarsApplicationMixin.RenderContext,
-      DocumentSheetV2.RenderContext<Folder.Implementation> {}
+    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<Folder.Implementation> {}
 
   interface Configuration
-    extends HandlebarsApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<Folder.Implementation> {}
+    extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<Folder.Implementation> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
 }

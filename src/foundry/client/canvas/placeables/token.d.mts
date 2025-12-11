@@ -1240,8 +1240,9 @@ declare namespace Token {
       origin: Canvas.Point;
     }>;
 
-  interface CheckCollisionOptions<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>
-    extends _CheckCollisionOptions<Mode> {}
+  interface CheckCollisionOptions<
+    Mode extends PointSourcePolygon.CollisionModes | undefined = undefined,
+  > extends _CheckCollisionOptions<Mode> {}
 
   /** Return type of {@link Token.getSize | `Token#getSize`} */
   interface Size {

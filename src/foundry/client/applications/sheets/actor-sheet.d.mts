@@ -127,8 +127,9 @@ declare namespace ActorSheetV2 {
 
   interface RenderContext extends DocumentSheetV2.RenderContext<Actor.Implementation> {}
 
-  interface Configuration<ActorSheetV2 extends ActorSheetV2.Any = ActorSheetV2.Any>
-    extends DocumentSheetV2.Configuration<Actor.Implementation, ActorSheetV2> {}
+  interface Configuration<
+    ActorSheetV2 extends ActorSheetV2.Any = ActorSheetV2.Any,
+  > extends DocumentSheetV2.Configuration<Actor.Implementation, ActorSheetV2> {}
 
   type DefaultOptions<ActorSheetV2 extends ActorSheetV2.Any = ActorSheetV2.Any> =
     DocumentSheetV2.DefaultOptions<ActorSheetV2>;

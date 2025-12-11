@@ -142,7 +142,7 @@
     "tinymce": "^6.8.5"
   },
   "devDependencies": {
-    "@actions/core": "^1.11.1",
+    "@actions/core": "^2.0.0",
     "@actions/github": "^6.0.0",
     "@ark/attest": "^0.56.0",
     "@codemirror/lint": "^6.9.2",

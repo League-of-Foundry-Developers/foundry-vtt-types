@@ -153,8 +153,10 @@ declare namespace EmbeddedCollectionDelta {
    *
    * @remarks `#get` is not overridden in `EmbeddedCollectionDelta`
    */
-  interface Methods<ContainedDocument extends Document.Any>
-    extends Pick<EmbeddedCollection.Methods<ContainedDocument>, "get"> {
+  interface Methods<ContainedDocument extends Document.Any> extends Pick<
+    EmbeddedCollection.Methods<ContainedDocument>,
+    "get"
+  > {
     self: unknown;
 
     set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): void;

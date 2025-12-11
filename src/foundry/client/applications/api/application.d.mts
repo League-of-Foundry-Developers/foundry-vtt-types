@@ -439,30 +439,29 @@ declare namespace ApplicationV2 {
    * @remarks InexactPartial is used over NullishProps because event/navElement are not called with null as a possible value,
    *          and null interferes with the defaults of force/updatePosition
    */
-  interface ChangeTabOptions
-    extends InexactPartial<{
-      /**
-       * An interaction event which caused the tab change, if any
-       */
-      event: Event;
+  interface ChangeTabOptions extends InexactPartial<{
+    /**
+     * An interaction event which caused the tab change, if any
+     */
+    event: Event;
 
-      /**
-       * An explicit navigation element being modified
-       */
-      navElement: HTMLElement;
+    /**
+     * An explicit navigation element being modified
+     */
+    navElement: HTMLElement;
 
-      /**
-       * Force changing the tab even if the new tab is already active
-       * @defaultValue `false`
-       */
-      force: boolean;
+    /**
+     * Force changing the tab even if the new tab is already active
+     * @defaultValue `false`
+     */
+    force: boolean;
 
-      /**
-       * Update application position after changing the tab?
-       * @defaultValue `false`
-       */
-      updatePosition: boolean;
-    }> {}
+    /**
+     * Update application position after changing the tab?
+     * @defaultValue `false`
+     */
+    updatePosition: boolean;
+  }> {}
 
   type CreateContextMenuHandler = () => ContextMenu.Entry<HTMLElement>[];
 

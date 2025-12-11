@@ -1,28 +1,36 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import WorldSettings = foundry.documents.collections.WorldSettings;
 
-declare const settingCreateData: Setting.CreateData;
-declare const settingSource: Setting.Source;
-declare const stack: Setting.Stored;
-declare const settingImpl: Setting.Implementation;
-declare const actorCreateData: Actor.CreateData;
-declare const actor: Actor.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("WorldSettings Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("WorldSettings Tests", () => {
+  const setting = await Setting.implementation.create({ key: "core.worldSettingsTestSetting" });
+  if (!setting) throw new Error("Failed to create test Setting");
+  docsToCleanUp.add(setting);
+
+  const settingImpl = new Setting.implementation({ key: "core.worldSettingsTestSetting" });
+  const settingSource = setting.toObject();
+
+  const actor = await Actor.implementation.create({ name: "Settings Collection Test Actor", type: "base" });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const actorSource: Actor.Source = actor.toObject();
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new WorldSettings();
-    new WorldSettings([settingCreateData]);
     new WorldSettings([settingSource]);
 
     // @ts-expect-error `Actor` data not assignable to `Setting` data
-    new WorldSettings([actorCreateData]);
+    new WorldSettings([actorSource]);
   });
 
-  const settings = new WorldSettings([settingCreateData]);
+  const settings = new WorldSettings([settingSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(WorldSettings.documentName).toEqualTypeOf<"Setting">();
@@ -97,8 +105,12 @@ describe("WorldSettings Tests", () => {
     // @ts-expect-error `Actor`s are not `Setting`s
     settings.set("ID", actor);
     // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(settings.set("ID", stack)).toBeVoid();
+    expectTypeOf(settings.set("ID", setting)).toBeVoid();
 
     expectTypeOf(settings.delete("ID")).toBeBoolean();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

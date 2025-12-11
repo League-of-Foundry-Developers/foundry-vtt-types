@@ -2,16 +2,16 @@ import { describe, expectTypeOf, test } from "vitest";
 
 // Collection is a blessed global and doesn't need to be imported
 
-type CollectionValue = string | true | 5 | null | { foo: number };
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
-
-function isString(e: CollectionValue): e is string {
-  return typeof e === "string";
-}
-
 describe("Collection Tests", () => {
+  type CollectionValue = string | true | 5 | null | { foo: number };
+
+  function isString(e: CollectionValue): e is string {
+    return typeof e === "string";
+  }
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     expectTypeOf(new Collection()).toEqualTypeOf<Collection<unknown>>();
     expectTypeOf(new Collection([["foo", 7]])).toEqualTypeOf<Collection<number>>();

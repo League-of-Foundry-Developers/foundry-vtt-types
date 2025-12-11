@@ -26,8 +26,7 @@ declare class EmbeddedCollection<
   constructor(
     name: string,
     parent: ParentDocument,
-    // TODO: revisit CreateData vs Source once the Source assignability investigation is complete
-    sourceArray: Document.CreateDataForName<ContainedDocument["documentName"]>[],
+    sourceArray: Document.SourceForName<ContainedDocument["documentName"]>[],
   );
 
   /**
@@ -68,7 +67,7 @@ declare class EmbeddedCollection<
    *
    * Defined via `Object.defineProperties` during construction with `{ writable: false }`
    */
-  readonly _source: Document.CreateDataForName<ContainedDocument["documentName"]>[];
+  readonly _source: Document.SourceForName<ContainedDocument["documentName"]>[];
 
   /**
    * Record the set of document ids where the Document was not initialized because of invalid source data
@@ -95,7 +94,7 @@ declare class EmbeddedCollection<
    * @remarks `options` doesn't have a parameter default, but it's only passed to places that do, so it's optional here
    */
   protected _initializeDocument(
-    data: Document.CreateDataForName<ContainedDocument["documentName"]>,
+    data: Document.SourceForName<ContainedDocument["documentName"]>,
     options?: EmbeddedCollection.InitializeDocumentOptions,
   ): void;
 
@@ -251,8 +250,10 @@ declare namespace EmbeddedCollection {
    * The context interface for {@linkcode EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}
    * The omitted properties are defined after spreading the passed context into a new object, overwriting any passed values
    */
-  interface DocumentConstructionContext
-    extends Omit<Document.ConstructionContext, "parent" | "parentCollection" | "pack"> {}
+  interface DocumentConstructionContext extends Omit<
+    Document.ConstructionContext,
+    "parent" | "parentCollection" | "pack"
+  > {}
 
   interface HandleInvalidDocumentOptions {
     /**

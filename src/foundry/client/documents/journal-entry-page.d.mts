@@ -40,22 +40,21 @@ declare namespace JournalEntryPage {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "JournalEntryPage";
-        collection: "pages";
-        hasTypeData: true;
-        indexed: true;
-        label: string;
-        labelPlural: string;
-        coreTypes: ["text", "image", "pdf", "video"];
-        compendiumIndexFields: ["name", "type", "sort"];
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "JournalEntryPage";
+      collection: "pages";
+      hasTypeData: true;
+      indexed: true;
+      label: string;
+      labelPlural: string;
+      coreTypes: ["text", "image", "pdf", "video"];
+      compendiumIndexFields: ["name", "type", "sort"];
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     interface Permissions {
@@ -101,15 +100,14 @@ declare namespace JournalEntryPage {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredJournalEntryPage<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            JournalEntryPage<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredJournalEntryPage<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          JournalEntryPage<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `JournalEntryPage` subtype.
@@ -208,8 +206,8 @@ declare namespace JournalEntryPage {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData<SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType>
-    extends fields.SchemaField.CreateData<Schema> {
+  interface CreateData<SubType extends JournalEntryPage.SubType = JournalEntryPage.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
     type?: SubType | null | undefined;
   }
 
@@ -419,12 +417,8 @@ declare namespace JournalEntryPage {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<JournalEntryPage.Parent> {}
 
     /** Options passed along in Create operations for JournalEntryPages */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        JournalEntryPage.CreateData,
-        JournalEntryPage.Parent,
-        Temporary
-      > {
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<JournalEntryPage.CreateData, JournalEntryPage.Parent, Temporary> {
       animate?: boolean;
     }
 
@@ -434,26 +428,30 @@ declare namespace JournalEntryPage {
     }
 
     /** Options passed along in Update operations for JournalEntryPages */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<JournalEntryPage.UpdateData, JournalEntryPage.Parent> {
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      JournalEntryPage.UpdateData,
+      JournalEntryPage.Parent
+    > {
       animate?: boolean;
     }
 
     /** Operation for {@linkcode JournalEntryPage.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<JournalEntryPage.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      JournalEntryPage.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode JournalEntryPage.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<JournalEntryPage.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<JournalEntryPage.Database.Update> {}
 
     /** Operation for {@linkcode JournalEntryPage.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<JournalEntryPage.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<JournalEntryPage.Database.Delete> {}
 
     /** Operation for {@linkcode JournalEntryPage.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<JournalEntryPage.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      JournalEntryPage.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link JournalEntryPage.update | `JournalEntryPage#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

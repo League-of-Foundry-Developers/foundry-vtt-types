@@ -419,8 +419,10 @@ declare namespace CompendiumCollection {
 
   type SettingField = fields.TypedObjectField<SettingFieldElement>;
 
-  interface SettingData
-    extends fields.TypedObjectField.InitializedType<SettingFieldElement, fields.TypedObjectField.DefaultOptions> {}
+  interface SettingData extends fields.TypedObjectField.InitializedType<
+    SettingFieldElement,
+    fields.TypedObjectField.DefaultOptions
+  > {}
 
   /** @remarks Currently (13.351) unused due to {@link https://github.com/foundryvtt/foundryvtt/issues/13354} */
   type OwnershipData = NonNullable<SettingData["ownership"]>;
@@ -434,7 +436,8 @@ declare namespace CompendiumCollection {
    *
    */
   interface CreateCompendiumMetadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName>
-    extends Pick<Metadata<Type>, "type" | "label">,
+    extends
+      Pick<Metadata<Type>, "type" | "label">,
       Pick<IntentionalPartial<Metadata<Type>>, "name" | "flags" | "ownership"> {}
 
   /**
@@ -443,8 +446,9 @@ declare namespace CompendiumCollection {
    * @privateRemarks Construction technically doesn't error with only `type`, `index`, and `folders`, but that doesn't produce an actually
    * valid pack. This type represents the data the server will be providing when construction happens, which users will never do directly.
    */
-  interface ConstructorMetadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName>
-    extends Metadata<Type> {
+  interface ConstructorMetadata<
+    Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName,
+  > extends Metadata<Type> {
     /**
      * @remarks The precomputed index sent from the server.
      *
@@ -466,10 +470,12 @@ declare namespace CompendiumCollection {
   /**
    * The type that appears in `compendium.metadata` after initialization.
    * @privateRemarks Note that the `Omit` is because `delete metadata.index` and `delete metadata.folders` are called during construction.
-   * This also deletes in `game.data` since its passed uncloned.
+   * This also deletes in `game.data` since it's passed uncloned.
    */
-  interface Metadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName>
-    extends Omit<Game.Data.Pack, "index" | "folders"> {
+  interface Metadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName> extends Omit<
+    Game.Data.Pack,
+    "index" | "folders"
+  > {
     type: Type;
   }
 
@@ -511,7 +517,8 @@ declare namespace CompendiumCollection {
   interface ManageCompendiumRequest<
     Action extends ManageCompendiumAction = ManageCompendiumAction,
     Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName,
-  > extends SocketInterface.SocketRequest {
+  >
+    extends SocketInterface.SocketRequest {
     /** The request action. */
     action: ManageCompendiumAction;
 
@@ -532,7 +539,8 @@ declare namespace CompendiumCollection {
   interface ManageCompendiumResponse<
     Action extends ManageCompendiumAction = ManageCompendiumAction,
     Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName,
-  > extends SocketInterface.SocketResponse {
+  >
+    extends SocketInterface.SocketResponse {
     /** @remarks "manageCompendium" socket returns always include this key */
     userId: string;
 

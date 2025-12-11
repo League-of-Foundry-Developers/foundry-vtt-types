@@ -33,12 +33,10 @@ declare namespace CardsConfig {
   interface AnyConstructor extends Identity<typeof AnyCardsConfig> {}
 
   interface RenderContext
-    extends HandlebarsApplicationMixin.RenderContext,
-      DocumentSheetV2.RenderContext<Cards.Implementation> {}
+    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<Cards.Implementation> {}
 
   interface Configuration
-    extends HandlebarsApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<Cards.Implementation> {}
+    extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<Cards.Implementation> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
 }

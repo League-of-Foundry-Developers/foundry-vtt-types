@@ -33,18 +33,17 @@ declare namespace JournalEntryCategory {
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "JournalEntryCategory";
-        collection: "categories";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "JournalEntryCategory";
+      collection: "categories";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      schemaVersion: string;
+    }>
+  > {}
 
   /**
    * A document's parent is something that can contain it.
@@ -188,38 +187,35 @@ declare namespace JournalEntryCategory {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<JournalEntryCategory.Parent> {}
 
     /** Options passed along in Create operations for JournalEntryCategories */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        JournalEntryCategory.CreateData,
-        JournalEntryCategory.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<JournalEntryCategory.CreateData, JournalEntryCategory.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for JournalEntryCategories */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<JournalEntryCategory.Parent> {}
 
     /** Options passed along in Update operation for JournalEntryCategories */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<
-        JournalEntryCategory.UpdateData,
-        JournalEntryCategory.Parent
-      > {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      JournalEntryCategory.UpdateData,
+      JournalEntryCategory.Parent
+    > {}
 
     /** Operation for {@linkcode JournalEntryCategory.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<JournalEntryCategory.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      JournalEntryCategory.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode JournalEntryCategory.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<JournalEntryCategory.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<JournalEntryCategory.Database.Update> {}
 
     /** Operation for {@linkcode JournalEntryCategory.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<JournalEntryCategory.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<JournalEntryCategory.Database.Delete> {}
 
     /** Operation for {@linkcode JournalEntryCategory.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<JournalEntryCategory.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      JournalEntryCategory.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link JournalEntryCategory.update | `JournalEntryCategory#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -236,8 +232,8 @@ declare namespace JournalEntryCategory {
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode JournalEntryCategory._preCreateOperation} */
-    interface PreCreateOperation
-      extends Document.Database.PreCreateOperationStatic<JournalEntryCategory.Database.Create> {}
+    interface PreCreateOperation extends Document.Database
+      .PreCreateOperationStatic<JournalEntryCategory.Database.Create> {}
 
     /** Operation for {@link JournalEntryCategory._onCreateOperation | `JournalEntryCategory#_onCreateOperation`} */
     interface OnCreateOperation extends JournalEntryCategory.Database.Create {}

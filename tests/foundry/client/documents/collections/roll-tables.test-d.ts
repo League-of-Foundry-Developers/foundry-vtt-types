@@ -1,28 +1,39 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import RollTables = foundry.documents.collections.RollTables;
 
-declare const tableCreateData: RollTable.CreateData;
-declare const tableSource: RollTable.Source;
-declare const stack: RollTable.Stored;
-declare const tableImpl: RollTable.Implementation;
-declare const actor: Actor.Stored;
-declare const wallCreateData: WallDocument.CreateData;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("RollTables Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("RollTables Tests", () => {
+  const actor = await Actor.implementation.create({
+    name: "RollTables Collection Test Actor",
+    type: "base",
+  });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const table = await RollTable.implementation.create({ name: "RollTables Collection Test RollTable" });
+  if (!table) throw new Error("Failed to create test RollTable.");
+  docsToCleanUp.add(table);
+
+  const tableSource = table.toObject();
+  const tableImpl = new RollTable.implementation({ name: "RollTables Collection Test RollTable" });
+
+  const actorSource = actor.toObject();
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new RollTables();
-    new RollTables([tableCreateData]);
     new RollTables([tableSource]);
 
-    // @ts-expect-error `WallDocument` data not assignable to `RollTable` data
-    new RollTables([wallCreateData]);
+    // @ts-expect-error `Actor` data not assignable to `RollTable` data
+    new RollTables([actorSource]);
   });
 
-  const tables = new RollTables([tableCreateData]);
+  const tables = new RollTables([tableSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(RollTables.documentName).toEqualTypeOf<"RollTable">();
@@ -95,8 +106,12 @@ describe("RollTables Tests", () => {
     // @ts-expect-error `Actor`s are not `RollTable`s
     tables.set("ID", actor);
     // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(tables.set("ID", stack)).toBeVoid();
+    expectTypeOf(tables.set("ID", table)).toBeVoid();
 
     expectTypeOf(tables.delete("ID")).toBeBoolean();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

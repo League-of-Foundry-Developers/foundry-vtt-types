@@ -621,8 +621,9 @@ declare namespace Game {
   /**
    * The special interface for {@linkcode Game.modules | game.modules}.
    *
-   * This is not a subclass of {@linkcode Collection} at runtime, just a type override to provide specificity where we can know which types
-   * certain keys refer to due to FVTT-Types's configuration interfaces {@linkcode ModuleConfig} and {@linkcode RequiredModules}.
+   * This is a {@linkcode Collection} at runtime, not a subclass, but the type of its `get` method is overridden here to provide specificity
+   * where we can know which types certain keys refer to due to fvtt-types's configuration interfaces {@linkcode ModuleConfig} and
+   * {@linkcode RequiredModules}.
    */
   interface ModuleCollection extends Collection<foundry.packages.Module, ModuleCollectionMethods> {
     /**
@@ -665,7 +666,12 @@ declare namespace Game {
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     | ({ active: false } & Module & { [K in keyof GetKey<ModuleConfig, Name, {}>]?: never });
 
-  /** The type for {@linkcode Game.collections | game.collections} after initialization. */
+  /**
+   * The type for {@linkcode Game.collections | game.collections} after initialization.
+   *
+   * This is a {@linkcode Collection} at runtime, not a subclass, but the type of its `get` method is overridden here to return the
+   * Foundry-provided {@linkcode WorldCollection}s for their known keys.
+   */
   interface WorldCollectionsCollection extends Collection<WorldCollection.Any, WorldCollectionsCollectionMethods> {
     /**
      * @remarks Returns the appropriate {@linkcode WorldCollection} implementation

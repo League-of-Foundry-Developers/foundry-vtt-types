@@ -38,17 +38,16 @@ declare namespace AmbientLightDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "AmbientLight";
-        collection: "lights";
-        label: string;
-        labelPlural: string;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "AmbientLight";
+      collection: "lights";
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
+    }>
+  > {}
 
   // No need for Metadata namespace
 
@@ -228,40 +227,37 @@ declare namespace AmbientLightDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<AmbientLightDocument.Parent> {}
 
     /** Options passed along in Create operations for AmbientLightDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        AmbientLightDocument.CreateData,
-        AmbientLightDocument.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<AmbientLightDocument.CreateData, AmbientLightDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for AmbientLightDocuments */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<AmbientLightDocument.Parent> {}
 
     /** Options passed along in Update operations for AmbientLightDocuments */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<
-        AmbientLightDocument.UpdateData,
-        AmbientLightDocument.Parent
-      > {
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      AmbientLightDocument.UpdateData,
+      AmbientLightDocument.Parent
+    > {
       animate?: boolean;
     }
 
     /** Operation for {@linkcode AmbientLightDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<AmbientLightDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      AmbientLightDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode AmbientLightDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<AmbientLightDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<AmbientLightDocument.Database.Update> {}
 
     /** Operation for {@linkcode AmbientLightDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<AmbientLightDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<AmbientLightDocument.Database.Delete> {}
 
     /** Operation for {@linkcode AmbientLightDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<AmbientLightDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      AmbientLightDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link AmbientLightDocument.update | `AmbientLightDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -278,8 +274,8 @@ declare namespace AmbientLightDocument {
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode AmbientLightDocument._preCreateOperation} */
-    interface PreCreateOperation
-      extends Document.Database.PreCreateOperationStatic<AmbientLightDocument.Database.Create> {}
+    interface PreCreateOperation extends Document.Database
+      .PreCreateOperationStatic<AmbientLightDocument.Database.Create> {}
 
     /** Operation for {@link AmbientLightDocument._onCreateOperation | `AmbientLightDocument#_onCreateOperation`} */
     interface OnCreateOperation extends AmbientLightDocument.Database.Create {}

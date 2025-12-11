@@ -44,9 +44,7 @@ declare class Uses<T> {
 // See: https://gist.github.com/LukeAbby/b9fd57eeba778a25297721e88b3e6bdd
 // @ts-expect-error This pattern is inherently an error.
 interface DataModelOverride<Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends object>
-  extends _ComputedInstance,
-    DataModel<Schema, Parent>,
-    Uses<_ComputedInstance> {}
+  extends _ComputedInstance, DataModel<Schema, Parent>, Uses<_ComputedInstance> {}
 
 type UnmergePartial<
   Schema extends DataSchema,

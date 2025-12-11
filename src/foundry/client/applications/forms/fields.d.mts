@@ -221,7 +221,8 @@ interface _MultiSelectInputConfig {
 
 /** @remarks See {@linkcode SelectOptionsValue} */
 export interface MultiSelectInputConfig
-  extends InexactPartial<_MultiSelectInputConfig>,
+  extends
+    InexactPartial<_MultiSelectInputConfig>,
     FormInputConfig<SelectOptionsValue>,
     Omit<_SelectInputConfig, "blank"> {}
 
@@ -378,8 +379,7 @@ export interface TextInputConfig extends FormInputConfig<string> {}
 export function createTextInput(config: TextInputConfig): HTMLInputElement;
 
 export interface PrepareSelectOptionGroupsConfig
-  extends _SelectInputConfig,
-    Pick<FormInputConfig<SelectOptionsValue>, "value"> {}
+  extends _SelectInputConfig, Pick<FormInputConfig<SelectOptionsValue>, "value"> {}
 
 /**
  * Structure a provided array of select options into a standardized format for rendering optgroup and option elements.

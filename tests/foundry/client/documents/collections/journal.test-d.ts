@@ -1,28 +1,39 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import Journal = foundry.documents.collections.Journal;
 
-declare const jeCreateData: JournalEntry.CreateData;
-declare const jeSource: JournalEntry.Source;
-declare const je: JournalEntry.Stored;
-declare const jeImpl: JournalEntry.Implementation;
-declare const actorCreateData: Actor.CreateData;
-declare const actor: Actor.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("Journal Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("Journal Tests", () => {
+  const je = await JournalEntry.implementation.create({ name: "Journal Collection Test JournalEntry" });
+  if (!je) throw new Error("Failed to create test JournalEntry.");
+  docsToCleanUp.add(je);
+
+  const jeSource = je.toObject();
+  const jeImpl = new JournalEntry.implementation({ name: "Journal Collection Test JournalEntry" });
+
+  const actor = await Actor.implementation.create({
+    name: "Journal Collection Test Actor",
+    type: "base",
+  });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const actorSource = actor.toObject;
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new Journal();
-    new Journal([jeCreateData]);
     new Journal([jeSource]);
 
-    // This errors in most other world collections, but `JournalEntry`s only need `name`s
-    new Journal([actorCreateData]);
+    // @ts-expect-error `Actor` source not assignable to `JournalEntry` source
+    new Journal([actorSource]);
   });
 
-  const journals = new Journal([jeCreateData]);
+  const journals = new Journal([jeSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(Journal.documentName).toEqualTypeOf<"JournalEntry">();
@@ -152,5 +163,9 @@ describe("Journal Tests", () => {
     expectTypeOf(journals.set("ID", je)).toBeVoid();
 
     expectTypeOf(journals.delete("ID")).toBeBoolean();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

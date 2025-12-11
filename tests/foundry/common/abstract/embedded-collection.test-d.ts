@@ -1,34 +1,47 @@
-import { test, describe, expectTypeOf } from "vitest";
+import { afterAll, test, describe, expectTypeOf } from "vitest";
 
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 import Document = foundry.abstract.Document;
 
-declare const actor: Actor.Stored;
-declare const itemSourceArray: Item.Source[];
-declare const itemCreateDataArray: Item.CreateData[];
-declare const sceneSourceArray: Scene.Source[];
-declare const itemStored: Item.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("EmbeddedCollection Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("EmbeddedCollection Tests", () => {
+  const actor = await Actor.implementation.create({
+    name: "EmbeddedCollection Test Actor",
+    type: "base",
+  });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const itemStored = await Item.implementation.create({
+    name: "EmbeddedCollection Test Actor",
+    type: "base",
+  });
+  if (!itemStored) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(itemStored);
+
+  const itemSource = itemStored.toObject();
+  const sceneSource = new Scene.implementation({ name: "EmbeddedCollection Test Scene" }).toObject();
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     // EmbeddedCollections must be constructed with explicit type parameters.
     // Constructing without them will only infer the parent doc type, not the source array type:
-    expectTypeOf(new EmbeddedCollection("items", actor, itemSourceArray)).toEqualTypeOf<
+    expectTypeOf(new EmbeddedCollection("items", actor, [itemSource])).toEqualTypeOf<
       EmbeddedCollection<Document.Any, Actor.Stored>
     >();
 
-    // Source is assignable to CreateData, so either is allowed
-    new EmbeddedCollection<Item.Stored, Actor.Stored>("items", actor, itemSourceArray);
-    new EmbeddedCollection<Item.Stored, Actor.Stored>("items", actor, itemCreateDataArray);
+    new EmbeddedCollection<Item.Stored, Actor.Stored>("items", actor, [itemSource]);
 
-    // Known limitation: nothing prevents passing incompatible parent and source doc types
-    new EmbeddedCollection<ActiveEffect.Stored, Actor.Stored>("items", actor, sceneSourceArray);
+    // Known limitation: nothing type-side prevents passing incompatible parent and source doc types;
+    // this will fail at runtime when `initialize()` is called, same as any other invalid document
+    new EmbeddedCollection<Scene.Stored, Actor.Stored>("items", actor, [sceneSource]);
   });
 
-  const ec = new EmbeddedCollection<Item.Stored, Actor.Stored>("items", actor, itemSourceArray);
+  const ec = new EmbeddedCollection<Item.Stored, Actor.Stored>("items", actor, [itemSource]);
 
   test("Initialization", () => {
     expectTypeOf(ec["_initialized"]).toBeBoolean();
@@ -38,34 +51,34 @@ describe("EmbeddedCollection Tests", () => {
     expectTypeOf(ec.initialize({ dropInvalidEmbedded: true, fallback: false, strict: true })).toBeVoid();
     expectTypeOf(ec.initialize({ dropInvalidEmbedded: undefined, fallback: undefined, strict: undefined })).toBeVoid();
 
-    expectTypeOf(ec["_initializeDocument"](itemSourceArray[0]!)).toBeVoid();
-    expectTypeOf(ec["_initializeDocument"](itemSourceArray[0]!, {})).toBeVoid();
+    expectTypeOf(ec["_initializeDocument"](itemSource)).toBeVoid();
+    expectTypeOf(ec["_initializeDocument"](itemSource, {})).toBeVoid();
     expectTypeOf(
-      ec["_initializeDocument"](itemSourceArray[0]!, {
+      ec["_initializeDocument"](itemSource, {
         dropInvalidEmbedded: false,
         fallback: true,
         strict: false,
       }),
     ).toBeVoid();
     expectTypeOf(
-      ec["_initializeDocument"](itemSourceArray[0]!, {
+      ec["_initializeDocument"](itemSource, {
         dropInvalidEmbedded: undefined,
         fallback: undefined,
         strict: undefined,
       }),
     ).toBeVoid();
 
-    expectTypeOf(ec.createDocument(itemSourceArray[0]!)).toEqualTypeOf<Item.Implementation>();
-    expectTypeOf(ec.createDocument(itemSourceArray[0]!, {})).toEqualTypeOf<Item.Implementation>();
+    expectTypeOf(ec.createDocument(itemSource)).toEqualTypeOf<Item.Implementation>();
+    expectTypeOf(ec.createDocument(itemSource, {})).toEqualTypeOf<Item.Implementation>();
     expectTypeOf(
-      ec.createDocument(itemSourceArray[0]!, {
+      ec.createDocument(itemSource, {
         dropInvalidEmbedded: true,
         fallback: false,
         strict: true,
       }),
     ).toEqualTypeOf<Item.Implementation>();
     expectTypeOf(
-      ec.createDocument(itemSourceArray[0]!, {
+      ec.createDocument(itemSource, {
         dropInvalidEmbedded: undefined,
         fallback: undefined,
         strict: undefined,
@@ -83,7 +96,7 @@ describe("EmbeddedCollection Tests", () => {
     expectTypeOf(ec.model).toEqualTypeOf<Actor.Stored>();
 
     // we put the constraint on the constructor as `CreateData` and that gets directly assigned to `_source`, so this is correct
-    expectTypeOf(ec._source).toEqualTypeOf<Item.CreateData[]>();
+    expectTypeOf(ec._source).toEqualTypeOf<Item.Source[]>();
 
     expectTypeOf(ec.invalidDocumentIds).toEqualTypeOf<Set<string>>();
     expectTypeOf(ec.documentsByType).toEqualTypeOf<Record<string, Item.Stored[]>>();
@@ -95,7 +108,7 @@ describe("EmbeddedCollection Tests", () => {
 
     // Inherited from Collection:
     // TODO: Waiting on a luke reduction
-    // expectTypeOf(itemCollOnActor.toJSON()).toEqualTypeOf<Item.Source[]>();
+    // expectTypeOf(ec.toJSON()).toEqualTypeOf<Item.Source[]>();
   });
 
   test("Getting and Searching", () => {
@@ -159,5 +172,9 @@ describe("EmbeddedCollection Tests", () => {
 
     // same options interface as `#delete` above
     expectTypeOf(ec["_delete"]("ID")).toBeVoid();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

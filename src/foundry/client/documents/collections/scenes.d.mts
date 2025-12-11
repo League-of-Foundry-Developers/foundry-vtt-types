@@ -45,7 +45,7 @@ declare class Scenes extends WorldCollection<"Scene"> {
   static _activateSocketListeners(socket: io.Socket): void;
 
   override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
-    document: Scene.Implementation | Scene.CreateData,
+    document: Scene.Implementation | Scene.Source,
     options?: Options,
   ): WorldCollection.FromCompendiumReturnType<"Scene", Options>;
 

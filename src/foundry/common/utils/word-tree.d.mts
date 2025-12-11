@@ -51,8 +51,7 @@ declare namespace WordTree {
   }>;
 
   interface LookupOptions<DocumentName extends Document.Type>
-    extends Omit<StringTree.LookupOptions<Entry<DocumentName>>, "limit">,
-      _LookupOptions {}
+    extends Omit<StringTree.LookupOptions<Entry<DocumentName>>, "limit">, _LookupOptions {}
 
   /**
    * A leaf entry in the tree.
