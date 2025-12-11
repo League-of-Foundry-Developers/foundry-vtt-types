@@ -171,6 +171,23 @@ const placeables = [
   "Wall",
 ];
 
+const worldCollections = [
+  "Actors",
+  "CardStacks",
+  "ChatMessages",
+  "CombatEncounters",
+  "FogExplorations",
+  "Folders",
+  "Items",
+  "Journal", // singular on purpose, grr foundry
+  "Macros",
+  "Playlists",
+  "RollTables",
+  "Scenes",
+  "Users",
+  "WorldSettings",
+];
+
 /** @type {{ selector: string; message: string }[]} */
 const noRestrictedSyntax = [];
 
@@ -244,6 +261,22 @@ for (const placeable of placeables) {
 
   noRestrictedTypes[placeable] = {
     message: `Prefer \`${placeable}.Implementation\` as \`${placeable}\` does not account for any packages that may have configured the placeable class.`,
+  };
+}
+
+for (const worldCollection of worldCollections) {
+  noRestrictedSyntax.push({
+    selector: typeofSelector(worldCollection),
+    message: `Prefer \`${worldCollection}.ImplementationClass\` as \`typeof ${worldCollection}\` does not account for any packages that may have configured the placeable class.`,
+  });
+
+  noRestrictedSyntax.push({
+    selector: directExpressionSelector(worldCollection, "^embeddedName$"),
+    message: `Prefer \`${worldCollection}.Implementation\` as \`typeof ${worldCollection}\` does not account for any packages that may have configured the placeable class.`,
+  });
+
+  noRestrictedTypes[worldCollection] = {
+    message: `Prefer \`${worldCollection}.Implementation\` as \`${worldCollection}\` does not account for any packages that may have configured the placeable class.`,
   };
 }
 

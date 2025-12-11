@@ -28,14 +28,14 @@ declare abstract class DocumentCollection<
   DocumentName extends Document.Type,
   Methods extends Collection.Methods.Any = DocumentCollection.Methods<DocumentName>,
 > extends Collection<Document.StoredForName<DocumentName>, Methods> {
-  constructor(data?: Document.CreateDataForName<DocumentName>[]);
+  constructor(data?: Document.SourceForName<DocumentName>[]);
 
   /**
    * The source data array from which the Documents in the WorldCollection are created
    * @remarks Created via `Object.defineProperty` during construction with `{ writable: false }`,
    * and the `data` param from the constructor as `value`.
    */
-  readonly _source: Document.CreateDataForName<DocumentName>[];
+  readonly _source: Document.SourceForName<DocumentName>[];
 
   /**
    * An Array of application references which will be automatically updated when the collection content changes
@@ -55,14 +55,16 @@ declare abstract class DocumentCollection<
 
   /**
    * A reference to the named Document class which is contained within this DocumentCollection.
-   * @remarks This accessor is abstract: A subclass of DocumentCollection must implement the documentName getter
+   * @remarks Returns the static {@linkcode DocumentCollection.documentName | this.constructor.documentName}.
+   * @throws If the static property is unset or otherwise falsey.
    */
   get documentName(): DocumentName;
 
   /**
    * The base Document type which is contained within this DocumentCollection
+   * @remarks Effectively abstract, this is used as the base value for the instance `documentName` getter, must be set by subclasses.
    */
-  static documentName: Document.Type | undefined;
+  static documentName: Document.Type;
 
   /**
    * Record the set of document ids where the Document was not initialized because of invalid source data

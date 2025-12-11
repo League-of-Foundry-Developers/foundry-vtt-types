@@ -73,7 +73,7 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
    * @returns The processed data ready for world Document creation
    */
   fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
-    document: Document.ImplementationFor<DocumentName> | Document.CreateDataForName<DocumentName>,
+    document: Document.ImplementationFor<DocumentName> | Document.SourceForName<DocumentName>,
     options?: Options,
   ): WorldCollection.FromCompendiumReturnType<DocumentName, Options>;
 

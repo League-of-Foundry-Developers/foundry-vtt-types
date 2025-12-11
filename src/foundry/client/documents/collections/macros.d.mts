@@ -19,7 +19,7 @@ declare class Macros extends WorldCollection<"Macro"> {
 
   /** @remarks `Macros` override doesn't change the signature, only sets `data.author` to `game.user.id` if `clearOwnership` is `true` */
   override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
-    document: Macro.Implementation | Macro.CreateData,
+    document: Macro.Implementation | Macro.Source,
     options?: Options,
   ): WorldCollection.FromCompendiumReturnType<"Macro", Options>;
 }

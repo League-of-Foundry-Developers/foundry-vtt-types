@@ -470,7 +470,7 @@ declare namespace CompendiumCollection {
   /**
    * The type that appears in `compendium.metadata` after initialization.
    * @privateRemarks Note that the `Omit` is because `delete metadata.index` and `delete metadata.folders` are called during construction.
-   * This also deletes in `game.data` since its passed uncloned.
+   * This also deletes in `game.data` since it's passed uncloned.
    */
   interface Metadata<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName> extends Omit<
     Game.Data.Pack,
