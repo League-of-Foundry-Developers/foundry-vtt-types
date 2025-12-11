@@ -171,7 +171,8 @@ const placeables = [
   "Wall",
 ];
 
-const worldCollections = [
+// TODO: Wire up what parts of this work. These classes only have `.instance` getters, no `.implementation` equivalent; point users toward CONFIG[documentName].collection
+const _worldCollections = [
   "Actors",
   "CardStacks",
   "ChatMessages",
@@ -261,22 +262,6 @@ for (const placeable of placeables) {
 
   noRestrictedTypes[placeable] = {
     message: `Prefer \`${placeable}.Implementation\` as \`${placeable}\` does not account for any packages that may have configured the placeable class.`,
-  };
-}
-
-for (const worldCollection of worldCollections) {
-  noRestrictedSyntax.push({
-    selector: typeofSelector(worldCollection),
-    message: `Prefer \`${worldCollection}.ImplementationClass\` as \`typeof ${worldCollection}\` does not account for any packages that may have configured the placeable class.`,
-  });
-
-  noRestrictedSyntax.push({
-    selector: directExpressionSelector(worldCollection, "^embeddedName$"),
-    message: `Prefer \`${worldCollection}.Implementation\` as \`typeof ${worldCollection}\` does not account for any packages that may have configured the placeable class.`,
-  });
-
-  noRestrictedTypes[worldCollection] = {
-    message: `Prefer \`${worldCollection}.Implementation\` as \`${worldCollection}\` does not account for any packages that may have configured the placeable class.`,
   };
 }
 

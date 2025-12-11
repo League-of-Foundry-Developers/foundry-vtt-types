@@ -5,31 +5,33 @@ import DocumentCollection = foundry.documents.abstract.DocumentCollection;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
 import Document = foundry.abstract.Document;
 
-declare const actorCreateDataArray: Actor.CreateData[];
-declare const actorSourceDataArray: Actor.Source[];
-declare const compendia: Array<[string, CompendiumCollection.Any]>;
-
-class DCMTestActors extends DirectoryCollectionMixin(DocumentCollection)<"Actor"> {
-  /**
-   * This override is required because of necessary widening of the type in the mixin, see
-   * {@linkcode DirectoryCollectionMixin.AnyMixed._getVisibleTreeContents | DirectoryCollection#_getVisibleTreeContents}.
-   */
-  protected override _getVisibleTreeContents() {
-    return this.contents;
-  }
-}
-class DCMTestCompendia extends DirectoryCollectionMixin(Collection)<CompendiumCollection.Any> {}
-
 describe("DirectoryCollectionMixin Tests", () => {
+  class DCMTestActors extends DirectoryCollectionMixin(DocumentCollection)<"Actor"> {
+    /**
+     * This override is required because of necessary widening of the type in the mixin, see
+     * {@linkcode DirectoryCollectionMixin.AnyMixed._getVisibleTreeContents | DirectoryCollection#_getVisibleTreeContents}.
+     */
+    protected override _getVisibleTreeContents() {
+      return this.contents;
+    }
+  }
+  class DCMTestCompendia extends DirectoryCollectionMixin(Collection)<CompendiumCollection.Any> {}
+
+  const actorSource = new Actor.implementation({
+    name: "DirectoryCollectionMixin Test Actor",
+    type: "base",
+  }).toObject();
+
+  const compendia: Array<[string, CompendiumCollection.Any]> = game.packs!.contents.map((p) => [p.metadata.name, p]);
+
   test("Construction", () => {
     new DCMTestActors();
-    new DCMTestActors(actorSourceDataArray);
-    new DCMTestActors(actorCreateDataArray);
+    new DCMTestActors([actorSource]);
 
     new DCMTestCompendia(compendia);
   });
 
-  const dcm = new DCMTestActors(actorCreateDataArray);
+  const dcm = new DCMTestActors([actorSource]);
 
   test("Contents", () => {
     expectTypeOf(dcm.contents).toEqualTypeOf<Actor.Stored[]>();

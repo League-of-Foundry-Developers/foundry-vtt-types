@@ -63,8 +63,10 @@ declare abstract class DocumentCollection<
   /**
    * The base Document type which is contained within this DocumentCollection
    * @remarks Effectively abstract, this is used as the base value for the instance `documentName` getter, must be set by subclasses.
+   * {@linkcode foundry.documents.collections.CompendiumFolderCollection} lacks an override, so this is always `undefined` on that
+   * subclass.
    */
-  static documentName: Document.Type;
+  static documentName: Document.Type | undefined;
 
   /**
    * Record the set of document ids where the Document was not initialized because of invalid source data

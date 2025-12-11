@@ -1,4 +1,4 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 import type { EmptyObject, AnyMutableObject, IntentionalPartial } from "fvtt-types/utils";
 
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
@@ -8,81 +8,112 @@ import BasePackage = foundry.packages.BasePackage;
 import Application = foundry.appv1.api.Application;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 
-declare const folder: Folder.Stored;
-declare const folderCompendium: Folder.Stored<"Compendium">;
-declare const folderActor: Folder.Stored<"Actor">;
-declare const tempFolderActor: Folder.OfType<"Actor">;
-declare const folderSource: Folder.Source;
-declare const user: User.Stored;
-declare const actor: Actor.Stored;
-declare const tempActor: Actor.Implementation;
-declare const folderOrActor: Folder.Stored<"Actor"> | Actor.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
-
-const minimalActorPackCreateMetadata = {
-  type: "Actor",
-  label: "An Actor Pack",
-} satisfies CompendiumCollection.CreateCompendiumMetadata<"Actor">;
-
-const fullActorPackCreateMetadata = {
-  type: "Actor",
-  label: "An Actor Pack",
-  name: "actors",
-  flags: { foo: true },
-  ownership: { GAMEMASTER: "OWNER", TRUSTED: "OBSERVER", PLAYER: "NONE" },
-} satisfies CompendiumCollection.CreateCompendiumMetadata<"Actor">;
-
-const actorPackConstructorMetadata = {
-  type: "Actor",
-  label: "Foo",
-  name: "foo",
-  packageType: "module",
-  packageName: "my-module",
-  id: "my-module.foo",
-  index: [{ _id: "actorID", type: "character", uuid: "Compendium.my-module.foo.Actor.actorID" }],
-  flags: { foo: false },
-  folders: [
-    {
-      type: "Actor",
-      folder: null,
-      name: "Folder",
-      color: null,
-      sorting: "a",
-      _id: "ySLvdimClYtnhfil",
-      description: "",
-      sort: 0,
-      flags: {},
-      _stats: {
-        compendiumSource: null,
-        duplicateSource: null,
-        exportSource: null,
-        coreVersion: "13.348",
-        systemId: "pf2e",
-        systemVersion: "7.7.1",
-        createdTime: 1763334028012,
-        modifiedTime: 1763334028012,
-        lastModifiedBy: "reSyyNKHdj4q9hqB",
-      },
-    },
-    folderSource,
-  ],
-  ownership: { GAMEMASTER: "OWNER" },
-  path: "modules/my-module/packs/foo",
-} satisfies CompendiumCollection.ConstructorMetadata<"Actor">;
-
-const configSettingData = {
-  "package-id.pack-name": {
-    folder: null,
-    locked: true,
-    ownership: undefined,
-    sort: 3,
-  },
-} satisfies CompendiumCollection.SettingData;
-
 describe("CompendiumCollection Tests", async () => {
-  test("Construction/Creation", () => {
+  const compendiaToCleanUp = new Set<CompendiumCollection.Any>();
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
+
+  const user = await User.implementation.create({ name: "CompendiumCollection Test User" });
+  if (!user) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(user);
+
+  const actor = await Actor.implementation.create({ name: "CompendiumCollection Test Actor", type: "base" });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const tempActor = new Actor.implementation({ name: "CompendiumCollection Test Actor", type: "base" });
+
+  const folder = await Folder.implementation.create({ name: "CompendiumCollection Test Folder", type: "Item" });
+  if (!folder) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(folder);
+
+  const folderSource = folder.toObject();
+
+  const folderCompendium = (await Folder.implementation.create({
+    name: "CompendiumCollection Test Folder",
+    type: "Compendium",
+  })) as Folder.Stored<"Compendium"> | undefined;
+  if (!folderCompendium) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(folderCompendium);
+
+  const folderActor = (await Folder.implementation.create({
+    name: "CompendiumCollection Test Folder",
+    type: "Actor",
+  })) as Folder.Stored<"Actor"> | undefined;
+  if (!folderActor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(folderActor);
+
+  const tempFolderActor = new Folder.implementation({
+    name: "CompendiumCollection Test Folder",
+    type: "Actor",
+  });
+
+  const folderOrActor = Math.random() > 0.5 ? folderActor : actor;
+
+  const minimalActorPackCreateMetadata = {
+    type: "Actor",
+    label: "An Actor Pack",
+  } satisfies CompendiumCollection.CreateCompendiumMetadata<"Actor">;
+
+  const fullActorPackCreateMetadata = {
+    type: "Actor",
+    label: "An Actor Pack",
+    name: "actors",
+    flags: { foo: true },
+    ownership: { GAMEMASTER: "OWNER", TRUSTED: "OBSERVER", PLAYER: "NONE" },
+  } satisfies CompendiumCollection.CreateCompendiumMetadata<"Actor">;
+
+  const actorPackConstructorMetadata = {
+    type: "Actor",
+    label: "Foo",
+    name: "foo",
+    packageType: "module",
+    packageName: "my-module",
+    id: "my-module.foo",
+    index: [{ _id: "actorID", type: "base", uuid: "Compendium.my-module.foo.Actor.actorID" }],
+    flags: { foo: false },
+    folders: [
+      {
+        type: "Actor",
+        folder: null,
+        name: "Folder",
+        color: null,
+        sorting: "a",
+        _id: "ySLvdimClYtnhfil",
+        description: "",
+        sort: 0,
+        flags: {},
+        _stats: {
+          compendiumSource: null,
+          duplicateSource: null,
+          exportSource: null,
+          coreVersion: "13.348",
+          systemId: "pf2e",
+          systemVersion: "7.7.1",
+          createdTime: 1763334028012,
+          modifiedTime: 1763334028012,
+          lastModifiedBy: "reSyyNKHdj4q9hqB",
+        },
+      },
+      folderSource,
+    ],
+    ownership: { GAMEMASTER: "OWNER" },
+    path: "modules/my-module/packs/foo",
+  } satisfies CompendiumCollection.ConstructorMetadata<"Actor">;
+
+  const configSettingData = {
+    "package-id.pack-name": {
+      folder: null,
+      locked: true,
+      ownership: undefined,
+      sort: 3,
+    },
+  } satisfies CompendiumCollection.SettingData;
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
+  test("Construction/Creation", async () => {
     // @ts-expect-error passing metadata is required
     new CompendiumCollection();
 
@@ -98,15 +129,17 @@ describe("CompendiumCollection Tests", async () => {
       }),
     ).toEqualTypeOf<CompendiumCollection<"Actor">>();
 
-    expectTypeOf(CompendiumCollection.createCompendium(minimalActorPackCreateMetadata)).toEqualTypeOf<
-      Promise<CompendiumCollection<"Actor">>
-    >();
-    expectTypeOf(CompendiumCollection.createCompendium(fullActorPackCreateMetadata)).toEqualTypeOf<
-      Promise<CompendiumCollection<"Actor">>
-    >();
+    const testPack1 = await CompendiumCollection.createCompendium(minimalActorPackCreateMetadata);
+    compendiaToCleanUp.add(testPack1);
+    expectTypeOf(testPack1).toEqualTypeOf<CompendiumCollection<"Actor">>();
+
+    const testPack2 = await CompendiumCollection.createCompendium(fullActorPackCreateMetadata);
+    compendiaToCleanUp.add(testPack2);
+    expectTypeOf(testPack2).toEqualTypeOf<CompendiumCollection<"Actor">>();
   });
 
   const actorPack = await CompendiumCollection.createCompendium(fullActorPackCreateMetadata);
+  compendiaToCleanUp.add(actorPack);
 
   test("Other Compendium management", () => {
     expectTypeOf(actorPack.deleteCompendium()).toEqualTypeOf<Promise<typeof actorPack>>();
@@ -135,7 +168,7 @@ describe("CompendiumCollection Tests", async () => {
   test("Miscellaneous", () => {
     expectTypeOf(actorPack.documentClass).toEqualTypeOf<Actor.ImplementationClass>();
     expectTypeOf(actorPack.documentName).toEqualTypeOf<"Actor">();
-    expectTypeOf(actorPack._source).toEqualTypeOf<Actor.CreateData[]>();
+    expectTypeOf(actorPack._source).toEqualTypeOf<Actor.Source[]>();
     expectTypeOf(actorPack.collection).toBeString();
     expectTypeOf(actorPack.banner).toEqualTypeOf<string | null | undefined>();
     expectTypeOf(actorPack.applicationClass).toEqualTypeOf<Application.AnyConstructor | ApplicationV2.AnyConstructor>();
@@ -401,5 +434,10 @@ describe("CompendiumCollection Tests", async () => {
     expectTypeOf(actorPack.set("ID", actor)).toBeVoid();
 
     expectTypeOf(actorPack.delete("ID")).toBeBoolean();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
+    for (const pack of compendiaToCleanUp) await pack.deleteCompendium();
   });
 });

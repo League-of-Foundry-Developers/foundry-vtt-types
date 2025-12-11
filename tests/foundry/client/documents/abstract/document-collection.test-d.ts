@@ -4,18 +4,24 @@ import DocumentCollection = foundry.documents.abstract.DocumentCollection;
 import SearchFilter = foundry.applications.ux.SearchFilter;
 import Document = foundry.abstract.Document;
 
-// DocumentCollection is abstract
-declare class TestItemCollection extends DocumentCollection<"Item"> {
-  // necessary type override, normally handled by WorldCollection
-  search(search: DocumentCollection.SearchOptions): Item.Stored[];
-}
-
 describe("DocumentCollection Tests", async () => {
-  const actor = await Actor.implementation.create({ name: "DocumentCollection Test Actor", type: "character" });
+  // DocumentCollection is abstract
+  class TestItemCollection extends DocumentCollection<"Item"> {
+    // necessary type override, normally handled by WorldCollection
+    override search(search: DocumentCollection.SearchOptions): Item.Stored[] {
+      return super.search(search) as Item.Stored[];
+    }
+  }
+
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
+
+  const actor = await Actor.implementation.create({ name: "DocumentCollection Test Actor", type: "base" });
   if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
 
   const item = await Item.implementation.create({ name: "DocumentCollection Test Item", type: "base" });
   if (!item) throw new Error("Failed to create test Item.");
+  docsToCleanUp.add(item);
 
   const itemImpl = new Item.implementation({ name: "DocumentCollection Test Item", type: "base" });
 
@@ -25,6 +31,7 @@ describe("DocumentCollection Tests", async () => {
   const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
   const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
   const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     // no data *needs* to be passed
     new TestItemCollection();
@@ -41,7 +48,7 @@ describe("DocumentCollection Tests", async () => {
   test("Miscellaneous", () => {
     expectTypeOf(dc.documentClass).toEqualTypeOf<Item.ImplementationClass>();
     expectTypeOf(dc.documentName).toEqualTypeOf<"Item">();
-    expectTypeOf(TestItemCollection.documentName).toEqualTypeOf<Document.Type>();
+    expectTypeOf(TestItemCollection.documentName).toEqualTypeOf<Document.Type | undefined>();
     expectTypeOf(dc._source).toEqualTypeOf<Item.Source[]>();
 
     expectTypeOf(dc.createDocument(itemSource)).toEqualTypeOf<Item.Implementation>();
@@ -175,6 +182,6 @@ describe("DocumentCollection Tests", async () => {
   // TODO: _onModifyContents tests exist on the db-ops branch
 
   afterAll(async () => {
-    await actor.delete();
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

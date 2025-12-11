@@ -1,29 +1,46 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import Folders = foundry.documents.collections.Folders;
 import DocumentDirectory = foundry.applications.sidebar.DocumentDirectory;
 
-declare const folderCreateData: Folder.CreateData;
-declare const folderSource: Folder.Source;
-declare const folder: Folder.Stored;
-declare const folderImpl: Folder.Implementation;
-declare const actorCreateData: Actor.CreateData;
-declare const actor: Actor.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("Folders Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("Folders Tests", () => {
+  const folder = await Folder.implementation.create({
+    name: "Folders Collection Test Folder",
+    type: "Actor",
+  });
+  if (!folder) throw new Error("Failed to create test Folder.");
+  docsToCleanUp.add(folder);
+
+  const folderImpl = new Folder.implementation({
+    name: "Folders Collection Test Folder",
+    type: "Actor",
+  });
+  const folderSource = folder.toObject();
+
+  const actor = await Actor.implementation.create({
+    name: "Folders Collection Test Actor",
+    type: "base",
+  });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const actorSource = actor.toObject();
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new Folders();
-    new Folders([folderCreateData]);
     new Folders([folderSource]);
 
     // @ts-expect-error `Actor` data not assignable to `Folder` data
-    new Folders([actorCreateData]);
+    new Folders([actorSource]);
   });
 
-  const folders = new Folders([folderCreateData]);
+  const folders = new Folders([folderSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(Folders.documentName).toEqualTypeOf<"Folder">();
@@ -99,4 +116,8 @@ describe("Folders Tests", () => {
   });
 
   // TODO: _onModifyContents tests on the db-ops branch
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
+  });
 });

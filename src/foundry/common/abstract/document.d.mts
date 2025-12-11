@@ -517,7 +517,7 @@ declare abstract class Document<
    * returned.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#delete` directly.
-  delete(operation: never): Promise<this | undefined>;
+  delete(operation?: never): Promise<this | undefined>;
 
   /**
    * Get a World-level Document of this type by its id.

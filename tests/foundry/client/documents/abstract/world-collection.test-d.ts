@@ -13,11 +13,15 @@ describe("WorldCollection Tests", async () => {
   class TestUsersWorldCollection extends WorldCollection<"User"> {}
   class TestScenesWorldCollection extends WorldCollection<"Scene"> {}
 
-  const actor = await Actor.implementation.create({ name: "WorldCollection Test Actor", type: "character" });
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
+
+  const actor = await Actor.implementation.create({ name: "WorldCollection Test Actor", type: "base" });
   if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
 
   const scene = await Scene.implementation.create({ name: "WorldCollection Test Scene" });
   if (!scene) throw new Error("Failed to create test Scene");
+  docsToCleanUp.add(scene);
 
   const actorPack = await CompendiumCollection.createCompendium({
     label: "WorldCollection Test Compendium",
@@ -219,8 +223,7 @@ describe("WorldCollection Tests", async () => {
   });
 
   afterAll(async () => {
-    await actor.delete();
-    await scene.delete();
+    for (const doc of docsToCleanUp) await doc.delete();
     await actorPack.deleteCompendium();
   });
 });

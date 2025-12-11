@@ -32,7 +32,7 @@ declare class Actors extends WorldCollection<"Actor"> {
    * {@linkcode WorldCollection.FromCompendiumOptions.keepId | keepId} is `true`
    */
   override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
-    document: Actor.Implementation | Actor.CreateData,
+    document: Actor.Implementation | Actor.Source,
     options?: Options,
   ): WorldCollection.FromCompendiumReturnType<"Actor", Options>;
 }

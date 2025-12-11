@@ -1,29 +1,43 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import Playlists = foundry.documents.collections.Playlists;
 
-declare const playlistCreateData: Playlist.CreateData;
-declare const playlistSource: Playlist.Source;
-declare const playlist: Playlist.Stored;
-declare const playlistImpl: Playlist.Implementation;
-declare const actor: Actor.Stored;
-declare const scene: Scene.Stored;
-declare const wallCreateData: WallDocument.CreateData;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("Playlists Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("Playlists Tests", () => {
+  const actor = await Actor.implementation.create({
+    name: "Playlists Collection Test Actor",
+    type: "base",
+  });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const actorSource = actor.toObject();
+
+  const scene = await Scene.implementation.create({ name: "Playlists Collection Test Scene" });
+  if (!scene) throw new Error("Failed to create test Scene.");
+  docsToCleanUp.add(scene);
+
+  const playlist = await Playlist.implementation.create({ name: "Playlists Collection Test Playlist" });
+  if (!playlist) throw new Error("Failed to create test Playlist.");
+  docsToCleanUp.add(playlist);
+
+  const playlistImpl = new Playlist.implementation({ name: "Playlists Collection Test Playlist" });
+  const playlistSource = playlist.toObject();
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new Playlists();
-    new Playlists([playlistCreateData]);
     new Playlists([playlistSource]);
 
-    // @ts-expect-error `WallDocument` data not assignable to `Scene` data
-    new Playlists([wallCreateData]);
+    // @ts-expect-error `Actor` data not assignable to `Scene` data
+    new Playlists([actorSource]);
   });
 
-  const playlists = new Playlists([playlistCreateData]);
+  const playlists = new Playlists([playlistSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(Playlists.documentName).toEqualTypeOf<"Playlist">();
@@ -109,5 +123,9 @@ describe("Playlists Tests", () => {
     expectTypeOf(playlists.set("ID", playlist)).toBeVoid();
 
     expectTypeOf(playlists.delete("ID")).toBeBoolean();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

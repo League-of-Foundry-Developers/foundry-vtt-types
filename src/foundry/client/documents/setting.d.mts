@@ -180,6 +180,8 @@ declare namespace Setting {
      * The setting key, a composite of \{scope\}.\{name\}
      * @defaultValue `""`
      */
+    // TODO: why is this not required in CreateData like it should be?
+    // TODO: why are is the string template not being enforced?
     key: fields.StringField<
       {
         required: true;
