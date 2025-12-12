@@ -1,28 +1,44 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import Macros = foundry.documents.collections.Macros;
 
-declare const macroCreateData: Macro.CreateData;
-declare const macroSource: Macro.Source;
-declare const macro: Macro.Stored;
-declare const macroImpl: Macro.Implementation;
-declare const actorCreateData: Actor.CreateData;
-declare const actor: Actor.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("Macros Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("Macros Tests", () => {
+  const macro = await Macro.implementation.create({
+    name: "Macros Collection Test Macro",
+    type: "script",
+  });
+  if (!macro) throw new Error("Failed to create test Macro.");
+  docsToCleanUp.add(macro);
+
+  const macroSource = macro.toObject();
+
+  const macroImpl = new Macro.implementation({
+    name: "Macros Collection Test Macro",
+    type: "script",
+  });
+
+  const actor = await Actor.implementation.create({
+    name: "Macros Collection Test Actor",
+    type: "base",
+  });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new Macros();
-    new Macros([macroCreateData]);
     new Macros([macroSource]);
 
     // @ts-expect-error `Actor` data not assignable to `Macro` data
     new Macros([actorCreateData]);
   });
 
-  const macros = new Macros([macroCreateData]);
+  const macros = new Macros([macroSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(Macros.documentName).toEqualTypeOf<"Macro">();
@@ -93,9 +109,11 @@ describe("Macros Tests", () => {
   });
 
   test("fromCompendium", () => {
+    const macroOrSource: Macro.Stored | Macro.Source = macroSource;
+
     // no deletions with these options
     expectTypeOf(
-      macros.fromCompendium(macro, {
+      macros.fromCompendium(macroOrSource, {
         clearFolder: false,
         clearOwnership: false,
         clearSort: false,
@@ -107,10 +125,14 @@ describe("Macros Tests", () => {
     // more thorough options testing is in the `WorldCollection` tests
 
     // default case - all deletions enabled except `folder`
-    expectTypeOf(macros.fromCompendium(macro)).toEqualTypeOf<Omit<Macro.Source, "_id" | "sort" | "ownership">>();
-    expectTypeOf(macros.fromCompendium(macro, {})).toEqualTypeOf<Omit<Macro.Source, "_id" | "sort" | "ownership">>();
+    expectTypeOf(macros.fromCompendium(macroOrSource)).toEqualTypeOf<
+      Omit<Macro.Source, "_id" | "sort" | "ownership">
+    >();
+    expectTypeOf(macros.fromCompendium(macroOrSource, {})).toEqualTypeOf<
+      Omit<Macro.Source, "_id" | "sort" | "ownership">
+    >();
     expectTypeOf(
-      macros.fromCompendium(macro, {
+      macros.fromCompendium(macroOrSource, {
         clearFolder: undefined,
         clearOwnership: undefined,
         clearSort: undefined,
@@ -121,5 +143,9 @@ describe("Macros Tests", () => {
 
     // @ts-expect-error `Actor.Stored`s aren't `Macro.Stored`s
     macros.fromCompendium(actor);
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

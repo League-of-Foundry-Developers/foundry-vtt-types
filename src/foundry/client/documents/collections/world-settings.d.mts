@@ -1,5 +1,6 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 
 /**
  * The Collection of Setting documents which exist within the active World.
@@ -7,7 +8,7 @@ import type Document from "#common/abstract/document.d.mts";
  *
  * @see {@linkcode foundry.documents.Setting} The Setting document
  */
-declare class WorldSettings extends foundry.documents.abstract.WorldCollection<"Setting"> {
+declare class WorldSettings extends WorldCollection<"Setting"> {
   static override documentName: "Setting";
 
   /** @privateRemarks Fake type override */

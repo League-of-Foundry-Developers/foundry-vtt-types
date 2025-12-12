@@ -48,19 +48,18 @@ declare namespace DrawingDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Drawing";
-        collection: "drawings";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Drawing";
+      collection: "drawings";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -424,8 +423,9 @@ declare namespace DrawingDocument {
      * @remarks This interface was previously typed for passing to {@linkcode DrawingDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<DrawingDocument.CreateInput, DrawingDocument.Parent, Temporary> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<DrawingDocument.CreateInput, DrawingDocument.Parent, Temporary> {}
 
     /**
      * The interface for passing to {@linkcode DrawingDocument.create} or {@linkcode DrawingDocument.createDocuments}.
@@ -439,8 +439,8 @@ declare namespace DrawingDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -469,8 +469,8 @@ declare namespace DrawingDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode DrawingDocument._preCreate | DrawingDocument#_preCreate} and
@@ -485,8 +485,8 @@ declare namespace DrawingDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode DrawingDocument._preCreateOperation}.
@@ -500,8 +500,8 @@ declare namespace DrawingDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode DrawingDocument._onCreateDocuments}. It will be removed in v14 along with the
@@ -516,8 +516,8 @@ declare namespace DrawingDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode DrawingDocument._onCreate | DrawingDocument#_onCreate} and
@@ -562,8 +562,10 @@ declare namespace DrawingDocument {
      * @remarks This interface was previously typed for passing to {@linkcode DrawingDocument.update | DrawingDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation
-      extends DatabaseBackend.UpdateOperation<DrawingDocument.UpdateInput, DrawingDocument.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
+      DrawingDocument.UpdateInput,
+      DrawingDocument.Parent
+    > {}
 
     /**
      * The interface for passing to {@linkcode DrawingDocument.update | DrawingDocument#update}.
@@ -972,35 +974,34 @@ declare namespace DrawingDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<DrawingDocument.Parent> {}
 
     /** Options passed along in Create operations for DrawingDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        DrawingDocument.CreateData,
-        DrawingDocument.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<DrawingDocument.CreateData, DrawingDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for DrawingDocuments */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<DrawingDocument.Parent> {}
 
     /** Options passed along in Update operations for DrawingDocuments */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<DrawingDocument.UpdateData, DrawingDocument.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      DrawingDocument.UpdateData,
+      DrawingDocument.Parent
+    > {}
 
     /** Operation for {@linkcode DrawingDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<DrawingDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<DrawingDocument.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode DrawingDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<DrawingDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<DrawingDocument.Database.Update> {}
 
     /** Operation for {@linkcode DrawingDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<DrawingDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<DrawingDocument.Database.Delete> {}
 
     /** Operation for {@linkcode DrawingDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<DrawingDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      DrawingDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link DrawingDocument.update | `DrawingDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1132,8 +1133,7 @@ declare namespace DrawingDocument {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode DrawingDocument.createDialog}'s third parameter
@@ -1165,7 +1165,8 @@ declare namespace DrawingDocument {
    *************************************************/
 
   interface ValidateVisibleContentData
-    extends IntentionalPartial<Pick<BaseDrawing.InitializedData, "shape">>,
+    extends
+      IntentionalPartial<Pick<BaseDrawing.InitializedData, "shape">>,
       Pick<
         BaseDrawing.InitializedData,
         "text" | "textAlpha" | "fillType" | "fillAlpha" | "strokeWidth" | "strokeAlpha"

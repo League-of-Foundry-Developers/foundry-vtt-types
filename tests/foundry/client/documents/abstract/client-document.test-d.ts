@@ -126,6 +126,7 @@ item.apps["bar"] = someAppV2;
 // @ts-expect-error apps is readonly
 item.apps = { foo: someApp, bar: someAppV2 };
 
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 expectTypeOf(item["_sheet"]).toEqualTypeOf<FixedInstanceType<Document.SheetClassFor<"Item">> | null>();
 
 // _initialize overridden with no signature changes

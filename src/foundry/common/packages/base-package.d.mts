@@ -92,7 +92,7 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
-  // TODO: (esheyw) does this need to be `InexactPartial`ed here? Explicit `undefined` values for any key fail validation.
+  // TODO(esheyw): does this need to be `InexactPartial`ed here? Explicit `undefined` values for any key fail validation.
   type OwnershipRecord = InexactPartial<
     Record<keyof typeof CONST.USER_ROLES, keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS>
   >;
@@ -104,7 +104,7 @@ declare namespace BasePackage {
     name: fields.StringField<{
       required: true;
       blank: false;
-      validate: (typeof BasePackage)["validateId"];
+      validate: typeof BasePackage.validateId;
       validationError: "may not contain periods";
     }>;
 
@@ -155,6 +155,7 @@ declare namespace BasePackage {
 
   interface PackageCompendiumData extends fields.SchemaField.InitializedData<PackageCompendiumSchema> {}
 
+  /** The {@linkcode UndefinedToOptional} is because in a socket response from the server, properties with `undefined` value are dropped. */
   interface SocketCompendiumData extends UndefinedToOptional<PackageCompendiumData> {}
 
   interface PackageLanguageSchema extends DataSchema {
@@ -230,8 +231,9 @@ declare namespace BasePackage {
     flags: fields.ObjectField;
   }
 
-  interface RelatedPackageSchema<PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES>
-    extends DataSchema {
+  interface RelatedPackageSchema<
+    PackageType extends foundry.CONST.PACKAGE_TYPES = foundry.CONST.PACKAGE_TYPES,
+  > extends DataSchema {
     /**
      * The id of the related package
      */

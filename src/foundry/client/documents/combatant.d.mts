@@ -49,20 +49,19 @@ declare namespace Combatant {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Combatant";
-        collection: "combatants";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        hasTypeData: true;
-        schemaVersion: string;
-        permissions: Metadata.Permissions;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Combatant";
+      collection: "combatants";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      hasTypeData: true;
+      schemaVersion: string;
+      permissions: Metadata.Permissions;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -111,15 +110,14 @@ declare namespace Combatant {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredCombatant<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Combatant<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredCombatant<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Combatant<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Combatant` subtype.
@@ -219,8 +217,8 @@ declare namespace Combatant {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData<SubType extends Combatant.SubType = Combatant.SubType>
-    extends fields.SchemaField.CreateData<Schema> {
+  interface CreateData<SubType extends Combatant.SubType = Combatant.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
     type?: SubType | null | undefined;
   }
 
@@ -388,8 +386,9 @@ declare namespace Combatant {
      * @remarks This interface was previously typed for passing to {@linkcode Combatant.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<Combatant.CreateInput, Combatant.Parent, Temporary> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<Combatant.CreateInput, Combatant.Parent, Temporary> {}
 
     /**
      * The interface for passing to {@linkcode Combatant.create} or {@linkcode Combatant.createDocuments}.
@@ -403,8 +402,8 @@ declare namespace Combatant {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -433,8 +432,8 @@ declare namespace Combatant {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Combatant._preCreate | Combatant#_preCreate} and
@@ -449,8 +448,8 @@ declare namespace Combatant {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Combatant._preCreateOperation}.
@@ -464,8 +463,8 @@ declare namespace Combatant {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Combatant._onCreateDocuments}. It will be removed in v14 along with the
@@ -480,8 +479,8 @@ declare namespace Combatant {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Combatant._onCreate | Combatant#_onCreate} and
@@ -935,8 +934,8 @@ declare namespace Combatant {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Combatant.Parent> {}
 
     /** Options passed along in Create operations for Combatants */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Combatant.CreateData, Combatant.Parent, Temporary> {
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Combatant.CreateData, Combatant.Parent, Temporary> {
       combatTurn?: number;
       turnEvents?: boolean;
     }
@@ -954,8 +953,8 @@ declare namespace Combatant {
     }
 
     /** Operation for {@linkcode Combatant.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<Combatant.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<Combatant.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode Combatant.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Combatant.Database.Update> {}
@@ -964,8 +963,9 @@ declare namespace Combatant {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Combatant.Database.Delete> {}
 
     /** Operation for {@linkcode Combatant.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<Combatant.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      Combatant.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Combatant.update | `Combatant#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1097,8 +1097,7 @@ declare namespace Combatant {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode Combatant.createDialog}'s third parameter

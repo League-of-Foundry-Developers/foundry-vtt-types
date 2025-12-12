@@ -8,11 +8,12 @@ declare const pack: CompendiumCollection.Any;
 declare const hasMetadata: { metadata: { label: string } };
 declare const hasName: { name: string };
 declare const hasNeither: { foo: "bar " };
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
 
 describe("CompendiumPacks Tests", () => {
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new CompendiumPacks();
     new CompendiumPacks(packsData);

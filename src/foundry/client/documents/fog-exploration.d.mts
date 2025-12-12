@@ -48,19 +48,18 @@ declare namespace FogExploration {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "FogExploration";
-        collection: "fog";
-        label: string;
-        labelPlural: string;
-        isPrimary: true;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "FogExploration";
+      collection: "fog";
+      label: string;
+      labelPlural: string;
+      isPrimary: true;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -293,8 +292,9 @@ declare namespace FogExploration {
      * @remarks This interface was previously typed for passing to {@linkcode FogExploration.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<FogExploration.CreateInput, FogExploration.Parent, Temporary> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<FogExploration.CreateInput, FogExploration.Parent, Temporary> {}
 
     /**
      * The interface for passing to {@linkcode FogExploration.create} or {@linkcode FogExploration.createDocuments}.
@@ -308,8 +308,8 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `FogExploration` documents are never embedded. This interface exists for consistency with other documents.
@@ -340,8 +340,8 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._preCreate | FogExploration#_preCreate} and
@@ -356,8 +356,8 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._preCreateOperation}.
@@ -371,8 +371,8 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode FogExploration._onCreateDocuments}. It will be removed in v14 along with the
@@ -387,8 +387,8 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._onCreate | FogExploration#_onCreate} and
@@ -433,8 +433,10 @@ declare namespace FogExploration {
      * @remarks This interface was previously typed for passing to {@linkcode FogExploration.update | FogExploration#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation
-      extends DatabaseBackend.UpdateOperation<FogExploration.UpdateInput, FogExploration.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
+      FogExploration.UpdateInput,
+      FogExploration.Parent
+    > {}
 
     /**
      * The interface for passing to {@linkcode FogExploration.update | FogExploration#update}.
@@ -850,12 +852,8 @@ declare namespace FogExploration {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<FogExploration.Parent> {}
 
     /** Options passed along in Create operations for FogExplorations */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        FogExploration.CreateData,
-        FogExploration.Parent,
-        Temporary
-      > {
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<FogExploration.CreateData, FogExploration.Parent, Temporary> {
       loadFog?: boolean;
     }
 
@@ -865,26 +863,29 @@ declare namespace FogExploration {
     }
 
     /** Options passed along in Update operations for FogExplorations */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<FogExploration.UpdateData, FogExploration.Parent> {
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      FogExploration.UpdateData,
+      FogExploration.Parent
+    > {
       loadFog?: boolean;
     }
 
     /** Operation for {@linkcode FogExploration.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<FogExploration.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<FogExploration.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode FogExploration.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<FogExploration.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<FogExploration.Database.Update> {}
 
     /** Operation for {@linkcode FogExploration.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<FogExploration.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<FogExploration.Database.Delete> {}
 
     /** Operation for {@linkcode FogExploration.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<FogExploration.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      FogExploration.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link FogExploration.update | `FogExploration#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1016,8 +1017,7 @@ declare namespace FogExploration {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode FogExploration.createDialog}'s third parameter

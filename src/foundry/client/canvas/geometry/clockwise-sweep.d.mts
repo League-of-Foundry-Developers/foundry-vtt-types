@@ -241,8 +241,7 @@ declare namespace ClockwiseSweepPolygon {
   interface TestCollisionConfig extends PointSourcePolygon._TestCollisionConfig, Omit<Config, "type"> {}
 
   interface TestCollisionOptions<Mode extends PointSourcePolygon.CollisionModes | undefined = undefined>
-    extends PointSourcePolygon._TestCollisionOptions<Mode>,
-      TestCollisionConfig {}
+    extends PointSourcePolygon._TestCollisionOptions<Mode>, TestCollisionConfig {}
 
   /**
    * @remarks See {@linkcode Config.edgeTypes}

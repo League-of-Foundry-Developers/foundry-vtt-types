@@ -304,8 +304,10 @@ declare namespace DatabaseBackend {
    * {@linkcode Document.Database2.BackendGetOperation | BackendGetOperation}) are `InexactPartial`ed in their entirety to allow passing
    * `undefined` regardless for DX reasons, and because some keys are only set via `??=`.
    */
-  interface GetOperation<Parent extends Document.Any | null = Document.Any | null>
-    extends Pick<_CommonOperationKeys<Parent>, "pack" | "parent" | "parentUuid"> {
+  interface GetOperation<Parent extends Document.Any | null = Document.Any | null> extends Pick<
+    _CommonOperationKeys<Parent>,
+    "pack" | "parent" | "parentUuid"
+  > {
     /**
      * The action of this database operation
      * @remarks Added to the operation object in `DatabaseBackend##configureGet`
@@ -594,8 +596,9 @@ declare namespace DatabaseBackend {
    * Any properties that are included in Foundry's typedef, but which can never be seen by client code (e.g `_result`) are not included in
    * this interface.
    */
-  interface DeleteOperation<Parent extends Document.Any | null = Document.Any | null>
-    extends _CommonOperationKeys<Parent> {
+  interface DeleteOperation<
+    Parent extends Document.Any | null = Document.Any | null,
+  > extends _CommonOperationKeys<Parent> {
     /**
      * The action of this database operation
      * @remarks Added to the operation object in `DatabaseBackend##configureDelete`

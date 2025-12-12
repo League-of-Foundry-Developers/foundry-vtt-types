@@ -1,28 +1,36 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import Actors = foundry.documents.collections.Actors;
 
-declare const actorCreateData: Actor.CreateData;
-declare const actorSource: Actor.Source;
-declare const itemCreateData: Item.CreateData;
-declare const actor: Actor.Stored;
-declare const actorImpl: Actor.Implementation;
-declare const item: Item.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("Actors Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("Actors Tests", () => {
+  const actor = await Actor.implementation.create({ name: "Actors Collection Test Actor", type: "base" });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const actorSource: Actor.Source = actor.toObject();
+  const actorImpl = new Actor.implementation({ name: "Actors Collection Test Actor", type: "base" });
+
+  const item = await Item.implementation.create({ name: "Actors Collection Test Item", type: "base" });
+  if (!item) throw new Error("Failed to create test Item.");
+  docsToCleanUp.add(item);
+
+  const itemSource: Item.Source = item.toObject();
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
-    new Actors();
-    new Actors([actorCreateData]);
+    new CONFIG.Actor.collection();
     new Actors([actorSource]);
 
-    // @ts-expect-error Actor data not assignable to Actor data
-    new Actors([itemCreateData]);
+    // @ts-expect-error Item data not assignable to Actor data
+    new Actors([itemSource]);
   });
 
-  const actors = new Actors([actorCreateData]);
+  const actors = new Actors([actorSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(Actors.documentName).toEqualTypeOf<"Actor">();
@@ -34,9 +42,11 @@ describe("Actors Tests", () => {
   });
 
   test("fromCompendium", () => {
+    const actorOrSource: Actor.Stored | Actor.Source = actorSource;
+
     // no deletions with these options
     expectTypeOf(
-      actors.fromCompendium(actor, {
+      actors.fromCompendium(actorOrSource, {
         clearFolder: false,
         clearOwnership: false,
         clearSort: false,
@@ -48,10 +58,14 @@ describe("Actors Tests", () => {
     // more thorough options testing is in the `WorldCollection` tests
 
     // default case - all deletions enabled except `folder`
-    expectTypeOf(actors.fromCompendium(actor)).toEqualTypeOf<Omit<Actor.Source, "_id" | "sort" | "ownership">>();
-    expectTypeOf(actors.fromCompendium(actor, {})).toEqualTypeOf<Omit<Actor.Source, "_id" | "sort" | "ownership">>();
+    expectTypeOf(actors.fromCompendium(actorOrSource)).toEqualTypeOf<
+      Omit<Actor.Source, "_id" | "sort" | "ownership">
+    >();
+    expectTypeOf(actors.fromCompendium(actorOrSource, {})).toEqualTypeOf<
+      Omit<Actor.Source, "_id" | "sort" | "ownership">
+    >();
     expectTypeOf(
-      actors.fromCompendium(actor, {
+      actors.fromCompendium(actorOrSource, {
         clearFolder: undefined,
         clearOwnership: undefined,
         clearSort: undefined,
@@ -123,5 +137,9 @@ describe("Actors Tests", () => {
     expectTypeOf(actors.set("ID", actor)).toBeVoid();
 
     expectTypeOf(actors.delete("ID")).toBeBoolean();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

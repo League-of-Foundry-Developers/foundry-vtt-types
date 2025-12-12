@@ -79,7 +79,7 @@ declare class EmbeddedCollectionDelta<
   /**
    * Prepare changes to this delta collection.
    * @param changes - Candidate source changes.
-   * @param options -  Options which determine how the new data is merged.
+   * @param options - Options which determine how the new data is merged.
    * @internal
    *
    * @remarks Mutates `changes`.
@@ -153,8 +153,10 @@ declare namespace EmbeddedCollectionDelta {
    *
    * @remarks `#get` is not overridden in `EmbeddedCollectionDelta`
    */
-  interface Methods<ContainedDocument extends Document.Any>
-    extends Pick<EmbeddedCollection.Methods<ContainedDocument>, "get"> {
+  interface Methods<ContainedDocument extends Document.Any> extends Pick<
+    EmbeddedCollection.Methods<ContainedDocument>,
+    "get"
+  > {
     self: unknown;
 
     set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): void;

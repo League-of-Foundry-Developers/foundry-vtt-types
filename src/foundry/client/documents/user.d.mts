@@ -58,18 +58,17 @@ declare namespace User {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "User";
-        collection: "users";
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "User";
+      collection: "users";
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -363,8 +362,9 @@ declare namespace User {
      * @remarks This interface was previously typed for passing to {@linkcode User.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<User.CreateInput, User.Parent, Temporary> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<User.CreateInput, User.Parent, Temporary> {}
 
     /**
      * The interface for passing to {@linkcode User.create} or {@linkcode User.createDocuments}.
@@ -378,8 +378,8 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `User` documents are never embedded. This interface exists for consistency with other documents.
@@ -410,8 +410,8 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode User._preCreate | User#_preCreate} and
@@ -426,8 +426,8 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode User._preCreateOperation}.
@@ -441,8 +441,8 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode User._onCreateDocuments}. It will be removed in v14 along with the
@@ -457,8 +457,8 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode User._onCreate | User#_onCreate} and
@@ -919,8 +919,8 @@ declare namespace User {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<User.Parent> {}
 
     /** Options passed along in Create operations for Users */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<User.CreateData, User.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<User.CreateData, User.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Users */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<User.Parent> {}
@@ -929,8 +929,8 @@ declare namespace User {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<User.UpdateData, User.Parent> {}
 
     /** Operation for {@linkcode User.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<User.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<User.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode User.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<User.Database.Update> {}
@@ -939,8 +939,9 @@ declare namespace User {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<User.Database.Delete> {}
 
     /** Operation for {@linkcode User.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<User.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      User.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link User.update | `User#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1072,8 +1073,7 @@ declare namespace User {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode User.createDialog}'s third parameter

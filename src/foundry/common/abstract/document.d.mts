@@ -549,7 +549,7 @@ declare abstract class Document<
    * returned.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#delete` directly.
-  delete(operation: never): Promise<this | undefined>;
+  delete(operation?: never): Promise<this | undefined>;
 
   /**
    * Get a World-level Document of this type by its id.
@@ -1793,30 +1793,30 @@ declare namespace Document {
 
   // TODO: this does nothing, all parents currently extend null
   /** @internal */
-  interface _ParentContext<Parent extends Document.Any | null>
-    extends _DynamicBase<
-      Parent extends null
-        ? {
-            /**
-             * The parent Document of this one, if this one is embedded
-             * @defaultValue `null`
-             */
-            parent?: Parent | undefined;
-          }
-        : {
-            /**
-             * The parent Document of this one, if this one is embedded
-             */
-            parent: Parent;
-          }
-    > {}
+  interface _ParentContext<Parent extends Document.Any | null> extends _DynamicBase<
+    Parent extends null
+      ? {
+          /**
+           * The parent Document of this one, if this one is embedded
+           * @defaultValue `null`
+           */
+          parent?: Parent | undefined;
+        }
+      : {
+          /**
+           * The parent Document of this one, if this one is embedded
+           */
+          parent: Parent;
+        }
+  > {}
 
   // @ts-expect-error This pattern is inherently an error.
   interface _DynamicBase<T extends object> extends T, Uses<T> {}
 
   /** @internal */
   interface _ConstructionContext<Parent extends Document.Any | null>
-    extends _ParentContext<Parent>,
+    extends
+      _ParentContext<Parent>,
       NullishProps<{
         /**
          * The compendium collection ID which contains this Document, if any
@@ -1847,8 +1847,7 @@ declare namespace Document {
    * description takes precedence.
    */
   interface ConstructionContext<Parent extends Document.Any | null = Document.Any | null>
-    extends Omit<DataModel._ConstructionContext, "strict">,
-      _ConstructionContext<Parent> {}
+    extends Omit<DataModel._ConstructionContext, "strict">, _ConstructionContext<Parent> {}
 
   /** `DataModel#constructor` pulls `parent` and `strict` out of the passed context before forwarding to `#_configure` */
   interface ConfigureOptions extends Omit<ConstructionContext, "parent" | "strict"> {}
@@ -1984,7 +1983,8 @@ declare namespace Document {
    * `{ save: true, temporary: true }` is nonsensical.
    */
   interface CloneContext<Save extends boolean | undefined>
-    extends _CloneContext<Save>,
+    extends
+      _CloneContext<Save>,
       Omit<Document.ConstructionContext, "parent" | "strict">,
       Omit<
         Document.Database2.CreateDocumentsOperation<DatabaseBackend.CreateOperation>,
@@ -2071,7 +2071,7 @@ declare namespace Document {
     /**
      * A helper type for defining the interface that gets passed to {@linkcode Document.get}.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.GetOperation | GetOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.GetOperation | GetOperation}, e.g
      * {@linkcode Macro.Database2.GetOperation}.
      *
      * @remarks This type is identical to {@linkcode BackendGetOperation}. Core's implementation of `Document.get` only ever checks for, or
@@ -2083,7 +2083,7 @@ declare namespace Document {
     /**
      * A helper type for defining the interface that gets passed to {@linkcode DatabaseBackend.get | DatabaseBackend#get}
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.GetOperation | GetOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.GetOperation | GetOperation}, e.g
      * {@linkcode Macro.Database2.GetOperation}.
      *
      * @remarks No properties are required here. `IntentionalPartial` because `undefined`-valued properties don't survive the socket.
@@ -2114,7 +2114,7 @@ declare namespace Document {
      * distinction for `Create` ops, as `.create` will take either a single data object or instance, or an array of such, and it provides no
      * guaranteed properties over `.createDocuments`.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
      * {@linkcode JournalEntry.Database2.CreateOperation}.
      *
      * @remarks `data` is omitted because it's passed to either method as a separate parameter.
@@ -2130,7 +2130,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to
      * {@linkcode Document.createEmbeddedDocuments | Document#createEmbeddedDocuments}.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
      * {@linkcode JournalEntry.Database2.CreateOperation}.
      *
      * @remarks This type does the same omission as {@linkcode UpdateOneDocumentOperation} or {@linkcode DeleteOneDocumentOperation}, for
@@ -2145,7 +2145,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to {@linkcode DatabaseBackend.create | DatabaseBackend#create}. This
      * project assumes that that method has not been overridden, or, if it has, that the override calls `super` immediately.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
      * {@linkcode JournalEntry.Database2.CreateOperation}.
      *
      * @remarks Some properties are omitted because they are overwritten before the next opportunity for non-core code to interact with this
@@ -2178,7 +2178,7 @@ declare namespace Document {
      * This type assumes that any override of {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments}
      * calls `super`, ensuring a call to `##preCreateDocumentArray`.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
      * {@linkcode JournalEntry.Database2.CreateOperation}.
      *
      * @remarks This type makes no optionality changes, only omits the keys that `ClientDatabaseBackend##preCreateDocumentArray` pulls out
@@ -2192,7 +2192,7 @@ declare namespace Document {
     /**
      * A helper type for defining the interface that gets passed to {@linkcode Document._preCreateOperation}.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
      * {@linkcode JournalEntry.Database2.CreateOperation}.
      *
      * @remarks The only change this type makes is to restrict the `CreateData` to source objects only;
@@ -2207,7 +2207,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onCreateDocuments} method. This will
      * be removed in v14 along with that method.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
      * {@linkcode JournalEntry.Database2.CreateOperation}.
      *
      * @remarks Since this method is called inside {@linkcode Document.createDocuments}, but *after* the call to
@@ -2228,7 +2228,7 @@ declare namespace Document {
      * {@link Hooks.CreateDocument | the `create[Document]` hook}, and
      * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ClientDocument._onCreateDescendantDocuments}.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
      * {@linkcode JournalEntry.Database2.CreateOperation}.
      *
      * @remarks This interface is created in `ClientDatabaseBackend##handleCreateDocuments`, which pulls out the omitted keys before passing
@@ -2252,7 +2252,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to {@linkcode Document._onCreateOperation}, and
      * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
      * {@linkcode JournalEntry.Database2.CreateOperation}.
      *
      * @remarks `ClientDatabaseBackend##handleCreateDocuments` sets `operation.data = response.result`, that being the array of data objects
@@ -2329,7 +2329,7 @@ declare namespace Document {
      * specific document namespaces (e.g {@linkcode NoteDocument.Database2.UpdateAsEmbeddedOperation}),
      * {@linkcode Document.updateEmbeddedDocuments | Document#updateEmbeddedDocuments}.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
      * {@linkcode JournalEntry.Database2.UpdateOperation}
      *
      * @remarks Since this interface is for the instance method only, `pack` and `parent` are omitted because they get set to the instance's
@@ -2345,7 +2345,7 @@ declare namespace Document {
     /**
      * A helper type for defining the interface that gets passed to {@linkcode Document.updateDocuments}.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
      * {@linkcode JournalEntry.Database2.UpdateOperation}.
      *
      * @remarks `updates` is omitted because it is set to what's passed as the first argument to the aforementioned methods before being
@@ -2362,7 +2362,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to {@linkcode DatabaseBackend.update | DatabaseBackend#update}. This
      * project assumes that that method has not been overridden, or, if it has, that the override calls `super` immediately.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
      * {@linkcode JournalEntry.Database2.UpdateOperation}.
      *
      * @remarks Some properties are omitted because they are overwritten before the next opportunity for non-core code to interact with this
@@ -2395,7 +2395,7 @@ declare namespace Document {
      * This type assumes that any override of {@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments}
      * calls `super`, ensuring a call to `##preUpdateDocumentArray`.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
      * {@linkcode JournalEntry.Database2.UpdateOperation}.
      *
      * @remarks This type makes no optionality changes, only omits the keys that `ClientDatabaseBackend##preUpdateDocumentArray` pulls out
@@ -2414,7 +2414,7 @@ declare namespace Document {
      * This type assumes that any override of {@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments}
      * calls `super`, ensuring a call to `##preUpdateDocumentArray`.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
      * {@linkcode JournalEntry.Database2.UpdateOperation}.
      *
      * @remarks The only change this type makes is to restrict the `UpdateData` to source objects only;
@@ -2429,7 +2429,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onUpdateDocuments} method. This
      * interface will be removed in v14 along with that method.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
      * {@linkcode JournalEntry.Database2.UpdateOperation}.
      *
      * @remarks This is effectively the same type as {@linkcode PreUpdateOperation}. Unlike {@linkcode OnCreateDocumentsOperation}, nothing
@@ -2448,7 +2448,7 @@ declare namespace Document {
      * This type assumes that any override of {@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments}
      * calls `super`, ensuring a call to `##preUpdateDocumentArray`.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
      * {@linkcode JournalEntry.Database2.UpdateOperation}.
      *
      * @remarks This interface is created in `ClientDatabaseBackend##handleUpdateDocuments`, which pulls out the omitted keys before passing
@@ -2468,7 +2468,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to {@linkcode Document._onUpdateOperation}, and
      * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
      * {@linkcode JournalEntry.Database2.UpdateOperation}.
      *
      * @remarks The only change this type makes is to restrict the `UpdateData` to source objects only;
@@ -2531,7 +2531,7 @@ declare namespace Document {
      * specific document namespaces (e.g {@linkcode NoteDocument.Database2.DeleteAsEmbeddedOperation}),
      * {@linkcode Document.deleteEmbeddedDocuments | Document#deleteEmbeddedDocuments}.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
      * {@linkcode JournalEntry.Database2.DeleteOperation}.
      *
      * @remarks Since this interface is for the instance method only, `pack` and `parent` are omitted as they get set to the instance's
@@ -2547,7 +2547,7 @@ declare namespace Document {
     /**
      * A helper type for defining the interface that gets passed to {@linkcode Document.deleteDocuments}.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
      * {@linkcode JournalEntry.Database2.DeleteOperation}.
      *
      * @remarks `ids` is omitted because it is set to what's passed as the first argument to the aforementioned methods before being passed
@@ -2564,7 +2564,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete}. This
      * project assumes that that method has not been overridden, or, if it has, that the override calls `super` immediately.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
      * {@linkcode JournalEntry.Database2.DeleteOperation}.
      *
      * @remarks Some properties are omitted because they are overwritten before the next opportunity for non-core code to interact with this
@@ -2597,7 +2597,7 @@ declare namespace Document {
      * This type assumes that any override of {@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments}
      * calls `super`, ensuring a call to `##preDeleteDocumentArray`.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
      * {@linkcode JournalEntry.Database2.DeleteOperation}.
      *
      * @remarks This type makes no optionality changes, only omits the keys that `ClientDatabaseBackend##preDeleteDocumentArray` pulls out
@@ -2614,7 +2614,7 @@ declare namespace Document {
      * This type assumes that any override of {@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments}
      * calls `super`, ensuring a call to `##preDeleteDocumentArray`.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
      * {@linkcode JournalEntry.Database2.DeleteOperation}.
      *
      * @remarks This type is a no-op, here only for consistency of the operation interface 'type template'. Unlike create or update ops,
@@ -2626,7 +2626,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to the deprecated {@linkcode Document._onDeleteDocuments} method. This
      * interface will be removed in v14 along with that method.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
      * {@linkcode JournalEntry.Database2.CreateOperation}.
      *
      * @remarks This is effectively the same type as {@linkcode PreDeleteOperation}. Unlike {@linkcode OnCreateDocumentsOperation}, nothing
@@ -2645,7 +2645,7 @@ declare namespace Document {
      * This type assumes that any override of {@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments}
      * calls `super`, ensuring a call to `##preDeleteDocumentArray`.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
      * {@linkcode JournalEntry.Database2.DeleteOperation}.
      *
      * @remarks This interface is created in `ClientDatabaseBackend##handleDeleteDocuments`, which pulls out the omitted keys before passing
@@ -2665,7 +2665,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to {@linkcode Document._onDeleteOperation}, and
      * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}.
      *
-     * @typeParam BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
+     * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
      * {@linkcode JournalEntry.Database2.DeleteOperation}.
      *
      * @remarks This type is a no-op, here only for consistency of the operation interface 'type template'. Unlike create or update ops,
@@ -3549,8 +3549,10 @@ declare namespace Document {
   interface DeleteDialogDeprecatedConfig extends DialogV2.ConfirmConfig, IntentionalPartial<ApplicationV2.Position> {}
 
   /** This interface is necessitated by the change in default `strict` behaviour and nothing else */
-  interface FromImportContext<Parent extends Document.Any | null>
-    extends Omit<Document.ConstructionContext<Parent>, "strict"> {
+  interface FromImportContext<Parent extends Document.Any | null> extends Omit<
+    Document.ConstructionContext<Parent>,
+    "strict"
+  > {
     /**
      * Strict validation is enabled by default.
      * @defaultValue `true`

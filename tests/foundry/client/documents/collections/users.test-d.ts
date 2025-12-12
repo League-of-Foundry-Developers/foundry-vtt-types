@@ -9,11 +9,12 @@ declare const stack: User.Stored;
 declare const userImpl: User.Implementation;
 declare const actor: Actor.Stored;
 declare const wallCreateData: WallDocument.CreateData;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
 
 describe("Users Tests", () => {
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new Users();
     new Users([userCreateData]);
@@ -39,7 +40,7 @@ describe("Users Tests", () => {
     expectTypeOf(users.activeGM).toEqualTypeOf<User.Stored | null>();
 
     expectTypeOf(
-      users.getDesignatedUser((u) => u.active && !!u.flags?.core?.sheetLock),
+      users.getDesignatedUser((u) => u.active && !!u.flags.core?.sheetLock),
     ).toEqualTypeOf<User.Stored | null>();
 
     expectTypeOf(Users._activateSocketListeners(game.socket!)).toBeVoid();

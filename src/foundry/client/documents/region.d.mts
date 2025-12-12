@@ -259,19 +259,18 @@ declare namespace RegionDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Region";
-        collection: "regions";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        embedded: Metadata.Embedded;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Region";
+      collection: "regions";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      embedded: Metadata.Embedded;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -602,8 +601,9 @@ declare namespace RegionDocument {
      * @remarks This interface was previously typed for passing to {@linkcode RegionDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<RegionDocument.CreateInput, RegionDocument.Parent, Temporary> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<RegionDocument.CreateInput, RegionDocument.Parent, Temporary> {}
 
     /**
      * The interface for passing to {@linkcode RegionDocument.create} or {@linkcode RegionDocument.createDocuments}.
@@ -617,8 +617,8 @@ declare namespace RegionDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -647,8 +647,8 @@ declare namespace RegionDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode RegionDocument._preCreate | RegionDocument#_preCreate} and
@@ -663,8 +663,8 @@ declare namespace RegionDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode RegionDocument._preCreateOperation}.
@@ -678,8 +678,8 @@ declare namespace RegionDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode RegionDocument._onCreateDocuments}. It will be removed in v14 along with the
@@ -694,8 +694,8 @@ declare namespace RegionDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode RegionDocument._onCreate | RegionDocument#_onCreate} and
@@ -740,8 +740,10 @@ declare namespace RegionDocument {
      * @remarks This interface was previously typed for passing to {@linkcode RegionDocument.update | RegionDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation
-      extends DatabaseBackend.UpdateOperation<RegionDocument.UpdateInput, RegionDocument.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
+      RegionDocument.UpdateInput,
+      RegionDocument.Parent
+    > {}
 
     /**
      * The interface for passing to {@linkcode RegionDocument.update | RegionDocument#update}.
@@ -1150,35 +1152,34 @@ declare namespace RegionDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<RegionDocument.Parent> {}
 
     /** Options passed along in Create operations for Regions */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        RegionDocument.CreateData,
-        RegionDocument.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<RegionDocument.CreateData, RegionDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Regions */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RegionDocument.Parent> {}
 
     /** Options passed along in Update operations for Regions */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<RegionDocument.UpdateData, RegionDocument.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      RegionDocument.UpdateData,
+      RegionDocument.Parent
+    > {}
 
     /** Operation for {@linkcode RegionDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<RegionDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<RegionDocument.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode RegionDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<RegionDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<RegionDocument.Database.Update> {}
 
     /** Operation for {@linkcode RegionDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<RegionDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<RegionDocument.Database.Delete> {}
 
     /** Operation for {@linkcode RegionDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<RegionDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      RegionDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link RegionDocument.update | `RegionDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1310,8 +1311,7 @@ declare namespace RegionDocument {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode RegionDocument.createDialog}'s third parameter

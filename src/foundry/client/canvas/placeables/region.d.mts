@@ -241,23 +241,22 @@ declare namespace Region {
 
   type MOVEMENT_SEGMENT_TYPES = Brand<number, "Region.MOVEMENT_SEGMENT_TYPES">;
 
-  interface MovementSegmentTypes
-    extends Readonly<{
-      /**
-       * The segment crosses the boundary of the region and exits it.
-       */
-      EXIT: -1 & MOVEMENT_SEGMENT_TYPES;
+  interface MovementSegmentTypes extends Readonly<{
+    /**
+     * The segment crosses the boundary of the region and exits it.
+     */
+    EXIT: -1 & MOVEMENT_SEGMENT_TYPES;
 
-      /**
-       * The segment does not cross the boundary of the region and is contained within it.
-       */
-      MOVE: 0 & MOVEMENT_SEGMENT_TYPES;
+    /**
+     * The segment does not cross the boundary of the region and is contained within it.
+     */
+    MOVE: 0 & MOVEMENT_SEGMENT_TYPES;
 
-      /**
-       * The segment crosses the boundary of the region and enters it.
-       */
-      ENTER: 1 & MOVEMENT_SEGMENT_TYPES;
-    }> {}
+    /**
+     * The segment crosses the boundary of the region and enters it.
+     */
+    ENTER: 1 & MOVEMENT_SEGMENT_TYPES;
+  }> {}
 
   /** @internal */
   type _SegmentizeMovementOptions = NullishProps<{

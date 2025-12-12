@@ -49,6 +49,7 @@ class MyCombatDocumentSubclass extends Combat {
     expectTypeOf(options.keepId).toEqualTypeOf<boolean | undefined>();
 
     switch (collection) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       case "combatants":
         // @ts-expect-error TODO: specific document doc ops props
         expectTypeOf(options.combatTurn).toEqualTypeOf<number | undefined>();
@@ -57,6 +58,7 @@ class MyCombatDocumentSubclass extends Combat {
         }
         break;
       // @ts-expect-error "foobar" is not a valid collection
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       case "foobar":
         break;
     }

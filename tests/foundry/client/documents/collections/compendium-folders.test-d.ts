@@ -1,37 +1,54 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import CompendiumFolderCollection = foundry.documents.collections.CompendiumFolderCollection;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
 
-declare const folderCreateDataArray: Folder.CreateData[];
-declare const folder: Folder.Stored;
-declare const folderImpl: Folder.Implementation;
-declare const actorPack: CompendiumCollection<"Actor">;
-declare const itemPack: CompendiumCollection<"Item">;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("CompendiumFolderCollection Tests", async () => {
+  const compendiaToCleanUp = new Set<CompendiumCollection.Any>();
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("CompendiumFolderCollection Tests", () => {
+  const folder = await Folder.implementation.create({ name: "CompendiumFolderCollection Test Folder", type: "Item" });
+  if (!folder) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(folder);
+
+  const folderImpl = new Folder.implementation({ name: "CompendiumFolderCollection Test Folder", type: "Item" });
+  const folderSource = folder.toObject();
+
+  const actorPack = await CompendiumCollection.createCompendium({
+    label: "CompendiumFolderCollection Test Actor Pack",
+    type: "Actor",
+  });
+  compendiaToCleanUp.add(actorPack);
+
+  const itemPack = await CompendiumCollection.createCompendium({
+    label: "CompendiumFolderCollection Test Item Pack",
+    type: "Item",
+  });
+  compendiaToCleanUp.add(itemPack);
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     expectTypeOf(new CompendiumFolderCollection(actorPack)).toEqualTypeOf<CompendiumFolderCollection<"Actor">>();
-    expectTypeOf(new CompendiumFolderCollection(actorPack, folderCreateDataArray)).toEqualTypeOf<
+    expectTypeOf(new CompendiumFolderCollection(actorPack, [folderSource])).toEqualTypeOf<
       CompendiumFolderCollection<"Actor">
     >();
     expectTypeOf(new CompendiumFolderCollection(itemPack)).toEqualTypeOf<CompendiumFolderCollection<"Item">>();
-    expectTypeOf(new CompendiumFolderCollection(itemPack, folderCreateDataArray)).toEqualTypeOf<
+    expectTypeOf(new CompendiumFolderCollection(itemPack, [folderSource])).toEqualTypeOf<
       CompendiumFolderCollection<"Item">
     >();
   });
 
   // actorPackFolders
-  const apf = new CompendiumFolderCollection(actorPack, folderCreateDataArray);
+  const apf = new CompendiumFolderCollection(actorPack, [folderSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(apf.pack).toEqualTypeOf<CompendiumCollection<"Actor">>();
 
     // `CompendiumFolderCollection` doesn't set its `static documentName`, so it'll always be `undefined` at runtime
-    expectTypeOf(CompendiumFolderCollection.documentName).toEqualTypeOf<string | undefined>();
+    expectTypeOf(CompendiumFolderCollection.documentName).toEqualTypeOf<CONST.ALL_DOCUMENT_TYPES | undefined>();
     // It does have an override for the instance getter though
     expectTypeOf(apf.documentName).toEqualTypeOf<"Folder">();
 
@@ -95,4 +112,9 @@ describe("CompendiumFolderCollection Tests", () => {
   });
 
   // TODO: updateAll and _onModifyContents tests on the db-ops branch
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
+    for (const pack of compendiaToCleanUp) await pack.deleteCompendium();
+  });
 });

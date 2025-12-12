@@ -1,28 +1,39 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import CombatEncounters = foundry.documents.collections.CombatEncounters;
 
-declare const combatCreateData: Combat.CreateData;
-declare const combatSource: Combat.Source;
-declare const combat: Combat.Stored;
-declare const combatImpl: Combat.Implementation;
-declare const actorCreateData: Actor.CreateData;
-declare const actor: Actor.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("CombatEncounters Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("CombatEncounters Tests", () => {
+  const combat = await Combat.implementation.create({});
+  if (!combat) throw new Error("Failed to create test Combat.");
+  docsToCleanUp.add(combat);
+
+  const combatImpl = new Combat.implementation();
+  const combatSource = combat.toObject();
+
+  const actor = await Actor.implementation.create({
+    name: "CombatEncounters Collection Test Actor",
+    type: "base",
+  });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const actorSource = actor.toObject();
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new CombatEncounters();
-    new CombatEncounters([combatCreateData]);
     new CombatEncounters([combatSource]);
 
     // @ts-expect-error `Actor` data not assignable to `Combat` data
-    new CombatEncounters([actorCreateData]);
+    new CombatEncounters([actorSource]);
   });
 
-  const encounters = new CombatEncounters([combatCreateData]);
+  const encounters = new CombatEncounters([combatSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(CombatEncounters.documentName).toEqualTypeOf<"Combat">();
@@ -100,5 +111,9 @@ describe("CombatEncounters Tests", () => {
     expectTypeOf(encounters.set("ID", combat)).toBeVoid();
 
     expectTypeOf(encounters.delete("ID")).toBeBoolean();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

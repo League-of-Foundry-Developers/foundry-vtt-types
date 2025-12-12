@@ -620,8 +620,11 @@ declare global {
 
 declare namespace Game {
   /**
-   * This is just a regular {@linkcode Collection} at runtime, but here it gets its `#get` wired up to fvtt-types {@linkcode ModuleConfig}
-   * and {@linkcode RequiredModules} configuration interfaces.
+   * The special interface for {@linkcode Game.modules | game.modules}.
+   *
+   * This is a {@linkcode Collection} at runtime, not a subclass, but the type of its `get` method is overridden here to provide specificity
+   * where we can know which types certain keys refer to due to fvtt-types's configuration interfaces {@linkcode ModuleConfig} and
+   * {@linkcode RequiredModules}.
    */
   interface ModuleCollection extends Collection<foundry.packages.Module, ModuleCollectionMethods> {
     /**
@@ -664,7 +667,12 @@ declare namespace Game {
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     | ({ active: false } & Module & { [K in keyof GetKey<ModuleConfig, Name, {}>]?: never });
 
-  /** The type for {@linkcode Game.collections | game.collections} after initialization. */
+  /**
+   * The type for {@linkcode Game.collections | game.collections} after initialization.
+   *
+   * This is a {@linkcode Collection} at runtime, not a subclass, but the type of its `get` method is overridden here to return the
+   * Foundry-provided {@linkcode WorldCollection}s for their known keys.
+   */
   interface WorldCollectionsCollection extends Collection<WorldCollection.Any, WorldCollectionsCollectionMethods> {
     /**
      * @remarks Returns the appropriate {@linkcode WorldCollection} implementation
@@ -831,7 +839,7 @@ declare namespace Game {
       packageName: BasePackage["_source"]["id"];
       packageType: BasePackage["type"];
 
-      /** @remarks `${package.id}.${pack.name}` */
+      /** @remarks In the format `${package.id}.${pack.name}` */
       id: string;
 
       /**

@@ -48,20 +48,19 @@ declare namespace RollTable {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "RollTable";
-        collection: "tables";
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        label: string;
-        labelPlural: string;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "RollTable";
+      collection: "tables";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -390,8 +389,9 @@ declare namespace RollTable {
      * @remarks This interface was previously typed for passing to {@linkcode RollTable.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<RollTable.CreateInput, RollTable.Parent, Temporary> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<RollTable.CreateInput, RollTable.Parent, Temporary> {}
 
     /**
      * The interface for passing to {@linkcode RollTable.create} or {@linkcode RollTable.createDocuments}.
@@ -405,8 +405,8 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `RollTable` documents are never embedded. This interface exists for consistency with other documents.
@@ -437,8 +437,8 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode RollTable._preCreate | RollTable#_preCreate} and
@@ -453,8 +453,8 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode RollTable._preCreateOperation}.
@@ -468,8 +468,8 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode RollTable._onCreateDocuments}. It will be removed in v14 along with the
@@ -484,8 +484,8 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode RollTable._onCreate | RollTable#_onCreate} and
@@ -946,8 +946,8 @@ declare namespace RollTable {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<RollTable.Parent> {}
 
     /** Options passed along in Create operations for RollTables */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<RollTable.CreateData, RollTable.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<RollTable.CreateData, RollTable.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for RollTables */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RollTable.Parent> {}
@@ -956,8 +956,8 @@ declare namespace RollTable {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<RollTable.UpdateData, RollTable.Parent> {}
 
     /** Operation for {@linkcode RollTable.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<RollTable.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<RollTable.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode RollTable.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<RollTable.Database.Update> {}
@@ -966,8 +966,9 @@ declare namespace RollTable {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<RollTable.Database.Delete> {}
 
     /** Operation for {@linkcode RollTable.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<RollTable.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      RollTable.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link RollTable.update | `RollTable#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1099,8 +1100,7 @@ declare namespace RollTable {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode RollTable.createDialog}'s third parameter
@@ -1189,30 +1189,30 @@ declare namespace RollTable {
     /**
      * An existing Roll instance to use for drawing from the table
      */
-    roll: Roll;
+    roll?: Roll | undefined;
 
     /**
      * Allow drawing recursively from inner RollTable results
      * @defaultValue `true`
      */
-    recursive: boolean;
+    recursive?: boolean | undefined;
 
     /**
      * One or more table results which have been drawn
      * @defaultValue `[]`
      */
-    results: TableResult.Implementation[];
+    results?: TableResult.Implementation[] | undefined;
 
     /**
      * Whether to automatically display the results in chat
      * @defaultValue `true`
      */
-    displayChat: boolean;
+    displayChat?: boolean | undefined;
 
     /**
      * The chat roll mode to use when displaying the result
      */
-    rollMode: ChatMessage.PassableRollMode;
+    rollMode?: ChatMessage.PassableRollMode | undefined;
   }
 
   /**
@@ -1318,7 +1318,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * @param options - Optional arguments which customize the draw
    * @returns The drawn results
    */
-  drawMany(number: number, options?: InexactPartial<RollTable.DrawOptions>): Promise<RollTable.Draw>;
+  drawMany(number: number, options?: RollTable.DrawOptions): Promise<RollTable.Draw>;
 
   /**
    * Normalize the probabilities of rolling each item in the RollTable based on their assigned weights

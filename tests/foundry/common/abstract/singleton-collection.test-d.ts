@@ -1,23 +1,49 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import SingletonEmbeddedCollection from "#common/abstract/singleton-collection.mjs";
 
-declare const deltaSource: ActorDelta.Source;
-declare const deltaCreateData: ActorDelta.CreateData;
-declare const tokenDoc: TokenDocument.Stored;
-declare const deltaStored: ActorDelta.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("SingletonEmbeddedCollection Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("SingletonEmbeddedCollection Tests", () => {
+  const scene = await Scene.implementation.create({ name: "SingletonEmbeddedCollection Test Scene" });
+  if (!scene) throw new Error("Failed to create test Scene");
+  docsToCleanUp.add(scene);
+
+  const actor = await Actor.implementation.create({
+    name: "SingletonEmbeddedCollection Test Actor",
+    type: "base",
+  });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const tokenDoc = await TokenDocument.implementation.create(
+    // @ts-expect-error `TokenDocument.create` will take a `TokenDocument` on the db-ops branch
+    await actor.getTokenDocument({ x: 200, y: 200, actorLink: false }),
+    {
+      parent: scene,
+    },
+  );
+  if (!tokenDoc) throw new Error("Failed to create test TokenDocument");
+  // not added to cleanup as it will get tidied with its parent scene
+  // docsToCleanUp.add(tokenDoc)
+
+  // cast required because
+  // a) could be `null`, but wont be at runtime given the above
+  // b) the initialized type of the `EmbeddedDeltaCollectionField` is `.Implementation`, not `.Stored`
+  const deltaStored = tokenDoc.delta as ActorDelta.Stored;
+  // TODO: investigate why the `type` override is necessary to get this to behave. Possibly fixed on db-ops?
+  const deltaSource: ActorDelta.Source = { ...deltaStored.toObject(), type: "base" };
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new SingletonEmbeddedCollection<ActorDelta.Stored, TokenDocument.Stored>("delta", tokenDoc, [deltaSource]);
-    new SingletonEmbeddedCollection<ActorDelta.Stored, TokenDocument.Stored>("delta", tokenDoc, [deltaCreateData]);
   });
 
   const sec = new SingletonEmbeddedCollection<ActorDelta.Stored, TokenDocument.Stored>("delta", tokenDoc, [
-    deltaCreateData,
+    deltaSource,
   ]);
 
   test("Getting", () => {
@@ -79,5 +105,9 @@ describe("SingletonEmbeddedCollection Tests", () => {
 
   test("Deleting", () => {
     expectTypeOf(sec["_delete"]("ID")).toBeVoid();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

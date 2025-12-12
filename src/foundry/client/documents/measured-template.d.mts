@@ -47,19 +47,18 @@ declare namespace MeasuredTemplateDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "MeasuredTemplate";
-        collection: "templates";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "MeasuredTemplate";
+      collection: "templates";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -359,12 +358,13 @@ declare namespace MeasuredTemplateDocument {
      * @remarks This interface was previously typed for passing to {@linkcode MeasuredTemplateDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<
-        MeasuredTemplateDocument.CreateInput,
-        MeasuredTemplateDocument.Parent,
-        Temporary
-      > {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<
+      MeasuredTemplateDocument.CreateInput,
+      MeasuredTemplateDocument.Parent,
+      Temporary
+    > {}
 
     /**
      * The interface for passing to {@linkcode MeasuredTemplateDocument.create} or {@linkcode MeasuredTemplateDocument.createDocuments}.
@@ -378,8 +378,8 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -408,8 +408,8 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._preCreate | MeasuredTemplateDocument#_preCreate} and
@@ -424,8 +424,8 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._preCreateOperation}.
@@ -439,8 +439,8 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode MeasuredTemplateDocument._onCreateDocuments}. It will be removed in v14 along with the
@@ -455,8 +455,8 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._onCreate | MeasuredTemplateDocument#_onCreate} and
@@ -501,8 +501,10 @@ declare namespace MeasuredTemplateDocument {
      * @remarks This interface was previously typed for passing to {@linkcode MeasuredTemplateDocument.update | MeasuredTemplateDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation
-      extends DatabaseBackend.UpdateOperation<MeasuredTemplateDocument.UpdateInput, MeasuredTemplateDocument.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
+      MeasuredTemplateDocument.UpdateInput,
+      MeasuredTemplateDocument.Parent
+    > {}
 
     /**
      * The interface for passing to {@linkcode MeasuredTemplateDocument.update | MeasuredTemplateDocument#update}.
@@ -911,38 +913,34 @@ declare namespace MeasuredTemplateDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<MeasuredTemplateDocument.Parent> {}
 
     /** Options passed along in Create operations for MeasuredTemplateDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        MeasuredTemplateDocument.CreateData,
-        MeasuredTemplateDocument.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<MeasuredTemplateDocument.CreateData, MeasuredTemplateDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for MeasuredTemplateDocuments */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<MeasuredTemplateDocument.Parent> {}
 
     /** Options passed along in Update operations for MeasuredTemplateDocuments */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<
-        MeasuredTemplateDocument.UpdateData,
-        MeasuredTemplateDocument.Parent
-      > {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      MeasuredTemplateDocument.UpdateData,
+      MeasuredTemplateDocument.Parent
+    > {}
 
     /** Operation for {@linkcode MeasuredTemplateDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<MeasuredTemplateDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<MeasuredTemplateDocument.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode MeasuredTemplateDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<MeasuredTemplateDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<MeasuredTemplateDocument.Database.Update> {}
 
     /** Operation for {@linkcode MeasuredTemplateDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<MeasuredTemplateDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<MeasuredTemplateDocument.Database.Delete> {}
 
     /** Operation for {@linkcode MeasuredTemplateDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<MeasuredTemplateDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      MeasuredTemplateDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link MeasuredTemplateDocument.update | `MeasuredTemplateDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -959,8 +957,8 @@ declare namespace MeasuredTemplateDocument {
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode MeasuredTemplateDocument._preCreateOperation} */
-    interface PreCreateOperation
-      extends Document.Database.PreCreateOperationStatic<MeasuredTemplateDocument.Database.Create> {}
+    interface PreCreateOperation extends Document.Database
+      .PreCreateOperationStatic<MeasuredTemplateDocument.Database.Create> {}
 
     /** Operation for {@link MeasuredTemplateDocument._onCreateOperation | `MeasuredTemplateDocument#_onCreateOperation`} */
     interface OnCreateOperation extends MeasuredTemplateDocument.Database.Create {}
@@ -1075,8 +1073,7 @@ declare namespace MeasuredTemplateDocument {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode MeasuredTemplateDocument.createDialog}'s third parameter

@@ -62,20 +62,19 @@ declare namespace TokenDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Token";
-        collection: "tokens";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        embedded: TokenDocument.Metadata.Embedded;
-        permissions: TokenDocument.Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Token";
+      collection: "tokens";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      embedded: TokenDocument.Metadata.Embedded;
+      permissions: TokenDocument.Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -764,8 +763,9 @@ declare namespace TokenDocument {
 
   interface MeasuredMovementWaypoint extends SchemaField.InitializedData<MeasuredMovementWaypointSchema> {}
 
-  interface GetCompleteMovementPathWaypoint
-    extends InexactPartial<Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost">> {}
+  interface GetCompleteMovementPathWaypoint extends InexactPartial<
+    Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost">
+  > {}
 
   interface CompleteMovementWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {}
 
@@ -897,8 +897,9 @@ declare namespace TokenDocument {
      * @remarks This interface was previously typed for passing to {@linkcode TokenDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<TokenDocument.CreateInput, TokenDocument.Parent, Temporary> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<TokenDocument.CreateInput, TokenDocument.Parent, Temporary> {}
 
     /**
      * The interface for passing to {@linkcode TokenDocument.create} or {@linkcode TokenDocument.createDocuments}.
@@ -912,8 +913,8 @@ declare namespace TokenDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -942,8 +943,8 @@ declare namespace TokenDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode TokenDocument._preCreate | TokenDocument#_preCreate} and
@@ -958,8 +959,8 @@ declare namespace TokenDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode TokenDocument._preCreateOperation}.
@@ -973,8 +974,8 @@ declare namespace TokenDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode TokenDocument._onCreateDocuments}. It will be removed in v14 along with the
@@ -989,8 +990,8 @@ declare namespace TokenDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode TokenDocument._onCreate | TokenDocument#_onCreate} and
@@ -1035,8 +1036,10 @@ declare namespace TokenDocument {
      * @remarks This interface was previously typed for passing to {@linkcode TokenDocument.update | TokenDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation
-      extends DatabaseBackend.UpdateOperation<TokenDocument.UpdateInput, TokenDocument.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
+      TokenDocument.UpdateInput,
+      TokenDocument.Parent
+    > {}
 
     /**
      * The interface for passing to {@linkcode TokenDocument.update | TokenDocument#update}.
@@ -1445,19 +1448,17 @@ declare namespace TokenDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<TokenDocument.Parent> {}
 
     /** Options passed along in Create operations for TokenDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        TokenDocument.CreateData,
-        TokenDocument.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<TokenDocument.CreateData, TokenDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for TokenDocuments */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TokenDocument.Parent> {}
 
     /** Options passed along in Update operations for TokenDocuments */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<TokenDocument.UpdateData, TokenDocument.Parent> {
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      TokenDocument.UpdateData,
+      TokenDocument.Parent
+    > {
       previousActorId?: string | null;
       animate?: boolean;
       _priorRegions?: Record<string, string[]>;
@@ -1469,20 +1470,21 @@ declare namespace TokenDocument {
     }
 
     /** Operation for {@linkcode TokenDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<TokenDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<TokenDocument.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode TokenDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<TokenDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<TokenDocument.Database.Update> {}
 
     /** Operation for {@linkcode TokenDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<TokenDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<TokenDocument.Database.Delete> {}
 
     /** Operation for {@linkcode TokenDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<TokenDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      TokenDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link TokenDocument.update | `TokenDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1624,8 +1626,7 @@ declare namespace TokenDocument {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode TokenDocument.createDialog}'s third parameter
@@ -1839,11 +1840,15 @@ declare namespace TokenDocument {
 
   interface ResizeOptions extends InexactPartial<Omit<TokenDocument.Database.UpdateOperation, "updates">> {}
 
-  interface MovementWaypoint
-    extends Omit<MeasuredMovementWaypoint, "terrain" | "intermediate" | "userId" | "movementId" | "cost"> {}
+  interface MovementWaypoint extends Omit<
+    MeasuredMovementWaypoint,
+    "terrain" | "intermediate" | "userId" | "movementId" | "cost"
+  > {}
 
-  interface MovementSegmentData
-    extends Pick<MeasuredMovementWaypoint, "width" | "height" | "shape" | "action" | "terrain"> {
+  interface MovementSegmentData extends Pick<
+    MeasuredMovementWaypoint,
+    "width" | "height" | "shape" | "action" | "terrain"
+  > {
     actionConfig: CONFIG.Token.MovementActionConfig;
     teleport: boolean;
   }
@@ -2089,20 +2094,19 @@ declare namespace TokenDocument {
     segment: MovementSegmentData,
   ) => number;
 
-  interface MeasureMovementPathOptions
-    extends InexactPartial<{
-      /**
-       * The function that returns the cost for a given move between grid spaces
-       * (default is the distance travelled along the direct path)
-       */
-      cost: MovementCostFunction;
+  interface MeasureMovementPathOptions extends InexactPartial<{
+    /**
+     * The function that returns the cost for a given move between grid spaces
+     * (default is the distance travelled along the direct path)
+     */
+    cost: MovementCostFunction;
 
-      /**
-       * The cost aggregator.
-       * @defaultValue `CONFIG.Token.movement.costAggregator`
-       */
-      aggregator: MovementCostAggregator;
-    }> {}
+    /**
+     * The cost aggregator.
+     * @defaultValue `CONFIG.Token.movement.costAggregator`
+     */
+    aggregator: MovementCostAggregator;
+  }> {}
 
   interface MovementOperation extends Omit<MovementData, "user" | "state" | "updateOptions"> {}
 
@@ -2127,16 +2131,16 @@ declare namespace TokenDocument {
   }
 
   interface PreMovementOptions
-    extends DeepReadonly<Omit<MovementOperation, "autoRotate" | "showRuler">>,
+    extends
+      DeepReadonly<Omit<MovementOperation, "autoRotate" | "showRuler">>,
       Pick<MovementOperation, "autoRotate" | "showRuler"> {}
 
-  interface SegmentizeMovementWaypoint
-    extends InexactPartial<
-      Pick<
-        MeasuredMovementWaypoint,
-        "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped"
-      >
-    > {}
+  interface SegmentizeMovementWaypoint extends InexactPartial<
+    Pick<
+      MeasuredMovementWaypoint,
+      "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped"
+    >
+  > {}
 
   /**
    * The arguments to construct the document.

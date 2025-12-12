@@ -1,29 +1,44 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import Scenes = foundry.documents.collections.Scenes;
 
-declare const sceneCreateData: Scene.CreateData;
-declare const sceneSource: Scene.Source;
-declare const scene: Scene.Stored;
-declare const sceneImpl: Scene.Implementation;
-declare const actor: Actor.Stored;
-declare const wallCreateData: WallDocument.CreateData;
-declare const wall: WallDocument.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("Scenes Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("Scenes Tests", () => {
+  const actor = await Actor.implementation.create({
+    name: "Scenes Collection Test Actor",
+    type: "base",
+  });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const scene = await Scene.implementation.create({ name: "Scenes Collection Test Scene" });
+  if (!scene) throw new Error("Failed to create test Scene.");
+  docsToCleanUp.add(scene);
+
+  const sceneImpl = new Scene.implementation({ name: "Scenes Collection Test Scene" });
+  const sceneSource = scene.toObject();
+
+  const wallDoc = await WallDocument.implementation.create({ c: [0, 0, 50, 50] });
+  if (!wallDoc) throw new Error("Failed to create Test Wall.");
+  // cleanup handled by parent scene
+  // docsToCleanUp.add(wall);
+
+  const wallSource = wallDoc.toObject();
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new Scenes();
-    new Scenes([sceneCreateData]);
     new Scenes([sceneSource]);
 
     // @ts-expect-error `WallDocument` data not assignable to `Scene` data
-    new Scenes([wallCreateData]);
+    new Scenes([wallSource]);
   });
 
-  const scenes = new Scenes([sceneCreateData]);
+  const scenes = new Scenes([sceneSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(Scenes.documentName).toEqualTypeOf<"Scene">();
@@ -105,9 +120,11 @@ describe("Scenes Tests", () => {
   });
 
   test("fromCompendium", () => {
+    const sceneOrSource: Scene.Stored | Scene.Source = sceneSource;
+
     // no deletions with these options
     expectTypeOf(
-      scenes.fromCompendium(scene, {
+      scenes.fromCompendium(sceneOrSource, {
         clearFolder: false,
         clearOwnership: false,
         clearSort: false,
@@ -119,14 +136,14 @@ describe("Scenes Tests", () => {
     // more thorough options testing is in the `WorldCollection` tests
 
     // default case - all deletions enabled except `folder`
-    expectTypeOf(scenes.fromCompendium(scene)).toEqualTypeOf<
+    expectTypeOf(scenes.fromCompendium(sceneOrSource)).toEqualTypeOf<
       Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">
     >();
-    expectTypeOf(scenes.fromCompendium(scene, {})).toEqualTypeOf<
+    expectTypeOf(scenes.fromCompendium(sceneOrSource, {})).toEqualTypeOf<
       Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">
     >();
     expectTypeOf(
-      scenes.fromCompendium(scene, {
+      scenes.fromCompendium(sceneOrSource, {
         clearFolder: undefined,
         clearOwnership: undefined,
         clearSort: undefined,
@@ -136,6 +153,10 @@ describe("Scenes Tests", () => {
     ).toEqualTypeOf<Omit<Scene.Source, "_id" | "active" | "sort" | "navOrder" | "ownership">>();
 
     // @ts-expect-error `WallDocument.Stored`s aren't `Scene.Stored`s
-    scenes.fromCompendium(wall);
+    scenes.fromCompendium(wallDoc);
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

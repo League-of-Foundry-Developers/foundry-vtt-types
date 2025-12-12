@@ -24,7 +24,7 @@ declare namespace CombatConfiguration {
     turnMarker: fields.SchemaField<TurnMarkerSchema>;
   }
 
-  type SettingData = fields.SchemaField.InitializedData<ConfigSettingSchema>;
+  interface SettingData extends fields.SchemaField.InitializedData<ConfigSettingSchema> {}
 
   /** Default combat tracker settings used in Foundry VTT. */
   interface Data {

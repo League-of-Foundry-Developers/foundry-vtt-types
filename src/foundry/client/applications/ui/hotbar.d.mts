@@ -146,8 +146,7 @@ declare namespace Hotbar {
   }
 
   interface Configuration<Hotbar extends Hotbar.Any = Hotbar.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<Hotbar> {}
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<Hotbar> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

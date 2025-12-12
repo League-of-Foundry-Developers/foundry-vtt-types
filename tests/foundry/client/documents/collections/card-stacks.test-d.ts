@@ -1,28 +1,36 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import CardStacks = foundry.documents.collections.CardStacks;
 
-declare const cardsCreateData: Cards.CreateData;
-declare const cardsSource: Cards.Source;
-declare const stack: Cards.Stored;
-declare const cardsImpl: Cards.Implementation;
-declare const actorCreateData: Actor.CreateData;
-declare const actor: Actor.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("CardStacks Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("CardStacks Tests", () => {
+  const actor = await Actor.implementation.create({ name: "CardStacks Test Actor", type: "base" });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const actorSource = actor.toObject();
+
+  const stack = await Cards.implementation.create({ name: "CardStacks Test Actor", type: "deck" });
+  if (!stack) throw new Error("Failed to create test Cards.");
+  docsToCleanUp.add(stack);
+
+  const cardsImpl = new Cards.implementation({ name: "CardStacks Test Actor", type: "deck" });
+  const cardsSource = stack.toObject();
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new CardStacks();
-    new CardStacks([cardsCreateData]);
     new CardStacks([cardsSource]);
 
     // @ts-expect-error `Actor` data not assignable to `Cards` data
-    new CardStacks([actorCreateData]);
+    new CardStacks([actorSource]);
   });
 
-  const stacks = new CardStacks([cardsCreateData]);
+  const stacks = new CardStacks([cardsSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(CardStacks.documentName).toEqualTypeOf<"Cards">();
@@ -90,5 +98,9 @@ describe("CardStacks Tests", () => {
     expectTypeOf(stacks.set("ID", stack)).toBeVoid();
 
     expectTypeOf(stacks.delete("ID")).toBeBoolean();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

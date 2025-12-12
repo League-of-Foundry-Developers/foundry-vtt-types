@@ -1,28 +1,45 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import Items = foundry.documents.collections.Items;
 
-declare const itemCreateData: Item.CreateData;
-declare const itemSource: Item.Source;
-declare const item: Item.Stored;
-declare const itemImpl: Item.Implementation;
-declare const actorCreateData: Actor.CreateData;
-declare const actor: Actor.Stored;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("Items Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("Items Tests", () => {
+  const item = await Item.implementation.create({
+    name: "Items Collection Test Item",
+    type: "base",
+  });
+  if (!item) throw new Error("Failed to create test Item.");
+  docsToCleanUp.add(item);
+
+  const itemSource = item.toObject();
+  const itemImpl = new Item.implementation({
+    name: "Items Collection Test Item",
+    type: "base",
+  });
+
+  const actor = await Actor.implementation.create({
+    name: "Items Collection Test Actor",
+    type: "base",
+  });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const actorSource = actor.toObject();
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new Items();
-    new Items([itemCreateData]);
     new Items([itemSource]);
 
     // @ts-expect-error `Actor` data not assignable to `Item` data
-    new Items([actorCreateData]);
+    new Items([actorSource]);
   });
 
-  const items = new Items([itemCreateData]);
+  const items = new Items([itemSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(Items.documentName).toEqualTypeOf<"Item">();
@@ -86,5 +103,9 @@ describe("Items Tests", () => {
     expectTypeOf(items.set("ID", item)).toBeVoid();
 
     expectTypeOf(items.delete("ID")).toBeBoolean();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

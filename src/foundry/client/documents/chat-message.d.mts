@@ -50,20 +50,19 @@ declare namespace ChatMessage {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "ChatMessage";
-        collection: "messages";
-        label: string;
-        labelPlural: string;
-        hasTypeData: true;
-        isPrimary: true;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "ChatMessage";
+      collection: "messages";
+      label: string;
+      labelPlural: string;
+      hasTypeData: true;
+      isPrimary: true;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -111,15 +110,14 @@ declare namespace ChatMessage {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredChatMessage<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            ChatMessage<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredChatMessage<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          ChatMessage<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `ChatMessage` subtype.
@@ -217,8 +215,8 @@ declare namespace ChatMessage {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData<SubType extends ChatMessage.SubType = ChatMessage.SubType>
-    extends fields.SchemaField.CreateData<Schema> {
+  interface CreateData<SubType extends ChatMessage.SubType = ChatMessage.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
     type?: SubType | null | undefined;
   }
 
@@ -449,8 +447,9 @@ declare namespace ChatMessage {
      * @remarks This interface was previously typed for passing to {@linkcode ChatMessage.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<ChatMessage.CreateInput, ChatMessage.Parent, Temporary> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<ChatMessage.CreateInput, ChatMessage.Parent, Temporary> {}
 
     /**
      * The interface for passing to {@linkcode ChatMessage.create} or {@linkcode ChatMessage.createDocuments}.
@@ -464,8 +463,8 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `ChatMessage` documents are never embedded. This interface exists for consistency with other documents.
@@ -496,8 +495,8 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._preCreate | ChatMessage#_preCreate} and
@@ -512,8 +511,8 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._preCreateOperation}.
@@ -527,8 +526,8 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode ChatMessage._onCreateDocuments}. It will be removed in v14 along with the
@@ -543,8 +542,8 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._onCreate | ChatMessage#_onCreate} and
@@ -1005,8 +1004,8 @@ declare namespace ChatMessage {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<ChatMessage.Parent> {}
 
     /** Options passed along in Create operations for ChatMessages */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<ChatMessage.CreateData, ChatMessage.Parent, Temporary> {
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<ChatMessage.CreateData, ChatMessage.Parent, Temporary> {
       rollMode?: foundry.dice.Roll.Mode;
       chatBubble?: boolean;
     }
@@ -1015,24 +1014,27 @@ declare namespace ChatMessage {
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ChatMessage.Parent> {}
 
     /** Options passed along in Update operations for ChatMessages */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<ChatMessage.UpdateData, ChatMessage.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      ChatMessage.UpdateData,
+      ChatMessage.Parent
+    > {}
 
     /** Operation for {@linkcode ChatMessage.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<ChatMessage.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<ChatMessage.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode ChatMessage.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<ChatMessage.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<ChatMessage.Database.Update> {}
 
     /** Operation for {@linkcode ChatMessage.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<ChatMessage.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<ChatMessage.Database.Delete> {}
 
     /** Operation for {@linkcode ChatMessage.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<ChatMessage.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      ChatMessage.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link ChatMessage.update | `ChatMessage#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1173,8 +1175,7 @@ declare namespace ChatMessage {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode ChatMessage.createDialog}'s third parameter

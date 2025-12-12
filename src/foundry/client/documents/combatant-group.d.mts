@@ -44,19 +44,18 @@ declare namespace CombatantGroup {
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "CombatantGroup";
-        collection: "groups";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        hasTypeData: true;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "CombatantGroup";
+      collection: "groups";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      hasTypeData: true;
+      schemaVersion: string;
+    }>
+  > {}
 
   /**
    * Allowed subtypes of `CombatantGroup`. This is configured through various methods. Modern Foundry
@@ -94,15 +93,14 @@ declare namespace CombatantGroup {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredCombatantGroup<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            CombatantGroup<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredCombatantGroup<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          CombatantGroup<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `CombatantGroup` subtype.
@@ -203,8 +201,8 @@ declare namespace CombatantGroup {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData<SubType extends CombatantGroup.SubType = CombatantGroup.SubType>
-    extends fields.SchemaField.CreateData<Schema> {
+  interface CreateData<SubType extends CombatantGroup.SubType = CombatantGroup.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
     type?: SubType | null | undefined;
   }
 
@@ -350,8 +348,9 @@ declare namespace CombatantGroup {
      * @remarks This interface was previously typed for passing to {@linkcode CombatantGroup.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<CombatantGroup.CreateInput, CombatantGroup.Parent, Temporary> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<CombatantGroup.CreateInput, CombatantGroup.Parent, Temporary> {}
 
     /**
      * The interface for passing to {@linkcode CombatantGroup.create} or {@linkcode CombatantGroup.createDocuments}.
@@ -365,8 +364,8 @@ declare namespace CombatantGroup {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -395,8 +394,8 @@ declare namespace CombatantGroup {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode CombatantGroup._preCreate | CombatantGroup#_preCreate} and
@@ -411,8 +410,8 @@ declare namespace CombatantGroup {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode CombatantGroup._preCreateOperation}.
@@ -426,8 +425,8 @@ declare namespace CombatantGroup {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode CombatantGroup._onCreateDocuments}. It will be removed in v14 along with the
@@ -442,8 +441,8 @@ declare namespace CombatantGroup {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode CombatantGroup._onCreate | CombatantGroup#_onCreate} and
@@ -488,8 +487,10 @@ declare namespace CombatantGroup {
      * @remarks This interface was previously typed for passing to {@linkcode CombatantGroup.update | CombatantGroup#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation
-      extends DatabaseBackend.UpdateOperation<CombatantGroup.UpdateInput, CombatantGroup.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
+      CombatantGroup.UpdateInput,
+      CombatantGroup.Parent
+    > {}
 
     /**
      * The interface for passing to {@linkcode CombatantGroup.update | CombatantGroup#update}.
@@ -898,35 +899,34 @@ declare namespace CombatantGroup {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<CombatantGroup.Parent> {}
 
     /** Options passed along in Create operations for CombatantGroups */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        CombatantGroup.CreateData,
-        CombatantGroup.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<CombatantGroup.CreateData, CombatantGroup.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for CombatantGroups */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<CombatantGroup.Parent> {}
 
     /** Options passed along in Update operation for CombatantGroups */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<CombatantGroup.UpdateData, CombatantGroup.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      CombatantGroup.UpdateData,
+      CombatantGroup.Parent
+    > {}
 
     /** Operation for {@linkcode CombatantGroup.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<CombatantGroup.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<CombatantGroup.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode CombatantGroup.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<CombatantGroup.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<CombatantGroup.Database.Update> {}
 
     /** Operation for {@linkcode CombatantGroup.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<CombatantGroup.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<CombatantGroup.Database.Delete> {}
 
     /** Operation for {@linkcode CombatantGroup.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<CombatantGroup.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      CombatantGroup.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link CombatantGroup.update | `CombatantGroup#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1058,8 +1058,7 @@ declare namespace CombatantGroup {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode CombatantGroup.createDialog}'s third parameter

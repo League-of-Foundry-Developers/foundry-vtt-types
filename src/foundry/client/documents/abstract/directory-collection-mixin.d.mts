@@ -13,7 +13,6 @@ import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 /**
  * An extension of the Collection class which adds behaviors specific to tree-based collections of entries and folders.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class DirectoryCollection {
   /** @privateRemarks All mixin classes need a constructor like this */
   constructor(...args: any[]);
@@ -38,7 +37,7 @@ declare class DirectoryCollection {
    * @remarks Only `undefined` prior to first {@linkcode initializeTree | #initializeTree} call, which happens just before the `"setup"`
    * hook in {@linkcode foundry.Game.initializeTrees | Game#initializeTrees} via {@linkcode foundry.Game.setupGame | Game#setupGame}
    */
-  get tree(): InitializedOn<DirectoryCollectionMixin.TreeNode<this[" __fvtt_types_internal_value"]>, "setup">;
+  get tree(): DirectoryCollectionMixin.Tree<this>;
 
   /**
    * The current search mode for this collection
@@ -69,9 +68,8 @@ declare class DirectoryCollection {
   /**
    * Return a reference to list of entries which are visible to the User in this tree
    * @remarks
-   * This signature's return type:
-   * - Uses `this[" __fvtt_types_internal_value"][]` instead of `this["contents"]` as the latter is not defined in this mixin class
-   * - Includes `AnyObject[]` to allow {@linkcode CompendiumCollection._getVisibleTreeContents | CompendiumCollection#_getVisibleTreeContents}
+   * This signature's return type includes `AnyObject[]` to allow
+   * {@linkcode CompendiumCollection._getVisibleTreeContents | CompendiumCollection#_getVisibleTreeContents}
    * to return its `index`'s `contents` instead of its own.
    *
    * Any classes *directly* extending this mixin, if they wish to call this method, should provide a minimal override like:
@@ -85,7 +83,7 @@ declare class DirectoryCollection {
    * @privateRemarks The three core classes which directly extend this mixin ({@linkcode CompendiumCollection}, {@linkcode CompendiumPacks},
    * and {@linkcode WorldCollection}) all have real overrides to narrow this, so it's only relevant in user subclasses.
    */
-  protected _getVisibleTreeContents(): this[" __fvtt_types_internal_value"][] | AnyObject[];
+  protected _getVisibleTreeContents(): DirectoryCollectionMixin.GetElementType<this>[] | AnyObject[];
 
   /**
    * Initialize the tree by categorizing folders and entries into a hierarchical tree structure.
@@ -157,6 +155,9 @@ declare namespace DirectoryCollectionMixin {
    */
   type BaseClass = Collection.AnyConstructor;
 
+  /** A helper type to prevent exposing the internal property directly to users. */
+  type GetElementType<Collection extends DirectoryCollection> = Collection[" __fvtt_types_internal_value"];
+
   /** These are hardcoded, and really all values that aren't `"a"` are treated as `"m"` */
   type SortingMode = "a" | "m";
 
@@ -167,12 +168,16 @@ declare namespace DirectoryCollectionMixin {
    */
   interface MinimalFolderSelectOption extends Pick<Document.DialogFoldersChoices, "id" | "name"> {}
 
+  type Tree<Collection extends DirectoryCollection> = InitializedOn<
+    DirectoryCollectionMixin.TreeNode<DirectoryCollectionMixin.GetElementType<Collection>>,
+    "setup"
+  >;
+
   interface TreeNode<T> {
     children: TreeNode<T>[];
     depth: number;
     entries: T[];
-    // TODO: Folder.StoredOfType<T["documentName"] | "Compendium"> or something when we have StoredOfType
-    folder: Folder.Stored;
+    folder: Folder.Stored; // TODO: Folder.Stored<T["documentName"] | "Compendium">, but in a way that doesn't make circularities
     root: boolean;
     visible: boolean;
   }

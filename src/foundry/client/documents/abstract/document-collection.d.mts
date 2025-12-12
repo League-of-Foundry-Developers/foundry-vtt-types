@@ -27,14 +27,14 @@ declare abstract class DocumentCollection<
   DocumentName extends Document.Type,
   Methods extends Collection.Methods.Any = DocumentCollection.Methods<DocumentName>,
 > extends Collection<Document.StoredForName<DocumentName>, Methods> {
-  constructor(data?: Document.CreateDataForName<DocumentName>[]);
+  constructor(data?: Document.SourceForName<DocumentName>[]);
 
   /**
    * The source data array from which the Documents in the WorldCollection are created
    * @remarks Created via `Object.defineProperty` during construction with `{ writable: false }`,
    * and the `data` param from the constructor as `value`.
    */
-  readonly _source: Document.CreateDataForName<DocumentName>[];
+  readonly _source: Document.SourceForName<DocumentName>[];
 
   /**
    * An Array of application references which will be automatically updated when the collection content changes
@@ -54,14 +54,18 @@ declare abstract class DocumentCollection<
 
   /**
    * A reference to the named Document class which is contained within this DocumentCollection.
-   * @remarks This accessor is abstract: A subclass of DocumentCollection must implement the documentName getter
+   * @remarks Returns the static {@linkcode DocumentCollection.documentName | this.constructor.documentName}.
+   * @throws If the static property is unset or otherwise falsey.
    */
   get documentName(): DocumentName;
 
   /**
    * The base Document type which is contained within this DocumentCollection
+   * @remarks Effectively abstract, this is used as the base value for the instance `documentName` getter, must be set by subclasses.
+   * {@linkcode foundry.documents.collections.CompendiumFolderCollection} lacks an override, so this is always `undefined` on that
+   * subclass.
    */
-  static documentName: string | undefined;
+  static documentName: Document.Type | undefined;
 
   /**
    * Record the set of document ids where the Document was not initialized because of invalid source data
@@ -227,7 +231,8 @@ declare namespace DocumentCollection {
    * {@linkcode Application.render | AppV1#render} and {@linkcode ApplicationV2.render | AppV2#render}; in the latter case,
    * `options.force` is overwritten with the first parameter of `DocumentCollection#render`, so it is omitted here.
    */
-  interface RenderOptions extends DeepPartial<Application.Options & Omit<ApplicationV2.RenderOptions, "force">> {}
+  interface RenderOptions
+    extends DeepPartial<Application.Options>, DeepPartial<Omit<ApplicationV2.RenderOptions, "force">> {}
 
   /** @internal */
   interface _SearchOptions {

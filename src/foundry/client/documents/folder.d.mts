@@ -49,18 +49,17 @@ declare namespace Folder {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Folder";
-        collection: "folders";
-        label: string;
-        labelPlural: string;
-        coreTypes: typeof CONST.FOLDER_DOCUMENT_TYPES;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Folder";
+      collection: "folders";
+      label: string;
+      labelPlural: string;
+      coreTypes: typeof CONST.FOLDER_DOCUMENT_TYPES;
+      schemaVersion: string;
+    }>
+  > {}
 
   // No need for Metadata namespace
 
@@ -106,15 +105,14 @@ declare namespace Folder {
   type OfType<Type extends SubType> = _OfType[Type];
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredFolder<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Folder<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredFolder<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Folder<Type>
+      : never;
+  }> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -347,8 +345,9 @@ declare namespace Folder {
      * @remarks This interface was previously typed for passing to {@linkcode Folder.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<Folder.CreateInput, Folder.Parent, Temporary> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<Folder.CreateInput, Folder.Parent, Temporary> {}
 
     /**
      * The interface for passing to {@linkcode Folder.create} or {@linkcode Folder.createDocuments}.
@@ -362,8 +361,8 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `Folder` documents are never embedded. This interface exists for consistency with other documents.
@@ -394,8 +393,8 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Folder._preCreate | Folder#_preCreate} and
@@ -410,8 +409,8 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Folder._preCreateOperation}.
@@ -425,8 +424,8 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Folder._onCreateDocuments}. It will be removed in v14 along with the
@@ -441,8 +440,8 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Folder._onCreate | Folder#_onCreate} and
@@ -903,8 +902,8 @@ declare namespace Folder {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Folder.Parent> {}
 
     /** Options passed along in Create operations for Folders */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Folder.CreateData, Folder.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Folder.CreateData, Folder.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Folders */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Folder.Parent> {}
@@ -913,8 +912,8 @@ declare namespace Folder {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Folder.UpdateData, Folder.Parent> {}
 
     /** Operation for {@linkcode Folder.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<Folder.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<Folder.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode Folder.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Folder.Database.Update> {}
@@ -923,8 +922,9 @@ declare namespace Folder {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Folder.Database.Delete> {}
 
     /** Operation for {@linkcode Folder.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<Folder.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      Folder.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Folder.update | `Folder#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1050,7 +1050,8 @@ declare namespace Folder {
    */
   // NOTE: Off-template due to real override
   interface CreateDialogData
-    extends Omit<Document.CreateDialogData<CreateData>, "name" | "color" | "sorting">,
+    extends
+      Omit<Document.CreateDialogData<CreateData>, "name" | "color" | "sorting">,
       InexactPartial<Pick<CreateData, "name" | "color" | "sorting">> {}
 
   /**
@@ -1059,8 +1060,7 @@ declare namespace Folder {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode Folder.createDialog}'s third parameter
@@ -1140,8 +1140,7 @@ declare namespace Folder {
 
   /** @privateRemarks `keepId` omitted to override comment */
   interface ExportToCompendiumOptions
-    extends _ExportToCompendiumOptions,
-      Omit<ClientDocument.ToCompendiumOptions, "keepId"> {}
+    extends _ExportToCompendiumOptions, Omit<ClientDocument.ToCompendiumOptions, "keepId"> {}
 
   /** @internal */
   type _ExportDialogOptions = NullishProps<{

@@ -42,18 +42,17 @@ declare namespace JournalEntryCategory {
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "JournalEntryCategory";
-        collection: "categories";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "JournalEntryCategory";
+      collection: "categories";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      schemaVersion: string;
+    }>
+  > {}
 
   /**
    * A document's parent is something that can contain it.
@@ -257,12 +256,13 @@ declare namespace JournalEntryCategory {
      * @remarks This interface was previously typed for passing to {@linkcode JournalEntryCategory.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<
-        JournalEntryCategory.CreateInput,
-        JournalEntryCategory.Parent,
-        Temporary
-      > {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<
+      JournalEntryCategory.CreateInput,
+      JournalEntryCategory.Parent,
+      Temporary
+    > {}
 
     /**
      * The interface for passing to {@linkcode JournalEntryCategory.create} or {@linkcode JournalEntryCategory.createDocuments}.
@@ -276,8 +276,8 @@ declare namespace JournalEntryCategory {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -306,8 +306,8 @@ declare namespace JournalEntryCategory {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode JournalEntryCategory._preCreate | JournalEntryCategory#_preCreate} and
@@ -322,8 +322,8 @@ declare namespace JournalEntryCategory {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode JournalEntryCategory._preCreateOperation}.
@@ -337,8 +337,8 @@ declare namespace JournalEntryCategory {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode JournalEntryCategory._onCreateDocuments}. It will be removed in v14 along with the
@@ -353,8 +353,8 @@ declare namespace JournalEntryCategory {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode JournalEntryCategory._onCreate | JournalEntryCategory#_onCreate} and
@@ -399,8 +399,10 @@ declare namespace JournalEntryCategory {
      * @remarks This interface was previously typed for passing to {@linkcode JournalEntryCategory.update | JournalEntryCategory#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation
-      extends DatabaseBackend.UpdateOperation<JournalEntryCategory.UpdateInput, JournalEntryCategory.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
+      JournalEntryCategory.UpdateInput,
+      JournalEntryCategory.Parent
+    > {}
 
     /**
      * The interface for passing to {@linkcode JournalEntryCategory.update | JournalEntryCategory#update}.
@@ -809,38 +811,34 @@ declare namespace JournalEntryCategory {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<JournalEntryCategory.Parent> {}
 
     /** Options passed along in Create operations for JournalEntryCategories */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        JournalEntryCategory.CreateData,
-        JournalEntryCategory.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<JournalEntryCategory.CreateData, JournalEntryCategory.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for JournalEntryCategories */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<JournalEntryCategory.Parent> {}
 
     /** Options passed along in Update operation for JournalEntryCategories */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<
-        JournalEntryCategory.UpdateData,
-        JournalEntryCategory.Parent
-      > {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      JournalEntryCategory.UpdateData,
+      JournalEntryCategory.Parent
+    > {}
 
     /** Operation for {@linkcode JournalEntryCategory.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<JournalEntryCategory.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<JournalEntryCategory.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode JournalEntryCategory.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<JournalEntryCategory.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<JournalEntryCategory.Database.Update> {}
 
     /** Operation for {@linkcode JournalEntryCategory.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<JournalEntryCategory.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<JournalEntryCategory.Database.Delete> {}
 
     /** Operation for {@linkcode JournalEntryCategory.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<JournalEntryCategory.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      JournalEntryCategory.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link JournalEntryCategory.update | `JournalEntryCategory#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -857,8 +855,8 @@ declare namespace JournalEntryCategory {
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode JournalEntryCategory._preCreateOperation} */
-    interface PreCreateOperation
-      extends Document.Database.PreCreateOperationStatic<JournalEntryCategory.Database.Create> {}
+    interface PreCreateOperation extends Document.Database
+      .PreCreateOperationStatic<JournalEntryCategory.Database.Create> {}
 
     /** Operation for {@link JournalEntryCategory._onCreateOperation | `JournalEntryCategory#_onCreateOperation`} */
     interface OnCreateOperation extends JournalEntryCategory.Database.Create {}
@@ -973,8 +971,7 @@ declare namespace JournalEntryCategory {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode JournalEntryCategory.createDialog}'s third parameter

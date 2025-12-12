@@ -28,8 +28,9 @@ declare namespace FrameViewer {
 
   interface RenderContext extends ApplicationV2.RenderContext {}
 
-  interface Configuration<FrameViewer extends FrameViewer.Any = FrameViewer.Any>
-    extends ApplicationV2.Configuration<FrameViewer> {
+  interface Configuration<
+    FrameViewer extends FrameViewer.Any = FrameViewer.Any,
+  > extends ApplicationV2.Configuration<FrameViewer> {
     /** The initial URL to navigate to */
     url: string;
   }

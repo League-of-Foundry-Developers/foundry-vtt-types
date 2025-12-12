@@ -31,8 +31,6 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
   /**
    * Return a reference to the singleton instance of this WorldCollection, or null if it has not yet been created.
    */
-  // TODO: Find a way to type this more concretely. One option would be to separate the static and non static side of this class,
-  // TODO: which allows accessing the the static this type to use the `documentName`.
   static get instance(): InitializedOn<WorldCollection.Any, "setup">;
 
   protected override _getVisibleTreeContents(): this["contents"];
@@ -70,7 +68,7 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
    * @returns The processed data ready for world Document creation
    */
   fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
-    document: Document.ImplementationFor<DocumentName> | Document.CreateDataForName<DocumentName>,
+    document: Document.ImplementationFor<DocumentName> | Document.SourceForName<DocumentName>,
     options?: Options,
   ): WorldCollection.FromCompendiumReturnType<DocumentName, Options>;
 
@@ -149,7 +147,7 @@ declare namespace WorldCollection {
    * {@linkcode WorldCollection.directory | WorldCollection#directory} returns `ui[documentClass.metadata.collection]`, but several
    * subclasses have overrides:
    * - {@linkcode collections.ChatMessages.directory | ChatMessages#directory} returns {@linkcode ChatLog | ui.chat}, notably *not*
-   * extending {@linkcode DocumentDirectory}, which is what `WorldCollection#directory` is typed as by Foundry.
+   * extending {@linkcode DocumentDirectory}, which is how `WorldCollection#directory` is typed by Foundry.
    * - {@linkcode collections.CombatEncounters.directory | CombatEncounters#directory} returns {@linkcode CombatTracker | ui.combat}, also
    * not extending `DocumentDirectory`.
    * - {@linkcode collections.RollTables.directory | RollTables#directory} just uses a different key than its `metadata.collection`, and
@@ -234,7 +232,6 @@ declare namespace WorldCollection {
    * and its removal of `navOrder` on `clearSort` is baked in.
    */
   // TODO: Ownership is removed recursively; probably not worth modeling?
-  // TODO: why are both the `keepId` branches `never`
   type FromCompendiumReturnType<
     DocumentType extends Document.WorldType,
     Options extends FromCompendiumOptions | undefined,
@@ -244,7 +241,7 @@ declare namespace WorldCollection {
     | ClientDocument._OmitProperty<GetKey<Options, "clearSort", undefined>, true, "sort" | "navOrder">
     | ClientDocument._OmitProperty<GetKey<Options, "clearOwnership", undefined>, true, "ownership">
     | ClientDocument._OmitProperty<GetKey<Options, "clearState", undefined>, true, "active">
-    | (GetKey<Options, "keepId", undefined> extends true ? never : "_id")
+    | (true extends GetKey<Options, "keepId", undefined> ? never : "_id")
   >;
 
   /**

@@ -29,8 +29,7 @@ declare namespace InvitationLinks {
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
 
   interface Configuration<InvitationLinks extends InvitationLinks.Any = InvitationLinks.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<InvitationLinks> {}
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<InvitationLinks> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

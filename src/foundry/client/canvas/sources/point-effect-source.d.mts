@@ -142,11 +142,10 @@ declare namespace PointEffectSourceMixin {
   interface MixedSourceData extends SourceData, BaseEffectSource.SourceData {}
 
   /** @remarks This mixin guarantees certain keys in the return type beyond the base required `type` */
-  interface PolygonConfig
-    extends RequiredProps<
-      ClockwiseSweepPolygon.Config,
-      "radius" | "edgeOptions" | "externalRadius" | "angle" | "rotation" | "priority" | "source"
-    > {}
+  interface PolygonConfig extends RequiredProps<
+    ClockwiseSweepPolygon.Config,
+    "radius" | "edgeOptions" | "externalRadius" | "angle" | "rotation" | "priority" | "source"
+  > {}
 
   interface SourceData {
     /**

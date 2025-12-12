@@ -52,8 +52,9 @@ declare namespace GamePause {
 
   type RenderHTMLReturn = [HTMLImageElement, HTMLElement];
 
-  interface Configuration<GamePause extends GamePause.Any = GamePause.Any>
-    extends ApplicationV2.Configuration<GamePause> {}
+  interface Configuration<
+    GamePause extends GamePause.Any = GamePause.Any,
+  > extends ApplicationV2.Configuration<GamePause> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

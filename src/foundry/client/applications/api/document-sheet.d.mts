@@ -41,8 +41,9 @@ declare namespace DocumentSheetV2 {
   };
 
   /** @internal */
-  interface _Configuration<DocumentSheet extends DocumentSheetV2.Any = DocumentSheetV2.Any>
-    extends ApplicationV2.Configuration<DocumentSheet> {
+  interface _Configuration<
+    DocumentSheet extends DocumentSheetV2.Any = DocumentSheetV2.Any,
+  > extends ApplicationV2.Configuration<DocumentSheet> {
     /**
      * A permission level in CONST.DOCUMENT_OWNERSHIP_LEVELS
      */

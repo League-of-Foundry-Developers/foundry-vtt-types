@@ -1,29 +1,40 @@
-import { describe, expectTypeOf, test } from "vitest";
+import { afterAll, describe, expectTypeOf, test } from "vitest";
 
 import FogExplorations = foundry.documents.collections.FogExplorations;
 import DocumentDirectory = foundry.applications.sidebar.DocumentDirectory;
 
-declare const fogCreateData: FogExploration.CreateData;
-declare const fogSource: FogExploration.Source;
-declare const stack: FogExploration.Stored;
-declare const fogImpl: FogExploration.Implementation;
-declare const actor: Actor.Stored;
-declare const wallCreateData: WallDocument.CreateData;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("FogExplorations Tests", async () => {
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("FogExplorations Tests", () => {
+  const fog = await FogExploration.implementation.create({});
+  if (!fog) throw new Error("Failed to create test FogExploration.");
+  docsToCleanUp.add(fog);
+
+  const fogSource = fog.toObject();
+  const fogImpl = new FogExploration.implementation();
+
+  const actor = await Actor.implementation.create({
+    name: "FogExplorations Collection Test Actor",
+    type: "base",
+  });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const actorSource = actor.toObject();
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     new FogExplorations();
-    new FogExplorations([fogCreateData]);
     new FogExplorations([fogSource]);
 
-    // This errors in most other world collections, but `FogExploration` has *nothing* required in its `CreateData`
-    new FogExplorations([wallCreateData]);
+    // @ts-expect-error `Actor`s are not `FogExploration`s
+    new FogExplorations([actorSource]);
   });
 
-  const fogs = new FogExplorations([fogCreateData]);
+  const fogs = new FogExplorations([fogSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(FogExplorations.documentName).toEqualTypeOf<"FogExploration">();
@@ -102,8 +113,12 @@ describe("FogExplorations Tests", () => {
     // @ts-expect-error `Actor`s are not `FogExploration`s
     fogs.set("ID", actor);
     // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(fogs.set("ID", stack)).toBeVoid();
+    expectTypeOf(fogs.set("ID", fog)).toBeVoid();
 
     expectTypeOf(fogs.delete("ID")).toBeBoolean();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

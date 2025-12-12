@@ -47,20 +47,19 @@ declare namespace PlaylistSound {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "PlaylistSound";
-        collection: "sounds";
-        indexed: true;
-        label: string;
-        labelPlural: string;
-        compendiumIndexFields: ["name", "sort"];
-        schemaVersion: string;
-        permissions: Metadata.Permissions;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "PlaylistSound";
+      collection: "sounds";
+      indexed: true;
+      label: string;
+      labelPlural: string;
+      compendiumIndexFields: ["name", "sort"];
+      schemaVersion: string;
+      permissions: Metadata.Permissions;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -320,8 +319,9 @@ declare namespace PlaylistSound {
      * @remarks This interface was previously typed for passing to {@linkcode PlaylistSound.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends DatabaseBackend.CreateOperation<PlaylistSound.CreateInput, PlaylistSound.Parent, Temporary> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<PlaylistSound.CreateInput, PlaylistSound.Parent, Temporary> {}
 
     /**
      * The interface for passing to {@linkcode PlaylistSound.create} or {@linkcode PlaylistSound.createDocuments}.
@@ -335,8 +335,8 @@ declare namespace PlaylistSound {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
@@ -365,8 +365,8 @@ declare namespace PlaylistSound {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode PlaylistSound._preCreate | PlaylistSound#_preCreate} and
@@ -381,8 +381,8 @@ declare namespace PlaylistSound {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOptions<CreateOperation<Temporary>> {}
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode PlaylistSound._preCreateOperation}.
@@ -396,8 +396,8 @@ declare namespace PlaylistSound {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.PreCreateOperation<CreateOperation<Temporary>> {}
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+      .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode PlaylistSound._onCreateDocuments}. It will be removed in v14 along with the
@@ -412,8 +412,8 @@ declare namespace PlaylistSound {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends Document.Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode PlaylistSound._onCreate | PlaylistSound#_onCreate} and
@@ -458,8 +458,10 @@ declare namespace PlaylistSound {
      * @remarks This interface was previously typed for passing to {@linkcode PlaylistSound.update | PlaylistSound#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation
-      extends DatabaseBackend.UpdateOperation<PlaylistSound.UpdateInput, PlaylistSound.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
+      PlaylistSound.UpdateInput,
+      PlaylistSound.Parent
+    > {}
 
     /**
      * The interface for passing to {@linkcode PlaylistSound.update | PlaylistSound#update}.
@@ -868,35 +870,34 @@ declare namespace PlaylistSound {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<PlaylistSound.Parent> {}
 
     /** Options passed along in Create operations for PlaylistSounds */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        PlaylistSound.CreateData,
-        PlaylistSound.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<PlaylistSound.CreateData, PlaylistSound.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for PlaylistSounds */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<PlaylistSound.Parent> {}
 
     /** Options passed along in Update operations for PlaylistSounds */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<PlaylistSound.UpdateData, PlaylistSound.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      PlaylistSound.UpdateData,
+      PlaylistSound.Parent
+    > {}
 
     /** Operation for {@linkcode PlaylistSound.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<PlaylistSound.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
+      .CreateDocumentsOperation<PlaylistSound.Database.Create<Temporary>> {}
 
     /** Operation for {@linkcode PlaylistSound.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<PlaylistSound.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<PlaylistSound.Database.Update> {}
 
     /** Operation for {@linkcode PlaylistSound.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<PlaylistSound.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<PlaylistSound.Database.Delete> {}
 
     /** Operation for {@linkcode PlaylistSound.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateDocumentsOperation<PlaylistSound.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
+      PlaylistSound.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link PlaylistSound.update | `PlaylistSound#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1028,8 +1029,7 @@ declare namespace PlaylistSound {
    * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>,
-      Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode PlaylistSound.createDialog}'s third parameter
