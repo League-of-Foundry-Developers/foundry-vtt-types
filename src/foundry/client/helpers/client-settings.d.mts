@@ -1,7 +1,6 @@
 import type { AnyArray, AnyObject, InexactPartial, FixedInstanceType, Identity } from "#utils";
 import type FormApplication from "#client/appv1/api/form-application-v1.mjs";
 import type ApplicationV2 from "#client/applications/api/application.d.mts";
-import type { CustomFormInput } from "#client/applications/forms/fields.d.mts";
 import type DataModel from "#common/abstract/data.d.mts";
 import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 
@@ -318,13 +317,15 @@ declare namespace ClientSettings {
 
     /**
      * A custom form field input used in conjunction with a DataField type
+     * @deprecated As of v13, the new, AppV2 {@linkcode foundry.applications.settings.SettingsConfig | SettingsConfig}'s template no longer
+     * passes this to the relevant `{{formGroup}}` helper, so this is currently non-functional:
+     * {@link https://github.com/foundryvtt/foundryvtt/issues/13670}
      */
-    input?: CustomFormInput | undefined;
+    input?: DataField.CustomFormInput | undefined;
   }
 
   /**
    * A Client Setting
-   * @remarks Copied from `client/_types.mjs`
    * @remarks Not to be confused with {@linkcode globalThis.SettingConfig} which is how you register setting types in this project
    */
   interface SettingConfig<T extends Type = (value: unknown) => unknown> extends _SettingConfig<
