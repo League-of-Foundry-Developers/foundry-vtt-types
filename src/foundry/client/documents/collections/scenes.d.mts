@@ -1,15 +1,20 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
+import type { Sound } from "#client/audio/_module.d.mts";
 
 /**
  * The singleton collection of Scene documents which exist within the active World.
- * This Collection is accessible within the Game object as game.scenes.
+ * This Collection is accessible within the Game object as {@linkcode foundry.Game.scenes | game.scenes}.
  *
- * @see {@linkcode Scene} The Scene document
- * @see {@linkcode SceneDirectory} The SceneDirectory sidebar directory
+ * @see {@linkcode foundry.documents.Scene}: The Scene document
+ * @see {@linkcode foundry.applications.sidebar.tabs.SceneDirectory}: The SceneDirectory sidebar directory
  */
-declare class Scenes extends foundry.documents.abstract.WorldCollection<"Scene", "Scenes"> {
-  static documentName: "Scene";
+declare class Scenes extends WorldCollection<"Scene"> {
+  static override documentName: "Scene";
+
+  /** @privateRemarks Fake type override */
+  static override get instance(): Scenes.Implementation;
 
   /**
    * Return a reference to the Scene which is currently active
@@ -31,28 +36,36 @@ declare class Scenes extends foundry.documents.abstract.WorldCollection<"Scene",
    * Handle pre-loading the art assets for a Scene
    *
    * @param sceneId - The Scene id to begin loading
-   * @param push    - Trigger other connected clients to also pre-load Scene resources
-   *                  (default: `false`)
+   * @param push    - Trigger other connected clients to also pre-load Scene resources (default: `false`)
+   * @remarks Returns the `game.socket` instance if `push` is true, otherwise returns an array of awaited returns of
+   * {@linkcode foundry.audio.AudioHelper.preloadSound} and {@linkcode foundry.canvas.TextureLoader.loadSceneTextures}.
    */
-  preload(sceneId: string, push?: boolean): io.Socket | Promise<unknown[]>;
+  preload<Push extends boolean | undefined = false>(sceneId: string, push?: Push): Promise<Scenes.PreloadReturn<Push>>;
 
-  /** @remarks This is not marked as protected because it is used in {@link Game.activateSocketListeners | `Game#activateSocketListeners`} */
   static _activateSocketListeners(socket: io.Socket): void;
 
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
+    document: Scene.Implementation | Scene.Source,
+    options?: Options,
+  ): WorldCollection.FromCompendiumReturnType<"Scene", Options>;
+
+  /** @deprecated Foundry made this method truly private in v13. This warning will be removed in v14. */
   protected static _pullToScene(sceneId: never): never;
 
-  override fromCompendium<Options extends foundry.documents.abstract.WorldCollection.FromCompendiumOptions | undefined>(
-    document: Scene.Implementation | Scene.CreateData,
-    options?: Options,
-  ): foundry.documents.abstract.WorldCollection.FromCompendiumReturnType<"Scene", Options>;
+  static #Scenes: true;
 }
 
 declare namespace Scenes {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Scenes.Implementation} instead. This will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Scenes.ImplementationClass} instead. This will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -63,14 +76,12 @@ declare namespace Scenes {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Scene"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Scene"> {}
 
-  /**
-   * @deprecated Replaced by {@linkcode Scenes.ImplementationClass}.
-   */
+  type PreloadReturn<Push extends boolean | undefined> = true extends Push ? io.Socket : Array<Sound | undefined>;
+
+  /** @deprecated Replaced by {@linkcode Scenes.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;
 
-  /**
-   * @deprecated Replaced by {@linkcode Scenes.Implementation}.
-   */
+  /** @deprecated Replaced by {@linkcode Scenes.Implementation}. Will be removed in v15. */
   type Configured = Implementation;
 }
 

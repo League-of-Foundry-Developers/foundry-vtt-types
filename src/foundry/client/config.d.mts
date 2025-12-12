@@ -10,6 +10,7 @@ import type {
   InexactPartial,
   Brand,
   InterfaceToObject,
+  MaybeArray,
 } from "#utils";
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
@@ -3505,31 +3506,31 @@ declare global {
          * One or more sound paths for when the door is closed
          * @remarks If an array is provided, a random entry is chosen
          */
-        close: string | string[];
+        close: MaybeArray<string>;
 
         /**
          * One or more sound paths for when the door becomes locked
          * @remarks If an array is provided, a random entry is chosen
          */
-        lock: string | string[];
+        lock: MaybeArray<string>;
 
         /**
          * One or more sound paths for when opening the door
          * @remarks If an array is provided, a random entry is chosen
          */
-        open: string | string[];
+        open: MaybeArray<string>;
 
         /**
          * One or more sound paths for when attempting to open a locked door
          * @remarks If an array is provided, a random entry is chosen
          */
-        test: string | string[];
+        test: MaybeArray<string>;
 
         /**
          * One or more sound paths for when the door becomes unlocked
          * @remarks If an array is provided, a random entry is chosen
          */
-        unlock: string | string[];
+        unlock: MaybeArray<string>;
       }>;
 
       interface DoorSoundConfig extends _DoorSoundConfig {

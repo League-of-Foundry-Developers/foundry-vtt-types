@@ -10,7 +10,7 @@ new TestBaseCards();
 
 const baseCards = new TestBaseCards({ type: "deck", name: "Test Cards" });
 
-expectTypeOf(baseCards.cards).toEqualTypeOf<EmbeddedCollection<Card.Implementation, Cards.Implementation>>();
+expectTypeOf(baseCards.cards).toEqualTypeOf<EmbeddedCollection<Card.Stored, Cards.Implementation>>();
 
 const card = baseCards._source.cards[0]!;
 expectTypeOf(card._id).toEqualTypeOf<Card.Source["_id"]>();

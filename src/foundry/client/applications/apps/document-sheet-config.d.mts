@@ -49,6 +49,7 @@ declare namespace DocumentSheetConfig {
     extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<Document> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
+
   interface SheetRegistrationOptions {
     /**
      * A human-readable label for the sheet name, or a function that returns one. Will be localized.

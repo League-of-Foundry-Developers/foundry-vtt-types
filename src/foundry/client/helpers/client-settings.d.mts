@@ -40,7 +40,7 @@ declare class ClientSettings {
    * {@linkcode foundry.documents.collections.WorldSettings | WorldSettings} lacks `key`, `setItem`,
    * and `removeItem` methods
    */
-  storage: Map<string, Storage | foundry.documents.collections.WorldSettings>;
+  storage: Map<string, Storage | foundry.documents.collections.WorldSettings.Implementation>;
 
   /**
    * Return a singleton instance of the Game Settings Configuration app

@@ -818,6 +818,9 @@ export type AnyMutableObject = {
   [K: string]: unknown;
 };
 
+/** Very basic helper type, does what it says on the tin. */
+export type MaybeArray<T> = T | T[];
+
 /**
  * Use this type to allow any array. This allows readonly arrays which is
  * generally what you want. If you need a mutable array use the

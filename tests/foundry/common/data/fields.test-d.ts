@@ -128,7 +128,7 @@ expectTypeOf(ElementFieldType.hasTypeData).toEqualTypeOf<true>();
 expectTypeOf(ParentDataModel.name).toEqualTypeOf<string>();
 expectTypeOf(AssignmentElementType.documentName).toEqualTypeOf<"ActiveEffect">();
 expectTypeOf(InitializedElementType.collectionName).toEqualTypeOf<"effects">();
-expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffect.Implementation>();
+expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffect.Stored>();
 
 const stringField = new foundry.data.fields.StringField();
 

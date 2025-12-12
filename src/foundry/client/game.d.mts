@@ -3,6 +3,7 @@ import type { ValueOf, FixedInstanceType, InitializationHook, InitializedOn, Emp
 import type BasePackage from "#common/packages/base-package.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 
 import AVMaster = foundry.av.AVMaster;
 import Module = foundry.packages.Module;
@@ -112,12 +113,8 @@ declare class InternalGame<RunEvents extends InitializationHook> {
    * A mapping of WorldCollection instances, one per primary Document type.
    * @remarks Initialized just before the `"setup"` hook event is called.
    */
-  // TODO(LukeAbby): Ideally this would be actually vary based upon `CollectionDocument`.
-  readonly collections: SimpleInitializedOn<
-    foundry.utils.Collection<foundry.documents.abstract.WorldCollection<Game.CollectionDocument, string>>,
-    "setup",
-    RunEvents
-  >;
+  // TODO: Make this a fake Collection subclass like game.modules, return the specific `.Implementation`s for the known keys
+  readonly collections: SimpleInitializedOn<Game.WorldCollectionsCollection, "setup", RunEvents>;
 
   /**
    * The collection of Actor documents which exists in the World.
@@ -621,26 +618,42 @@ declare global {
 }
 
 declare namespace Game {
-  interface ModuleCollection extends Collection<foundry.packages.Module, ModuleCollectionMethods> {}
-
-  interface ModuleCollectionMethods {
+  /**
+   * The special interface for {@linkcode Game.modules | game.modules}.
+   *
+   * This is a {@linkcode Collection} at runtime, not a subclass, but the type of its `get` method is overridden here to provide specificity
+   * where we can know which types certain keys refer to due to fvtt-types's configuration interfaces {@linkcode ModuleConfig} and
+   * {@linkcode RequiredModules}.
+   */
+  interface ModuleCollection extends Collection<foundry.packages.Module, ModuleCollectionMethods> {
     /**
-     * @remarks Gets the module requested for by ID
+     * @remarks Gets the module requested for by ID.
+     *
+     * Go to definition doesn't work here, see {@linkcode ModuleCollectionMethods.get}.
      * @see {@linkcode ModuleConfig} to add custom properties to modules, for example APIs.
      * @see {@linkcode RequiredModules} to remove `undefined` from the return type for a given module
      * @param id - The module ID to look up
+     *
+     * @privateRemarks The `Methods` hack does not pass through JSDoc, so we have this otherwise unnecessary override here.
      */
+    get: ModuleCollectionMethods["get"];
+  }
+
+  /**
+   * Methods for the {@linkcode ModuleCollection} fake class. Only `#get` needs a type override, the rest is inherited.
+   */
+  interface ModuleCollectionMethods extends Omit<Collection.Methods<foundry.packages.Module>, "get"> {
     get<T extends string, Options extends Collection.GetOptions | undefined = undefined>(
       id: T,
-      { strict }?: Options,
-    ): _ModuleCollectionGet<T, Options>;
+      options?: Options,
+    ): _ModuleCollectionGetReturn<T, Options>;
   }
 
   /** @internal */
-  type _ModuleCollectionGet<
+  type _ModuleCollectionGetReturn<
     Name extends string,
     Options extends Collection.GetOptions | undefined = undefined,
-  > = Name extends keyof RequiredModules ? _Module<Name> : Collection.GetReturnType<_MaybeActiveModule<Name>, Options>;
+  > = Name extends keyof RequiredModules ? _Module<Name> : Collection.GetReturn<_MaybeActiveModule<Name>, Options>;
 
   /** @internal */
   type _Module<Name extends string> =
@@ -652,6 +665,37 @@ declare namespace Game {
     | _Module<Name>
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     | ({ active: false } & Module & { [K in keyof GetKey<ModuleConfig, Name, {}>]?: never });
+
+  /**
+   * The type for {@linkcode Game.collections | game.collections} after initialization.
+   *
+   * This is a {@linkcode Collection} at runtime, not a subclass, but the type of its `get` method is overridden here to return the
+   * Foundry-provided {@linkcode WorldCollection}s for their known keys.
+   */
+  interface WorldCollectionsCollection extends Collection<WorldCollection.Any, WorldCollectionsCollectionMethods> {
+    /**
+     * @remarks Returns the appropriate {@linkcode WorldCollection} implementation
+     * when passed a key in {@linkcode CONST.WORLD_DOCUMENT_TYPES}.
+     *
+     * Go to definition breaks here, see {@linkcode WorldCollectionsCollectionMethods.get}.
+     */
+    get: WorldCollectionsCollectionMethods["get"];
+  }
+
+  interface WorldCollectionsCollectionMethods extends Omit<Collection.Methods<WorldCollection.Any>, "get"> {
+    get<Key extends string, Options extends Collection.GetOptions | undefined>(
+      key: Key,
+      options?: Options,
+    ): _WorldCollectionsCollectionGetReturn<Key, Options>;
+  }
+
+  /** @internal */
+  type _WorldCollectionsCollectionGetReturn<
+    Key extends string,
+    Options extends Collection.GetOptions | undefined,
+  > = Key extends CONST.WORLD_DOCUMENT_TYPES
+    ? WorldCollection.ForName<Key>
+    : Collection._GetReturn<WorldCollection.Any, Options>;
 
   namespace Model {
     /**
@@ -782,14 +826,27 @@ declare namespace Game {
   interface Data extends _Data {}
 
   namespace Data {
-    interface Pack extends PackageCompendiumData {
-      /** @deprecated since v11 */
-      private?: boolean | undefined;
-      system?: string | undefined;
-      type: foundry.CONST.COMPENDIUM_DOCUMENT_TYPES;
+    interface Pack extends BasePackage.SocketCompendiumData {
+      /**
+       * @remarks Not all packs are required to specify a `system`, and those that don't will not have this key in their data,
+       * presumably because the socket eats the `undefined`-valued property.
+       *
+       * Of packs with a `system`, only ones where it matches the current world's are sent to clients.
+       */
+      system?: foundry.packages.System.Id;
+
       packageName: BasePackage["_source"]["id"];
       packageType: BasePackage["type"];
+
+      /** @remarks In the format `${package.id}.${pack.name}` */
       id: string;
+
+      /**
+       * @privateRemarks For some reason {@linkcode BasePackage.Schema.path} is `required: false`, so the `UndefinedToOptional` on
+       * {@linkcode BasePackage.SocketCompendiumData} makes it optional here, but a `path` will always be in the metadata sent by
+       * the server.
+       */
+      path: string;
 
       /**
        * @remarks This property is deleted right before `setup` is called, most likely inadvertently.
@@ -838,21 +895,6 @@ declare namespace Game {
      */
     userId?: string | undefined;
   }
-
-  // Note(LukeAbby): See `Game#initializeDocuments`'s `initOrder`.
-  type CollectionDocument =
-    | "User"
-    | "Folder"
-    | "Actor"
-    | "Item"
-    | "Scene"
-    | "Combat"
-    | "JournalEntry"
-    | "Macro"
-    | "Playlist"
-    | "RollTable"
-    | "Cards"
-    | "ChatMessage";
 }
 
 declare global {
@@ -863,7 +905,7 @@ declare global {
   let canvas: InitializedOn<Canvas, "init">;
 }
 
-type ConfiguredCollectionClassForName<Name extends foundry.CONST.WORLD_DOCUMENT_TYPES> = FixedInstanceType<
+type ConfiguredCollectionClassForName<Name extends CONST.WORLD_DOCUMENT_TYPES> = FixedInstanceType<
   CONFIG[Name]["collection"]
 >;
 
