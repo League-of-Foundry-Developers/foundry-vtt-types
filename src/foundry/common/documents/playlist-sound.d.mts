@@ -67,7 +67,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   override readonly parentCollection: PlaylistSound.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): PlaylistSound.ImplementationClass;
 

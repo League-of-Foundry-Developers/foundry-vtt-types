@@ -128,11 +128,11 @@ declare abstract class Document<
 
   override parent: Parent;
 
-  // options: not null (destructured)
   protected override _configure(options?: Document.ConfigureOptions): void;
 
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
+   * @defaultValue {@linkcode Document._getParentCollection | this._getParentCollection(parentCollection)}
    * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`
    */
   readonly parentCollection: Document.MetadataFor<DocumentName>["collection"] | null;
@@ -141,9 +141,8 @@ declare abstract class Document<
    * An immutable reference to a containing Compendium collection to which this Document belongs.
    * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`
    */
-  // TODO: Actually a getter, consider converting
   // TODO: either way, propagate valid values to template (e.g `string` in `BaseAdventure`, `null` in `BaseChatMessage`)
-  readonly pack: string | null;
+  get pack(): string | null;
 
   /**
    * A mapping of embedded Document collections which exist in this model.
@@ -1849,10 +1848,16 @@ declare namespace Document {
   interface ConstructionContext<Parent extends Document.Any | null = Document.Any | null>
     extends Omit<DataModel._ConstructionContext, "strict">, _ConstructionContext<Parent> {}
 
-  /** `DataModel#constructor` pulls `parent` and `strict` out of the passed context before forwarding to `#_configure` */
+  /**
+   * `Document` has no constructor override, and `DataModel#constructor` pulls `parent` and `strict` out of the passed context before
+   * forwarding to {@linkcode Document._configure | #_configure}
+   */
   interface ConfigureOptions extends Omit<ConstructionContext, "parent" | "strict"> {}
 
-  /** `DataModel#constructor` pulls `parent` out of the passed context before forwarding to `#_initializeSource` */
+  /**
+   * `Document` has no constructor override, and `DataModel#constructor` pulls `parent` out of the passed context before forwarding to
+   * {@linkcode Document._initializeSource | #_initializeSource}
+   */
   interface InitializeOptions extends Omit<ConstructionContext, "parent"> {}
 
   /**

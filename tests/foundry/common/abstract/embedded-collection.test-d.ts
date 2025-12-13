@@ -26,10 +26,11 @@ describe("EmbeddedCollection Tests", async () => {
   const user = game.users!.contents[0]!;
 
   const itemCreateData = { name: "Test Item", type: "base" } satisfies Item.CreateData;
+  const itemUpdateData = { folder: null, name: "Test Item 2" } satisfies Item.UpdateData;
 
   const onItemCreateOperation = {
     action: "create",
-    data: [{ name: "Item", type: "base" }],
+    data: [itemCreateData],
     modifiedTime: 7,
     parent: null,
     renderSheet: true,
@@ -41,7 +42,7 @@ describe("EmbeddedCollection Tests", async () => {
     modifiedTime: 7,
     parent: null,
     recursive: true,
-    updates: [{ name: "Item 2" }],
+    updates: [itemUpdateData],
   } satisfies Item.Database2.OnUpdateOperation;
 
   const onItemDeleteOperation = {
@@ -214,13 +215,13 @@ describe("EmbeddedCollection Tests", async () => {
 
   test("_onModifyContents", () => {
     // @ts-expect-error wrong document's operation type
-    ec._onModifyContents("update", [itemStored], [itemCreateData], onSceneUpdateOperation);
+    ec._onModifyContents("update", [itemStored], [itemUpdateData], onSceneUpdateOperation);
 
     expectTypeOf(
       ec._onModifyContents("create", [itemStored], [itemCreateData], onItemCreateOperation, user),
     ).toBeVoid();
     expectTypeOf(
-      ec._onModifyContents("update", [itemStored], [itemCreateData], onItemUpdateOperation, user),
+      ec._onModifyContents("update", [itemStored], [itemUpdateData], onItemUpdateOperation, user),
     ).toBeVoid();
     expectTypeOf(ec._onModifyContents("delete", [itemStored], ["ID"], onItemDeleteOperation, user)).toBeVoid();
   });

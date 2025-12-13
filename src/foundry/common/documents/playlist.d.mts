@@ -79,7 +79,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   override readonly parentCollection: Playlist.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): Playlist.ImplementationClass;
 

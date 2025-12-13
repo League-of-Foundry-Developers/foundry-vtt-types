@@ -59,7 +59,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   override readonly parentCollection: WallDocument.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): WallDocument.ImplementationClass;
 

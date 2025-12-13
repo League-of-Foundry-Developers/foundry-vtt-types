@@ -1,48 +1,106 @@
-import { test, describe, expectTypeOf } from "vitest";
+import { afterAll, test, describe, expectTypeOf } from "vitest";
 
 import DocumentCollection = foundry.documents.abstract.DocumentCollection;
 import SearchFilter = foundry.applications.ux.SearchFilter;
+import Document = foundry.abstract.Document;
 
-declare const actor: Actor.Stored;
-declare const user: User.Stored;
-declare const itemSourceArray: Item.Source[];
-declare const itemCreateDataArray: Item.CreateData[];
-declare const itemMixedDataArray: (Item.Source | Item.CreateData)[];
-declare const actorCreateDataArray: Actor.CreateData[];
-declare const itemImpl: Item.Implementation;
-declare const itemStored: Item.Stored;
-declare const onItemCreateOperation: Item.Database2.OnCreateOperation;
-declare const onItemUpdateOperation: Item.Database2.OnUpdateOperation;
-declare const onItemDeleteOperation: Item.Database2.OnDeleteOperation;
-declare const onSceneUpdateOperation: Scene.Database2.OnUpdateOperation;
-declare const falseOrUndefined: false | undefined;
-declare const trueOrUndefined: true | undefined;
-declare const boolOrUndefined: boolean | undefined;
+describe("DocumentCollection Tests", async () => {
+  // DocumentCollection is abstract
+  class TestItemCollection extends DocumentCollection<"Item"> {
+    // necessary type override, normally handled by WorldCollection
+    override search(search: DocumentCollection.SearchOptions): Item.Stored[] {
+      return super.search(search) as Item.Stored[];
+    }
+  }
 
-declare class TestItemCollection extends DocumentCollection<"Item"> {
-  // necessary type override, normally handled by WorldCollection
-  search(search: DocumentCollection.SearchOptions): Item.Stored[];
-}
+  const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
 
-describe("DocumentCollection Tests", () => {
+  const actor = await Actor.implementation.create({ name: "DocumentCollection Test Actor", type: "base" });
+  if (!actor) throw new Error("Failed to create test Actor.");
+  docsToCleanUp.add(actor);
+
+  const item = await Item.implementation.create({ name: "DocumentCollection Test Item", type: "base" });
+  if (!item) throw new Error("Failed to create test Item.");
+  docsToCleanUp.add(item);
+
+  const itemImpl = new Item.implementation({ name: "DocumentCollection Test Item", type: "base" });
+
+  const itemSource: Item.Source = item.toObject();
+  const actorSource: Actor.Source = actor.toObject();
+
+  const user = game.users!.contents[0]!;
+
+  const itemCreateData = { name: "Test Item", type: "base" } satisfies Item.CreateData;
+  const itemUpdateData = { folder: null, name: "Test Item 2" } satisfies Item.UpdateData;
+
+  const onItemCreateOperation = {
+    action: "create",
+    data: [itemCreateData],
+    modifiedTime: 7,
+    parent: null,
+    renderSheet: true,
+  } satisfies Item.Database2.OnCreateOperation;
+
+  const onItemUpdateOperation = {
+    action: "update",
+    diff: true,
+    modifiedTime: 7,
+    parent: null,
+    recursive: true,
+    updates: [itemUpdateData],
+  } satisfies Item.Database2.OnUpdateOperation;
+
+  const onItemDeleteOperation = {
+    action: "delete",
+    deleteAll: false,
+    ids: ["XXXXXITEMIDXXXXX"],
+    modifiedTime: 7,
+    parent: null,
+  } satisfies Item.Database2.OnDeleteOperation;
+
+  const onSceneUpdateOperation = {
+    action: "update",
+    diff: true,
+    modifiedTime: 7,
+    parent: null,
+    recursive: true,
+    updates: [{ folder: null }],
+  } satisfies Scene.Database2.OnUpdateOperation;
+
+  const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
+  const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
+  const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
+
   test("Construction", () => {
     // no data *needs* to be passed
     new TestItemCollection();
 
     // @ts-expect-error wrong document source type
-    new TestItemCollection(actorCreateDataArray);
+    new TestItemCollection([actorSource]);
 
     // Source is assignable to CreateData, so either is accepted
-    new TestItemCollection(itemSourceArray);
-    new TestItemCollection(itemCreateDataArray);
-    new TestItemCollection(itemMixedDataArray);
+    new TestItemCollection([itemSource]);
   });
 
-  const dc = new TestItemCollection(itemCreateDataArray);
+  const dc = new TestItemCollection([itemSource]);
 
   test("Miscellaneous", () => {
     expectTypeOf(dc.documentClass).toEqualTypeOf<Item.ImplementationClass>();
     expectTypeOf(dc.documentName).toEqualTypeOf<"Item">();
+    expectTypeOf(TestItemCollection.documentName).toEqualTypeOf<Document.Type | undefined>();
+    expectTypeOf(dc._source).toEqualTypeOf<Item.Source[]>();
+
+    expectTypeOf(dc.createDocument(itemSource)).toEqualTypeOf<Item.Implementation>();
+    expectTypeOf(dc.createDocument(item, {})).toEqualTypeOf<Item.Implementation>();
+    expectTypeOf(
+      dc.createDocument(itemSource, {
+        dropInvalidEmbedded: true,
+        fallback: false,
+        // since this is returning a temporary document that doesn't automatically get put into the collection,
+        // passing a parent is perfectly valid, although there's no reason to make this call in particular
+        parent: actor,
+      }),
+    ).toEqualTypeOf<Item.Implementation>();
 
     expectTypeOf(dc.render()).toBeVoid();
     expectTypeOf(dc.render(true)).toBeVoid();
@@ -60,20 +118,8 @@ describe("DocumentCollection Tests", () => {
       }),
     ).toBeVoid();
 
-    // @ts-expect-error `force` in the render options is always overwritten by the value (after applying param default) of the first arg
+    // @ts-expect-error `force` in the render options is always overwritten with the first arg, so we omit it
     dc.render(undefined, { force: true });
-
-    expectTypeOf(dc.createDocument(itemCreateDataArray[0]!)).toEqualTypeOf<Item.Implementation>();
-    expectTypeOf(dc.createDocument(itemCreateDataArray[0]!, {})).toEqualTypeOf<Item.Implementation>();
-    expectTypeOf(
-      dc.createDocument(itemCreateDataArray[0]!, {
-        dropInvalidEmbedded: true,
-        fallback: false,
-        // since this is returning a temporary document that doesn't automatically get put into the collection,
-        // passing a parent is perfectly valid, although there's no reason to make this call in particular
-        parent: actor,
-      }),
-    ).toEqualTypeOf<Item.Implementation>();
   });
 
   test("Getting", () => {
@@ -106,13 +152,21 @@ describe("DocumentCollection Tests", () => {
     expectTypeOf(dc.getInvalid("ID", { strict: trueOrUndefined })).toEqualTypeOf<Item.Invalid>();
     expectTypeOf(dc.getInvalid("ID", { strict: falseOrUndefined })).toEqualTypeOf<Item.Invalid | undefined>();
     expectTypeOf(dc.getInvalid("ID", { strict: boolOrUndefined })).toEqualTypeOf<Item.Invalid | undefined>();
+
+    expectTypeOf(dc.getName("name")).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", {})).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", { strict: true })).toEqualTypeOf<Item.Stored>();
+    expectTypeOf(dc.getName("name", { strict: undefined })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", { strict: trueOrUndefined })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", { strict: falseOrUndefined })).toEqualTypeOf<Item.Stored | undefined>();
+    expectTypeOf(dc.getName("name", { strict: boolOrUndefined })).toEqualTypeOf<Item.Stored | undefined>();
   });
 
   test("Setting and Deleting", () => {
-    // @ts-expect-error Document collections only contain stored documents
+    // @ts-expect-error `DocumentCollection`s only contain stored documents
     dc.set("ID", itemImpl);
-    // returns void, for now (13.350): https://github.com/foundryvtt/foundryvtt/issues/13565
-    expectTypeOf(dc.set("ID", itemStored)).toBeVoid();
+    // returns void, for now (13.351): https://github.com/foundryvtt/foundryvtt/issues/13565
+    expectTypeOf(dc.set("ID", item)).toBeVoid();
 
     expectTypeOf(dc.delete("ID")).toBeBoolean();
   });
@@ -125,7 +179,7 @@ describe("DocumentCollection Tests", () => {
       Record<string, DocumentCollection.SearchableField>
     >();
 
-    // @ts-expect-error `#search`'s one parameter has no default, but all its properties do
+    // @ts-expect-error `#search`'s one parameter has no default, but all its properties do; must pass at least an empty object
     dc.search();
 
     expectTypeOf(dc.search({})).toEqualTypeOf<Item.Stored[]>();
@@ -166,13 +220,13 @@ describe("DocumentCollection Tests", () => {
 
   test("_onModifyContents", () => {
     // @ts-expect-error wrong document's operation type
-    dc._onModifyContents("update", [itemStored], itemCreateDataArray, onSceneUpdateOperation);
-    expectTypeOf(
-      dc._onModifyContents("create", [itemStored], itemCreateDataArray, onItemCreateOperation, user),
-    ).toBeVoid();
-    expectTypeOf(
-      dc._onModifyContents("update", [itemStored], itemCreateDataArray, onItemUpdateOperation, user),
-    ).toBeVoid();
-    expectTypeOf(dc._onModifyContents("delete", [itemStored], ["ID"], onItemDeleteOperation, user)).toBeVoid();
+    dc._onModifyContents("update", [item], [itemUpdateData], onSceneUpdateOperation);
+    expectTypeOf(dc._onModifyContents("create", [item], [itemCreateData], onItemCreateOperation, user)).toBeVoid();
+    expectTypeOf(dc._onModifyContents("update", [item], [itemUpdateData], onItemUpdateOperation, user)).toBeVoid();
+    expectTypeOf(dc._onModifyContents("delete", [item], ["XXXXXITEMIDXXXXX"], onItemDeleteOperation, user)).toBeVoid();
+  });
+
+  afterAll(async () => {
+    for (const doc of docsToCleanUp) await doc.delete();
   });
 });

@@ -83,7 +83,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   override readonly parentCollection: Folder.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): Folder.ImplementationClass;
 

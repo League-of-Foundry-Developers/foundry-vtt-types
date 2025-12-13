@@ -71,7 +71,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   override readonly parentCollection: Adventure.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  /** @privateRemarks There is no world `Adventure` collection, they only exist inside compendia */
+  override get pack(): string;
 
   static override get implementation(): Adventure.ImplementationClass;
 
