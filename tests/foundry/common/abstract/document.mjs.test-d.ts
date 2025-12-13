@@ -1,6 +1,15 @@
-import { expectTypeOf } from "vitest";
+import { describe, expectTypeOf, test } from "vitest";
 import Document = foundry.abstract.Document;
 import BaseActiveEffect = foundry.documents.BaseActiveEffect;
+
+describe("Document Type Tests", () => {
+  const actor = game.actors!.contents[0]!;
+  // const user = game.users!.contents[0]!
+
+  test("_configure-defined properties", () => {
+    expectTypeOf(actor.collections.items);
+  });
+});
 
 declare const configuredActiveEffect: Document.ToConfiguredInstance<typeof foundry.documents.BaseActiveEffect>;
 expectTypeOf(configuredActiveEffect).toEqualTypeOf<ActiveEffect.Implementation>();

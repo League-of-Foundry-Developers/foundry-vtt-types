@@ -2,6 +2,7 @@ import type { AnyMutableObject, MaybeArray } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The Macro Document.
@@ -157,8 +158,9 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   static override get(
     documentId: string,
     options?: BaseMacro.Database2.GetDocumentsOperation,
-  ): BaseMacro.Implementation | null;
+  ): BaseMacro.Implementation | CompendiumCollection.IndexEntry<"Macro"> | null;
 
+  /** @privateRemarks `Macro`s have no embedded documents, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

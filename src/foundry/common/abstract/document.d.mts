@@ -7,7 +7,6 @@ import type {
   GetKey,
   InterfaceToObject,
   MakeConform,
-  MustConform,
   ToMethod,
   AnyObject,
   EmptyObject,
@@ -52,6 +51,7 @@ import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
 import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 import type { SystemConfig } from "#configuration";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */
@@ -69,15 +69,6 @@ type InexactPartialExcept<T extends object, RequiredKey> = {
 } & {
   [K in keyof T as Exclude<K, RequiredKey>]?: T[K] | undefined;
 };
-
-// type IntentionalPartialExcept<T extends object, RequiredKey> = {
-//   [K in keyof T as Extract<K, RequiredKey>]: T[K];
-// } & {
-//   [K in keyof T as Exclude<K, RequiredKey>]?: T[K];
-// };
-
-type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
-type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
 
 // Note(LukeAbby): Properties from `Schema` technically derive from `DataModel`. This means that if
 // `name?: string` etc. were to be put in `Document` directly they'd actually override the schema.
@@ -133,7 +124,11 @@ declare abstract class Document<
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
    * @defaultValue {@linkcode Document._getParentCollection | this._getParentCollection(parentCollection)}
-   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`.
+   * @privateRemarks This could realistically be any string passed as
+   * {@linkcode Document.ConstructionContext.parentCollection | parentCollection} in the construction context of a `new Document()`. It's
+   * typed as-is because everywhere it is specified by core, it happens to match the `metadata.collection` of the given document type, and
+   * users are not realistically going to pass it, since they can't define new `EmbeddedCollectionField`s or `EmbeddedDocumentField`s.
    */
   readonly parentCollection: Document.MetadataFor<DocumentName>["collection"] | null;
 
@@ -141,19 +136,19 @@ declare abstract class Document<
    * An immutable reference to a containing Compendium collection to which this Document belongs.
    * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`
    */
-  // TODO: either way, propagate valid values to template (e.g `string` in `BaseAdventure`, `null` in `BaseChatMessage`)
   get pack(): string | null;
 
   /**
    * A mapping of embedded Document collections which exist in this model.
-   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`, and the value is
+   * {@linkcode Object.seal}ed.
    */
   readonly collections: Document.CollectionRecord<Schema>;
 
   /**
    * Ensure that all Document classes share the same schema of their base declaration.
    */
-  static get schema(): SchemaField.Any;
+  static override get schema(): SchemaField.Any;
 
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
@@ -230,7 +225,7 @@ declare abstract class Document<
 
   /**
    * Does this Document support additional subtypes?
-   * @remarks For all existing documents (as of 13.350), `Doc.metadata.hasTypeData` is either omitted or is `true`
+   * @remarks For all existing documents (as of 13.351), `Doc.metadata.hasTypeData` is either omitted or is `true`
    */
   static get hasTypeData(): undefined | true;
 
@@ -242,13 +237,10 @@ declare abstract class Document<
   /**
    * Identify the collection in a parent Document that this Document exists belongs to, if any.
    * @param parentCollection - An explicitly provided parent collection name.
-   * @remarks If passed a value for `parentCollection`, simply returns that value
-   *
-   * Foundry marked `@internal`
+   * @remarks If passed a value for `parentCollection`, simply returns that value.
+   * @internal
    */
-  _getParentCollection(parentCollection?: string): string | null;
-
-  _id: string | null;
+  _getParentCollection(parentCollection?: string | null): string | null;
 
   /**
    * The canonical identifier for this Document
@@ -267,8 +259,9 @@ declare abstract class Document<
 
   /**
    * A Universally Unique Identifier (uuid) for this Document instance.
+   * @remarks Always `null` for temporary documents, always `string` for persisted.
    */
-  get uuid(): string;
+  get uuid(): string | null;
 
   /**
    * Test whether a given User has sufficient permissions to create Documents of this type in general. This does not
@@ -288,14 +281,15 @@ declare abstract class Document<
    * granular per-User ownership definitions and Embedded Documents defer to their parent ownership.
    *
    * This method returns the value recorded in Document ownership, regardless of the User's role, for example a
-   * GAMEMASTER user might still return a result of NONE if they are not explicitly denoted as having a level.
+   * `GAMEMASTER` user might still return a result of `NONE` if they are not explicitly denoted as having a level.
    *
    * To test whether a user has a certain capability over the document, testUserPermission should be used.
    * @param user - The User being tested (default: `game.user`)
-   * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
+   * @returns A numeric permission level from `CONST.DOCUMENT_OWNERSHIP_LEVELS` or null
    *
    * @privateRemarks Making this just `User.Implementation` causes circularities
    */
+  // TODO: removing the `.Internal` seems to not break things immediately as of 12 Dec 2025, leaving for future further testing
   getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
@@ -307,6 +301,7 @@ declare abstract class Document<
    *
    * @privateRemarks Making this just `User.Implementation` causes circularities
    */
+  // TODO: removing the `.Internal` seems to not break things immediately as of 12 Dec 2025, leaving for future further testing
   testUserPermission(
     user: User.Internal.Implementation,
     permission: Document.ActionPermission,
@@ -322,6 +317,7 @@ declare abstract class Document<
    *
    * @privateRemarks Making this just `User.Implementation` causes circularities
    */
+  // TODO: removing the `.Internal` seems to not break things immediately as of 12 Dec 2025, leaving for future further testing
   canUserModify<Action extends "create" | "update" | "delete">(
     user: User.Internal.Implementation,
     action: Action,
@@ -345,7 +341,7 @@ declare abstract class Document<
    * The data model is defined by the template.json specification included by the game system.
    * @returns The migrated system data object
    * @remarks
-   * @throws If this document type either doesn't have subtypes or it does but the one on this document is a DataModel
+   * @throws If this document type either doesn't have subtypes or it does but the one on this document is a `DataModel`
    */
   migrateSystemData(): object;
 
@@ -562,14 +558,17 @@ declare abstract class Document<
    * {@linkcode FogExploration.get} can possibly forward args and return to/from {@linkcode FogExploration.load},
    * which accounts for the `Promise<>` part of the return; All other documents return `SomeDoc.Implementation | null`
    */
-  // TODO: Type for possible index entry return
-  static get(documentId: string, operation?: Document.Database.GetOptions): MaybePromise<Document.Any | null>;
+  // TODO: improve with a conditional return possibly: https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3545
+  static get(
+    documentId: string,
+    operation?: Document.Database.GetOptions,
+  ): MaybePromise<Document.Any | CompendiumCollection.IndexEntry | null>;
 
   /**
    * A compatibility method that returns the appropriate name of an embedded collection within this Document.
    * @param name - An existing collection name or a document name.
-   * @returns The provided collection name if it exists, the first available collection for the
-   *          document name provided, or null if no appropriate embedded collection could be found.
+   * @returns The provided collection name if it exists, the first available collection for the document name
+   * provided, or null if no appropriate embedded collection could be found.
    *
    * @example
    * Passing an existing collection name.
@@ -1307,8 +1306,9 @@ declare namespace Document {
     type Stored<D extends Document.Any> = Override<
       D,
       {
-        id: string;
+        get id(): string;
         _id: string;
+        get uuid(): string;
         _source: Override<D["_source"], { _id: string }>;
         toJSON(): Override<D["_source"], { _id: string }>;
       }
@@ -1833,7 +1833,8 @@ declare namespace Document {
          * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
          * @privateRemarks Omitted from the typedef, inferred from usage in {@linkcode Document._configure | Document#_configure}
          * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
-         * {@linkcode foundry.abstract.EmbeddedCollection.createDocument | EmbeddedCollection#createDocument})
+         * {@linkcode foundry.abstract.EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}). See
+         * {@linkcode Document.parentCollection | Document#parentCollection}.
          */
         parentCollection: string;
       }> {}
@@ -1987,7 +1988,7 @@ declare namespace Document {
    * @privateRemarks `temporary` is not being supported here; returning a temporary doc is the default behaviour of `clone()`, passing
    * `{ save: true, temporary: true }` is nonsensical.
    */
-  interface CloneContext<Save extends boolean | undefined>
+  interface CloneContext<Save extends boolean | undefined = undefined>
     extends
       _CloneContext<Save>,
       Omit<Document.ConstructionContext, "parent" | "strict">,
@@ -3679,11 +3680,11 @@ declare namespace Document {
     : never;
 
   /**
-   * {@linkcode Document.clone} is not an async function, and its default behaviour is to return a constructed, temporary document directly,
-   * but if `{save: true}` is passed in `context`, it will forward the return of {@linkcode Document.create}.
+   * {@linkcode Document.clone | Document#clone} is not an async function, and its default behaviour is to return a constructed, temporary,
+   * document directly, but if `{save: true}` is passed in `context`, it will forward the return of {@linkcode Document.create}.
    */
   type Clone<This extends Document.Any, Save extends boolean | undefined> =
-    true extends Extract<Save, true> ? Promise<Document.StoredForName<This["documentName"]>> : This;
+    true extends Extract<Save, true> ? Promise<Document.StoredForName<This["documentName"]> | undefined> : This;
 
   /**
    * @deprecated Foundry, prior to v13, had a completely unused `options` parameter in the

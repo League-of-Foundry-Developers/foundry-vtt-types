@@ -345,7 +345,7 @@ declare namespace DatabaseBackend {
      * An array of field identifiers which should be indexed
      *
      * @remarks Only fields that haven't been previously indexed this page load need be passed. Any given compendium will have the fields
-     * in it's Document class's metadata (e.g {@linkcode Actor.metadata.compendiumIndexFields}), and any pushed into the relevant array in
+     * in its Document class's metadata (e.g {@linkcode Actor.metadata.compendiumIndexFields}), and any pushed into the relevant array in
      * `CONFIG` (e.g {@linkcode CONFIG.Actor.compendiumIndexFields}) before the initial index is requested, in its index already.
      */
     indexFields?: string[];
