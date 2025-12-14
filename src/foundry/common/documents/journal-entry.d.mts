@@ -91,7 +91,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): BaseJournalEntry.Hierarchy;
 
@@ -160,11 +160,6 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     ids: Array<string>,
     operation?: Document.Database2.DeleteEmbeddedOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends BaseJournalEntry.Flags.Scope, Key extends BaseJournalEntry.Flags.Key<Scope>>(
     scope: Scope,

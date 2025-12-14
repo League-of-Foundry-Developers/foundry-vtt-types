@@ -1,10 +1,32 @@
 import { describe, expectTypeOf, test } from "vitest";
 import Document = foundry.abstract.Document;
 import BaseActiveEffect = foundry.documents.BaseActiveEffect;
+import type { FixedInstanceType } from "#utils";
+
+type _HasTypeData<Name extends Document.Type> = Name extends unknown
+  ? Document.ImplementationClassFor<Name> extends { hasTypeData: true }
+    ? Name
+    : never
+  : never;
+
+type CalculatedSystemDocTypesTypeData = _HasTypeData<Document.Type>;
+
+type _HasSystem<DocCls extends Document.AnyConstructor> = DocCls extends unknown
+  ? FixedInstanceType<DocCls["baseDocument"]> extends { system: unknown }
+    ? DocCls["documentName"]
+    : never
+  : never;
+
+type CalculatedSystemDocTypesSystem = _HasSystem<Document.ImplementationClassFor<Document.Type>>;
 
 describe("Document Type Tests", () => {
   const actor = game.actors!.contents[0]!;
   // const user = game.users!.contents[0]!
+
+  test("Hand written unions match calculated ones", () => {
+    expectTypeOf<Document.SystemType>().toEqualTypeOf<CalculatedSystemDocTypesTypeData>();
+    expectTypeOf<Document.SystemType>().toEqualTypeOf<Exclude<CalculatedSystemDocTypesSystem, "ActorDelta">>();
+  });
 
   test("_configure-defined properties", () => {
     expectTypeOf(actor.collections.items);

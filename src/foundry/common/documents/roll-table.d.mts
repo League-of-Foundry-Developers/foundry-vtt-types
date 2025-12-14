@@ -94,7 +94,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static get hasTypeData(): false;
 
   static get hierarchy(): RollTable.Hierarchy;
 
@@ -160,11 +160,6 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
     ids: Array<string>,
     operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends RollTable.Flags.Scope, Key extends RollTable.Flags.Key<Scope>>(
     scope: Scope,

@@ -77,7 +77,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): Setting.Hierarchy;
 
@@ -112,12 +112,8 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override get(documentId: string, options?: Setting.Database.GetOptions): Setting.Implementation | null;
 
+  /** @privateRemarks `Setting`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   protected override _preCreate(
     data: Setting.CreateData,

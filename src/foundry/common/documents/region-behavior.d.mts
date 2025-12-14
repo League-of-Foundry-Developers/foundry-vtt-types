@@ -132,12 +132,8 @@ declare abstract class BaseRegionBehavior<
     options?: RegionBehavior.Database.GetOptions,
   ): RegionBehavior.Implementation | null;
 
+  /** @privateRemarks `RegionBehavior`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends RegionBehavior.Flags.Scope, Key extends RegionBehavior.Flags.Key<Scope>>(
     scope: Scope,

@@ -126,12 +126,8 @@ declare abstract class BaseCombatant<
 
   static override get(documentId: string, options?: Combatant.Database.GetOptions): Combatant.Implementation | null;
 
+  /** @privateRemarks `Combatant`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends Combatant.Flags.Scope, Key extends Combatant.Flags.Key<Scope>>(
     scope: Scope,

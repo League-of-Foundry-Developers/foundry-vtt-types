@@ -16,6 +16,10 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
+/** @privateRemarks `hookEvents` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { AllHooks as hookEvents } from "#client/hooks.d.mts";
+
 import fields = foundry.data.fields;
 
 declare namespace Actor {

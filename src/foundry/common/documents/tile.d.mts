@@ -112,7 +112,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): TileDocument.Hierarchy;
 
@@ -150,12 +150,8 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     options?: TileDocument.Database.GetOptions,
   ): TileDocument.Implementation | null;
 
+  /** @privateRemarks `TileDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends TileDocument.Flags.Scope, Key extends TileDocument.Flags.Key<Scope>>(
     scope: Scope,

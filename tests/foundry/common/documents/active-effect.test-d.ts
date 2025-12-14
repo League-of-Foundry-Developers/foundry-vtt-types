@@ -632,8 +632,6 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 
-// traverseEmbeddedDocuments is in the Document boilerplate template but has no signature changes yet
-
 // TODO: wire up core flags to get/set/unsetFlag types
 // TODO: mock up configured flags to test
 expectTypeOf(fullTestAE.getFlag("core", "overlay")).toEqualTypeOf<boolean | undefined>();

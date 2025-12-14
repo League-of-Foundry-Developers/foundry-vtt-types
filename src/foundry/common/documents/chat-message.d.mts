@@ -139,12 +139,8 @@ declare abstract class BaseChatMessage<
 
   static override get(documentId: string, options?: ChatMessage.Database.GetOptions): ChatMessage.Implementation | null;
 
+  /** @privateRemarks `ChatMessage`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends ChatMessage.Flags.Scope, Key extends ChatMessage.Flags.Key<Scope>>(
     scope: Scope,

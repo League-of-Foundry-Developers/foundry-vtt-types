@@ -128,12 +128,8 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   static override get(documentId: string, options?: Card.Database.GetOptions): Card.Implementation | null;
 
+  /** @privateRemarks `Card`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends Card.Flags.Scope, Key extends Card.Flags.Key<Scope>>(
     scope: Scope,

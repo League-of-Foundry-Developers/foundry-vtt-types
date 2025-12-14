@@ -107,7 +107,7 @@ declare abstract class BaseTableResult<
 
   static override get TYPES(): BaseTableResult.SubType[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): TableResult.Hierarchy;
 
@@ -142,12 +142,8 @@ declare abstract class BaseTableResult<
 
   static override get(documentId: string, options?: TableResult.Database.GetOptions): TableResult.Implementation | null;
 
+  /** @privateRemarks `TableResult`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends TableResult.Flags.Scope, Key extends TableResult.Flags.Key<Scope>>(
     scope: Scope,

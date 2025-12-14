@@ -95,7 +95,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   static override get TYPES(): BaseFolder.SubType[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): Folder.Hierarchy;
 
@@ -128,12 +128,8 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   override delete(operation?: Folder.Database.DeleteOperation): Promise<this | undefined>;
 
+  /** @privateRemarks `Folder`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends Folder.Flags.Scope, Key extends Folder.Flags.Key<Scope>>(
     scope: Scope,

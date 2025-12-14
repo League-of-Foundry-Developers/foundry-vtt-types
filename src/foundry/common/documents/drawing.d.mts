@@ -111,7 +111,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): DrawingDocument.Hierarchy;
 
@@ -149,12 +149,8 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     options?: DrawingDocument.Database.GetOptions,
   ): DrawingDocument.Implementation | null;
 
+  /** @privateRemarks `DrawingDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends DrawingDocument.Flags.Scope, Key extends DrawingDocument.Flags.Key<Scope>>(
     scope: Scope,

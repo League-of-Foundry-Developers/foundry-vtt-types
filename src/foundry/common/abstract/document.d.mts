@@ -225,9 +225,9 @@ declare abstract class Document<
 
   /**
    * Does this Document support additional subtypes?
-   * @remarks For all existing documents (as of 13.351), `Doc.metadata.hasTypeData` is either omitted or is `true`
+   * @remarks This is `false` in `Document.metadata`, and is only true in subclasses that override
    */
-  static get hasTypeData(): undefined | true;
+  static get hasTypeData(): boolean;
 
   /**
    * The Embedded Document hierarchy for this Document.
@@ -584,7 +584,7 @@ declare abstract class Document<
    * // returns "items"
    * ```
    */
-  static getCollectionName(name: never): string | null;
+  static getCollectionName(name: string): string | null;
 
   /**
    * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
@@ -657,7 +657,9 @@ declare abstract class Document<
    * @param _parentPath - A parent field path already traversed
    * @remarks Not called within Foundry's client-side code, likely exists for server documents
    */
-  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>], void, undefined>;
+  // TODO: Put this into the document template with types that recurse Doc.Hierarchy for embedded documents
+  // TODO: https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3546
+  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.Any], void, undefined>;
 
   /**
    * Get the value of a "flag" for this document
@@ -1104,7 +1106,9 @@ declare namespace Document {
    */
   type UnknownSystem = UnknownSourceData | TypeDataField.UnknownTypeDataModel | DataModel.UnknownDataModel;
 
-  // TODO: Probably a way to auto-determine this
+  /**
+   * @privateRemarks This is hand-written here as a preemptive anti-circularity measure, it is checked against calculated values in tests.
+   */
   type SystemType =
     | "ActiveEffect"
     | "Actor"
@@ -1135,6 +1139,19 @@ declare namespace Document {
       CollectionName extends Document.Embedded.CollectionName<Embedded>,
     > = EmbeddedCollection<DocumentFor<Embedded, CollectionName>, Parent>;
 
+    /**
+     * Given a Record with document name keys and collection name values, returns keys and values as a union
+     * @example
+     * ```ts
+     * namespace Actor.Embedded {
+     *   // `"ActiveEffect" | "Item" | "effects" | "items"`
+     *   type CollectionName = Document.Embedded.CollectionName<{
+     *     ActiveEffect: "effects";
+     *     Item: "items";
+     *   }>
+     * }
+     * ```
+     */
     type CollectionName<Embedded extends Document.Metadata.Embedded> = {
       [K in keyof Embedded]: K extends Document.Type ? Extract<K | Embedded[K], string> : never;
     }[keyof Embedded];
@@ -1160,7 +1177,7 @@ declare namespace Document {
     User: foundry.documents.collections.Users;
   }
 
-  type WorldCollectionFor<Name extends Document.WorldType> = _WorldCollectionMap[Name];
+  type WorldCollectionForName<Name extends Document.WorldType> = _WorldCollectionMap[Name];
 
   type IsParentOf<
     ParentDocument extends Document.Internal.Instance.Any,

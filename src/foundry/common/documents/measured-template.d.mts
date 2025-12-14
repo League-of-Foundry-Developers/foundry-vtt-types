@@ -100,7 +100,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): MeasuredTemplateDocument.Hierarchy;
 
@@ -138,12 +138,8 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     options?: MeasuredTemplateDocument.Database.GetOptions,
   ): MeasuredTemplateDocument.Implementation | null;
 
+  /** @privateRemarks `MeasuredTemplateDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<
     Scope extends MeasuredTemplateDocument.Flags.Scope,

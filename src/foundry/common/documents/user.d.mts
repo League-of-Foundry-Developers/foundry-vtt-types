@@ -115,7 +115,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): User.Hierarchy;
 
@@ -150,12 +150,8 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static override get(documentId: string, options?: User.Database.GetOptions): User.Implementation | null;
 
+  /** @privateRemarks `User`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends User.Flags.Scope, Key extends User.Flags.Key<Scope>>(
     scope: Scope,

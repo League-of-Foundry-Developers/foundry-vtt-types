@@ -79,7 +79,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): PlaylistSound.Hierarchy;
 
@@ -117,12 +117,8 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     options?: PlaylistSound.Database.GetOptions,
   ): PlaylistSound.Implementation | null;
 
+  /** @privateRemarks `PlaylistSound`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends PlaylistSound.Flags.Scope, Key extends PlaylistSound.Flags.Key<Scope>>(
     scope: Scope,

@@ -81,7 +81,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): FogExploration.Hierarchy;
 
@@ -119,12 +119,8 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     options?: FogExploration.Database.GetOptions,
   ): Promise<FogExploration.Implementation | null> | FogExploration.Implementation | null;
 
+  /** @privateRemarks `FogExploration`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends FogExploration.Flags.Scope, Key extends FogExploration.Flags.Key<Scope>>(
     scope: Scope,

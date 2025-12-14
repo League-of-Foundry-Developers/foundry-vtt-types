@@ -66,7 +66,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): AmbientLightDocument.Hierarchy;
 
@@ -104,12 +104,8 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     options?: AmbientLightDocument.Database.GetOptions,
   ): AmbientLightDocument.Implementation | null;
 
+  /** @privateRemarks `AmbientLightDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends AmbientLightDocument.Flags.Scope, Key extends AmbientLightDocument.Flags.Key<Scope>>(
     scope: Scope,

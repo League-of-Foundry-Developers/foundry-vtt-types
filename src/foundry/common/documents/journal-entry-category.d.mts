@@ -74,7 +74,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): JournalEntryCategory.Hierarchy;
 
@@ -112,10 +112,8 @@ declare abstract class BaseJournalEntryCategory extends Document<
     options?: JournalEntryCategory.Database.GetOptions,
   ): JournalEntryCategory.Implementation | null;
 
+  /** @privateRemarks `JournalEntryCategory`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
   override getFlag<Scope extends JournalEntryCategory.Flags.Scope, Key extends JournalEntryCategory.Flags.Key<Scope>>(
     scope: Scope,

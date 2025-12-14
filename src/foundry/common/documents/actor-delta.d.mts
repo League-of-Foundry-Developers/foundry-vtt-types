@@ -136,11 +136,9 @@ declare abstract class BaseActorDelta<
 
   static override get TYPES(): BaseActorDelta.SubType[];
 
-  static override get hasTypeData(): true;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): ActorDelta.Hierarchy;
-
-  override system: ActorDelta.SystemOfType<SubType>;
 
   override parent: BaseActorDelta.Parent;
 
@@ -204,11 +202,6 @@ declare abstract class BaseActorDelta<
     ids: Array<string>,
     operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends ActorDelta.Flags.Scope, Key extends ActorDelta.Flags.Key<Scope>>(
     scope: Scope,

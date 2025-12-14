@@ -84,7 +84,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): Adventure.Hierarchy;
 
@@ -119,12 +119,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static override get(documentId: string, options?: Adventure.Database.GetOptions): Adventure.Implementation | null;
 
+  /** @privateRemarks `Adventure`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends Adventure.Flags.Scope, Key extends Adventure.Flags.Key<Scope>>(
     scope: Scope,

@@ -122,7 +122,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   static override get TYPES(): BaseMacro.SubType[];
 
-  static override get hasTypeData(): true;
+  static override get hasTypeData(): Macro.Metadata["hasTypeData"];
 
   static override get hierarchy(): BaseMacro.Hierarchy;
 
@@ -162,11 +162,6 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   /** @privateRemarks `Macro`s have no embedded documents, so this always returns `null` */
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends Macro.Flags.Scope, Key extends Macro.Flags.Key<Scope>>(
     scope: Scope,
