@@ -1,6 +1,6 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { DataField, SchemaField } from "#common/data/fields.mjs";
+import type { SchemaField } from "#common/data/fields.mjs";
 
 /**
  * The Region Document.
@@ -51,9 +51,6 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    */
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: RegionDocument.ParentCollectionName | null;
 

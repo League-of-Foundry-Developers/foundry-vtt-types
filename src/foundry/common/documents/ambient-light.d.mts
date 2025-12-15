@@ -1,6 +1,6 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The Document definition for an AmbientLight.
@@ -48,9 +48,6 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    * They are here because they're static properties but depend on the instance and so can't be
    * defined DRY-ly while also being easily overridable.
    */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: AmbientLightDocument.ParentCollectionName | null;
 

@@ -108,15 +108,15 @@ declare namespace Scene {
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
   type DirectDescendant =
-    | AmbientLightDocument.Implementation
-    | AmbientSoundDocument.Implementation
-    | DrawingDocument.Implementation
-    | MeasuredTemplateDocument.Implementation
-    | NoteDocument.Implementation
-    | RegionDocument.Implementation
-    | TileDocument.Implementation
-    | TokenDocument.Implementation
-    | WallDocument.Implementation;
+    | AmbientLightDocument.Stored
+    | AmbientSoundDocument.Stored
+    | DrawingDocument.Stored
+    | MeasuredTemplateDocument.Stored
+    | NoteDocument.Stored
+    | RegionDocument.Stored
+    | TileDocument.Stored
+    | TokenDocument.Stored
+    | WallDocument.Stored;
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -172,7 +172,7 @@ declare namespace Scene {
     /**
      * Gets the collection name for an embedded document.
      */
-    type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionNameFor<
+    type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
       Metadata.Embedded,
       CollectionName
     >;

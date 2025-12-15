@@ -1,7 +1,7 @@
 import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The ActiveEffect Document.
@@ -91,9 +91,6 @@ declare abstract class BaseActiveEffect<
   type: SubType;
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: ActiveEffect.ParentCollectionName | null;
 

@@ -3,13 +3,15 @@ import Document = foundry.abstract.Document;
 import BaseActiveEffect = foundry.documents.BaseActiveEffect;
 import type { FixedInstanceType } from "#utils";
 
+// declare const actor: Actor.Stored;
+
 type _HasTypeData<Name extends Document.Type> = Name extends unknown
   ? Document.ImplementationClassFor<Name> extends { hasTypeData: true }
     ? Name
     : never
   : never;
 
-type CalculatedSystemDocTypesTypeData = _HasTypeData<Document.Type>;
+type CalculatedSystemDocTypesByHasTypeData = _HasTypeData<Document.Type>;
 
 type _HasSystem<DocCls extends Document.AnyConstructor> = DocCls extends unknown
   ? FixedInstanceType<DocCls["baseDocument"]> extends { system: unknown }
@@ -17,15 +19,16 @@ type _HasSystem<DocCls extends Document.AnyConstructor> = DocCls extends unknown
     : never
   : never;
 
-type CalculatedSystemDocTypesSystem = _HasSystem<Document.ImplementationClassFor<Document.Type>>;
+type CalculatedSystemDocTypesByHasSystem = _HasSystem<Document.ImplementationClassFor<Document.Type>>;
 
 describe("Document Type Tests", () => {
   const actor = game.actors!.contents[0]!;
   // const user = game.users!.contents[0]!
 
   test("Hand written unions match calculated ones", () => {
-    expectTypeOf<Document.SystemType>().toEqualTypeOf<CalculatedSystemDocTypesTypeData>();
-    expectTypeOf<Document.SystemType>().toEqualTypeOf<Exclude<CalculatedSystemDocTypesSystem, "ActorDelta">>();
+    expectTypeOf<Document.SystemType>().toEqualTypeOf<CalculatedSystemDocTypesByHasTypeData>();
+    // ActorDelta has `system`, but not as a `TypeDataModel`
+    expectTypeOf<Document.SystemType>().toEqualTypeOf<Exclude<CalculatedSystemDocTypesByHasSystem, "ActorDelta">>();
   });
 
   test("_configure-defined properties", () => {

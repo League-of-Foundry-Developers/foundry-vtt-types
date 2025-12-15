@@ -1,6 +1,6 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The Document definition for a Wall.
@@ -53,9 +53,6 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
    */
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: WallDocument.ParentCollectionName | null;
 

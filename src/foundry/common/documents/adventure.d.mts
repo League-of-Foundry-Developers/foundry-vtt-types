@@ -1,6 +1,6 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 import type * as fields from "../data/fields.d.mts";
 
 /**
@@ -65,9 +65,6 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    */
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: Adventure.ParentCollectionName | null;
 

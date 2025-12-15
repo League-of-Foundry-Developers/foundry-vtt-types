@@ -1,7 +1,7 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The Combatant Document.
@@ -71,9 +71,6 @@ declare abstract class BaseCombatant<
   type: SubType;
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: Combatant.ParentCollectionName | null;
 

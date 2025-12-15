@@ -1,6 +1,6 @@
 import type { AnyMutableObject, Identity } from "#utils";
 import type Document from "../abstract/document.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 import type DataModel from "../abstract/data.d.mts";
 import type EmbeddedCollection from "../abstract/embedded-collection.d.mts";
 
@@ -118,9 +118,6 @@ declare abstract class BaseActorDelta<
   set type(type);
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: ActorDelta.ParentCollectionName | null;
 

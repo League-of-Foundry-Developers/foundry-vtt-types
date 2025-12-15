@@ -27,6 +27,8 @@ import type {
   IntentionalPartial,
   MaybeArray,
   Coalesce,
+  ValueOf,
+  PropertiesOfType,
 } from "#utils";
 import type {
   DataSchema,
@@ -556,7 +558,7 @@ declare abstract class Document<
    * index entry (or `null`), instead of the Document.
    *
    * {@linkcode FogExploration.get} can possibly forward args and return to/from {@linkcode FogExploration.load},
-   * which accounts for the `Promise<>` part of the return; All other documents return `SomeDoc.Implementation | null`
+   * which accounts for the `Promise<>` part of the return; All other documents return `SomeDoc.Implementation | IndexEntry<DocName> | null`
    */
   // TODO: improve with a conditional return possibly: https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3545
   static get(
@@ -602,6 +604,9 @@ declare abstract class Document<
    * @param id           - The id of the child document to retrieve
    * @param options      - Additional options which modify how embedded documents are retrieved
    * @returns The retrieved embedded Document instance, or undefined
+   *
+   * @remarks `embeddedName` can also be the collection name, e.g to get an `Item` from an `Actor` instance, both `"Item"` and `"items"` are
+   * valid.
    * @throws If the embedded collection does not exist, or if strict is true and the Embedded Document could not be found.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedDocument` directly.
@@ -619,8 +624,14 @@ declare abstract class Document<
    * @param operation    - Parameters of the database creation workflow (default: `{}`)
    * @returns An array of created Document instances
    *
-   * @remarks `| undefined` is included in the specific document overrides' element type
-   * @privateRemarks `data` has a parameter default but passing no updates is nonsensical, so it's not marked optional here
+   * @remarks Unlike {@linkcode Document.getEmbeddedDocument | Document#getEmbeddedDocument}, `embeddedName` must be a document type;
+   * collection names are not valid.
+   *
+   * As this is a create operation, `| undefined` is included in the specific document overrides' return type
+   *
+   * @privateRemarks `data` has a parameter default but passing no updates is nonsensical, so it's not marked optional here.
+   *
+   * `Temporary` is not handled here as making temporary embedded documents is nonsense, and it's going away in v14.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#createEmbeddedDocuments` directly.
   // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
@@ -633,6 +644,9 @@ declare abstract class Document<
    * @param updates      - An array of differential data objects, each used to update a single Document (default: `[]`)
    * @param operation    - Parameters of the database update workflow (default: `{}`)
    * @returns An array of updated Document instances
+   *
+   * @remarks Unlike {@linkcode Document.getEmbeddedDocument | Document#getEmbeddedDocument}, `embeddedName` must be a document type;
+   * collection names are not valid.
    *
    * @privateRemarks `updates` has a parameter default but passing no updates is nonsensical, so it's not marked optional here
    */
@@ -647,6 +661,9 @@ declare abstract class Document<
    * @param ids          - An array of string ids for each Document to be deleted
    * @param operation    - Parameters of the database deletion workflow (default: `{}`)
    * @returns An array of deleted Document instances
+   *
+   * @remarks Unlike {@linkcode Document.getEmbeddedDocument | Document#getEmbeddedDocument}, `embeddedName` must be a document type;
+   * collection names are not valid.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#deleteEmbeddedDocuments` directly.
   // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
@@ -1123,15 +1140,45 @@ declare namespace Document {
     | "RegionBehavior";
 
   namespace Embedded {
-    type CollectionNameFor<
-      Embedded extends Document.Metadata.Embedded,
-      CollectionName extends Document.Embedded.CollectionName<Embedded>,
-    > = Extract<GetKey<Metadata.Embedded, CollectionName, CollectionName>, Document.Type>;
+    /**
+     * @template Embedded - The specific document's `Metadata.Embedded`, e.g {@linkcode Actor.Metadata.Embedded}
+     * @template Name     - A document type or collection name
+     * @example
+     * ```ts
+     * // Document names convert to collection names, so this is "items":
+     * type ItemCollectionName = Document.Embedded.CollectionNameForName<Actor.Metadata.Embedded, "Item">
+     * // Collection names pass through
+     * type ItemCollectionNameAlso = Document.Embedded.CollectionNameForName<Actor.Metadata.Embedded, "items">
+     * ```
+     * @internal
+     */
+    type _CollectionNameForName<Embedded extends Document.Metadata.Embedded, Name extends string> =
+      Name extends ValueOf<Embedded> ? Name : Name extends keyof Embedded ? Embedded[Name] : never;
 
+    /**
+     * @template Embedded - The specific document's `Metadata.Embedded`, e.g {@linkcode Actor.Metadata.Embedded}
+     * @template Name     - A document type or collection name
+     * @example
+     * ```ts
+     * // Collection names convert to document names, so this is "Item":
+     * type ItemDocumentName = Document.Embedded.DocumentNameForName<Actor.Metadata.Embedded, "items">
+     * // Document names pass through
+     * type ItemDocumentNameAlso = Document.Embedded.DocumentNameForName<Actor.Metadata.Embedded, "Item">
+     * ```
+     * @internal
+     */
+    type _DocumentNameForName<
+      Embedded extends Document.Metadata.Embedded,
+      Name extends string,
+    > = Name extends keyof Embedded ? Name : Name extends ValueOf<Embedded> ? PropertiesOfType<Embedded, Name> : never;
+
+    /**
+     * Gets the document(s) associated with the passed `CollectionName`, which could be either a collection or document name
+     */
     type DocumentFor<
       Embedded extends Document.Metadata.Embedded,
       CollectionName extends Document.Embedded.CollectionName<Embedded>,
-    > = Document.ImplementationFor<CollectionNameFor<Embedded, CollectionName>>;
+    > = Document.StoredForName<Extract<_DocumentNameForName<Embedded, CollectionName>, Document.Type>>;
 
     type CollectionFor<
       Parent extends Document.Any,
@@ -1155,6 +1202,15 @@ declare namespace Document {
     type CollectionName<Embedded extends Document.Metadata.Embedded> = {
       [K in keyof Embedded]: K extends Document.Type ? Extract<K | Embedded[K], string> : never;
     }[keyof Embedded];
+
+    /**
+     * @deprecated @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
+     * This type will be removed in v15.
+     */
+    type CollectionNameFor<
+      Embedded extends Document.Metadata.Embedded,
+      Name extends Document.Embedded.CollectionName<Embedded>,
+    > = _CollectionNameForName<Embedded, Name>;
   }
 
   /**
@@ -3299,23 +3355,8 @@ declare namespace Document {
     | (Action extends "update" ? SchemaField.UpdateData<Schema> : never)
     | (Action extends "delete" ? EmptyObject : never);
 
-  /** @internal */
-  type _GetEmbeddedDocumentOptions = InexactPartial<{
-    /**
-     * Throw an Error if the requested id does not exist. See {@linkcode Collection.get | Collection#get}
-     * @defaultValue `false`
-     */
-    strict: boolean;
-
-    /**
-     * Allow retrieving an invalid Embedded Document.
-     * @defaultValue `false`
-     */
-    invalid: boolean;
-  }>;
-
   /** This is passed on to {@linkcode EmbeddedCollection.get | EmbeddedCollection#get} */
-  interface GetEmbeddedDocumentOptions extends _GetEmbeddedDocumentOptions {}
+  interface GetEmbeddedDocumentOptions extends EmbeddedCollection.GetOptions {}
 
   /**
    * Gets the hierarchical fields in the schema. Hardcoded to whatever Foundry fields are hierarchical

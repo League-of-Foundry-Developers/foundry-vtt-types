@@ -211,9 +211,6 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
   override readonly parentCollection: TokenDocument.ParentCollectionName | null;
 
   override get pack(): string | null;

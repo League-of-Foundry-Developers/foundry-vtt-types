@@ -1,7 +1,7 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * The User Document.
@@ -96,9 +96,6 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: User.ParentCollectionName | null;
 

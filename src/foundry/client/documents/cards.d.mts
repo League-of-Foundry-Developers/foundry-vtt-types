@@ -206,7 +206,7 @@ declare namespace Cards {
     /**
      * Gets the collection name for an embedded document.
      */
-    type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionNameFor<
+    type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
       Metadata.Embedded,
       CollectionName
     >;

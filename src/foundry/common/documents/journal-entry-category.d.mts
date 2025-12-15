@@ -1,6 +1,6 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
 
 /**
  * An embedded Document that represents a category in a JournalEntry.
@@ -56,9 +56,6 @@ declare abstract class BaseJournalEntryCategory extends Document<
    */
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
   override readonly parentCollection: JournalEntryCategory.ParentCollectionName | null;
 
