@@ -9,15 +9,17 @@ import type {
   NullishProps,
 } from "#utils";
 import type { documents } from "#client/client.d.mts";
-import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
+import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
 import type { ActorDeltaField } from "#common/documents/token.d.mts";
-import type BaseToken from "#common/documents/token.d.mts";
-import type { LightData, TextureData } from "#common/data/data.mjs";
+import type { BaseToken } from "#common/documents/_module.d.mts";
+import type { LightData, TextureData, fields } from "#common/data/_module.d.mts";
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
 import type DataModel from "#common/abstract/data.mjs";
 import type { TerrainData } from "#client/data/terrain-data.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -26,9 +28,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
-import Token = foundry.canvas.placeables.Token;
 
 declare namespace TokenDocument {
   /**
@@ -67,12 +66,12 @@ declare namespace TokenDocument {
     Readonly<{
       name: "Token";
       collection: "tokens";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Token";
+      labelPlural: "DOCUMENT.Tokens";
       isEmbedded: true;
       embedded: TokenDocument.Metadata.Embedded;
       permissions: TokenDocument.Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -148,8 +147,10 @@ declare namespace TokenDocument {
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
    * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+   *
+   * @privateRemarks This is always the same as `DirectDescendant` and is provided as a convenient alias for users. It is not deprecated.
    */
-  type Embedded = Document.ImplementationFor<Embedded.Name>;
+  type Embedded = DirectDescendant;
 
   namespace Embedded {
     /**
@@ -161,12 +162,10 @@ declare namespace TokenDocument {
     type Name = keyof Metadata.Embedded;
 
     /**
-     * Gets the collection name for an embedded document.
+     * A valid name to refer to a collection embedded in this document.
+     * @remarks Functionally identical to `keyof `{@linkcode Metadata.Embedded}` | ValueOf<Metadata.Embedded>`
      */
-    type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
-      Metadata.Embedded,
-      CollectionName
-    >;
+    type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
 
     /**
      * Gets the collection document for an embedded document.
@@ -186,11 +185,30 @@ declare namespace TokenDocument {
     >;
 
     /**
-     * A valid name to refer to a collection embedded in this document. For example an `Actor`
-     * has the key `"items"` which contains `Item` instance which would make both `"Item" | "Items"`
-     * valid keys (amongst others).
+     * The return type for {@linkcode TokenDocument.getCollectionName | TokenDocument#getCollectionName}. If the
+     * passed name is not a known valid embedded document type/collection name for `TokenDocument`, returns `null`.
      */
-    type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
+    type GetCollectionNameReturn<Name extends string> = Name extends CollectionName
+      ? Document.Embedded._CollectionNameForName<Metadata.Embedded, Name>
+      : null;
+
+    /**
+     * The return type for {@linkcode TokenDocument.getEmbeddedDocument | TokenDocument#getEmbeddedDocument}.
+     * See {@linkcode EmbeddedCollection.GetReturn}.
+     */
+    type GetReturn<
+      EmbeddedName extends CollectionName,
+      Options extends EmbeddedCollection.GetOptions | undefined,
+    > = EmbeddedCollection.GetReturn<DocumentFor<EmbeddedName>, Options>;
+
+    /**
+     * @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
+     * This type will be removed
+     */
+    type CollectionNameOf<Name extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
+      Metadata.Embedded,
+      Name
+    >;
   }
 
   /**
@@ -1786,10 +1804,15 @@ declare namespace TokenDocument {
     active: boolean;
   }
 
+  /**
+   * {@linkcode TokenDocument.getEmbeddedCollection | TokenDocument#getEmbeddedCollection} adds cases for these extra valid values if the
+   * token is unlinked. They are specifically enumerated, with no support for e.g passing `"actors"` in place of `"Actor"`, like you can
+   * with {@linkcode Document.getEmbeddedCollection | Document#getEmbeddedCollection}.
+   */
   type GetEmbeddedCollectionName = Embedded.CollectionName | "Actor" | "Item" | "ActiveEffect";
 
   type GetEmbeddedCollectionResult<Name extends GetEmbeddedCollectionName> =
-    | (Name extends Document.Type ? globalThis.Collection<Document.ImplementationFor<Name>> : never)
+    | (Name extends Document.Type ? foundry.utils.Collection<Document.ImplementationFor<Name>> : never)
     | (Name extends Embedded.CollectionName ? Embedded.CollectionFor<Name> : never);
 
   type MovementState = "completed" | "paused" | "pending" | "stopped";
@@ -1834,9 +1857,11 @@ declare namespace TokenDocument {
 
   interface ShapelessDimensions extends Omit<Dimensions, "shape"> {}
 
-  interface Dimensions2D extends InexactPartial<foundry.canvas.Canvas.Point & Dimensions> {}
+  interface PartialShapelessDimensions extends InexactPartial<ShapelessDimensions> {}
 
-  interface Dimensions3D extends InexactPartial<foundry.canvas.Canvas.ElevatedPoint & Dimensions> {}
+  interface Dimensions2D extends InexactPartial<Canvas.Point & Dimensions> {}
+
+  interface Dimensions3D extends InexactPartial<Canvas.ElevatedPoint & Dimensions> {}
 
   interface ResizeOptions extends InexactPartial<Omit<TokenDocument.Database.UpdateOperation, "updates">> {}
 
@@ -2125,9 +2150,9 @@ declare namespace TokenDocument {
     odd: foundry.grid.BaseGrid.Offset2D[];
 
     /**
-     * The anchor in normalized coordiantes
+     * The anchor in normalized coordinates
      */
-    anchor: foundry.canvas.Canvas.Point;
+    anchor: Canvas.Point;
   }
 
   interface PreMovementOptions

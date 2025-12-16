@@ -64,10 +64,10 @@ declare namespace Actor {
       compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
       embedded: Metadata.Embedded;
       hasTypeData: true;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Actor";
+      labelPlural: "DOCUMENT.Actors";
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -1246,11 +1246,13 @@ declare namespace Actor {
    *************************************************/
 
   interface GetDefaultArtworkReturn {
+    /** @defaultValue {@linkcode Actor.DEFAULT_ICON } */
     img: string;
     texture: GetDefaultArtworkTextureReturn;
   }
 
   interface GetDefaultArtworkTextureReturn {
+    /** @defaultValue {@linkcode Actor.DEFAULT_ICON } */
     src: string;
   }
 

@@ -1,6 +1,7 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "#common/data/fields.mjs";
+import type { MaybeArray, OverlapsWith } from "#utils";
 
 /**
  * The Region Document.
@@ -18,7 +19,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    * You should use {@link RegionDocument.implementation | `new RegionDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `RegionDocument`.
    */
-  constructor(data: RegionDocument.CreateData, context?: RegionDocument.ConstructionContext);
+  constructor(data: BaseRegion.CreateData, context?: BaseRegion.ConstructionContext);
 
   /**
    * @defaultValue
@@ -32,7 +33,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    *   embedded: {
    *     RegionBehavior: "behaviors"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -52,7 +53,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   /* Document overrides */
 
-  override readonly parentCollection: RegionDocument.ParentCollectionName | null;
+  override readonly parentCollection: BaseRegion.ParentCollectionName | null;
 
   override get pack(): string | null;
 
@@ -60,203 +61,209 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   static override get baseDocument(): typeof BaseRegion;
 
-  static override get collectionName(): RegionDocument.ParentCollectionName;
+  static override get collectionName(): BaseRegion.ParentCollectionName;
 
-  static override get documentName(): RegionDocument.Name;
+  static override get documentName(): BaseRegion.Name;
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): RegionDocument.Hierarchy;
+  static override get hierarchy(): BaseRegion.Hierarchy;
 
   override parent: BaseRegion.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<RegionDocument.Implementation | RegionDocument.CreateData> | undefined,
-    operation?: Document.Database.CreateDocumentsOperation<RegionDocument.Database.Create<Temporary>>,
-  ): Promise<Array<RegionDocument.TemporaryIf<Temporary>>>;
+    data: BaseRegion.CreateInput[],
+    operation?: BaseRegion.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<Array<BaseRegion.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: RegionDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<RegionDocument.Database.Update>,
-  ): Promise<RegionDocument.Implementation[]>;
+    updates: BaseRegion.UpdateInput[],
+    operation?: BaseRegion.Database2.UpdateManyDocumentsOperation,
+  ): Promise<Array<RegionDocument.Implementation>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<RegionDocument.Database.Delete>,
-  ): Promise<RegionDocument.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseRegion.Database2.DeleteManyDocumentsOperation,
+  ): Promise<Array<RegionDocument.Implementation>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: RegionDocument.CreateData | RegionDocument.CreateData[],
-    operation?: RegionDocument.Database.CreateOperation<Temporary>,
-  ): Promise<RegionDocument.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseRegion.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseRegion.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseRegion.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: RegionDocument.UpdateData | undefined,
-    operation?: RegionDocument.Database.UpdateOperation,
+    data: BaseRegion.UpdateInput,
+    operation?: BaseRegion.Database2.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: RegionDocument.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseRegion.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: RegionDocument.Database.GetOptions,
-  ): RegionDocument.Implementation | null;
+  /**
+   * @privateRemarks `RegionDocument`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
+   * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
+   * chance of index entry return), so this always returns `null`
+   */
+  static override get(documentId: string, operation?: BaseRegion.Database2.GetDocumentsOperation): null;
 
-  static override getCollectionName<CollectionName extends RegionDocument.Embedded.Name>(
-    name: CollectionName,
-  ): RegionDocument.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseRegion.Embedded.CollectionName>,
+  ): BaseRegion.Embedded.GetCollectionNameReturn<Name>;
 
-  override getEmbeddedCollection<EmbeddedName extends RegionDocument.Embedded.CollectionName>(
+  override getEmbeddedCollection<EmbeddedName extends BaseRegion.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
-  ): RegionDocument.Embedded.CollectionFor<EmbeddedName>;
+  ): BaseRegion.Embedded.CollectionFor<EmbeddedName>;
 
-  override getEmbeddedDocument<EmbeddedName extends RegionDocument.Embedded.CollectionName>(
-    embeddedName: EmbeddedName,
-    id: string,
-    options: Document.GetEmbeddedDocumentOptions,
-  ): RegionDocument.Embedded.DocumentFor<EmbeddedName> | undefined;
+  override getEmbeddedDocument<
+    EmbeddedName extends BaseRegion.Embedded.CollectionName,
+    Options extends Document.GetEmbeddedDocumentOptions | undefined = undefined,
+  >(embeddedName: EmbeddedName, id: string, options?: Options): BaseRegion.Embedded.GetReturn<EmbeddedName, Options>;
 
-  override createEmbeddedDocuments<EmbeddedName extends RegionDocument.Embedded.Name>(
+  override createEmbeddedDocuments<EmbeddedName extends BaseRegion.Embedded.Name>(
     embeddedName: EmbeddedName,
-    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+    data: Document.CreateDataForName<EmbeddedName>[],
+    operation?: Document.Database2.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  override updateEmbeddedDocuments<EmbeddedName extends RegionDocument.Embedded.Name>(
+  override updateEmbeddedDocuments<EmbeddedName extends BaseRegion.Embedded.Name>(
     embeddedName: EmbeddedName,
-    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+    updates: Document.UpdateDataForName<EmbeddedName>[],
+    operation?: Document.Database2.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  override deleteEmbeddedDocuments<EmbeddedName extends RegionDocument.Embedded.Name>(
+  override deleteEmbeddedDocuments<EmbeddedName extends BaseRegion.Embedded.Name>(
     embeddedName: EmbeddedName,
-    ids: Array<string>,
-    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+    ids: string[],
+    operation?: Document.Database2.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  override getFlag<Scope extends RegionDocument.Flags.Scope, Key extends RegionDocument.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseRegion.Flags.Scope, Key extends BaseRegion.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): RegionDocument.Flags.Get<Scope, Key>;
+  ): BaseRegion.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends RegionDocument.Flags.Scope,
-    Key extends RegionDocument.Flags.Key<Scope>,
-    Value extends RegionDocument.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+    Scope extends BaseRegion.Flags.Scope,
+    Key extends BaseRegion.Flags.Key<Scope>,
+    Value extends BaseRegion.Flags.Get<Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
-  override unsetFlag<Scope extends RegionDocument.Flags.Scope, Key extends RegionDocument.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseRegion.Flags.Scope, Key extends BaseRegion.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
-    data: RegionDocument.CreateData,
-    options: RegionDocument.Database.PreCreateOptions,
+    data: BaseRegion.CreateData,
+    options: BaseRegion.Database2.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: RegionDocument.CreateData,
-    options: RegionDocument.Database.OnCreateOperation,
+    data: BaseRegion.CreateData,
+    options: BaseRegion.Database2.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: RegionDocument.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<RegionDocument.Database.Create>,
+    operation: BaseRegion.Database2.PreCreateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: RegionDocument.Implementation[],
-    operation: RegionDocument.Database.Create,
+    documents: RegionDocument.Stored[],
+    operation: BaseRegion.Database2.OnCreateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: RegionDocument.UpdateData,
-    options: RegionDocument.Database.PreUpdateOptions,
+    changed: BaseRegion.UpdateData,
+    options: BaseRegion.Database2.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: RegionDocument.UpdateData,
-    options: RegionDocument.Database.OnUpdateOperation,
+    changed: BaseRegion.UpdateData,
+    options: BaseRegion.Database2.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: RegionDocument.Implementation[],
-    operation: RegionDocument.Database.Update,
+    documents: RegionDocument.Stored[],
+    operation: BaseRegion.Database2.PreUpdateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: RegionDocument.Implementation[],
-    operation: RegionDocument.Database.Update,
+    documents: RegionDocument.Stored[],
+    operation: BaseRegion.Database2.OnUpdateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: RegionDocument.Database.PreDeleteOptions,
+    options: BaseRegion.Database2.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: RegionDocument.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseRegion.Database2.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: RegionDocument.Implementation[],
-    operation: RegionDocument.Database.Delete,
+    documents: RegionDocument.Stored[],
+    operation: BaseRegion.Database2.PreDeleteOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: RegionDocument.Implementation[],
-    operation: RegionDocument.Database.Delete,
+    documents: RegionDocument.Stored[],
+    operation: BaseRegion.Database2.OnDeleteOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: RegionDocument.Implementation[],
-    context: Document.ModificationContext<RegionDocument.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseRegion.Database2.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: RegionDocument.Implementation[],
-    context: Document.ModificationContext<RegionDocument.Parent>,
+    documents: RegionDocument.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseRegion.Database2.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
+   * (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: RegionDocument.Implementation[],
-    context: Document.ModificationContext<RegionDocument.Parent>,
+    documents: RegionDocument.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseRegion.Database2.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<RegionDocument.Schema>;
+  protected static override _schema: SchemaField<BaseRegion.Schema>;
 
-  static override get schema(): SchemaField<RegionDocument.Schema>;
+  static override get schema(): SchemaField<BaseRegion.Schema>;
 
-  static override validateJoint(data: RegionDocument.Source): void;
+  static override validateJoint(data: BaseRegion.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: RegionDocument.CreateData,
+    source: BaseRegion.CreateData,
     context?: DataModel.FromSourceOptions,
   ): RegionDocument.Implementation;
 
@@ -266,6 +273,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 export default BaseRegion;
 
 declare namespace BaseRegion {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = RegionDocument.Name;
   export import ConstructionContext = RegionDocument.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -281,13 +289,16 @@ declare namespace BaseRegion {
   export import CollectionClass = RegionDocument.CollectionClass;
   export import Collection = RegionDocument.Collection;
   export import Invalid = RegionDocument.Invalid;
-  export import Stored = RegionDocument.Stored;
   export import Source = RegionDocument.Source;
   export import CreateData = RegionDocument.CreateData;
+  export import CreateInput = RegionDocument.CreateInput;
+  export import CreateReturn = RegionDocument.CreateReturn;
   export import InitializedData = RegionDocument.InitializedData;
   export import UpdateData = RegionDocument.UpdateData;
+  export import UpdateInput = RegionDocument.UpdateInput;
   export import Schema = RegionDocument.Schema;
   export import Database = RegionDocument.Database;
+  export import Database2 = RegionDocument.Database2;
   export import TemporaryIf = RegionDocument.TemporaryIf;
   export import Flags = RegionDocument.Flags;
 

@@ -1,6 +1,7 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
+import type { MaybeArray } from "#utils";
 
 /**
  * The Card Document.
@@ -25,7 +26,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
    * You should use {@link Card.implementation | `new Card.implementation(...)`} instead which will give you
    * a system specific implementation of `Card`.
    */
-  constructor(data: Card.CreateData, context?: Card.ConstructionContext);
+  constructor(data: BaseCard.CreateData, context?: BaseCard.ConstructionContext);
 
   /**
    * @defaultValue
@@ -82,168 +83,182 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   static override get baseDocument(): typeof BaseCard;
 
-  static override get collectionName(): Card.ParentCollectionName;
+  static override get collectionName(): BaseCard.ParentCollectionName;
 
-  static override get documentName(): Card.Name;
+  static override get documentName(): BaseCard.Name;
 
   static override get TYPES(): BaseCard.SubType[];
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): Card.Hierarchy;
+  static override get hierarchy(): BaseCard.Hierarchy;
 
-  override system: Card.SystemOfType<SubType>;
+  override system: BaseCard.SystemOfType<SubType>;
 
   override parent: BaseCard.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Card.Implementation | Card.CreateData> | undefined,
-    operation?: Document.Database.CreateDocumentsOperation<Card.Database.Create<Temporary>>,
-  ): Promise<Array<Card.TemporaryIf<Temporary>>>;
+    data: BaseCard.CreateInput[],
+    operation?: BaseCard.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<Array<BaseCard.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: Card.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<Card.Database.Update>,
-  ): Promise<Card.Implementation[]>;
+    updates: BaseCard.UpdateInput[],
+    operation?: BaseCard.Database2.UpdateManyDocumentsOperation,
+  ): Promise<Array<Card.Implementation>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<Card.Database.Delete>,
-  ): Promise<Card.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseCard.Database2.DeleteManyDocumentsOperation,
+  ): Promise<Array<Card.Implementation>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: Card.CreateData | Card.CreateData[],
-    operation?: Card.Database.CreateOperation<Temporary>,
-  ): Promise<Card.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseCard.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseCard.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseCard.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: Card.UpdateData | undefined,
-    operation?: Card.Database.UpdateOperation,
+    data: BaseCard.UpdateInput,
+    operation?: BaseCard.Database2.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: Card.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseCard.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: Card.Database.GetOptions): Card.Implementation | null;
+  /**
+   * @privateRemarks `Card`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
+   * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
+   * chance of index entry return), so this always returns `null`
+   */
+  static override get(documentId: string, operation?: BaseCard.Database2.GetDocumentsOperation): null;
 
   /** @privateRemarks `Card`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
-  override getFlag<Scope extends Card.Flags.Scope, Key extends Card.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseCard.Flags.Scope, Key extends BaseCard.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Card.Flags.Get<Scope, Key>;
+  ): BaseCard.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends Card.Flags.Scope,
-    Key extends Card.Flags.Key<Scope>,
-    Value extends Card.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+    Scope extends BaseCard.Flags.Scope,
+    Key extends BaseCard.Flags.Key<Scope>,
+    Value extends BaseCard.Flags.Get<Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
-  override unsetFlag<Scope extends Card.Flags.Scope, Key extends Card.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseCard.Flags.Scope, Key extends BaseCard.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
-    data: Card.CreateData,
-    options: Card.Database.PreCreateOptions,
+    data: BaseCard.CreateData,
+    options: BaseCard.Database2.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onCreate(data: Card.CreateData, options: Card.Database.OnCreateOperation, userId: string): void;
+  protected override _onCreate(
+    data: BaseCard.CreateData,
+    options: BaseCard.Database2.OnCreateOptions,
+    userId: string,
+  ): void;
 
   protected static override _preCreateOperation(
     documents: Card.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<Card.Database.Create>,
+    operation: BaseCard.Database2.PreCreateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Card.Implementation[],
-    operation: Card.Database.Create,
+    documents: Card.Stored[],
+    operation: BaseCard.Database2.OnCreateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: Card.UpdateData,
-    options: Card.Database.PreUpdateOptions,
+    changed: BaseCard.UpdateData,
+    options: BaseCard.Database2.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: Card.UpdateData,
-    options: Card.Database.OnUpdateOperation,
+    changed: BaseCard.UpdateData,
+    options: BaseCard.Database2.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Card.Implementation[],
-    operation: Card.Database.Update,
+    documents: Card.Stored[],
+    operation: BaseCard.Database2.PreUpdateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Card.Implementation[],
-    operation: Card.Database.Update,
+    documents: Card.Stored[],
+    operation: BaseCard.Database2.OnUpdateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: Card.Database.PreDeleteOptions,
+    options: BaseCard.Database2.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: Card.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseCard.Database2.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Card.Implementation[],
-    operation: Card.Database.Delete,
+    documents: Card.Stored[],
+    operation: BaseCard.Database2.PreDeleteOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Card.Implementation[],
-    operation: Card.Database.Delete,
+    documents: Card.Stored[],
+    operation: BaseCard.Database2.OnDeleteOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Card.Implementation[],
-    context: Document.ModificationContext<Card.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCard.Database2.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Card.Implementation[],
-    context: Document.ModificationContext<Card.Parent>,
+    documents: Card.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCard.Database2.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
+   * (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Card.Implementation[],
-    context: Document.ModificationContext<Card.Parent>,
+    documents: Card.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCard.Database2.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<Card.Schema>;
+  protected static override _schema: SchemaField<BaseCard.Schema>;
 
-  static override get schema(): SchemaField<Card.Schema>;
+  static override get schema(): SchemaField<BaseCard.Schema>;
 
-  static override validateJoint(data: Card.Source): void;
+  static override validateJoint(data: BaseCard.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
-  static override fromSource(source: Card.CreateData, context?: DataModel.FromSourceOptions): Card.Implementation;
+  static override fromSource(source: BaseCard.CreateData, context?: DataModel.FromSourceOptions): Card.Implementation;
 
   static override fromJSON(json: string): Card.Implementation;
 
@@ -253,6 +268,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 export default BaseCard;
 
 declare namespace BaseCard {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = Card.Name;
   export import ConstructionContext = Card.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -273,13 +289,16 @@ declare namespace BaseCard {
   export import CollectionClass = Card.CollectionClass;
   export import Collection = Card.Collection;
   export import Invalid = Card.Invalid;
-  export import Stored = Card.Stored;
   export import Source = Card.Source;
   export import CreateData = Card.CreateData;
+  export import CreateInput = Card.CreateInput;
+  export import CreateReturn = Card.CreateReturn;
   export import InitializedData = Card.InitializedData;
   export import UpdateData = Card.UpdateData;
+  export import UpdateInput = Card.UpdateInput;
   export import Schema = Card.Schema;
   export import Database = Card.Database;
+  export import Database2 = Card.Database2;
   export import TemporaryIf = Card.TemporaryIf;
   export import Flags = Card.Flags;
 

@@ -52,11 +52,11 @@ declare namespace MeasuredTemplateDocument {
     Readonly<{
       name: "MeasuredTemplate";
       collection: "templates";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.MeasuredTemplate";
+      labelPlural: "DOCUMENT.MeasuredTemplates";
       isEmbedded: true;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

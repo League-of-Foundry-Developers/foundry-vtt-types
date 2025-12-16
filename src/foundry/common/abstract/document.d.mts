@@ -127,6 +127,8 @@ declare abstract class Document<
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
    * @defaultValue {@linkcode Document._getParentCollection | this._getParentCollection(parentCollection)}
    * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`.
+   *
+   * Always `null` in temporary documents, except {@linkcode foundry.documents.BaseActorDelta.parentCollection | ActorDelta}s.
    * @privateRemarks This could realistically be any string passed as
    * {@linkcode Document.ConstructionContext.parentCollection | parentCollection} in the construction context of a `new Document()`. It's
    * typed as-is because everywhere it is specified by core, it happens to match the `metadata.collection` of the given document type, and
@@ -518,7 +520,7 @@ declare abstract class Document<
    * @remarks If the document creation is skipped by a hook or `_preCreate` then `undefined` is returned.
    *
    * `data` can be a `CreateData` object, an instance of this specific Document, or a possibly-mixed array of those types.
-   * If an array is passed, an array will be returned
+   * If an array is passed, an array will be returned.
    */
   // Note: This uses `never` because it's unsound to try to call `Document.create` directly.
   static create(data: never, operation?: never): Promise<MaybeArray<Document.Any> | undefined>;
@@ -563,7 +565,7 @@ declare abstract class Document<
   // TODO: improve with a conditional return possibly: https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3545
   static get(
     documentId: string,
-    operation?: Document.Database.GetOptions,
+    operation?: never,
   ): MaybePromise<Document.Any | CompendiumCollection.IndexEntry | null>;
 
   /**
@@ -2173,6 +2175,14 @@ declare namespace Document {
      *                  GET LOOKUPS                  *
      *************************************************/
 
+    /**
+     * This type exists to be the constraint for {@linkcode Document.get}'s `operation` parameter. Because
+     * {@linkcode DatabaseBackend.GetOperation} is typed for the point in the operation lifecycle with the
+     * most required properties, any specific documents' {@linkcode GetDocumentsOperation}s are not
+     * assignable to it, since they have been partialed.
+     */
+    type AnyGetOperation = IntentionalPartial<DatabaseBackend.GetOperation>;
+
     /** @see {@linkcode DatabaseBackend.GetOperation} */
     type GetOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["GetOperation"];
 
@@ -2350,6 +2360,14 @@ declare namespace Document {
     /* ***********************************************
      *               CREATE LOOKUPS                  *
      *************************************************/
+
+    /**
+     * This type exists to be the constraint for {@linkcode Document.createDocuments}'s and {@linkcode Document.create}'s `operation`
+     * parameters. Because {@linkcode DatabaseBackend.CreateOperation} is typed for the point in the operation lifecycle with the most
+     * required properties, any specific documents' {@linkcode CreateDocumentsOperation}s are not assignable to it, since they have been
+     * partialed.
+     */
+    type AnyCreateOperation = IntentionalPartial<DatabaseBackend.CreateOperation>;
 
     /**
      * @remarks This previously found the interface for passing to the relevant {@linkcode Document.create}.
@@ -2563,6 +2581,14 @@ declare namespace Document {
      *************************************************/
 
     /**
+     * This type exists to be the constraint for {@linkcode Document.updateDocuments}'s and {@linkcode Document.update | Document#update}'s
+     * `operation` parameters. Because {@linkcode DatabaseBackend.UpdateOperation} is typed for the point in the operation lifecycle with
+     * the most required properties, any specific documents' {@linkcode UpdateManyDocumentsOperation}s or
+     * {@linkcode UpdateOneDocumentOperation}s are not assignable to it, since they have  been partialed.
+     */
+    type AnyUpdateOperation = IntentionalPartial<DatabaseBackend.UpdateOperation>;
+
+    /**
      * @remarks This previously found the interface for passing to the relevant {@linkcode Document.update | Document#update}.
      * {@linkcode UpdateOneDocumentOperationForName} performs that duty now, while this returns types valid for
      * {@linkcode DatabaseBackend._updateDocuments | DatabaseBackend#_updateDocuments}
@@ -2755,6 +2781,14 @@ declare namespace Document {
     /* ***********************************************
      *               DELETE LOOKUPS                  *
      *************************************************/
+
+    /**
+     * This type exists to be the constraint for {@linkcode Document.deleteDocuments}'s and {@linkcode Document.delete | Document#delete}'s
+     * `operation` parameters. Because {@linkcode DatabaseBackend.DeleteOperation} is typed for the point in the operation lifecycle with
+     * the most required properties, any specific documents' {@linkcode DeleteManyDocumentsOperation}s or
+     * {@linkcode DeleteOneDocumentOperation}s are not assignable to it, since they have  been partialed.
+     */
+    type AnyDeleteOperation = IntentionalPartial<DatabaseBackend.UpdateOperation>;
 
     /**
      * @remarks This previously found the interface for passing to the relevant {@linkcode Document.delete | Document#delete}.

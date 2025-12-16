@@ -1,6 +1,6 @@
 import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
-import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
+import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { ConfiguredActorDelta } from "#configuration";
 import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
 import type DataModel from "#common/abstract/data.d.mts";
@@ -54,12 +54,12 @@ declare namespace ActorDelta {
     Readonly<{
       name: "ActorDelta";
       collection: "delta";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.ActorDelta";
+      labelPlural: "DOCUMENT.ActorDeltas";
       isEmbedded: true;
       embedded: Metadata.Embedded;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -189,8 +189,10 @@ declare namespace ActorDelta {
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
    * If this is `never` it is because there are no embeddable documents (or there's a bug!).
+   *
+   * @privateRemarks This is always the same as `DirectDescendant` and is provided as a convenient alias for users. It is not deprecated.
    */
-  type Embedded = Document.ImplementationFor<Embedded.Name>;
+  type Embedded = DirectDescendant;
 
   namespace Embedded {
     /**
@@ -202,12 +204,10 @@ declare namespace ActorDelta {
     type Name = keyof Metadata.Embedded;
 
     /**
-     * Gets the collection name for an embedded document.
+     * A valid name to refer to a collection embedded in this document.
+     * @remarks Functionally identical to `keyof `{@linkcode Metadata.Embedded}` | ValueOf<Metadata.Embedded>`
      */
-    type CollectionNameOf<CollectionName extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
-      Metadata.Embedded,
-      CollectionName
-    >;
+    type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
 
     /**
      * Gets the collection document for an embedded document.
@@ -227,11 +227,30 @@ declare namespace ActorDelta {
     >;
 
     /**
-     * A valid name to refer to a collection embedded in this document. For example an `Actor`
-     * has the key `"items"` which contains `Item` instance which would make both `"Item" | "Items"`
-     * valid keys (amongst others).
+     * The return type for {@linkcode ActorDelta.getCollectionName | ActorDelta#getCollectionName}. If the
+     * passed name is not a known valid embedded document type/collection name for `ActorDelta`, returns `null`.
      */
-    type CollectionName = Document.Embedded.CollectionName<Metadata.Embedded>;
+    type GetCollectionNameReturn<Name extends string> = Name extends CollectionName
+      ? Document.Embedded._CollectionNameForName<Metadata.Embedded, Name>
+      : null;
+
+    /**
+     * The return type for {@linkcode ActorDelta.getEmbeddedDocument | ActorDelta#getEmbeddedDocument}.
+     * See {@linkcode EmbeddedCollection.GetReturn}.
+     */
+    type GetReturn<
+      EmbeddedName extends CollectionName,
+      Options extends EmbeddedCollection.GetOptions | undefined,
+    > = EmbeddedCollection.GetReturn<DocumentFor<EmbeddedName>, Options>;
+
+    /**
+     * @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
+     * This type will be removed
+     */
+    type CollectionNameOf<Name extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
+      Metadata.Embedded,
+      Name
+    >;
   }
 
   /**
@@ -1314,7 +1333,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   /** @remarks `"No-op as ActorDeltas do not have sheets."` */
   protected override _onSheetChange(): Promise<void>;
 
-  protected override _prepareDeltaUpdate(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): void;
+  override _prepareDeltaUpdate(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): void;
 
   // _onUpdate and _onDelete are all overridden but with no signature changes from BaseActorDelta.
 

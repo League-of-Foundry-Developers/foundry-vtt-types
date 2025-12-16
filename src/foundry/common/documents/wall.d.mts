@@ -1,6 +1,7 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
+import type { MaybeArray } from "#utils";
 
 /**
  * The Document definition for a Wall.
@@ -21,7 +22,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
    * You should use {@link WallDocument.implementation | `new WallDocument.implementation(...)`} instead which will give you
    * a system specific implementation of `WallDocument`.
    */
-  constructor(data: WallDocument.CreateData, context?: WallDocument.ConstructionContext);
+  constructor(data: BaseWall.CreateData, context?: BaseWall.ConstructionContext);
 
   /**
    * @defaultValue
@@ -54,7 +55,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   /* Document overrides */
 
-  override readonly parentCollection: WallDocument.ParentCollectionName | null;
+  override readonly parentCollection: BaseWall.ParentCollectionName | null;
 
   override get pack(): string | null;
 
@@ -62,174 +63,181 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static override get baseDocument(): typeof BaseWall;
 
-  static override get collectionName(): WallDocument.ParentCollectionName;
+  static override get collectionName(): BaseWall.ParentCollectionName;
 
-  static override get documentName(): WallDocument.Name;
+  static override get documentName(): BaseWall.Name;
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): WallDocument.Hierarchy;
+  static override get hierarchy(): BaseWall.Hierarchy;
 
-  override parent: WallDocument.Parent;
+  override parent: BaseWall.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<WallDocument.Implementation | WallDocument.CreateData> | undefined,
-    operation?: WallDocument.Database.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<WallDocument.TemporaryIf<Temporary>>>;
+    data: BaseWall.CreateInput[],
+    operation?: BaseWall.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<Array<BaseWall.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: WallDocument.UpdateData[] | undefined,
-    operation?: WallDocument.Database.UpdateDocumentsOperation,
-  ): Promise<WallDocument.Implementation[]>;
+    updates: BaseWall.UpdateInput[],
+    operation?: BaseWall.Database2.UpdateManyDocumentsOperation,
+  ): Promise<Array<WallDocument.Implementation>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: WallDocument.Database.DeleteDocumentsOperation,
-  ): Promise<WallDocument.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseWall.Database2.DeleteManyDocumentsOperation,
+  ): Promise<Array<WallDocument.Implementation>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: WallDocument.CreateData | WallDocument.CreateData[],
-    operation?: WallDocument.Database.CreateOperation<Temporary>,
-  ): Promise<WallDocument.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseWall.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseWall.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseWall.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: WallDocument.UpdateData | undefined,
-    operation?: WallDocument.Database.UpdateOperation,
+    data: BaseWall.UpdateInput,
+    operation?: BaseWall.Database2.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: WallDocument.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseWall.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: WallDocument.Database.GetOptions,
-  ): WallDocument.Implementation | null;
+  /**
+   * @privateRemarks `WallDocument`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
+   * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
+   * chance of index entry return), so this always returns `null`
+   */
+  static override get(documentId: string, operation?: BaseWall.Database2.GetDocumentsOperation): null;
 
   /** @privateRemarks `WallDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
-  override getFlag<Scope extends WallDocument.Flags.Scope, Key extends WallDocument.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseWall.Flags.Scope, Key extends BaseWall.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): WallDocument.Flags.Get<Scope, Key>;
+  ): BaseWall.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends WallDocument.Flags.Scope,
-    Key extends WallDocument.Flags.Key<Scope>,
-    Value extends WallDocument.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+    Scope extends BaseWall.Flags.Scope,
+    Key extends BaseWall.Flags.Key<Scope>,
+    Value extends BaseWall.Flags.Get<Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
-  override unsetFlag<Scope extends WallDocument.Flags.Scope, Key extends WallDocument.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseWall.Flags.Scope, Key extends BaseWall.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
-    data: WallDocument.CreateData,
-    options: WallDocument.Database.PreCreateOptions,
+    data: BaseWall.CreateData,
+    options: BaseWall.Database2.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: WallDocument.CreateData,
-    options: WallDocument.Database.OnCreateOptions,
+    data: BaseWall.CreateData,
+    options: BaseWall.Database2.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: WallDocument.Implementation[],
-    operation: WallDocument.Database.PreCreateOperation,
+    operation: BaseWall.Database2.PreCreateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: WallDocument.Implementation[],
-    operation: WallDocument.Database.OnCreateOperation,
+    documents: WallDocument.Stored[],
+    operation: BaseWall.Database2.OnCreateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: WallDocument.UpdateData,
-    options: WallDocument.Database.PreUpdateOptions,
+    changed: BaseWall.UpdateData,
+    options: BaseWall.Database2.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: WallDocument.UpdateData,
-    options: WallDocument.Database.OnUpdateOptions,
+    changed: BaseWall.UpdateData,
+    options: BaseWall.Database2.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: WallDocument.Implementation[],
-    operation: WallDocument.Database.PreUpdateOperation,
+    documents: WallDocument.Stored[],
+    operation: BaseWall.Database2.PreUpdateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: WallDocument.Implementation[],
-    operation: WallDocument.Database.OnUpdateOperation,
+    documents: WallDocument.Stored[],
+    operation: BaseWall.Database2.OnUpdateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: WallDocument.Database.PreDeleteOptions,
+    options: BaseWall.Database2.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: WallDocument.Database.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseWall.Database2.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: WallDocument.Implementation[],
-    operation: WallDocument.Database.PreDeleteOperation,
+    documents: WallDocument.Stored[],
+    operation: BaseWall.Database2.PreDeleteOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: WallDocument.Implementation[],
-    operation: WallDocument.Database.OnDeleteOperation,
+    documents: WallDocument.Stored[],
+    operation: BaseWall.Database2.OnDeleteOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: WallDocument.Implementation[],
-    context: WallDocument.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseWall.Database2.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: WallDocument.Implementation[],
-    context: WallDocument.Database.OnUpdateDocumentsContext,
+    documents: WallDocument.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseWall.Database2.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
+   * (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: WallDocument.Implementation[],
-    context: WallDocument.Database.OnDeleteDocumentsContext,
+    documents: WallDocument.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseWall.Database2.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<WallDocument.Schema>;
+  protected static override _schema: SchemaField<BaseWall.Schema>;
 
-  static override get schema(): SchemaField<WallDocument.Schema>;
+  static override get schema(): SchemaField<BaseWall.Schema>;
 
-  static override validateJoint(data: WallDocument.Source): void;
+  static override validateJoint(data: BaseWall.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: WallDocument.CreateData,
+    source: BaseWall.CreateData,
     context?: DataModel.FromSourceOptions,
   ): WallDocument.Implementation;
 
@@ -241,6 +249,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 export default BaseWall;
 
 declare namespace BaseWall {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = WallDocument.Name;
   export import ConstructionContext = WallDocument.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -256,13 +265,16 @@ declare namespace BaseWall {
   export import CollectionClass = WallDocument.CollectionClass;
   export import Collection = WallDocument.Collection;
   export import Invalid = WallDocument.Invalid;
-  export import Stored = WallDocument.Stored;
   export import Source = WallDocument.Source;
   export import CreateData = WallDocument.CreateData;
+  export import CreateInput = WallDocument.CreateInput;
+  export import CreateReturn = WallDocument.CreateReturn;
   export import InitializedData = WallDocument.InitializedData;
   export import UpdateData = WallDocument.UpdateData;
+  export import UpdateInput = WallDocument.UpdateInput;
   export import Schema = WallDocument.Schema;
   export import Database = WallDocument.Database;
+  export import Database2 = WallDocument.Database2;
   export import TemporaryIf = WallDocument.TemporaryIf;
   export import Flags = WallDocument.Flags;
 

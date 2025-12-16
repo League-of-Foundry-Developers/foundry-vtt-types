@@ -49,11 +49,11 @@ declare namespace CombatantGroup {
     Readonly<{
       name: "CombatantGroup";
       collection: "groups";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.CombatantGroup";
+      labelPlural: "DOCUMENT.CombatantGroups";
       isEmbedded: true;
       hasTypeData: true;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

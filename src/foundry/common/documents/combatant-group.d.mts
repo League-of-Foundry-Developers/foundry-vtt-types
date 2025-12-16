@@ -1,6 +1,7 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
+import type { MaybeArray } from "#utils";
 
 /**
  * A Document that represents a grouping of individual Combatants in a Combat.
@@ -23,7 +24,7 @@ declare abstract class BaseCombatantGroup<
    * You should use {@link CombatantGroup.implementation | `new CombatantGroup.implementation(...)`} instead which will give you
    * a system specific implementation of `CombatantGroup`.
    */
-  constructor(data: CombatantGroup.CreateData, context?: CombatantGroup.ConstructionContext);
+  constructor(data: BaseCombatantGroup.CreateData, context?: BaseCombatantGroup.ConstructionContext);
 
   /**
    * @defaultValue
@@ -57,184 +58,192 @@ declare abstract class BaseCombatantGroup<
 
   /* Document overrides */
 
-  override readonly parentCollection: CombatantGroup.ParentCollectionName | null;
+  override readonly parentCollection: BaseCombatantGroup.ParentCollectionName | null;
 
-  override get pack(): string | null;
+  /** @privateRemarks Neither `CombatantGroup`s nor any of its ancestor document(s) can exist in compendia. */
+  override get pack(): null;
 
   static override get implementation(): CombatantGroup.ImplementationClass;
 
   static override get baseDocument(): typeof BaseCombatantGroup;
 
-  static override get collectionName(): CombatantGroup.ParentCollectionName;
+  static override get collectionName(): BaseCombatantGroup.ParentCollectionName;
 
-  static override get documentName(): CombatantGroup.Name;
+  static override get documentName(): BaseCombatantGroup.Name;
 
   static override get TYPES(): BaseCombatantGroup.SubType[];
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): CombatantGroup.Hierarchy;
+  static override get hierarchy(): BaseCombatantGroup.Hierarchy;
 
-  override system: CombatantGroup.SystemOfType<SubType>;
+  override system: BaseCombatantGroup.SystemOfType<SubType>;
 
   override parent: BaseCombatantGroup.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<CombatantGroup.Implementation | CombatantGroup.CreateData> | undefined,
-    operation?: Document.Database.CreateDocumentsOperation<CombatantGroup.Database.Create<Temporary>>,
-  ): Promise<Array<CombatantGroup.TemporaryIf<Temporary>>>;
+    data: BaseCombatantGroup.CreateInput[],
+    operation?: BaseCombatantGroup.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<Array<BaseCombatantGroup.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: CombatantGroup.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<CombatantGroup.Database.Update>,
-  ): Promise<CombatantGroup.Implementation[]>;
+    updates: BaseCombatantGroup.UpdateInput[],
+    operation?: BaseCombatantGroup.Database2.UpdateManyDocumentsOperation,
+  ): Promise<Array<CombatantGroup.Implementation>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<CombatantGroup.Database.Delete>,
-  ): Promise<CombatantGroup.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseCombatantGroup.Database2.DeleteManyDocumentsOperation,
+  ): Promise<Array<CombatantGroup.Implementation>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: CombatantGroup.CreateData | CombatantGroup.CreateData[],
-    operation?: CombatantGroup.Database.CreateOperation<Temporary>,
-  ): Promise<CombatantGroup.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseCombatantGroup.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseCombatantGroup.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseCombatantGroup.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: CombatantGroup.UpdateData | undefined,
-    operation?: CombatantGroup.Database.UpdateOperation,
+    data: BaseCombatantGroup.UpdateInput,
+    operation?: BaseCombatantGroup.Database2.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: CombatantGroup.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseCombatantGroup.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: CombatantGroup.Database.GetOptions,
-  ): CombatantGroup.Implementation | null;
+  /**
+   * @privateRemarks `CombatantGroup`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
+   * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
+   * chance of index entry return), so this always returns `null`
+   */
+  static override get(documentId: string, operation?: BaseCombatantGroup.Database2.GetDocumentsOperation): null;
 
   /** @privateRemarks `CombatantGroup`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
-  override getFlag<Scope extends CombatantGroup.Flags.Scope, Key extends CombatantGroup.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseCombatantGroup.Flags.Scope, Key extends BaseCombatantGroup.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): CombatantGroup.Flags.Get<Scope, Key>;
+  ): BaseCombatantGroup.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends CombatantGroup.Flags.Scope,
-    Key extends CombatantGroup.Flags.Key<Scope>,
-    Value extends CombatantGroup.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+    Scope extends BaseCombatantGroup.Flags.Scope,
+    Key extends BaseCombatantGroup.Flags.Key<Scope>,
+    Value extends BaseCombatantGroup.Flags.Get<Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
-  override unsetFlag<Scope extends CombatantGroup.Flags.Scope, Key extends CombatantGroup.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseCombatantGroup.Flags.Scope, Key extends BaseCombatantGroup.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
-    data: CombatantGroup.CreateData,
-    options: CombatantGroup.Database.PreCreateOptions,
+    data: BaseCombatantGroup.CreateData,
+    options: BaseCombatantGroup.Database2.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: CombatantGroup.CreateData,
-    options: CombatantGroup.Database.OnCreateOperation,
+    data: BaseCombatantGroup.CreateData,
+    options: BaseCombatantGroup.Database2.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: CombatantGroup.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<CombatantGroup.Database.Create>,
+    operation: BaseCombatantGroup.Database2.PreCreateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: CombatantGroup.Implementation[],
-    operation: CombatantGroup.Database.Create,
+    documents: CombatantGroup.Stored[],
+    operation: BaseCombatantGroup.Database2.OnCreateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: CombatantGroup.UpdateData,
-    options: CombatantGroup.Database.PreUpdateOptions,
+    changed: BaseCombatantGroup.UpdateData,
+    options: BaseCombatantGroup.Database2.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: CombatantGroup.UpdateData,
-    options: CombatantGroup.Database.OnUpdateOperation,
+    changed: BaseCombatantGroup.UpdateData,
+    options: BaseCombatantGroup.Database2.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: CombatantGroup.Implementation[],
-    operation: CombatantGroup.Database.Update,
+    documents: CombatantGroup.Stored[],
+    operation: BaseCombatantGroup.Database2.PreUpdateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: CombatantGroup.Implementation[],
-    operation: CombatantGroup.Database.Update,
+    documents: CombatantGroup.Stored[],
+    operation: BaseCombatantGroup.Database2.OnUpdateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: CombatantGroup.Database.PreDeleteOptions,
+    options: BaseCombatantGroup.Database2.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: CombatantGroup.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseCombatantGroup.Database2.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: CombatantGroup.Implementation[],
-    operation: CombatantGroup.Database.Delete,
+    documents: CombatantGroup.Stored[],
+    operation: BaseCombatantGroup.Database2.PreDeleteOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: CombatantGroup.Implementation[],
-    operation: CombatantGroup.Database.Delete,
+    documents: CombatantGroup.Stored[],
+    operation: BaseCombatantGroup.Database2.OnDeleteOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: CombatantGroup.Implementation[],
-    context: Document.ModificationContext<CombatantGroup.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCombatantGroup.Database2.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: CombatantGroup.Implementation[],
-    context: Document.ModificationContext<CombatantGroup.Parent>,
+    documents: CombatantGroup.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCombatantGroup.Database2.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
+   * (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: CombatantGroup.Implementation[],
-    context: Document.ModificationContext<CombatantGroup.Parent>,
+    documents: CombatantGroup.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCombatantGroup.Database2.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<CombatantGroup.Schema>;
+  protected static override _schema: SchemaField<BaseCombatantGroup.Schema>;
 
-  static override get schema(): SchemaField<CombatantGroup.Schema>;
+  static override get schema(): SchemaField<BaseCombatantGroup.Schema>;
 
-  static override validateJoint(data: CombatantGroup.Source): void;
+  static override validateJoint(data: BaseCombatantGroup.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: CombatantGroup.CreateData,
+    source: BaseCombatantGroup.CreateData,
     context?: DataModel.FromSourceOptions,
   ): CombatantGroup.Implementation;
 
@@ -242,8 +251,9 @@ declare abstract class BaseCombatantGroup<
 }
 
 declare namespace BaseCombatantGroup {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = CombatantGroup.Name;
-  export import ConstructionContext = Item.ConstructionContext;
+  export import ConstructionContext = CombatantGroup.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = CombatantGroup.ConstructorArgs;
   export import Hierarchy = CombatantGroup.Hierarchy;
@@ -262,13 +272,16 @@ declare namespace BaseCombatantGroup {
   export import CollectionClass = CombatantGroup.CollectionClass;
   export import Collection = CombatantGroup.Collection;
   export import Invalid = CombatantGroup.Invalid;
-  export import Stored = CombatantGroup.Stored;
   export import Source = CombatantGroup.Source;
   export import CreateData = CombatantGroup.CreateData;
+  export import CreateInput = CombatantGroup.CreateInput;
+  export import CreateReturn = CombatantGroup.CreateReturn;
   export import InitializedData = CombatantGroup.InitializedData;
   export import UpdateData = CombatantGroup.UpdateData;
+  export import UpdateInput = CombatantGroup.UpdateInput;
   export import Schema = CombatantGroup.Schema;
   export import Database = CombatantGroup.Database;
+  export import Database2 = CombatantGroup.Database2;
   export import TemporaryIf = CombatantGroup.TemporaryIf;
   export import Flags = CombatantGroup.Flags;
 

@@ -52,9 +52,9 @@ declare namespace TileDocument {
     Readonly<{
       name: "Tile";
       collection: "tiles";
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
+      label: "DOCUMENT.Tile";
+      labelPlural: "DOCUMENT.Tiles";
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -268,13 +268,7 @@ declare namespace TileDocument {
     locked: fields.BooleanField;
 
     /** @defaultValue see properties */
-    restrictions: fields.SchemaField<{
-      /** @defaultValue `false` */
-      light: fields.BooleanField;
-
-      /** @defaultValue `false` */
-      weather: fields.BooleanField;
-    }>;
+    restrictions: fields.SchemaField<RestrictionsSchema>;
 
     /**
      * The tile's occlusion settings
@@ -334,6 +328,16 @@ declare namespace TileDocument {
      */
     flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
   }
+
+  interface RestrictionsSchema extends fields.DataSchema {
+    /** @defaultValue `false` */
+    light: fields.BooleanField;
+
+    /** @defaultValue `false` */
+    weather: fields.BooleanField;
+  }
+
+  interface RestrictionsData extends fields.SchemaField.InitializedData<RestrictionsSchema> {}
 
   namespace Database2 {
     /* ***********************************************

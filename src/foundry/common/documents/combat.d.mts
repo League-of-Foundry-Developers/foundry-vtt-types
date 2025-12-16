@@ -1,6 +1,7 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
+import type { MaybeArray, OverlapsWith } from "#utils";
 
 /**
  * The Combat Document.
@@ -26,7 +27,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    * a system specific implementation of `Combat`.
    */
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
-  constructor(data?: Combat.CreateData, context?: Combat.ConstructionContext);
+  constructor(data?: BaseCombat.CreateData, context?: BaseCombat.ConstructionContext);
 
   /**
    * @defaultValue
@@ -72,8 +73,8 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   protected _canChangeTurn(user: User.Implementation): boolean;
 
   protected override _preUpdate(
-    changed: Combat.UpdateData,
-    options: Combat.Database.PreUpdateOptions,
+    changed: BaseCombat.UpdateData,
+    options: BaseCombat.Database2.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
@@ -91,203 +92,211 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   /* Document overrides */
 
-  override readonly parentCollection: Combat.ParentCollectionName | null;
+  override readonly parentCollection: BaseCombat.ParentCollectionName | null;
 
-  override get pack(): string | null;
+  /** @privateRemarks `Combat`s documents can never exist in compendia. */
+  override get pack(): null;
 
   static override get implementation(): Combat.ImplementationClass;
 
   static override get baseDocument(): typeof BaseCombat;
 
-  static override get collectionName(): Combat.ParentCollectionName;
+  static override get collectionName(): BaseCombat.ParentCollectionName;
 
-  static override get documentName(): Combat.Name;
+  static override get documentName(): BaseCombat.Name;
 
   static override get TYPES(): BaseCombat.SubType[];
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): Combat.Hierarchy;
+  static override get hierarchy(): BaseCombat.Hierarchy;
 
-  override system: Combat.SystemOfType<SubType>;
+  override system: BaseCombat.SystemOfType<SubType>;
 
   override parent: BaseCombat.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Combat.Implementation | Combat.CreateData> | undefined,
-    operation?: Document.Database.CreateDocumentsOperation<Combat.Database.Create<Temporary>>,
-  ): Promise<Array<Combat.TemporaryIf<Temporary>>>;
+    data: BaseCombat.CreateInput[],
+    operation?: BaseCombat.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<Array<BaseCombat.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: Combat.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<Combat.Database.Update>,
-  ): Promise<Combat.Implementation[]>;
+    updates: BaseCombat.UpdateInput[],
+    operation?: BaseCombat.Database2.UpdateManyDocumentsOperation,
+  ): Promise<Array<Combat.Implementation>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<Combat.Database.Delete>,
-  ): Promise<Combat.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseCombat.Database2.DeleteManyDocumentsOperation,
+  ): Promise<Array<Combat.Implementation>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: Combat.CreateData | Combat.CreateData[],
-    operation?: Combat.Database.CreateOperation<Temporary>,
-  ): Promise<Combat.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseCombat.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseCombat.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseCombat.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: Combat.UpdateData | undefined,
-    operation?: Combat.Database.UpdateOperation,
+    data: BaseCombat.UpdateInput,
+    operation?: BaseCombat.Database2.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: Combat.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseCombat.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: Combat.Database.GetOptions): Combat.Implementation | null;
+  static override get(documentId: string, operation?: BaseCombat.Database2.GetDocumentsOperation): Combat.Stored | null;
 
-  static override getCollectionName<CollectionName extends Combat.Embedded.Name>(
-    name: CollectionName,
-  ): Combat.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseCombat.Embedded.CollectionName>,
+  ): BaseCombat.Embedded.GetCollectionNameReturn<Name>;
 
-  override getEmbeddedCollection<EmbeddedName extends Combat.Embedded.CollectionName>(
+  override getEmbeddedCollection<EmbeddedName extends BaseCombat.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
-  ): Combat.Embedded.CollectionFor<EmbeddedName>;
+  ): BaseCombat.Embedded.CollectionFor<EmbeddedName>;
 
-  override getEmbeddedDocument<EmbeddedName extends Combat.Embedded.CollectionName>(
-    embeddedName: EmbeddedName,
-    id: string,
-    options: Document.GetEmbeddedDocumentOptions,
-  ): Combat.Embedded.DocumentFor<EmbeddedName> | undefined;
+  override getEmbeddedDocument<
+    EmbeddedName extends BaseCombat.Embedded.CollectionName,
+    Options extends Document.GetEmbeddedDocumentOptions | undefined = undefined,
+  >(embeddedName: EmbeddedName, id: string, options?: Options): BaseCombat.Embedded.GetReturn<EmbeddedName, Options>;
 
-  override createEmbeddedDocuments<EmbeddedName extends Combat.Embedded.Name>(
+  override createEmbeddedDocuments<EmbeddedName extends BaseCombat.Embedded.Name>(
     embeddedName: EmbeddedName,
-    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+    data: Document.CreateDataForName<EmbeddedName>[],
+    operation?: Document.Database2.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  override updateEmbeddedDocuments<EmbeddedName extends Combat.Embedded.Name>(
+  override updateEmbeddedDocuments<EmbeddedName extends BaseCombat.Embedded.Name>(
     embeddedName: EmbeddedName,
-    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+    updates: Document.UpdateDataForName<EmbeddedName>[],
+    operation?: Document.Database2.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  override deleteEmbeddedDocuments<EmbeddedName extends Combat.Embedded.Name>(
+  override deleteEmbeddedDocuments<EmbeddedName extends BaseCombat.Embedded.Name>(
     embeddedName: EmbeddedName,
-    ids: Array<string>,
-    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+    ids: string[],
+    operation?: Document.Database2.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  override getFlag<Scope extends Combat.Flags.Scope, Key extends Combat.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseCombat.Flags.Scope, Key extends BaseCombat.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Combat.Flags.Get<Scope, Key>;
+  ): BaseCombat.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends Combat.Flags.Scope,
-    Key extends Combat.Flags.Key<Scope>,
-    Value extends Combat.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+    Scope extends BaseCombat.Flags.Scope,
+    Key extends BaseCombat.Flags.Key<Scope>,
+    Value extends BaseCombat.Flags.Get<Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
-  override unsetFlag<Scope extends Combat.Flags.Scope, Key extends Combat.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseCombat.Flags.Scope, Key extends BaseCombat.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
-    data: Combat.CreateData,
-    options: Combat.Database.PreCreateOptions,
+    data: BaseCombat.CreateData,
+    options: BaseCombat.Database2.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: Combat.CreateData,
-    options: Combat.Database.OnCreateOperation,
+    data: BaseCombat.CreateData,
+    options: BaseCombat.Database2.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Combat.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<Combat.Database.Create>,
+    operation: BaseCombat.Database2.PreCreateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Combat.Implementation[],
-    operation: Combat.Database.Create,
+    documents: Combat.Stored[],
+    operation: BaseCombat.Database2.OnCreateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _onUpdate(
-    changed: Combat.UpdateData,
-    options: Combat.Database.OnUpdateOperation,
+    changed: BaseCombat.UpdateData,
+    options: BaseCombat.Database2.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Combat.Implementation[],
-    operation: Combat.Database.Update,
+    documents: Combat.Stored[],
+    operation: BaseCombat.Database2.PreUpdateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Combat.Implementation[],
-    operation: Combat.Database.Update,
+    documents: Combat.Stored[],
+    operation: BaseCombat.Database2.OnUpdateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: Combat.Database.PreDeleteOptions,
+    options: BaseCombat.Database2.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: Combat.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseCombat.Database2.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Combat.Implementation[],
-    operation: Combat.Database.Delete,
+    documents: Combat.Stored[],
+    operation: BaseCombat.Database2.PreDeleteOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Combat.Implementation[],
-    operation: Combat.Database.Delete,
+    documents: Combat.Stored[],
+    operation: BaseCombat.Database2.OnDeleteOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Combat.Implementation[],
-    context: Document.ModificationContext<Combat.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCombat.Database2.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Combat.Implementation[],
-    context: Document.ModificationContext<Combat.Parent>,
+    documents: Combat.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCombat.Database2.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
+   * (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Combat.Implementation[],
-    context: Document.ModificationContext<Combat.Parent>,
+    documents: Combat.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCombat.Database2.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<Combat.Schema>;
+  protected static override _schema: SchemaField<BaseCombat.Schema>;
 
-  static override get schema(): SchemaField<Combat.Schema>;
+  static override get schema(): SchemaField<BaseCombat.Schema>;
 
-  static override validateJoint(data: Combat.Source): void;
+  static override validateJoint(data: BaseCombat.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
-  static override fromSource(source: Combat.CreateData, context?: DataModel.FromSourceOptions): Combat.Implementation;
+  static override fromSource(
+    source: BaseCombat.CreateData,
+    context?: DataModel.FromSourceOptions,
+  ): Combat.Implementation;
 
   static override fromJSON(json: string): Combat.Implementation;
 
@@ -297,6 +306,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 export default BaseCombat;
 
 declare namespace BaseCombat {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = Combat.Name;
   export import ConstructionContext = Combat.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -317,13 +327,16 @@ declare namespace BaseCombat {
   export import CollectionClass = Combat.CollectionClass;
   export import Collection = Combat.Collection;
   export import Invalid = Combat.Invalid;
-  export import Stored = Combat.Stored;
   export import Source = Combat.Source;
   export import CreateData = Combat.CreateData;
+  export import CreateInput = Combat.CreateInput;
+  export import CreateReturn = Combat.CreateReturn;
   export import InitializedData = Combat.InitializedData;
   export import UpdateData = Combat.UpdateData;
+  export import UpdateInput = Combat.UpdateInput;
   export import Schema = Combat.Schema;
   export import Database = Combat.Database;
+  export import Database2 = Combat.Database2;
   export import TemporaryIf = Combat.TemporaryIf;
   export import Flags = Combat.Flags;
 

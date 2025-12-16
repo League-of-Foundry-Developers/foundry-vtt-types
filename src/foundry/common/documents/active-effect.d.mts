@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
@@ -50,8 +50,8 @@ declare abstract class BaseActiveEffect<
   static override LOCALIZATION_PREFIXES: string[];
 
   protected override _preCreate(
-    data: ActiveEffect.CreateData,
-    options: ActiveEffect.Database.PreCreateOptions,
+    data: BaseActiveEffect.CreateData,
+    options: BaseActiveEffect.Database2.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
@@ -67,7 +67,6 @@ declare abstract class BaseActiveEffect<
    * Shims:
    * - `icon` to `img` (since v12, until v14)
    */
-  // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
@@ -92,7 +91,7 @@ declare abstract class BaseActiveEffect<
 
   /* Document overrides */
 
-  override readonly parentCollection: ActiveEffect.ParentCollectionName | null;
+  override readonly parentCollection: BaseActiveEffect.ParentCollectionName | null;
 
   override get pack(): string | null;
 
@@ -100,170 +99,177 @@ declare abstract class BaseActiveEffect<
 
   static override get baseDocument(): typeof BaseActiveEffect;
 
-  static override get collectionName(): ActiveEffect.ParentCollectionName;
+  static override get collectionName(): BaseActiveEffect.ParentCollectionName;
 
-  static override get documentName(): ActiveEffect.Name;
+  static override get documentName(): BaseActiveEffect.Name;
 
   static override get TYPES(): BaseActiveEffect.SubType[];
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): ActiveEffect.Hierarchy;
+  static override get hierarchy(): BaseActiveEffect.Hierarchy;
 
-  override system: ActiveEffect.SystemOfType<SubType>;
+  override system: BaseActiveEffect.SystemOfType<SubType>;
 
   override parent: BaseActiveEffect.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<ActiveEffect.Implementation | ActiveEffect.CreateData> | undefined,
-    operation?: Document.Database.CreateDocumentsOperation<ActiveEffect.Database.Create<Temporary>>,
-  ): Promise<Array<ActiveEffect.TemporaryIf<Temporary>>>;
+    data: BaseActiveEffect.CreateInput[],
+    operation?: BaseActiveEffect.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<Array<BaseActiveEffect.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: ActiveEffect.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<ActiveEffect.Database.Update>,
-  ): Promise<ActiveEffect.Implementation[]>;
+    updates: BaseActiveEffect.UpdateInput[],
+    operation?: BaseActiveEffect.Database2.UpdateManyDocumentsOperation,
+  ): Promise<Array<ActiveEffect.Implementation>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<ActiveEffect.Database.Delete>,
-  ): Promise<ActiveEffect.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseActiveEffect.Database2.DeleteManyDocumentsOperation,
+  ): Promise<Array<ActiveEffect.Implementation>>;
 
-  static override create<Temporary extends boolean | undefined = false>(
-    data: ActiveEffect.CreateData | ActiveEffect.CreateData[],
-    operation?: ActiveEffect.Database.CreateOperation<Temporary>,
-  ): Promise<ActiveEffect.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseActiveEffect.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseActiveEffect.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseActiveEffect.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: ActiveEffect.UpdateData | undefined,
-    operation?: ActiveEffect.Database.UpdateOperation,
+    data: BaseActiveEffect.UpdateInput,
+    operation?: BaseActiveEffect.Database2.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: ActiveEffect.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseActiveEffect.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: ActiveEffect.Database.GetOptions,
-  ): ActiveEffect.Implementation | null;
+  /**
+   * @privateRemarks `ActiveEffect`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
+   * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
+   * chance of index entry return), so this always returns `null`
+   */
+  static override get(documentId: string, operation?: BaseActiveEffect.Database2.GetDocumentsOperation): null;
 
   /** @privateRemarks `ActiveEffect`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
-  override getFlag<Scope extends ActiveEffect.Flags.Scope, Key extends ActiveEffect.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseActiveEffect.Flags.Scope, Key extends BaseActiveEffect.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): ActiveEffect.Flags.Get<Scope, Key>;
+  ): BaseActiveEffect.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends ActiveEffect.Flags.Scope,
-    Key extends ActiveEffect.Flags.Key<Scope>,
-    Value extends ActiveEffect.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+    Scope extends BaseActiveEffect.Flags.Scope,
+    Key extends BaseActiveEffect.Flags.Key<Scope>,
+    Value extends BaseActiveEffect.Flags.Get<Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
-  override unsetFlag<Scope extends ActiveEffect.Flags.Scope, Key extends ActiveEffect.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseActiveEffect.Flags.Scope, Key extends BaseActiveEffect.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _onCreate(
-    data: ActiveEffect.CreateData,
-    options: ActiveEffect.Database.OnCreateOperation,
+    data: BaseActiveEffect.CreateData,
+    options: BaseActiveEffect.Database2.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: ActiveEffect.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<ActiveEffect.Database.Create>,
+    operation: BaseActiveEffect.Database2.PreCreateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: ActiveEffect.Implementation[],
-    operation: ActiveEffect.Database.Create,
+    documents: ActiveEffect.Stored[],
+    operation: BaseActiveEffect.Database2.OnCreateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: ActiveEffect.UpdateData,
-    options: ActiveEffect.Database.PreUpdateOptions,
+    changed: BaseActiveEffect.UpdateData,
+    options: BaseActiveEffect.Database2.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: ActiveEffect.UpdateData,
-    options: ActiveEffect.Database.OnUpdateOperation,
+    changed: BaseActiveEffect.UpdateData,
+    options: BaseActiveEffect.Database2.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: ActiveEffect.Implementation[],
-    operation: ActiveEffect.Database.Update,
+    documents: ActiveEffect.Stored[],
+    operation: BaseActiveEffect.Database2.PreUpdateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: ActiveEffect.Implementation[],
-    operation: ActiveEffect.Database.Update,
+    documents: ActiveEffect.Stored[],
+    operation: BaseActiveEffect.Database2.OnUpdateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: ActiveEffect.Database.PreDeleteOptions,
+    options: BaseActiveEffect.Database2.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: ActiveEffect.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseActiveEffect.Database2.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: ActiveEffect.Implementation[],
-    operation: ActiveEffect.Database.Delete,
+    documents: ActiveEffect.Stored[],
+    operation: BaseActiveEffect.Database2.PreDeleteOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: ActiveEffect.Implementation[],
-    operation: ActiveEffect.Database.Delete,
+    documents: ActiveEffect.Stored[],
+    operation: BaseActiveEffect.Database2.OnDeleteOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: ActiveEffect.Implementation[],
-    context: Document.ModificationContext<ActiveEffect.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseActiveEffect.Database2.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: ActiveEffect.Implementation[],
-    context: Document.ModificationContext<ActiveEffect.Parent>,
+    documents: ActiveEffect.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseActiveEffect.Database2.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
+   * (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: ActiveEffect.Implementation[],
-    context: Document.ModificationContext<ActiveEffect.Parent>,
+    documents: ActiveEffect.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseActiveEffect.Database2.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<ActiveEffect.Schema>;
+  protected static override _schema: SchemaField<BaseActiveEffect.Schema>;
 
-  static override get schema(): SchemaField<ActiveEffect.Schema>;
+  static override get schema(): SchemaField<BaseActiveEffect.Schema>;
 
-  static override validateJoint(data: ActiveEffect.Source): void;
+  static override validateJoint(data: BaseActiveEffect.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: ActiveEffect.CreateData,
+    source: BaseActiveEffect.CreateData,
     context?: DataModel.FromSourceOptions,
   ): ActiveEffect.Implementation;
 
@@ -273,6 +279,7 @@ declare abstract class BaseActiveEffect<
 export default BaseActiveEffect;
 
 declare namespace BaseActiveEffect {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = ActiveEffect.Name;
   export import ConstructionContext = ActiveEffect.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -293,13 +300,16 @@ declare namespace BaseActiveEffect {
   export import CollectionClass = ActiveEffect.CollectionClass;
   export import Collection = ActiveEffect.Collection;
   export import Invalid = ActiveEffect.Invalid;
-  export import Stored = ActiveEffect.Stored;
   export import Source = ActiveEffect.Source;
   export import CreateData = ActiveEffect.CreateData;
+  export import CreateInput = ActiveEffect.CreateInput;
+  export import CreateReturn = ActiveEffect.CreateReturn;
   export import InitializedData = ActiveEffect.InitializedData;
   export import UpdateData = ActiveEffect.UpdateData;
+  export import UpdateInput = ActiveEffect.UpdateInput;
   export import Schema = ActiveEffect.Schema;
   export import Database = ActiveEffect.Database;
+  export import Database2 = ActiveEffect.Database2;
   export import TemporaryIf = ActiveEffect.TemporaryIf;
   export import Flags = ActiveEffect.Flags;
   export import CoreFlags = ActiveEffect.CoreFlags;

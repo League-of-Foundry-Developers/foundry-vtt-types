@@ -51,10 +51,10 @@ declare namespace WallDocument {
     Readonly<{
       name: "Wall";
       collection: "walls";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Wall";
+      labelPlural: "DOCUMENT.Walls";
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

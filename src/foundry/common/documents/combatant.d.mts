@@ -1,7 +1,7 @@
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { DOCUMENT_OWNERSHIP_LEVELS } from "../constants.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
+import type { MaybeArray } from "#utils";
 
 /**
  * The Combatant Document.
@@ -25,7 +25,7 @@ declare abstract class BaseCombatant<
    * a system specific implementation of `Combatant`.
    */
   // Note(LukeAbby): `data` is not actually required but `context.parent` is.
-  constructor(data: Combatant.CreateData | undefined, context: Combatant.ConstructionContext);
+  constructor(data: BaseCombatant.CreateData | undefined, context: BaseCombatant.ConstructionContext);
 
   /**
    * @defaultValue
@@ -50,13 +50,7 @@ declare abstract class BaseCombatant<
 
   static override defineSchema(): BaseCombatant.Schema;
 
-  /**
-   * @remarks Uses `game.user` if `user` is falsey.
-   *
-   * Returns {@link DOCUMENT_OWNERSHIP_LEVELS.OWNER | `OWNER`} if `user.isGM`, otherwise forwards to `this.actor?.getUserLevel(user)`.
-   * If thats nullish, returns {@link DOCUMENT_OWNERSHIP_LEVELS.NONE | `NONE`}
-   */
-  override getUserLevel(user?: User.Implementation): DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /*
    * After this point these are not really overridden methods.
@@ -74,179 +68,190 @@ declare abstract class BaseCombatant<
 
   override readonly parentCollection: Combatant.ParentCollectionName | null;
 
-  override get pack(): string | null;
+  /** @privateRemarks Neither `Combatant`s nor any of its ancestor document(s) can exist in compendia. */
+  override get pack(): null;
 
   static override get implementation(): Combatant.ImplementationClass;
 
   static override get baseDocument(): typeof BaseCombatant;
 
-  static override get collectionName(): Combatant.ParentCollectionName;
+  static override get collectionName(): BaseCombatant.ParentCollectionName;
 
-  static override get documentName(): Combatant.Name;
+  static override get documentName(): BaseCombatant.Name;
 
   static override get TYPES(): BaseCombatant.SubType[];
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): Combatant.Hierarchy;
+  static override get hierarchy(): BaseCombatant.Hierarchy;
 
-  override system: Combatant.SystemOfType<SubType>;
+  override system: BaseCombatant.SystemOfType<SubType>;
 
   override parent: BaseCombatant.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Combatant.Implementation | Combatant.CreateData> | undefined,
-    operation?: Document.Database.CreateDocumentsOperation<Combatant.Database.Create<Temporary>>,
-  ): Promise<Array<Combatant.TemporaryIf<Temporary>>>;
+    data: BaseCombatant.CreateInput[],
+    operation?: BaseCombatant.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<Array<BaseCombatant.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: Combatant.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<Combatant.Database.Update>,
-  ): Promise<Combatant.Implementation[]>;
+    updates: BaseCombatant.UpdateInput[],
+    operation?: BaseCombatant.Database2.UpdateManyDocumentsOperation,
+  ): Promise<Array<Combatant.Implementation>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<Combatant.Database.Delete>,
-  ): Promise<Combatant.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseCombatant.Database2.DeleteManyDocumentsOperation,
+  ): Promise<Array<Combatant.Implementation>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: Combatant.CreateData | Combatant.CreateData[],
-    operation?: Combatant.Database.CreateOperation<Temporary>,
-  ): Promise<Combatant.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseCombatant.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseCombatant.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseCombatant.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: Combatant.UpdateData | undefined,
-    operation?: Combatant.Database.UpdateOperation,
+    data: BaseCombatant.UpdateInput,
+    operation?: BaseCombatant.Database2.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: Combatant.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseCombatant.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: Combatant.Database.GetOptions): Combatant.Implementation | null;
+  /**
+   * @privateRemarks `Combatant`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
+   * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
+   * chance of index entry return), so this always returns `null`
+   */
+  static override get(documentId: string, operation?: BaseCombatant.Database2.GetDocumentsOperation): null;
 
   /** @privateRemarks `Combatant`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
-  override getFlag<Scope extends Combatant.Flags.Scope, Key extends Combatant.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseCombatant.Flags.Scope, Key extends BaseCombatant.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Combatant.Flags.Get<Scope, Key>;
+  ): BaseCombatant.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends Combatant.Flags.Scope,
-    Key extends Combatant.Flags.Key<Scope>,
-    Value extends Combatant.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+    Scope extends BaseCombatant.Flags.Scope,
+    Key extends BaseCombatant.Flags.Key<Scope>,
+    Value extends BaseCombatant.Flags.Get<Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
-  override unsetFlag<Scope extends Combatant.Flags.Scope, Key extends Combatant.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseCombatant.Flags.Scope, Key extends BaseCombatant.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
-    data: Combatant.CreateData,
-    options: Combatant.Database.PreCreateOptions,
+    data: BaseCombatant.CreateData,
+    options: BaseCombatant.Database2.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: Combatant.CreateData,
-    options: Combatant.Database.OnCreateOperation,
+    data: BaseCombatant.CreateData,
+    options: BaseCombatant.Database2.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Combatant.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<Combatant.Database.Create>,
+    operation: BaseCombatant.Database2.PreCreateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Combatant.Implementation[],
-    operation: Combatant.Database.Create,
+    documents: Combatant.Stored[],
+    operation: BaseCombatant.Database2.OnCreateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: Combatant.UpdateData,
-    options: Combatant.Database.PreUpdateOptions,
+    changed: BaseCombatant.UpdateData,
+    options: BaseCombatant.Database2.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: Combatant.UpdateData,
-    options: Combatant.Database.OnUpdateOperation,
+    changed: BaseCombatant.UpdateData,
+    options: BaseCombatant.Database2.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Combatant.Implementation[],
-    operation: Combatant.Database.Update,
+    documents: Combatant.Stored[],
+    operation: BaseCombatant.Database2.PreUpdateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Combatant.Implementation[],
-    operation: Combatant.Database.Update,
+    documents: Combatant.Stored[],
+    operation: BaseCombatant.Database2.OnUpdateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: Combatant.Database.PreDeleteOptions,
+    options: BaseCombatant.Database2.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: Combatant.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseCombatant.Database2.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Combatant.Implementation[],
-    operation: Combatant.Database.Delete,
+    documents: Combatant.Stored[],
+    operation: BaseCombatant.Database2.PreDeleteOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Combatant.Implementation[],
-    operation: Combatant.Database.Delete,
+    documents: Combatant.Stored[],
+    operation: BaseCombatant.Database2.OnDeleteOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Combatant.Implementation[],
-    context: Document.ModificationContext<Combatant.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCombatant.Database2.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Combatant.Implementation[],
-    context: Document.ModificationContext<Combatant.Parent>,
+    documents: Combatant.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCombatant.Database2.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
+   * (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Combatant.Implementation[],
-    context: Document.ModificationContext<Combatant.Parent>,
+    documents: Combatant.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseCombatant.Database2.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<Combatant.Schema>;
+  protected static override _schema: SchemaField<BaseCombatant.Schema>;
 
-  static override get schema(): SchemaField<Combatant.Schema>;
+  static override get schema(): SchemaField<BaseCombatant.Schema>;
 
-  static override validateJoint(data: Combatant.Source): void;
+  static override validateJoint(data: BaseCombatant.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: Combatant.CreateData,
+    source: BaseCombatant.CreateData,
     context?: DataModel.FromSourceOptions,
   ): Combatant.Implementation;
 
@@ -258,6 +263,7 @@ declare abstract class BaseCombatant<
 export default BaseCombatant;
 
 declare namespace BaseCombatant {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = Combatant.Name;
   export import ConstructionContext = Combatant.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -278,13 +284,16 @@ declare namespace BaseCombatant {
   export import CollectionClass = Combatant.CollectionClass;
   export import Collection = Combatant.Collection;
   export import Invalid = Combatant.Invalid;
-  export import Stored = Combatant.Stored;
   export import Source = Combatant.Source;
   export import CreateData = Combatant.CreateData;
+  export import CreateInput = Combatant.CreateInput;
+  export import CreateReturn = Combatant.CreateReturn;
   export import InitializedData = Combatant.InitializedData;
   export import UpdateData = Combatant.UpdateData;
+  export import UpdateInput = Combatant.UpdateInput;
   export import Schema = Combatant.Schema;
   export import Database = Combatant.Database;
+  export import Database2 = Combatant.Database2;
   export import TemporaryIf = Combatant.TemporaryIf;
   export import Flags = Combatant.Flags;
 

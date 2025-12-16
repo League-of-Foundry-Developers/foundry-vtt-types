@@ -64,9 +64,9 @@ declare namespace ActiveEffect {
       name: "ActiveEffect";
       collection: "effects";
       hasTypeData: true;
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
+      label: "DOCUMENT.ActiveEffect";
+      labelPlural: "DOCUMENT.ActiveEffects";
+      schemaVersion: "13.341";
       permissions: Metadata.Permissions;
     }>
   > {}

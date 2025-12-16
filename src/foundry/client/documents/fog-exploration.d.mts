@@ -53,11 +53,11 @@ declare namespace FogExploration {
     Readonly<{
       name: "FogExploration";
       collection: "fog";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.FogExploration";
+      labelPlural: "DOCUMENT.FogExplorations";
       isPrimary: true;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -1099,7 +1099,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   static load(
     query?: FogExploration.LoadQuery,
     options?: FogExploration.LoadOptions,
-  ): Promise<FogExploration.Implementation | null>;
+  ): Promise<FogExploration.Stored | null>;
 
   /**
    * Transform the explored base64 data into a PIXI.Texture object
@@ -1110,17 +1110,17 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
 
   static override get(
     documentId: string,
-    options?: FogExploration.Database.GetOptions,
-  ): FogExploration.Implementation | null;
+    options?: FogExploration.Database2.GetDocumentsOperation,
+  ): FogExploration.Stored | null;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War exploration data, an operation which has been renamed to {@link FogExploration.load | `FogExploration.load`}"
+   * @deprecated "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War
+   * exploration data, an operation which has been renamed to {@link FogExploration.load | `FogExploration.load`}" (since v12, will be removed in v14)
    */
   static override get(
     query: FogExploration.LoadQuery,
     options: FogExploration.LoadOptions,
-  ): Promise<FogExploration.Implementation | null>;
+  ): Promise<FogExploration.Stored | null>;
 
   /*
    * After this point these are not really overridden methods.

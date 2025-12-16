@@ -616,7 +616,11 @@ declare namespace PlaceableObject {
   interface Any extends AnyPlaceableObject {}
   interface AnyConstructor extends Identity<typeof AnyPlaceableObject> {}
 
-  type AnyCanvasDocument = Scene.Embedded;
+  /**
+   * Since this is the constraint on the `CanvasDocument` generic on {@linkcode PlaceablesLayer}, it can't be {@linkcode Scene.Embedded}/
+   * {@linkcode Scene.DirectDescendant | .DirectDescendant}, or placeables for temporary documents couldn't exist.
+   */
+  type AnyCanvasDocument = Document.ImplementationFor<Scene.Embedded.Name>;
 
   type RenderFlags = RenderFlagsMixin.ToBooleanFlags<RENDER_FLAGS>;
 

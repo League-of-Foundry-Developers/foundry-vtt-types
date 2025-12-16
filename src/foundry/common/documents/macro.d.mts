@@ -62,35 +62,29 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    */
   static DEFAULT_ICON: string;
 
+  /** @remarks Calls {@linkcode DocumentStatsField._shimDocument}`(this)` */
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  /**
-   * @remarks
-   * Migrations:
-   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
-   */
+  /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
-  /**
-   * @remarks Only calls {@linkcode foundry.data.fields.DocumentStatsField._shimData | DocumentStatsField._shimData} and
-   * {@linkcode DataModel.shimData | super.shimData}.
-   */
+  /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
    * @remarks
    * @throws If `data.command` doesn't pass {@linkcode foundry.data.fields.JavaScriptField | JavaScriptField} validation
+   * (`script`-type `Macro`s only)
    */
   static override validateJoint(data: BaseMacro.Source): void;
 
-  /** @remarks Returns `user.hasRole("PLAYER")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   protected override _preCreate(
     data: BaseMacro.CreateData,
-    options: BaseMacro.Database.PreCreateOptions,
+    options: BaseMacro.Database2.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
@@ -112,7 +106,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   override get pack(): string | null;
 
-  static override get implementation(): BaseMacro.ImplementationClass;
+  static override get implementation(): Macro.ImplementationClass;
 
   static override get baseDocument(): typeof BaseMacro;
 
@@ -131,22 +125,25 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseMacro.CreateInput[],
     operation?: BaseMacro.Database2.CreateDocumentsOperation<Temporary>,
-  ): Promise<Array<Macro.TemporaryIf<Temporary>>>;
+  ): Promise<Array<BaseMacro.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseMacro.UpdateInput[],
     operation?: BaseMacro.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<BaseMacro.Implementation>>;
+  ): Promise<Array<Macro.Implementation>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: BaseMacro.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<BaseMacro.Implementation>>;
+  ): Promise<Array<Macro.Implementation>>;
 
-  static override create<Data extends MaybeArray<Macro.CreateInput>, Temporary extends boolean | undefined = undefined>(
+  static override create<
+    Data extends MaybeArray<BaseMacro.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
     data: Data,
     operation?: BaseMacro.Database2.CreateDocumentsOperation<Temporary>,
-  ): Promise<Macro.CreateReturn<Data, Temporary>>;
+  ): Promise<BaseMacro.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseMacro.UpdateInput,
@@ -157,24 +154,24 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   static override get(
     documentId: string,
-    options?: BaseMacro.Database2.GetDocumentsOperation,
-  ): BaseMacro.Implementation | CompendiumCollection.IndexEntry<"Macro"> | null;
+    operation?: BaseMacro.Database2.GetDocumentsOperation,
+  ): Macro.Stored | CompendiumCollection.IndexEntry<"Macro"> | null;
 
   /** @privateRemarks `Macro`s have no embedded documents, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
-  override getFlag<Scope extends Macro.Flags.Scope, Key extends Macro.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseMacro.Flags.Scope, Key extends BaseMacro.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): BaseMacro.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends Macro.Flags.Scope,
-    Key extends Macro.Flags.Key<Scope>,
-    Value extends Macro.Flags.Get<Scope, Key>,
+    Scope extends BaseMacro.Flags.Scope,
+    Key extends BaseMacro.Flags.Key<Scope>,
+    Value extends BaseMacro.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
-  override unsetFlag<Scope extends Macro.Flags.Scope, Key extends Macro.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseMacro.Flags.Scope, Key extends BaseMacro.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): Promise<this | undefined>;
@@ -186,13 +183,13 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   ): void;
 
   protected static override _preCreateOperation(
-    documents: BaseMacro.Implementation[],
+    documents: Macro.Implementation[],
     operation: BaseMacro.Database2.PreCreateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: BaseMacro.Stored[],
+    documents: Macro.Stored[],
     operation: BaseMacro.Database2.OnCreateOperation,
     user: User.Implementation,
   ): Promise<void>;
@@ -210,13 +207,13 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: BaseMacro.Stored[],
+    documents: Macro.Stored[],
     operation: BaseMacro.Database2.PreUpdateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: BaseMacro.Stored[],
+    documents: Macro.Stored[],
     operation: BaseMacro.Database2.OnUpdateOperation,
     user: User.Implementation,
   ): Promise<void>;
@@ -229,13 +226,13 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   protected override _onDelete(options: BaseMacro.Database2.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: BaseMacro.Stored[],
+    documents: Macro.Stored[],
     operation: BaseMacro.Database2.PreDeleteOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: BaseMacro.Stored[],
+    documents: Macro.Stored[],
     operation: BaseMacro.Database2.OnDeleteOperation,
     user: User.Implementation,
   ): Promise<void>;
@@ -245,7 +242,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    * (since v12, until v14)
    */
   protected static override _onCreateDocuments(
-    documents: BaseMacro.Implementation[],
+    documents: Macro.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     context: BaseMacro.Database2.OnCreateDocumentsOperation,
   ): Promise<void>;
@@ -255,7 +252,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    * (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: BaseMacro.Stored[],
+    documents: Macro.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     context: BaseMacro.Database2.OnUpdateDocumentsOperation,
   ): Promise<void>;
@@ -265,23 +262,20 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    * (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: BaseMacro.Stored[],
+    documents: Macro.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     context: BaseMacro.Database2.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<Macro.Schema>;
+  protected static override _schema: SchemaField<BaseMacro.Schema>;
 
-  static override get schema(): SchemaField<Macro.Schema>;
+  static override get schema(): SchemaField<BaseMacro.Schema>;
 
-  static override fromSource(
-    source: BaseMacro.CreateData,
-    context?: DataModel.FromSourceOptions,
-  ): BaseMacro.Implementation;
+  static override fromSource(source: BaseMacro.CreateData, context?: DataModel.FromSourceOptions): Macro.Implementation;
 
-  static override fromJSON(json: string): BaseMacro.Implementation;
+  static override fromJSON(json: string): Macro.Implementation;
 
   static #BaseMacro: true;
 }
@@ -295,8 +289,6 @@ declare namespace BaseMacro {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = Macro.ConstructorArgs;
   export import Hierarchy = Macro.Hierarchy;
-  export import Implementation = Macro.Implementation;
-  export import ImplementationClass = Macro.ImplementationClass;
   export import Metadata = Macro.Metadata;
   export import SubType = Macro.SubType;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -313,7 +305,6 @@ declare namespace BaseMacro {
   export import CollectionClass = Macro.CollectionClass;
   export import Collection = Macro.Collection;
   export import Invalid = Macro.Invalid;
-  export import Stored = Macro.Stored;
   export import Source = Macro.Source;
   export import CreateData = Macro.CreateData;
   export import CreateInput = Macro.CreateInput;

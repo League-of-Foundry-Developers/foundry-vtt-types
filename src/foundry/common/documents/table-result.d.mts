@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
@@ -24,7 +24,7 @@ declare abstract class BaseTableResult<
    * You should use {@link TableResult.implementation | `new TableResult.implementation(...)`} instead which will give you
    * a system specific implementation of `TableResult`.
    */
-  constructor(data: TableResult.CreateData, context?: TableResult.ConstructionContext);
+  constructor(data: BaseTableResult.CreateData, context?: BaseTableResult.ConstructionContext);
 
   /**
    * @defaultValue
@@ -53,17 +53,18 @@ declare abstract class BaseTableResult<
   static override defineSchema(): BaseTableResult.Schema;
 
   /**
-   * @deprecated since V13 until V15
+   * @deprecated "`#text` is deprecated. Use {@linkcode BaseTableResult.name | #name} or
+   * {@linkcode BaseTableResult.description | #description} instead." (since v13, until v15)
    */
   get text(): string;
 
   /**
-   * @deprecated since V13 until V15
+   * @deprecated "`#documentId` is deprecated. Consult {@linkcode BaseTableResult.uuid | #uuid} instead." (since v13, until v15)
    */
   get documentId(): string | null;
 
   /**
-   * @deprecated since v13 until V15
+   * @deprecated "`#documentCollection` is deprecated. Consult {@linkcode BaseTableResult.uuid | #uuid} instead." (since v13, until v15)
    */
   get documentCollection(): string;
 
@@ -71,9 +72,19 @@ declare abstract class BaseTableResult<
    * @remarks
    * Migrations:
    * - Numeric `type`s to their new — since v12 — string values
+   * - `type: "pack"` -\> {@linkcode CONST.TABLE_RESULT_TYPES.DOCUMENT} (since v13)
+   * - `documentId` and `documentCollection` -\> `documentUuid`
+   * - `text` -\> `description` (since v13, until v15)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
+  /**
+   * @remarks
+   * Shims:
+   * - `documentId` -\> the `id` part of a {@linkcode foundry.utils.parseUuid} call or `null` (since v13, until v15)
+   * - `documentCollection` -\> a pack ID, document type, or `null` (since v13, until v15)
+   * - `text` -\> `description` (since v13, until v15)
+   */
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
@@ -90,7 +101,7 @@ declare abstract class BaseTableResult<
 
   /* Document overrides */
 
-  override readonly parentCollection: TableResult.ParentCollectionName | null;
+  override readonly parentCollection: BaseTableResult.ParentCollectionName | null;
 
   override get pack(): string | null;
 
@@ -98,171 +109,181 @@ declare abstract class BaseTableResult<
 
   static override get baseDocument(): typeof BaseTableResult;
 
-  static override get collectionName(): TableResult.ParentCollectionName;
+  static override get collectionName(): BaseTableResult.ParentCollectionName;
 
-  static override get documentName(): TableResult.Name;
+  static override get documentName(): BaseTableResult.Name;
 
   static override get TYPES(): BaseTableResult.SubType[];
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): TableResult.Hierarchy;
+  static override get hierarchy(): BaseTableResult.Hierarchy;
 
   override parent: BaseTableResult.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<TableResult.Implementation | TableResult.CreateData> | undefined,
-    operation?: Document.Database.CreateDocumentsOperation<TableResult.Database.Create<Temporary>>,
-  ): Promise<Array<TableResult.TemporaryIf<Temporary>>>;
+    data: BaseTableResult.CreateInput[],
+    operation?: BaseTableResult.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<Array<BaseTableResult.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: TableResult.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<TableResult.Database.Update>,
-  ): Promise<TableResult.Implementation[]>;
+    updates: BaseTableResult.UpdateInput[],
+    operation?: BaseTableResult.Database2.UpdateManyDocumentsOperation,
+  ): Promise<Array<TableResult.Implementation>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<TableResult.Database.Delete>,
-  ): Promise<TableResult.Implementation[]>;
+    ids: readonly string[],
+    operation?: BaseTableResult.Database2.DeleteManyDocumentsOperation,
+  ): Promise<Array<TableResult.Implementation>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: TableResult.CreateData | TableResult.CreateData[],
-    operation?: TableResult.Database.CreateOperation<Temporary>,
-  ): Promise<TableResult.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseTableResult.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseTableResult.Database2.CreateDocumentsOperation<Temporary>,
+  ): Promise<BaseTableResult.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: TableResult.UpdateData | undefined,
-    operation?: TableResult.Database.UpdateOperation,
+    data: BaseTableResult.UpdateInput,
+    operation?: BaseTableResult.Database2.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: TableResult.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseTableResult.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: TableResult.Database.GetOptions): TableResult.Implementation | null;
+  /**
+   * @privateRemarks `TableResult`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
+   * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
+   * chance of index entry return), so this always returns `null`
+   */
+  static override get(documentId: string, operation?: BaseTableResult.Database2.GetDocumentsOperation): null;
 
   /** @privateRemarks `TableResult`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
-  override getFlag<Scope extends TableResult.Flags.Scope, Key extends TableResult.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseTableResult.Flags.Scope, Key extends BaseTableResult.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): TableResult.Flags.Get<Scope, Key>;
+  ): BaseTableResult.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends TableResult.Flags.Scope,
-    Key extends TableResult.Flags.Key<Scope>,
-    Value extends TableResult.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+    Scope extends BaseTableResult.Flags.Scope,
+    Key extends BaseTableResult.Flags.Key<Scope>,
+    Value extends BaseTableResult.Flags.Get<Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
-  override unsetFlag<Scope extends TableResult.Flags.Scope, Key extends TableResult.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseTableResult.Flags.Scope, Key extends BaseTableResult.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
-    data: TableResult.CreateData,
-    options: TableResult.Database.PreCreateOptions,
+    data: BaseTableResult.CreateData,
+    options: BaseTableResult.Database2.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: TableResult.CreateData,
-    options: TableResult.Database.OnCreateOperation,
+    data: BaseTableResult.CreateData,
+    options: BaseTableResult.Database2.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: TableResult.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<TableResult.Database.Create>,
+    operation: BaseTableResult.Database2.PreCreateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: TableResult.Implementation[],
-    operation: TableResult.Database.Create,
+    documents: TableResult.Stored[],
+    operation: BaseTableResult.Database2.OnCreateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: TableResult.UpdateData,
-    options: TableResult.Database.PreUpdateOptions,
+    changed: BaseTableResult.UpdateData,
+    options: BaseTableResult.Database2.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: TableResult.UpdateData,
-    options: TableResult.Database.OnUpdateOperation,
+    changed: BaseTableResult.UpdateData,
+    options: BaseTableResult.Database2.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: TableResult.Implementation[],
-    operation: TableResult.Database.Update,
+    documents: TableResult.Stored[],
+    operation: BaseTableResult.Database2.PreUpdateOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: TableResult.Implementation[],
-    operation: TableResult.Database.Update,
+    documents: TableResult.Stored[],
+    operation: BaseTableResult.Database2.OnUpdateOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: TableResult.Database.PreDeleteOptions,
+    options: BaseTableResult.Database2.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: TableResult.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseTableResult.Database2.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: TableResult.Implementation[],
-    operation: TableResult.Database.Delete,
+    documents: TableResult.Stored[],
+    operation: BaseTableResult.Database2.PreDeleteOperation,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: TableResult.Implementation[],
-    operation: TableResult.Database.Delete,
+    documents: TableResult.Stored[],
+    operation: BaseTableResult.Database2.OnDeleteOperation,
     user: User.Implementation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: TableResult.Implementation[],
-    context: Document.ModificationContext<TableResult.Parent>,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseTableResult.Database2.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
+   * (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: TableResult.Implementation[],
-    context: Document.ModificationContext<TableResult.Parent>,
+    documents: TableResult.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseTableResult.Database2.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
+   * (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: TableResult.Implementation[],
-    context: Document.ModificationContext<TableResult.Parent>,
+    documents: TableResult.Stored[],
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseTableResult.Database2.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<TableResult.Schema>;
+  protected static override _schema: SchemaField<BaseTableResult.Schema>;
 
-  static override get schema(): SchemaField<TableResult.Schema>;
+  static override get schema(): SchemaField<BaseTableResult.Schema>;
 
-  static override validateJoint(data: TableResult.Source): void;
+  static override validateJoint(data: BaseTableResult.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: TableResult.CreateData,
+    source: BaseTableResult.CreateData,
     context?: DataModel.FromSourceOptions,
   ): TableResult.Implementation;
 
@@ -274,6 +295,7 @@ declare abstract class BaseTableResult<
 export default BaseTableResult;
 
 declare namespace BaseTableResult {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = TableResult.Name;
   export import ConstructionContext = TableResult.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -295,13 +317,16 @@ declare namespace BaseTableResult {
   export import CollectionClass = TableResult.CollectionClass;
   export import Collection = TableResult.Collection;
   export import Invalid = TableResult.Invalid;
-  export import Stored = TableResult.Stored;
   export import Source = TableResult.Source;
   export import CreateData = TableResult.CreateData;
+  export import CreateInput = TableResult.CreateInput;
+  export import CreateReturn = TableResult.CreateReturn;
   export import InitializedData = TableResult.InitializedData;
   export import UpdateData = TableResult.UpdateData;
+  export import UpdateInput = TableResult.UpdateInput;
   export import Schema = TableResult.Schema;
   export import Database = TableResult.Database;
+  export import Database2 = TableResult.Database2;
   export import TemporaryIf = TableResult.TemporaryIf;
   export import Flags = TableResult.Flags;
 

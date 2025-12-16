@@ -47,10 +47,10 @@ declare namespace JournalEntryCategory {
     Readonly<{
       name: "JournalEntryCategory";
       collection: "categories";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.JournalEntryCategory";
+      labelPlural: "DOCUMENT.JournalEntryCategories";
       isEmbedded: true;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

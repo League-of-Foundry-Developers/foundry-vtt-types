@@ -53,11 +53,11 @@ declare namespace DrawingDocument {
     Readonly<{
       name: "Drawing";
       collection: "drawings";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Drawing";
+      labelPlural: "DOCUMENT.Drawings";
       isEmbedded: true;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

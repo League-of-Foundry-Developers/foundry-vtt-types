@@ -51,10 +51,10 @@ declare namespace AmbientSoundDocument {
     Readonly<{
       name: "AmbientSound";
       collection: "sounds";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.AmbientSound";
+      labelPlural: "DOCUMENT.AmbientSounds";
       isEmbedded: true;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

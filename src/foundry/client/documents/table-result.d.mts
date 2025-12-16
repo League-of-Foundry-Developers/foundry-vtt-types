@@ -53,12 +53,12 @@ declare namespace TableResult {
     Readonly<{
       name: "TableResult";
       collection: "results";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.TableResult";
+      labelPlural: "DOCUMENT.TableResults";
       coreTypes: foundry.CONST.TABLE_RESULT_TYPES[];
       permissions: Metadata.Permissions;
       compendiumIndexFields: ["type"];
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
