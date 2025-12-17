@@ -153,7 +153,7 @@ declare namespace MeasuredTemplateDocument {
 
   /**
    * Used in the {@linkcode MeasuredTemplateDocument.create} and {@linkcode MeasuredTemplateDocument.createDocuments} signatures, and
-   * {@linkcode MeasuredTemplateDocument.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode MeasuredTemplateDocument.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -188,7 +188,7 @@ declare namespace MeasuredTemplateDocument {
 
   /**
    * Used in the {@linkcode MeasuredTemplateDocument.update | MeasuredTemplateDocument#update} and
-   * {@linkcode MeasuredTemplateDocument.updateDocuments} signatures, and {@linkcode MeasuredTemplateDocument.Database2.UpdateOperation}
+   * {@linkcode MeasuredTemplateDocument.updateDocuments} signatures, and {@linkcode MeasuredTemplateDocument.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -317,7 +317,7 @@ declare namespace MeasuredTemplateDocument {
     flags: fields.DocumentFlagsField<Name>;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -333,15 +333,15 @@ declare namespace MeasuredTemplateDocument {
 
     /**
      * The interface for passing to {@linkcode MeasuredTemplateDocument.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get}.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -366,7 +366,7 @@ declare namespace MeasuredTemplateDocument {
 
     /**
      * The interface for passing to {@linkcode MeasuredTemplateDocument.create} or {@linkcode MeasuredTemplateDocument.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -377,12 +377,12 @@ declare namespace MeasuredTemplateDocument {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `MeasuredTemplateDocument` documents. (see {@linkcode MeasuredTemplateDocument.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -392,11 +392,11 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `MeasuredTemplateDocument` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -407,12 +407,12 @@ declare namespace MeasuredTemplateDocument {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._preCreate | MeasuredTemplateDocument#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateMeasuredTemplateDocument` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -422,12 +422,12 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -437,13 +437,13 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode MeasuredTemplateDocument._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -454,12 +454,12 @@ declare namespace MeasuredTemplateDocument {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._onCreate | MeasuredTemplateDocument#_onCreate} and
      * {@link Hooks.CreateDocument | the `createMeasuredTemplateDocument` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -469,12 +469,12 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._onCreateOperation} and MeasuredTemplateDocument-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -484,7 +484,7 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -506,7 +506,7 @@ declare namespace MeasuredTemplateDocument {
 
     /**
      * The interface for passing to {@linkcode MeasuredTemplateDocument.update | MeasuredTemplateDocument#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -516,7 +516,7 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
@@ -535,7 +535,7 @@ declare namespace MeasuredTemplateDocument {
 
     /**
      * The interface for passing to {@linkcode MeasuredTemplateDocument.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -545,11 +545,11 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `MeasuredTemplateDocument` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -559,12 +559,12 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._preUpdate | MeasuredTemplateDocument#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateMeasuredTemplateDocument` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -574,11 +574,11 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -588,12 +588,12 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode MeasuredTemplateDocument._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -603,12 +603,12 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._onUpdate | MeasuredTemplateDocument#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateMeasuredTemplateDocument` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -618,12 +618,12 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._onUpdateOperation} and MeasuredTemplateDocument-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -633,7 +633,7 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -652,7 +652,7 @@ declare namespace MeasuredTemplateDocument {
 
     /**
      * The interface for passing to {@linkcode MeasuredTemplateDocument.delete | MeasuredTemplateDocument#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -662,7 +662,7 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
@@ -681,7 +681,7 @@ declare namespace MeasuredTemplateDocument {
 
     /**
      * The interface for passing to {@linkcode MeasuredTemplateDocument.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -691,11 +691,11 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `MeasuredTemplateDocument` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -705,12 +705,12 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._preDelete | MeasuredTemplateDocument#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteMeasuredTemplateDocument` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -720,11 +720,11 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -734,12 +734,12 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode MeasuredTemplateDocument._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -749,12 +749,12 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._onDelete | MeasuredTemplateDocument#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteMeasuredTemplateDocument` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -764,12 +764,12 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode MeasuredTemplateDocument._onDeleteOperation} and MeasuredTemplateDocument-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -779,48 +779,48 @@ declare namespace MeasuredTemplateDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: MeasuredTemplateDocument.Database2.GetDocumentsOperation;
-        BackendGetOperation: MeasuredTemplateDocument.Database2.BackendGetOperation;
-        GetOperation: MeasuredTemplateDocument.Database2.GetOperation;
+        GetDocumentsOperation: MeasuredTemplateDocument.Database.GetDocumentsOperation;
+        BackendGetOperation: MeasuredTemplateDocument.Database.BackendGetOperation;
+        GetOperation: MeasuredTemplateDocument.Database.GetOperation;
 
-        CreateDocumentsOperation: MeasuredTemplateDocument.Database2.CreateDocumentsOperation<Temporary>;
-        CreateEmbeddedOperation: MeasuredTemplateDocument.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: MeasuredTemplateDocument.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: MeasuredTemplateDocument.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: MeasuredTemplateDocument.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: MeasuredTemplateDocument.Database2.PreCreateOperation<Temporary>;
+        CreateDocumentsOperation: MeasuredTemplateDocument.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: MeasuredTemplateDocument.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: MeasuredTemplateDocument.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: MeasuredTemplateDocument.Database.CreateOperation<Temporary>;
+        PreCreateOptions: MeasuredTemplateDocument.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: MeasuredTemplateDocument.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: MeasuredTemplateDocument.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: MeasuredTemplateDocument.Database2.OnCreateOptions;
-        OnCreateOperation: MeasuredTemplateDocument.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: MeasuredTemplateDocument.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: MeasuredTemplateDocument.Database.OnCreateOptions;
+        OnCreateOperation: MeasuredTemplateDocument.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: MeasuredTemplateDocument.Database2.UpdateOneDocumentOperation;
-        UpdateEmbeddedOperation: MeasuredTemplateDocument.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: MeasuredTemplateDocument.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: MeasuredTemplateDocument.Database2.BackendUpdateOperation;
-        UpdateOperation: MeasuredTemplateDocument.Database2.UpdateOperation;
-        PreUpdateOptions: MeasuredTemplateDocument.Database2.PreUpdateOptions;
-        PreUpdateOperation: MeasuredTemplateDocument.Database2.PreUpdateOperation;
+        UpdateOneDocumentOperation: MeasuredTemplateDocument.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: MeasuredTemplateDocument.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: MeasuredTemplateDocument.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: MeasuredTemplateDocument.Database.BackendUpdateOperation;
+        UpdateOperation: MeasuredTemplateDocument.Database.UpdateOperation;
+        PreUpdateOptions: MeasuredTemplateDocument.Database.PreUpdateOptions;
+        PreUpdateOperation: MeasuredTemplateDocument.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: MeasuredTemplateDocument.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: MeasuredTemplateDocument.Database2.OnUpdateOptions;
-        OnUpdateOperation: MeasuredTemplateDocument.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: MeasuredTemplateDocument.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: MeasuredTemplateDocument.Database.OnUpdateOptions;
+        OnUpdateOperation: MeasuredTemplateDocument.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: MeasuredTemplateDocument.Database2.DeleteOneDocumentOperation;
-        DeleteEmbeddedOperation: MeasuredTemplateDocument.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: MeasuredTemplateDocument.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: MeasuredTemplateDocument.Database2.BackendDeleteOperation;
-        DeleteOperation: MeasuredTemplateDocument.Database2.DeleteOperation;
-        PreDeleteOptions: MeasuredTemplateDocument.Database2.PreDeleteOptions;
-        PreDeleteOperation: MeasuredTemplateDocument.Database2.PreDeleteOperation;
+        DeleteOneDocumentOperation: MeasuredTemplateDocument.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: MeasuredTemplateDocument.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: MeasuredTemplateDocument.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: MeasuredTemplateDocument.Database.BackendDeleteOperation;
+        DeleteOperation: MeasuredTemplateDocument.Database.DeleteOperation;
+        PreDeleteOptions: MeasuredTemplateDocument.Database.PreDeleteOptions;
+        PreDeleteOperation: MeasuredTemplateDocument.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: MeasuredTemplateDocument.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: MeasuredTemplateDocument.Database2.OnDeleteOptions;
-        OnDeleteOperation: MeasuredTemplateDocument.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: MeasuredTemplateDocument.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: MeasuredTemplateDocument.Database.OnDeleteOptions;
+        OnDeleteOperation: MeasuredTemplateDocument.Database.OnDeleteOperation;
       }
     }
 
@@ -956,10 +956,10 @@ declare namespace MeasuredTemplateDocument {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode MeasuredTemplateDocument.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode MeasuredTemplateDocument.createDialog}'s third parameter
@@ -1040,7 +1040,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
     Options extends MeasuredTemplateDocument.CreateDialogOptions | undefined = undefined,
   >(
     data?: MeasuredTemplateDocument.CreateDialogData,
-    createOptions?: MeasuredTemplateDocument.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: MeasuredTemplateDocument.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<MeasuredTemplateDocument.CreateDialogReturn<Temporary, Options>>;
 
@@ -1062,7 +1062,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: MeasuredTemplateDocument.Database2.DeleteOneDocumentOperation,
+    operation?: MeasuredTemplateDocument.Database.DeleteOneDocumentOperation,
   ): Promise<MeasuredTemplateDocument.DeleteDialogReturn<Options>>;
 
   /**
@@ -1074,7 +1074,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: MeasuredTemplateDocument.Database2.DeleteOneDocumentOperation,
+    operation?: MeasuredTemplateDocument.Database.DeleteOneDocumentOperation,
   ): Promise<MeasuredTemplateDocument.DeleteDialogReturn<Options>>;
 
   static override fromDropData(

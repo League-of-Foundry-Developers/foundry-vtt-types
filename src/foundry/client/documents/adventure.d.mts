@@ -144,7 +144,7 @@ declare namespace Adventure {
 
   /**
    * Used in the {@linkcode Adventure.create} and {@linkcode Adventure.createDocuments} signatures, and
-   * {@linkcode Adventure.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode Adventure.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -179,7 +179,7 @@ declare namespace Adventure {
 
   /**
    * Used in the {@linkcode Adventure.update | Adventure#update} and
-   * {@linkcode Adventure.updateDocuments} signatures, and {@linkcode Adventure.Database2.UpdateOperation}
+   * {@linkcode Adventure.updateDocuments} signatures, and {@linkcode Adventure.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -311,7 +311,7 @@ declare namespace Adventure {
     _stats: fields.DocumentStatsField;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -327,15 +327,15 @@ declare namespace Adventure {
 
     /**
      * The interface for passing to {@linkcode Adventure.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Adventure` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -356,7 +356,7 @@ declare namespace Adventure {
 
     /**
      * The interface for passing to {@linkcode Adventure.create} or {@linkcode Adventure.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -367,14 +367,14 @@ declare namespace Adventure {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `Adventure` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `Adventure` documents. (see {@linkcode Adventure.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -384,11 +384,11 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Adventure` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -399,12 +399,12 @@ declare namespace Adventure {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Adventure._preCreate | Adventure#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateAdventure` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -414,12 +414,12 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Adventure._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -429,13 +429,13 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Adventure._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -446,12 +446,12 @@ declare namespace Adventure {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Adventure._onCreate | Adventure#_onCreate} and
      * {@link Hooks.CreateDocument | the `createAdventure` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -461,12 +461,12 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Adventure._onCreateOperation} and `Adventure`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -476,7 +476,7 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -495,7 +495,7 @@ declare namespace Adventure {
 
     /**
      * The interface for passing to {@linkcode Adventure.update | Adventure#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -505,7 +505,7 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * @deprecated `Adventure` documents are never embedded. This interface exists for consistency with other documents.
@@ -526,7 +526,7 @@ declare namespace Adventure {
 
     /**
      * The interface for passing to {@linkcode Adventure.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -536,11 +536,11 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Adventure` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -550,12 +550,12 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Adventure._preUpdate | Adventure#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateAdventure` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -565,11 +565,11 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Adventure._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -579,12 +579,12 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Adventure._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -594,12 +594,12 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Adventure._onUpdate | Adventure#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateAdventure` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -609,12 +609,12 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Adventure._onUpdateOperation} and `Adventure`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -624,7 +624,7 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -643,7 +643,7 @@ declare namespace Adventure {
 
     /**
      * The interface for passing to {@linkcode Adventure.delete | Adventure#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -653,7 +653,7 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * @deprecated `Adventure` documents are never embedded. This interface exists for consistency with other documents.
@@ -674,7 +674,7 @@ declare namespace Adventure {
 
     /**
      * The interface for passing to {@linkcode Adventure.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -684,11 +684,11 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Adventure` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -698,12 +698,12 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Adventure._preDelete | Adventure#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteAdventure` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -713,11 +713,11 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Adventure._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -727,12 +727,12 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Adventure._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -742,12 +742,12 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Adventure._onDelete | Adventure#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteAdventure` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -757,12 +757,12 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Adventure._onDeleteOperation} and `Adventure`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -772,51 +772,51 @@ declare namespace Adventure {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: Adventure.Database2.GetDocumentsOperation;
-        BackendGetOperation: Adventure.Database2.BackendGetOperation;
-        GetOperation: Adventure.Database2.GetOperation;
+        GetDocumentsOperation: Adventure.Database.GetDocumentsOperation;
+        BackendGetOperation: Adventure.Database.BackendGetOperation;
+        GetOperation: Adventure.Database.GetOperation;
 
-        CreateDocumentsOperation: Adventure.Database2.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: Adventure.Database.CreateDocumentsOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: Adventure.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: Adventure.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: Adventure.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: Adventure.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: Adventure.Database2.PreCreateOperation<Temporary>;
+        CreateEmbeddedOperation: Adventure.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: Adventure.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: Adventure.Database.CreateOperation<Temporary>;
+        PreCreateOptions: Adventure.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: Adventure.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Adventure.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: Adventure.Database2.OnCreateOptions;
-        OnCreateOperation: Adventure.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: Adventure.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: Adventure.Database.OnCreateOptions;
+        OnCreateOperation: Adventure.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: Adventure.Database2.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: Adventure.Database.UpdateOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: Adventure.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: Adventure.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: Adventure.Database2.BackendUpdateOperation;
-        UpdateOperation: Adventure.Database2.UpdateOperation;
-        PreUpdateOptions: Adventure.Database2.PreUpdateOptions;
-        PreUpdateOperation: Adventure.Database2.PreUpdateOperation;
+        UpdateEmbeddedOperation: Adventure.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Adventure.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Adventure.Database.BackendUpdateOperation;
+        UpdateOperation: Adventure.Database.UpdateOperation;
+        PreUpdateOptions: Adventure.Database.PreUpdateOptions;
+        PreUpdateOperation: Adventure.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: Adventure.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: Adventure.Database2.OnUpdateOptions;
-        OnUpdateOperation: Adventure.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: Adventure.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: Adventure.Database.OnUpdateOptions;
+        OnUpdateOperation: Adventure.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: Adventure.Database2.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: Adventure.Database.DeleteOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: Adventure.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: Adventure.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: Adventure.Database2.BackendDeleteOperation;
-        DeleteOperation: Adventure.Database2.DeleteOperation;
-        PreDeleteOptions: Adventure.Database2.PreDeleteOptions;
-        PreDeleteOperation: Adventure.Database2.PreDeleteOperation;
+        DeleteEmbeddedOperation: Adventure.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Adventure.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Adventure.Database.BackendDeleteOperation;
+        DeleteOperation: Adventure.Database.DeleteOperation;
+        PreDeleteOptions: Adventure.Database.PreDeleteOptions;
+        PreDeleteOperation: Adventure.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: Adventure.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: Adventure.Database2.OnDeleteOptions;
-        OnDeleteOperation: Adventure.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: Adventure.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: Adventure.Database.OnDeleteOptions;
+        OnDeleteOperation: Adventure.Database.OnDeleteOperation;
       }
     }
 
@@ -952,10 +952,10 @@ declare namespace Adventure {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode Adventure.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode Adventure.createDialog}'s third parameter
@@ -1108,7 +1108,7 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
     Options extends Adventure.CreateDialogOptions | undefined = undefined,
   >(
     data?: Adventure.CreateDialogData,
-    createOptions?: Adventure.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: Adventure.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<Adventure.CreateDialogReturn<Temporary, Options>>;
 
@@ -1130,7 +1130,7 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: Adventure.Database2.DeleteOneDocumentOperation,
+    operation?: Adventure.Database.DeleteOneDocumentOperation,
   ): Promise<Adventure.DeleteDialogReturn<Options>>;
 
   /**
@@ -1142,7 +1142,7 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: Adventure.Database2.DeleteOneDocumentOperation,
+    operation?: Adventure.Database.DeleteOneDocumentOperation,
   ): Promise<Adventure.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: Adventure.DropData): Promise<Adventure.Implementation | undefined>;

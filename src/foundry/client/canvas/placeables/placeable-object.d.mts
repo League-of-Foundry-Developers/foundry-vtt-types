@@ -269,7 +269,7 @@ declare abstract class PlaceableObject<
   // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _onCreate(
     data: Document.CreateDataForName<CanvasDocument["documentName"]>,
-    options: Document.Database2.OnCreateOptionsForName<CanvasDocument["documentName"]>,
+    options: Document.Database.OnCreateOptionsForName<CanvasDocument["documentName"]>,
     userId: string,
   ): void;
 
@@ -278,7 +278,7 @@ declare abstract class PlaceableObject<
    */
   protected _onUpdate(
     changed: Document.UpdateDataForName<CanvasDocument["documentName"]>,
-    options: Document.Database2.OnUpdateOptionsForName<CanvasDocument["documentName"]>,
+    options: Document.Database.OnUpdateOptionsForName<CanvasDocument["documentName"]>,
     userId: string,
   ): void;
 
@@ -286,7 +286,7 @@ declare abstract class PlaceableObject<
    * Define additional steps taken when an existing placeable object of this type is deleted
    */
   protected _onDelete(
-    options: Document.Database2.OnDeleteOptionsForName<CanvasDocument["documentName"]>,
+    options: Document.Database.OnDeleteOptionsForName<CanvasDocument["documentName"]>,
     userId: string,
   ): void;
 

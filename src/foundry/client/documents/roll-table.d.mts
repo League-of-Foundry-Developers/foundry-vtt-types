@@ -234,7 +234,7 @@ declare namespace RollTable {
 
   /**
    * Used in the {@linkcode RollTable.create} and {@linkcode RollTable.createDocuments} signatures, and
-   * {@linkcode RollTable.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode RollTable.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -269,7 +269,7 @@ declare namespace RollTable {
 
   /**
    * Used in the {@linkcode RollTable.update | RollTable#update} and
-   * {@linkcode RollTable.updateDocuments} signatures, and {@linkcode RollTable.Database2.UpdateOperation}
+   * {@linkcode RollTable.updateDocuments} signatures, and {@linkcode RollTable.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -367,7 +367,7 @@ declare namespace RollTable {
     _stats: fields.DocumentStatsField;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -383,15 +383,15 @@ declare namespace RollTable {
 
     /**
      * The interface for passing to {@linkcode RollTable.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `RollTable` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -412,7 +412,7 @@ declare namespace RollTable {
 
     /**
      * The interface for passing to {@linkcode RollTable.create} or {@linkcode RollTable.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -423,14 +423,14 @@ declare namespace RollTable {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `RollTable` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `RollTable` documents. (see {@linkcode RollTable.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -440,11 +440,11 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `RollTable` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -455,12 +455,12 @@ declare namespace RollTable {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode RollTable._preCreate | RollTable#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateRollTable` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -470,12 +470,12 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode RollTable._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -485,13 +485,13 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode RollTable._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -502,12 +502,12 @@ declare namespace RollTable {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode RollTable._onCreate | RollTable#_onCreate} and
      * {@link Hooks.CreateDocument | the `createRollTable` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -517,12 +517,12 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode RollTable._onCreateOperation} and `RollTable`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -532,7 +532,7 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -551,7 +551,7 @@ declare namespace RollTable {
 
     /**
      * The interface for passing to {@linkcode RollTable.update | RollTable#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -561,7 +561,7 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * @deprecated `RollTable` documents are never embedded. This interface exists for consistency with other documents.
@@ -582,7 +582,7 @@ declare namespace RollTable {
 
     /**
      * The interface for passing to {@linkcode RollTable.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -592,11 +592,11 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `RollTable` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -606,12 +606,12 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode RollTable._preUpdate | RollTable#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateRollTable` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -621,11 +621,11 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode RollTable._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -635,12 +635,12 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode RollTable._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -650,12 +650,12 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode RollTable._onUpdate | RollTable#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateRollTable` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -665,12 +665,12 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode RollTable._onUpdateOperation} and `RollTable`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -680,7 +680,7 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -699,7 +699,7 @@ declare namespace RollTable {
 
     /**
      * The interface for passing to {@linkcode RollTable.delete | RollTable#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -709,7 +709,7 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * @deprecated `RollTable` documents are never embedded. This interface exists for consistency with other documents.
@@ -730,7 +730,7 @@ declare namespace RollTable {
 
     /**
      * The interface for passing to {@linkcode RollTable.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -740,11 +740,11 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `RollTable` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -754,12 +754,12 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode RollTable._preDelete | RollTable#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteRollTable` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -769,11 +769,11 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode RollTable._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -783,12 +783,12 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode RollTable._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -798,12 +798,12 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode RollTable._onDelete | RollTable#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteRollTable` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -813,12 +813,12 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode RollTable._onDeleteOperation} and `RollTable`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -828,51 +828,51 @@ declare namespace RollTable {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: RollTable.Database2.GetDocumentsOperation;
-        BackendGetOperation: RollTable.Database2.BackendGetOperation;
-        GetOperation: RollTable.Database2.GetOperation;
+        GetDocumentsOperation: RollTable.Database.GetDocumentsOperation;
+        BackendGetOperation: RollTable.Database.BackendGetOperation;
+        GetOperation: RollTable.Database.GetOperation;
 
-        CreateDocumentsOperation: RollTable.Database2.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: RollTable.Database.CreateDocumentsOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: RollTable.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: RollTable.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: RollTable.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: RollTable.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: RollTable.Database2.PreCreateOperation<Temporary>;
+        CreateEmbeddedOperation: RollTable.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: RollTable.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: RollTable.Database.CreateOperation<Temporary>;
+        PreCreateOptions: RollTable.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: RollTable.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: RollTable.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: RollTable.Database2.OnCreateOptions;
-        OnCreateOperation: RollTable.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: RollTable.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: RollTable.Database.OnCreateOptions;
+        OnCreateOperation: RollTable.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: RollTable.Database2.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: RollTable.Database.UpdateOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: RollTable.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: RollTable.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: RollTable.Database2.BackendUpdateOperation;
-        UpdateOperation: RollTable.Database2.UpdateOperation;
-        PreUpdateOptions: RollTable.Database2.PreUpdateOptions;
-        PreUpdateOperation: RollTable.Database2.PreUpdateOperation;
+        UpdateEmbeddedOperation: RollTable.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: RollTable.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: RollTable.Database.BackendUpdateOperation;
+        UpdateOperation: RollTable.Database.UpdateOperation;
+        PreUpdateOptions: RollTable.Database.PreUpdateOptions;
+        PreUpdateOperation: RollTable.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: RollTable.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: RollTable.Database2.OnUpdateOptions;
-        OnUpdateOperation: RollTable.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: RollTable.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: RollTable.Database.OnUpdateOptions;
+        OnUpdateOperation: RollTable.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: RollTable.Database2.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: RollTable.Database.DeleteOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: RollTable.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: RollTable.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: RollTable.Database2.BackendDeleteOperation;
-        DeleteOperation: RollTable.Database2.DeleteOperation;
-        PreDeleteOptions: RollTable.Database2.PreDeleteOptions;
-        PreDeleteOperation: RollTable.Database2.PreDeleteOperation;
+        DeleteEmbeddedOperation: RollTable.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: RollTable.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: RollTable.Database.BackendDeleteOperation;
+        DeleteOperation: RollTable.Database.DeleteOperation;
+        PreDeleteOptions: RollTable.Database.PreDeleteOptions;
+        PreDeleteOperation: RollTable.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: RollTable.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: RollTable.Database2.OnDeleteOptions;
-        OnDeleteOperation: RollTable.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: RollTable.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: RollTable.Database.OnDeleteOptions;
+        OnDeleteOperation: RollTable.Database.OnDeleteOperation;
       }
     }
 
@@ -1008,10 +1008,10 @@ declare namespace RollTable {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode RollTable.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode RollTable.createDialog}'s third parameter
@@ -1145,7 +1145,7 @@ declare namespace RollTable {
      * Additional options which customize the created messages
      * @defaultValue `{}`
      */
-    messageOptions: ChatMessage.Database2.CreateDocumentsOperation<Temporary>;
+    messageOptions: ChatMessage.Database.CreateDocumentsOperation<Temporary>;
   }
 
   interface RollOptions {
@@ -1391,7 +1391,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    */
   static fromFolder<Temporary extends boolean | undefined = undefined>(
     folder: Folder.Implementation,
-    options?: RollTable.Database2.CreateDocumentsOperation<Temporary>,
+    options?: RollTable.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<RollTable.TemporaryIf<Temporary> | undefined>;
 
   /*
@@ -1485,7 +1485,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
     Options extends RollTable.CreateDialogOptions | undefined = undefined,
   >(
     data?: RollTable.CreateDialogData,
-    createOptions?: RollTable.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: RollTable.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<RollTable.CreateDialogReturn<Temporary, Options>>;
 
@@ -1507,7 +1507,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: RollTable.Database2.DeleteOneDocumentOperation,
+    operation?: RollTable.Database.DeleteOneDocumentOperation,
   ): Promise<RollTable.DeleteDialogReturn<Options>>;
 
   /**
@@ -1519,7 +1519,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: RollTable.Database2.DeleteOneDocumentOperation,
+    operation?: RollTable.Database.DeleteOneDocumentOperation,
   ): Promise<RollTable.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: RollTable.DropData): Promise<RollTable.Implementation | undefined>;

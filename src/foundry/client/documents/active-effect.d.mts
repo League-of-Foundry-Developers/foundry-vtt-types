@@ -223,7 +223,7 @@ declare namespace ActiveEffect {
 
   /**
    * Used in the {@linkcode ActiveEffect.create} and {@linkcode ActiveEffect.createDocuments} signatures, and
-   * {@linkcode ActiveEffect.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode ActiveEffect.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -258,7 +258,7 @@ declare namespace ActiveEffect {
 
   /**
    * Used in the {@linkcode ActiveEffect.update | ActiveEffect#update} and
-   * {@linkcode ActiveEffect.updateDocuments} signatures, and {@linkcode ActiveEffect.Database2.UpdateOperation}
+   * {@linkcode ActiveEffect.updateDocuments} signatures, and {@linkcode ActiveEffect.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -439,7 +439,7 @@ declare namespace ActiveEffect {
     startTurn: fields.NumberField<{ integer: true; min: 0 }>;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -455,15 +455,15 @@ declare namespace ActiveEffect {
 
     /**
      * The interface for passing to {@linkcode ActiveEffect.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `ActiveEffect` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -484,7 +484,7 @@ declare namespace ActiveEffect {
 
     /**
      * The interface for passing to {@linkcode ActiveEffect.create} or {@linkcode ActiveEffect.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -495,14 +495,14 @@ declare namespace ActiveEffect {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `ActiveEffect` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `ActiveEffect` documents. (see {@linkcode ActiveEffect.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -512,11 +512,11 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `ActiveEffect` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -527,12 +527,12 @@ declare namespace ActiveEffect {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode ActiveEffect._preCreate | ActiveEffect#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateActiveEffect` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -542,12 +542,12 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode ActiveEffect._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -557,13 +557,13 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode ActiveEffect._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -574,12 +574,12 @@ declare namespace ActiveEffect {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode ActiveEffect._onCreate | ActiveEffect#_onCreate} and
      * {@link Hooks.CreateDocument | the `createActiveEffect` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -589,12 +589,12 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode ActiveEffect._onCreateOperation} and `ActiveEffect`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -604,7 +604,7 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -623,7 +623,7 @@ declare namespace ActiveEffect {
 
     /**
      * The interface for passing to {@linkcode ActiveEffect.update | ActiveEffect#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -633,7 +633,7 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * @deprecated `ActiveEffect` documents are never embedded. This interface exists for consistency with other documents.
@@ -654,7 +654,7 @@ declare namespace ActiveEffect {
 
     /**
      * The interface for passing to {@linkcode ActiveEffect.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -664,11 +664,11 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `ActiveEffect` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -678,12 +678,12 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode ActiveEffect._preUpdate | ActiveEffect#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateActiveEffect` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -693,11 +693,11 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode ActiveEffect._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -707,12 +707,12 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode ActiveEffect._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -722,12 +722,12 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode ActiveEffect._onUpdate | ActiveEffect#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateActiveEffect` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -737,12 +737,12 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode ActiveEffect._onUpdateOperation} and `ActiveEffect`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -752,7 +752,7 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -771,7 +771,7 @@ declare namespace ActiveEffect {
 
     /**
      * The interface for passing to {@linkcode ActiveEffect.delete | ActiveEffect#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -781,7 +781,7 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * @deprecated `ActiveEffect` documents are never embedded. This interface exists for consistency with other documents.
@@ -802,7 +802,7 @@ declare namespace ActiveEffect {
 
     /**
      * The interface for passing to {@linkcode ActiveEffect.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -812,11 +812,11 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `ActiveEffect` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -826,12 +826,12 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode ActiveEffect._preDelete | ActiveEffect#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteActiveEffect` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -841,11 +841,11 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode ActiveEffect._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -855,12 +855,12 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode ActiveEffect._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -870,12 +870,12 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode ActiveEffect._onDelete | ActiveEffect#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteActiveEffect` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -885,12 +885,12 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode ActiveEffect._onDeleteOperation} and `ActiveEffect`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -900,51 +900,51 @@ declare namespace ActiveEffect {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: ActiveEffect.Database2.GetDocumentsOperation;
-        BackendGetOperation: ActiveEffect.Database2.BackendGetOperation;
-        GetOperation: ActiveEffect.Database2.GetOperation;
+        GetDocumentsOperation: ActiveEffect.Database.GetDocumentsOperation;
+        BackendGetOperation: ActiveEffect.Database.BackendGetOperation;
+        GetOperation: ActiveEffect.Database.GetOperation;
 
-        CreateDocumentsOperation: ActiveEffect.Database2.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: ActiveEffect.Database.CreateDocumentsOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: ActiveEffect.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: ActiveEffect.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: ActiveEffect.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: ActiveEffect.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: ActiveEffect.Database2.PreCreateOperation<Temporary>;
+        CreateEmbeddedOperation: ActiveEffect.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: ActiveEffect.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: ActiveEffect.Database.CreateOperation<Temporary>;
+        PreCreateOptions: ActiveEffect.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: ActiveEffect.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: ActiveEffect.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: ActiveEffect.Database2.OnCreateOptions;
-        OnCreateOperation: ActiveEffect.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: ActiveEffect.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: ActiveEffect.Database.OnCreateOptions;
+        OnCreateOperation: ActiveEffect.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: ActiveEffect.Database2.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: ActiveEffect.Database.UpdateOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: ActiveEffect.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: ActiveEffect.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: ActiveEffect.Database2.BackendUpdateOperation;
-        UpdateOperation: ActiveEffect.Database2.UpdateOperation;
-        PreUpdateOptions: ActiveEffect.Database2.PreUpdateOptions;
-        PreUpdateOperation: ActiveEffect.Database2.PreUpdateOperation;
+        UpdateEmbeddedOperation: ActiveEffect.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: ActiveEffect.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: ActiveEffect.Database.BackendUpdateOperation;
+        UpdateOperation: ActiveEffect.Database.UpdateOperation;
+        PreUpdateOptions: ActiveEffect.Database.PreUpdateOptions;
+        PreUpdateOperation: ActiveEffect.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: ActiveEffect.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: ActiveEffect.Database2.OnUpdateOptions;
-        OnUpdateOperation: ActiveEffect.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: ActiveEffect.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: ActiveEffect.Database.OnUpdateOptions;
+        OnUpdateOperation: ActiveEffect.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: ActiveEffect.Database2.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: ActiveEffect.Database.DeleteOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: ActiveEffect.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: ActiveEffect.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: ActiveEffect.Database2.BackendDeleteOperation;
-        DeleteOperation: ActiveEffect.Database2.DeleteOperation;
-        PreDeleteOptions: ActiveEffect.Database2.PreDeleteOptions;
-        PreDeleteOperation: ActiveEffect.Database2.PreDeleteOperation;
+        DeleteEmbeddedOperation: ActiveEffect.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: ActiveEffect.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: ActiveEffect.Database.BackendDeleteOperation;
+        DeleteOperation: ActiveEffect.Database.DeleteOperation;
+        PreDeleteOptions: ActiveEffect.Database.PreDeleteOptions;
+        PreDeleteOperation: ActiveEffect.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: ActiveEffect.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: ActiveEffect.Database2.OnDeleteOptions;
-        OnDeleteOperation: ActiveEffect.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: ActiveEffect.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: ActiveEffect.Database.OnDeleteOptions;
+        OnDeleteOperation: ActiveEffect.Database.OnDeleteOperation;
       }
     }
 
@@ -1087,10 +1087,10 @@ declare namespace ActiveEffect {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode ActiveEffect.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode ActiveEffect.createDialog}'s third parameter
@@ -1527,7 +1527,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
     Options extends ActiveEffect.CreateDialogOptions | undefined = undefined,
   >(
     data?: ActiveEffect.CreateDialogData,
-    createOptions?: ActiveEffect.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: ActiveEffect.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<ActiveEffect.CreateDialogReturn<Temporary, Options>>;
 
@@ -1549,7 +1549,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: ActiveEffect.Database2.DeleteOneDocumentOperation,
+    operation?: ActiveEffect.Database.DeleteOneDocumentOperation,
   ): Promise<ActiveEffect.DeleteDialogReturn<Options>>;
 
   /**
@@ -1561,7 +1561,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: ActiveEffect.Database2.DeleteOneDocumentOperation,
+    operation?: ActiveEffect.Database.DeleteOneDocumentOperation,
   ): Promise<ActiveEffect.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: ActiveEffect.DropData): Promise<ActiveEffect.Implementation | undefined>;

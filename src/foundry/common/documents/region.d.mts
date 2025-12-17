@@ -126,19 +126,19 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   override createEmbeddedDocuments<EmbeddedName extends BaseRegion.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.CreateDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseRegion.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.UpdateManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseRegion.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: string[],
-    operation?: Document.Database2.DeleteManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseRegion.Flags.Scope, Key extends BaseRegion.Flags.Key<Scope>>(
@@ -297,7 +297,7 @@ declare namespace BaseRegion {
   export import UpdateData = RegionDocument.UpdateData;
   export import UpdateInput = RegionDocument.UpdateInput;
   export import Schema = RegionDocument.Schema;
-  export import Database2 = RegionDocument.Database2;
+  export import Database2 = RegionDocument.Database;
   export import TemporaryIf = RegionDocument.TemporaryIf;
   export import Flags = RegionDocument.Flags;
 

@@ -343,7 +343,7 @@ declare class CompendiumCollection<
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
   /** @remarks Calls the {@linkcode AllHooks.updateCompendium | updateCompendium} hook via `callAll` */
-  override _onModifyContents<Action extends Document.Database2.OperationAction>(
+  override _onModifyContents<Action extends Document.Database.OperationAction>(
     action: Action,
     documents: Document.StoredForName<DocumentName>[],
     result: Collection.OnModifyContentsResult<DocumentName, Action>,
@@ -633,7 +633,7 @@ declare namespace CompendiumCollection {
    */
   type ImportAllOptions<Type extends CompendiumCollection.DocumentName> =
     foundry.documents.abstract.WorldCollection.FromCompendiumOptions &
-      Document.Database2.CreateDocumentsOperationForName<Type> &
+      Document.Database.CreateDocumentsOperationForName<Type> &
       InexactPartial<_ImportAllOptions>;
 
   /** @internal */

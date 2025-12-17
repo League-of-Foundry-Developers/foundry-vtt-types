@@ -307,7 +307,7 @@ declare namespace ActorDelta {
 
   /**
    * Used in the {@linkcode ActorDelta.create} and {@linkcode ActorDelta.createDocuments} signatures, and
-   * {@linkcode ActorDelta.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode ActorDelta.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -342,7 +342,7 @@ declare namespace ActorDelta {
 
   /**
    * Used in the {@linkcode ActorDelta.update | ActorDelta#update} and
-   * {@linkcode ActorDelta.updateDocuments} signatures, and {@linkcode ActorDelta.Database2.UpdateOperation}
+   * {@linkcode ActorDelta.updateDocuments} signatures, and {@linkcode ActorDelta.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -408,7 +408,7 @@ declare namespace ActorDelta {
     flags: fields.DocumentFlagsField<"Actor">;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -424,15 +424,15 @@ declare namespace ActorDelta {
 
     /**
      * The interface for passing to {@linkcode ActorDelta.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `ActorDelta` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -453,7 +453,7 @@ declare namespace ActorDelta {
 
     /**
      * The interface for passing to {@linkcode ActorDelta.create} or {@linkcode ActorDelta.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -464,12 +464,12 @@ declare namespace ActorDelta {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `ActorDelta` documents. (see {@linkcode ActorDelta.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -479,11 +479,11 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `ActorDelta` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -494,12 +494,12 @@ declare namespace ActorDelta {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode ActorDelta._preCreate | ActorDelta#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateActorDelta` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -509,12 +509,12 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode ActorDelta._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -524,13 +524,13 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode ActorDelta._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -541,12 +541,12 @@ declare namespace ActorDelta {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode ActorDelta._onCreate | ActorDelta#_onCreate} and
      * {@link Hooks.CreateDocument | the `createActorDelta` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -556,12 +556,12 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode ActorDelta._onCreateOperation} and `ActorDelta`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -571,7 +571,7 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -590,7 +590,7 @@ declare namespace ActorDelta {
 
     /**
      * The interface for passing to {@linkcode ActorDelta.update | ActorDelta#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -600,7 +600,7 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
@@ -619,7 +619,7 @@ declare namespace ActorDelta {
 
     /**
      * The interface for passing to {@linkcode ActorDelta.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -629,11 +629,11 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `ActorDelta` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -643,12 +643,12 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode ActorDelta._preUpdate | ActorDelta#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateActorDelta` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -658,11 +658,11 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode ActorDelta._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -672,12 +672,12 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode ActorDelta._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -687,12 +687,12 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode ActorDelta._onUpdate | ActorDelta#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateActorDelta` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -702,12 +702,12 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode ActorDelta._onUpdateOperation} and `ActorDelta`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -717,7 +717,7 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -736,7 +736,7 @@ declare namespace ActorDelta {
 
     /**
      * The interface for passing to {@linkcode ActorDelta.delete | ActorDelta#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -746,7 +746,7 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
@@ -765,7 +765,7 @@ declare namespace ActorDelta {
 
     /**
      * The interface for passing to {@linkcode ActorDelta.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -775,11 +775,11 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `ActorDelta` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -789,12 +789,12 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode ActorDelta._preDelete | ActorDelta#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteActorDelta` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -804,11 +804,11 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode ActorDelta._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -818,12 +818,12 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode ActorDelta._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -833,12 +833,12 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode ActorDelta._onDelete | ActorDelta#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteActorDelta` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -848,12 +848,12 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode ActorDelta._onDeleteOperation} and `ActorDelta`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -863,48 +863,48 @@ declare namespace ActorDelta {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: ActorDelta.Database2.GetDocumentsOperation;
-        BackendGetOperation: ActorDelta.Database2.BackendGetOperation;
-        GetOperation: ActorDelta.Database2.GetOperation;
+        GetDocumentsOperation: ActorDelta.Database.GetDocumentsOperation;
+        BackendGetOperation: ActorDelta.Database.BackendGetOperation;
+        GetOperation: ActorDelta.Database.GetOperation;
 
-        CreateDocumentsOperation: ActorDelta.Database2.CreateDocumentsOperation<Temporary>;
-        CreateEmbeddedOperation: ActorDelta.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: ActorDelta.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: ActorDelta.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: ActorDelta.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: ActorDelta.Database2.PreCreateOperation<Temporary>;
+        CreateDocumentsOperation: ActorDelta.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: ActorDelta.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: ActorDelta.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: ActorDelta.Database.CreateOperation<Temporary>;
+        PreCreateOptions: ActorDelta.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: ActorDelta.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: ActorDelta.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: ActorDelta.Database2.OnCreateOptions;
-        OnCreateOperation: ActorDelta.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: ActorDelta.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: ActorDelta.Database.OnCreateOptions;
+        OnCreateOperation: ActorDelta.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: ActorDelta.Database2.UpdateOneDocumentOperation;
-        UpdateEmbeddedOperation: ActorDelta.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: ActorDelta.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: ActorDelta.Database2.BackendUpdateOperation;
-        UpdateOperation: ActorDelta.Database2.UpdateOperation;
-        PreUpdateOptions: ActorDelta.Database2.PreUpdateOptions;
-        PreUpdateOperation: ActorDelta.Database2.PreUpdateOperation;
+        UpdateOneDocumentOperation: ActorDelta.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: ActorDelta.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: ActorDelta.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: ActorDelta.Database.BackendUpdateOperation;
+        UpdateOperation: ActorDelta.Database.UpdateOperation;
+        PreUpdateOptions: ActorDelta.Database.PreUpdateOptions;
+        PreUpdateOperation: ActorDelta.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: ActorDelta.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: ActorDelta.Database2.OnUpdateOptions;
-        OnUpdateOperation: ActorDelta.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: ActorDelta.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: ActorDelta.Database.OnUpdateOptions;
+        OnUpdateOperation: ActorDelta.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: ActorDelta.Database2.DeleteOneDocumentOperation;
-        DeleteEmbeddedOperation: ActorDelta.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: ActorDelta.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: ActorDelta.Database2.BackendDeleteOperation;
-        DeleteOperation: ActorDelta.Database2.DeleteOperation;
-        PreDeleteOptions: ActorDelta.Database2.PreDeleteOptions;
-        PreDeleteOperation: ActorDelta.Database2.PreDeleteOperation;
+        DeleteOneDocumentOperation: ActorDelta.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: ActorDelta.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: ActorDelta.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: ActorDelta.Database.BackendDeleteOperation;
+        DeleteOperation: ActorDelta.Database.DeleteOperation;
+        PreDeleteOptions: ActorDelta.Database.PreDeleteOptions;
+        PreDeleteOperation: ActorDelta.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: ActorDelta.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: ActorDelta.Database2.OnDeleteOptions;
-        OnDeleteOperation: ActorDelta.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: ActorDelta.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: ActorDelta.Database.OnDeleteOptions;
+        OnDeleteOperation: ActorDelta.Database.OnDeleteOperation;
       }
     }
 
@@ -1040,10 +1040,10 @@ declare namespace ActorDelta {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode ActorDelta.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode ActorDelta.createDialog}'s third parameter
@@ -1267,7 +1267,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
     Options extends ActorDelta.CreateDialogOptions | undefined = undefined,
   >(
     data?: ActorDelta.CreateDialogData,
-    createOptions?: ActorDelta.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: ActorDelta.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<ActorDelta.CreateDialogReturn<Temporary, Options>>;
 
@@ -1289,7 +1289,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: ActorDelta.Database2.DeleteOneDocumentOperation,
+    operation?: ActorDelta.Database.DeleteOneDocumentOperation,
   ): Promise<ActorDelta.DeleteDialogReturn<Options>>;
 
   /**
@@ -1301,7 +1301,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: ActorDelta.Database2.DeleteOneDocumentOperation,
+    operation?: ActorDelta.Database.DeleteOneDocumentOperation,
   ): Promise<ActorDelta.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: ActorDelta.DropData): Promise<ActorDelta.Implementation | undefined>;

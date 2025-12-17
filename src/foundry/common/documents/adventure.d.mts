@@ -288,7 +288,7 @@ declare namespace BaseAdventure {
   export import UpdateData = Adventure.UpdateData;
   export import UpdateInput = Adventure.UpdateInput;
   export import Schema = Adventure.Schema;
-  export import Database2 = Adventure.Database2;
+  export import Database2 = Adventure.Database;
   export import TemporaryIf = Adventure.TemporaryIf;
   export import Flags = Adventure.Flags;
 

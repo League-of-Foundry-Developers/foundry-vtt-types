@@ -147,19 +147,19 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   override createEmbeddedDocuments<EmbeddedName extends BaseJournalEntry.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.CreateDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseJournalEntry.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.UpdateManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseJournalEntry.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: string[],
-    operation?: Document.Database2.DeleteManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseJournalEntry.Flags.Scope, Key extends BaseJournalEntry.Flags.Key<Scope>>(
@@ -318,7 +318,7 @@ declare namespace BaseJournalEntry {
   export import UpdateData = JournalEntry.UpdateData;
   export import UpdateInput = JournalEntry.UpdateInput;
   export import Schema = JournalEntry.Schema;
-  export import Database2 = JournalEntry.Database2;
+  export import Database2 = JournalEntry.Database;
   export import TemporaryIf = JournalEntry.TemporaryIf;
   export import Flags = JournalEntry.Flags;
   export import CoreFlags = JournalEntry.CoreFlags;

@@ -307,7 +307,7 @@ declare namespace BaseUser {
   export import UpdateData = User.UpdateData;
   export import UpdateInput = User.UpdateInput;
   export import Schema = User.Schema;
-  export import Database2 = User.Database2;
+  export import Database2 = User.Database;
   export import TemporaryIf = User.TemporaryIf;
   export import Flags = User.Flags;
   export import PingData = User.PingData;

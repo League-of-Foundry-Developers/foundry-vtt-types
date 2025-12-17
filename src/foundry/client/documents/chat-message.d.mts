@@ -219,7 +219,7 @@ declare namespace ChatMessage {
 
   /**
    * Used in the {@linkcode ChatMessage.create} and {@linkcode ChatMessage.createDocuments} signatures, and
-   * {@linkcode ChatMessage.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode ChatMessage.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -254,7 +254,7 @@ declare namespace ChatMessage {
 
   /**
    * Used in the {@linkcode ChatMessage.update | ChatMessage#update} and
-   * {@linkcode ChatMessage.updateDocuments} signatures, and {@linkcode ChatMessage.Database2.UpdateOperation}
+   * {@linkcode ChatMessage.updateDocuments} signatures, and {@linkcode ChatMessage.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -405,7 +405,7 @@ declare namespace ChatMessage {
 
   interface SpeakerData extends fields.SchemaField.InitializedData<SpeakerSchema> {}
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -421,15 +421,15 @@ declare namespace ChatMessage {
 
     /**
      * The interface for passing to {@linkcode ChatMessage.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `ChatMessage` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -450,7 +450,7 @@ declare namespace ChatMessage {
 
     /**
      * The interface for passing to {@linkcode ChatMessage.create} or {@linkcode ChatMessage.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -461,14 +461,14 @@ declare namespace ChatMessage {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `ChatMessage` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `ChatMessage` documents. (see {@linkcode ChatMessage.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -478,11 +478,11 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `ChatMessage` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -493,12 +493,12 @@ declare namespace ChatMessage {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._preCreate | ChatMessage#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateChatMessage` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -508,12 +508,12 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -523,13 +523,13 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode ChatMessage._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -540,12 +540,12 @@ declare namespace ChatMessage {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._onCreate | ChatMessage#_onCreate} and
      * {@link Hooks.CreateDocument | the `createChatMessage` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -555,12 +555,12 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._onCreateOperation} and `ChatMessage`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -570,7 +570,7 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -589,7 +589,7 @@ declare namespace ChatMessage {
 
     /**
      * The interface for passing to {@linkcode ChatMessage.update | ChatMessage#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -599,7 +599,7 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * @deprecated `ChatMessage` documents are never embedded. This interface exists for consistency with other documents.
@@ -620,7 +620,7 @@ declare namespace ChatMessage {
 
     /**
      * The interface for passing to {@linkcode ChatMessage.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -630,11 +630,11 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `ChatMessage` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -644,12 +644,12 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._preUpdate | ChatMessage#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateChatMessage` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -659,11 +659,11 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -673,12 +673,12 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode ChatMessage._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -688,12 +688,12 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._onUpdate | ChatMessage#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateChatMessage` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -703,12 +703,12 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._onUpdateOperation} and `ChatMessage`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -718,7 +718,7 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -737,7 +737,7 @@ declare namespace ChatMessage {
 
     /**
      * The interface for passing to {@linkcode ChatMessage.delete | ChatMessage#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -747,7 +747,7 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * @deprecated `ChatMessage` documents are never embedded. This interface exists for consistency with other documents.
@@ -768,7 +768,7 @@ declare namespace ChatMessage {
 
     /**
      * The interface for passing to {@linkcode ChatMessage.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -778,11 +778,11 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `ChatMessage` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -792,12 +792,12 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._preDelete | ChatMessage#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteChatMessage` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -807,11 +807,11 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -821,12 +821,12 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode ChatMessage._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -836,12 +836,12 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._onDelete | ChatMessage#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteChatMessage` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -851,12 +851,12 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode ChatMessage._onDeleteOperation} and `ChatMessage`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -866,51 +866,51 @@ declare namespace ChatMessage {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: ChatMessage.Database2.GetDocumentsOperation;
-        BackendGetOperation: ChatMessage.Database2.BackendGetOperation;
-        GetOperation: ChatMessage.Database2.GetOperation;
+        GetDocumentsOperation: ChatMessage.Database.GetDocumentsOperation;
+        BackendGetOperation: ChatMessage.Database.BackendGetOperation;
+        GetOperation: ChatMessage.Database.GetOperation;
 
-        CreateDocumentsOperation: ChatMessage.Database2.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: ChatMessage.Database.CreateDocumentsOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: ChatMessage.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: ChatMessage.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: ChatMessage.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: ChatMessage.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: ChatMessage.Database2.PreCreateOperation<Temporary>;
+        CreateEmbeddedOperation: ChatMessage.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: ChatMessage.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: ChatMessage.Database.CreateOperation<Temporary>;
+        PreCreateOptions: ChatMessage.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: ChatMessage.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: ChatMessage.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: ChatMessage.Database2.OnCreateOptions;
-        OnCreateOperation: ChatMessage.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: ChatMessage.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: ChatMessage.Database.OnCreateOptions;
+        OnCreateOperation: ChatMessage.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: ChatMessage.Database2.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: ChatMessage.Database.UpdateOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: ChatMessage.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: ChatMessage.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: ChatMessage.Database2.BackendUpdateOperation;
-        UpdateOperation: ChatMessage.Database2.UpdateOperation;
-        PreUpdateOptions: ChatMessage.Database2.PreUpdateOptions;
-        PreUpdateOperation: ChatMessage.Database2.PreUpdateOperation;
+        UpdateEmbeddedOperation: ChatMessage.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: ChatMessage.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: ChatMessage.Database.BackendUpdateOperation;
+        UpdateOperation: ChatMessage.Database.UpdateOperation;
+        PreUpdateOptions: ChatMessage.Database.PreUpdateOptions;
+        PreUpdateOperation: ChatMessage.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: ChatMessage.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: ChatMessage.Database2.OnUpdateOptions;
-        OnUpdateOperation: ChatMessage.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: ChatMessage.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: ChatMessage.Database.OnUpdateOptions;
+        OnUpdateOperation: ChatMessage.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: ChatMessage.Database2.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: ChatMessage.Database.DeleteOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: ChatMessage.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: ChatMessage.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: ChatMessage.Database2.BackendDeleteOperation;
-        DeleteOperation: ChatMessage.Database2.DeleteOperation;
-        PreDeleteOptions: ChatMessage.Database2.PreDeleteOptions;
-        PreDeleteOperation: ChatMessage.Database2.PreDeleteOperation;
+        DeleteEmbeddedOperation: ChatMessage.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: ChatMessage.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: ChatMessage.Database.BackendDeleteOperation;
+        DeleteOperation: ChatMessage.Database.DeleteOperation;
+        PreDeleteOptions: ChatMessage.Database.PreDeleteOptions;
+        PreDeleteOperation: ChatMessage.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: ChatMessage.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: ChatMessage.Database2.OnDeleteOptions;
-        OnDeleteOperation: ChatMessage.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: ChatMessage.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: ChatMessage.Database.OnDeleteOptions;
+        OnDeleteOperation: ChatMessage.Database.OnDeleteOperation;
       }
     }
 
@@ -1055,10 +1055,10 @@ declare namespace ChatMessage {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode ChatMessage.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode ChatMessage.createDialog}'s third parameter
@@ -1392,7 +1392,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
     Options extends ChatMessage.CreateDialogOptions | undefined = undefined,
   >(
     data?: ChatMessage.CreateDialogData,
-    createOptions?: ChatMessage.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: ChatMessage.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<ChatMessage.CreateDialogReturn<Temporary, Options>>;
 
@@ -1414,7 +1414,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: ChatMessage.Database2.DeleteOneDocumentOperation,
+    operation?: ChatMessage.Database.DeleteOneDocumentOperation,
   ): Promise<ChatMessage.DeleteDialogReturn<Options>>;
 
   /**
@@ -1426,7 +1426,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: ChatMessage.Database2.DeleteOneDocumentOperation,
+    operation?: ChatMessage.Database.DeleteOneDocumentOperation,
   ): Promise<ChatMessage.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: ChatMessage.DropData): Promise<ChatMessage.Implementation | undefined>;

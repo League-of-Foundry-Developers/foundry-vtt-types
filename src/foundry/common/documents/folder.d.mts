@@ -64,7 +64,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
    * @remarks Never returns an index entry, only ever {@linkcode Folder.Implementation} or `null`, as the `folders` collection of a
    * compendium is always loaded and available synchronously.
    */
-  static override get(documentId: string, options?: Folder.Database2.GetDocumentsOperation): Folder.Stored | null;
+  static override get(documentId: string, options?: Folder.Database.GetDocumentsOperation): Folder.Stored | null;
 
   /*
    * After this point these are not really overridden methods.
@@ -293,7 +293,7 @@ declare namespace BaseFolder {
   export import UpdateData = Folder.UpdateData;
   export import UpdateInput = Folder.UpdateInput;
   export import Schema = Folder.Schema;
-  export import Database2 = Folder.Database2;
+  export import Database2 = Folder.Database;
   export import TemporaryIf = Folder.TemporaryIf;
   export import Flags = Folder.Flags;
 

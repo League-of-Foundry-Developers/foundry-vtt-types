@@ -159,19 +159,19 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   override createEmbeddedDocuments<EmbeddedName extends BaseCards.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.CreateDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseCards.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.UpdateManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseCards.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: string[],
-    operation?: Document.Database2.DeleteManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseCards.Flags.Scope, Key extends BaseCards.Flags.Key<Scope>>(
@@ -332,7 +332,7 @@ declare namespace BaseCards {
   export import UpdateData = Cards.UpdateData;
   export import UpdateInput = Cards.UpdateInput;
   export import Schema = Cards.Schema;
-  export import Database2 = Cards.Database2;
+  export import Database2 = Cards.Database;
   export import TemporaryIf = Cards.TemporaryIf;
   export import Flags = Cards.Flags;
 

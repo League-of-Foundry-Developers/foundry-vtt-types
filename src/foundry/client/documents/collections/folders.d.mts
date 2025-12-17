@@ -20,7 +20,7 @@ declare class Folders extends WorldCollection<"Folder"> {
    */
   _expanded: Record<string, boolean>;
 
-  override _onModifyContents<Action extends Document.Database2.OperationAction>(
+  override _onModifyContents<Action extends Document.Database.OperationAction>(
     action: Action,
     documents: Folder.Stored[],
     result: Collection.OnModifyContentsResult<"Folder", Action>,

@@ -290,19 +290,19 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   override createEmbeddedDocuments<EmbeddedName extends BaseToken.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.CreateDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseToken.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.UpdateManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseToken.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: string[],
-    operation?: Document.Database2.DeleteManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseToken.Flags.Scope, Key extends BaseToken.Flags.Key<Scope>>(
@@ -480,7 +480,7 @@ declare namespace BaseToken {
   export import UpdateData = TokenDocument.UpdateData;
   export import UpdateInput = TokenDocument.UpdateInput;
   export import Schema = TokenDocument.Schema;
-  export import Database2 = TokenDocument.Database2;
+  export import Database2 = TokenDocument.Database;
   export import TemporaryIf = TokenDocument.TemporaryIf;
   export import Flags = TokenDocument.Flags;
   export import CoreFlags = TokenDocument.CoreFlags;

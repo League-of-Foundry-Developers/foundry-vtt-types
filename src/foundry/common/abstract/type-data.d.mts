@@ -373,7 +373,7 @@ declare abstract class TypeDataModel<
    */
   protected _preCreate(
     data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
-    options: Document.Database2.PreCreateOptionsForName<Parent["documentName"]>,
+    options: Document.Database.PreCreateOptionsForName<Parent["documentName"]>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
@@ -387,7 +387,7 @@ declare abstract class TypeDataModel<
   // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _onCreate(
     data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
-    options: Document.Database2.OnCreateOptionsForName<Parent["documentName"]>,
+    options: Document.Database.OnCreateOptionsForName<Parent["documentName"]>,
     userId: string,
   ): void;
 
@@ -401,7 +401,7 @@ declare abstract class TypeDataModel<
    */
   protected _preUpdate(
     changes: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
-    options: Document.Database2.PreUpdateOptionsForName<Parent["documentName"]>,
+    options: Document.Database.PreUpdateOptionsForName<Parent["documentName"]>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
@@ -415,7 +415,7 @@ declare abstract class TypeDataModel<
   // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _onUpdate(
     changed: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
-    options: Document.Database2.OnUpdateOptionsForName<Parent["documentName"]>,
+    options: Document.Database.OnUpdateOptionsForName<Parent["documentName"]>,
     userId: string,
   ): void;
 
@@ -427,7 +427,7 @@ declare abstract class TypeDataModel<
    * @returns A return value of false indicates the deletion operation should be cancelled.
    */
   protected _preDelete(
-    options: Document.Database2.PreDeleteOptionsForName<Parent["documentName"]>,
+    options: Document.Database.PreDeleteOptionsForName<Parent["documentName"]>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
@@ -438,7 +438,7 @@ declare abstract class TypeDataModel<
    * @param userId  - The id of the User requesting the document update
    */
   // TODO: should be `MaybePromise<void>` to allow async subclassing?
-  protected _onDelete(options: Document.Database2.OnDeleteOptionsForName<Parent["documentName"]>, userId: string): void;
+  protected _onDelete(options: Document.Database.OnDeleteOptionsForName<Parent["documentName"]>, userId: string): void;
 }
 
 declare class ConfigurationFailure extends TypeDataModel<any, any, any, any> {}

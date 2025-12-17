@@ -231,7 +231,7 @@ declare namespace RegionBehavior {
 
   /**
    * Used in the {@linkcode RegionBehavior.create} and {@linkcode RegionBehavior.createDocuments} signatures, and
-   * {@linkcode RegionBehavior.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode RegionBehavior.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -266,7 +266,7 @@ declare namespace RegionBehavior {
 
   /**
    * Used in the {@linkcode RegionBehavior.update | RegionBehavior#update} and
-   * {@linkcode RegionBehavior.updateDocuments} signatures, and {@linkcode RegionBehavior.Database2.UpdateOperation}
+   * {@linkcode RegionBehavior.updateDocuments} signatures, and {@linkcode RegionBehavior.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -322,7 +322,7 @@ declare namespace RegionBehavior {
     _stats: fields.DocumentStatsField;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -338,15 +338,15 @@ declare namespace RegionBehavior {
 
     /**
      * The interface for passing to {@linkcode RegionBehavior.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `RegionBehavior` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -367,7 +367,7 @@ declare namespace RegionBehavior {
 
     /**
      * The interface for passing to {@linkcode RegionBehavior.create} or {@linkcode RegionBehavior.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -378,12 +378,12 @@ declare namespace RegionBehavior {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `RegionBehavior` documents. (see {@linkcode RegionBehavior.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -393,11 +393,11 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `RegionBehavior` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -408,12 +408,12 @@ declare namespace RegionBehavior {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode RegionBehavior._preCreate | RegionBehavior#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateRegionBehavior` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -423,12 +423,12 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode RegionBehavior._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -438,13 +438,13 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode RegionBehavior._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -455,12 +455,12 @@ declare namespace RegionBehavior {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode RegionBehavior._onCreate | RegionBehavior#_onCreate} and
      * {@link Hooks.CreateDocument | the `createRegionBehavior` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -470,12 +470,12 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode RegionBehavior._onCreateOperation} and `RegionBehavior`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -485,7 +485,7 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -507,7 +507,7 @@ declare namespace RegionBehavior {
 
     /**
      * The interface for passing to {@linkcode RegionBehavior.update | RegionBehavior#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -517,7 +517,7 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
@@ -536,7 +536,7 @@ declare namespace RegionBehavior {
 
     /**
      * The interface for passing to {@linkcode RegionBehavior.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -546,11 +546,11 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `RegionBehavior` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -560,12 +560,12 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode RegionBehavior._preUpdate | RegionBehavior#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateRegionBehavior` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -575,11 +575,11 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode RegionBehavior._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -589,12 +589,12 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode RegionBehavior._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -604,12 +604,12 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode RegionBehavior._onUpdate | RegionBehavior#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateRegionBehavior` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -619,12 +619,12 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode RegionBehavior._onUpdateOperation} and `RegionBehavior`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -634,7 +634,7 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -653,7 +653,7 @@ declare namespace RegionBehavior {
 
     /**
      * The interface for passing to {@linkcode RegionBehavior.delete | RegionBehavior#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -663,7 +663,7 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
@@ -682,7 +682,7 @@ declare namespace RegionBehavior {
 
     /**
      * The interface for passing to {@linkcode RegionBehavior.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -692,11 +692,11 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `RegionBehavior` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -706,12 +706,12 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode RegionBehavior._preDelete | RegionBehavior#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteRegionBehavior` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -721,11 +721,11 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode RegionBehavior._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -735,12 +735,12 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode RegionBehavior._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -750,12 +750,12 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode RegionBehavior._onDelete | RegionBehavior#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteRegionBehavior` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -765,12 +765,12 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode RegionBehavior._onDeleteOperation} and `RegionBehavior`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -780,48 +780,48 @@ declare namespace RegionBehavior {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: RegionBehavior.Database2.GetDocumentsOperation;
-        BackendGetOperation: RegionBehavior.Database2.BackendGetOperation;
-        GetOperation: RegionBehavior.Database2.GetOperation;
+        GetDocumentsOperation: RegionBehavior.Database.GetDocumentsOperation;
+        BackendGetOperation: RegionBehavior.Database.BackendGetOperation;
+        GetOperation: RegionBehavior.Database.GetOperation;
 
-        CreateDocumentsOperation: RegionBehavior.Database2.CreateDocumentsOperation<Temporary>;
-        CreateEmbeddedOperation: RegionBehavior.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: RegionBehavior.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: RegionBehavior.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: RegionBehavior.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: RegionBehavior.Database2.PreCreateOperation<Temporary>;
+        CreateDocumentsOperation: RegionBehavior.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: RegionBehavior.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: RegionBehavior.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: RegionBehavior.Database.CreateOperation<Temporary>;
+        PreCreateOptions: RegionBehavior.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: RegionBehavior.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: RegionBehavior.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: RegionBehavior.Database2.OnCreateOptions;
-        OnCreateOperation: RegionBehavior.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: RegionBehavior.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: RegionBehavior.Database.OnCreateOptions;
+        OnCreateOperation: RegionBehavior.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: RegionBehavior.Database2.UpdateOneDocumentOperation;
-        UpdateEmbeddedOperation: RegionBehavior.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: RegionBehavior.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: RegionBehavior.Database2.BackendUpdateOperation;
-        UpdateOperation: RegionBehavior.Database2.UpdateOperation;
-        PreUpdateOptions: RegionBehavior.Database2.PreUpdateOptions;
-        PreUpdateOperation: RegionBehavior.Database2.PreUpdateOperation;
+        UpdateOneDocumentOperation: RegionBehavior.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: RegionBehavior.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: RegionBehavior.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: RegionBehavior.Database.BackendUpdateOperation;
+        UpdateOperation: RegionBehavior.Database.UpdateOperation;
+        PreUpdateOptions: RegionBehavior.Database.PreUpdateOptions;
+        PreUpdateOperation: RegionBehavior.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: RegionBehavior.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: RegionBehavior.Database2.OnUpdateOptions;
-        OnUpdateOperation: RegionBehavior.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: RegionBehavior.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: RegionBehavior.Database.OnUpdateOptions;
+        OnUpdateOperation: RegionBehavior.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: RegionBehavior.Database2.DeleteOneDocumentOperation;
-        DeleteEmbeddedOperation: RegionBehavior.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: RegionBehavior.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: RegionBehavior.Database2.BackendDeleteOperation;
-        DeleteOperation: RegionBehavior.Database2.DeleteOperation;
-        PreDeleteOptions: RegionBehavior.Database2.PreDeleteOptions;
-        PreDeleteOperation: RegionBehavior.Database2.PreDeleteOperation;
+        DeleteOneDocumentOperation: RegionBehavior.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: RegionBehavior.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: RegionBehavior.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: RegionBehavior.Database.BackendDeleteOperation;
+        DeleteOperation: RegionBehavior.Database.DeleteOperation;
+        PreDeleteOptions: RegionBehavior.Database.PreDeleteOptions;
+        PreDeleteOperation: RegionBehavior.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: RegionBehavior.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: RegionBehavior.Database2.OnDeleteOptions;
-        OnDeleteOperation: RegionBehavior.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: RegionBehavior.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: RegionBehavior.Database.OnDeleteOptions;
+        OnDeleteOperation: RegionBehavior.Database.OnDeleteOperation;
       }
     }
 
@@ -957,10 +957,10 @@ declare namespace RegionBehavior {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode RegionBehavior.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode RegionBehavior.createDialog}'s third parameter
@@ -1046,7 +1046,7 @@ declare class RegionBehavior<
     Options extends RegionBehavior.CreateDialogOptions | undefined = undefined,
   >(
     data?: RegionBehavior.CreateDialogData,
-    createOptions?: RegionBehavior.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: RegionBehavior.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<RegionBehavior.CreateDialogReturn<Temporary, Options>>;
 
@@ -1084,7 +1084,7 @@ declare class RegionBehavior<
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: RegionBehavior.Database2.DeleteOneDocumentOperation,
+    operation?: RegionBehavior.Database.DeleteOneDocumentOperation,
   ): Promise<RegionBehavior.DeleteDialogReturn<Options>>;
 
   /**
@@ -1096,7 +1096,7 @@ declare class RegionBehavior<
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: RegionBehavior.Database2.DeleteOneDocumentOperation,
+    operation?: RegionBehavior.Database.DeleteOneDocumentOperation,
   ): Promise<RegionBehavior.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: RegionBehavior.DropData): Promise<RegionBehavior.Implementation | undefined>;

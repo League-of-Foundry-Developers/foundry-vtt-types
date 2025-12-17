@@ -715,7 +715,7 @@ declare class PrototypeToken extends DataModel<PrototypeToken.Schema, PrototypeT
    */
   update(
     data: PrototypeToken.UpdateData | undefined,
-    operation?: Actor.Database2.UpdateOneDocumentOperation,
+    operation?: Actor.Database.UpdateOneDocumentOperation,
   ): Promise<Actor.Implementation | undefined>;
 
   /**

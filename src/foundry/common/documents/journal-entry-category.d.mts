@@ -272,7 +272,7 @@ declare namespace BaseJournalEntryCategory {
   export import UpdateData = JournalEntryCategory.UpdateData;
   export import UpdateInput = JournalEntryCategory.UpdateInput;
   export import Schema = JournalEntryCategory.Schema;
-  export import Database2 = JournalEntryCategory.Database2;
+  export import Database2 = JournalEntryCategory.Database;
   export import TemporaryIf = JournalEntryCategory.TemporaryIf;
   export import Flags = JournalEntryCategory.Flags;
 

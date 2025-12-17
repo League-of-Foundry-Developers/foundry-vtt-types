@@ -166,7 +166,7 @@ declare namespace User {
 
   /**
    * Used in the {@linkcode User.create} and {@linkcode User.createDocuments} signatures, and
-   * {@linkcode User.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode User.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -199,7 +199,7 @@ declare namespace User {
 
   /**
    * Used in the {@linkcode User.update | User#update} and
-   * {@linkcode User.updateDocuments} signatures, and {@linkcode User.Database2.UpdateOperation}
+   * {@linkcode User.updateDocuments} signatures, and {@linkcode User.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -323,7 +323,7 @@ declare namespace User {
     _stats: fields.DocumentStatsField;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -339,15 +339,15 @@ declare namespace User {
 
     /**
      * The interface for passing to {@linkcode User.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `User` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -368,7 +368,7 @@ declare namespace User {
 
     /**
      * The interface for passing to {@linkcode User.create} or {@linkcode User.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -379,14 +379,14 @@ declare namespace User {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `User` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `User` documents. (see {@linkcode User.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -396,11 +396,11 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `User` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -411,12 +411,12 @@ declare namespace User {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode User._preCreate | User#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateUser` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -426,12 +426,12 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode User._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -441,13 +441,13 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode User._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -458,12 +458,12 @@ declare namespace User {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode User._onCreate | User#_onCreate} and
      * {@link Hooks.CreateDocument | the `createUser` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -473,12 +473,12 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode User._onCreateOperation} and `User`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -488,7 +488,7 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -507,7 +507,7 @@ declare namespace User {
 
     /**
      * The interface for passing to {@linkcode User.update | User#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -517,7 +517,7 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * @deprecated `User` documents are never embedded. This interface exists for consistency with other documents.
@@ -538,7 +538,7 @@ declare namespace User {
 
     /**
      * The interface for passing to {@linkcode User.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -548,11 +548,11 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `User` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -562,12 +562,12 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode User._preUpdate | User#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateUser` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -577,11 +577,11 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode User._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -591,12 +591,12 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode User._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -606,12 +606,12 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode User._onUpdate | User#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateUser` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -621,12 +621,12 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode User._onUpdateOperation} and `User`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -636,7 +636,7 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -655,7 +655,7 @@ declare namespace User {
 
     /**
      * The interface for passing to {@linkcode User.delete | User#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -665,7 +665,7 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * @deprecated `User` documents are never embedded. This interface exists for consistency with other documents.
@@ -686,7 +686,7 @@ declare namespace User {
 
     /**
      * The interface for passing to {@linkcode User.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -696,11 +696,11 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `User` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -710,12 +710,12 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode User._preDelete | User#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteUser` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -725,11 +725,11 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode User._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -739,12 +739,12 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode User._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -754,12 +754,12 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode User._onDelete | User#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteUser` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -769,12 +769,12 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode User._onDeleteOperation} and `User`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -784,51 +784,51 @@ declare namespace User {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: User.Database2.GetDocumentsOperation;
-        BackendGetOperation: User.Database2.BackendGetOperation;
-        GetOperation: User.Database2.GetOperation;
+        GetDocumentsOperation: User.Database.GetDocumentsOperation;
+        BackendGetOperation: User.Database.BackendGetOperation;
+        GetOperation: User.Database.GetOperation;
 
-        CreateDocumentsOperation: User.Database2.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: User.Database.CreateDocumentsOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: User.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: User.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: User.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: User.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: User.Database2.PreCreateOperation<Temporary>;
+        CreateEmbeddedOperation: User.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: User.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: User.Database.CreateOperation<Temporary>;
+        PreCreateOptions: User.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: User.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: User.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: User.Database2.OnCreateOptions;
-        OnCreateOperation: User.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: User.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: User.Database.OnCreateOptions;
+        OnCreateOperation: User.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: User.Database2.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: User.Database.UpdateOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: User.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: User.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: User.Database2.BackendUpdateOperation;
-        UpdateOperation: User.Database2.UpdateOperation;
-        PreUpdateOptions: User.Database2.PreUpdateOptions;
-        PreUpdateOperation: User.Database2.PreUpdateOperation;
+        UpdateEmbeddedOperation: User.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: User.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: User.Database.BackendUpdateOperation;
+        UpdateOperation: User.Database.UpdateOperation;
+        PreUpdateOptions: User.Database.PreUpdateOptions;
+        PreUpdateOperation: User.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: User.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: User.Database2.OnUpdateOptions;
-        OnUpdateOperation: User.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: User.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: User.Database.OnUpdateOptions;
+        OnUpdateOperation: User.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: User.Database2.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: User.Database.DeleteOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: User.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: User.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: User.Database2.BackendDeleteOperation;
-        DeleteOperation: User.Database2.DeleteOperation;
-        PreDeleteOptions: User.Database2.PreDeleteOptions;
-        PreDeleteOperation: User.Database2.PreDeleteOperation;
+        DeleteEmbeddedOperation: User.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: User.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: User.Database.BackendDeleteOperation;
+        DeleteOperation: User.Database.DeleteOperation;
+        PreDeleteOptions: User.Database.PreDeleteOptions;
+        PreDeleteOperation: User.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: User.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: User.Database2.OnDeleteOptions;
-        OnDeleteOperation: User.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: User.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: User.Database.OnDeleteOptions;
+        OnDeleteOperation: User.Database.OnDeleteOperation;
       }
     }
 
@@ -964,10 +964,10 @@ declare namespace User {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode User.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode User.createDialog}'s third parameter
@@ -1335,7 +1335,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
     Options extends User.CreateDialogOptions | undefined = undefined,
   >(
     data?: User.CreateDialogData,
-    createOptions?: User.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: User.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<User.CreateDialogReturn<Temporary, Options>>;
 
@@ -1357,7 +1357,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: User.Database2.DeleteOneDocumentOperation,
+    operation?: User.Database.DeleteOneDocumentOperation,
   ): Promise<User.DeleteDialogReturn<Options>>;
 
   /**
@@ -1369,7 +1369,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: User.Database2.DeleteOneDocumentOperation,
+    operation?: User.Database.DeleteOneDocumentOperation,
   ): Promise<User.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: User.DropData): Promise<User.Implementation | undefined>;

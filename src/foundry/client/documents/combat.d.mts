@@ -312,7 +312,7 @@ declare namespace Combat {
 
   /**
    * Used in the {@linkcode Combat.create} and {@linkcode Combat.createDocuments} signatures, and
-   * {@linkcode Combat.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode Combat.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -345,7 +345,7 @@ declare namespace Combat {
 
   /**
    * Used in the {@linkcode Combat.update | Combat#update} and
-   * {@linkcode Combat.updateDocuments} signatures, and {@linkcode Combat.Database2.UpdateOperation}
+   * {@linkcode Combat.updateDocuments} signatures, and {@linkcode Combat.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -432,7 +432,7 @@ declare namespace Combat {
     _stats: fields.DocumentStatsField;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -448,15 +448,15 @@ declare namespace Combat {
 
     /**
      * The interface for passing to {@linkcode Combat.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Combat` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -477,7 +477,7 @@ declare namespace Combat {
 
     /**
      * The interface for passing to {@linkcode Combat.create} or {@linkcode Combat.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -488,14 +488,14 @@ declare namespace Combat {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `Combat` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `Combat` documents. (see {@linkcode Combat.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -505,11 +505,11 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Combat` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -520,12 +520,12 @@ declare namespace Combat {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Combat._preCreate | Combat#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateCombat` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -535,12 +535,12 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Combat._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -550,13 +550,13 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Combat._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -567,12 +567,12 @@ declare namespace Combat {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Combat._onCreate | Combat#_onCreate} and
      * {@link Hooks.CreateDocument | the `createCombat` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -582,12 +582,12 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Combat._onCreateOperation} and `Combat`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -597,7 +597,7 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -616,7 +616,7 @@ declare namespace Combat {
 
     /**
      * The interface for passing to {@linkcode Combat.update | Combat#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -626,7 +626,7 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * @deprecated `Combat` documents are never embedded. This interface exists for consistency with other documents.
@@ -647,7 +647,7 @@ declare namespace Combat {
 
     /**
      * The interface for passing to {@linkcode Combat.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -657,11 +657,11 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Combat` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -671,12 +671,12 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Combat._preUpdate | Combat#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateCombat` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -686,11 +686,11 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Combat._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -700,12 +700,12 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Combat._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -715,12 +715,12 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Combat._onUpdate | Combat#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateCombat` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -730,12 +730,12 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Combat._onUpdateOperation} and `Combat`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -745,7 +745,7 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -764,7 +764,7 @@ declare namespace Combat {
 
     /**
      * The interface for passing to {@linkcode Combat.delete | Combat#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -774,7 +774,7 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * @deprecated `Combat` documents are never embedded. This interface exists for consistency with other documents.
@@ -795,7 +795,7 @@ declare namespace Combat {
 
     /**
      * The interface for passing to {@linkcode Combat.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -805,11 +805,11 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Combat` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -819,12 +819,12 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Combat._preDelete | Combat#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteCombat` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -834,11 +834,11 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Combat._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -848,12 +848,12 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Combat._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -863,12 +863,12 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Combat._onDelete | Combat#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteCombat` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -878,12 +878,12 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Combat._onDeleteOperation} and `Combat`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -893,51 +893,51 @@ declare namespace Combat {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: Combat.Database2.GetDocumentsOperation;
-        BackendGetOperation: Combat.Database2.BackendGetOperation;
-        GetOperation: Combat.Database2.GetOperation;
+        GetDocumentsOperation: Combat.Database.GetDocumentsOperation;
+        BackendGetOperation: Combat.Database.BackendGetOperation;
+        GetOperation: Combat.Database.GetOperation;
 
-        CreateDocumentsOperation: Combat.Database2.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: Combat.Database.CreateDocumentsOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: Combat.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: Combat.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: Combat.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: Combat.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: Combat.Database2.PreCreateOperation<Temporary>;
+        CreateEmbeddedOperation: Combat.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: Combat.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: Combat.Database.CreateOperation<Temporary>;
+        PreCreateOptions: Combat.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: Combat.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Combat.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: Combat.Database2.OnCreateOptions;
-        OnCreateOperation: Combat.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: Combat.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: Combat.Database.OnCreateOptions;
+        OnCreateOperation: Combat.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: Combat.Database2.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: Combat.Database.UpdateOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: Combat.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: Combat.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: Combat.Database2.BackendUpdateOperation;
-        UpdateOperation: Combat.Database2.UpdateOperation;
-        PreUpdateOptions: Combat.Database2.PreUpdateOptions;
-        PreUpdateOperation: Combat.Database2.PreUpdateOperation;
+        UpdateEmbeddedOperation: Combat.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Combat.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Combat.Database.BackendUpdateOperation;
+        UpdateOperation: Combat.Database.UpdateOperation;
+        PreUpdateOptions: Combat.Database.PreUpdateOptions;
+        PreUpdateOperation: Combat.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: Combat.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: Combat.Database2.OnUpdateOptions;
-        OnUpdateOperation: Combat.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: Combat.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: Combat.Database.OnUpdateOptions;
+        OnUpdateOperation: Combat.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: Combat.Database2.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: Combat.Database.DeleteOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: Combat.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: Combat.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: Combat.Database2.BackendDeleteOperation;
-        DeleteOperation: Combat.Database2.DeleteOperation;
-        PreDeleteOptions: Combat.Database2.PreDeleteOptions;
-        PreDeleteOperation: Combat.Database2.PreDeleteOperation;
+        DeleteEmbeddedOperation: Combat.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Combat.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Combat.Database.BackendDeleteOperation;
+        DeleteOperation: Combat.Database.DeleteOperation;
+        PreDeleteOptions: Combat.Database.PreDeleteOptions;
+        PreDeleteOperation: Combat.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: Combat.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: Combat.Database2.OnDeleteOptions;
-        OnDeleteOperation: Combat.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: Combat.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: Combat.Database.OnDeleteOptions;
+        OnDeleteOperation: Combat.Database.OnDeleteOperation;
       }
     }
 
@@ -1073,10 +1073,10 @@ declare namespace Combat {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode Combat.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode Combat.createDialog}'s third parameter
@@ -1270,7 +1270,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * Deactivate all other Combat encounters within the viewed Scene and set this one as active
    * @param options - Additional context to customize the update workflow
    */
-  activate(options?: Combat.Database2.UpdateOneDocumentOperation): Promise<Combat.Implementation[]>;
+  activate(options?: Combat.Database.UpdateOneDocumentOperation): Promise<Combat.Implementation[]>;
 
   /** @remarks Calls {@link Combat.setupTurns | `Combat#setupTurns`} if there is at least one Combatant and `this.turns` is empty */
   override prepareDerivedData(): void;
@@ -1513,7 +1513,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    */
   protected static _onDeleteTokens(
     documents: TokenDocument.Stored[],
-    operation: TokenDocument.Database2.OnDeleteOperation,
+    operation: TokenDocument.Database.OnDeleteOperation,
     user: User.Implementation,
   ): void;
 
@@ -1554,7 +1554,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
     Options extends Combat.CreateDialogOptions | undefined = undefined,
   >(
     data?: Combat.CreateDialogData,
-    createOptions?: Combat.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: Combat.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<Combat.CreateDialogReturn<Temporary, Options>>;
 
@@ -1576,7 +1576,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: Combat.Database2.DeleteOneDocumentOperation,
+    operation?: Combat.Database.DeleteOneDocumentOperation,
   ): Promise<Combat.DeleteDialogReturn<Options>>;
 
   /**
@@ -1588,7 +1588,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: Combat.Database2.DeleteOneDocumentOperation,
+    operation?: Combat.Database.DeleteOneDocumentOperation,
   ): Promise<Combat.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: Combat.DropData): Promise<Combat.Implementation | undefined>;

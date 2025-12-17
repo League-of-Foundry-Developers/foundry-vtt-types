@@ -163,19 +163,19 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   override createEmbeddedDocuments<EmbeddedName extends BaseCombat.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.CreateDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseCombat.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.UpdateManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseCombat.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: string[],
-    operation?: Document.Database2.DeleteManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseCombat.Flags.Scope, Key extends BaseCombat.Flags.Key<Scope>>(
@@ -335,7 +335,7 @@ declare namespace BaseCombat {
   export import UpdateData = Combat.UpdateData;
   export import UpdateInput = Combat.UpdateInput;
   export import Schema = Combat.Schema;
-  export import Database2 = Combat.Database2;
+  export import Database2 = Combat.Database;
   export import TemporaryIf = Combat.TemporaryIf;
   export import Flags = Combat.Flags;
 

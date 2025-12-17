@@ -297,7 +297,7 @@ declare namespace BaseCard {
   export import UpdateData = Card.UpdateData;
   export import UpdateInput = Card.UpdateInput;
   export import Schema = Card.Schema;
-  export import Database2 = Card.Database2;
+  export import Database2 = Card.Database;
   export import TemporaryIf = Card.TemporaryIf;
   export import Flags = Card.Flags;
 

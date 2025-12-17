@@ -186,7 +186,7 @@ declare abstract class DocumentCollection<
    * @remarks Foundry types `action` as {@linkcode DatabaseBackend.DatabaseAction} but no path exists from a `get` operation to calling
    * this method.
    */
-  _onModifyContents<Action extends Document.Database2.OperationAction>(
+  _onModifyContents<Action extends Document.Database.OperationAction>(
     action: Action,
     documents: Document.StoredForName<DocumentName>[],
     result: Collection.OnModifyContentsResult<DocumentName, Action>,
@@ -267,7 +267,7 @@ declare namespace DocumentCollection {
    * If you're a user that needs to be able to pass `pack` to your `DocumentCollection` subclass for some reason, please let us know.
    */
   type UpdateAllOperation<DocumentName extends Document.Type> = Omit<
-    Document.Database2.UpdateManyDocumentsOperationForName<DocumentName>,
+    Document.Database.UpdateManyDocumentsOperationForName<DocumentName>,
     "pack"
   >;
 

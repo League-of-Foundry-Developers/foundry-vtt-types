@@ -305,7 +305,7 @@ declare namespace Cards {
 
   /**
    * Used in the {@linkcode Cards.create} and {@linkcode Cards.createDocuments} signatures, and
-   * {@linkcode Cards.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode Cards.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -338,7 +338,7 @@ declare namespace Cards {
 
   /**
    * Used in the {@linkcode Cards.update | Cards#update} and
-   * {@linkcode Cards.updateDocuments} signatures, and {@linkcode Cards.Database2.UpdateOperation}
+   * {@linkcode Cards.updateDocuments} signatures, and {@linkcode Cards.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -451,7 +451,7 @@ declare namespace Cards {
     _stats: fields.DocumentStatsField;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -467,15 +467,15 @@ declare namespace Cards {
 
     /**
      * The interface for passing to {@linkcode Cards.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Cards` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -496,7 +496,7 @@ declare namespace Cards {
 
     /**
      * The interface for passing to {@linkcode Cards.create} or {@linkcode Cards.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -507,14 +507,14 @@ declare namespace Cards {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `Cards` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `Cards` documents. (see {@linkcode Cards.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -524,11 +524,11 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Cards` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -539,12 +539,12 @@ declare namespace Cards {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Cards._preCreate | Cards#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateCards` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -554,12 +554,12 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Cards._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -569,13 +569,13 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Cards._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -586,12 +586,12 @@ declare namespace Cards {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Cards._onCreate | Cards#_onCreate} and
      * {@link Hooks.CreateDocument | the `createCards` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -601,12 +601,12 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Cards._onCreateOperation} and `Cards`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -616,7 +616,7 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -635,7 +635,7 @@ declare namespace Cards {
 
     /**
      * The interface for passing to {@linkcode Cards.update | Cards#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -645,7 +645,7 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * @deprecated `Cards` documents are never embedded. This interface exists for consistency with other documents.
@@ -666,7 +666,7 @@ declare namespace Cards {
 
     /**
      * The interface for passing to {@linkcode Cards.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -676,11 +676,11 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Cards` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -690,12 +690,12 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Cards._preUpdate | Cards#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateCards` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -705,11 +705,11 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Cards._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -719,12 +719,12 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Cards._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -734,12 +734,12 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Cards._onUpdate | Cards#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateCards` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -749,12 +749,12 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Cards._onUpdateOperation} and `Cards`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -764,7 +764,7 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -783,7 +783,7 @@ declare namespace Cards {
 
     /**
      * The interface for passing to {@linkcode Cards.delete | Cards#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -793,7 +793,7 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * @deprecated `Cards` documents are never embedded. This interface exists for consistency with other documents.
@@ -814,7 +814,7 @@ declare namespace Cards {
 
     /**
      * The interface for passing to {@linkcode Cards.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -824,11 +824,11 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Cards` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -838,12 +838,12 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Cards._preDelete | Cards#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteCards` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -853,11 +853,11 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Cards._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -867,12 +867,12 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Cards._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -882,12 +882,12 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Cards._onDelete | Cards#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteCards` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -897,12 +897,12 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Cards._onDeleteOperation} and `Cards`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -912,51 +912,51 @@ declare namespace Cards {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: Cards.Database2.GetDocumentsOperation;
-        BackendGetOperation: Cards.Database2.BackendGetOperation;
-        GetOperation: Cards.Database2.GetOperation;
+        GetDocumentsOperation: Cards.Database.GetDocumentsOperation;
+        BackendGetOperation: Cards.Database.BackendGetOperation;
+        GetOperation: Cards.Database.GetOperation;
 
-        CreateDocumentsOperation: Cards.Database2.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: Cards.Database.CreateDocumentsOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: Cards.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: Cards.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: Cards.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: Cards.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: Cards.Database2.PreCreateOperation<Temporary>;
+        CreateEmbeddedOperation: Cards.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: Cards.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: Cards.Database.CreateOperation<Temporary>;
+        PreCreateOptions: Cards.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: Cards.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Cards.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: Cards.Database2.OnCreateOptions;
-        OnCreateOperation: Cards.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: Cards.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: Cards.Database.OnCreateOptions;
+        OnCreateOperation: Cards.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: Cards.Database2.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: Cards.Database.UpdateOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: Cards.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: Cards.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: Cards.Database2.BackendUpdateOperation;
-        UpdateOperation: Cards.Database2.UpdateOperation;
-        PreUpdateOptions: Cards.Database2.PreUpdateOptions;
-        PreUpdateOperation: Cards.Database2.PreUpdateOperation;
+        UpdateEmbeddedOperation: Cards.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Cards.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Cards.Database.BackendUpdateOperation;
+        UpdateOperation: Cards.Database.UpdateOperation;
+        PreUpdateOptions: Cards.Database.PreUpdateOptions;
+        PreUpdateOperation: Cards.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: Cards.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: Cards.Database2.OnUpdateOptions;
-        OnUpdateOperation: Cards.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: Cards.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: Cards.Database.OnUpdateOptions;
+        OnUpdateOperation: Cards.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: Cards.Database2.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: Cards.Database.DeleteOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: Cards.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: Cards.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: Cards.Database2.BackendDeleteOperation;
-        DeleteOperation: Cards.Database2.DeleteOperation;
-        PreDeleteOptions: Cards.Database2.PreDeleteOptions;
-        PreDeleteOperation: Cards.Database2.PreDeleteOperation;
+        DeleteEmbeddedOperation: Cards.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Cards.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Cards.Database.BackendDeleteOperation;
+        DeleteOperation: Cards.Database.DeleteOperation;
+        PreDeleteOptions: Cards.Database.PreDeleteOptions;
+        PreDeleteOperation: Cards.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: Cards.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: Cards.Database2.OnDeleteOptions;
-        OnDeleteOperation: Cards.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: Cards.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: Cards.Database.OnDeleteOptions;
+        OnDeleteOperation: Cards.Database.OnDeleteOperation;
       }
     }
 
@@ -1092,10 +1092,10 @@ declare namespace Cards {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode Cards.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode Cards.createDialog}'s third parameter
@@ -1374,7 +1374,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    */
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Cards.CreateInput[],
-    operation?: Cards.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: Cards.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<Cards.TemporaryIf<Temporary>>>;
 
   /**
@@ -1489,7 +1489,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
     Options extends Cards.CreateDialogOptions | undefined = undefined,
   >(
     data?: Cards.CreateDialogData,
-    createOptions?: Cards.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: Cards.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<Cards.CreateDialogReturn<Temporary, Options>>;
 
@@ -1511,7 +1511,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: Cards.Database2.DeleteOneDocumentOperation,
+    operation?: Cards.Database.DeleteOneDocumentOperation,
   ): Promise<Cards.DeleteDialogReturn<Options>>;
 
   /**
@@ -1523,7 +1523,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: Cards.Database2.DeleteOneDocumentOperation,
+    operation?: Cards.Database.DeleteOneDocumentOperation,
   ): Promise<Cards.DeleteDialogReturn<Options>>;
 
   /*

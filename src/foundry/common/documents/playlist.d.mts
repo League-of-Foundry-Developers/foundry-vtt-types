@@ -143,19 +143,19 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   override createEmbeddedDocuments<EmbeddedName extends BasePlaylist.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.CreateDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BasePlaylist.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.UpdateManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BasePlaylist.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: string[],
-    operation?: Document.Database2.DeleteManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BasePlaylist.Flags.Scope, Key extends BasePlaylist.Flags.Key<Scope>>(
@@ -314,7 +314,7 @@ declare namespace BasePlaylist {
   export import UpdateData = Playlist.UpdateData;
   export import UpdateInput = Playlist.UpdateInput;
   export import Schema = Playlist.Schema;
-  export import Database2 = Playlist.Database2;
+  export import Database2 = Playlist.Database;
   export import TemporaryIf = Playlist.TemporaryIf;
   export import Flags = Playlist.Flags;
 

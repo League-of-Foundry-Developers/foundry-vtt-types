@@ -240,7 +240,7 @@ declare namespace Playlist {
 
   /**
    * Used in the {@linkcode Playlist.create} and {@linkcode Playlist.createDocuments} signatures, and
-   * {@linkcode Playlist.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode Playlist.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -275,7 +275,7 @@ declare namespace Playlist {
 
   /**
    * Used in the {@linkcode Playlist.update | Playlist#update} and
-   * {@linkcode Playlist.updateDocuments} signatures, and {@linkcode Playlist.Database2.UpdateOperation}
+   * {@linkcode Playlist.updateDocuments} signatures, and {@linkcode Playlist.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -403,7 +403,7 @@ declare namespace Playlist {
     _stats: fields.DocumentStatsField;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -419,15 +419,15 @@ declare namespace Playlist {
 
     /**
      * The interface for passing to {@linkcode Playlist.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Playlist` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -448,7 +448,7 @@ declare namespace Playlist {
 
     /**
      * The interface for passing to {@linkcode Playlist.create} or {@linkcode Playlist.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -459,14 +459,14 @@ declare namespace Playlist {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `Playlist` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `Playlist` documents. (see {@linkcode Playlist.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -476,11 +476,11 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Playlist` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -491,12 +491,12 @@ declare namespace Playlist {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Playlist._preCreate | Playlist#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreatePlaylist` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -506,12 +506,12 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Playlist._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -521,13 +521,13 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Playlist._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -538,12 +538,12 @@ declare namespace Playlist {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Playlist._onCreate | Playlist#_onCreate} and
      * {@link Hooks.CreateDocument | the `createPlaylist` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -553,12 +553,12 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Playlist._onCreateOperation} and `Playlist`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -568,7 +568,7 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -587,7 +587,7 @@ declare namespace Playlist {
 
     /**
      * The interface for passing to {@linkcode Playlist.update | Playlist#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -597,7 +597,7 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * @deprecated `Playlist` documents are never embedded. This interface exists for consistency with other documents.
@@ -618,7 +618,7 @@ declare namespace Playlist {
 
     /**
      * The interface for passing to {@linkcode Playlist.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -628,11 +628,11 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Playlist` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -642,12 +642,12 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Playlist._preUpdate | Playlist#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdatePlaylist` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -657,11 +657,11 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Playlist._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -671,12 +671,12 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Playlist._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -686,12 +686,12 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Playlist._onUpdate | Playlist#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updatePlaylist` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -701,12 +701,12 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Playlist._onUpdateOperation} and `Playlist`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -716,7 +716,7 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -735,7 +735,7 @@ declare namespace Playlist {
 
     /**
      * The interface for passing to {@linkcode Playlist.delete | Playlist#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -745,7 +745,7 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * @deprecated `Playlist` documents are never embedded. This interface exists for consistency with other documents.
@@ -766,7 +766,7 @@ declare namespace Playlist {
 
     /**
      * The interface for passing to {@linkcode Playlist.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -776,11 +776,11 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Playlist` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -790,12 +790,12 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Playlist._preDelete | Playlist#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeletePlaylist` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -805,11 +805,11 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Playlist._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -819,12 +819,12 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Playlist._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -834,12 +834,12 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Playlist._onDelete | Playlist#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deletePlaylist` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -849,12 +849,12 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Playlist._onDeleteOperation} and `Playlist`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -864,51 +864,51 @@ declare namespace Playlist {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: Playlist.Database2.GetDocumentsOperation;
-        BackendGetOperation: Playlist.Database2.BackendGetOperation;
-        GetOperation: Playlist.Database2.GetOperation;
+        GetDocumentsOperation: Playlist.Database.GetDocumentsOperation;
+        BackendGetOperation: Playlist.Database.BackendGetOperation;
+        GetOperation: Playlist.Database.GetOperation;
 
-        CreateDocumentsOperation: Playlist.Database2.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: Playlist.Database.CreateDocumentsOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: Playlist.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: Playlist.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: Playlist.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: Playlist.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: Playlist.Database2.PreCreateOperation<Temporary>;
+        CreateEmbeddedOperation: Playlist.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: Playlist.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: Playlist.Database.CreateOperation<Temporary>;
+        PreCreateOptions: Playlist.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: Playlist.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Playlist.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: Playlist.Database2.OnCreateOptions;
-        OnCreateOperation: Playlist.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: Playlist.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: Playlist.Database.OnCreateOptions;
+        OnCreateOperation: Playlist.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: Playlist.Database2.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: Playlist.Database.UpdateOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: Playlist.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: Playlist.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: Playlist.Database2.BackendUpdateOperation;
-        UpdateOperation: Playlist.Database2.UpdateOperation;
-        PreUpdateOptions: Playlist.Database2.PreUpdateOptions;
-        PreUpdateOperation: Playlist.Database2.PreUpdateOperation;
+        UpdateEmbeddedOperation: Playlist.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Playlist.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Playlist.Database.BackendUpdateOperation;
+        UpdateOperation: Playlist.Database.UpdateOperation;
+        PreUpdateOptions: Playlist.Database.PreUpdateOptions;
+        PreUpdateOperation: Playlist.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: Playlist.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: Playlist.Database2.OnUpdateOptions;
-        OnUpdateOperation: Playlist.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: Playlist.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: Playlist.Database.OnUpdateOptions;
+        OnUpdateOperation: Playlist.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: Playlist.Database2.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: Playlist.Database.DeleteOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: Playlist.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: Playlist.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: Playlist.Database2.BackendDeleteOperation;
-        DeleteOperation: Playlist.Database2.DeleteOperation;
-        PreDeleteOptions: Playlist.Database2.PreDeleteOptions;
-        PreDeleteOperation: Playlist.Database2.PreDeleteOperation;
+        DeleteEmbeddedOperation: Playlist.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Playlist.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Playlist.Database.BackendDeleteOperation;
+        DeleteOperation: Playlist.Database.DeleteOperation;
+        PreDeleteOptions: Playlist.Database.PreDeleteOptions;
+        PreDeleteOperation: Playlist.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: Playlist.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: Playlist.Database2.OnDeleteOptions;
-        OnDeleteOperation: Playlist.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: Playlist.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: Playlist.Database.OnDeleteOptions;
+        OnDeleteOperation: Playlist.Database.OnDeleteOperation;
       }
     }
 
@@ -1044,10 +1044,10 @@ declare namespace Playlist {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode Playlist.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode Playlist.createDialog}'s third parameter
@@ -1304,7 +1304,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
     Options extends Playlist.CreateDialogOptions | undefined = undefined,
   >(
     data?: Playlist.CreateDialogData,
-    createOptions?: Playlist.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: Playlist.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<Playlist.CreateDialogReturn<Temporary, Options>>;
 
@@ -1326,7 +1326,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: Playlist.Database2.DeleteOneDocumentOperation,
+    operation?: Playlist.Database.DeleteOneDocumentOperation,
   ): Promise<Playlist.DeleteDialogReturn<Options>>;
 
   /**
@@ -1338,7 +1338,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: Playlist.Database2.DeleteOneDocumentOperation,
+    operation?: Playlist.Database.DeleteOneDocumentOperation,
   ): Promise<Playlist.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: Playlist.DropData): Promise<Playlist.Implementation | undefined>;

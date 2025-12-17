@@ -266,7 +266,7 @@ declare namespace BaseAmbientLight {
   export import UpdateData = AmbientLightDocument.UpdateData;
   export import UpdateInput = AmbientLightDocument.UpdateInput;
   export import Schema = AmbientLightDocument.Schema;
-  export import Database2 = AmbientLightDocument.Database2;
+  export import Database2 = AmbientLightDocument.Database;
   export import TemporaryIf = AmbientLightDocument.TemporaryIf;
   export import Flags = AmbientLightDocument.Flags;
   export import CoreFlags = AmbientLightDocument.CoreFlags;

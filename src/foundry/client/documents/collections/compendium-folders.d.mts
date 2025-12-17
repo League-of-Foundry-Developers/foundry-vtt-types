@@ -25,7 +25,7 @@ declare class CompendiumFolderCollection<
     options?: DocumentCollection.UpdateAllOperation<"Folder">,
   ): Promise<Folder.Stored[]>;
 
-  override _onModifyContents<Action extends Document.Database2.OperationAction>(
+  override _onModifyContents<Action extends Document.Database.OperationAction>(
     action: Action,
     documents: Folder.Stored[], // TODO: StoredOfType
     result: Collection.OnModifyContentsResult<"Folder", Action>,

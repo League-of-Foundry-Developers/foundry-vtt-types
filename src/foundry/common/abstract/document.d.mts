@@ -1515,7 +1515,7 @@ declare namespace Document {
           parent: Parent,
           collection: Embedded[DirectDescendantName],
           data: Document.CreateDataForName<DirectDescendantName>[],
-          options: Document.Database2.PreCreateOptionsForName<DirectDescendantName>,
+          options: Document.Database.PreCreateOptionsForName<DirectDescendantName>,
           userId: string,
         ]
       : never;
@@ -1530,7 +1530,7 @@ declare namespace Document {
           collection: Embedded[DirectDescendantName],
           documents: Document.StoredForName<DirectDescendantName>[],
           data: Document.CreateDataForName<DirectDescendantName>[],
-          options: Document.Database2.OnCreateOptionsForName<DirectDescendantName>,
+          options: Document.Database.OnCreateOptionsForName<DirectDescendantName>,
           userId: string,
         ]
       : never;
@@ -1544,7 +1544,7 @@ declare namespace Document {
           parent: Parent,
           collection: Embedded[DirectDescendantName],
           changes: Document.UpdateDataForName<DirectDescendantName>[],
-          options: Document.Database2.PreUpdateOptionsForName<DirectDescendantName>,
+          options: Document.Database.PreUpdateOptionsForName<DirectDescendantName>,
           userId: string,
         ]
       : never;
@@ -1559,7 +1559,7 @@ declare namespace Document {
           collection: Embedded[DirectDescendantName],
           documents: Document.StoredForName<DirectDescendantName>[],
           changes: Document.UpdateDataForName<DirectDescendantName>[],
-          options: Document.Database2.OnUpdateOptionsForName<DirectDescendantName>,
+          options: Document.Database.OnUpdateOptionsForName<DirectDescendantName>,
           userId: string,
         ]
       : never;
@@ -1573,7 +1573,7 @@ declare namespace Document {
           parent: Parent,
           collection: Embedded[DirectDescendantName],
           ids: string[],
-          options: Document.Database2.PreDeleteOptionsForName<DirectDescendantName>,
+          options: Document.Database.PreDeleteOptionsForName<DirectDescendantName>,
           userId: string,
         ]
       : never;
@@ -1588,7 +1588,7 @@ declare namespace Document {
           collection: Embedded[DirectDescendantName],
           documents: Document.StoredForName<DirectDescendantName>[],
           ids: string[],
-          options: Document.Database2.OnDeleteOptionsForName<DirectDescendantName>,
+          options: Document.Database.OnDeleteOptionsForName<DirectDescendantName>,
           userId: string,
         ]
       : never;
@@ -2052,7 +2052,7 @@ declare namespace Document {
    *
    * `parent`, `pack`, and `strict` are all overwritten with no respect to passed values, so they've been omitted from the extended types.
    * This allows the use of a generic {@linkcode DatabaseBackend.CreateOperation}, since any document-specific properties are irrelevant
-   * (`data` doesn't go in a {@linkcode Document.Database2.CreateDocumentsOperation | CreateDocumentsOperation}).
+   * (`data` doesn't go in a {@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation}).
    *
    * @privateRemarks `temporary` is not being supported here; returning a temporary doc is the default behaviour of `clone()`, passing
    * `{ save: true, temporary: true }` is nonsensical.
@@ -2061,10 +2061,7 @@ declare namespace Document {
     extends
       _CloneContext<Save>,
       Omit<Document.ConstructionContext, "parent" | "strict">,
-      Omit<
-        Document.Database2.CreateDocumentsOperation<DatabaseBackend.CreateOperation>,
-        "parent" | "pack" | "keepId"
-      > {}
+      Omit<Document.Database.CreateDocumentsOperation<DatabaseBackend.CreateOperation>, "parent" | "pack" | "keepId"> {}
 
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
@@ -2121,7 +2118,7 @@ declare namespace Document {
 
   type LayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
 
-  namespace Database2 {
+  namespace Database {
     /** Database action types which make a change in the database */
     type OperationAction = Exclude<DatabaseBackend.DatabaseAction, "get">;
 
@@ -2147,7 +2144,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to {@linkcode Document.get}.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.GetOperation | GetOperation}, e.g
-     * {@linkcode Macro.Database2.GetOperation}.
+     * {@linkcode Macro.Database.GetOperation}.
      *
      * @remarks This type is identical to {@linkcode BackendGetOperation}. Core's implementation of `Document.get` only ever checks for, or
      * makes use of, {@linkcode DatabaseBackend.GetOperation.pack | pack}, but they type its `operation` parameter as a full `GetOperation`,
@@ -2159,7 +2156,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to {@linkcode DatabaseBackend.get | DatabaseBackend#get}
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.GetOperation | GetOperation}, e.g
-     * {@linkcode Macro.Database2.GetOperation}.
+     * {@linkcode Macro.Database.GetOperation}.
      *
      * @remarks No properties are required here. `IntentionalPartial` because `undefined`-valued properties don't survive the socket.
      */
@@ -2180,11 +2177,11 @@ declare namespace Document {
     /** @see {@linkcode DatabaseBackend.GetOperation} */
     type GetOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["GetOperation"];
 
-    /** @see {@linkcode Document.Database2.GetDocumentsOperation} */
+    /** @see {@linkcode Document.Database.GetDocumentsOperation} */
     type GetDocumentsOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["GetDocumentsOperation"];
 
-    /** @see {@linkcode Document.Database2.BackendGetOperation} */
+    /** @see {@linkcode Document.Database.BackendGetOperation} */
     type BackendGetOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["BackendGetOperation"];
 
     /* ***********************************************
@@ -2198,7 +2195,7 @@ declare namespace Document {
      * guaranteed properties over `.createDocuments`.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     * {@linkcode JournalEntry.Database.CreateOperation}.
      *
      * @remarks `data` is omitted because it's passed to either method as a separate parameter.
      *
@@ -2214,7 +2211,7 @@ declare namespace Document {
      * {@linkcode Document.createEmbeddedDocuments | Document#createEmbeddedDocuments}.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     * {@linkcode JournalEntry.Database.CreateOperation}.
      *
      * @remarks This type does the same omission as {@linkcode UpdateOneDocumentOperation} or {@linkcode DeleteOneDocumentOperation}, for
      * similar reasons: the called method sets `pack` and `parent` to the values from the instance it's called on.
@@ -2229,7 +2226,7 @@ declare namespace Document {
      * project assumes that that method has not been overridden, or, if it has, that the override calls `super` immediately.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     * {@linkcode JournalEntry.Database.CreateOperation}.
      *
      * @remarks Some properties are omitted because they are overwritten before the next opportunity for non-core code to interact with this
      * object ({@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments}):
@@ -2262,7 +2259,7 @@ declare namespace Document {
      * calls `super`, ensuring a call to `##preCreateDocumentArray`.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     * {@linkcode JournalEntry.Database.CreateOperation}.
      *
      * @remarks This type makes no optionality changes, only omits the keys that `ClientDatabaseBackend##preCreateDocumentArray` pulls out
      * of `operation` before passing on the remainder as `options`.
@@ -2276,7 +2273,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to {@linkcode Document._preCreateOperation}.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     * {@linkcode JournalEntry.Database.CreateOperation}.
      *
      * @remarks The only change this type makes is to restrict the `CreateData` to source objects only;
      * `ClientDatabaseBackend##preCreateDocumentArray` has called `#toObject` on all instances by this point.
@@ -2291,7 +2288,7 @@ declare namespace Document {
      * be removed in v14 along with that method.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     * {@linkcode JournalEntry.Database.CreateOperation}.
      *
      * @remarks Since this method is called inside {@linkcode Document.createDocuments}, but *after* the call to
      * {@linkcode DatabaseBackend.create | DatabaseBackend#create}, it receives the final mutated version of the client-side `operation`
@@ -2312,15 +2309,15 @@ declare namespace Document {
      * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ClientDocument._onCreateDescendantDocuments}.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     * {@linkcode JournalEntry.Database.CreateOperation}.
      *
      * @remarks This interface is created in `ClientDatabaseBackend##handleCreateDocuments`, which pulls out the omitted keys before passing
      * the rest of the object along.
      *
      * `data` is omitted not because it gets pulled out but because it does not exist in the `operation` the socket returns. It is added
-     * back *after* `options` is defined, which is why it appears in {@linkcode Document.Database2.OnCreateOperation | OnCreateOperation}.
+     * back *after* `options` is defined, which is why it appears in {@linkcode Document.Database.OnCreateOperation | OnCreateOperation}.
      *
-     * See {@linkcode ActorDelta.Database2.CreateOperation.syntheticActorUpdate} for more on that key.
+     * See {@linkcode ActorDelta.Database.CreateOperation.syntheticActorUpdate} for more on that key.
      *
      * `temporary` is omitted because any operation that included it would have short-circuited at the
      * {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments} stage, skipping post-operation calls like
@@ -2336,7 +2333,7 @@ declare namespace Document {
      * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.CreateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     * {@linkcode JournalEntry.Database.CreateOperation}.
      *
      * @remarks `ClientDatabaseBackend##handleCreateDocuments` sets `operation.data = response.result`, that being the array of data objects
      * sent back from the server. No instances appear in it, regardless of initial input. This object is a new reference from the original
@@ -2373,42 +2370,42 @@ declare namespace Document {
       Temporary extends boolean | undefined = boolean | undefined,
     > = Internal.Lookup<DocName, Temporary>["CreateOperation"];
 
-    /** @see {@linkcode Document.Database2.CreateDocumentsOperation} */
+    /** @see {@linkcode Document.Database.CreateDocumentsOperation} */
     type CreateDocumentsOperationForName<
       DocName extends Document.Type,
       Temporary extends boolean | undefined = boolean | undefined,
     > = Internal.Lookup<DocName, Temporary>["CreateDocumentsOperation"];
 
-    /** @see {@linkcode Document.Database2.CreateEmbeddedOperation} */
+    /** @see {@linkcode Document.Database.CreateEmbeddedOperation} */
     type CreateEmbeddedOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["CreateEmbeddedOperation"];
 
-    /** @see {@linkcode Document.Database2.BackendCreateOperation} */
+    /** @see {@linkcode Document.Database.BackendCreateOperation} */
     type BackendCreateOperationForName<
       DocName extends Document.Type,
       Temporary extends boolean | undefined = boolean | undefined,
     > = Internal.Lookup<DocName, Temporary>["BackendCreateOperation"];
 
-    /** @see {@linkcode Document.Database2.PreCreateOptions} */
+    /** @see {@linkcode Document.Database.PreCreateOptions} */
     type PreCreateOptionsForName<
       DocName extends Document.Type,
       Temporary extends boolean | undefined = boolean | undefined,
     > = Internal.Lookup<DocName, Temporary>["PreCreateOptions"];
 
-    /** @see {@linkcode Document.Database2.PreCreateOperation} */
+    /** @see {@linkcode Document.Database.PreCreateOperation} */
     type PreCreateOperationForName<
       DocName extends Document.Type,
       Temporary extends boolean | undefined = boolean | undefined,
     > = Internal.Lookup<DocName, Temporary>["PreCreateOperation"];
 
-    /** @see {@linkcode Document.Database2.OnCreateDocumentsOperation} */
+    /** @see {@linkcode Document.Database.OnCreateDocumentsOperation} */
     type OnCreateDocumentsOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["OnCreateDocumentsOperation"];
 
-    /** @see {@linkcode Document.Database2.OnCreateOptions} */
+    /** @see {@linkcode Document.Database.OnCreateOptions} */
     type OnCreateOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnCreateOptions"];
 
-    /** @see {@linkcode Document.Database2.OnCreateOperation} */
+    /** @see {@linkcode Document.Database.OnCreateOperation} */
     type OnCreateOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnCreateOperation"];
 
     /* ***********************************************
@@ -2417,11 +2414,11 @@ declare namespace Document {
 
     /**
      * A helper type for defining the interface that gets passed to {@linkcode Document.update | Document#update}, and, via aliases in the
-     * specific document namespaces (e.g {@linkcode NoteDocument.Database2.UpdateAsEmbeddedOperation}),
+     * specific document namespaces (e.g {@linkcode NoteDocument.Database.UpdateAsEmbeddedOperation}),
      * {@linkcode Document.updateEmbeddedDocuments | Document#updateEmbeddedDocuments}.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.UpdateOperation}
+     * {@linkcode JournalEntry.Database.UpdateOperation}
      *
      * @remarks Since this interface is for the instance method only, `pack` and `parent` are omitted because they get set to the instance's
      * values, and `updates` because it's passed to `#update` as the first parameter.
@@ -2437,7 +2434,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to {@linkcode Document.updateDocuments}.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     * {@linkcode JournalEntry.Database.UpdateOperation}.
      *
      * @remarks `updates` is omitted because it is set to what's passed as the first argument to the aforementioned methods before being
      * passed on to {@linkcode DatabaseBackend.update | DatabaseBackend#update}.
@@ -2454,7 +2451,7 @@ declare namespace Document {
      * project assumes that that method has not been overridden, or, if it has, that the override calls `super` immediately.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     * {@linkcode JournalEntry.Database.UpdateOperation}.
      *
      * @remarks Some properties are omitted because they are overwritten before the next opportunity for non-core code to interact with this
      * object ({@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments}):
@@ -2487,12 +2484,12 @@ declare namespace Document {
      * calls `super`, ensuring a call to `##preUpdateDocumentArray`.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     * {@linkcode JournalEntry.Database.UpdateOperation}.
      *
      * @remarks This type makes no optionality changes, only omits the keys that `ClientDatabaseBackend##preUpdateDocumentArray` pulls out
      * of `operation` before passing on the remainder as `options`.
      *
-     * See {@linkcode Actor.Database2.UpdateOperation.restoreDelta} for more information on that property.
+     * See {@linkcode Actor.Database.UpdateOperation.restoreDelta} for more information on that property.
      */
     type PreUpdateOptions<BaseOperation extends DatabaseBackend.UpdateOperation> = Omit<
       BaseOperation,
@@ -2506,7 +2503,7 @@ declare namespace Document {
      * calls `super`, ensuring a call to `##preUpdateDocumentArray`.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     * {@linkcode JournalEntry.Database.UpdateOperation}.
      *
      * @remarks The only change this type makes is to restrict the `UpdateData` to source objects only;
      * `ClientDatabaseBackend##preUpdateDocumentArray` has called `#toObject` on all instances by this point.
@@ -2521,7 +2518,7 @@ declare namespace Document {
      * interface will be removed in v14 along with that method.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     * {@linkcode JournalEntry.Database.UpdateOperation}.
      *
      * @remarks This is effectively the same type as {@linkcode PreUpdateOperation}. Unlike {@linkcode OnCreateDocumentsOperation}, nothing
      * modifies the object after {@linkcode Document._preUpdateOperation}.
@@ -2540,15 +2537,15 @@ declare namespace Document {
      * calls `super`, ensuring a call to `##preUpdateDocumentArray`.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     * {@linkcode JournalEntry.Database.UpdateOperation}.
      *
      * @remarks This interface is created in `ClientDatabaseBackend##handleUpdateDocuments`, which pulls out the omitted keys before passing
      * the rest of the object along.
      *
      * `updates` is omitted not because it gets pulled out but because it does not exist in the `operation` the socket returns. It is added
-     * back *after* `options` is defined, which is why it appears in {@linkcode Document.Database2.OnUpdateOperation | OnUpdateOperation}.
+     * back *after* `options` is defined, which is why it appears in {@linkcode Document.Database.OnUpdateOperation | OnUpdateOperation}.
      *
-     * See {@linkcode ActorDelta.Database2.UpdateOperation.syntheticActorUpdate} for more on that key.
+     * See {@linkcode ActorDelta.Database.UpdateOperation.syntheticActorUpdate} for more on that key.
      */
     type OnUpdateOptions<BaseOperation extends DatabaseBackend.UpdateOperation> = Omit<
       BaseOperation,
@@ -2560,7 +2557,7 @@ declare namespace Document {
      * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.UpdateOperation}, e.g
-     * {@linkcode JournalEntry.Database2.UpdateOperation}.
+     * {@linkcode JournalEntry.Database.UpdateOperation}.
      *
      * @remarks The only change this type makes is to restrict the `UpdateData` to source objects only;
      * `ClientDatabaseBackend##preUpdateDocumentArray` has called `#toObject` on all instances by this point.
@@ -2589,36 +2586,36 @@ declare namespace Document {
      */
     type UpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["UpdateOperation"];
 
-    /** @see {@linkcode Document.Database2.UpdateOneDocumentOperation} */
+    /** @see {@linkcode Document.Database.UpdateOneDocumentOperation} */
     type UpdateOneDocumentOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["UpdateOneDocumentOperation"];
 
-    /** @see {@linkcode Document.Database2.UpdateOneDocumentOperation} */
+    /** @see {@linkcode Document.Database.UpdateOneDocumentOperation} */
     type UpdateEmbeddedOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["UpdateEmbeddedOperation"];
 
-    /** @see {@linkcode Document.Database2.UpdateManyDocumentsOperation} */
+    /** @see {@linkcode Document.Database.UpdateManyDocumentsOperation} */
     type UpdateManyDocumentsOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["UpdateManyDocumentsOperation"];
 
-    /** @see {@linkcode Document.Database2.BackendUpdateOperation} */
+    /** @see {@linkcode Document.Database.BackendUpdateOperation} */
     type BackendUpdateOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["BackendUpdateOperation"];
 
-    /** @see {@linkcode Document.Database2.PreUpdateOptions} */
+    /** @see {@linkcode Document.Database.PreUpdateOptions} */
     type PreUpdateOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["PreUpdateOptions"];
 
-    /** @see {@linkcode Document.Database2.PreUpdateOperation} */
+    /** @see {@linkcode Document.Database.PreUpdateOperation} */
     type PreUpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["PreUpdateOperation"];
 
-    /** @see {@linkcode Document.Database2.OnUpdateDocumentsOperation} */
+    /** @see {@linkcode Document.Database.OnUpdateDocumentsOperation} */
     type OnUpdateDocumentsOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["OnUpdateDocumentsOperation"];
 
-    /** @see {@linkcode Document.Database2.OnUpdateOptions} */
+    /** @see {@linkcode Document.Database.OnUpdateOptions} */
     type OnUpdateOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnUpdateOptions"];
 
-    /** @see {@linkcode Document.Database2.OnUpdateOperation} */
+    /** @see {@linkcode Document.Database.OnUpdateOperation} */
     type OnUpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnUpdateOperation"];
 
     /* ***********************************************
@@ -2627,11 +2624,11 @@ declare namespace Document {
 
     /**
      * A helper type for defining the interface that gets passed to {@linkcode Document.delete | Document#delete}, and, via aliases in the
-     * specific document namespaces (e.g {@linkcode NoteDocument.Database2.DeleteAsEmbeddedOperation}),
+     * specific document namespaces (e.g {@linkcode NoteDocument.Database.DeleteAsEmbeddedOperation}),
      * {@linkcode Document.deleteEmbeddedDocuments | Document#deleteEmbeddedDocuments}.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
-     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     * {@linkcode JournalEntry.Database.DeleteOperation}.
      *
      * @remarks Since this interface is for the instance method only, `pack` and `parent` are omitted as they get set to the instance's
      * values.
@@ -2647,7 +2644,7 @@ declare namespace Document {
      * A helper type for defining the interface that gets passed to {@linkcode Document.deleteDocuments}.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
-     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     * {@linkcode JournalEntry.Database.DeleteOperation}.
      *
      * @remarks `ids` is omitted because it is set to what's passed as the first argument to the aforementioned methods before being passed
      * on to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete}.
@@ -2664,7 +2661,7 @@ declare namespace Document {
      * project assumes that that method has not been overridden, or, if it has, that the override calls `super` immediately.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
-     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     * {@linkcode JournalEntry.Database.DeleteOperation}.
      *
      * @remarks Some properties are omitted because they are overwritten before the next opportunity for non-core code to interact with this
      * object ({@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments}):
@@ -2697,7 +2694,7 @@ declare namespace Document {
      * calls `super`, ensuring a call to `##preDeleteDocumentArray`.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
-     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     * {@linkcode JournalEntry.Database.DeleteOperation}.
      *
      * @remarks This type makes no optionality changes, only omits the keys that `ClientDatabaseBackend##preDeleteDocumentArray` pulls out
      * of `operation` before passing on the remainder as `options`.
@@ -2714,7 +2711,7 @@ declare namespace Document {
      * calls `super`, ensuring a call to `##preDeleteDocumentArray`.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
-     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     * {@linkcode JournalEntry.Database.DeleteOperation}.
      *
      * @remarks This type is a no-op, here only for consistency of the operation interface 'type template'. Unlike create or update ops,
      * there is no data property to restrict, just a list of IDs.
@@ -2726,7 +2723,7 @@ declare namespace Document {
      * interface will be removed in v14 along with that method.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
-     * {@linkcode JournalEntry.Database2.CreateOperation}.
+     * {@linkcode JournalEntry.Database.CreateOperation}.
      *
      * @remarks This is effectively the same type as {@linkcode PreDeleteOperation}. Unlike {@linkcode OnCreateDocumentsOperation}, nothing
      * modifies the object after {@linkcode Document._preDeleteOperation}.
@@ -2745,15 +2742,15 @@ declare namespace Document {
      * calls `super`, ensuring a call to `##preDeleteDocumentArray`.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
-     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     * {@linkcode JournalEntry.Database.DeleteOperation}.
      *
      * @remarks This interface is created in `ClientDatabaseBackend##handleDeleteDocuments`, which pulls out the omitted keys before passing
      * the rest of the object along.
      *
      * `ids` is omitted not because it gets pulled out but because it does not exist in the `operation` the socket returns. It is added back
-     * _after_ `options` is defined, which is why it appears in {@linkcode Document.Database2.OnDeleteOperation | OnDeleteOperation}.
+     * _after_ `options` is defined, which is why it appears in {@linkcode Document.Database.OnDeleteOperation | OnDeleteOperation}.
      *
-     * See {@linkcode ActorDelta.Database2.DeleteOperation.syntheticActorUpdate} for more on that key.
+     * See {@linkcode ActorDelta.Database.DeleteOperation.syntheticActorUpdate} for more on that key.
      */
     type OnDeleteOptions<BaseOperation extends DatabaseBackend.DeleteOperation> = Omit<
       BaseOperation,
@@ -2765,7 +2762,7 @@ declare namespace Document {
      * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents}.
      *
      * @template BaseOperation - A specific document's {@linkcode DatabaseBackend.DeleteOperation}, e.g
-     * {@linkcode JournalEntry.Database2.DeleteOperation}.
+     * {@linkcode JournalEntry.Database.DeleteOperation}.
      *
      * @remarks This type is a no-op, here only for consistency of the operation interface 'type template'. Unlike create or update ops,
      * there is no data property to restrict, just a list of IDs.
@@ -2791,78 +2788,78 @@ declare namespace Document {
      */
     type DeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["DeleteOperation"];
 
-    /** @see {@linkcode Document.Database2.DeleteOneDocumentOperation} */
+    /** @see {@linkcode Document.Database.DeleteOneDocumentOperation} */
     type DeleteOneDocumentOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["DeleteOneDocumentOperation"];
 
-    /** @see {@linkcode Document.Database2.DeleteOneDocumentOperation} */
+    /** @see {@linkcode Document.Database.DeleteOneDocumentOperation} */
     type DeleteEmbeddedOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["DeleteEmbeddedOperation"];
 
-    /** @see {@linkcode Document.Database2.DeleteManyDocumentsOperation} */
+    /** @see {@linkcode Document.Database.DeleteManyDocumentsOperation} */
     type DeleteManyDocumentsOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["DeleteManyDocumentsOperation"];
 
-    /** @see {@linkcode Document.Database2.BackendDeleteOperation} */
+    /** @see {@linkcode Document.Database.BackendDeleteOperation} */
     type BackendDeleteOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["BackendDeleteOperation"];
 
-    /** @see {@linkcode Document.Database2.PreDeleteOptions} */
+    /** @see {@linkcode Document.Database.PreDeleteOptions} */
     type PreDeleteOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["PreDeleteOptions"];
 
-    /** @see {@linkcode Document.Database2.PreDeleteOperation} */
+    /** @see {@linkcode Document.Database.PreDeleteOperation} */
     type PreDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["PreDeleteOperation"];
 
-    /** @see {@linkcode Document.Database2.OnDeleteDocumentsOperation} */
+    /** @see {@linkcode Document.Database.OnDeleteDocumentsOperation} */
     type OnDeleteDocumentsOperationForName<DocName extends Document.Type> =
       Internal.Lookup<DocName>["OnDeleteDocumentsOperation"];
 
-    /** @see {@linkcode Document.Database2.OnDeleteOptions} */
+    /** @see {@linkcode Document.Database.OnDeleteOptions} */
     type OnDeleteOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnDeleteOptions"];
 
-    /** @see {@linkcode Document.Database2.OnDeleteOperation} */
+    /** @see {@linkcode Document.Database.OnDeleteOperation} */
     type OnDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnDeleteOperation"];
 
     namespace Internal {
       type Lookup<Name extends Document.Type, Temporary extends boolean | undefined = boolean | undefined> =
-        | (Name extends "ActiveEffect" ? ActiveEffect.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "ActorDelta" ? ActorDelta.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Actor" ? Actor.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Adventure" ? Adventure.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "AmbientLight" ? AmbientLightDocument.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "AmbientSound" ? AmbientSoundDocument.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Card" ? Card.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Cards" ? Cards.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "ChatMessage" ? ChatMessage.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Combat" ? Combat.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Combatant" ? Combatant.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "CombatantGroup" ? CombatantGroup.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Drawing" ? DrawingDocument.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "FogExploration" ? FogExploration.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Folder" ? Folder.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Item" ? Item.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "ActorDelta" ? ActorDelta.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Actor" ? Actor.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Adventure" ? Adventure.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "AmbientLight" ? AmbientLightDocument.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "AmbientSound" ? AmbientSoundDocument.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Card" ? Card.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Cards" ? Cards.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "ChatMessage" ? ChatMessage.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Combat" ? Combat.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Combatant" ? Combatant.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "CombatantGroup" ? CombatantGroup.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Drawing" ? DrawingDocument.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "FogExploration" ? FogExploration.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Folder" ? Folder.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Item" ? Item.Database.Internal.OperationNameMap<Temporary> : never)
         | (Name extends "JournalEntryCategory"
-            ? JournalEntryCategory.Database2.Internal.OperationNameMap<Temporary>
+            ? JournalEntryCategory.Database.Internal.OperationNameMap<Temporary>
             : never)
-        | (Name extends "JournalEntryPage" ? JournalEntryPage.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "JournalEntry" ? JournalEntry.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Macro" ? Macro.Database2.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "JournalEntryPage" ? JournalEntryPage.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "JournalEntry" ? JournalEntry.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Macro" ? Macro.Database.Internal.OperationNameMap<Temporary> : never)
         | (Name extends "MeasuredTemplate"
-            ? MeasuredTemplateDocument.Database2.Internal.OperationNameMap<Temporary>
+            ? MeasuredTemplateDocument.Database.Internal.OperationNameMap<Temporary>
             : never)
-        | (Name extends "Note" ? NoteDocument.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "PlaylistSound" ? PlaylistSound.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Playlist" ? Playlist.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "RegionBehavior" ? RegionBehavior.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Region" ? RegionDocument.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "RollTable" ? RollTable.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Scene" ? Scene.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Setting" ? Setting.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "TableResult" ? TableResult.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Tile" ? TileDocument.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Token" ? TokenDocument.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "User" ? User.Database2.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Wall" ? WallDocument.Database2.Internal.OperationNameMap<Temporary> : never);
+        | (Name extends "Note" ? NoteDocument.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "PlaylistSound" ? PlaylistSound.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Playlist" ? Playlist.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "RegionBehavior" ? RegionBehavior.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Region" ? RegionDocument.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "RollTable" ? RollTable.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Scene" ? Scene.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Setting" ? Setting.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "TableResult" ? TableResult.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Tile" ? TileDocument.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Token" ? TokenDocument.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "User" ? User.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "Wall" ? WallDocument.Database.Internal.OperationNameMap<Temporary> : never);
     }
 
     /* ***********************************************
@@ -2873,7 +2870,7 @@ declare namespace Document {
     type Operation = OperationAction;
 
     /**
-     * @deprecated This type has been replaced with document-specific interfaces, e.g {@linkcode Macro.Database2.GetDocumentsOperation}.
+     * @deprecated This type has been replaced with document-specific interfaces, e.g {@linkcode Macro.Database.GetDocumentsOperation}.
      * This type will be removed in v14.
      *
      * @see {@linkcode GetDocumentsOperation}
@@ -2960,7 +2957,7 @@ declare namespace Document {
 
   interface TestUserPermissionOptions extends _TestUserPermissionsOptions {}
 
-  type CanUserModifyData<Schema extends DataSchema, Action extends Document.Database2.OperationAction> =
+  type CanUserModifyData<Schema extends DataSchema, Action extends Document.Database.OperationAction> =
     | (Action extends "create" ? SchemaField.CreateData<Schema> : never)
     | (Action extends "update" ? SchemaField.UpdateData<Schema> : never)
     | (Action extends "delete" ? EmptyObject : never);
@@ -3097,7 +3094,7 @@ declare namespace Document {
 
   /**
    * Prior to v13, {@linkcode ClientDocumentMixin.AnyMixed.createDialog | ClientDocument.createDialog} took Dialog (V1) options in the same
-   * parameter as the {@linkcode Document.Database2.CreateDocumentsOperation | CreateDocumentsOperation}. In v13+, it still checks for a
+   * parameter as the {@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation}. In v13+, it still checks for a
    * subset of those options that are relevant to DialogV2 (and also `jQuery`, for some reason) and, if they exist, reorganizes them to
    * match V2 option format and adds them to the new `dialogOptions` object, which is a rest property on the new 3rd parameter.
    *
@@ -3249,7 +3246,7 @@ declare namespace Document {
         parent: Parent,
         collection: Embedded[DirectDescendant["documentName"]],
         data: Document.CreateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database2.PreCreateOptionsForName<DirectDescendant["documentName"]>,
+        options: Document.Database.PreCreateOptionsForName<DirectDescendant["documentName"]>,
         userId: string,
       ]
     : never;
@@ -3268,7 +3265,7 @@ declare namespace Document {
         collection: Embedded[DirectDescendant["documentName"]],
         documents: DirectDescendant[],
         data: Document.CreateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database2.OnCreateOptionsForName<DirectDescendant["documentName"]>,
+        options: Document.Database.OnCreateOptionsForName<DirectDescendant["documentName"]>,
         userId: string,
       ]
     : never;
@@ -3286,7 +3283,7 @@ declare namespace Document {
         parent: Parent,
         collection: Embedded[DirectDescendant["documentName"]],
         changes: Document.UpdateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database2.PreUpdateOptionsForName<DirectDescendant["documentName"]>,
+        options: Document.Database.PreUpdateOptionsForName<DirectDescendant["documentName"]>,
         userId: string,
       ]
     : never;
@@ -3305,7 +3302,7 @@ declare namespace Document {
         collection: Embedded[DirectDescendant["documentName"]],
         documents: DirectDescendant[],
         changes: Document.UpdateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database2.OnUpdateOptionsForName<DirectDescendant["documentName"]>,
+        options: Document.Database.OnUpdateOptionsForName<DirectDescendant["documentName"]>,
         userId: string,
       ]
     : never;
@@ -3323,7 +3320,7 @@ declare namespace Document {
         parent: Parent,
         collection: Embedded[DirectDescendant["documentName"]],
         ids: string[],
-        options: Document.Database2.PreDeleteOptionsForName<DirectDescendant["documentName"]>,
+        options: Document.Database.PreDeleteOptionsForName<DirectDescendant["documentName"]>,
         userId: string,
       ]
     : never;
@@ -3342,7 +3339,7 @@ declare namespace Document {
         collection: Embedded[DirectDescendant["documentName"]],
         documents: DirectDescendant[],
         ids: string[],
-        options: Document.Database2.OnDeleteOptionsForName<DirectDescendant["documentName"]>,
+        options: Document.Database.OnDeleteOptionsForName<DirectDescendant["documentName"]>,
         userId: string,
       ]
     : never;

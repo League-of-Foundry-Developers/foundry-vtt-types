@@ -184,19 +184,19 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   override createEmbeddedDocuments<EmbeddedName extends BaseActor.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.CreateDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseActor.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.UpdateManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseActor.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: string[],
-    operation?: Document.Database2.DeleteManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseActor.Flags.Scope, Key extends BaseActor.Flags.Key<Scope>>(
@@ -345,7 +345,7 @@ declare namespace BaseActor {
   export import UpdateData = Actor.UpdateData;
   export import UpdateInput = Actor.UpdateInput;
   export import Schema = Actor.Schema;
-  export import Database2 = Actor.Database2;
+  export import Database2 = Actor.Database;
   export import TemporaryIf = Actor.TemporaryIf;
   export import Flags = Actor.Flags;
   export import GetDefaultArtworkReturn = Actor.GetDefaultArtworkReturn;

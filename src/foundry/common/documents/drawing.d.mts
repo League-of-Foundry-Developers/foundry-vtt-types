@@ -307,7 +307,7 @@ declare namespace BaseDrawing {
   export import UpdateData = DrawingDocument.UpdateData;
   export import UpdateInput = DrawingDocument.UpdateInput;
   export import Schema = DrawingDocument.Schema;
-  export import Database2 = DrawingDocument.Database2;
+  export import Database2 = DrawingDocument.Database;
   export import TemporaryIf = DrawingDocument.TemporaryIf;
   export import Flags = DrawingDocument.Flags;
 

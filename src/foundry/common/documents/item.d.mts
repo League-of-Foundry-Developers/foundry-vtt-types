@@ -167,19 +167,19 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   override createEmbeddedDocuments<EmbeddedName extends BaseItem.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.CreateDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseItem.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.UpdateManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseItem.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: string[],
-    operation?: Document.Database2.DeleteManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseItem.Flags.Scope, Key extends BaseItem.Flags.Key<Scope>>(
@@ -340,7 +340,7 @@ declare namespace BaseItem {
   export import UpdateData = Item.UpdateData;
   export import UpdateInput = Item.UpdateInput;
   export import Schema = Item.Schema;
-  export import Database2 = Item.Database2;
+  export import Database2 = Item.Database;
   export import TemporaryIf = Item.TemporaryIf;
   export import Flags = Item.Flags;
   export import GetDefaultArtworkReturn = Item.GetDefaultArtworkReturn;

@@ -154,7 +154,7 @@ declare namespace FogExploration {
 
   /**
    * Used in the {@linkcode FogExploration.create} and {@linkcode FogExploration.createDocuments} signatures, and
-   * {@linkcode FogExploration.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode FogExploration.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -189,7 +189,7 @@ declare namespace FogExploration {
 
   /**
    * Used in the {@linkcode FogExploration.update | FogExploration#update} and
-   * {@linkcode FogExploration.updateDocuments} signatures, and {@linkcode FogExploration.Database2.UpdateOperation}
+   * {@linkcode FogExploration.updateDocuments} signatures, and {@linkcode FogExploration.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -250,7 +250,7 @@ declare namespace FogExploration {
     _stats: fields.DocumentStatsField;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -266,15 +266,15 @@ declare namespace FogExploration {
 
     /**
      * The interface for passing to {@linkcode FogExploration.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `FogExploration` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -295,7 +295,7 @@ declare namespace FogExploration {
 
     /**
      * The interface for passing to {@linkcode FogExploration.create} or {@linkcode FogExploration.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -306,14 +306,14 @@ declare namespace FogExploration {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `FogExploration` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `FogExploration` documents. (see {@linkcode FogExploration.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -323,11 +323,11 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `FogExploration` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -338,12 +338,12 @@ declare namespace FogExploration {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._preCreate | FogExploration#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateFogExploration` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -353,12 +353,12 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -368,13 +368,13 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode FogExploration._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -385,12 +385,12 @@ declare namespace FogExploration {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._onCreate | FogExploration#_onCreate} and
      * {@link Hooks.CreateDocument | the `createFogExploration` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -400,12 +400,12 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._onCreateOperation} and `FogExploration`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -415,7 +415,7 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -437,7 +437,7 @@ declare namespace FogExploration {
 
     /**
      * The interface for passing to {@linkcode FogExploration.update | FogExploration#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -447,7 +447,7 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * @deprecated `FogExploration` documents are never embedded. This interface exists for consistency with other documents.
@@ -468,7 +468,7 @@ declare namespace FogExploration {
 
     /**
      * The interface for passing to {@linkcode FogExploration.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -478,11 +478,11 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `FogExploration` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -492,12 +492,12 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._preUpdate | FogExploration#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateFogExploration` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -507,11 +507,11 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -521,12 +521,12 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode FogExploration._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -536,12 +536,12 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._onUpdate | FogExploration#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateFogExploration` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -551,12 +551,12 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._onUpdateOperation} and `FogExploration`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -566,7 +566,7 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -585,7 +585,7 @@ declare namespace FogExploration {
 
     /**
      * The interface for passing to {@linkcode FogExploration.delete | FogExploration#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -595,7 +595,7 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * @deprecated `FogExploration` documents are never embedded. This interface exists for consistency with other documents.
@@ -616,7 +616,7 @@ declare namespace FogExploration {
 
     /**
      * The interface for passing to {@linkcode FogExploration.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -626,11 +626,11 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `FogExploration` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -640,12 +640,12 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._preDelete | FogExploration#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteFogExploration` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -655,11 +655,11 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -669,12 +669,12 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode FogExploration._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -684,12 +684,12 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._onDelete | FogExploration#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteFogExploration` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -699,12 +699,12 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode FogExploration._onDeleteOperation} and `FogExploration`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -714,51 +714,51 @@ declare namespace FogExploration {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: FogExploration.Database2.GetDocumentsOperation;
-        BackendGetOperation: FogExploration.Database2.BackendGetOperation;
-        GetOperation: FogExploration.Database2.GetOperation;
+        GetDocumentsOperation: FogExploration.Database.GetDocumentsOperation;
+        BackendGetOperation: FogExploration.Database.BackendGetOperation;
+        GetOperation: FogExploration.Database.GetOperation;
 
-        CreateDocumentsOperation: FogExploration.Database2.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: FogExploration.Database.CreateDocumentsOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: FogExploration.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: FogExploration.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: FogExploration.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: FogExploration.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: FogExploration.Database2.PreCreateOperation<Temporary>;
+        CreateEmbeddedOperation: FogExploration.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: FogExploration.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: FogExploration.Database.CreateOperation<Temporary>;
+        PreCreateOptions: FogExploration.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: FogExploration.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: FogExploration.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: FogExploration.Database2.OnCreateOptions;
-        OnCreateOperation: FogExploration.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: FogExploration.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: FogExploration.Database.OnCreateOptions;
+        OnCreateOperation: FogExploration.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: FogExploration.Database2.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: FogExploration.Database.UpdateOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: FogExploration.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: FogExploration.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: FogExploration.Database2.BackendUpdateOperation;
-        UpdateOperation: FogExploration.Database2.UpdateOperation;
-        PreUpdateOptions: FogExploration.Database2.PreUpdateOptions;
-        PreUpdateOperation: FogExploration.Database2.PreUpdateOperation;
+        UpdateEmbeddedOperation: FogExploration.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: FogExploration.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: FogExploration.Database.BackendUpdateOperation;
+        UpdateOperation: FogExploration.Database.UpdateOperation;
+        PreUpdateOptions: FogExploration.Database.PreUpdateOptions;
+        PreUpdateOperation: FogExploration.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: FogExploration.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: FogExploration.Database2.OnUpdateOptions;
-        OnUpdateOperation: FogExploration.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: FogExploration.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: FogExploration.Database.OnUpdateOptions;
+        OnUpdateOperation: FogExploration.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: FogExploration.Database2.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: FogExploration.Database.DeleteOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: FogExploration.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: FogExploration.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: FogExploration.Database2.BackendDeleteOperation;
-        DeleteOperation: FogExploration.Database2.DeleteOperation;
-        PreDeleteOptions: FogExploration.Database2.PreDeleteOptions;
-        PreDeleteOperation: FogExploration.Database2.PreDeleteOperation;
+        DeleteEmbeddedOperation: FogExploration.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: FogExploration.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: FogExploration.Database.BackendDeleteOperation;
+        DeleteOperation: FogExploration.Database.DeleteOperation;
+        PreDeleteOptions: FogExploration.Database.PreDeleteOptions;
+        PreDeleteOperation: FogExploration.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: FogExploration.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: FogExploration.Database2.OnDeleteOptions;
-        OnDeleteOperation: FogExploration.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: FogExploration.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: FogExploration.Database.OnDeleteOptions;
+        OnDeleteOperation: FogExploration.Database.OnDeleteOperation;
       }
     }
 
@@ -894,10 +894,10 @@ declare namespace FogExploration {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode FogExploration.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode FogExploration.createDialog}'s third parameter
@@ -948,7 +948,7 @@ declare namespace FogExploration {
    * @remarks {@link FogExploration.load | `FogExploration#load`} takes the `query` property separately as its first argument, then merges that
    * with this interface via `{query, ...options}` before passing to {@link ClientDatabaseBackend.get | `this.database.get`}
    */
-  interface LoadOptions extends Omit<FogExploration.Database2.GetDocumentsOperation, "query"> {}
+  interface LoadOptions extends Omit<FogExploration.Database.GetDocumentsOperation, "query"> {}
 
   /**
    * The arguments to construct the document.
@@ -990,7 +990,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
 
   static override get(
     documentId: string,
-    options?: FogExploration.Database2.GetDocumentsOperation,
+    options?: FogExploration.Database.GetDocumentsOperation,
   ): FogExploration.Stored | null;
 
   /**
@@ -1023,7 +1023,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
     Options extends FogExploration.CreateDialogOptions | undefined = undefined,
   >(
     data?: FogExploration.CreateDialogData,
-    createOptions?: FogExploration.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: FogExploration.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<FogExploration.CreateDialogReturn<Temporary, Options>>;
 
@@ -1045,7 +1045,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: FogExploration.Database2.DeleteOneDocumentOperation,
+    operation?: FogExploration.Database.DeleteOneDocumentOperation,
   ): Promise<FogExploration.DeleteDialogReturn<Options>>;
 
   /**
@@ -1057,7 +1057,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: FogExploration.Database2.DeleteOneDocumentOperation,
+    operation?: FogExploration.Database.DeleteOneDocumentOperation,
   ): Promise<FogExploration.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: FogExploration.DropData): Promise<FogExploration.Implementation | undefined>;

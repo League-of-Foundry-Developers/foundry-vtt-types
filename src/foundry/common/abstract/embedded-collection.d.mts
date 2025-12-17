@@ -192,7 +192,7 @@ declare class EmbeddedCollection<
    * @param user      - The User who performed the operation
    * @internal
    */
-  _onModifyContents<Action extends Document.Database2.OperationAction>(
+  _onModifyContents<Action extends Document.Database.OperationAction>(
     action: Action,
     documents: Document.StoredForName<ContainedDocument["documentName"]>[],
     result: Collection.OnModifyContentsResult<ContainedDocument["documentName"], Action>,

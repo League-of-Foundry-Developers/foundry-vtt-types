@@ -199,7 +199,7 @@ declare namespace Folder {
 
   /**
    * Used in the {@linkcode Folder.create} and {@linkcode Folder.createDocuments} signatures, and
-   * {@linkcode Folder.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode Folder.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -232,7 +232,7 @@ declare namespace Folder {
 
   /**
    * Used in the {@linkcode Folder.update | Folder#update} and
-   * {@linkcode Folder.updateDocuments} signatures, and {@linkcode Folder.Database2.UpdateOperation}
+   * {@linkcode Folder.updateDocuments} signatures, and {@linkcode Folder.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -303,7 +303,7 @@ declare namespace Folder {
     _stats: fields.DocumentStatsField;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -319,15 +319,15 @@ declare namespace Folder {
 
     /**
      * The interface for passing to {@linkcode Folder.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Folder` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -348,7 +348,7 @@ declare namespace Folder {
 
     /**
      * The interface for passing to {@linkcode Folder.create} or {@linkcode Folder.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -359,14 +359,14 @@ declare namespace Folder {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `Folder` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `Folder` documents. (see {@linkcode Folder.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -376,11 +376,11 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Folder` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -391,12 +391,12 @@ declare namespace Folder {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Folder._preCreate | Folder#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateFolder` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -406,12 +406,12 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Folder._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -421,13 +421,13 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Folder._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -438,12 +438,12 @@ declare namespace Folder {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Folder._onCreate | Folder#_onCreate} and
      * {@link Hooks.CreateDocument | the `createFolder` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -453,12 +453,12 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Folder._onCreateOperation} and `Folder`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -468,7 +468,7 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -487,7 +487,7 @@ declare namespace Folder {
 
     /**
      * The interface for passing to {@linkcode Folder.update | Folder#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -497,7 +497,7 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * @deprecated `Folder` documents are never embedded. This interface exists for consistency with other documents.
@@ -518,7 +518,7 @@ declare namespace Folder {
 
     /**
      * The interface for passing to {@linkcode Folder.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -528,11 +528,11 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Folder` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -542,12 +542,12 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Folder._preUpdate | Folder#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateFolder` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -557,11 +557,11 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Folder._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -571,12 +571,12 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Folder._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -586,12 +586,12 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Folder._onUpdate | Folder#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateFolder` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -601,12 +601,12 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Folder._onUpdateOperation} and `Folder`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -616,7 +616,7 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -635,7 +635,7 @@ declare namespace Folder {
 
     /**
      * The interface for passing to {@linkcode Folder.delete | Folder#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -645,7 +645,7 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * @deprecated `Folder` documents are never embedded. This interface exists for consistency with other documents.
@@ -666,7 +666,7 @@ declare namespace Folder {
 
     /**
      * The interface for passing to {@linkcode Folder.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -676,11 +676,11 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Folder` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -690,12 +690,12 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Folder._preDelete | Folder#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteFolder` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -705,11 +705,11 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Folder._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -719,12 +719,12 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Folder._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -734,12 +734,12 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Folder._onDelete | Folder#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteFolder` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -749,12 +749,12 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Folder._onDeleteOperation} and `Folder`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -764,51 +764,51 @@ declare namespace Folder {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: Folder.Database2.GetDocumentsOperation;
-        BackendGetOperation: Folder.Database2.BackendGetOperation;
-        GetOperation: Folder.Database2.GetOperation;
+        GetDocumentsOperation: Folder.Database.GetDocumentsOperation;
+        BackendGetOperation: Folder.Database.BackendGetOperation;
+        GetOperation: Folder.Database.GetOperation;
 
-        CreateDocumentsOperation: Folder.Database2.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: Folder.Database.CreateDocumentsOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: Folder.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: Folder.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: Folder.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: Folder.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: Folder.Database2.PreCreateOperation<Temporary>;
+        CreateEmbeddedOperation: Folder.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: Folder.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: Folder.Database.CreateOperation<Temporary>;
+        PreCreateOptions: Folder.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: Folder.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Folder.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: Folder.Database2.OnCreateOptions;
-        OnCreateOperation: Folder.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: Folder.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: Folder.Database.OnCreateOptions;
+        OnCreateOperation: Folder.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: Folder.Database2.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: Folder.Database.UpdateOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: Folder.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: Folder.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: Folder.Database2.BackendUpdateOperation;
-        UpdateOperation: Folder.Database2.UpdateOperation;
-        PreUpdateOptions: Folder.Database2.PreUpdateOptions;
-        PreUpdateOperation: Folder.Database2.PreUpdateOperation;
+        UpdateEmbeddedOperation: Folder.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Folder.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Folder.Database.BackendUpdateOperation;
+        UpdateOperation: Folder.Database.UpdateOperation;
+        PreUpdateOptions: Folder.Database.PreUpdateOptions;
+        PreUpdateOperation: Folder.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: Folder.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: Folder.Database2.OnUpdateOptions;
-        OnUpdateOperation: Folder.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: Folder.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: Folder.Database.OnUpdateOptions;
+        OnUpdateOperation: Folder.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: Folder.Database2.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: Folder.Database.DeleteOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: Folder.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: Folder.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: Folder.Database2.BackendDeleteOperation;
-        DeleteOperation: Folder.Database2.DeleteOperation;
-        PreDeleteOptions: Folder.Database2.PreDeleteOptions;
-        PreDeleteOperation: Folder.Database2.PreDeleteOperation;
+        DeleteEmbeddedOperation: Folder.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Folder.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Folder.Database.BackendDeleteOperation;
+        DeleteOperation: Folder.Database.DeleteOperation;
+        PreDeleteOptions: Folder.Database.PreDeleteOptions;
+        PreDeleteOperation: Folder.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: Folder.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: Folder.Database2.OnDeleteOptions;
-        OnDeleteOperation: Folder.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: Folder.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: Folder.Database.OnDeleteOptions;
+        OnDeleteOperation: Folder.Database.OnDeleteOperation;
       }
     }
 
@@ -948,10 +948,10 @@ declare namespace Folder {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode Folder.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode Folder.createDialog}'s third parameter
@@ -1167,7 +1167,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
     Options extends Folder.CreateDialogOptions | undefined = undefined,
   >(
     data?: Folder.CreateDialogData,
-    createOptions?: Folder.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: Folder.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<void>;
 
@@ -1192,7 +1192,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: Folder.Database2.DeleteOneDocumentOperation,
+    operation?: Folder.Database.DeleteOneDocumentOperation,
   ): Promise<Folder.DeleteDialogReturn<Options>>;
 
   /**
@@ -1204,7 +1204,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: Folder.Database2.DeleteOneDocumentOperation,
+    operation?: Folder.Database.DeleteOneDocumentOperation,
   ): Promise<Folder.DeleteDialogReturn<Options>>;
 
   /**

@@ -8,26 +8,26 @@ import type { Game } from "#client/_module.d.mts";
 declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
   protected override _getDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
-    request: Document.Database2.GetOperationForName<DocClass["documentName"]>,
+    request: Document.Database.GetOperationForName<DocClass["documentName"]>,
     user: User.Implementation,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   // TODO: possible improvements around Stored types and inferring type data
   protected override _createDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
-    operation: Document.Database2.CreateOperationForName<DocClass["documentName"]>,
+    operation: Document.Database.CreateOperationForName<DocClass["documentName"]>,
     user: User.Implementation,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   protected override _updateDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
-    request: Document.Database2.UpdateOperationForName<DocClass["documentName"]>,
+    request: Document.Database.UpdateOperationForName<DocClass["documentName"]>,
     user: User.Implementation,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   protected override _deleteDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
-    request: Document.Database2.DeleteOperationForName<DocClass["documentName"]>,
+    request: Document.Database.DeleteOperationForName<DocClass["documentName"]>,
     user: User.Implementation,
   ): Promise<FixedInstanceType<DocClass>[]>;
 

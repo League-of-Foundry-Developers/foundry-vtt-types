@@ -285,7 +285,7 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
    * @param data - The object data
    * @throws An error if any of the objects in the `data` array lack an `_id` key
    */
-  storeHistory<Operation extends Document.Database2.OperationAction>(
+  storeHistory<Operation extends Document.Database.OperationAction>(
     type: Operation,
     data: PlaceablesLayer.HistoryDataFor<Operation, DocumentName>,
   ): void;
@@ -338,7 +338,7 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
   updateAll(
     transformation: PlaceablesLayer.UpdateAllTransformation<DocumentName>,
     condition?: PlaceablesLayer.UpdateAllCondition<DocumentName> | null,
-    options?: Document.Database2.UpdateManyDocumentsOperationForName<DocumentName>,
+    options?: Document.Database.UpdateManyDocumentsOperationForName<DocumentName>,
   ): Promise<Array<Document.ImplementationFor<DocumentName>>>;
 
   /**
@@ -552,7 +552,7 @@ declare namespace PlaceablesLayer {
   interface MoveManyOptions extends _MoveManyOptions {}
 
   /** @privateRemarks Handled like this rather than an interface mapping to avoid extraneous type calculation */
-  type HistoryDataFor<Action extends Document.Database2.OperationAction, DocumentName extends DocumentNames> =
+  type HistoryDataFor<Action extends Document.Database.OperationAction, DocumentName extends DocumentNames> =
     | (Action extends "create" ? { _id: string } : never)
     | (Action extends "update" ? Document.UpdateDataForName<DocumentName> & { _id: string } : never)
     | (Action extends "delete" ? Document.CreateDataForName<DocumentName> & { _id: string } : never);
@@ -655,9 +655,9 @@ declare namespace PlaceablesLayer {
     placeable: Document.ObjectFor<DocumentName>,
   ) => boolean;
 
-  /** @deprecated Use {@linkcode Document.Database2.UpdateManyDocumentsOperationForName} directly. This type will be removed in v14. */
+  /** @deprecated Use {@linkcode Document.Database.UpdateManyDocumentsOperationForName} directly. This type will be removed in v14. */
   type UpdateAllOptions<DocumentName extends DocumentNames> =
-    Document.Database2.UpdateManyDocumentsOperationForName<DocumentName>;
+    Document.Database.UpdateManyDocumentsOperationForName<DocumentName>;
 
   /** @internal */
   type _CanvasCoordinatesFromDropOptions = NullishProps<{

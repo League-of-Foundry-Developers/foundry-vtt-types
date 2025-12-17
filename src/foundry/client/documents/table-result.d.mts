@@ -202,7 +202,7 @@ declare namespace TableResult {
 
   /**
    * Used in the {@linkcode TableResult.create} and {@linkcode TableResult.createDocuments} signatures, and
-   * {@linkcode TableResult.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode TableResult.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -237,7 +237,7 @@ declare namespace TableResult {
 
   /**
    * Used in the {@linkcode TableResult.update | TableResult#update} and
-   * {@linkcode TableResult.updateDocuments} signatures, and {@linkcode TableResult.Database2.UpdateOperation}
+   * {@linkcode TableResult.updateDocuments} signatures, and {@linkcode TableResult.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -332,7 +332,7 @@ declare namespace TableResult {
     _stats: fields.DocumentStatsField;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -348,15 +348,15 @@ declare namespace TableResult {
 
     /**
      * The interface for passing to {@linkcode TableResult.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `TableResult` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -377,7 +377,7 @@ declare namespace TableResult {
 
     /**
      * The interface for passing to {@linkcode TableResult.create} or {@linkcode TableResult.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -388,12 +388,12 @@ declare namespace TableResult {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `TableResult` documents. (see {@linkcode TableResult.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -403,11 +403,11 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `TableResult` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -418,12 +418,12 @@ declare namespace TableResult {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode TableResult._preCreate | TableResult#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateTableResult` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -433,12 +433,12 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode TableResult._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -448,13 +448,13 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode TableResult._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -465,12 +465,12 @@ declare namespace TableResult {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode TableResult._onCreate | TableResult#_onCreate} and
      * {@link Hooks.CreateDocument | the `createTableResult` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -480,12 +480,12 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode TableResult._onCreateOperation} and `TableResult`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -495,7 +495,7 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -514,7 +514,7 @@ declare namespace TableResult {
 
     /**
      * The interface for passing to {@linkcode TableResult.update | TableResult#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -524,7 +524,7 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
@@ -543,7 +543,7 @@ declare namespace TableResult {
 
     /**
      * The interface for passing to {@linkcode TableResult.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -553,11 +553,11 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `TableResult` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -567,12 +567,12 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode TableResult._preUpdate | TableResult#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateTableResult` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -582,11 +582,11 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode TableResult._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -596,12 +596,12 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode TableResult._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -611,12 +611,12 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode TableResult._onUpdate | TableResult#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateTableResult` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -626,12 +626,12 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode TableResult._onUpdateOperation} and `TableResult`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -641,7 +641,7 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -660,7 +660,7 @@ declare namespace TableResult {
 
     /**
      * The interface for passing to {@linkcode TableResult.delete | TableResult#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -670,7 +670,7 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
@@ -689,7 +689,7 @@ declare namespace TableResult {
 
     /**
      * The interface for passing to {@linkcode TableResult.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -699,11 +699,11 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `TableResult` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -713,12 +713,12 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode TableResult._preDelete | TableResult#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteTableResult` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -728,11 +728,11 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode TableResult._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -742,12 +742,12 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode TableResult._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -757,12 +757,12 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode TableResult._onDelete | TableResult#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteTableResult` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -772,12 +772,12 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode TableResult._onDeleteOperation} and `TableResult`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -787,48 +787,48 @@ declare namespace TableResult {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: TableResult.Database2.GetDocumentsOperation;
-        BackendGetOperation: TableResult.Database2.BackendGetOperation;
-        GetOperation: TableResult.Database2.GetOperation;
+        GetDocumentsOperation: TableResult.Database.GetDocumentsOperation;
+        BackendGetOperation: TableResult.Database.BackendGetOperation;
+        GetOperation: TableResult.Database.GetOperation;
 
-        CreateDocumentsOperation: TableResult.Database2.CreateDocumentsOperation<Temporary>;
-        CreateEmbeddedOperation: TableResult.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: TableResult.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: TableResult.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: TableResult.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: TableResult.Database2.PreCreateOperation<Temporary>;
+        CreateDocumentsOperation: TableResult.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: TableResult.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: TableResult.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: TableResult.Database.CreateOperation<Temporary>;
+        PreCreateOptions: TableResult.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: TableResult.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: TableResult.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: TableResult.Database2.OnCreateOptions;
-        OnCreateOperation: TableResult.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: TableResult.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: TableResult.Database.OnCreateOptions;
+        OnCreateOperation: TableResult.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: TableResult.Database2.UpdateOneDocumentOperation;
-        UpdateEmbeddedOperation: TableResult.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: TableResult.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: TableResult.Database2.BackendUpdateOperation;
-        UpdateOperation: TableResult.Database2.UpdateOperation;
-        PreUpdateOptions: TableResult.Database2.PreUpdateOptions;
-        PreUpdateOperation: TableResult.Database2.PreUpdateOperation;
+        UpdateOneDocumentOperation: TableResult.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: TableResult.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: TableResult.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: TableResult.Database.BackendUpdateOperation;
+        UpdateOperation: TableResult.Database.UpdateOperation;
+        PreUpdateOptions: TableResult.Database.PreUpdateOptions;
+        PreUpdateOperation: TableResult.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: TableResult.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: TableResult.Database2.OnUpdateOptions;
-        OnUpdateOperation: TableResult.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: TableResult.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: TableResult.Database.OnUpdateOptions;
+        OnUpdateOperation: TableResult.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: TableResult.Database2.DeleteOneDocumentOperation;
-        DeleteEmbeddedOperation: TableResult.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: TableResult.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: TableResult.Database2.BackendDeleteOperation;
-        DeleteOperation: TableResult.Database2.DeleteOperation;
-        PreDeleteOptions: TableResult.Database2.PreDeleteOptions;
-        PreDeleteOperation: TableResult.Database2.PreDeleteOperation;
+        DeleteOneDocumentOperation: TableResult.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: TableResult.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: TableResult.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: TableResult.Database.BackendDeleteOperation;
+        DeleteOperation: TableResult.Database.DeleteOperation;
+        PreDeleteOptions: TableResult.Database.PreDeleteOptions;
+        PreDeleteOperation: TableResult.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: TableResult.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: TableResult.Database2.OnDeleteOptions;
-        OnDeleteOperation: TableResult.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: TableResult.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: TableResult.Database.OnDeleteOptions;
+        OnDeleteOperation: TableResult.Database.OnDeleteOperation;
       }
     }
 
@@ -964,10 +964,10 @@ declare namespace TableResult {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode TableResult.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode TableResult.createDialog}'s third parameter
@@ -1070,7 +1070,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
     Options extends TableResult.CreateDialogOptions | undefined = undefined,
   >(
     data?: TableResult.CreateDialogData,
-    createOptions?: TableResult.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: TableResult.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<TableResult.CreateDialogReturn<Temporary, Options>>;
 
@@ -1092,7 +1092,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: TableResult.Database2.DeleteOneDocumentOperation,
+    operation?: TableResult.Database.DeleteOneDocumentOperation,
   ): Promise<TableResult.DeleteDialogReturn<Options>>;
 
   /**
@@ -1104,7 +1104,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: TableResult.Database2.DeleteOneDocumentOperation,
+    operation?: TableResult.Database.DeleteOneDocumentOperation,
   ): Promise<TableResult.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: TableResult.DropData): Promise<TableResult.Implementation | undefined>;

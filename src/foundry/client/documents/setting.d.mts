@@ -153,7 +153,7 @@ declare namespace Setting {
 
   /**
    * Used in the {@linkcode Setting.create} and {@linkcode Setting.createDocuments} signatures, and
-   * {@linkcode Setting.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode Setting.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -188,7 +188,7 @@ declare namespace Setting {
 
   /**
    * Used in the {@linkcode Setting.update | Setting#update} and
-   * {@linkcode Setting.updateDocuments} signatures, and {@linkcode Setting.Database2.UpdateOperation}
+   * {@linkcode Setting.updateDocuments} signatures, and {@linkcode Setting.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -252,7 +252,7 @@ declare namespace Setting {
     _stats: fields.DocumentStatsField;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -268,15 +268,15 @@ declare namespace Setting {
 
     /**
      * The interface for passing to {@linkcode Setting.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Setting` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -297,7 +297,7 @@ declare namespace Setting {
 
     /**
      * The interface for passing to {@linkcode Setting.create} or {@linkcode Setting.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -308,14 +308,14 @@ declare namespace Setting {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `Setting` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `Setting` documents. (see {@linkcode Setting.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -325,11 +325,11 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Setting` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -340,12 +340,12 @@ declare namespace Setting {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Setting._preCreate | Setting#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateSetting` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -355,12 +355,12 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Setting._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -370,13 +370,13 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Setting._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -387,12 +387,12 @@ declare namespace Setting {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode Setting._onCreate | Setting#_onCreate} and
      * {@link Hooks.CreateDocument | the `createSetting` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -402,12 +402,12 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode Setting._onCreateOperation} and `Setting`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -417,7 +417,7 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -436,7 +436,7 @@ declare namespace Setting {
 
     /**
      * The interface for passing to {@linkcode Setting.update | Setting#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -446,7 +446,7 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * @deprecated `Setting` documents are never embedded. This interface exists for consistency with other documents.
@@ -467,7 +467,7 @@ declare namespace Setting {
 
     /**
      * The interface for passing to {@linkcode Setting.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -477,11 +477,11 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Setting` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -491,12 +491,12 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Setting._preUpdate | Setting#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateSetting` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -506,11 +506,11 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Setting._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -520,12 +520,12 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Setting._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -535,12 +535,12 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Setting._onUpdate | Setting#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateSetting` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -550,12 +550,12 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Setting._onUpdateOperation} and `Setting`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -565,7 +565,7 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -584,7 +584,7 @@ declare namespace Setting {
 
     /**
      * The interface for passing to {@linkcode Setting.delete | Setting#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -594,7 +594,7 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * @deprecated `Setting` documents are never embedded. This interface exists for consistency with other documents.
@@ -615,7 +615,7 @@ declare namespace Setting {
 
     /**
      * The interface for passing to {@linkcode Setting.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -625,11 +625,11 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Setting` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -639,12 +639,12 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Setting._preDelete | Setting#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteSetting` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -654,11 +654,11 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Setting._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -668,12 +668,12 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode Setting._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -683,12 +683,12 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Setting._onDelete | Setting#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteSetting` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -698,12 +698,12 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode Setting._onDeleteOperation} and `Setting`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -713,51 +713,51 @@ declare namespace Setting {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: Setting.Database2.GetDocumentsOperation;
-        BackendGetOperation: Setting.Database2.BackendGetOperation;
-        GetOperation: Setting.Database2.GetOperation;
+        GetDocumentsOperation: Setting.Database.GetDocumentsOperation;
+        BackendGetOperation: Setting.Database.BackendGetOperation;
+        GetOperation: Setting.Database.GetOperation;
 
-        CreateDocumentsOperation: Setting.Database2.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: Setting.Database.CreateDocumentsOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: Setting.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: Setting.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: Setting.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: Setting.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: Setting.Database2.PreCreateOperation<Temporary>;
+        CreateEmbeddedOperation: Setting.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: Setting.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: Setting.Database.CreateOperation<Temporary>;
+        PreCreateOptions: Setting.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: Setting.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Setting.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: Setting.Database2.OnCreateOptions;
-        OnCreateOperation: Setting.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: Setting.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: Setting.Database.OnCreateOptions;
+        OnCreateOperation: Setting.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: Setting.Database2.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: Setting.Database.UpdateOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: Setting.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: Setting.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: Setting.Database2.BackendUpdateOperation;
-        UpdateOperation: Setting.Database2.UpdateOperation;
-        PreUpdateOptions: Setting.Database2.PreUpdateOptions;
-        PreUpdateOperation: Setting.Database2.PreUpdateOperation;
+        UpdateEmbeddedOperation: Setting.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: Setting.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: Setting.Database.BackendUpdateOperation;
+        UpdateOperation: Setting.Database.UpdateOperation;
+        PreUpdateOptions: Setting.Database.PreUpdateOptions;
+        PreUpdateOperation: Setting.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: Setting.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: Setting.Database2.OnUpdateOptions;
-        OnUpdateOperation: Setting.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: Setting.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: Setting.Database.OnUpdateOptions;
+        OnUpdateOperation: Setting.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: Setting.Database2.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: Setting.Database.DeleteOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: Setting.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: Setting.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: Setting.Database2.BackendDeleteOperation;
-        DeleteOperation: Setting.Database2.DeleteOperation;
-        PreDeleteOptions: Setting.Database2.PreDeleteOptions;
-        PreDeleteOperation: Setting.Database2.PreDeleteOperation;
+        DeleteEmbeddedOperation: Setting.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: Setting.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: Setting.Database.BackendDeleteOperation;
+        DeleteOperation: Setting.Database.DeleteOperation;
+        PreDeleteOptions: Setting.Database.PreDeleteOptions;
+        PreDeleteOperation: Setting.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: Setting.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: Setting.Database2.OnDeleteOptions;
-        OnDeleteOperation: Setting.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: Setting.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: Setting.Database.OnDeleteOptions;
+        OnDeleteOperation: Setting.Database.OnDeleteOperation;
       }
     }
 
@@ -901,10 +901,10 @@ declare namespace Setting {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode Setting.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode Setting.createDialog}'s third parameter
@@ -991,7 +991,7 @@ declare class Setting extends BaseSetting.Internal.ClientDocument {
     Options extends Setting.CreateDialogOptions | undefined = undefined,
   >(
     data?: Setting.CreateDialogData,
-    createOptions?: Setting.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: Setting.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<Setting.CreateDialogReturn<Temporary, Options>>;
 
@@ -1013,7 +1013,7 @@ declare class Setting extends BaseSetting.Internal.ClientDocument {
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: Setting.Database2.DeleteOneDocumentOperation,
+    operation?: Setting.Database.DeleteOneDocumentOperation,
   ): Promise<Setting.DeleteDialogReturn<Options>>;
 
   /**
@@ -1025,7 +1025,7 @@ declare class Setting extends BaseSetting.Internal.ClientDocument {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: Setting.Database2.DeleteOneDocumentOperation,
+    operation?: Setting.Database.DeleteOneDocumentOperation,
   ): Promise<Setting.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: Setting.DropData): Promise<Setting.Implementation | undefined>;

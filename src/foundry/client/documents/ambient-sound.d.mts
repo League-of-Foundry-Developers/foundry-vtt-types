@@ -143,7 +143,7 @@ declare namespace AmbientSoundDocument {
 
   /**
    * Used in the {@linkcode AmbientSoundDocument.create} and {@linkcode AmbientSoundDocument.createDocuments} signatures, and
-   * {@linkcode AmbientSoundDocument.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode AmbientSoundDocument.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -178,7 +178,7 @@ declare namespace AmbientSoundDocument {
 
   /**
    * Used in the {@linkcode AmbientSoundDocument.update | AmbientSoundDocument#update} and
-   * {@linkcode AmbientSoundDocument.updateDocuments} signatures, and {@linkcode AmbientSoundDocument.Database2.UpdateOperation}
+   * {@linkcode AmbientSoundDocument.updateDocuments} signatures, and {@linkcode AmbientSoundDocument.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -315,7 +315,7 @@ declare namespace AmbientSoundDocument {
     intensity: fields.NumberField<{ required: true; integer: true; initial: 5; min: 1; max: 10 }>;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -331,15 +331,15 @@ declare namespace AmbientSoundDocument {
 
     /**
      * The interface for passing to {@linkcode AmbientSoundDocument.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `AmbientSoundDocument` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -364,7 +364,7 @@ declare namespace AmbientSoundDocument {
 
     /**
      * The interface for passing to {@linkcode AmbientSoundDocument.create} or {@linkcode AmbientSoundDocument.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -375,12 +375,12 @@ declare namespace AmbientSoundDocument {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `AmbientSoundDocument` documents. (see {@linkcode AmbientSoundDocument.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -390,11 +390,11 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `AmbientSoundDocument` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -405,12 +405,12 @@ declare namespace AmbientSoundDocument {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._preCreate | AmbientSoundDocument#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateAmbientSoundDocument` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -420,12 +420,12 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -435,13 +435,13 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode AmbientSoundDocument._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -452,12 +452,12 @@ declare namespace AmbientSoundDocument {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._onCreate | AmbientSoundDocument#_onCreate} and
      * {@link Hooks.CreateDocument | the `createAmbientSoundDocument` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -467,12 +467,12 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._onCreateOperation} and `AmbientSoundDocument`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -482,7 +482,7 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -504,7 +504,7 @@ declare namespace AmbientSoundDocument {
 
     /**
      * The interface for passing to {@linkcode AmbientSoundDocument.update | AmbientSoundDocument#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -514,7 +514,7 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
@@ -533,7 +533,7 @@ declare namespace AmbientSoundDocument {
 
     /**
      * The interface for passing to {@linkcode AmbientSoundDocument.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -543,11 +543,11 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `AmbientSoundDocument` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -557,12 +557,12 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._preUpdate | AmbientSoundDocument#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateAmbientSoundDocument` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -572,11 +572,11 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -586,12 +586,12 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode AmbientSoundDocument._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -601,12 +601,12 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._onUpdate | AmbientSoundDocument#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateAmbientSoundDocument` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -616,12 +616,12 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._onUpdateOperation} and `AmbientSoundDocument`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -631,7 +631,7 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -650,7 +650,7 @@ declare namespace AmbientSoundDocument {
 
     /**
      * The interface for passing to {@linkcode AmbientSoundDocument.delete | AmbientSoundDocument#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -660,7 +660,7 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
@@ -679,7 +679,7 @@ declare namespace AmbientSoundDocument {
 
     /**
      * The interface for passing to {@linkcode AmbientSoundDocument.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -689,11 +689,11 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `AmbientSoundDocument` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -703,12 +703,12 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._preDelete | AmbientSoundDocument#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteAmbientSoundDocument` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -718,11 +718,11 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -732,12 +732,12 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode AmbientSoundDocument._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -747,12 +747,12 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._onDelete | AmbientSoundDocument#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteAmbientSoundDocument` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -762,12 +762,12 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode AmbientSoundDocument._onDeleteOperation} and `AmbientSoundDocument`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -777,48 +777,48 @@ declare namespace AmbientSoundDocument {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: AmbientSoundDocument.Database2.GetDocumentsOperation;
-        BackendGetOperation: AmbientSoundDocument.Database2.BackendGetOperation;
-        GetOperation: AmbientSoundDocument.Database2.GetOperation;
+        GetDocumentsOperation: AmbientSoundDocument.Database.GetDocumentsOperation;
+        BackendGetOperation: AmbientSoundDocument.Database.BackendGetOperation;
+        GetOperation: AmbientSoundDocument.Database.GetOperation;
 
-        CreateDocumentsOperation: AmbientSoundDocument.Database2.CreateDocumentsOperation<Temporary>;
-        CreateEmbeddedOperation: AmbientSoundDocument.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: AmbientSoundDocument.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: AmbientSoundDocument.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: AmbientSoundDocument.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: AmbientSoundDocument.Database2.PreCreateOperation<Temporary>;
+        CreateDocumentsOperation: AmbientSoundDocument.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: AmbientSoundDocument.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: AmbientSoundDocument.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: AmbientSoundDocument.Database.CreateOperation<Temporary>;
+        PreCreateOptions: AmbientSoundDocument.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: AmbientSoundDocument.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: AmbientSoundDocument.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: AmbientSoundDocument.Database2.OnCreateOptions;
-        OnCreateOperation: AmbientSoundDocument.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: AmbientSoundDocument.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: AmbientSoundDocument.Database.OnCreateOptions;
+        OnCreateOperation: AmbientSoundDocument.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: AmbientSoundDocument.Database2.UpdateOneDocumentOperation;
-        UpdateEmbeddedOperation: AmbientSoundDocument.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: AmbientSoundDocument.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: AmbientSoundDocument.Database2.BackendUpdateOperation;
-        UpdateOperation: AmbientSoundDocument.Database2.UpdateOperation;
-        PreUpdateOptions: AmbientSoundDocument.Database2.PreUpdateOptions;
-        PreUpdateOperation: AmbientSoundDocument.Database2.PreUpdateOperation;
+        UpdateOneDocumentOperation: AmbientSoundDocument.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: AmbientSoundDocument.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: AmbientSoundDocument.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: AmbientSoundDocument.Database.BackendUpdateOperation;
+        UpdateOperation: AmbientSoundDocument.Database.UpdateOperation;
+        PreUpdateOptions: AmbientSoundDocument.Database.PreUpdateOptions;
+        PreUpdateOperation: AmbientSoundDocument.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: AmbientSoundDocument.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: AmbientSoundDocument.Database2.OnUpdateOptions;
-        OnUpdateOperation: AmbientSoundDocument.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: AmbientSoundDocument.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: AmbientSoundDocument.Database.OnUpdateOptions;
+        OnUpdateOperation: AmbientSoundDocument.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: AmbientSoundDocument.Database2.DeleteOneDocumentOperation;
-        DeleteEmbeddedOperation: AmbientSoundDocument.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: AmbientSoundDocument.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: AmbientSoundDocument.Database2.BackendDeleteOperation;
-        DeleteOperation: AmbientSoundDocument.Database2.DeleteOperation;
-        PreDeleteOptions: AmbientSoundDocument.Database2.PreDeleteOptions;
-        PreDeleteOperation: AmbientSoundDocument.Database2.PreDeleteOperation;
+        DeleteOneDocumentOperation: AmbientSoundDocument.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: AmbientSoundDocument.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: AmbientSoundDocument.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: AmbientSoundDocument.Database.BackendDeleteOperation;
+        DeleteOperation: AmbientSoundDocument.Database.DeleteOperation;
+        PreDeleteOptions: AmbientSoundDocument.Database.PreDeleteOptions;
+        PreDeleteOperation: AmbientSoundDocument.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: AmbientSoundDocument.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: AmbientSoundDocument.Database2.OnDeleteOptions;
-        OnDeleteOperation: AmbientSoundDocument.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: AmbientSoundDocument.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: AmbientSoundDocument.Database.OnDeleteOptions;
+        OnDeleteOperation: AmbientSoundDocument.Database.OnDeleteOperation;
       }
     }
 
@@ -954,10 +954,10 @@ declare namespace AmbientSoundDocument {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode AmbientSoundDocument.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode AmbientSoundDocument.createDialog}'s third parameter
@@ -1046,7 +1046,7 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
     Options extends AmbientSoundDocument.CreateDialogOptions | undefined = undefined,
   >(
     data?: AmbientSoundDocument.CreateDialogData,
-    createOptions?: AmbientSoundDocument.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: AmbientSoundDocument.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<AmbientSoundDocument.CreateDialogReturn<Temporary, Options>>;
 
@@ -1068,7 +1068,7 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: AmbientSoundDocument.Database2.DeleteOneDocumentOperation,
+    operation?: AmbientSoundDocument.Database.DeleteOneDocumentOperation,
   ): Promise<AmbientSoundDocument.DeleteDialogReturn<Options>>;
 
   /**
@@ -1080,7 +1080,7 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: AmbientSoundDocument.Database2.DeleteOneDocumentOperation,
+    operation?: AmbientSoundDocument.Database.DeleteOneDocumentOperation,
   ): Promise<AmbientSoundDocument.DeleteDialogReturn<Options>>;
 
   static override fromDropData(

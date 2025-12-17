@@ -339,7 +339,7 @@ declare namespace Collection {
    * property of the relevant operation: `Create`/`UpdateData` for `"create"`/`"update"` respectively, and an array of IDs
    * for `"delete"`.
    */
-  type OnModifyContentsResult<DocumentName extends Document.Type, Action extends Document.Database2.OperationAction> =
+  type OnModifyContentsResult<DocumentName extends Document.Type, Action extends Document.Database.OperationAction> =
     | (Action extends "create" ? Array<Document.CreateDataForName<DocumentName>> : never)
     | (Action extends "update" ? Array<Document.UpdateDataForName<DocumentName>> : never)
     | (Action extends "delete" ? string[] : never);
@@ -350,11 +350,11 @@ declare namespace Collection {
    */
   type OnModifyContentsOperation<
     DocumentName extends Document.Type,
-    Action extends Document.Database2.OperationAction,
+    Action extends Document.Database.OperationAction,
   > =
-    | (Action extends "create" ? Document.Database2.OnCreateOperationForName<DocumentName> : never)
-    | (Action extends "update" ? Document.Database2.OnUpdateOperationForName<DocumentName> : never)
-    | (Action extends "delete" ? Document.Database2.OnDeleteOperationForName<DocumentName> : never);
+    | (Action extends "create" ? Document.Database.OnCreateOperationForName<DocumentName> : never)
+    | (Action extends "update" ? Document.Database.OnUpdateOperationForName<DocumentName> : never)
+    | (Action extends "delete" ? Document.Database.OnDeleteOperationForName<DocumentName> : never);
 
   /** @deprecated Use {@linkcode GetReturn} instead. This type will be removed in v14. */
   type GetReturnType<V, Options extends GetOptions | undefined> = GetReturn<V, Options>;

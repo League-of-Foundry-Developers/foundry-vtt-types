@@ -146,19 +146,19 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   override createEmbeddedDocuments<EmbeddedName extends BaseRollTable.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.CreateDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseRollTable.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[],
-    operation?: Document.Database2.UpdateManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseRollTable.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: string[],
-    operation?: Document.Database2.DeleteManyDocumentsOperationForName<EmbeddedName>,
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseRollTable.Flags.Scope, Key extends BaseRollTable.Flags.Key<Scope>>(
@@ -318,7 +318,7 @@ declare namespace BaseRollTable {
   export import UpdateData = RollTable.UpdateData;
   export import UpdateInput = RollTable.UpdateInput;
   export import Schema = RollTable.Schema;
-  export import Database2 = RollTable.Database2;
+  export import Database2 = RollTable.Database;
   export import TemporaryIf = RollTable.TemporaryIf;
   export import Flags = RollTable.Flags;
 

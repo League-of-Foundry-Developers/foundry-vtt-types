@@ -419,11 +419,11 @@ declare namespace ClientSettings {
 
   /** @internal */
   interface _SetOptionsCreate<Doc extends boolean | undefined>
-    extends _SetOptions<Doc>, Setting.Database2.CreateDocumentsOperation<undefined | false> {}
+    extends _SetOptions<Doc>, Setting.Database.CreateDocumentsOperation<undefined | false> {}
 
   /** @internal */
   interface _SetOptionsUpdate<Doc extends boolean | undefined>
-    extends _SetOptions<Doc>, Setting.Database2.UpdateOneDocumentOperation {}
+    extends _SetOptions<Doc>, Setting.Database.UpdateOneDocumentOperation {}
 
   type SetOptions<Doc extends boolean | undefined = undefined> = _SetOptionsCreate<Doc> | _SetOptionsUpdate<Doc>;
 

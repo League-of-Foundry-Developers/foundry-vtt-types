@@ -300,7 +300,7 @@ declare namespace BaseMeasuredTemplate {
   export import UpdateData = MeasuredTemplateDocument.UpdateData;
   export import UpdateInput = MeasuredTemplateDocument.UpdateInput;
   export import Schema = MeasuredTemplateDocument.Schema;
-  export import Database2 = MeasuredTemplateDocument.Database2;
+  export import Database2 = MeasuredTemplateDocument.Database;
   export import TemporaryIf = MeasuredTemplateDocument.TemporaryIf;
   export import Flags = MeasuredTemplateDocument.Flags;
 

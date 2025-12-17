@@ -245,7 +245,7 @@ declare namespace JournalEntry {
 
   /**
    * Used in the {@linkcode JournalEntry.create} and {@linkcode JournalEntry.createDocuments} signatures, and
-   * {@linkcode JournalEntry.Database2.CreateOperation} and its derivative interfaces.
+   * {@linkcode JournalEntry.Database.CreateOperation} and its derivative interfaces.
    */
   type CreateInput = CreateData | Implementation;
 
@@ -280,7 +280,7 @@ declare namespace JournalEntry {
 
   /**
    * Used in the {@linkcode JournalEntry.update | JournalEntry#update} and
-   * {@linkcode JournalEntry.updateDocuments} signatures, and {@linkcode JournalEntry.Database2.UpdateOperation}
+   * {@linkcode JournalEntry.updateDocuments} signatures, and {@linkcode JournalEntry.Database.UpdateOperation}
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
@@ -350,7 +350,7 @@ declare namespace JournalEntry {
     _stats: fields.DocumentStatsField;
   }
 
-  namespace Database2 {
+  namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
      *************************************************/
@@ -366,15 +366,15 @@ declare namespace JournalEntry {
 
     /**
      * The interface for passing to {@linkcode JournalEntry.get}.
-     * @see {@linkcode Document.Database2.GetDocumentsOperation}
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface GetDocumentsOperation extends Document.Database2.GetDocumentsOperation<GetOperation> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `JournalEntry` documents.
-     * @see {@linkcode Document.Database2.BackendGetOperation}
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface BackendGetOperation extends Document.Database2.BackendGetOperation<GetOperation> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
 
     /* ***********************************************
      *              CREATE OPERATIONS                *
@@ -395,7 +395,7 @@ declare namespace JournalEntry {
 
     /**
      * The interface for passing to {@linkcode JournalEntry.create} or {@linkcode JournalEntry.createDocuments}.
-     * @see {@linkcode Document.Database2.CreateDocumentsOperation}
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
      *
@@ -406,14 +406,14 @@ declare namespace JournalEntry {
      * use case for doing so, please let us know.
      */
     interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated `JournalEntry` documents are never embedded. This interface exists for consistency with other documents.
      *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `JournalEntry` documents. (see {@linkcode JournalEntry.Parent})
-     * @see {@linkcode Document.Database2.CreateEmbeddedOperation}
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
      *
@@ -423,11 +423,11 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface CreateEmbeddedOperation extends Document.Database2.CreateEmbeddedOperation<CreateOperation> {}
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `JournalEntry` documents.
-     * @see {@linkcode Document.Database2.BackendCreateOperation}
+     * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
      *
@@ -438,12 +438,12 @@ declare namespace JournalEntry {
      * use case for doing so, please let us know.
      */
     interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.BackendCreateOperation<CreateOperation<Temporary>> {}
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode JournalEntry._preCreate | JournalEntry#_preCreate} and
      * {@link Hooks.PreCreateDocument | the `preCreateJournalEntry` hook}.
-     * @see {@linkcode Document.Database2.PreCreateOptions}
+     * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
      *
@@ -453,12 +453,12 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode JournalEntry._preCreateOperation}.
-     * @see {@linkcode Document.Database2.PreCreateOperation}
+     * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
      *
@@ -468,13 +468,13 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database2
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
      * @deprecated The interface passed to {@linkcode JournalEntry._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnCreateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
      * ---
      *
@@ -485,12 +485,12 @@ declare namespace JournalEntry {
      * use case for doing so, please let us know.
      */
     interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
-      .Database2.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
      * The interface passed to {@linkcode JournalEntry._onCreate | JournalEntry#_onCreate} and
      * {@link Hooks.CreateDocument | the `createJournalEntry` hook}.
-     * @see {@linkcode Document.Database2.OnCreateOptions}
+     * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
      *
@@ -500,12 +500,12 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOptions extends Document.Database2.OnCreateOptions<CreateOperation> {}
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
      * The interface passed to {@linkcode JournalEntry._onCreateOperation} and `JournalEntry`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnCreateOperation}
+     * @see {@linkcode Document.Database.OnCreateOperation}
      *
      * ---
      *
@@ -515,7 +515,7 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnCreateOperation extends Document.Database2.OnCreateOperation<CreateOperation> {}
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
 
     /* ***********************************************
      *              UPDATE OPERATIONS                *
@@ -534,7 +534,7 @@ declare namespace JournalEntry {
 
     /**
      * The interface for passing to {@linkcode JournalEntry.update | JournalEntry#update}.
-     * @see {@linkcode Document.Database2.UpdateOneDocumentOperation}
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
      *
@@ -544,7 +544,7 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateOneDocumentOperation extends Document.Database2.UpdateOneDocumentOperation<UpdateOperation> {}
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
      * @deprecated `JournalEntry` documents are never embedded. This interface exists for consistency with other documents.
@@ -565,7 +565,7 @@ declare namespace JournalEntry {
 
     /**
      * The interface for passing to {@linkcode JournalEntry.updateDocuments}.
-     * @see {@linkcode Document.Database2.UpdateManyDocumentsOperation}
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
      *
@@ -575,11 +575,11 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface UpdateManyDocumentsOperation extends Document.Database2.UpdateManyDocumentsOperation<UpdateOperation> {}
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `JournalEntry` documents.
-     * @see {@linkcode Document.Database2.BackendUpdateOperation}
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
      *
@@ -589,12 +589,12 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendUpdateOperation extends Document.Database2.BackendUpdateOperation<UpdateOperation> {}
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode JournalEntry._preUpdate | JournalEntry#_preUpdate} and
      * {@link Hooks.PreUpdateDocument | the `preUpdateJournalEntry` hook}.
-     * @see {@linkcode Document.Database2.PreUpdateOptions}
+     * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
      *
@@ -604,11 +604,11 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database2.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode JournalEntry._preUpdateOperation}.
-     * @see {@linkcode Document.Database2.PreUpdateOperation}
+     * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
      *
@@ -618,12 +618,12 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOperation extends Document.Database2.PreUpdateOperation<UpdateOperation> {}
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode JournalEntry._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnUpdateDocumentsOperation}
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
      * ---
      *
@@ -633,12 +633,12 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateDocumentsOperation extends Document.Database2.OnUpdateDocumentsOperation<UpdateOperation> {}
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode JournalEntry._onUpdate | JournalEntry#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateJournalEntry` hook}.
-     * @see {@linkcode Document.Database2.OnUpdateOptions}
+     * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
      *
@@ -648,12 +648,12 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOptions extends Document.Database2.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode JournalEntry._onUpdateOperation} and `JournalEntry`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnUpdateOperation}
+     * @see {@linkcode Document.Database.OnUpdateOperation}
      *
      * ---
      *
@@ -663,7 +663,7 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnUpdateOperation extends Document.Database2.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *
@@ -682,7 +682,7 @@ declare namespace JournalEntry {
 
     /**
      * The interface for passing to {@linkcode JournalEntry.delete | JournalEntry#delete}.
-     * @see {@linkcode Document.Database2.DeleteOneDocumentOperation}
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
      *
@@ -692,7 +692,7 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteOneDocumentOperation extends Document.Database2.DeleteOneDocumentOperation<DeleteOperation> {}
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
      * @deprecated `JournalEntry` documents are never embedded. This interface exists for consistency with other documents.
@@ -713,7 +713,7 @@ declare namespace JournalEntry {
 
     /**
      * The interface for passing to {@linkcode JournalEntry.deleteDocuments}.
-     * @see {@linkcode Document.Database2.DeleteManyDocumentsOperation}
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
      *
@@ -723,11 +723,11 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface DeleteManyDocumentsOperation extends Document.Database2.DeleteManyDocumentsOperation<DeleteOperation> {}
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `JournalEntry` documents.
-     * @see {@linkcode Document.Database2.BackendDeleteOperation}
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
      *
@@ -737,12 +737,12 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface BackendDeleteOperation extends Document.Database2.BackendDeleteOperation<DeleteOperation> {}
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode JournalEntry._preDelete | JournalEntry#_preDelete} and
      * {@link Hooks.PreDeleteDocument | the `preDeleteJournalEntry` hook}.
-     * @see {@linkcode Document.Database2.PreDeleteOptions}
+     * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
      *
@@ -752,11 +752,11 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOptions extends Document.Database2.PreDeleteOptions<DeleteOperation> {}
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode JournalEntry._preDeleteOperation}.
-     * @see {@linkcode Document.Database2.PreDeleteOperation}
+     * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
      *
@@ -766,12 +766,12 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreDeleteOperation extends Document.Database2.PreDeleteOperation<DeleteOperation> {}
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
      * @deprecated The interface passed to {@linkcode JournalEntry._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
-     * @see {@linkcode Document.Database2.OnDeleteDocumentsOperation}
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
      * ---
      *
@@ -781,12 +781,12 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteDocumentsOperation extends Document.Database2.OnDeleteDocumentsOperation<DeleteOperation> {}
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode JournalEntry._onDelete | JournalEntry#_onDelete} and
      * {@link Hooks.DeleteDocument | the `deleteJournalEntry` hook}.
-     * @see {@linkcode Document.Database2.OnDeleteOptions}
+     * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
      *
@@ -796,12 +796,12 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOptions extends Document.Database2.OnDeleteOptions<DeleteOperation> {}
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
      * The interface passed to {@linkcode JournalEntry._onDeleteOperation} and `JournalEntry`-related collections'
      * `#_onModifyContents` methods.
-     * @see {@linkcode Document.Database2.OnDeleteOperation}
+     * @see {@linkcode Document.Database.OnDeleteOperation}
      *
      * ---
      *
@@ -811,51 +811,51 @@ declare namespace JournalEntry {
      * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface OnDeleteOperation extends Document.Database2.OnDeleteOperation<DeleteOperation> {}
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: JournalEntry.Database2.GetDocumentsOperation;
-        BackendGetOperation: JournalEntry.Database2.BackendGetOperation;
-        GetOperation: JournalEntry.Database2.GetOperation;
+        GetDocumentsOperation: JournalEntry.Database.GetDocumentsOperation;
+        BackendGetOperation: JournalEntry.Database.BackendGetOperation;
+        GetOperation: JournalEntry.Database.GetOperation;
 
-        CreateDocumentsOperation: JournalEntry.Database2.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: JournalEntry.Database.CreateDocumentsOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: JournalEntry.Database2.CreateEmbeddedOperation;
-        BackendCreateOperation: JournalEntry.Database2.BackendCreateOperation<Temporary>;
-        CreateOperation: JournalEntry.Database2.CreateOperation<Temporary>;
-        PreCreateOptions: JournalEntry.Database2.PreCreateOptions<Temporary>;
-        PreCreateOperation: JournalEntry.Database2.PreCreateOperation<Temporary>;
+        CreateEmbeddedOperation: JournalEntry.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: JournalEntry.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: JournalEntry.Database.CreateOperation<Temporary>;
+        PreCreateOptions: JournalEntry.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: JournalEntry.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: JournalEntry.Database2.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: JournalEntry.Database2.OnCreateOptions;
-        OnCreateOperation: JournalEntry.Database2.OnCreateOperation;
+        OnCreateDocumentsOperation: JournalEntry.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: JournalEntry.Database.OnCreateOptions;
+        OnCreateOperation: JournalEntry.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: JournalEntry.Database2.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: JournalEntry.Database.UpdateOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: JournalEntry.Database2.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: JournalEntry.Database2.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: JournalEntry.Database2.BackendUpdateOperation;
-        UpdateOperation: JournalEntry.Database2.UpdateOperation;
-        PreUpdateOptions: JournalEntry.Database2.PreUpdateOptions;
-        PreUpdateOperation: JournalEntry.Database2.PreUpdateOperation;
+        UpdateEmbeddedOperation: JournalEntry.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: JournalEntry.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: JournalEntry.Database.BackendUpdateOperation;
+        UpdateOperation: JournalEntry.Database.UpdateOperation;
+        PreUpdateOptions: JournalEntry.Database.PreUpdateOptions;
+        PreUpdateOperation: JournalEntry.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: JournalEntry.Database2.OnUpdateDocumentsOperation;
-        OnUpdateOptions: JournalEntry.Database2.OnUpdateOptions;
-        OnUpdateOperation: JournalEntry.Database2.OnUpdateOperation;
+        OnUpdateDocumentsOperation: JournalEntry.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: JournalEntry.Database.OnUpdateOptions;
+        OnUpdateOperation: JournalEntry.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: JournalEntry.Database2.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: JournalEntry.Database.DeleteOneDocumentOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: JournalEntry.Database2.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: JournalEntry.Database2.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: JournalEntry.Database2.BackendDeleteOperation;
-        DeleteOperation: JournalEntry.Database2.DeleteOperation;
-        PreDeleteOptions: JournalEntry.Database2.PreDeleteOptions;
-        PreDeleteOperation: JournalEntry.Database2.PreDeleteOperation;
+        DeleteEmbeddedOperation: JournalEntry.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: JournalEntry.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: JournalEntry.Database.BackendDeleteOperation;
+        DeleteOperation: JournalEntry.Database.DeleteOperation;
+        PreDeleteOptions: JournalEntry.Database.PreDeleteOptions;
+        PreDeleteOperation: JournalEntry.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: JournalEntry.Database2.OnDeleteDocumentsOperation;
-        OnDeleteOptions: JournalEntry.Database2.OnDeleteOptions;
-        OnDeleteOperation: JournalEntry.Database2.OnDeleteOperation;
+        OnDeleteDocumentsOperation: JournalEntry.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: JournalEntry.Database.OnDeleteOptions;
+        OnDeleteOperation: JournalEntry.Database.OnDeleteOperation;
       }
     }
 
@@ -998,10 +998,10 @@ declare namespace JournalEntry {
   /**
    * @deprecated This is for a deprecated signature, and will be removed in v15.
    * The interface for passing to {@linkcode JournalEntry.createDialog}'s second parameter that still includes partial Dialog
-   * options, instead of being purely a {@linkcode Database2.CreateDocumentsOperation | CreateDocumentsOperation}.
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
    */
   interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
-    extends Database2.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
 
   /**
    * The interface for passing to {@linkcode JournalEntry.createDialog}'s third parameter
@@ -1160,7 +1160,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
     Options extends JournalEntry.CreateDialogOptions | undefined = undefined,
   >(
     data?: JournalEntry.CreateDialogData,
-    createOptions?: JournalEntry.Database2.CreateDocumentsOperation<Temporary>,
+    createOptions?: JournalEntry.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<JournalEntry.CreateDialogReturn<Temporary, Options>>;
 
@@ -1182,7 +1182,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
-    operation?: JournalEntry.Database2.DeleteOneDocumentOperation,
+    operation?: JournalEntry.Database.DeleteOneDocumentOperation,
   ): Promise<JournalEntry.DeleteDialogReturn<Options>>;
 
   /**
@@ -1194,7 +1194,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
     options?: Options,
-    operation?: JournalEntry.Database2.DeleteOneDocumentOperation,
+    operation?: JournalEntry.Database.DeleteOneDocumentOperation,
   ): Promise<JournalEntry.DeleteDialogReturn<Options>>;
 
   static override fromDropData(data: JournalEntry.DropData): Promise<JournalEntry.Implementation | undefined>;

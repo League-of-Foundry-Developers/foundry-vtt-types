@@ -31,7 +31,7 @@ declare abstract class DatabaseBackend {
    */
   get<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
-    operation: Document.Database2.BackendGetOperationForName<DocClass["documentName"]>,
+    operation: Document.Database.BackendGetOperationForName<DocClass["documentName"]>,
     user?: User.Implementation,
   ): Promise<FixedInstanceType<DocClass>>[];
 
@@ -44,7 +44,7 @@ declare abstract class DatabaseBackend {
    */
   protected abstract _getDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
-    operation: Document.Database2.GetOperationForName<DocClass["documentName"]>,
+    operation: Document.Database.GetOperationForName<DocClass["documentName"]>,
     user?: User.Implementation,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
@@ -63,7 +63,7 @@ declare abstract class DatabaseBackend {
   // TODO: possible improvements around Stored types and inferring type data
   create<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
-    operation: Document.Database2.BackendCreateOperationForName<DocClass["documentName"]>,
+    operation: Document.Database.BackendCreateOperationForName<DocClass["documentName"]>,
     user?: User.Implementation,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
@@ -77,7 +77,7 @@ declare abstract class DatabaseBackend {
   // TODO: possible improvements around Stored types and inferring type data
   protected _createDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
-    operation: Document.Database2.CreateOperationForName<DocClass["documentName"]>,
+    operation: Document.Database.CreateOperationForName<DocClass["documentName"]>,
     user: User.Implementation,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
@@ -92,7 +92,7 @@ declare abstract class DatabaseBackend {
    */
   update<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
-    operation: Document.Database2.BackendUpdateOperationForName<DocClass["documentName"]>,
+    operation: Document.Database.BackendUpdateOperationForName<DocClass["documentName"]>,
     user?: User.Implementation,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
@@ -105,7 +105,7 @@ declare abstract class DatabaseBackend {
    */
   protected abstract _updateDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
-    operation: Document.Database2.UpdateOperationForName<DocClass["documentName"]>,
+    operation: Document.Database.UpdateOperationForName<DocClass["documentName"]>,
     user: User.Implementation,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
@@ -120,7 +120,7 @@ declare abstract class DatabaseBackend {
    */
   delete<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
-    operation: Document.Database2.BackendDeleteOperationForName<DocClass["documentName"]>,
+    operation: Document.Database.BackendDeleteOperationForName<DocClass["documentName"]>,
     user?: User.Implementation,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
@@ -132,7 +132,7 @@ declare abstract class DatabaseBackend {
    */
   protected abstract _deleteDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
-    operation: Document.Database2.DeleteOperationForName<DocClass["documentName"]>,
+    operation: Document.Database.DeleteOperationForName<DocClass["documentName"]>,
     user: User.Implementation,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
@@ -242,8 +242,8 @@ declare namespace DatabaseBackend {
      * The timestamp when the operation was performed
      *
      * @remarks This property is set in `DatabaseBackend##configureOperation`; since passed values are never respected, it is omitted from
-     * interfaces for prior to that call ({@linkcode Document.Database2.CreateDocumentsOperation | CreateDocumentsOperation},
-     * {@linkcode Document.Database2.BackendCreateOperation | BackendCreateOperation})
+     * interfaces for prior to that call ({@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation},
+     * {@linkcode Document.Database.BackendCreateOperation | BackendCreateOperation})
      */
     modifiedTime: number;
   } & IntentionalPartial<{
@@ -300,8 +300,8 @@ declare namespace DatabaseBackend {
    * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}).
    *
    * @privateRemarks Optional parameters are not `| undefined` because keys with `undefined` values do not survive passage over the socket.
-   * The interfaces users will most commonly be passing ({@linkcode Document.Database2.GetDocumentsOperation | GetDocumentsOperation},
-   * {@linkcode Document.Database2.BackendGetOperation | BackendGetOperation}) are `InexactPartial`ed in their entirety to allow passing
+   * The interfaces users will most commonly be passing ({@linkcode Document.Database.GetDocumentsOperation | GetDocumentsOperation},
+   * {@linkcode Document.Database.BackendGetOperation | BackendGetOperation}) are `InexactPartial`ed in their entirety to allow passing
    * `undefined` regardless for DX reasons, and because some keys are only set via `??=`.
    */
   interface GetOperation<Parent extends Document.Any | null = Document.Any | null> extends Pick<
@@ -365,36 +365,36 @@ declare namespace DatabaseBackend {
    * at first try only merging into the one specific interface in question, given the way the operation object is passed around, and how
    * keys added by hooks or document lifecycle methods propagate (see below), it only ever makes sense to merge into either this interface
    * (affecting **all** Documents), or into the base `CreateOperation` type for a specific document (e.g
-   * {@linkcode Actor.Database2.CreateOperation}).
+   * {@linkcode Actor.Database.CreateOperation}).
    *
    * The stages of life of the operation object:
-   * 1. A {@linkcode Document.Database2.CreateDocumentsOperation | CreateDocumentsOperation} is passed to {@linkcode Document.create} or
+   * 1. A {@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation} is passed to {@linkcode Document.create} or
    * {@linkcode Document.createDocuments} (this is the usual entry point).
-   * 2. It then becomes a {@linkcode Document.Database2.BackendCreateOperation | BackendCreateOperation} and is passed to
+   * 2. It then becomes a {@linkcode Document.Database.BackendCreateOperation | BackendCreateOperation} and is passed to
    * {@linkcode DatabaseBackend.create | DatabaseBackend#create}.
    * 3. It's sent through `DatabaseBackend##configureCreate` and `##configureOperation` to become this interface, and then is passed to
    * {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments}.
    * 4. `ClientDatabaseBackend##preCreateDocumentArray` pulls out some keys to create a
-   * {@linkcode Document.Database2.PreCreateOptions | PreCreateOptions} that gets passed to
+   * {@linkcode Document.Database.PreCreateOptions | PreCreateOptions} that gets passed to
    * {@linkcode Document._preCreate | Document#_preCreate} and {@link Hooks.PreCreateDocument | the `preCreate[Document]` hook} for each
    * element of `data`, possibly acquiring new keys from either. It's also sent to
    * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}, if applicable.
    * 5. `##preCreateDocumentArray` then merges the previous step's `options` back into the `operation`, including any new keys, to produce
-   * a {@linkcode Document.Database2.PreCreateOperation | PreCreateOperation}, which is passed to {@linkcode Document._preCreateOperation}.
+   * a {@linkcode Document.Database.PreCreateOperation | PreCreateOperation}, which is passed to {@linkcode Document._preCreateOperation}.
    * 6. The operation gets sent to the server, at which point any keys with the value `undefined` are lost. The response from the server is
    * then fed into `ClientDatabaseBackend##handleCreateDocuments`, which, like `##pCDA` before, pulls out some keys to create an
-   * {@linkcode Document.Database2.OnCreateOptions | OnCreateOptions} which is passed to {@linkcode Document._onCreate | Document#_onCreate}
+   * {@linkcode Document.Database.OnCreateOptions | OnCreateOptions} which is passed to {@linkcode Document._onCreate | Document#_onCreate}
    * and {@link Hooks.CreateDocument | the `create[Document]` hook}, as well as
    * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ClientDocument._onCreateDescendantDocuments}, if applicable.
    * 7. Also as before, `##handleCreateDocuments` then merges any altered/added keys back into the operation, producing a
-   * {@linkcode Document.Database2.OnCreateOperation} which is passed to {@linkcode Document._onCreateOperation}, and the relevant
+   * {@linkcode Document.Database.OnCreateOperation} which is passed to {@linkcode Document._onCreateOperation}, and the relevant
    * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents} or
    * {@linkcode EmbeddedCollection._onModifyContents | EmbeddedCollection#_onModifyContents} method.
    * ---
    *
    * @privateRemarks Optional parameters are not `| undefined` because keys with `undefined` values do not survive passage over the socket.
-   * The interfaces users will most commonly be passing ({@linkcode Document.Database2.CreateDocumentsOperation | CreateDocumentsOperation},
-   * {@linkcode Document.Database2.BackendCreateOperation | BackendCreateOperation}) are `InexactPartial`ed in their entirety to allow
+   * The interfaces users will most commonly be passing ({@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation},
+   * {@linkcode Document.Database.BackendCreateOperation | BackendCreateOperation}) are `InexactPartial`ed in their entirety to allow
    * passing `undefined` regardless for DX reasons, and because some keys are only set via `??=`.
    *
    * Any properties that are included in the Foundry typedef, but which can never be seen by client code (e.g `_result`, `_createData`) are
@@ -414,10 +414,10 @@ declare namespace DatabaseBackend {
     /**
      * An array of data objects from which to create Documents
      *
-     * @remarks For the passable interfaces ({@linkcode Document.Database2.CreateDocumentsOperation | CreateDocumentsOperation},
-     * {@linkcode Document.Database2.BackendCreateOperation | BackendCreateOperation}), and this base type, this can be a mixed array of
+     * @remarks For the passable interfaces ({@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation},
+     * {@linkcode Document.Database.BackendCreateOperation | BackendCreateOperation}), and this base type, this can be a mixed array of
      * either `CreateData` objects or Document instances. It's restricted to only the `CreateData` in all interfaces downstream of this one,
-     * except {@linkcode Document.Database2.OnCreateDocumentsOperation | OnCreateDocumentsOperation}
+     * except {@linkcode Document.Database.OnCreateDocumentsOperation | OnCreateDocumentsOperation}
      */
     // TODO: remove the except clause above in v14
     data: CreateData[];
@@ -467,31 +467,31 @@ declare namespace DatabaseBackend {
    * at first try only merging into the one specific interface in question, given the way the operation object is passed around, and how
    * keys added by hooks or document lifecycle methods propagate (see below), it only ever makes sense to merge into either this interface
    * (affecting **all** Documents), or into the base `UpdateOperation` type for a specific document (e.g
-   * {@linkcode Actor.Database2.UpdateOperation}).
+   * {@linkcode Actor.Database.UpdateOperation}).
    *
    * The stages of life of the operation object:
-   * 1. An {@linkcode Document.Database2.UpdateOneDocumentOperation | UpdateOneDocumentOperation} is passed to
+   * 1. An {@linkcode Document.Database.UpdateOneDocumentOperation | UpdateOneDocumentOperation} is passed to
    * {@linkcode Document.update | Document#update}, or an
-   * {@linkcode Document.Database2.UpdateManyDocumentsOperation | UpdateManyDocumentsOperation} is passed to
+   * {@linkcode Document.Database.UpdateManyDocumentsOperation | UpdateManyDocumentsOperation} is passed to
    * {@linkcode Document.updateDocuments} (this is the usual entry point).
-   * 2. It then becomes a {@linkcode Document.Database2.BackendUpdateOperation | BackendUpdateOperation} and is passed to
+   * 2. It then becomes a {@linkcode Document.Database.BackendUpdateOperation | BackendUpdateOperation} and is passed to
    * {@linkcode DatabaseBackend.update | DatabaseBackend#update}.
    * 3. It's sent through `DatabaseBackend##configureUpdate` and `##configureOperation` to become this interface, and then is passed to
    * {@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments}.
    * 4. `ClientDatabaseBackend##preUpdateDocumentArray` pulls out some keys to update a
-   * {@linkcode Document.Database2.PreUpdateOptions | PreUpdateOptions} that gets passed to
+   * {@linkcode Document.Database.PreUpdateOptions | PreUpdateOptions} that gets passed to
    * {@linkcode Document._preUpdate | Document#_preUpdate} and {@link Hooks.PreUpdateDocument | the `preUpdate[Document]` hook} for each
    * element of `data`, possibly acquiring new keys from either. It's also sent to
    * {@linkcode ClientDocumentMixin.AnyMixed._preUpdateDescendantDocuments | ClientDocument._preUpdateDescendantDocuments}, if applicable.
    * 5. `##preUpdateDocumentArray` then merges the previous step's `options` back into the `operation`, including any new keys, to produce
-   * a {@linkcode Document.Database2.PreUpdateOperation | PreUpdateOperation}, which is passed to {@linkcode Document._preUpdateOperation}.
+   * a {@linkcode Document.Database.PreUpdateOperation | PreUpdateOperation}, which is passed to {@linkcode Document._preUpdateOperation}.
    * 6. The operation gets sent to the server, at which point any keys with the value `undefined` are lost. The response from the server is
    * then fed into `ClientDatabaseBackend##handleUpdateDocuments`, which, like `##pCDA` before, pulls out some keys to create an
-   * {@linkcode Document.Database2.OnUpdateOptions | OnUpdateOptions} which is passed to {@linkcode Document._onUpdate | Document#_onUpdate}
+   * {@linkcode Document.Database.OnUpdateOptions | OnUpdateOptions} which is passed to {@linkcode Document._onUpdate | Document#_onUpdate}
    * and {@link Hooks.UpdateDocument | the `update[Document]` hook}, as well as
    * {@linkcode ClientDocumentMixin.AnyMixed._onUpdateDescendantDocuments | ClientDocument._onUpdateDescendantDocuments}, if applicable.
    * 7. Also as before, `##handleUpdateDocuments` then merges any altered/added keys back into the operation, producing a
-   * {@linkcode Document.Database2.OnUpdateOperation} which is passed to {@linkcode Document._onUpdateOperation}, and the relevant
+   * {@linkcode Document.Database.OnUpdateOperation} which is passed to {@linkcode Document._onUpdateOperation}, and the relevant
    * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents} or
    * {@linkcode EmbeddedCollection._onModifyContents | EmbeddedCollection#_onModifyContents} method.
    *
@@ -499,8 +499,8 @@ declare namespace DatabaseBackend {
    *
    * @privateRemarks Optional parameters are not `| undefined` because keys with `undefined` values do not survive passage over the socket.
    * The interfaces users will most commonly be passing
-   * ({@linkcode Document.Database2.UpdateManyDocumentsOperation | UpdateDocumentsOperation},
-   * {@linkcode Document.Database2.BackendUpdateOperation | BackendUpdateOperation}) are `InexactPartial`ed in their entirety to allow
+   * ({@linkcode Document.Database.UpdateManyDocumentsOperation | UpdateDocumentsOperation},
+   * {@linkcode Document.Database.BackendUpdateOperation | BackendUpdateOperation}) are `InexactPartial`ed in their entirety to allow
    * passing `undefined` regardless for DX reasons, and because some keys are only set via `??=`.
    *
    * Any properties that are included in the Foundry typedef, but which can never be seen by client code (e.g `_result`, `_updateData`)
@@ -520,8 +520,8 @@ declare namespace DatabaseBackend {
      * An array of data objects used to update existing Documents.
      * Each update object must contain the _id of the target Document
      *
-     * @remarks For the passable interfaces ({@linkcode Document.Database2.UpdateManyDocumentsOperation | UpdateDocumentsOperation},
-     * {@linkcode Document.Database2.BackendUpdateOperation | BackendUpdateOperation}), and this base type, this can be a mixed array of
+     * @remarks For the passable interfaces ({@linkcode Document.Database.UpdateManyDocumentsOperation | UpdateDocumentsOperation},
+     * {@linkcode Document.Database.BackendUpdateOperation | BackendUpdateOperation}), and this base type, this can be a mixed array of
      * either `UpdateData` objects or Document instances. It's restricted to only the `UpdateData` in all interfaces downstream of this one.
      */
     updates: UpdateData[];
@@ -557,31 +557,31 @@ declare namespace DatabaseBackend {
    * at first try only merging into the one specific interface in question, given the way the operation object is passed around, and how
    * keys added by hooks or document lifecycle methods propagate (see below), it only ever makes sense to merge into either this interface
    * (affecting **all** Documents), or into the base `DeleteOperation` type for a specific document (e.g
-   * {@linkcode Actor.Database2.DeleteOperation}).
+   * {@linkcode Actor.Database.DeleteOperation}).
    *
    * The stages of life of the operation object:
-   * 1. An {@linkcode Document.Database2.DeleteOneDocumentOperation | DeleteOneDocumentOperation} is passed to
+   * 1. An {@linkcode Document.Database.DeleteOneDocumentOperation | DeleteOneDocumentOperation} is passed to
    * {@linkcode Document.delete | Document#delete}, or an
-   * {@linkcode Document.Database2.DeleteManyDocumentsOperation | DeleteManyDocumentsOperation} is passed to
+   * {@linkcode Document.Database.DeleteManyDocumentsOperation | DeleteManyDocumentsOperation} is passed to
    * {@linkcode Document.deleteDocuments} (this is the usual entry point).
-   * 2. It then becomes a {@linkcode Document.Database2.BackendDeleteOperation | BackendDeleteOperation} and is passed to
+   * 2. It then becomes a {@linkcode Document.Database.BackendDeleteOperation | BackendDeleteOperation} and is passed to
    * {@linkcode DatabaseBackend.delete | DatabaseBackend#delete}.
    * 3. It's sent through `DatabaseBackend##configureDelete` and `##configureOperation` to become this interface, and then is passed to
    * {@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments}.
    * 4. `ClientDatabaseBackend##preDeleteDocumentArray` pulls out some keys to delete a
-   * {@linkcode Document.Database2.PreDeleteOptions | PreDeleteOptions} that gets passed to
+   * {@linkcode Document.Database.PreDeleteOptions | PreDeleteOptions} that gets passed to
    * {@linkcode Document._preDelete | Document#_preDelete} and {@link Hooks.PreDeleteDocument | the `preDelete[Document]` hook} for each
    * element of `data`, possibly acquiring new keys from either. It's also sent to
    * {@linkcode ClientDocumentMixin.AnyMixed._preDeleteDescendantDocuments | ClientDocument._preDeleteDescendantDocuments}, if applicable.
    * 5. `##preDeleteDocumentArray` then merges the previous step's `options` back into the `operation`, including any new keys, to produce
-   * a {@linkcode Document.Database2.PreDeleteOperation | PreDeleteOperation}, which is passed to {@linkcode Document._preDeleteOperation}.
+   * a {@linkcode Document.Database.PreDeleteOperation | PreDeleteOperation}, which is passed to {@linkcode Document._preDeleteOperation}.
    * 6. The operation gets sent to the server, at which point any keys with the value `undefined` are lost. The response from the server is
    * then fed into `ClientDatabaseBackend##handleDeleteDocuments`, which, like `##pCDA` before, pulls out some keys to create an
-   * {@linkcode Document.Database2.OnDeleteOptions | OnDeleteOptions} which is passed to {@linkcode Document._onDelete | Document#_onDelete}
+   * {@linkcode Document.Database.OnDeleteOptions | OnDeleteOptions} which is passed to {@linkcode Document._onDelete | Document#_onDelete}
    * and {@link Hooks.DeleteDocument | the `delete[Document]` hook}, as well as
    * {@linkcode ClientDocumentMixin.AnyMixed._onDeleteDescendantDocuments | ClientDocument._onDeleteDescendantDocuments}, if applicable.
    * 7. Also as before, `##handleDeleteDocuments` then merges any altered/added keys back into the operation, producing a
-   * {@linkcode Document.Database2.OnDeleteOperation} which is passed to {@linkcode Document._onDeleteOperation}, and the relevant
+   * {@linkcode Document.Database.OnDeleteOperation} which is passed to {@linkcode Document._onDeleteOperation}, and the relevant
    * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents} or
    * {@linkcode EmbeddedCollection._onModifyContents | EmbeddedCollection#_onModifyContents} method.
    *
@@ -589,8 +589,8 @@ declare namespace DatabaseBackend {
    *
    * @privateRemarks Optional parameters are not `| undefined` because keys with `undefined` values do not survive passage over the socket.
    * The interfaces users will most commonly be passing
-   * ({@linkcode Document.Database2.DeleteManyDocumentsOperation | DeleteDocumentsOperation},
-   * {@linkcode Document.Database2.BackendDeleteOperation | BackendDeleteOperation}) are `InexactPartial`ed in their entirety to allow
+   * ({@linkcode Document.Database.DeleteManyDocumentsOperation | DeleteDocumentsOperation},
+   * {@linkcode Document.Database.BackendDeleteOperation | BackendDeleteOperation}) are `InexactPartial`ed in their entirety to allow
    * passing `undefined` regardless for DX reasons, and because some keys are only set via `??=`.
    *
    * Any properties that are included in Foundry's typedef, but which can never be seen by client code (e.g `_result`) are not included in

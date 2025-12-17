@@ -273,7 +273,7 @@ declare namespace BaseWall {
   export import UpdateData = WallDocument.UpdateData;
   export import UpdateInput = WallDocument.UpdateInput;
   export import Schema = WallDocument.Schema;
-  export import Database2 = WallDocument.Database2;
+  export import Database2 = WallDocument.Database;
   export import TemporaryIf = WallDocument.TemporaryIf;
   export import Flags = WallDocument.Flags;
 

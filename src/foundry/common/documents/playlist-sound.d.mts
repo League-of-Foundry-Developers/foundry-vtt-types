@@ -279,7 +279,7 @@ declare namespace BasePlaylistSound {
   export import UpdateData = PlaylistSound.UpdateData;
   export import UpdateInput = PlaylistSound.UpdateInput;
   export import Schema = PlaylistSound.Schema;
-  export import Database2 = PlaylistSound.Database2;
+  export import Database2 = PlaylistSound.Database;
   export import TemporaryIf = PlaylistSound.TemporaryIf;
   export import Flags = PlaylistSound.Flags;
 

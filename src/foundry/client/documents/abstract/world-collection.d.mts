@@ -251,7 +251,7 @@ declare namespace WorldCollection {
   type ImportFromCompendiumOptions<
     DocumentName extends Document.WorldType,
     Temporary extends boolean | undefined = boolean | undefined,
-  > = Document.Database2.CreateDocumentsOperation<Document.Database2.CreateOperationForName<DocumentName, Temporary>> &
+  > = Document.Database.CreateDocumentsOperation<Document.Database.CreateOperationForName<DocumentName, Temporary>> &
     FromCompendiumOptions;
 
   type Pack<DocumentName extends Document.WorldType> = DocumentName extends CompendiumCollection.DocumentName

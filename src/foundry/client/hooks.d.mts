@@ -490,7 +490,7 @@ export interface AllHooks extends DynamicHooks {
   updateCompendium: <DocumentName extends CompendiumCollection.DocumentName>(
     pack: CompendiumCollection<DocumentName>,
     documents: Document.StoredForName<DocumentName>[],
-    options: Collection.OnModifyContentsOperation<DocumentName, Document.Database2.OperationAction>,
+    options: Collection.OnModifyContentsOperation<DocumentName, Document.Database.OperationAction>,
     userId: string,
   ) => void;
 
@@ -1322,7 +1322,7 @@ declare global {
     type PreCreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       data: Document.CreateDataForName<D["documentName"]>,
-      options: Document.Database2.PreCreateOptionsForName<D["documentName"]>,
+      options: Document.Database.PreCreateOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1340,7 +1340,7 @@ declare global {
      */
     type CreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database2.OnCreateOptionsForName<D["documentName"]>,
+      options: Document.Database.OnCreateOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1364,7 +1364,7 @@ declare global {
     type PreUpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       changed: Document.UpdateDataForName<D["documentName"]>,
-      options: Document.Database2.PreUpdateOptionsForName<D["documentName"]>,
+      options: Document.Database.PreUpdateOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1384,7 +1384,7 @@ declare global {
     type UpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       change: Document.UpdateDataForName<D["documentName"]>,
-      options: Document.Database2.OnUpdateOptionsForName<D["documentName"]>,
+      options: Document.Database.OnUpdateOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1406,7 +1406,7 @@ declare global {
      */
     type PreDeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database2.PreDeleteOptionsForName<D["documentName"]>,
+      options: Document.Database.PreDeleteOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1424,7 +1424,7 @@ declare global {
      */
     type DeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database2.OnDeleteOptionsForName<D["documentName"]>,
+      options: Document.Database.OnDeleteOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 

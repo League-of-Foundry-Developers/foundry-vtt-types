@@ -286,7 +286,7 @@ declare namespace BaseNote {
   export import UpdateData = NoteDocument.UpdateData;
   export import UpdateInput = NoteDocument.UpdateInput;
   export import Schema = NoteDocument.Schema;
-  export import Database2 = NoteDocument.Database2;
+  export import Database2 = NoteDocument.Database;
   export import TemporaryIf = NoteDocument.TemporaryIf;
   export import Flags = NoteDocument.Flags;
 
