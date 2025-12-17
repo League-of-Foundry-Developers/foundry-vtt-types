@@ -8,9 +8,10 @@ import type {
   Merge,
   NullishProps,
 } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { BaseActor, BaseUser } from "#common/documents/_module.d.mts";
+import type { BaseActor } from "#common/documents/_module.d.mts";
+import type BaseUser from "#common/documents/user.d.mts";
 import type { UserTargets } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { BaseRuler, Ping } from "#client/canvas/interaction/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
@@ -24,7 +25,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
-import fields = foundry.data.fields;
 
 declare namespace User {
   /**
@@ -214,7 +214,7 @@ declare namespace User {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this User document.
      * @defaultValue `null`
@@ -913,112 +913,6 @@ declare namespace User {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? User.Implementation : User.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for Users */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<User.Parent> {}
-
-    /** Options passed along in Create operations for Users */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<User.CreateData, User.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Users */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<User.Parent> {}
-
-    /** Options passed along in Update operations for Users */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<User.UpdateData, User.Parent> {}
-
-    /** Operation for {@linkcode User.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<User.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode User.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<User.Database.Update> {}
-
-    /** Operation for {@linkcode User.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<User.Database.Delete> {}
-
-    /** Operation for {@linkcode User.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      User.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link User.update | `User#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode User.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link User._preCreate | `User#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link User._onCreate | `User#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode User._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<User.Database.Create> {}
-
-    /** Operation for {@link User._onCreateOperation | `User#_onCreateOperation`} */
-    interface OnCreateOperation extends User.Database.Create {}
-
-    /** Options for {@link User._preUpdate | `User#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link User._onUpdate | `User#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode User._preUpdateOperation} */
-    interface PreUpdateOperation extends User.Database.Update {}
-
-    /** Operation for {@link User._onUpdateOperation | `User._preUpdateOperation`} */
-    interface OnUpdateOperation extends User.Database.Update {}
-
-    /** Options for {@link User._preDelete | `User#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link User._onDelete | `User#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link User._preDeleteOperation | `User#_preDeleteOperation`} */
-    interface PreDeleteOperation extends User.Database.Delete {}
-
-    /** Options for {@link User._onDeleteOperation | `User#_onDeleteOperation`} */
-    interface OnDeleteOperation extends User.Database.Delete {}
-
-    /** Context for {@linkcode User._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<User.Parent> {}
-
-    /** Context for {@linkcode User._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<User.Parent> {}
-
-    /** Context for {@linkcode User._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<User.Parent> {}
-
-    /**
-     * Options for {@link User._preCreateDescendantDocuments | `User#_preCreateDescendantDocuments`}
-     * and {@link User._onCreateDescendantDocuments | `User#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<User.Database.Create> {}
-
-    /**
-     * Options for {@link User._preUpdateDescendantDocuments | `User#_preUpdateDescendantDocuments`}
-     * and {@link User._onUpdateDescendantDocuments | `User#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<User.Database.Update> {}
-
-    /**
-     * Options for {@link User._preDeleteDescendantDocuments | `User#_preDeleteDescendantDocuments`}
-     * and {@link User._onDeleteDescendantDocuments | `User#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<User.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode User.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

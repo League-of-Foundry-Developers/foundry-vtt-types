@@ -292,7 +292,6 @@ declare namespace BaseCombatant {
   export import UpdateData = Combatant.UpdateData;
   export import UpdateInput = Combatant.UpdateInput;
   export import Schema = Combatant.Schema;
-  export import Database = Combatant.Database;
   export import Database2 = Combatant.Database2;
   export import TemporaryIf = Combatant.TemporaryIf;
   export import Flags = Combatant.Flags;

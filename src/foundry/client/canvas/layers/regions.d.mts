@@ -62,7 +62,7 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
 
   protected override _deactivate(): void;
 
-  override storeHistory<Operation extends Document.Database.Operation>(
+  override storeHistory<Operation extends Document.Database2.OperationAction>(
     type: Operation,
     data: PlaceablesLayer.HistoryDataFor<Operation, "Region">,
   ): void;

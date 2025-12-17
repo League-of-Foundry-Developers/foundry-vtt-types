@@ -1,7 +1,7 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
+import type { MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { BaseJournalEntryPage, BaseJournalEntry } from "#client/documents/_module.d.mts";
 import type BaseNote from "#common/documents/note.d.mts";
 import type { TextureData } from "#common/data/data.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
@@ -13,8 +13,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace NoteDocument {
   /**
@@ -205,7 +203,7 @@ declare namespace NoteDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this BaseNote embedded document
      * @defaultValue `null`
@@ -216,13 +214,13 @@ declare namespace NoteDocument {
      * The _id of a JournalEntry document which this Note represents
      * @defaultValue `null`
      */
-    entryId: fields.ForeignDocumentField<typeof documents.BaseJournalEntry, { idOnly: true }>;
+    entryId: fields.ForeignDocumentField<typeof BaseJournalEntry, { idOnly: true }>;
 
     /**
      * The _id of a specific JournalEntryPage document which this Note represents
      * @defaultValue `null`
      */
-    pageId: fields.ForeignDocumentField<typeof documents.BaseJournalEntryPage, { idOnly: true }>;
+    pageId: fields.ForeignDocumentField<typeof BaseJournalEntryPage, { idOnly: true }>;
 
     /**
      * The x-coordinate position of the center of the note icon
@@ -916,117 +914,6 @@ declare namespace NoteDocument {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? NoteDocument.Implementation : NoteDocument.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for NoteDocuments */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<NoteDocument.Parent> {}
-
-    /** Options passed along in Create operations for NoteDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<NoteDocument.CreateData, NoteDocument.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for NoteDocuments */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<NoteDocument.Parent> {}
-
-    /** Options passed along in Update operations for NoteDocuments */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      NoteDocument.UpdateData,
-      NoteDocument.Parent
-    > {}
-
-    /** Operation for {@linkcode NoteDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<NoteDocument.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode NoteDocument.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<NoteDocument.Database.Update> {}
-
-    /** Operation for {@linkcode NoteDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<NoteDocument.Database.Delete> {}
-
-    /** Operation for {@linkcode NoteDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      NoteDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link NoteDocument.update | `NoteDocument#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode NoteDocument.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link NoteDocument._preCreate | `NoteDocument#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link NoteDocument._onCreate | `NoteDocument#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode NoteDocument._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<NoteDocument.Database.Create> {}
-
-    /** Operation for {@link NoteDocument._onCreateOperation | `NoteDocument#_onCreateOperation`} */
-    interface OnCreateOperation extends NoteDocument.Database.Create {}
-
-    /** Options for {@link NoteDocument._preUpdate | `NoteDocument#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link NoteDocument._onUpdate | `NoteDocument#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode NoteDocument._preUpdateOperation} */
-    interface PreUpdateOperation extends NoteDocument.Database.Update {}
-
-    /** Operation for {@link NoteDocument._onUpdateOperation | `NoteDocument._preUpdateOperation`} */
-    interface OnUpdateOperation extends NoteDocument.Database.Update {}
-
-    /** Options for {@link NoteDocument._preDelete | `NoteDocument#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link NoteDocument._onDelete | `NoteDocument#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link NoteDocument._preDeleteOperation | `NoteDocument#_preDeleteOperation`} */
-    interface PreDeleteOperation extends NoteDocument.Database.Delete {}
-
-    /** Options for {@link NoteDocument._onDeleteOperation | `NoteDocument#_onDeleteOperation`} */
-    interface OnDeleteOperation extends NoteDocument.Database.Delete {}
-
-    /** Context for {@linkcode NoteDocument._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<NoteDocument.Parent> {}
-
-    /** Context for {@linkcode NoteDocument._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<NoteDocument.Parent> {}
-
-    /** Context for {@linkcode NoteDocument._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<NoteDocument.Parent> {}
-
-    /**
-     * Options for {@link NoteDocument._preCreateDescendantDocuments | `NoteDocument#_preCreateDescendantDocuments`}
-     * and {@link NoteDocument._onCreateDescendantDocuments | `NoteDocument#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<NoteDocument.Database.Create> {}
-
-    /**
-     * Options for {@link NoteDocument._preUpdateDescendantDocuments | `NoteDocument#_preUpdateDescendantDocuments`}
-     * and {@link NoteDocument._onUpdateDescendantDocuments | `NoteDocument#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<NoteDocument.Database.Update> {}
-
-    /**
-     * Options for {@link NoteDocument._preDeleteDescendantDocuments | `NoteDocument#_preDeleteDescendantDocuments`}
-     * and {@link NoteDocument._onDeleteDescendantDocuments | `NoteDocument#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<NoteDocument.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode NoteDocument.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

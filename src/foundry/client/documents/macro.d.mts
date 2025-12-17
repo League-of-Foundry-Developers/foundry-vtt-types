@@ -1,8 +1,8 @@
 import type { ConfiguredMacro } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
-import type { documents } from "#client/client.d.mts";
+import type { Identity, MaybeArray, Merge, NullishProps } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { BaseFolder, BaseUser } from "#client/documents/_module.d.mts";
 import type BaseMacro from "#common/documents/macro.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
@@ -18,8 +18,6 @@ import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.m
 /** @privateRemarks `ExecuteMacroRegionBehaviourType` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ExecuteMacroRegionBehaviorType } from "#client/data/region-behaviors/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace Macro {
   /**
@@ -262,7 +260,7 @@ declare namespace Macro {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Macro document
      * @defaultValue `null`
@@ -285,7 +283,7 @@ declare namespace Macro {
      * The _id of a User document which created this Macro *
      * @defaultValue `game.user?.id`
      */
-    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
+    author: fields.DocumentAuthorField<typeof BaseUser>;
 
     /**
      * An image file path which provides the thumbnail artwork for this Macro
@@ -322,7 +320,7 @@ declare namespace Macro {
      * The _id of a Folder which contains this Macro
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The numeric sort value which orders this Macro relative to its siblings
@@ -939,112 +937,6 @@ declare namespace Macro {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Macro.Implementation : Macro.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for Macros */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Macro.Parent> {}
-
-    /** Options passed along in Create operations for Macros */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Macro.CreateData, Macro.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Macros */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Macro.Parent> {}
-
-    /** Options passed along in Update operations for Macros */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Macro.UpdateData, Macro.Parent> {}
-
-    /** Operation for {@linkcode Macro.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<Macro.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode Macro.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Macro.Database.Update> {}
-
-    /** Operation for {@linkcode Macro.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Macro.Database.Delete> {}
-
-    /** Operation for {@linkcode Macro.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      Macro.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link Macro.update | `Macro#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Macro.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link Macro._preCreate | `Macro#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link Macro._onCreate | `Macro#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Macro._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Macro.Database.Create> {}
-
-    /** Operation for {@link Macro._onCreateOperation | `Macro#_onCreateOperation`} */
-    interface OnCreateOperation extends Macro.Database.Create {}
-
-    /** Options for {@link Macro._preUpdate | `Macro#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link Macro._onUpdate | `Macro#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Macro._preUpdateOperation} */
-    interface PreUpdateOperation extends Macro.Database.Update {}
-
-    /** Operation for {@link Macro._onUpdateOperation | `Macro._preUpdateOperation`} */
-    interface OnUpdateOperation extends Macro.Database.Update {}
-
-    /** Options for {@link Macro._preDelete | `Macro#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link Macro._onDelete | `Macro#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link Macro._preDeleteOperation | `Macro#_preDeleteOperation`} */
-    interface PreDeleteOperation extends Macro.Database.Delete {}
-
-    /** Options for {@link Macro._onDeleteOperation | `Macro#_onDeleteOperation`} */
-    interface OnDeleteOperation extends Macro.Database.Delete {}
-
-    /** Context for {@linkcode Macro._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Macro.Parent> {}
-
-    /** Context for {@linkcode Macro._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Macro.Parent> {}
-
-    /** Context for {@linkcode Macro._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Macro.Parent> {}
-
-    /**
-     * Options for {@link Macro._preCreateDescendantDocuments | `Macro#_preCreateDescendantDocuments`}
-     * and {@link Macro._onCreateDescendantDocuments | `Macro#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<Macro.Database.Create> {}
-
-    /**
-     * Options for {@link Macro._preUpdateDescendantDocuments | `Macro#_preUpdateDescendantDocuments`}
-     * and {@link Macro._onUpdateDescendantDocuments | `Macro#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Macro.Database.Update> {}
-
-    /**
-     * Options for {@link Macro._preDeleteDescendantDocuments | `Macro#_preDeleteDescendantDocuments`}
-     * and {@link Macro._onDeleteDescendantDocuments | `Macro#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Macro.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode Macro.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

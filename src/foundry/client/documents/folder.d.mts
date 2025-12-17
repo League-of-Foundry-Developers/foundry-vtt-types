@@ -1,9 +1,9 @@
 import type { ConfiguredFolder } from "#configuration";
 import type { Identity, InexactPartial, IntentionalPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { FolderConfig } from "#client/applications/sheets/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseFolder from "#common/documents/folder.d.mts";
+import type { FolderConfig } from "#client/applications/sheets/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */
@@ -13,8 +13,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace Folder {
   /**
@@ -249,7 +247,7 @@ declare namespace Folder {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Folder document
      * @defaultValue `null`
@@ -260,8 +258,7 @@ declare namespace Folder {
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** The document type which this Folder contains, from {@linkcode CONST.FOLDER_DOCUMENT_TYPES} */
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof BaseFolder, {}>;
+    type: fields.DocumentTypeField<typeof BaseFolder>;
 
     /**
      * An HTML description of the contents of this folder
@@ -896,112 +893,6 @@ declare namespace Folder {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Folder.Implementation : Folder.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for Folders */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Folder.Parent> {}
-
-    /** Options passed along in Create operations for Folders */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Folder.CreateData, Folder.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Folders */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Folder.Parent> {}
-
-    /** Options passed along in Update operations for Folders */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Folder.UpdateData, Folder.Parent> {}
-
-    /** Operation for {@linkcode Folder.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<Folder.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode Folder.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Folder.Database.Update> {}
-
-    /** Operation for {@linkcode Folder.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Folder.Database.Delete> {}
-
-    /** Operation for {@linkcode Folder.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      Folder.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link Folder.update | `Folder#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Folder.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link Folder._preCreate | `Folder#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link Folder._onCreate | `Folder#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Folder._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Folder.Database.Create> {}
-
-    /** Operation for {@link Folder._onCreateOperation | `Folder#_onCreateOperation`} */
-    interface OnCreateOperation extends Folder.Database.Create {}
-
-    /** Options for {@link Folder._preUpdate | `Folder#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link Folder._onUpdate | `Folder#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Folder._preUpdateOperation} */
-    interface PreUpdateOperation extends Folder.Database.Update {}
-
-    /** Operation for {@link Folder._onUpdateOperation | `Folder._preUpdateOperation`} */
-    interface OnUpdateOperation extends Folder.Database.Update {}
-
-    /** Options for {@link Folder._preDelete | `Folder#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link Folder._onDelete | `Folder#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link Folder._preDeleteOperation | `Folder#_preDeleteOperation`} */
-    interface PreDeleteOperation extends Folder.Database.Delete {}
-
-    /** Options for {@link Folder._onDeleteOperation | `Folder#_onDeleteOperation`} */
-    interface OnDeleteOperation extends Folder.Database.Delete {}
-
-    /** Context for {@linkcode Folder._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Folder.Parent> {}
-
-    /** Context for {@linkcode Folder._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Folder.Parent> {}
-
-    /** Context for {@linkcode Folder._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Folder.Parent> {}
-
-    /**
-     * Options for {@link Folder._preCreateDescendantDocuments | `Folder#_preCreateDescendantDocuments`}
-     * and {@link Folder._onCreateDescendantDocuments | `Folder#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<Folder.Database.Create> {}
-
-    /**
-     * Options for {@link Folder._preUpdateDescendantDocuments | `Folder#_preUpdateDescendantDocuments`}
-     * and {@link Folder._onUpdateDescendantDocuments | `Folder#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Folder.Database.Update> {}
-
-    /**
-     * Options for {@link Folder._preDeleteDescendantDocuments | `Folder#_preDeleteDescendantDocuments`}
-     * and {@link Folder._onDeleteDescendantDocuments | `Folder#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Folder.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode Folder.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

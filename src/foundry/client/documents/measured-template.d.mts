@@ -1,7 +1,7 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
+import type { MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { BaseUser } from "#client/documents/_module.d.mts";
 import type BaseMeasuredTemplate from "#common/documents/measured-template.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -12,8 +12,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace MeasuredTemplateDocument {
   /**
@@ -205,7 +203,7 @@ declare namespace MeasuredTemplateDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this BaseMeasuredTemplate embedded document
      * @defaultValue `null`
@@ -216,7 +214,7 @@ declare namespace MeasuredTemplateDocument {
      * The _id of the user who created this measured template
      * @defaultValue `game?.user?.id`
      */
-    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
+    author: fields.DocumentAuthorField<typeof BaseUser>;
 
     /**
      * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
@@ -907,118 +905,6 @@ declare namespace MeasuredTemplateDocument {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? MeasuredTemplateDocument.Implementation : MeasuredTemplateDocument.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for MeasuredTemplateDocuments */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<MeasuredTemplateDocument.Parent> {}
-
-    /** Options passed along in Create operations for MeasuredTemplateDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<MeasuredTemplateDocument.CreateData, MeasuredTemplateDocument.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for MeasuredTemplateDocuments */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<MeasuredTemplateDocument.Parent> {}
-
-    /** Options passed along in Update operations for MeasuredTemplateDocuments */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      MeasuredTemplateDocument.UpdateData,
-      MeasuredTemplateDocument.Parent
-    > {}
-
-    /** Operation for {@linkcode MeasuredTemplateDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<MeasuredTemplateDocument.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode MeasuredTemplateDocument.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<MeasuredTemplateDocument.Database.Update> {}
-
-    /** Operation for {@linkcode MeasuredTemplateDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<MeasuredTemplateDocument.Database.Delete> {}
-
-    /** Operation for {@linkcode MeasuredTemplateDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      MeasuredTemplateDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link MeasuredTemplateDocument.update | `MeasuredTemplateDocument#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode MeasuredTemplateDocument.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link MeasuredTemplateDocument._preCreate | `MeasuredTemplateDocument#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link MeasuredTemplateDocument._onCreate | `MeasuredTemplateDocument#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode MeasuredTemplateDocument._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database
-      .PreCreateOperationStatic<MeasuredTemplateDocument.Database.Create> {}
-
-    /** Operation for {@link MeasuredTemplateDocument._onCreateOperation | `MeasuredTemplateDocument#_onCreateOperation`} */
-    interface OnCreateOperation extends MeasuredTemplateDocument.Database.Create {}
-
-    /** Options for {@link MeasuredTemplateDocument._preUpdate | `MeasuredTemplateDocument#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link MeasuredTemplateDocument._onUpdate | `MeasuredTemplateDocument#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode MeasuredTemplateDocument._preUpdateOperation} */
-    interface PreUpdateOperation extends MeasuredTemplateDocument.Database.Update {}
-
-    /** Operation for {@link MeasuredTemplateDocument._onUpdateOperation | `MeasuredTemplateDocument._preUpdateOperation`} */
-    interface OnUpdateOperation extends MeasuredTemplateDocument.Database.Update {}
-
-    /** Options for {@link MeasuredTemplateDocument._preDelete | `MeasuredTemplateDocument#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link MeasuredTemplateDocument._onDelete | `MeasuredTemplateDocument#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link MeasuredTemplateDocument._preDeleteOperation | `MeasuredTemplateDocument#_preDeleteOperation`} */
-    interface PreDeleteOperation extends MeasuredTemplateDocument.Database.Delete {}
-
-    /** Options for {@link MeasuredTemplateDocument._onDeleteOperation | `MeasuredTemplateDocument#_onDeleteOperation`} */
-    interface OnDeleteOperation extends MeasuredTemplateDocument.Database.Delete {}
-
-    /** Context for {@linkcode MeasuredTemplateDocument._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<MeasuredTemplateDocument.Parent> {}
-
-    /** Context for {@linkcode MeasuredTemplateDocument._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<MeasuredTemplateDocument.Parent> {}
-
-    /** Context for {@linkcode MeasuredTemplateDocument._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<MeasuredTemplateDocument.Parent> {}
-
-    /**
-     * Options for {@link MeasuredTemplateDocument._preCreateDescendantDocuments | `MeasuredTemplateDocument#_preCreateDescendantDocuments`}
-     * and {@link MeasuredTemplateDocument._onCreateDescendantDocuments | `MeasuredTemplateDocument#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<MeasuredTemplateDocument.Database.Create> {}
-
-    /**
-     * Options for {@link MeasuredTemplateDocument._preUpdateDescendantDocuments | `MeasuredTemplateDocument#_preUpdateDescendantDocuments`}
-     * and {@link MeasuredTemplateDocument._onUpdateDescendantDocuments | `MeasuredTemplateDocument#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<MeasuredTemplateDocument.Database.Update> {}
-
-    /**
-     * Options for {@link MeasuredTemplateDocument._preDeleteDescendantDocuments | `MeasuredTemplateDocument#_preDeleteDescendantDocuments`}
-     * and {@link MeasuredTemplateDocument._onDeleteDescendantDocuments | `MeasuredTemplateDocument#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<MeasuredTemplateDocument.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode MeasuredTemplate.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

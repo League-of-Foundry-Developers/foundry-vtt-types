@@ -1,7 +1,7 @@
+import type { InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
-import type { documents } from "#client/client.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { InexactPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { BaseFolder, BaseJournalEntryCategory, BaseJournalEntryPage } from "#client/documents/_module.d.mts";
 import type BaseJournalEntry from "#common/documents/journal-entry.mjs";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
 import type { NotesLayer } from "#client/canvas/layers/_module.d.mts";
@@ -14,8 +14,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace JournalEntry {
   /**
@@ -297,7 +295,7 @@ declare namespace JournalEntry {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this JournalEntry document
      * @defaultValue `null`
@@ -313,19 +311,19 @@ declare namespace JournalEntry {
      * The pages contained within this JournalEntry document
      * @defaultValue `[]`
      */
-    pages: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryPage, JournalEntry.Implementation>;
+    pages: fields.EmbeddedCollectionField<typeof BaseJournalEntryPage, JournalEntry.Implementation>;
 
     /**
      * The _id of a Folder which contains this JournalEntry
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The categories contained within this JournalEntry.
      * @defaultValue `[]`
      */
-    categories: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryCategory, JournalEntry.Implementation>;
+    categories: fields.EmbeddedCollectionField<typeof BaseJournalEntryCategory, JournalEntry.Implementation>;
 
     /**
      * The numeric sort value which orders this JournalEntry relative to its siblings
@@ -942,117 +940,6 @@ declare namespace JournalEntry {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? JournalEntry.Implementation : JournalEntry.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for  JournalEntries */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<JournalEntry.Parent> {}
-
-    /** Options passed along in Create operations for  JournalEntries */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<JournalEntry.CreateData, JournalEntry.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for  JournalEntries */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<JournalEntry.Parent> {}
-
-    /** Options passed along in Update operations for  JournalEntries */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      JournalEntry.UpdateData,
-      JournalEntry.Parent
-    > {}
-
-    /** Operation for {@linkcode JournalEntry.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<JournalEntry.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode JournalEntry.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<JournalEntry.Database.Update> {}
-
-    /** Operation for {@linkcode JournalEntry.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<JournalEntry.Database.Delete> {}
-
-    /** Operation for {@linkcode JournalEntry.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      JournalEntry.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link JournalEntry.update | `JournalEntry#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode JournalEntry.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link JournalEntry._preCreate | `JournalEntry#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link JournalEntry._onCreate | `JournalEntry#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode JournalEntry._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<JournalEntry.Database.Create> {}
-
-    /** Operation for {@link JournalEntry._onCreateOperation | `JournalEntry#_onCreateOperation`} */
-    interface OnCreateOperation extends JournalEntry.Database.Create {}
-
-    /** Options for {@link JournalEntry._preUpdate | `JournalEntry#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link JournalEntry._onUpdate | `JournalEntry#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode JournalEntry._preUpdateOperation} */
-    interface PreUpdateOperation extends JournalEntry.Database.Update {}
-
-    /** Operation for {@link JournalEntry._onUpdateOperation | `JournalEntry._preUpdateOperation`} */
-    interface OnUpdateOperation extends JournalEntry.Database.Update {}
-
-    /** Options for {@link JournalEntry._preDelete | `JournalEntry#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link JournalEntry._onDelete | `JournalEntry#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link JournalEntry._preDeleteOperation | `JournalEntry#_preDeleteOperation`} */
-    interface PreDeleteOperation extends JournalEntry.Database.Delete {}
-
-    /** Options for {@link JournalEntry._onDeleteOperation | `JournalEntry#_onDeleteOperation`} */
-    interface OnDeleteOperation extends JournalEntry.Database.Delete {}
-
-    /** Context for {@linkcode JournalEntry._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<JournalEntry.Parent> {}
-
-    /** Context for {@linkcode JournalEntry._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<JournalEntry.Parent> {}
-
-    /** Context for {@linkcode JournalEntry._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<JournalEntry.Parent> {}
-
-    /**
-     * Options for {@link JournalEntry._preCreateDescendantDocuments | `JournalEntry#_preCreateDescendantDocuments`}
-     * and {@link JournalEntry._onCreateDescendantDocuments | `JournalEntry#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<JournalEntry.Database.Create> {}
-
-    /**
-     * Options for {@link JournalEntry._preUpdateDescendantDocuments | `JournalEntry#_preUpdateDescendantDocuments`}
-     * and {@link JournalEntry._onUpdateDescendantDocuments | `JournalEntry#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<JournalEntry.Database.Update> {}
-
-    /**
-     * Options for {@link JournalEntry._preDeleteDescendantDocuments | `JournalEntry#_preDeleteDescendantDocuments`}
-     * and {@link JournalEntry._onDeleteDescendantDocuments | `JournalEntry#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<JournalEntry.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode JournalEntry.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

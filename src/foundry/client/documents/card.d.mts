@@ -1,8 +1,8 @@
 import type { ConfiguredCard } from "#configuration";
-import type { AnyObject, DeepPartial, Identity, InexactPartial, MaybeArray, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
+import type { AnyObject, DeepPartial, Identity, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { BaseCards } from "#client/documents/_module.d.mts";
 import type BaseCard from "#common/documents/card.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -13,8 +13,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace Card {
   /**
@@ -270,7 +268,7 @@ declare namespace Card {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Card document
      * @defaultValue `null`
@@ -355,7 +353,7 @@ declare namespace Card {
      * The document ID of the origin deck to which this card belongs
      * @defaultValue `null`
      */
-    origin: fields.ForeignDocumentField<typeof documents.BaseCards>;
+    origin: fields.ForeignDocumentField<typeof BaseCards>;
 
     /**
      * The visible width of this card
@@ -390,7 +388,7 @@ declare namespace Card {
     _stats: fields.DocumentStatsField;
   }
 
-  interface FaceSchema extends DataSchema {
+  interface FaceSchema extends fields.DataSchema {
     /**
      * A name for this card face
      * @defaultValue `undefined`
@@ -997,112 +995,6 @@ declare namespace Card {
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Card.Implementation : Card.Stored;
 
-  namespace Database {
-    /** Options passed along in Get operations for Card Documents */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Card.Parent> {}
-
-    /** Options passed along in Create operations for Card Documents */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Card.CreateData, Card.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Card Documents */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Card.Parent> {}
-
-    /** Options passed along in Update operations for Card Documents */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Card.UpdateData, Card.Parent> {}
-
-    /** Operation for {@linkcode Card.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<Card.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode Card.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Card.Database.Update> {}
-
-    /** Operation for {@linkcode Card.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Card.Database.Delete> {}
-
-    /** Operation for {@linkcode Card.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      Card.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link Card.update | `Card#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Card.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link Card._preCreate | `Card#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link Card._onCreate | `Card#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Card._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Card.Database.Create> {}
-
-    /** Operation for {@link Card._onCreateOperation | `Card#_onCreateOperation`} */
-    interface OnCreateOperation extends Card.Database.Create {}
-
-    /** Options for {@link Card._preUpdate | `Card#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link Card._onUpdate | `Card#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Card._preUpdateOperation} */
-    interface PreUpdateOperation extends Card.Database.Update {}
-
-    /** Operation for {@link Card._onUpdateOperation | `Card._preUpdateOperation`} */
-    interface OnUpdateOperation extends Card.Database.Update {}
-
-    /** Options for {@link Card._preDelete | `Card#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link Card._onDelete | `Card#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link Card._preDeleteOperation | `Card#_preDeleteOperation`} */
-    interface PreDeleteOperation extends Card.Database.Delete {}
-
-    /** Options for {@link Card._onDeleteOperation | `Card#_onDeleteOperation`} */
-    interface OnDeleteOperation extends Card.Database.Delete {}
-
-    /** Context for {@linkcode Card._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Card.Parent> {}
-
-    /** Context for {@linkcode Card._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Card.Parent> {}
-
-    /** Context for {@linkcode Card._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Card.Parent> {}
-
-    /**
-     * Options for {@link Card._preCreateDescendantDocuments | `Card#_preCreateDescendantDocuments`}
-     * and {@link Card._onCreateDescendantDocuments | `Card#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<Card.Database.Create> {}
-
-    /**
-     * Options for {@link Card._preUpdateDescendantDocuments | `Card#_preUpdateDescendantDocuments`}
-     * and {@link Card._onUpdateDescendantDocuments | `Card#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Card.Database.Update> {}
-
-    /**
-     * Options for {@link Card._preDeleteDescendantDocuments | `Card#_preDeleteDescendantDocuments`}
-     * and {@link Card._onDeleteDescendantDocuments | `Card#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Card.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode Card.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
-
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
@@ -1330,7 +1222,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    */
   toMessage<Temporary extends boolean | undefined = undefined>(
     messageData?: DeepPartial<foundry.documents.BaseChatMessage.CreateData>,
-    options?: ChatMessage.Database.CreateOperation<Temporary>,
+    options?: ChatMessage.Database2.CreateDocumentsOperation<Temporary>,
   ): Promise<ChatMessage.TemporaryIf<Temporary> | undefined>;
 
   /*

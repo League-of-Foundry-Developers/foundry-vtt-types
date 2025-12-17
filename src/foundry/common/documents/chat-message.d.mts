@@ -310,7 +310,6 @@ declare namespace BaseChatMessage {
   export import UpdateData = ChatMessage.UpdateData;
   export import UpdateInput = ChatMessage.UpdateInput;
   export import Schema = ChatMessage.Schema;
-  export import Database = ChatMessage.Database;
   export import Database2 = ChatMessage.Database2;
   export import TemporaryIf = ChatMessage.TemporaryIf;
   export import Flags = ChatMessage.Flags;

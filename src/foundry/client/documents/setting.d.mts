@@ -1,7 +1,8 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
+import type { MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { BaseUser } from "#client/documents/_module.d.mts";
+import type BaseSetting from "#common/documents/setting.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */
@@ -11,8 +12,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace Setting {
   /**
@@ -204,7 +203,7 @@ declare namespace Setting {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Setting document
      * @defaultValue `null`
@@ -244,7 +243,7 @@ declare namespace Setting {
      * The ID of the user this Setting belongs to, if user-scoped.
      * @defaultValue `null`
      */
-    user: fields.ForeignDocumentField<typeof documents.BaseUser, { idOnly: true }>;
+    user: fields.ForeignDocumentField<typeof BaseUser, { idOnly: true }>;
 
     /**
      * An object of creation and access information
@@ -844,112 +843,6 @@ declare namespace Setting {
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Setting.Implementation : Setting.Stored;
 
-  namespace Database {
-    /** Options passed along in Get operations for Settings */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Setting.Parent> {}
-
-    /** Options passed along in Create operations for Settings */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Setting.CreateData, Setting.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Settings */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Setting.Parent> {}
-
-    /** Options passed along in Update operations for Settings */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Setting.UpdateData, Setting.Parent> {}
-
-    /** Operation for {@linkcode Setting.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<Setting.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode Setting.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Setting.Database.Update> {}
-
-    /** Operation for {@linkcode Setting.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Setting.Database.Delete> {}
-
-    /** Operation for {@linkcode Setting.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      Setting.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link Setting.update | `Setting#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Setting.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link Setting._preCreate | `Setting#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link Setting._onCreate | `Setting#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Setting._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Setting.Database.Create> {}
-
-    /** Operation for {@link Setting._onCreateOperation | `Setting#_onCreateOperation`} */
-    interface OnCreateOperation extends Setting.Database.Create {}
-
-    /** Options for {@link Setting._preUpdate | `Setting#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link Setting._onUpdate | `Setting#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Setting._preUpdateOperation} */
-    interface PreUpdateOperation extends Setting.Database.Update {}
-
-    /** Operation for {@link Setting._onUpdateOperation | `Setting._preUpdateOperation`} */
-    interface OnUpdateOperation extends Setting.Database.Update {}
-
-    /** Options for {@link Setting._preDelete | `Setting#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link Setting._onDelete | `Setting#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link Setting._preDeleteOperation | `Setting#_preDeleteOperation`} */
-    interface PreDeleteOperation extends Setting.Database.Delete {}
-
-    /** Options for {@link Setting._onDeleteOperation | `Setting#_onDeleteOperation`} */
-    interface OnDeleteOperation extends Setting.Database.Delete {}
-
-    /** Context for {@linkcode Setting._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Setting.Parent> {}
-
-    /** Context for {@linkcode Setting._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Setting.Parent> {}
-
-    /** Context for {@linkcode Setting._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Setting.Parent> {}
-
-    /**
-     * Options for {@link Setting._preCreateDescendantDocuments | `Setting#_preCreateDescendantDocuments`}
-     * and {@link Setting._onCreateDescendantDocuments | `Setting#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<Setting.Database.Create> {}
-
-    /**
-     * Options for {@link Setting._preUpdateDescendantDocuments | `Setting#_preUpdateDescendantDocuments`}
-     * and {@link Setting._onUpdateDescendantDocuments | `Setting#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Setting.Database.Update> {}
-
-    /**
-     * Options for {@link Setting._preDeleteDescendantDocuments | `Setting#_preDeleteDescendantDocuments`}
-     * and {@link Setting._onDeleteDescendantDocuments | `Setting#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Setting.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode Setting.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
-
   /**
    * @deprecated `Settings` does not have any flags.
    *
@@ -1053,7 +946,7 @@ declare namespace Setting {
  *
  * @see {@linkcode WorldSettings}       The world-level collection of Setting documents
  */
-declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocument {
+declare class Setting extends BaseSetting.Internal.ClientDocument {
   /**
    * @param data    - Initial data from which to construct the `Setting`
    * @param context - Construction context options

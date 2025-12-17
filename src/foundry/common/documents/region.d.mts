@@ -297,7 +297,6 @@ declare namespace BaseRegion {
   export import UpdateData = RegionDocument.UpdateData;
   export import UpdateInput = RegionDocument.UpdateInput;
   export import Schema = RegionDocument.Schema;
-  export import Database = RegionDocument.Database;
   export import Database2 = RegionDocument.Database2;
   export import TemporaryIf = RegionDocument.TemporaryIf;
   export import Flags = RegionDocument.Flags;

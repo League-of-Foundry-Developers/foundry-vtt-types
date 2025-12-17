@@ -1,7 +1,7 @@
-import type { InexactPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
-import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { LightData } from "#common/data/data.mjs";
+import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
 import type BaseAmbientLight from "#common/documents/ambient-light.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -12,8 +12,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace AmbientLightDocument {
   /**
@@ -195,7 +193,7 @@ declare namespace AmbientLightDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this BaseAmbientLight embedded document
      * @defaultValue `null`
@@ -845,120 +843,6 @@ declare namespace AmbientLightDocument {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? AmbientLightDocument.Implementation : AmbientLightDocument.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for AmbientLightDocuments */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<AmbientLightDocument.Parent> {}
-
-    /** Options passed along in Create operations for AmbientLightDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<AmbientLightDocument.CreateData, AmbientLightDocument.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for AmbientLightDocuments */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<AmbientLightDocument.Parent> {}
-
-    /** Options passed along in Update operations for AmbientLightDocuments */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      AmbientLightDocument.UpdateData,
-      AmbientLightDocument.Parent
-    > {
-      animate?: boolean;
-    }
-
-    /** Operation for {@linkcode AmbientLightDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<AmbientLightDocument.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode AmbientLightDocument.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<AmbientLightDocument.Database.Update> {}
-
-    /** Operation for {@linkcode AmbientLightDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<AmbientLightDocument.Database.Delete> {}
-
-    /** Operation for {@linkcode AmbientLightDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      AmbientLightDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link AmbientLightDocument.update | `AmbientLightDocument#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode AmbientLightDocument.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link AmbientLightDocument._preCreate | `AmbientLightDocument#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link AmbientLightDocument._onCreate | `AmbientLightDocument#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode AmbientLightDocument._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database
-      .PreCreateOperationStatic<AmbientLightDocument.Database.Create> {}
-
-    /** Operation for {@link AmbientLightDocument._onCreateOperation | `AmbientLightDocument#_onCreateOperation`} */
-    interface OnCreateOperation extends AmbientLightDocument.Database.Create {}
-
-    /** Options for {@link AmbientLightDocument._preUpdate | `AmbientLightDocument#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link AmbientLightDocument._onUpdate | `AmbientLightDocument#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode AmbientLightDocument._preUpdateOperation} */
-    interface PreUpdateOperation extends AmbientLightDocument.Database.Update {}
-
-    /** Operation for {@link AmbientLightDocument._onUpdateOperation | `AmbientLightDocument._preUpdateOperation`} */
-    interface OnUpdateOperation extends AmbientLightDocument.Database.Update {}
-
-    /** Options for {@link AmbientLightDocument._preDelete | `AmbientLightDocument#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link AmbientLightDocument._onDelete | `AmbientLightDocument#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link AmbientLightDocument._preDeleteOperation | `AmbientLightDocument#_preDeleteOperation`} */
-    interface PreDeleteOperation extends AmbientLightDocument.Database.Delete {}
-
-    /** Options for {@link AmbientLightDocument._onDeleteOperation | `AmbientLightDocument#_onDeleteOperation`} */
-    interface OnDeleteOperation extends AmbientLightDocument.Database.Delete {}
-
-    /** Context for {@linkcode AmbientLightDocument._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<AmbientLightDocument.Parent> {}
-
-    /** Context for {@linkcode AmbientLightDocument._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<AmbientLightDocument.Parent> {}
-
-    /** Context for {@linkcode AmbientLightDocument._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<AmbientLightDocument.Parent> {}
-
-    /**
-     * Options for {@link AmbientLightDocument._preCreateDescendantDocuments | `AmbientLightDocument#_preCreateDescendantDocuments`}
-     * and {@link AmbientLightDocument._onCreateDescendantDocuments | `AmbientLightDocument#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<AmbientLightDocument.Database.Create> {}
-
-    /**
-     * Options for {@link AmbientLightDocument._preUpdateDescendantDocuments | `AmbientLightDocument#_preUpdateDescendantDocuments`}
-     * and {@link AmbientLightDocument._onUpdateDescendantDocuments | `AmbientLightDocument#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<AmbientLightDocument.Database.Update> {}
-
-    /**
-     * Options for {@link AmbientLightDocument._preDeleteDescendantDocuments | `AmbientLightDocument#_preDeleteDescendantDocuments`}
-     * and {@link AmbientLightDocument._onDeleteDescendantDocuments | `AmbientLightDocument#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<AmbientLightDocument.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode AmbientLightDocument.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

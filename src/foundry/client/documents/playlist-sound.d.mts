@@ -1,7 +1,7 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
-import type Sound from "#client/audio/sound.d.mts";
+import type { MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { Sound } from "#client/audio/_module.d.mts";
 import type BasePlaylistSound from "#common/documents/playlist-sound.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -12,8 +12,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace PlaylistSound {
   /**
@@ -207,7 +205,7 @@ declare namespace PlaylistSound {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this PlaylistSound document
      * @defaultValue `null`
@@ -864,117 +862,6 @@ declare namespace PlaylistSound {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? PlaylistSound.Implementation : PlaylistSound.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for PlaylistSounds */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<PlaylistSound.Parent> {}
-
-    /** Options passed along in Create operations for PlaylistSounds */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<PlaylistSound.CreateData, PlaylistSound.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for PlaylistSounds */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<PlaylistSound.Parent> {}
-
-    /** Options passed along in Update operations for PlaylistSounds */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      PlaylistSound.UpdateData,
-      PlaylistSound.Parent
-    > {}
-
-    /** Operation for {@linkcode PlaylistSound.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<PlaylistSound.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode PlaylistSound.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<PlaylistSound.Database.Update> {}
-
-    /** Operation for {@linkcode PlaylistSound.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<PlaylistSound.Database.Delete> {}
-
-    /** Operation for {@linkcode PlaylistSound.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      PlaylistSound.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link PlaylistSound.update | `PlaylistSound#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode PlaylistSound.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link PlaylistSound._preCreate | `PlaylistSound#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link PlaylistSound._onCreate | `PlaylistSound#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode PlaylistSound._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<PlaylistSound.Database.Create> {}
-
-    /** Operation for {@link PlaylistSound._onCreateOperation | `PlaylistSound#_onCreateOperation`} */
-    interface OnCreateOperation extends PlaylistSound.Database.Create {}
-
-    /** Options for {@link PlaylistSound._preUpdate | `PlaylistSound#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link PlaylistSound._onUpdate | `PlaylistSound#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode PlaylistSound._preUpdateOperation} */
-    interface PreUpdateOperation extends PlaylistSound.Database.Update {}
-
-    /** Operation for {@link PlaylistSound._onUpdateOperation | `PlaylistSound._preUpdateOperation`} */
-    interface OnUpdateOperation extends PlaylistSound.Database.Update {}
-
-    /** Options for {@link PlaylistSound._preDelete | `PlaylistSound#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link PlaylistSound._onDelete | `PlaylistSound#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link PlaylistSound._preDeleteOperation | `PlaylistSound#_preDeleteOperation`} */
-    interface PreDeleteOperation extends PlaylistSound.Database.Delete {}
-
-    /** Options for {@link PlaylistSound._onDeleteOperation | `PlaylistSound#_onDeleteOperation`} */
-    interface OnDeleteOperation extends PlaylistSound.Database.Delete {}
-
-    /** Context for {@linkcode PlaylistSound._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<PlaylistSound.Parent> {}
-
-    /** Context for {@linkcode PlaylistSound._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<PlaylistSound.Parent> {}
-
-    /** Context for {@linkcode PlaylistSound._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<PlaylistSound.Parent> {}
-
-    /**
-     * Options for {@link PlaylistSound._preCreateDescendantDocuments | `PlaylistSound#_preCreateDescendantDocuments`}
-     * and {@link PlaylistSound._onCreateDescendantDocuments | `PlaylistSound#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<PlaylistSound.Database.Create> {}
-
-    /**
-     * Options for {@link PlaylistSound._preUpdateDescendantDocuments | `PlaylistSound#_preUpdateDescendantDocuments`}
-     * and {@link PlaylistSound._onUpdateDescendantDocuments | `PlaylistSound#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<PlaylistSound.Database.Update> {}
-
-    /**
-     * Options for {@link PlaylistSound._preDeleteDescendantDocuments | `PlaylistSound#_preDeleteDescendantDocuments`}
-     * and {@link PlaylistSound._onDeleteDescendantDocuments | `PlaylistSound#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<PlaylistSound.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode PlaylistSound.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

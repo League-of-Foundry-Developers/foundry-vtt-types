@@ -423,7 +423,6 @@ declare namespace BaseScene {
   export import UpdateData = Scene.UpdateData;
   export import UpdateInput = Scene.UpdateInput;
   export import Schema = Scene.Schema;
-  export import Database = Scene.Database;
   export import Database2 = Scene.Database2;
   export import TemporaryIf = Scene.TemporaryIf;
   export import Flags = Scene.Flags;

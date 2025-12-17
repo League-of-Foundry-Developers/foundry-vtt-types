@@ -1,7 +1,7 @@
 import type { ConfiguredTableResult } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { Identity, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseTableResult from "#common/documents/table-result.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -12,8 +12,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace TableResult {
   /**
@@ -254,7 +252,7 @@ declare namespace TableResult {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this TableResult embedded document
      * @defaultValue `null`
@@ -262,8 +260,8 @@ declare namespace TableResult {
     _id: fields.DocumentIdField;
 
     /**
-     * A result subtype from CONST.TABLE_RESULT_TYPES
-     * @defaultValue `CONST.TABLE_RESULT_TYPES.TEXT`
+     * A result subtype from {@linkcode CONST.TABLE_RESULT_TYPES}
+     * @defaultValue {@linkcode CONST.TABLE_RESULT_TYPES.TEXT}
      */
     type: fields.DocumentTypeField<
       typeof BaseTableResult,
@@ -915,123 +913,6 @@ declare namespace TableResult {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? TableResult.Implementation : TableResult.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for TableResults */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<TableResult.Parent> {}
-
-    /** Options passed along in Create operations for TableResults */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<TableResult.CreateData, TableResult.Parent, Temporary> {
-      animate?: boolean;
-    }
-
-    /** Options passed along in Delete operations for TableResults */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TableResult.Parent> {
-      animate?: boolean;
-    }
-
-    /** Options passed along in Update operations for TableResults */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      TableResult.UpdateData,
-      TableResult.Parent
-    > {
-      animate?: boolean;
-    }
-
-    /** Operation for {@linkcode TableResult.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<TableResult.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode TableResult.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<TableResult.Database.Update> {}
-
-    /** Operation for {@linkcode TableResult.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<TableResult.Database.Delete> {}
-
-    /** Operation for {@linkcode TableResult.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      TableResult.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link TableResult.update | `TableResult#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode TableResult.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link TableResult._preCreate | `TableResult#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link TableResult._onCreate | `TableResult#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode TableResult._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TableResult.Database.Create> {}
-
-    /** Operation for {@link TableResult._onCreateOperation | `TableResult#_onCreateOperation`} */
-    interface OnCreateOperation extends TableResult.Database.Create {}
-
-    /** Options for {@link TableResult._preUpdate | `TableResult#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link TableResult._onUpdate | `TableResult#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode TableResult._preUpdateOperation} */
-    interface PreUpdateOperation extends TableResult.Database.Update {}
-
-    /** Operation for {@link TableResult._onUpdateOperation | `TableResult._preUpdateOperation`} */
-    interface OnUpdateOperation extends TableResult.Database.Update {}
-
-    /** Options for {@link TableResult._preDelete | `TableResult#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link TableResult._onDelete | `TableResult#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link TableResult._preDeleteOperation | `TableResult#_preDeleteOperation`} */
-    interface PreDeleteOperation extends TableResult.Database.Delete {}
-
-    /** Options for {@link TableResult._onDeleteOperation | `TableResult#_onDeleteOperation`} */
-    interface OnDeleteOperation extends TableResult.Database.Delete {}
-
-    /** Context for {@linkcode TableResult._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
-
-    /** Context for {@linkcode TableResult._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
-
-    /** Context for {@linkcode TableResult._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
-
-    /**
-     * Options for {@link TableResult._preCreateDescendantDocuments | `TableResult#_preCreateDescendantDocuments`}
-     * and {@link TableResult._onCreateDescendantDocuments | `TableResult#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<TableResult.Database.Create> {}
-
-    /**
-     * Options for {@link TableResult._preUpdateDescendantDocuments | `TableResult#_preUpdateDescendantDocuments`}
-     * and {@link TableResult._onUpdateDescendantDocuments | `TableResult#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<TableResult.Database.Update> {}
-
-    /**
-     * Options for {@link TableResult._preDeleteDescendantDocuments | `TableResult#_preDeleteDescendantDocuments`}
-     * and {@link TableResult._onDeleteDescendantDocuments | `TableResult#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<TableResult.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode TableResult.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

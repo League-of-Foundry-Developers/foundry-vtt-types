@@ -480,7 +480,6 @@ declare namespace BaseToken {
   export import UpdateData = TokenDocument.UpdateData;
   export import UpdateInput = TokenDocument.UpdateInput;
   export import Schema = TokenDocument.Schema;
-  export import Database = TokenDocument.Database;
   export import Database2 = TokenDocument.Database2;
   export import TemporaryIf = TokenDocument.TemporaryIf;
   export import Flags = TokenDocument.Flags;

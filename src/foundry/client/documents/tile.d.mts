@@ -1,6 +1,6 @@
-import type { InexactPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type { TextureData } from "#common/data/data.mjs";
 import type BaseTile from "#common/documents/tile.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
@@ -12,8 +12,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace TileDocument {
   /**
@@ -195,7 +193,7 @@ declare namespace TileDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Tile embedded document
      * @defaultValue `null`
@@ -920,117 +918,6 @@ declare namespace TileDocument {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? TileDocument.Implementation : TileDocument.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for TileDocuments */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<TileDocument.Parent> {}
-
-    /** Options passed along in Create operations for TileDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<TileDocument.CreateData, TileDocument.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for TileDocuments */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TileDocument.Parent> {}
-
-    /** Options passed along in Update operations for TileDocuments */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      TileDocument.UpdateData,
-      TileDocument.Parent
-    > {}
-
-    /** Operation for {@linkcode TileDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<TileDocument.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode TileDocument.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<TileDocument.Database.Update> {}
-
-    /** Operation for {@linkcode TileDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<TileDocument.Database.Delete> {}
-
-    /** Operation for {@linkcode TileDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      TileDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link TileDocument.update | `TileDocument#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode TileDocument.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link TileDocument._preCreate | `TileDocument#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link TileDocument._onCreate | `TileDocument#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode TileDocument._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TileDocument.Database.Create> {}
-
-    /** Operation for {@link TileDocument._onCreateOperation | `TileDocument#_onCreateOperation`} */
-    interface OnCreateOperation extends TileDocument.Database.Create {}
-
-    /** Options for {@link TileDocument._preUpdate | `TileDocument#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link TileDocument._onUpdate | `TileDocument#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode TileDocument._preUpdateOperation} */
-    interface PreUpdateOperation extends TileDocument.Database.Update {}
-
-    /** Operation for {@link TileDocument._onUpdateOperation | `TileDocument._preUpdateOperation`} */
-    interface OnUpdateOperation extends TileDocument.Database.Update {}
-
-    /** Options for {@link TileDocument._preDelete | `TileDocument#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link TileDocument._onDelete | `TileDocument#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link TileDocument._preDeleteOperation | `TileDocument#_preDeleteOperation`} */
-    interface PreDeleteOperation extends TileDocument.Database.Delete {}
-
-    /** Options for {@link TileDocument._onDeleteOperation | `TileDocument#_onDeleteOperation`} */
-    interface OnDeleteOperation extends TileDocument.Database.Delete {}
-
-    /** Context for {@linkcode TileDocument._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<TileDocument.Parent> {}
-
-    /** Context for {@linkcode TileDocument._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<TileDocument.Parent> {}
-
-    /** Context for {@linkcode TileDocument._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<TileDocument.Parent> {}
-
-    /**
-     * Options for {@link TileDocument._preCreateDescendantDocuments | `TileDocument#_preCreateDescendantDocuments`}
-     * and {@link TileDocument._onCreateDescendantDocuments | `TileDocument#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<TileDocument.Database.Create> {}
-
-    /**
-     * Options for {@link TileDocument._preUpdateDescendantDocuments | `TileDocument#_preUpdateDescendantDocuments`}
-     * and {@link TileDocument._onUpdateDescendantDocuments | `TileDocument#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<TileDocument.Database.Update> {}
-
-    /**
-     * Options for {@link TileDocument._preDeleteDescendantDocuments | `TileDocument#_preDeleteDescendantDocuments`}
-     * and {@link TileDocument._onDeleteDescendantDocuments | `TileDocument#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<TileDocument.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode TileDocument.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

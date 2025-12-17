@@ -314,7 +314,6 @@ declare namespace BasePlaylist {
   export import UpdateData = Playlist.UpdateData;
   export import UpdateInput = Playlist.UpdateInput;
   export import Schema = Playlist.Schema;
-  export import Database = Playlist.Database;
   export import Database2 = Playlist.Database2;
   export import TemporaryIf = Playlist.TemporaryIf;
   export import Flags = Playlist.Flags;

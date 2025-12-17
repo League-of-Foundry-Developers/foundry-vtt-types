@@ -325,7 +325,6 @@ declare namespace BaseTableResult {
   export import UpdateData = TableResult.UpdateData;
   export import UpdateInput = TableResult.UpdateInput;
   export import Schema = TableResult.Schema;
-  export import Database = TableResult.Database;
   export import Database2 = TableResult.Database2;
   export import TemporaryIf = TableResult.TemporaryIf;
   export import Flags = TableResult.Flags;

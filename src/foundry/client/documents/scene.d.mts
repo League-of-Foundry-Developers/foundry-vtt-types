@@ -1,8 +1,9 @@
 import type { InexactPartial, MaybeArray, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { documents } from "#client/client.d.mts";
 import type { LightData, TextureData } from "#common/data/data.d.mts";
+import type BaseScene from "#common/documents/scene.d.mts";
 import type ImageHelper from "#client/helpers/media/image-helper.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
@@ -14,8 +15,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace Scene {
   /**
@@ -317,7 +316,7 @@ declare namespace Scene {
     shadows: number;
   }
 
-  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends DataSchema {
+  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends fields.DataSchema {
     /**
      * The normalized hue angle.
      * @defaultValue `0` for `environment.base`, `257/360` for `environment.dark`
@@ -392,7 +391,7 @@ declare namespace Scene {
     shadows: number;
   }
 
-  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends DataSchema {
+  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends fields.DataSchema {
     /**
      * The normalized hue angle.
      * @defaultValue `0` for `environment.base`, `257/360` for `environment.dark`
@@ -469,7 +468,7 @@ declare namespace Scene {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Scene document
      * @defaultValue `null`
@@ -721,7 +720,7 @@ declare namespace Scene {
     _stats: fields.DocumentStatsField;
   }
 
-  interface FogSchema extends DataSchema {
+  interface FogSchema extends fields.DataSchema {
     /**
      * Should fog exploration progress be tracked for this Scene?
      * @defaultValue `true`
@@ -748,7 +747,7 @@ declare namespace Scene {
 
   interface FogData extends fields.SchemaField.InitializedData<FogSchema> {}
 
-  interface FogColorSchema extends DataSchema {
+  interface FogColorSchema extends fields.DataSchema {
     /**
      * A color tint applied to explored regions of fog of war
      * @defaultValue `null`
@@ -764,7 +763,7 @@ declare namespace Scene {
 
   interface FogColorData extends fields.SchemaField.InitializedData<FogColorSchema> {}
 
-  interface EnvironmentSchema extends DataSchema {
+  interface EnvironmentSchema extends fields.DataSchema {
     /**
      * The ambient darkness level in this Scene, where 0 represents midday (maximum illumination) and 1 represents midnight (maximum darkness)
      * @defaultValue `0`
@@ -866,7 +865,7 @@ declare namespace Scene {
 
   interface EnvironmentData extends fields.SchemaField.InitializedData<EnvironmentSchema> {}
 
-  interface GridSchema extends DataSchema {
+  interface GridSchema extends fields.DataSchema {
     /**
      * The type of grid, a number from CONST.GRID_TYPES.
      * @defaultValue {@linkcode foundry.packages.BaseSystem.grid | game.system.grid.type}
@@ -1526,116 +1525,6 @@ declare namespace Scene {
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Scene.Implementation : Scene.Stored;
 
-  namespace Database {
-    /** Options passed along in Get operations for Scenes */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Scene.Parent> {}
-
-    /** Options passed along in Create operations for Scenes */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Scene.CreateData, Scene.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Scenes */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Scene.Parent> {}
-
-    /** Options passed along in Update operations for Scenes */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Scene.UpdateData, Scene.Parent> {
-      thumb?: (string | null)[];
-      autoReposition?: boolean;
-      animateDarkness?: number;
-    }
-
-    /** Operation for {@linkcode Scene.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<Scene.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode Scene.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Scene.Database.Update> {}
-
-    /** Operation for {@linkcode Scene.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Scene.Database.Delete> {}
-
-    /** Operation for {@linkcode Scene.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      Scene.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link Scene.update | `Scene#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Scene.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link Scene._preCreate | `Scene#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link Scene._onCreate | `Scene#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Scene._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Scene.Database.Create> {}
-
-    /** Operation for {@link Scene._onCreateOperation | `Scene#_onCreateOperation`} */
-    interface OnCreateOperation extends Scene.Database.Create {}
-
-    /** Options for {@link Scene._preUpdate | `Scene#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link Scene._onUpdate | `Scene#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Scene._preUpdateOperation} */
-    interface PreUpdateOperation extends Scene.Database.Update {}
-
-    /** Operation for {@link Scene._onUpdateOperation | `Scene._preUpdateOperation`} */
-    interface OnUpdateOperation extends Scene.Database.Update {}
-
-    /** Options for {@link Scene._preDelete | `Scene#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link Scene._onDelete | `Scene#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link Scene._preDeleteOperation | `Scene#_preDeleteOperation`} */
-    interface PreDeleteOperation extends Scene.Database.Delete {}
-
-    /** Options for {@link Scene._onDeleteOperation | `Scene#_onDeleteOperation`} */
-    interface OnDeleteOperation extends Scene.Database.Delete {}
-
-    /** Context for {@linkcode Scene._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Scene.Parent> {}
-
-    /** Context for {@linkcode Scene._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Scene.Parent> {}
-
-    /** Context for {@linkcode Scene._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Scene.Parent> {}
-
-    /**
-     * Options for {@link Scene._preCreateDescendantDocuments | `Scene#_preCreateDescendantDocuments`}
-     * and {@link Scene._onCreateDescendantDocuments | `Scene#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<Scene.Database.Create> {}
-
-    /**
-     * Options for {@link Scene._preUpdateDescendantDocuments | `Scene#_preUpdateDescendantDocuments`}
-     * and {@link Scene._onUpdateDescendantDocuments | `Scene#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Scene.Database.Update> {}
-
-    /**
-     * Options for {@link Scene._preDeleteDescendantDocuments | `Scene#_preDeleteDescendantDocuments`}
-     * and {@link Scene._onDeleteDescendantDocuments | `Scene#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Scene.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode Scene.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
-
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
@@ -1879,7 +1768,7 @@ declare namespace Scene {
  * @see {@linkcode Scenes}            The world-level collection of Scene documents
  * @see {@linkcode SceneConfig}       The Scene configuration application
  */
-declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument {
+declare class Scene extends BaseScene.Internal.ClientDocument {
   /**
    * @param data    - Initial data from which to construct the `Scene`
    * @param context - Construction context options

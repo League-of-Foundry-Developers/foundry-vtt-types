@@ -1,8 +1,8 @@
 import type { ConfiguredItem } from "#configuration";
-import type { documents } from "#client/client.d.mts";
+import type { AnyObject, Identity, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { AnyObject, Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { BaseActiveEffect, BaseFolder } from "#client/documents/_module.d.mts";
 import type BaseItem from "#common/documents/item.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -13,8 +13,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace Item {
   /**
@@ -357,7 +355,7 @@ declare namespace Item {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Item document
      * @defaultValue `null`
@@ -368,8 +366,7 @@ declare namespace Item {
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Item subtype which configures the system data model applied */
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof documents.BaseItem, {}>;
+    type: fields.DocumentTypeField<typeof BaseItem>;
 
     /**
      * An image file path which provides the artwork for this Item
@@ -384,19 +381,19 @@ declare namespace Item {
      * Data for an Item subtype, defined by a System or Module
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<typeof documents.BaseItem>;
+    system: fields.TypeDataField<typeof BaseItem>;
 
     /**
      * A collection of ActiveEffect embedded Documents
      * @defaultValue `[]`
      */
-    effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Item.Implementation>;
+    effects: fields.EmbeddedCollectionField<typeof BaseActiveEffect, Item.Implementation>;
 
     /**
      * The _id of a Folder which contains this Item
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The numeric sort value which orders this Item relative to its siblings
@@ -1013,112 +1010,6 @@ declare namespace Item {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Item.Implementation : Item.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for Items */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Item.Parent> {}
-
-    /** Options passed along in Create operations for Items */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Item.CreateData, Item.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Items */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Item.Parent> {}
-
-    /** Options passed along in Update operations for Items */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Item.UpdateData, Item.Parent> {}
-
-    /** Operation for {@linkcode Item.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<Item.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode Item.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Item.Database.Update> {}
-
-    /** Operation for {@linkcode Item.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Item.Database.Delete> {}
-
-    /** Operation for {@linkcode Item.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      Item.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link Item.update | `Item#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Item.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link Item._preCreate | `Item#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link Item._onCreate | `Item#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Item._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Item.Database.Create> {}
-
-    /** Operation for {@link Item._onCreateOperation | `Item#_onCreateOperation`} */
-    interface OnCreateOperation extends Item.Database.Create {}
-
-    /** Options for {@link Item._preUpdate | `Item#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link Item._onUpdate | `Item#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Item._preUpdateOperation} */
-    interface PreUpdateOperation extends Item.Database.Update {}
-
-    /** Operation for {@link Item._onUpdateOperation | `Item._preUpdateOperation`} */
-    interface OnUpdateOperation extends Item.Database.Update {}
-
-    /** Options for {@link Item._preDelete | `Item#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link Item._onDelete | `Item#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link Item._preDeleteOperation | `Item#_preDeleteOperation`} */
-    interface PreDeleteOperation extends Item.Database.Delete {}
-
-    /** Options for {@link Item._onDeleteOperation | `Item#_onDeleteOperation`} */
-    interface OnDeleteOperation extends Item.Database.Delete {}
-
-    /** Context for {@linkcode Item._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Item.Parent> {}
-
-    /** Context for {@linkcode Item._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Item.Parent> {}
-
-    /** Context for {@linkcode Item._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Item.Parent> {}
-
-    /**
-     * Options for {@link Item._preCreateDescendantDocuments | `Item#_preCreateDescendantDocuments`}
-     * and {@link Item._onCreateDescendantDocuments | `Item#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<Item.Database.Create> {}
-
-    /**
-     * Options for {@link Item._preUpdateDescendantDocuments | `Item#_preUpdateDescendantDocuments`}
-     * and {@link Item._onUpdateDescendantDocuments | `Item#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Item.Database.Update> {}
-
-    /**
-     * Options for {@link Item._preDeleteDescendantDocuments | `Item#_preDeleteDescendantDocuments`}
-     * and {@link Item._onDeleteDescendantDocuments | `Item#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Item.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode Item.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

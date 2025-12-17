@@ -1,8 +1,7 @@
-import type { InexactPartial, IntentionalPartial, MaybeArray, Merge, NullishProps } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type { DatabaseGetOperation } from "#common/abstract/_types.d.mts";
+import type { MaybeArray, Merge, NullishProps } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { BaseScene, BaseUser } from "#client/documents/_module.d.mts";
 import type BaseFogExploration from "#common/documents/fog-exploration.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -13,8 +12,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace FogExploration {
   /**
@@ -207,7 +204,7 @@ declare namespace FogExploration {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this FogExploration document
      * @defaultValue `null`
@@ -218,13 +215,13 @@ declare namespace FogExploration {
      * The _id of the Scene document to which this fog applies
      * @defaultValue `canvas?.scene?.id`
      */
-    scene: fields.ForeignDocumentField<typeof documents.BaseScene, { initial: () => string | undefined }>;
+    scene: fields.ForeignDocumentField<typeof BaseScene, { initial: () => string | undefined }>;
 
     /**
      * The _id of the User document to which this fog applies
      * @defaultValue `null`
      */
-    user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
+    user: fields.ForeignDocumentField<typeof BaseUser, { initial: () => string }>;
 
     /**
      * The base64 image/jpeg of the explored fog polygon
@@ -847,123 +844,6 @@ declare namespace FogExploration {
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? FogExploration.Implementation : FogExploration.Stored;
 
-  namespace Database {
-    /** Options passed along in Get operations for FogExplorations */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<FogExploration.Parent> {}
-
-    /** Options passed along in Create operations for FogExplorations */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<FogExploration.CreateData, FogExploration.Parent, Temporary> {
-      loadFog?: boolean;
-    }
-
-    /** Options passed along in Delete operations for FogExplorations */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<FogExploration.Parent> {
-      loadFog?: boolean;
-    }
-
-    /** Options passed along in Update operations for FogExplorations */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      FogExploration.UpdateData,
-      FogExploration.Parent
-    > {
-      loadFog?: boolean;
-    }
-
-    /** Operation for {@linkcode FogExploration.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<FogExploration.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode FogExploration.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<FogExploration.Database.Update> {}
-
-    /** Operation for {@linkcode FogExploration.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<FogExploration.Database.Delete> {}
-
-    /** Operation for {@linkcode FogExploration.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      FogExploration.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link FogExploration.update | `FogExploration#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode FogExploration.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link FogExploration._preCreate | `FogExploration#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link FogExploration._onCreate | `FogExploration#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode FogExploration._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<FogExploration.Database.Create> {}
-
-    /** Operation for {@link FogExploration._onCreateOperation | `FogExploration#_onCreateOperation`} */
-    interface OnCreateOperation extends FogExploration.Database.Create {}
-
-    /** Options for {@link FogExploration._preUpdate | `FogExploration#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link FogExploration._onUpdate | `FogExploration#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode FogExploration._preUpdateOperation} */
-    interface PreUpdateOperation extends FogExploration.Database.Update {}
-
-    /** Operation for {@link FogExploration._onUpdateOperation | `FogExploration._preUpdateOperation`} */
-    interface OnUpdateOperation extends FogExploration.Database.Update {}
-
-    /** Options for {@link FogExploration._preDelete | `FogExploration#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link FogExploration._onDelete | `FogExploration#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link FogExploration._preDeleteOperation | `FogExploration#_preDeleteOperation`} */
-    interface PreDeleteOperation extends FogExploration.Database.Delete {}
-
-    /** Options for {@link FogExploration._onDeleteOperation | `FogExploration#_onDeleteOperation`} */
-    interface OnDeleteOperation extends FogExploration.Database.Delete {}
-
-    /** Context for {@linkcode FogExploration._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<FogExploration.Parent> {}
-
-    /** Context for {@linkcode FogExploration._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<FogExploration.Parent> {}
-
-    /** Context for {@linkcode FogExploration._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<FogExploration.Parent> {}
-
-    /**
-     * Options for {@link FogExploration._preCreateDescendantDocuments | `FogExploration#_preCreateDescendantDocuments`}
-     * and {@link FogExploration._onCreateDescendantDocuments | `FogExploration#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<FogExploration.Database.Create> {}
-
-    /**
-     * Options for {@link FogExploration._preUpdateDescendantDocuments | `FogExploration#_preUpdateDescendantDocuments`}
-     * and {@link FogExploration._onUpdateDescendantDocuments | `FogExploration#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<FogExploration.Database.Update> {}
-
-    /**
-     * Options for {@link FogExploration._preDeleteDescendantDocuments | `FogExploration#_preDeleteDescendantDocuments`}
-     * and {@link FogExploration._onDeleteDescendantDocuments | `FogExploration#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<FogExploration.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode FogExploration.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
-
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
@@ -1068,7 +948,7 @@ declare namespace FogExploration {
    * @remarks {@link FogExploration.load | `FogExploration#load`} takes the `query` property separately as its first argument, then merges that
    * with this interface via `{query, ...options}` before passing to {@link ClientDatabaseBackend.get | `this.database.get`}
    */
-  interface LoadOptions extends Omit<IntentionalPartial<DatabaseGetOperation>, "query"> {}
+  interface LoadOptions extends Omit<FogExploration.Database2.GetDocumentsOperation, "query"> {}
 
   /**
    * The arguments to construct the document.

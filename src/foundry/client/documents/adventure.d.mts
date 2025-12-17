@@ -1,9 +1,8 @@
 import type { InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseAdventure from "#common/documents/adventure.mjs";
 import type DataModel from "#common/abstract/data.mjs";
+import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
+import type BaseAdventure from "#common/documents/adventure.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */
@@ -195,7 +194,7 @@ declare namespace Adventure {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Adventure document
      * @defaultValue `null`
@@ -902,112 +901,6 @@ declare namespace Adventure {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Adventure.Implementation : Adventure.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for Adventures */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Adventure.Parent> {}
-
-    /** Options passed along in Create operations for Adventures */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Adventure.CreateData, Adventure.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Adventures */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Adventure.Parent> {}
-
-    /** Options passed along in Update operations for Adventures */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Adventure.UpdateData, Adventure.Parent> {}
-
-    /** Operation for {@linkcode Adventure.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<Adventure.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode Adventure.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Adventure.Database.Update> {}
-
-    /** Operation for {@linkcode Adventure.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Adventure.Database.Delete> {}
-
-    /** Operation for {@linkcode Adventure.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      Adventure.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link Adventure.update | `Adventure#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Adventure.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link Adventure._preCreate | `Adventure#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link Adventure._onCreate | `Adventure#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Adventure._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Adventure.Database.Create> {}
-
-    /** Operation for {@link Adventure._onCreateOperation | `Adventure#_onCreateOperation`} */
-    interface OnCreateOperation extends Adventure.Database.Create {}
-
-    /** Options for {@link Adventure._preUpdate | `Adventure#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link Adventure._onUpdate | `Adventure#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Adventure._preUpdateOperation} */
-    interface PreUpdateOperation extends Adventure.Database.Update {}
-
-    /** Operation for {@link Adventure._onUpdateOperation | `Adventure._preUpdateOperation`} */
-    interface OnUpdateOperation extends Adventure.Database.Update {}
-
-    /** Options for {@link Adventure._preDelete | `Adventure#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link Adventure._onDelete | `Adventure#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link Adventure._preDeleteOperation | `Adventure#_preDeleteOperation`} */
-    interface PreDeleteOperation extends Adventure.Database.Delete {}
-
-    /** Options for {@link Adventure._onDeleteOperation | `Adventure#_onDeleteOperation`} */
-    interface OnDeleteOperation extends Adventure.Database.Delete {}
-
-    /** Context for {@linkcode Adventure._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Adventure.Parent> {}
-
-    /** Context for {@linkcode Adventure._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Adventure.Parent> {}
-
-    /** Context for {@linkcode Adventure._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Adventure.Parent> {}
-
-    /**
-     * Options for {@link Adventure._preCreateDescendantDocuments | `Adventure#_preCreateDescendantDocuments`}
-     * and {@link Adventure._onCreateDescendantDocuments | `Adventure#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<Adventure.Database.Create> {}
-
-    /**
-     * Options for {@link Adventure._preUpdateDescendantDocuments | `Adventure#_preUpdateDescendantDocuments`}
-     * and {@link Adventure._onUpdateDescendantDocuments | `Adventure#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Adventure.Database.Update> {}
-
-    /**
-     * Options for {@link Adventure._preDeleteDescendantDocuments | `Adventure#_preDeleteDescendantDocuments`}
-     * and {@link Adventure._onDeleteDescendantDocuments | `Adventure#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Adventure.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode Adventure.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

@@ -1,10 +1,10 @@
-import type { AnyObject, InexactPartial, NullishProps, Merge, Identity, MaybeArray } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
-import type BaseActor from "#common/documents/actor.d.mts";
 import type { ConfiguredActor } from "#configuration";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { AnyObject, InexactPartial, NullishProps, Merge, Identity, MaybeArray } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { BaseItem, BaseActiveEffect, BaseFolder } from "#client/documents/_module.d.mts";
 import type { PrototypeToken } from "#common/data/data.mjs";
+import type BaseActor from "#common/documents/actor.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -19,8 +19,6 @@ import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.m
 /** @privateRemarks `hookEvents` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { AllHooks as hookEvents } from "#client/hooks.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace Actor {
   /**
@@ -375,7 +373,7 @@ declare namespace Actor {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Actor document
      * @defaultValue `null`
@@ -386,8 +384,7 @@ declare namespace Actor {
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Actor subtype which configures the system data model applied */
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof BaseActor, {}>;
+    type: fields.DocumentTypeField<typeof BaseActor>;
 
     /**
      * An image file path which provides the artwork for this Actor
@@ -411,19 +408,19 @@ declare namespace Actor {
      * A Collection of Item embedded Documents
      * @defaultValue `[]`
      */
-    items: fields.EmbeddedCollectionField<typeof documents.BaseItem, Actor.Implementation>;
+    items: fields.EmbeddedCollectionField<typeof BaseItem, Actor.Implementation>;
 
     /**
      * A Collection of ActiveEffect embedded Documents
      * @defaultValue `[]`
      */
-    effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Actor.Implementation>;
+    effects: fields.EmbeddedCollectionField<typeof BaseActiveEffect, Actor.Implementation>;
 
     /**
      * The _id of a Folder which contains this Actor
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The numeric sort value which orders this Actor relative to its siblings
@@ -1007,112 +1004,6 @@ declare namespace Actor {
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Actor.Implementation : Actor.Stored;
 
-  namespace Database {
-    /** Options passed along in Get operations for Actors */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Actor.Parent> {}
-
-    /** Options passed along in Create operations for Actors */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Actor.CreateData, Actor.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Actors */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Actor.Parent> {}
-
-    /** Options passed along in Update operations for Actors */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Actor.UpdateData, Actor.Parent> {}
-
-    /** Operation for {@linkcode Actor.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<Actor.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode Actor.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Actor.Database.Update> {}
-
-    /** Operation for {@linkcode Actor.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Actor.Database.Delete> {}
-
-    /** Operation for {@linkcode Actor.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      Actor.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link Actor.update | `Actor#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Actor.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link Actor._preCreate | `Actor#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link Actor._onCreate | `Actor#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Actor._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Actor.Database.Create> {}
-
-    /** Operation for {@link Actor._onCreateOperation | `Actor#_onCreateOperation`} */
-    interface OnCreateOperation extends Actor.Database.Create {}
-
-    /** Options for {@link Actor._preUpdate | `Actor#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link Actor._onUpdate | `Actor#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Actor._preUpdateOperation} */
-    interface PreUpdateOperation extends Actor.Database.Update {}
-
-    /** Operation for {@link Actor._onUpdateOperation | `Actor._preUpdateOperation`} */
-    interface OnUpdateOperation extends Actor.Database.Update {}
-
-    /** Options for {@link Actor._preDelete | `Actor#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link Actor._onDelete | `Actor#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link Actor._preDeleteOperation | `Actor#_preDeleteOperation`} */
-    interface PreDeleteOperation extends Actor.Database.Delete {}
-
-    /** Options for {@link Actor._onDeleteOperation | `Actor#_onDeleteOperation`} */
-    interface OnDeleteOperation extends Actor.Database.Delete {}
-
-    /** Context for {@linkcode Actor._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
-
-    /** Context for {@linkcode Actor._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
-
-    /** Context for {@linkcode Actor._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
-
-    /**
-     * Options for {@link Actor._preCreateDescendantDocuments | `Actor#_preCreateDescendantDocuments`}
-     * and {@link Actor._onCreateDescendantDocuments | `Actor#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<Actor.Database.Create> {}
-
-    /**
-     * Options for {@link Actor._preUpdateDescendantDocuments | `Actor#_preUpdateDescendantDocuments`}
-     * and {@link Actor._onUpdateDescendantDocuments | `Actor#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Actor.Database.Update> {}
-
-    /**
-     * Options for {@link Actor._preDeleteDescendantDocuments | `Actor#_preDeleteDescendantDocuments`}
-     * and {@link Actor._onDeleteDescendantDocuments | `Actor#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Actor.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode Actor.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
-
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
@@ -1617,7 +1508,8 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param options - The update context.
    * @remarks Forwards to {@link Token._onUpdateBaseActor | `Token#_onUpdateBaseActor`}
    */
-  protected _updateDependentTokens(update: Actor.UpdateData, options: Actor.Database.UpdateOperation): void;
+  // TODO(esheyw): verify operation is correct
+  protected _updateDependentTokens(update: Actor.UpdateData, options: Actor.Database2.OnUpdateOperation): void;
 
   /*
    * After this point these are not really overridden methods.

@@ -1,8 +1,8 @@
 import type { ConfiguredRegionBehavior } from "#configuration";
+import type { Identity, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
 import type BaseRegionBehavior from "#common/documents/region-behavior.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */
@@ -12,8 +12,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace RegionBehavior {
   /**
@@ -283,7 +281,7 @@ declare namespace RegionBehavior {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this RegionBehavior document
      * @defaultValue `null`
@@ -299,8 +297,7 @@ declare namespace RegionBehavior {
     /**
      * An RegionBehavior subtype which configures the system data model applied
      */
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof BaseRegionBehavior, {}>;
+    type: fields.DocumentTypeField<typeof BaseRegionBehavior>;
 
     /**
      * Data for a RegionBehavior subtype, defined by a System or Module
@@ -909,117 +906,6 @@ declare namespace RegionBehavior {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? RegionBehavior.Implementation : RegionBehavior.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for RegionBehaviors */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<RegionBehavior.Parent> {}
-
-    /** Options passed along in Create operations for RegionBehaviors */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<RegionBehavior.CreateData, RegionBehavior.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for RegionBehaviors */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RegionBehavior.Parent> {}
-
-    /** Options passed along in Update operations for RegionBehaviors */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      RegionBehavior.UpdateData,
-      RegionBehavior.Parent
-    > {}
-
-    /** Operation for {@linkcode RegionBehavior.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<RegionBehavior.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode RegionBehavior.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<RegionBehavior.Database.Update> {}
-
-    /** Operation for {@linkcode RegionBehavior.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<RegionBehavior.Database.Delete> {}
-
-    /** Operation for {@linkcode RegionBehavior.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      RegionBehavior.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link RegionBehavior.update | `RegionBehavior#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode RegionBehavior.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link RegionBehavior._preCreate | `RegionBehavior#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link RegionBehavior._onCreate | `RegionBehavior#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode RegionBehavior._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RegionBehavior.Database.Create> {}
-
-    /** Operation for {@link RegionBehavior._onCreateOperation | `RegionBehavior#_onCreateOperation`} */
-    interface OnCreateOperation extends RegionBehavior.Database.Create {}
-
-    /** Options for {@link RegionBehavior._preUpdate | `RegionBehavior#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link RegionBehavior._onUpdate | `RegionBehavior#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode RegionBehavior._preUpdateOperation} */
-    interface PreUpdateOperation extends RegionBehavior.Database.Update {}
-
-    /** Operation for {@link RegionBehavior._onUpdateOperation | `RegionBehavior._preUpdateOperation`} */
-    interface OnUpdateOperation extends RegionBehavior.Database.Update {}
-
-    /** Options for {@link RegionBehavior._preDelete | `RegionBehavior#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link RegionBehavior._onDelete | `RegionBehavior#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link RegionBehavior._preDeleteOperation | `RegionBehavior#_preDeleteOperation`} */
-    interface PreDeleteOperation extends RegionBehavior.Database.Delete {}
-
-    /** Options for {@link RegionBehavior._onDeleteOperation | `RegionBehavior#_onDeleteOperation`} */
-    interface OnDeleteOperation extends RegionBehavior.Database.Delete {}
-
-    /** Context for {@linkcode RegionBehavior._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
-
-    /** Context for {@linkcode RegionBehavior._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
-
-    /** Context for {@linkcode RegionBehavior._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
-
-    /**
-     * Options for {@link RegionBehavior._preCreateDescendantDocuments | `RegionBehavior#_preCreateDescendantDocuments`}
-     * and {@link RegionBehavior._onCreateDescendantDocuments | `RegionBehavior#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<RegionBehavior.Database.Create> {}
-
-    /**
-     * Options for {@link RegionBehavior._preUpdateDescendantDocuments | `RegionBehavior#_preUpdateDescendantDocuments`}
-     * and {@link RegionBehavior._onUpdateDescendantDocuments | `RegionBehavior#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<RegionBehavior.Database.Update> {}
-
-    /**
-     * Options for {@link RegionBehavior._preDeleteDescendantDocuments | `RegionBehavior#_preDeleteDescendantDocuments`}
-     * and {@link RegionBehavior._onDeleteDescendantDocuments | `RegionBehavior#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<RegionBehavior.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode RegionBehavior.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

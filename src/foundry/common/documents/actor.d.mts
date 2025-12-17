@@ -345,7 +345,6 @@ declare namespace BaseActor {
   export import UpdateData = Actor.UpdateData;
   export import UpdateInput = Actor.UpdateInput;
   export import Schema = Actor.Schema;
-  export import Database = Actor.Database;
   export import Database2 = Actor.Database2;
   export import TemporaryIf = Actor.TemporaryIf;
   export import Flags = Actor.Flags;

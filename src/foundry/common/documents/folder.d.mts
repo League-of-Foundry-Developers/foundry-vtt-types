@@ -293,7 +293,6 @@ declare namespace BaseFolder {
   export import UpdateData = Folder.UpdateData;
   export import UpdateInput = Folder.UpdateInput;
   export import Schema = Folder.Schema;
-  export import Database = Folder.Database;
   export import Database2 = Folder.Database2;
   export import TemporaryIf = Folder.TemporaryIf;
   export import Flags = Folder.Flags;

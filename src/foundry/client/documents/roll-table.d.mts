@@ -1,7 +1,7 @@
 import type { InexactPartial, MaybeArray, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { fields } from "#common/data/_module.d.mts";
+import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { BaseFolder, BaseTableResult } from "#client/documents/_module.d.mts";
 import type BaseRollTable from "#common/documents/roll-table.mjs";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
@@ -303,7 +303,7 @@ declare namespace RollTable {
      */
     img: fields.FilePathField<{
       categories: ["IMAGE"];
-      initial: () => typeof documents.BaseRollTable.DEFAULT_ICON;
+      initial: () => typeof BaseRollTable.DEFAULT_ICON;
     }>;
 
     /**
@@ -316,7 +316,7 @@ declare namespace RollTable {
      * A Collection of TableResult embedded documents which belong to this RollTable
      * @defaultValue `[]`
      */
-    results: fields.EmbeddedCollectionField<typeof documents.BaseTableResult, RollTable.Implementation>;
+    results: fields.EmbeddedCollectionField<typeof BaseTableResult, RollTable.Implementation>;
 
     /**
      * The Roll formula which determines the results chosen from the table
@@ -340,7 +340,7 @@ declare namespace RollTable {
      * The _id of a Folder which contains this RollTable
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The numeric sort value which orders this RollTable relative to its siblings
@@ -958,112 +958,6 @@ declare namespace RollTable {
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? RollTable.Implementation : RollTable.Stored;
 
-  namespace Database {
-    /** Options passed along in Get operations for RollTables */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<RollTable.Parent> {}
-
-    /** Options passed along in Create operations for RollTables */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<RollTable.CreateData, RollTable.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for RollTables */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RollTable.Parent> {}
-
-    /** Options passed along in Update operations for RollTables */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<RollTable.UpdateData, RollTable.Parent> {}
-
-    /** Operation for {@linkcode RollTable.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<RollTable.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode RollTable.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<RollTable.Database.Update> {}
-
-    /** Operation for {@linkcode RollTable.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<RollTable.Database.Delete> {}
-
-    /** Operation for {@linkcode RollTable.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      RollTable.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link RollTable.update | `RollTable#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode RollTable.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link RollTable._preCreate | `RollTable#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link RollTable._onCreate | `RollTable#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode RollTable._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RollTable.Database.Create> {}
-
-    /** Operation for {@link RollTable._onCreateOperation | `RollTable#_onCreateOperation`} */
-    interface OnCreateOperation extends RollTable.Database.Create {}
-
-    /** Options for {@link RollTable._preUpdate | `RollTable#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link RollTable._onUpdate | `RollTable#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode RollTable._preUpdateOperation} */
-    interface PreUpdateOperation extends RollTable.Database.Update {}
-
-    /** Operation for {@link RollTable._onUpdateOperation | `RollTable._preUpdateOperation`} */
-    interface OnUpdateOperation extends RollTable.Database.Update {}
-
-    /** Options for {@link RollTable._preDelete | `RollTable#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link RollTable._onDelete | `RollTable#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link RollTable._preDeleteOperation | `RollTable#_preDeleteOperation`} */
-    interface PreDeleteOperation extends RollTable.Database.Delete {}
-
-    /** Options for {@link RollTable._onDeleteOperation | `RollTable#_onDeleteOperation`} */
-    interface OnDeleteOperation extends RollTable.Database.Delete {}
-
-    /** Context for {@linkcode RollTable._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<RollTable.Parent> {}
-
-    /** Context for {@linkcode RollTable._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<RollTable.Parent> {}
-
-    /** Context for {@linkcode RollTable._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<RollTable.Parent> {}
-
-    /**
-     * Options for {@link RollTable._preCreateDescendantDocuments | `RollTable#_preCreateDescendantDocuments`}
-     * and {@link RollTable._onCreateDescendantDocuments | `RollTable#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<RollTable.Database.Create> {}
-
-    /**
-     * Options for {@link RollTable._preUpdateDescendantDocuments | `RollTable#_preUpdateDescendantDocuments`}
-     * and {@link RollTable._onUpdateDescendantDocuments | `RollTable#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<RollTable.Database.Update> {}
-
-    /**
-     * Options for {@link RollTable._preDeleteDescendantDocuments | `RollTable#_preDeleteDescendantDocuments`}
-     * and {@link RollTable._onDeleteDescendantDocuments | `RollTable#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<RollTable.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode RollTable.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
-
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
@@ -1251,7 +1145,7 @@ declare namespace RollTable {
      * Additional options which customize the created messages
      * @defaultValue `{}`
      */
-    messageOptions: ChatMessage.Database.CreateOperation<Temporary>;
+    messageOptions: ChatMessage.Database2.CreateDocumentsOperation<Temporary>;
   }
 
   interface RollOptions {
@@ -1497,7 +1391,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    */
   static fromFolder<Temporary extends boolean | undefined = undefined>(
     folder: Folder.Implementation,
-    options?: RollTable.Database.CreateOperation<Temporary>,
+    options?: RollTable.Database2.CreateDocumentsOperation<Temporary>,
   ): Promise<RollTable.TemporaryIf<Temporary> | undefined>;
 
   /*

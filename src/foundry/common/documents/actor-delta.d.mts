@@ -384,7 +384,6 @@ declare namespace BaseActorDelta {
   export import UpdateData = ActorDelta.UpdateData;
   export import UpdateInput = ActorDelta.UpdateInput;
   export import Schema = ActorDelta.Schema;
-  export import Database = ActorDelta.Database;
   export import Database2 = ActorDelta.Database2;
   export import TemporaryIf = ActorDelta.TemporaryIf;
   export import Flags = ActorDelta.Flags;

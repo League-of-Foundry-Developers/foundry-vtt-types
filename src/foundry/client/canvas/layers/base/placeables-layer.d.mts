@@ -285,7 +285,7 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
    * @param data - The object data
    * @throws An error if any of the objects in the `data` array lack an `_id` key
    */
-  storeHistory<Operation extends Document.Database.Operation>(
+  storeHistory<Operation extends Document.Database2.OperationAction>(
     type: Operation,
     data: PlaceablesLayer.HistoryDataFor<Operation, DocumentName>,
   ): void;

@@ -1,4 +1,5 @@
 import type { Identity } from "#utils";
+import type { ClientSettings } from "#client/helpers/_module.d.mts";
 import type CalendarData from "#client/data/calendar.mjs";
 
 /**
@@ -56,10 +57,7 @@ declare class GameTime {
    * @param options - Additional options passed to `game.settings.set`
    * @returns The new game time
    */
-  set(
-    time: CalendarData.PartialTimeComponents | number,
-    options?: foundry.helpers.ClientSettings.SetOptions,
-  ): Promise<number>;
+  set(time: CalendarData.PartialTimeComponents | number, options?: ClientSettings.SetOptions): Promise<number>;
 
   /** Synchronize the local client game time with the official time kept by the server */
   sync(): Promise<this>;
@@ -69,8 +67,9 @@ declare class GameTime {
    * @param worldTime - The new canonical World time.
    * @param options   - Options passed from the requesting client where the change was made
    * @param userId    - The ID of the User who advanced the time
+   * @remarks This is (effectively, not directly) used as the `onChange` function for the `core.time` setting.
    */
-  onUpdateWorldTime(worldTime: number, options: Setting.Database.UpdateOperation, userId: string): void;
+  onUpdateWorldTime(worldTime: number, options: GameTime.OnUpdateWorldTimeOptions, userId: string): void;
 
   #GameTime: true;
 }
@@ -78,6 +77,12 @@ declare class GameTime {
 declare namespace GameTime {
   interface Any extends AnyGameTime {}
   interface AnyConstructor extends Identity<typeof AnyGameTime> {}
+
+  type SettingField = foundry.data.fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+
+  interface OnUpdateWorldTimeOptions extends ClientSettings.OnChangeFunction<
+    ClientSettings.ToSettingInitializedType<SettingField>
+  > {}
 }
 
 export default GameTime;

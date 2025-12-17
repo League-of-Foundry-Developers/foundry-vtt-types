@@ -1,6 +1,6 @@
-import type { InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { MaybeArray, Merge, NullishProps } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type { BaseShapeData } from "#common/data/data.mjs";
 import type BaseRegion from "#common/documents/region.mjs";
 import type { Region } from "#client/canvas/placeables/_module.d.mts";
@@ -13,8 +13,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 /**
  * The client-side Region document which extends the common BaseRegion model.
@@ -495,7 +493,7 @@ declare namespace RegionDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The Region _id which uniquely identifies it within its parent Scene
      * @defaultValue `null`
@@ -1165,117 +1163,6 @@ declare namespace RegionDocument {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? RegionDocument.Implementation : RegionDocument.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for Regions */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<RegionDocument.Parent> {}
-
-    /** Options passed along in Create operations for Regions */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<RegionDocument.CreateData, RegionDocument.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for Regions */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RegionDocument.Parent> {}
-
-    /** Options passed along in Update operations for Regions */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      RegionDocument.UpdateData,
-      RegionDocument.Parent
-    > {}
-
-    /** Operation for {@linkcode RegionDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<RegionDocument.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode RegionDocument.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<RegionDocument.Database.Update> {}
-
-    /** Operation for {@linkcode RegionDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<RegionDocument.Database.Delete> {}
-
-    /** Operation for {@linkcode RegionDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      RegionDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link RegionDocument.update | `RegionDocument#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode RegionDocument.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link RegionDocument._preCreate | `RegionDocument#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link RegionDocument._onCreate | `RegionDocument#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode RegionDocument._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RegionDocument.Database.Create> {}
-
-    /** Operation for {@link RegionDocument._onCreateOperation | `RegionDocument#_onCreateOperation`} */
-    interface OnCreateOperation extends RegionDocument.Database.Create {}
-
-    /** Options for {@link RegionDocument._preUpdate | `RegionDocument#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link RegionDocument._onUpdate | `RegionDocument#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode RegionDocument._preUpdateOperation} */
-    interface PreUpdateOperation extends RegionDocument.Database.Update {}
-
-    /** Operation for {@link RegionDocument._onUpdateOperation | `RegionDocument._preUpdateOperation`} */
-    interface OnUpdateOperation extends RegionDocument.Database.Update {}
-
-    /** Options for {@link RegionDocument._preDelete | `RegionDocument#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link RegionDocument._onDelete | `RegionDocument#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link RegionDocument._preDeleteOperation | `RegionDocument#_preDeleteOperation`} */
-    interface PreDeleteOperation extends RegionDocument.Database.Delete {}
-
-    /** Options for {@link RegionDocument._onDeleteOperation | `RegionDocument#_onDeleteOperation`} */
-    interface OnDeleteOperation extends RegionDocument.Database.Delete {}
-
-    /** Context for {@linkcode RegionDocument._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
-
-    /** Context for {@linkcode RegionDocument._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
-
-    /** Context for {@linkcode RegionDocument._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
-
-    /**
-     * Options for {@link RegionDocument._preCreateDescendantDocuments | `RegionDocument#_preCreateDescendantDocuments`}
-     * and {@link RegionDocument._onCreateDescendantDocuments | `RegionDocument#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<RegionDocument.Database.Create> {}
-
-    /**
-     * Options for {@link RegionDocument._preUpdateDescendantDocuments | `RegionDocument#_preUpdateDescendantDocuments`}
-     * and {@link RegionDocument._onUpdateDescendantDocuments | `RegionDocument#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<RegionDocument.Database.Update> {}
-
-    /**
-     * Options for {@link RegionDocument._preDeleteDescendantDocuments | `RegionDocument#_preDeleteDescendantDocuments`}
-     * and {@link RegionDocument._onDeleteDescendantDocuments | `RegionDocument#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<RegionDocument.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode RegionDocument.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

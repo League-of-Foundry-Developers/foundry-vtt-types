@@ -267,7 +267,6 @@ declare namespace BaseAmbientSound {
   export import UpdateData = AmbientSoundDocument.UpdateData;
   export import UpdateInput = AmbientSoundDocument.UpdateInput;
   export import Schema = AmbientSoundDocument.Schema;
-  export import Database = AmbientSoundDocument.Database;
   export import Database2 = AmbientSoundDocument.Database2;
   export import TemporaryIf = AmbientSoundDocument.TemporaryIf;
   export import Flags = AmbientSoundDocument.Flags;

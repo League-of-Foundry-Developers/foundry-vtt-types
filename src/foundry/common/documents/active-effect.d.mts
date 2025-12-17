@@ -308,7 +308,6 @@ declare namespace BaseActiveEffect {
   export import UpdateData = ActiveEffect.UpdateData;
   export import UpdateInput = ActiveEffect.UpdateInput;
   export import Schema = ActiveEffect.Schema;
-  export import Database = ActiveEffect.Database;
   export import Database2 = ActiveEffect.Database2;
   export import TemporaryIf = ActiveEffect.TemporaryIf;
   export import Flags = ActiveEffect.Flags;

@@ -1,7 +1,7 @@
 import type { ConfiguredCombatantGroup } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { Identity, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseCombatantGroup from "#common/documents/combatant-group.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -12,8 +12,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace CombatantGroup {
   /**
@@ -258,7 +256,7 @@ declare namespace CombatantGroup {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this CombatantGroup embedded document.
      * @defaultValue `null`
@@ -893,117 +891,6 @@ declare namespace CombatantGroup {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? CombatantGroup.Implementation : CombatantGroup.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for CombatantGroups */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<CombatantGroup.Parent> {}
-
-    /** Options passed along in Create operations for CombatantGroups */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<CombatantGroup.CreateData, CombatantGroup.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for CombatantGroups */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<CombatantGroup.Parent> {}
-
-    /** Options passed along in Update operation for CombatantGroups */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      CombatantGroup.UpdateData,
-      CombatantGroup.Parent
-    > {}
-
-    /** Operation for {@linkcode CombatantGroup.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<CombatantGroup.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode CombatantGroup.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<CombatantGroup.Database.Update> {}
-
-    /** Operation for {@linkcode CombatantGroup.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<CombatantGroup.Database.Delete> {}
-
-    /** Operation for {@linkcode CombatantGroup.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      CombatantGroup.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link CombatantGroup.update | `CombatantGroup#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode CombatantGroup.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link CombatantGroup._preCreate | `CombatantGroup#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link CombatantGroup._onCreate | `CombatantGroup#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode CombatantGroup._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<CombatantGroup.Database.Create> {}
-
-    /** Operation for {@link CombatantGroup._onCreateOperation | `CombatantGroup#_onCreateOperation`} */
-    interface OnCreateOperation extends CombatantGroup.Database.Create {}
-
-    /** Options for {@link CombatantGroup._preUpdate | `CombatantGroup#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link CombatantGroup._onUpdate | `CombatantGroup#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode CombatantGroup._preUpdateOperation} */
-    interface PreUpdateOperation extends CombatantGroup.Database.Update {}
-
-    /** Operation for {@link CombatantGroup._onUpdateOperation | `CombatantGroup._preUpdateOperation`} */
-    interface OnUpdateOperation extends CombatantGroup.Database.Update {}
-
-    /** Options for {@link CombatantGroup._preDelete | `CombatantGroup#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link CombatantGroup._onDelete | `CombatantGroup#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link CombatantGroup._preDeleteOperation | `CombatantGroup#_preDeleteOperation`} */
-    interface PreDeleteOperation extends CombatantGroup.Database.Delete {}
-
-    /** Options for {@link CombatantGroup._onDeleteOperation | `CombatantGroup#_onDeleteOperation`} */
-    interface OnDeleteOperation extends CombatantGroup.Database.Delete {}
-
-    /** Context for {@linkcode CombatantGroup._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<CombatantGroup.Parent> {}
-
-    /** Context for {@linkcode CombatantGroup._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<CombatantGroup.Parent> {}
-
-    /** Context for {@linkcode CombatantGroup._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<CombatantGroup.Parent> {}
-
-    /**
-     * Options for {@link CombatantGroup._preCreateDescendantDocuments | `CombatantGroup#_preCreateDescendantDocuments`}
-     * and {@link CombatantGroup._onCreateDescendantDocuments | `CombatantGroup#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<CombatantGroup.Database.Create> {}
-
-    /**
-     * Options for {@link CombatantGroup._preUpdateDescendantDocuments | `CombatantGroup#_preUpdateDescendantDocuments`}
-     * and {@link CombatantGroup._onUpdateDescendantDocuments | `CombatantGroup#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<CombatantGroup.Database.Update> {}
-
-    /**
-     * Options for {@link CombatantGroup._preDeleteDescendantDocuments | `CombatantGroup#_preDeleteDescendantDocuments`}
-     * and {@link CombatantGroup._onDeleteDescendantDocuments | `CombatantGroup#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<CombatantGroup.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode CombatantGroup.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

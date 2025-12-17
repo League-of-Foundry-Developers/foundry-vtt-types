@@ -335,7 +335,6 @@ declare namespace BaseCombat {
   export import UpdateData = Combat.UpdateData;
   export import UpdateInput = Combat.UpdateInput;
   export import Schema = Combat.Schema;
-  export import Database = Combat.Database;
   export import Database2 = Combat.Database2;
   export import TemporaryIf = Combat.TemporaryIf;
   export import Flags = Combat.Flags;

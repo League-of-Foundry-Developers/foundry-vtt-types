@@ -300,7 +300,6 @@ declare namespace BaseRegionBehavior {
   export import UpdateData = RegionBehavior.UpdateData;
   export import UpdateInput = RegionBehavior.UpdateInput;
   export import Schema = RegionBehavior.Schema;
-  export import Database = RegionBehavior.Database;
   export import Database2 = RegionBehavior.Database2;
   export import TemporaryIf = RegionBehavior.TemporaryIf;
   export import Flags = RegionBehavior.Flags;

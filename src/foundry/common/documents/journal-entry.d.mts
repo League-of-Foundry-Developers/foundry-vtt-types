@@ -318,7 +318,6 @@ declare namespace BaseJournalEntry {
   export import UpdateData = JournalEntry.UpdateData;
   export import UpdateInput = JournalEntry.UpdateInput;
   export import Schema = JournalEntry.Schema;
-  export import Database = JournalEntry.Database;
   export import Database2 = JournalEntry.Database2;
   export import TemporaryIf = JournalEntry.TemporaryIf;
   export import Flags = JournalEntry.Flags;

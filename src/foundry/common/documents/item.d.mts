@@ -340,7 +340,6 @@ declare namespace BaseItem {
   export import UpdateData = Item.UpdateData;
   export import UpdateInput = Item.UpdateInput;
   export import Schema = Item.Schema;
-  export import Database = Item.Database;
   export import Database2 = Item.Database2;
   export import TemporaryIf = Item.TemporaryIf;
   export import Flags = Item.Flags;

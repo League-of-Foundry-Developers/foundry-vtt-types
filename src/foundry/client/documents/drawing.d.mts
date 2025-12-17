@@ -1,8 +1,7 @@
-import type { InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
+import type { IntentionalPartial, MaybeArray, Merge } from "#utils";
+import type { fields, ShapeData } from "#common/data/_module.mjs";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { ShapeData } from "#common/data/data.mjs";
+import type { BaseUser } from "#client/documents/_module.d.mts";
 import type BaseDrawing from "#common/documents/drawing.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -13,8 +12,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace DrawingDocument {
   /**
@@ -206,7 +203,7 @@ declare namespace DrawingDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this BaseDrawing embedded document
      * @defaultValue `null`
@@ -217,7 +214,7 @@ declare namespace DrawingDocument {
      * The _id of the user who created the drawing
      * @defaultValue `game.user?.id`
      */
-    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
+    author: fields.DocumentAuthorField<typeof BaseUser>;
 
     /**
      * The geometric shape of the drawing
@@ -968,117 +965,6 @@ declare namespace DrawingDocument {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? DrawingDocument.Implementation : DrawingDocument.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for DrawingDocuments */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<DrawingDocument.Parent> {}
-
-    /** Options passed along in Create operations for DrawingDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<DrawingDocument.CreateData, DrawingDocument.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for DrawingDocuments */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<DrawingDocument.Parent> {}
-
-    /** Options passed along in Update operations for DrawingDocuments */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      DrawingDocument.UpdateData,
-      DrawingDocument.Parent
-    > {}
-
-    /** Operation for {@linkcode DrawingDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<DrawingDocument.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode DrawingDocument.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<DrawingDocument.Database.Update> {}
-
-    /** Operation for {@linkcode DrawingDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<DrawingDocument.Database.Delete> {}
-
-    /** Operation for {@linkcode DrawingDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      DrawingDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link DrawingDocument.update | `DrawingDocument#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode DrawingDocument.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link DrawingDocument._preCreate | `DrawingDocument#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link DrawingDocument._onCreate | `DrawingDocument#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode DrawingDocument._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<DrawingDocument.Database.Create> {}
-
-    /** Operation for {@link DrawingDocument._onCreateOperation | `DrawingDocument#_onCreateOperation`} */
-    interface OnCreateOperation extends DrawingDocument.Database.Create {}
-
-    /** Options for {@link DrawingDocument._preUpdate | `DrawingDocument#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link DrawingDocument._onUpdate | `DrawingDocument#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode DrawingDocument._preUpdateOperation} */
-    interface PreUpdateOperation extends DrawingDocument.Database.Update {}
-
-    /** Operation for {@link DrawingDocument._onUpdateOperation | `DrawingDocument._preUpdateOperation`} */
-    interface OnUpdateOperation extends DrawingDocument.Database.Update {}
-
-    /** Options for {@link DrawingDocument._preDelete | `DrawingDocument#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link DrawingDocument._onDelete | `DrawingDocument#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link DrawingDocument._preDeleteOperation | `DrawingDocument#_preDeleteOperation`} */
-    interface PreDeleteOperation extends DrawingDocument.Database.Delete {}
-
-    /** Options for {@link DrawingDocument._onDeleteOperation | `DrawingDocument#_onDeleteOperation`} */
-    interface OnDeleteOperation extends DrawingDocument.Database.Delete {}
-
-    /** Context for {@linkcode DrawingDocument._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
-
-    /** Context for {@linkcode DrawingDocument._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
-
-    /** Context for {@linkcode DrawingDocument._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
-
-    /**
-     * Options for {@link DrawingDocument._preCreateDescendantDocuments | `DrawingDocument#_preCreateDescendantDocuments`}
-     * and {@link DrawingDocument._onCreateDescendantDocuments | `DrawingDocument#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<DrawingDocument.Database.Create> {}
-
-    /**
-     * Options for {@link DrawingDocument._preUpdateDescendantDocuments | `DrawingDocument#_preUpdateDescendantDocuments`}
-     * and {@link DrawingDocument._onUpdateDescendantDocuments | `DrawingDocument#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<DrawingDocument.Database.Update> {}
-
-    /**
-     * Options for {@link DrawingDocument._preDeleteDescendantDocuments | `DrawingDocument#_preDeleteDescendantDocuments`}
-     * and {@link DrawingDocument._onDeleteDescendantDocuments | `DrawingDocument#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<DrawingDocument.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode DrawingDocument.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

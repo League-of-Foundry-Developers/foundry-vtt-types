@@ -1,6 +1,6 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseAmbientSound from "#common/documents/ambient-sound.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -11,8 +11,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace AmbientSoundDocument {
   /**
@@ -195,7 +193,7 @@ declare namespace AmbientSoundDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this AmbientSound document
      * @defaultValue `null`
@@ -306,7 +304,7 @@ declare namespace AmbientSoundDocument {
     flags: fields.DocumentFlagsField<Name>;
   }
 
-  interface EffectsConfigSchema extends DataSchema {
+  interface EffectsConfigSchema extends fields.DataSchema {
     /**
      * @defaultValue `undefined`
      * @remarks This isn't enforced by the model, but in practice should only have values in `keyof CONFIG["soundEffects"]`
@@ -905,118 +903,6 @@ declare namespace AmbientSoundDocument {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? AmbientSoundDocument.Implementation : AmbientSoundDocument.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for AmbientSoundDocuments */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<AmbientSoundDocument.Parent> {}
-
-    /** Options passed along in Create operations for AmbientSoundDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<AmbientSoundDocument.CreateData, AmbientSoundDocument.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for AmbientSoundDocuments */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<AmbientSoundDocument.Parent> {}
-
-    /** Options passed along in Update operations for AmbientSoundDocuments */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      AmbientSoundDocument.UpdateData,
-      AmbientSoundDocument.Parent
-    > {}
-
-    /** Operation for {@linkcode AmbientSoundDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<AmbientSoundDocument.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode AmbientSoundDocument.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<AmbientSoundDocument.Database.Update> {}
-
-    /** Operation for {@linkcode AmbientSoundDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<AmbientSoundDocument.Database.Delete> {}
-
-    /** Operation for {@linkcode AmbientSoundDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      AmbientSoundDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link AmbientSoundDocument.update | `AmbientSoundDocument#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode AmbientSoundDocument.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link AmbientSoundDocument._preCreate | `AmbientSoundDocument#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link AmbientSoundDocument._onCreate | `AmbientSoundDocument#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode AmbientSoundDocument._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database
-      .PreCreateOperationStatic<AmbientSoundDocument.Database.Create> {}
-
-    /** Operation for {@link AmbientSoundDocument._onCreateOperation | `AmbientSoundDocument#_onCreateOperation`} */
-    interface OnCreateOperation extends AmbientSoundDocument.Database.Create {}
-
-    /** Options for {@link AmbientSoundDocument._preUpdate | `AmbientSoundDocument#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link AmbientSoundDocument._onUpdate | `AmbientSoundDocument#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode AmbientSoundDocument._preUpdateOperation} */
-    interface PreUpdateOperation extends AmbientSoundDocument.Database.Update {}
-
-    /** Operation for {@link AmbientSoundDocument._onUpdateOperation | `AmbientSoundDocument._preUpdateOperation`} */
-    interface OnUpdateOperation extends AmbientSoundDocument.Database.Update {}
-
-    /** Options for {@link AmbientSoundDocument._preDelete | `AmbientSoundDocument#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link AmbientSoundDocument._onDelete | `AmbientSoundDocument#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link AmbientSoundDocument._preDeleteOperation | `AmbientSoundDocument#_preDeleteOperation`} */
-    interface PreDeleteOperation extends AmbientSoundDocument.Database.Delete {}
-
-    /** Options for {@link AmbientSoundDocument._onDeleteOperation | `AmbientSoundDocument#_onDeleteOperation`} */
-    interface OnDeleteOperation extends AmbientSoundDocument.Database.Delete {}
-
-    /** Context for {@linkcode AmbientSoundDocument._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<AmbientSoundDocument.Parent> {}
-
-    /** Context for {@linkcode AmbientSoundDocument._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<AmbientSoundDocument.Parent> {}
-
-    /** Context for {@linkcode AmbientSoundDocument._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<AmbientSoundDocument.Parent> {}
-
-    /**
-     * Options for {@link AmbientSoundDocument._preCreateDescendantDocuments | `AmbientSoundDocument#_preCreateDescendantDocuments`}
-     * and {@link AmbientSoundDocument._onCreateDescendantDocuments | `AmbientSoundDocument#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<AmbientSoundDocument.Database.Create> {}
-
-    /**
-     * Options for {@link AmbientSoundDocument._preUpdateDescendantDocuments | `AmbientSoundDocument#_preUpdateDescendantDocuments`}
-     * and {@link AmbientSoundDocument._onUpdateDescendantDocuments | `AmbientSoundDocument#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<AmbientSoundDocument.Database.Update> {}
-
-    /**
-     * Options for {@link AmbientSoundDocument._preDeleteDescendantDocuments | `AmbientSoundDocument#_preDeleteDescendantDocuments`}
-     * and {@link AmbientSoundDocument._onDeleteDescendantDocuments | `AmbientSoundDocument#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<AmbientSoundDocument.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode AmbientSoundDocument.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

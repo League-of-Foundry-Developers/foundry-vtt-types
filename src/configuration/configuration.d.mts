@@ -361,7 +361,7 @@ export interface SettingConfig {
       string
     >;
   };
-  "core.time": fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+  "core.time": foundry.helpers.GameTime.SettingField;
   "core.tokenDragPreview": boolean;
   "core.visionAnimation": boolean;
 }

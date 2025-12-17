@@ -280,7 +280,6 @@ declare namespace BaseCombatantGroup {
   export import UpdateData = CombatantGroup.UpdateData;
   export import UpdateInput = CombatantGroup.UpdateInput;
   export import Schema = CombatantGroup.Schema;
-  export import Database = CombatantGroup.Database;
   export import Database2 = CombatantGroup.Database2;
   export import TemporaryIf = CombatantGroup.TemporaryIf;
   export import Flags = CombatantGroup.Flags;

@@ -263,9 +263,20 @@ declare namespace ClientSettings {
 
   type Scope = "world" | "client" | "user";
 
+  interface OnChangeOptions extends Omit<SetOptions, "document"> {}
+
   /**
-   * @internal
+   * A function that gets called when a setting is changed, either by `ClientSettings##setClient`
+   * or {@linkcode Setting._onUpdate | Setting#_onUpdate}.
+   * @remarks Only world settings get passed `userId`.
    */
+  type OnChangeFunction<InitializedData = unknown> = (
+    value: InitializedData,
+    options: OnChangeOptions,
+    userId?: string,
+  ) => void;
+
+  /** @internal */
   interface _SettingConfig<RuntimeType extends ClientSettings.RuntimeType, CreateData, InitializedData> {
     /** A unique machine-readable id for the setting */
     key: string;
@@ -314,7 +325,7 @@ declare namespace ClientSettings {
     requiresReload?: boolean;
 
     /** Executes when the value of this Setting changes */
-    onChange?: (value: InitializedData, options?: Omit<SetOptions, "document">) => void;
+    onChange?: OnChangeFunction<InitializedData>;
 
     /**
      * A custom form field input used in conjunction with a DataField type
@@ -408,11 +419,11 @@ declare namespace ClientSettings {
 
   /** @internal */
   interface _SetOptionsCreate<Doc extends boolean | undefined>
-    extends _SetOptions<Doc>, Setting.Database.CreateOperation<undefined | false> {}
+    extends _SetOptions<Doc>, Setting.Database2.CreateDocumentsOperation<undefined | false> {}
 
   /** @internal */
   interface _SetOptionsUpdate<Doc extends boolean | undefined>
-    extends _SetOptions<Doc>, Setting.Database.UpdateOperation {}
+    extends _SetOptions<Doc>, Setting.Database2.UpdateOneDocumentOperation {}
 
   type SetOptions<Doc extends boolean | undefined = undefined> = _SetOptionsCreate<Doc> | _SetOptionsUpdate<Doc>;
 

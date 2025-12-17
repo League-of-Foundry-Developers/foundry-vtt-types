@@ -2,16 +2,15 @@ import type { ConfiguredActiveEffect } from "#configuration";
 import type {
   AnyMutableObject,
   Identity,
-  InexactPartial,
   IntentionalPartial,
   InterfaceToObject,
   MaybeArray,
   Merge,
   RequiredProps,
 } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { DataModel } from "#common/abstract/data.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataField, DataSchema } from "#common/data/fields.d.mts";
 import type BaseActiveEffect from "#common/documents/active-effect.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -22,8 +21,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace ActiveEffect {
   /**
@@ -276,7 +273,7 @@ declare namespace ActiveEffect {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies the ActiveEffect within a parent Actor or Item
      * @defaultValue `null`
@@ -361,7 +358,7 @@ declare namespace ActiveEffect {
     _stats: fields.DocumentStatsField;
   }
 
-  interface ChangeSchema extends DataSchema {
+  interface ChangeSchema extends fields.DataSchema {
     /**
      * The attribute path in the Actor or Item data which the change modifies
      * @defaultValue `""`
@@ -398,7 +395,7 @@ declare namespace ActiveEffect {
     priority: fields.NumberField;
   }
 
-  interface DurationSchema extends DataSchema {
+  interface DurationSchema extends fields.DataSchema {
     /**
      * The world time when the active effect first started
      * @defaultValue `null`
@@ -1033,123 +1030,6 @@ declare namespace ActiveEffect {
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? ActiveEffect.Implementation : ActiveEffect.Stored;
 
-  namespace Database {
-    /** Options passed along in Get operations for ActiveEffects */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<ActiveEffect.Parent> {}
-
-    /** Options passed along in Create operations for ActiveEffects */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<ActiveEffect.CreateData, ActiveEffect.Parent, Temporary> {
-      animate?: boolean | undefined;
-    }
-
-    /** Options passed along in Delete operations for ActiveEffects */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ActiveEffect.Parent> {
-      animate?: boolean | undefined;
-    }
-
-    /** Options passed along in Update operations for ActiveEffects */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      ActiveEffect.UpdateData,
-      ActiveEffect.Parent
-    > {
-      animate?: boolean | undefined;
-    }
-
-    /** Operation for {@linkcode ActiveEffect.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<ActiveEffect.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode ActiveEffect.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<ActiveEffect.Database.Update> {}
-
-    /** Operation for {@linkcode ActiveEffect.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<ActiveEffect.Database.Delete> {}
-
-    /** Operation for {@linkcode ActiveEffect.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      ActiveEffect.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link ActiveEffect.update | `ActiveEffect#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode ActiveEffect.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link ActiveEffect._preCreate | `ActiveEffect#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link ActiveEffect._onCreate | `ActiveEffect#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode ActiveEffect._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<ActiveEffect.Database.Create> {}
-
-    /** Operation for {@link ActiveEffect._onCreateOperation | `ActiveEffect#_onCreateOperation`} */
-    interface OnCreateOperation extends ActiveEffect.Database.Create {}
-
-    /** Options for {@link ActiveEffect._preUpdate | `ActiveEffect#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link ActiveEffect._onUpdate | `ActiveEffect#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode ActiveEffect._preUpdateOperation} */
-    interface PreUpdateOperation extends ActiveEffect.Database.Update {}
-
-    /** Operation for {@link ActiveEffect._onUpdateOperation | `ActiveEffect._preUpdateOperation`} */
-    interface OnUpdateOperation extends ActiveEffect.Database.Update {}
-
-    /** Options for {@link ActiveEffect._preDelete | `ActiveEffect#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link ActiveEffect._onDelete | `ActiveEffect#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link ActiveEffect._preDeleteOperation | `ActiveEffect#_preDeleteOperation`} */
-    interface PreDeleteOperation extends ActiveEffect.Database.Delete {}
-
-    /** Options for {@link ActiveEffect._onDeleteOperation | `ActiveEffect#_onDeleteOperation`} */
-    interface OnDeleteOperation extends ActiveEffect.Database.Delete {}
-
-    /** Context for {@linkcode ActiveEffect._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<ActiveEffect.Parent> {}
-
-    /** Context for {@linkcode ActiveEffect._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<ActiveEffect.Parent> {}
-
-    /** Context for {@linkcode ActiveEffect._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<ActiveEffect.Parent> {}
-
-    /**
-     * Options for {@link ActiveEffect._preCreateDescendantDocuments | `ActiveEffect#_preCreateDescendantDocuments`}
-     * and {@link ActiveEffect._onCreateDescendantDocuments | `ActiveEffect#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<ActiveEffect.Database.Create> {}
-
-    /**
-     * Options for {@link ActiveEffect._preUpdateDescendantDocuments | `ActiveEffect#_preUpdateDescendantDocuments`}
-     * and {@link ActiveEffect._onUpdateDescendantDocuments | `ActiveEffect#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<ActiveEffect.Database.Update> {}
-
-    /**
-     * Options for {@link ActiveEffect._preDeleteDescendantDocuments | `ActiveEffect#_preDeleteDescendantDocuments`}
-     * and {@link ActiveEffect._onDeleteDescendantDocuments | `ActiveEffect#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<ActiveEffect.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode ActiveEffect.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
-
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
@@ -1332,8 +1212,8 @@ declare namespace ActiveEffect {
     priority: number | null | undefined;
   }
 
-  type ApplyFieldReturn<Field extends DataField.Any | null | undefined> = Field extends DataField.Any
-    ? DataField.InitializedTypeFor<Field>
+  type ApplyFieldReturn<Field extends fields.DataField.Any | null | undefined> = Field extends fields.DataField.Any
+    ? fields.DataField.InitializedTypeFor<Field>
     : unknown;
 
   /**
@@ -1481,7 +1361,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    *
    * @remarks `field` default provided by `??= model.schema.getField(change.key)`
    */
-  static applyField<Field extends DataField.Any | null | undefined = undefined>(
+  static applyField<Field extends fields.DataField.Any | null | undefined = undefined>(
     model: DataModel.Any,
     change: ActiveEffect.ChangeData,
     field?: Field,

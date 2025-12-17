@@ -1,8 +1,8 @@
 import type { ConfiguredCombatant } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
+import type { Identity, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { BaseActor, BaseScene, BaseToken } from "#client/documents/_module.d.mts";
 import type BaseCombatant from "#common/documents/combatant.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -13,8 +13,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace Combatant {
   /**
@@ -274,7 +272,7 @@ declare namespace Combatant {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Combatant embedded document
      * @defaultValue `null`
@@ -290,18 +288,18 @@ declare namespace Combatant {
      * The _id of an Actor associated with this Combatant
      * @defaultValue `null`
      */
-    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { label: "COMBAT.CombatantActor"; idOnly: true }>;
+    actorId: fields.ForeignDocumentField<typeof BaseActor, { label: "COMBAT.CombatantActor"; idOnly: true }>;
 
     /**
      * The _id of a Token associated with this Combatant
      * @defaultValue `null`
      */
-    tokenId: fields.ForeignDocumentField<typeof documents.BaseToken, { label: "COMBAT.CombatantToken"; idOnly: true }>;
+    tokenId: fields.ForeignDocumentField<typeof BaseToken, { label: "COMBAT.CombatantToken"; idOnly: true }>;
 
     /**
      * @defaultValue `null`
      */
-    sceneId: fields.ForeignDocumentField<typeof documents.BaseScene, { label: "COMBAT.CombatantScene"; idOnly: true }>;
+    sceneId: fields.ForeignDocumentField<typeof BaseScene, { label: "COMBAT.CombatantScene"; idOnly: true }>;
 
     /**
      * A customized name which replaces the name of the Token in the tracker
@@ -928,121 +926,6 @@ declare namespace Combatant {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Combatant.Implementation : Combatant.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for Combatants */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Combatant.Parent> {}
-
-    /** Options passed along in Create operations for Combatants */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Combatant.CreateData, Combatant.Parent, Temporary> {
-      combatTurn?: number;
-      turnEvents?: boolean;
-    }
-
-    /** Options passed along in Delete operations for Combatants */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Combatant.Parent> {
-      combatTurn?: number;
-      turnEvents?: boolean;
-    }
-
-    /** Options passed along in Update operations for Combatants */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Combatant.UpdateData, Combatant.Parent> {
-      combatTurn?: number;
-      turnEvents?: boolean;
-    }
-
-    /** Operation for {@linkcode Combatant.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<Combatant.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode Combatant.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Combatant.Database.Update> {}
-
-    /** Operation for {@linkcode Combatant.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Combatant.Database.Delete> {}
-
-    /** Operation for {@linkcode Combatant.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      Combatant.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link Combatant.update | `Combatant#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Combatant.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link Combatant._preCreate | `Combatant#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link Combatant._onCreate | `Combatant#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Combatant._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Combatant.Database.Create> {}
-
-    /** Operation for {@link Combatant._onCreateOperation | `Combatant#_onCreateOperation`} */
-    interface OnCreateOperation extends Combatant.Database.Create {}
-
-    /** Options for {@link Combatant._preUpdate | `Combatant#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link Combatant._onUpdate | `Combatant#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Combatant._preUpdateOperation} */
-    interface PreUpdateOperation extends Combatant.Database.Update {}
-
-    /** Operation for {@link Combatant._onUpdateOperation | `Combatant._preUpdateOperation`} */
-    interface OnUpdateOperation extends Combatant.Database.Update {}
-
-    /** Options for {@link Combatant._preDelete | `Combatant#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link Combatant._onDelete | `Combatant#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link Combatant._preDeleteOperation | `Combatant#_preDeleteOperation`} */
-    interface PreDeleteOperation extends Combatant.Database.Delete {}
-
-    /** Options for {@link Combatant._onDeleteOperation | `Combatant#_onDeleteOperation`} */
-    interface OnDeleteOperation extends Combatant.Database.Delete {}
-
-    /** Context for {@linkcode Combatant._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Combatant.Parent> {}
-
-    /** Context for {@linkcode Combatant._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Combatant.Parent> {}
-
-    /** Context for {@linkcode Combatant._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Combatant.Parent> {}
-
-    /**
-     * Options for {@link Combatant._preCreateDescendantDocuments | `Combatant#_preCreateDescendantDocuments`}
-     * and {@link Combatant._onCreateDescendantDocuments | `Combatant#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<Combatant.Database.Create> {}
-
-    /**
-     * Options for {@link Combatant._preUpdateDescendantDocuments | `Combatant#_preUpdateDescendantDocuments`}
-     * and {@link Combatant._onUpdateDescendantDocuments | `Combatant#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Combatant.Database.Update> {}
-
-    /**
-     * Options for {@link Combatant._preDeleteDescendantDocuments | `Combatant#_preDeleteDescendantDocuments`}
-     * and {@link Combatant._onDeleteDescendantDocuments | `Combatant#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Combatant.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode Combatant.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

@@ -332,7 +332,6 @@ declare namespace BaseCards {
   export import UpdateData = Cards.UpdateData;
   export import UpdateInput = Cards.UpdateInput;
   export import Schema = Cards.Schema;
-  export import Database = Cards.Database;
   export import Database2 = Cards.Database2;
   export import TemporaryIf = Cards.TemporaryIf;
   export import Flags = Cards.Flags;

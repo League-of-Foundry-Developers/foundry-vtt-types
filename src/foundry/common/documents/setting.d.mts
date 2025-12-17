@@ -261,7 +261,6 @@ declare namespace BaseSetting {
   export import UpdateData = Setting.UpdateData;
   export import UpdateInput = Setting.UpdateInput;
   export import Schema = Setting.Schema;
-  export import Database = Setting.Database;
   export import Database2 = Setting.Database2;
   export import TemporaryIf = Setting.TemporaryIf;
   // eslint-disable-next-line @typescript-eslint/no-deprecated

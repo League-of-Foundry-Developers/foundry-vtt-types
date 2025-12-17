@@ -1,9 +1,8 @@
 import type { ConfiguredChatMessage } from "#configuration";
-import type { AnyObject, Identity, InexactPartial, InterfaceToObject, MaybeArray, Merge, NullishProps } from "#utils";
-import type { documents } from "#client/client.d.mts";
+import type { AnyObject, Identity, InterfaceToObject, MaybeArray, Merge, NullishProps } from "#utils";
+import type { BaseActor, BaseChatMessage, BaseScene, BaseToken, BaseUser } from "#client/documents/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
-import type BaseChatMessage from "#common/documents/chat-message.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -14,8 +13,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace ChatMessage {
   /**
@@ -272,7 +269,7 @@ declare namespace ChatMessage {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this ChatMessage document
      * @defaultValue `null`
@@ -308,7 +305,7 @@ declare namespace ChatMessage {
      * The _id of the User document who generated this message
      * @defaultValue `game.user?.id`
      */
-    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
+    author: fields.DocumentAuthorField<typeof BaseUser>;
 
     /**
      * The timestamp at which point this message was generated
@@ -337,7 +334,7 @@ declare namespace ChatMessage {
      * An array of User _id values to whom this message is privately whispered
      * @defaultValue `[]`
      */
-    whisper: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseUser, { idOnly: true }>>;
+    whisper: fields.ArrayField<fields.ForeignDocumentField<typeof BaseUser, { idOnly: true }>>;
 
     /**
      * Is this message sent blindly where the creating User cannot see it?
@@ -380,24 +377,24 @@ declare namespace ChatMessage {
     _stats: fields.DocumentStatsField;
   }
 
-  interface SpeakerSchema extends DataSchema {
+  interface SpeakerSchema extends fields.DataSchema {
     /**
      * The _id of the Scene where this message was created
      * @defaultValue `null`
      */
-    scene: fields.ForeignDocumentField<typeof documents.BaseScene, { idOnly: true }>;
+    scene: fields.ForeignDocumentField<typeof BaseScene, { idOnly: true }>;
 
     /**
      * The _id of the Actor who generated this message
      * @defaultValue `null`
      */
-    actor: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
+    actor: fields.ForeignDocumentField<typeof BaseActor, { idOnly: true }>;
 
     /**
      * The _id of the Token who generated this message
      * @defaultValue `null`
      */
-    token: fields.ForeignDocumentField<typeof documents.BaseToken, { idOnly: true }>;
+    token: fields.ForeignDocumentField<typeof BaseToken, { idOnly: true }>;
 
     /**
      * An overridden alias name used instead of the Actor or Token name
@@ -999,120 +996,6 @@ declare namespace ChatMessage {
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? ChatMessage.Implementation : ChatMessage.Stored;
 
-  namespace Database {
-    /** Options passed along in Get operations for ChatMessages */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<ChatMessage.Parent> {}
-
-    /** Options passed along in Create operations for ChatMessages */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<ChatMessage.CreateData, ChatMessage.Parent, Temporary> {
-      rollMode?: foundry.dice.Roll.Mode;
-      chatBubble?: boolean;
-    }
-
-    /** Options passed along in Delete operations for ChatMessages */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ChatMessage.Parent> {}
-
-    /** Options passed along in Update operations for ChatMessages */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      ChatMessage.UpdateData,
-      ChatMessage.Parent
-    > {}
-
-    /** Operation for {@linkcode ChatMessage.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<ChatMessage.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode ChatMessage.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<ChatMessage.Database.Update> {}
-
-    /** Operation for {@linkcode ChatMessage.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<ChatMessage.Database.Delete> {}
-
-    /** Operation for {@linkcode ChatMessage.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      ChatMessage.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link ChatMessage.update | `ChatMessage#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode ChatMessage.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link ChatMessage._preCreate | `ChatMessage#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link ChatMessage._onCreate | `ChatMessage#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode ChatMessage._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<ChatMessage.Database.Create> {}
-
-    /** Operation for {@link ChatMessage._onCreateOperation | `ChatMessage#_onCreateOperation`} */
-    interface OnCreateOperation extends ChatMessage.Database.Create {}
-
-    /** Options for {@link ChatMessage._preUpdate | `ChatMessage#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link ChatMessage._onUpdate | `ChatMessage#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode ChatMessage._preUpdateOperation} */
-    interface PreUpdateOperation extends ChatMessage.Database.Update {}
-
-    /** Operation for {@link ChatMessage._onUpdateOperation | `ChatMessage._preUpdateOperation`} */
-    interface OnUpdateOperation extends ChatMessage.Database.Update {}
-
-    /** Options for {@link ChatMessage._preDelete | `ChatMessage#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link ChatMessage._onDelete | `ChatMessage#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link ChatMessage._preDeleteOperation | `ChatMessage#_preDeleteOperation`} */
-    interface PreDeleteOperation extends ChatMessage.Database.Delete {}
-
-    /** Options for {@link ChatMessage._onDeleteOperation | `ChatMessage#_onDeleteOperation`} */
-    interface OnDeleteOperation extends ChatMessage.Database.Delete {}
-
-    /** Context for {@linkcode ChatMessage._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<ChatMessage.Parent> {}
-
-    /** Context for {@linkcode ChatMessage._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<ChatMessage.Parent> {}
-
-    /** Context for {@linkcode ChatMessage._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<ChatMessage.Parent> {}
-
-    /**
-     * Options for {@link ChatMessage._preCreateDescendantDocuments | `ChatMessage#_preCreateDescendantDocuments`}
-     * and {@link ChatMessage._onCreateDescendantDocuments | `ChatMessage#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<ChatMessage.Database.Create> {}
-
-    /**
-     * Options for {@link ChatMessage._preUpdateDescendantDocuments | `ChatMessage#_preUpdateDescendantDocuments`}
-     * and {@link ChatMessage._onUpdateDescendantDocuments | `ChatMessage#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<ChatMessage.Database.Update> {}
-
-    /**
-     * Options for {@link ChatMessage._preDeleteDescendantDocuments | `ChatMessage#_preDeleteDescendantDocuments`}
-     * and {@link ChatMessage._onDeleteDescendantDocuments | `ChatMessage#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<ChatMessage.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode ChatMessage.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
-
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
@@ -1242,7 +1125,7 @@ declare namespace ChatMessage {
   }
 
   /** @internal */
-  type _SpeakerData = SchemaField.InitializedData<ChatMessage.SpeakerSchema>;
+  type _SpeakerData = fields.SchemaField.InitializedData<ChatMessage.SpeakerSchema>;
 
   interface SpeakerData extends _SpeakerData {}
 

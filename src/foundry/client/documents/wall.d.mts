@@ -1,6 +1,6 @@
-import type { InexactPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type BaseWall from "#common/documents/wall.mjs";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -11,8 +11,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace WallDocument {
   /**
@@ -204,7 +202,7 @@ declare namespace WallDocument {
    * iterable.
    */
 
-  interface ThresholdSchema extends DataSchema {
+  interface ThresholdSchema extends fields.DataSchema {
     /**
      * Minimum distance from a light source for which this wall blocks light
      */
@@ -228,7 +226,7 @@ declare namespace WallDocument {
 
   interface ThresholdData extends fields.SchemaField.InitializedData<ThresholdSchema> {}
 
-  interface AnimationSchema extends DataSchema {
+  interface AnimationSchema extends fields.DataSchema {
     /** @defaultValue `1` */
     direction: fields.NumberField<{ choices: [-1, 1]; initial: 1 }>;
 
@@ -264,7 +262,7 @@ declare namespace WallDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this BaseWall embedded document
      * @defaultValue `null`
@@ -1023,117 +1021,6 @@ declare namespace WallDocument {
    */
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? WallDocument.Implementation : WallDocument.Stored;
-
-  namespace Database {
-    /** Options passed along in Get operations for WallDocuments */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<WallDocument.Parent> {}
-
-    /** Options passed along in Create operations for WallDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<WallDocument.CreateData, WallDocument.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for WallDocuments */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<WallDocument.Parent> {}
-
-    /** Options passed along in Update operations for WallDocuments */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      WallDocument.UpdateData,
-      WallDocument.Parent
-    > {}
-
-    /** Operation for {@linkcode WallDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<WallDocument.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode WallDocument.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<WallDocument.Database.Update> {}
-
-    /** Operation for {@linkcode WallDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<WallDocument.Database.Delete> {}
-
-    /** Operation for {@linkcode WallDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      WallDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link WallDocument.update | `WallDocument#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode WallDocument.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link WallDocument._preCreate | `WallDocument#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link WallDocument._onCreate | `WallDocument#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode WallDocument._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<WallDocument.Database.Create> {}
-
-    /** Operation for {@link WallDocument._onCreateOperation | `WallDocument#_onCreateOperation`} */
-    interface OnCreateOperation extends WallDocument.Database.Create {}
-
-    /** Options for {@link WallDocument._preUpdate | `WallDocument#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link WallDocument._onUpdate | `WallDocument#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode WallDocument._preUpdateOperation} */
-    interface PreUpdateOperation extends WallDocument.Database.Update {}
-
-    /** Operation for {@link WallDocument._onUpdateOperation | `WallDocument._preUpdateOperation`} */
-    interface OnUpdateOperation extends WallDocument.Database.Update {}
-
-    /** Options for {@link WallDocument._preDelete | `WallDocument#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link WallDocument._onDelete | `WallDocument#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link WallDocument._preDeleteOperation | `WallDocument#_preDeleteOperation`} */
-    interface PreDeleteOperation extends WallDocument.Database.Delete {}
-
-    /** Options for {@link WallDocument._onDeleteOperation | `WallDocument#_onDeleteOperation`} */
-    interface OnDeleteOperation extends WallDocument.Database.Delete {}
-
-    /** Context for {@linkcode WallDocument._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<WallDocument.Parent> {}
-
-    /** Context for {@linkcode WallDocument._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<WallDocument.Parent> {}
-
-    /** Context for {@linkcode WallDocument._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<WallDocument.Parent> {}
-
-    /**
-     * Options for {@link WallDocument._preCreateDescendantDocuments | `WallDocument#_preCreateDescendantDocuments`}
-     * and {@link WallDocument._onCreateDescendantDocuments | `WallDocument#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<WallDocument.Database.Create> {}
-
-    /**
-     * Options for {@link WallDocument._preUpdateDescendantDocuments | `WallDocument#_preUpdateDescendantDocuments`}
-     * and {@link WallDocument._onUpdateDescendantDocuments | `WallDocument#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<WallDocument.Database.Update> {}
-
-    /**
-     * Options for {@link WallDocument._preDeleteDescendantDocuments | `WallDocument#_preDeleteDescendantDocuments`}
-     * and {@link WallDocument._onDeleteDescendantDocuments | `WallDocument#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<WallDocument.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode WallDocument.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.

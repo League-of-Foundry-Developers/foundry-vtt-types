@@ -275,7 +275,6 @@ declare namespace BaseFogExploration {
   export import UpdateData = FogExploration.UpdateData;
   export import UpdateInput = FogExploration.UpdateInput;
   export import Schema = FogExploration.Schema;
-  export import Database = FogExploration.Database;
   export import Database2 = FogExploration.Database2;
   export import TemporaryIf = FogExploration.TemporaryIf;
   export import Flags = FogExploration.Flags;

@@ -1,9 +1,9 @@
 import type { ConfiguredCards } from "#configuration";
 import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { BaseCard, BaseFolder } from "#client/documents/_module.d.mts";
 import type BaseCards from "#common/documents/cards.d.mts";
-import type { documents } from "#client/client.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */
@@ -13,8 +13,6 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import fields = foundry.data.fields;
 
 declare namespace Cards {
   /**
@@ -355,7 +353,7 @@ declare namespace Cards {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this stack of Cards document
      * @defaultValue `null`
@@ -369,8 +367,7 @@ declare namespace Cards {
      * The type of this stack, in BaseCards.metadata.types
      * @defaultValue `BaseCards.TYPES[0]`
      */
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof BaseCards, {}>;
+    type: fields.DocumentTypeField<typeof BaseCards>;
 
     /**
      * A text description of this stack
@@ -397,7 +394,7 @@ declare namespace Cards {
      * A collection of Card documents which currently belong to this stack
      * @defaultValue `[]`
      */
-    cards: fields.EmbeddedCollectionField<typeof documents.BaseCard, Cards.Implementation>;
+    cards: fields.EmbeddedCollectionField<typeof BaseCard, Cards.Implementation>;
 
     /**
      * The visible width of this stack
@@ -427,7 +424,7 @@ declare namespace Cards {
      * The _id of a Folder which contains this document
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The sort order of this stack relative to others in its parent collection
@@ -1045,118 +1042,6 @@ declare namespace Cards {
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? Cards.Implementation : Cards.Stored;
 
-  namespace Database {
-    /** Options passed along in Get operations for Cards Documents */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<Cards.Parent> {}
-
-    /** Options passed along in Create operations for Cards Documents */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<Cards.CreateData, Cards.Parent, Temporary> {
-      animate?: boolean;
-    }
-
-    /** Options passed along in Delete operations for Cards Documents */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Cards.Parent> {
-      animate?: boolean;
-    }
-
-    /** Options passed along in Update operations for Cards Documents */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Cards.UpdateData, Cards.Parent> {
-      animate?: boolean;
-    }
-
-    /** Operation for {@linkcode Cards.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<Cards.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode Cards.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Cards.Database.Update> {}
-
-    /** Operation for {@linkcode Cards.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Cards.Database.Delete> {}
-
-    /** Operation for {@linkcode Cards.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      Cards.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link Cards.update | `Cards#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode Cards.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link Cards._preCreate | `Cards#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link Cards._onCreate | `Cards#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode Cards._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Cards.Database.Create> {}
-
-    /** Operation for {@link Cards._onCreateOperation | `Cards#_onCreateOperation`} */
-    interface OnCreateOperation extends Cards.Database.Create {}
-
-    /** Options for {@link Cards._preUpdate | `Cards#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link Cards._onUpdate | `Cards#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode Cards._preUpdateOperation} */
-    interface PreUpdateOperation extends Cards.Database.Update {}
-
-    /** Operation for {@link Cards._onUpdateOperation | `Cards._preUpdateOperation`} */
-    interface OnUpdateOperation extends Cards.Database.Update {}
-
-    /** Options for {@link Cards._preDelete | `Cards#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link Cards._onDelete | `Cards#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link Cards._preDeleteOperation | `Cards#_preDeleteOperation`} */
-    interface PreDeleteOperation extends Cards.Database.Delete {}
-
-    /** Options for {@link Cards._onDeleteOperation | `Cards#_onDeleteOperation`} */
-    interface OnDeleteOperation extends Cards.Database.Delete {}
-
-    /** Context for {@linkcode Cards._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<Cards.Parent> {}
-
-    /** Context for {@linkcode Cards._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<Cards.Parent> {}
-
-    /** Context for {@linkcode Cards._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<Cards.Parent> {}
-
-    /**
-     * Options for {@link Cards._preCreateDescendantDocuments | `Cards#_preCreateDescendantDocuments`}
-     * and {@link Cards._onCreateDescendantDocuments | `Cards#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<Cards.Database.Create> {}
-
-    /**
-     * Options for {@link Cards._preUpdateDescendantDocuments | `Cards#_preUpdateDescendantDocuments`}
-     * and {@link Cards._onUpdateDescendantDocuments | `Cards#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<Cards.Database.Update> {}
-
-    /**
-     * Options for {@link Cards._preDeleteDescendantDocuments | `Cards#_preDeleteDescendantDocuments`}
-     * and {@link Cards._onDeleteDescendantDocuments | `Cards#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<Cards.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode Cards.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
-
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
@@ -1488,8 +1373,8 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    * @remarks Sets `context.keepEmbeddedIds` to `false` if it's `=== undefined`
    */
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Cards.Implementation | Cards.CreateData> | undefined,
-    operation?: Document.Database.CreateDocumentsOperation<Cards.Database.Create<Temporary>>,
+    data: Cards.CreateInput[],
+    operation?: Cards.Database2.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<Cards.TemporaryIf<Temporary>>>;
 
   /**

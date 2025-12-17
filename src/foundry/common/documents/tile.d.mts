@@ -307,7 +307,6 @@ declare namespace BaseTile {
   export import UpdateData = TileDocument.UpdateData;
   export import UpdateInput = TileDocument.UpdateInput;
   export import Schema = TileDocument.Schema;
-  export import Database = TileDocument.Database;
   export import Database2 = TileDocument.Database2;
   export import TemporaryIf = TileDocument.TemporaryIf;
   export import Flags = TileDocument.Flags;

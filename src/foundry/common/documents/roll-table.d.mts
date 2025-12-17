@@ -318,7 +318,6 @@ declare namespace BaseRollTable {
   export import UpdateData = RollTable.UpdateData;
   export import UpdateInput = RollTable.UpdateInput;
   export import Schema = RollTable.Schema;
-  export import Database = RollTable.Database;
   export import Database2 = RollTable.Database2;
   export import TemporaryIf = RollTable.TemporaryIf;
   export import Flags = RollTable.Flags;

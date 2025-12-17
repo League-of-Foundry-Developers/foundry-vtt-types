@@ -1461,126 +1461,6 @@ declare namespace TokenDocument {
   type TemporaryIf<Temporary extends boolean | undefined> =
     true extends Extract<Temporary, true> ? TokenDocument.Implementation : TokenDocument.Stored;
 
-  namespace Database {
-    /** Options passed along in Get operations for TokenDocuments */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<TokenDocument.Parent> {}
-
-    /** Options passed along in Create operations for TokenDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<TokenDocument.CreateData, TokenDocument.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for TokenDocuments */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TokenDocument.Parent> {}
-
-    /** Options passed along in Update operations for TokenDocuments */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      TokenDocument.UpdateData,
-      TokenDocument.Parent
-    > {
-      previousActorId?: string | null;
-      animate?: boolean;
-      _priorRegions?: Record<string, string[]>;
-      _priorPosition?: Record<string, { x: number; y: number; elevation: number }>;
-      teleport?: boolean;
-      forced?: boolean;
-      // TODO: Type this accurately when going over the Token placeable
-      animation: AnyObject;
-    }
-
-    /** Operation for {@linkcode TokenDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database
-      .CreateDocumentsOperation<TokenDocument.Database.Create<Temporary>> {}
-
-    /** Operation for {@linkcode TokenDocument.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<TokenDocument.Database.Update> {}
-
-    /** Operation for {@linkcode TokenDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<TokenDocument.Database.Delete> {}
-
-    /** Operation for {@linkcode TokenDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateDocumentsOperation<
-      TokenDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@link TokenDocument.update | `TokenDocument#update`} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode TokenDocument.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@link TokenDocument._preCreate | `TokenDocument#_preCreate`} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@link TokenDocument._onCreate | `TokenDocument#_onCreate`} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode TokenDocument._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TokenDocument.Database.Create> {}
-
-    /** Operation for {@link TokenDocument._onCreateOperation | `TokenDocument#_onCreateOperation`} */
-    interface OnCreateOperation extends TokenDocument.Database.Create {}
-
-    /** Options for {@link TokenDocument._preUpdate | `TokenDocument#_preUpdate`} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@link TokenDocument._onUpdate | `TokenDocument#_onUpdate`} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode TokenDocument._preUpdateOperation} */
-    interface PreUpdateOperation extends TokenDocument.Database.Update {}
-
-    /** Operation for {@link TokenDocument._onUpdateOperation | `TokenDocument._preUpdateOperation`} */
-    interface OnUpdateOperation extends TokenDocument.Database.Update {}
-
-    /** Options for {@link TokenDocument._preDelete | `TokenDocument#_preDelete`} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@link TokenDocument._onDelete | `TokenDocument#_onDelete`} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@link TokenDocument._preDeleteOperation | `TokenDocument#_preDeleteOperation`} */
-    interface PreDeleteOperation extends TokenDocument.Database.Delete {}
-
-    /** Options for {@link TokenDocument._onDeleteOperation | `TokenDocument#_onDeleteOperation`} */
-    interface OnDeleteOperation extends TokenDocument.Database.Delete {}
-
-    /** Context for {@linkcode TokenDocument._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
-
-    /** Context for {@linkcode TokenDocument._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
-
-    /** Context for {@linkcode TokenDocument._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
-
-    /**
-     * Options for {@link TokenDocument._preCreateDescendantDocuments | `TokenDocument#_preCreateDescendantDocuments`}
-     * and {@link TokenDocument._onCreateDescendantDocuments | `TokenDocument#_onCreateDescendantDocuments`}
-     */
-    interface CreateOptions extends Document.Database.CreateOptions<TokenDocument.Database.Create> {}
-
-    /**
-     * Options for {@link TokenDocument._preUpdateDescendantDocuments | `TokenDocument#_preUpdateDescendantDocuments`}
-     * and {@link TokenDocument._onUpdateDescendantDocuments | `TokenDocument#_onUpdateDescendantDocuments`}
-     */
-    interface UpdateOptions extends Document.Database.UpdateOptions<TokenDocument.Database.Update> {}
-
-    /**
-     * Options for {@link TokenDocument._preDeleteDescendantDocuments | `TokenDocument#_preDeleteDescendantDocuments`}
-     * and {@link TokenDocument._onDeleteDescendantDocuments | `TokenDocument#_onDeleteDescendantDocuments`}
-     */
-    interface DeleteOptions extends Document.Database.DeleteOptions<TokenDocument.Database.Delete> {}
-
-    /**
-     * Create options for {@linkcode TokenDocument.createDialog}.
-     */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
-  }
-
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
    */
@@ -1863,7 +1743,7 @@ declare namespace TokenDocument {
 
   interface Dimensions3D extends InexactPartial<Canvas.ElevatedPoint & Dimensions> {}
 
-  interface ResizeOptions extends InexactPartial<Omit<TokenDocument.Database.UpdateOperation, "updates">> {}
+  interface ResizeOptions extends InexactPartial<Omit<TokenDocument.Database2.UpdateOneDocumentOperation, "updates">> {}
 
   interface MovementWaypoint extends Omit<
     MeasuredMovementWaypoint,
@@ -2080,10 +1960,10 @@ declare namespace TokenDocument {
     /**
      * The update options of the movement operation
      */
-    updateOptions: Database.UpdateOperation;
+    updateOptions: Database2.UpdateOperation;
   }
 
-  interface MoveOptions extends Database.UpdateOperation {
+  interface MoveOptions extends Database2.UpdateOperation {
     method: MovementMethod;
     autoRotate: boolean;
     showRuler: boolean;
@@ -2493,7 +2373,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    */
   protected _preUpdateMovement(
     movement: TokenDocument.PreMovementOptions,
-    operation: TokenDocument.Database.UpdateOperation,
+    operation: TokenDocument.Database2.PreUpdateOptions,
   ): Promise<boolean | void>;
 
   /**
@@ -2505,7 +2385,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    */
   protected _onUpdateMovement(
     movement: TokenDocument.MovementOperation,
-    operation: TokenDocument.Database.UpdateOperation,
+    operation: TokenDocument.Database2.OnUpdateOptions,
     user: User.Implementation,
   ): void;
 
@@ -2529,7 +2409,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @internal
    * @deprecated since v13
    */
-  protected static _addTeleportAndForcedShims(operation: TokenDocument.Database.UpdateOperation): void;
+  // TODO: Add these shims to the operation interface
+  static _addTeleportAndForcedShims(operation: TokenDocument.Database2.OnUpdateOperation): void;
 
   /**
    * Are these changes moving the Token?
@@ -2634,7 +2515,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
    * @remarks After updating the synthetic actor, forwards to {@link TokenDocument._onRelatedUpdate | `TokenDocument#_onRelatedUpdate`}
    */
-  protected _onUpdateBaseActor(update?: Actor.UpdateData, options?: Actor.Database.OnUpdateOperation): void;
+  protected _onUpdateBaseActor(update?: Actor.UpdateData, options?: Actor.Database2.OnUpdateOperation): void;
 
   /**
    * Whenever the token's actor delta changes, or the base actor changes, perform associated refreshes.
@@ -2648,7 +2529,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
      * @privateRemarks foundry calls this field operation
      * but it's being passed options (and then ignores them)
      */
-    operation?: Actor.Database.OnUpdateOperation,
+    operation?: Actor.Database2.OnUpdateOperation,
   ): void;
 
   /**

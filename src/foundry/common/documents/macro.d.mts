@@ -313,7 +313,6 @@ declare namespace BaseMacro {
   export import UpdateData = Macro.UpdateData;
   export import UpdateInput = Macro.UpdateInput;
   export import Schema = Macro.Schema;
-  export import Database = Macro.Database;
   export import Database2 = Macro.Database2;
   export import TemporaryIf = Macro.TemporaryIf;
   export import Flags = Macro.Flags;
