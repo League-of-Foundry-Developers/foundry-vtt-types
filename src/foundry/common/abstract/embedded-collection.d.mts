@@ -122,39 +122,11 @@ declare class EmbeddedCollection<
   ): void;
 
   /**
-   * Get a document from the EmbeddedCollection by its ID.
-   * @param id      - The ID of the Embedded Document to retrieve.
-   * @param options - Additional options to configure retrieval.
-   *
-   * @remarks See {@linkcode EmbeddedCollection.Methods.get}, {@linkcode EmbeddedCollection.GetReturn}
-   */
-  override get: Methods["get"];
-
-  /**
-   * Add a document to the collection
-   * @param key     - The embedded Document ID
-   * @param value   - The embedded Document instance
-   * @param options - Additional options to the set operation
-   *
-   * @remarks See {@linkcode EmbeddedCollection.Methods.set}, {@linkcode Collection.SetMethod}
-   */
-  override set: Collection.SetMethod<this, Methods>;
-
-  /**
    * Modify the underlying source array to include the Document.
    * @param key   - The Document ID Key
    * @param value - The Document
    */
   protected _set(key: string, value: ContainedDocument): void;
-
-  /**
-   * Remove a document from the collection.
-   * @param key     - The embedded Document ID.
-   * @param options - Additional options to the delete operation.
-   *
-   * @remarks See {@linkcode EmbeddedCollection.Methods.delete}
-   */
-  override delete: Methods["delete"];
 
   /**
    * Remove the value from the underlying source array.
@@ -344,15 +316,29 @@ declare namespace EmbeddedCollection {
    * @see {@linkcode Collection.SetMethod}
    */
   interface Methods<ContainedDocument extends Document.Any> {
-    self: unknown;
-
+    /**
+     * Get a document from the EmbeddedCollection by its ID.
+     * @param id      - The ID of the Embedded Document to retrieve.
+     * @param options - Additional options to configure retrieval.
+     */
     get<Options extends EmbeddedCollection.GetOptions | undefined = undefined>(
       id: string,
       options?: Options,
     ): EmbeddedCollection.GetReturn<ContainedDocument, Options>;
 
-    set(key: string, value: ContainedDocument, options?: EmbeddedCollection.SetOptions): this["self"];
+    /**
+     * Add a document to the collection
+     * @param key     - The embedded Document ID
+     * @param value   - The embedded Document instance
+     * @param options - Additional options to the set operation
+     */
+    set(key: string, value: ContainedDocument, options?: EmbeddedCollection.SetOptions): this;
 
+    /**
+     * Remove a document from the collection.
+     * @param key     - The embedded Document ID.
+     * @param options - Additional options to the delete operation.
+     */
     delete(key: string, options?: EmbeddedCollection.DeleteOptions): boolean;
   }
 }
