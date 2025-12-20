@@ -144,12 +144,6 @@ declare class CompendiumCollection<
    */
   get indexed(): boolean;
 
-  override get: DocumentCollection.Methods<DocumentName>["get"];
-
-  override set: DocumentCollection.Methods<DocumentName>["set"];
-
-  override delete: DocumentCollection.Methods<DocumentName>["delete"];
-
   /**
    * @remarks Since all documents will get flushed at the end of the cache timer anyway, this doesn't clear documents with currently
    * rendered sheets in their {@linkcode ClientDocumentMixin.AnyMixed.apps | #apps}

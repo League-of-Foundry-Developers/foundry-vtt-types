@@ -107,10 +107,8 @@ describe("Collection Tests", () => {
         switch (typeof e) {
           case "number":
             return "5";
-            break;
           case "object":
             return `${e.foo}`;
-            break;
           case "boolean":
             return "true";
           case "string":
@@ -176,12 +174,35 @@ describe("Collection Tests", () => {
   test("custom Collection Map overrides regression test", () => {
     class CustomCollection extends Collection<string> {
       override clear(): void {}
+
+      // Useless override but regression test for `Methods` being defined as properties not methods.
+      override get<Options extends Collection.GetOptions | undefined = undefined>(
+        key: string,
+        options?: Options,
+      ): Collection.GetReturn<string, Options> {
+        return super.get(key, options);
+      }
+
+      // Useless override but regression test for `Methods` being defined as properties not methods.
+      override set(key: string, value: string) {
+        return super.set(key, value);
+      }
+
+      // Useless override but regression test for `Methods` being defined as properties not methods.
+      override delete(key: string) {
+        return super.delete(key);
+      }
     }
 
+    // Make sure statics are carried through.
+    CustomCollection.groupBy([], () => true);
+
     const customCollection = new CustomCollection();
+    customCollection.clear();
 
     if (customCollection instanceof Map) {
-      expectTypeOf(customCollection).toEqualTypeOf<CustomCollection>();
+      // It would be ideal if this went back to just `CustomCollection` but that's tricky to do.
+      expectTypeOf(customCollection).toEqualTypeOf<CustomCollection & Map<any, any>>();
     }
   });
 

@@ -92,11 +92,7 @@ declare class EmbeddedCollectionDelta<
     options?: DataModel.UpdateOptions,
   ): void;
 
-  override set: Collection.SetMethod<this, Methods>;
-
   protected override _set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): void;
-
-  delete: Methods["delete"];
 
   protected override _delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): void;
 
@@ -157,10 +153,19 @@ declare namespace EmbeddedCollectionDelta {
     EmbeddedCollection.Methods<ContainedDocument>,
     "get"
   > {
-    self: unknown;
-
+    /**
+     * Add a document to the collection
+     * @param key     - The embedded Document ID
+     * @param value   - The embedded Document instance
+     * @param options - Additional options to the set operation
+     */
     set(key: string, value: ContainedDocument, options?: EmbeddedCollectionDelta.SetOptions): void;
 
+    /**
+     * Remove a document from the collection.
+     * @param key     - The embedded Document ID.
+     * @param options - Additional options to the delete operation.
+     */
     delete(key: string, options?: EmbeddedCollectionDelta.DeleteOptions): void;
   }
 }
