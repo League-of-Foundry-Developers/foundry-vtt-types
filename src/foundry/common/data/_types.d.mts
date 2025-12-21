@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { fields } from "./_module.d.mts";
+import type { elements, fields as applicationFields } from "#client/applications/_module.d.mts";
 
 // After seeing that none of these types add anything or are even exported a
 // very reasonable question may be: Why on earth does this file exist?
@@ -17,15 +18,17 @@ type DataFieldOptions = fields.DataField.Options.Any;
 
 type DataFieldContext = fields.DataField.ConstructionContext;
 
-type FormGroupConfig = unknown;
+type DataFieldValidationOptions = unknown;
 
-type FormInputConfig = unknown;
+type FormGroupConfig = applicationFields.FormGroupConfig;
 
-type StringFieldInputConfig = unknown;
+type FormInputConfig = applicationFields.FormInputConfig<unknown>;
 
-type CodeMirrorLanguage = unknown;
+type StringFieldInputConfig = fields.StringField._StringFieldInputConfig;
 
-type CodeMirrorInputConfig = unknown;
+type CodeMirrorLanguage = elements.HTMLCodeMirrorElement.Language;
+
+type CodeMirrorInputConfig = elements.HTMLCodeMirrorElement.Config;
 
 type LightAnimationData = foundry.data.LightData.AnimationData;
 
@@ -33,13 +36,13 @@ type NumberFieldOptions = fields.NumberField.Options;
 
 type StringFieldOptions = fields.StringField.Options;
 
-type ChoiceInputConfig = unknown;
+type ChoiceInputConfig = fields.StringField.PrepareChoiceConfig;
 
 type ArrayFieldOptions = fields.ArrayField.Options<unknown>;
 
 type DocumentUUIDFieldOptions = fields.DocumentUUIDField.Options;
 
-type FilePathFieldOptions = fields.FilePathField;
+type FilePathFieldOptions = fields.FilePathField.Options;
 
 type DocumentFlags = Record<string, Record<string, unknown>>;
 

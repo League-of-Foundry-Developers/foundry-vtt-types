@@ -12,8 +12,7 @@ export { default as HTMLEnrichedContentElement } from "./enriched-content.mjs";
 export { default as HTMLFilePickerElement } from "./file-picker.mjs";
 export { default as HTMLHueSelectorSlider } from "./hue-slider.mjs";
 export { default as HTMLRangePickerElement } from "./range-picker.mjs";
+export { default as HTMLSecretBlockElement } from "./secret-block.mjs";
 export { default as HTMLStringTagsElement } from "./string-tags.mjs";
 export { default as HTMLProseMirrorElement } from "./prosemirror-editor.mjs";
 export * from "./multi-select.mjs";
-
-// TODO: Figure out if custom elements need to be otherwise registered for TS compatibility

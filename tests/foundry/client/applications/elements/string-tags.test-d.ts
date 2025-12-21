@@ -1,23 +1,55 @@
-import { expectTypeOf } from "vitest";
+import { describe, expectTypeOf, test } from "vitest";
 
-const stringTags = new foundry.applications.elements.HTMLStringTagsElement();
+import HTMLStringTagsElement = foundry.applications.elements.HTMLStringTagsElement;
 
-expectTypeOf(stringTags._value).toEqualTypeOf<Set<string>>();
+describe("HTMLStringTagsElement Tests", () => {
+  const config = {
+    name: "system.tags",
+    slug: true,
+    value: ["tag-one", "tag two", "TagThree"],
+  } satisfies HTMLStringTagsElement.Config;
 
-expectTypeOf(foundry.applications.elements.HTMLStringTagsElement.tagName).toEqualTypeOf<"string-tags">();
+  test("Construction", () => {
+    // @ts-expect-error Custom elements with `static create` functions have protected constructors
+    new HTMLStringTagsElement();
+    // @ts-expect-error Custom elements with `static create` functions have protected constructors
+    new HTMLStringTagsElement({ slug: false, values: ["tag-one", "tag two", "TagThree"] });
+    expectTypeOf(HTMLStringTagsElement.create(config)).toEqualTypeOf<HTMLStringTagsElement>();
+  });
 
-expectTypeOf(foundry.applications.elements.HTMLStringTagsElement.icons).toEqualTypeOf<{
-  add: string;
-  remove: string;
-}>();
-expectTypeOf(foundry.applications.elements.HTMLStringTagsElement.labels).toEqualTypeOf<{
-  add: string;
-  remove: string;
-  placeholder: string;
-}>();
-expectTypeOf(foundry.applications.elements.HTMLStringTagsElement.renderTag("")).toEqualTypeOf<HTMLDivElement>();
+  const el = HTMLStringTagsElement.create(config);
 
-declare const config: foundry.applications.elements.HTMLStringTagsElement.StringTagsInputConfig;
-expectTypeOf(
-  foundry.applications.elements.HTMLStringTagsElement.create(config),
-).toEqualTypeOf<foundry.applications.elements.HTMLStringTagsElement>();
+  test("Miscellaneous", () => {
+    expectTypeOf(HTMLStringTagsElement.tagName).toBeString();
+    expectTypeOf(HTMLStringTagsElement.icons.add).toBeString();
+    expectTypeOf(HTMLStringTagsElement.labels.placeholder).toBeString();
+
+    expectTypeOf(el["_initializeTags"]()).toBeVoid();
+    expectTypeOf(el["_initializeTags"](["tag-one", "tag two", "TagThree"])).toBeVoid();
+    expectTypeOf(el["_initializeTags"]()).toBeVoid();
+
+    expectTypeOf(el["_validateTag"]("foo")).toBeVoid();
+
+    expectTypeOf(HTMLStringTagsElement.renderTag("foo")).toEqualTypeOf<HTMLDivElement>();
+    expectTypeOf(HTMLStringTagsElement.renderTag("foo", "A Label for Foo")).toEqualTypeOf<HTMLDivElement>();
+    expectTypeOf(HTMLStringTagsElement.renderTag("foo", "A Label for Foo", false)).toEqualTypeOf<HTMLDivElement>();
+  });
+
+  test("Value", () => {
+    expectTypeOf(el.value).toEqualTypeOf<string[]>();
+    el.value = ["tag-one", "tag two", "TagThree"]; // Setter
+    el.value = new Set(["tag-one", "tag two", "TagThree"]);
+
+    expectTypeOf(el["_value"]).toEqualTypeOf<Set<string>>();
+    expectTypeOf(el["_getValue"]()).toEqualTypeOf<string[]>();
+    expectTypeOf(el["_setValue"](["tag-one", "tag two", "TagThree"])).toBeVoid();
+    expectTypeOf(el["_setValue"](new Set(["tag-one", "tag two", "TagThree"]))).toBeVoid();
+  });
+
+  test("Element API and lifecycle methods", () => {
+    expectTypeOf(el["_buildElements"]()).toEqualTypeOf<HTMLElement[]>();
+    expectTypeOf(el["_refresh"]()).toBeVoid();
+    expectTypeOf(el["_activateListeners"]()).toBeVoid();
+    expectTypeOf(el["_toggleDisabled"](true)).toBeVoid();
+  });
+});
