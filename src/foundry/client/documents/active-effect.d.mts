@@ -11,6 +11,7 @@ import type {
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataModel } from "#common/abstract/data.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
+import type { BaseCombat } from "#common/documents/_module.d.mts";
 import type BaseActiveEffect from "#common/documents/active-effect.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -409,10 +410,10 @@ declare namespace ActiveEffect {
     seconds: fields.NumberField<{ integer: true; min: 0 }>;
 
     /**
-     * The _id of the CombatEncounter in which the effect first started
+     * The `_id` of the {@linkcode Combat} in which the effect first started
      * @defaultValue `null`
      */
-    combat: fields.ForeignDocumentField<typeof foundry.documents.BaseCombat>;
+    combat: fields.ForeignDocumentField<typeof BaseCombat>;
 
     /**
      * The maximum duration of the effect, in combat rounds
@@ -480,7 +481,13 @@ declare namespace ActiveEffect {
      */
     interface CreateOperation<
       Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<ActiveEffect.CreateInput, ActiveEffect.Parent, Temporary> {}
+    > extends DatabaseBackend.CreateOperation<ActiveEffect.CreateInput, ActiveEffect.Parent, Temporary> {
+      /**
+       * @remarks If passed as explicit `false`, the {@linkcode ActiveEffect._displayScrollingStatus | ActiveEffect#_displayScrollingStatus}
+       * call in {@linkcode ActiveEffect._onCreate | ActiveEffect#_onCreate} is prevented.
+       */
+      animate?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode ActiveEffect.create} or {@linkcode ActiveEffect.createDocuments}.
@@ -619,7 +626,13 @@ declare namespace ActiveEffect {
      * @remarks This interface was previously typed for passing to {@linkcode ActiveEffect.update | ActiveEffect#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<ActiveEffect.UpdateInput, ActiveEffect.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<ActiveEffect.UpdateInput, ActiveEffect.Parent> {
+      /**
+       * @remarks If passed as explicit `false`, the {@linkcode ActiveEffect._displayScrollingStatus | ActiveEffect#_displayScrollingStatus}
+       * call in {@linkcode ActiveEffect._onUpdate | ActiveEffect#_onUpdate} is prevented.
+       */
+      animate?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode ActiveEffect.update | ActiveEffect#update}.
@@ -767,7 +780,13 @@ declare namespace ActiveEffect {
      * @remarks This interface was previously typed for passing to {@linkcode ActiveEffect.delete | ActiveEffect#delete}.
      * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
      */
-    interface DeleteOperation extends DatabaseBackend.DeleteOperation<ActiveEffect.Parent> {}
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<ActiveEffect.Parent> {
+      /**
+       * @remarks If passed as explicit `false`, the {@linkcode ActiveEffect._displayScrollingStatus | ActiveEffect#_displayScrollingStatus}
+       * call in {@linkcode ActiveEffect._onDelete | ActiveEffect#_onDelete} is prevented.
+       */
+      animate?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode ActiveEffect.delete | ActiveEffect#delete}.

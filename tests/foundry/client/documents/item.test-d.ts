@@ -1,4 +1,4 @@
-import { expectTypeOf, test } from "vitest";
+import { describe, expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
 type DataSchema = foundry.data.fields.DataSchema;
@@ -23,7 +23,17 @@ test("optional subtype", () => {
   delete game.model?.Item.weapon;
 });
 
+// export class TestConfiguredItem<SubType extends Item.SubType = Item.SubType> extends Item<SubType> {
+//   newMethodOnTestClass(): void {
+//     console.warn("boop");
+//   }
+// }
+
 declare global {
+  // interface DocumentClassConfig {
+  //   Item: typeof TestConfiguredItem;
+  // }
+
   interface DataModelConfig {
     Item: {
       armor: typeof ArmorData;
@@ -31,6 +41,13 @@ declare global {
     };
   }
 }
+
+const actor = game.actors.contents[0]!;
+const item = actor.items.contents[0]!;
+
+expectTypeOf(item.configured).toBeBoolean();
+
+describe("Item Tests", () => {});
 
 // @ts-expect-error Item requires name and type.
 new Item.implementation();
@@ -81,13 +98,13 @@ test("update regression test", () => {
 declare global {
   namespace Item {
     namespace Database {
-      interface Create {
+      interface CreateOperation {
         foo?: string;
       }
-      interface Update {
+      interface UpdateOperation {
         bar?: number;
       }
-      interface Delete {
+      interface DeleteOperation {
         foobar?: boolean;
       }
     }
@@ -101,7 +118,7 @@ Item.deleteDocuments([foundry.utils.randomID()], { foobar: false });
 class BoilerplateItem extends Item {
   protected static override async _onUpdateOperation(
     documents: Item.Implementation[],
-    operation: Item.Database.Update,
+    operation: Item.Database.OnUpdateOperation,
     user: User.Implementation,
   ): Promise<void> {
     if (operation.bar) {

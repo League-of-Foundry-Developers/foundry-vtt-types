@@ -1,5 +1,5 @@
 import type { ConfiguredCombat } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, IntentionalPartial, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { BaseCombatantGroup, BaseCombatant, BaseScene } from "#client/documents/_module.d.mts";
 import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
@@ -14,6 +14,10 @@ import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+
+/** @privateRemarks `hookEvents` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { AllHooks as hookEvents } from "#client/hooks.d.mts";
 
 declare namespace Combat {
   /**
@@ -471,9 +475,10 @@ declare namespace Combat {
      * @remarks This interface was previously typed for passing to {@linkcode Combat.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<Combat.CreateInput, Combat.Parent, Temporary> {}
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<Combat.CreateInput, Combat.Parent, Temporary>,
+        IntentionalPartial<Combat.TurnUpdateOptions> {}
 
     /**
      * The interface for passing to {@linkcode Combat.create} or {@linkcode Combat.createDocuments}.
@@ -612,7 +617,10 @@ declare namespace Combat {
      * @remarks This interface was previously typed for passing to {@linkcode Combat.update | Combat#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Combat.UpdateInput, Combat.Parent> {}
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<Combat.UpdateInput, Combat.Parent>,
+        IntentionalPartial<Combat._TurnOrRoundUpdateOptions> {}
 
     /**
      * The interface for passing to {@linkcode Combat.update | Combat#update}.
@@ -1143,6 +1151,110 @@ declare namespace Combat {
    *             COMBAT-SPECIFIC TYPES             *
    *************************************************/
 
+  /**
+   * Identical to {@linkcode _TurnUpdateData} except for property descriptions.
+   * @internal
+   */
+  interface _CombatStartData {
+    /** The initial round */
+    round: number;
+
+    /** The initial turn */
+    turn: number;
+  }
+
+  /** @internal */
+  interface _TurnUpdateData {
+    /** The current round of combat */
+    round: number;
+
+    /** The new turn number */
+    turn: number;
+  }
+
+  /** @internal */
+  interface _RoundUpdateData {
+    /** The new round of combat */
+    round: number;
+
+    /**
+     * The new turn number
+     * @remarks `combatRound`, unlike `combatTurn` and `combatStart`, can have a `null` turn.
+     */
+    turn: number | null;
+  }
+
+  /**
+   * The interface for the second argument passed to {@linkcode hookEvents.combatStart}.
+   *
+   * @remarks This is passed to {@linkcode Combat.update | Combat#update} after any hook callbacks have had a chance to mutate it.
+   * Only `round` and `turn` are guaranteed to exist by {@linkcode Combat.startTurn | Combat#startTurn}.
+   */
+  interface CombatStartData extends Omit<Combat.UpdateData, "round" | "turn">, _CombatStartData {}
+
+  /**
+   * The interface for the second argument passed to {@linkcode hookEvents.combatTurn}.
+   *
+   * @remarks This is passed to {@linkcode Combat.update | Combat#update} after any hook callbacks have had a chance to mutate it.
+   * Only `round` and `turn` are guaranteed to exist by {@linkcode Combat.nextTurn | Combat#nextTurn} and
+   * {@linkcode Combat.previousTurn | #previousTurn}.
+   */
+  interface TurnUpdateData extends Omit<Combat.UpdateData, "round" | "turn">, _TurnUpdateData {}
+
+  /** The inner interface for `RoundUpdateOptions`/`TurnUpdateOptions`{@linkcode TurnUpdateOptions.worldTime | .worldTime} */
+  interface TurnWorldTime {
+    /**
+     * The amount of time in seconds that time is being advanced
+     * @remarks The above is the description Foundry gives for `options.advanceTime` in the {@linkcode hookEvents.combatTurn}
+     * JSDoc as of 13.351, which this property seems to have replaced.
+     */
+    delta: number;
+  }
+
+  /**
+   * This is used straight (props required) in {@linkcode TurnUpdateOptions} and {@linkcode RoundUpdateOptions}, and partialed in
+   * {@linkcode Combat.Database.UpdateOperation}.
+   * @internal
+   */
+  interface _TurnOrRoundUpdateOptions {
+    worldTime: TurnWorldTime;
+
+    /**
+     * A signed integer for whether the turn order is advancing or rewinding
+     * @remarks Core only ever provides `-1 | 1`, and doesn't appear to check it ever; this seems to exist just for user use.
+     */
+    direction: number;
+  }
+
+  /**
+   * The interface for the third argument passed to {@linkcode hookEvents.combatTurn}.
+   *
+   * @remarks This is passed to {@linkcode Combat.update | Combat#update} after any hook callbacks have had a chance to mutate it.
+   * Only `worldTime` and `direction` are guaranteed to exist by {@linkcode Combat.nextTurn | Combat#nextTurn} and
+   * {@linkcode Combat.previousTurn | #previousTurn}.
+   */
+  interface TurnUpdateOptions
+    extends Omit<Combat.Database.UpdateOneDocumentOperation, "direction" | "worldTime">, _TurnOrRoundUpdateOptions {}
+
+  /**
+   * The interface for the second argument passed to {@linkcode hookEvents.combatRound}.
+   *
+   * @remarks This is passed to {@linkcode Combat.update | Combat#update} after any hook callbacks have had a chance to mutate it.
+   * Only `round` and `turn` are guaranteed to exist by {@linkcode Combat.nextRound | Combat#nextRound} and
+   * {@linkcode Combat.previousRound | #previousRound}.
+   */
+  interface RoundUpdateData extends Omit<Combat.UpdateData, "round" | "turn">, _RoundUpdateData {}
+
+  /**
+   * The interface for the third argument passed to {@linkcode hookEvents.combatTurn}.
+   *
+   * @remarks This is passed to {@linkcode Combat.update | Combat#update} after any hook callbacks have had a chance to mutate it.
+   * Only `worldTime` and `direction` are guaranteed to exist by {@linkcode Combat.nextRound | Combat#nextRound} and
+   * {@linkcode Combat.previousRound | #previousRound}.
+   */
+  interface RoundUpdateOptions
+    extends Omit<Combat.Database.UpdateOneDocumentOperation, "direction" | "worldTime">, _TurnOrRoundUpdateOptions {}
+
   /** @internal */
   type _InitiativeOptions = NullishProps<{
     /**
@@ -1169,7 +1281,7 @@ declare namespace Combat {
   interface InitiativeOptions extends _InitiativeOptions {}
 
   interface HistoryData {
-    round: number | null;
+    round: number;
     turn: number | null;
     tokenId: string | null;
     combatantId: string | null;
@@ -1216,8 +1328,12 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
   constructor(data?: Combat.CreateData<SubType>, context?: Combat.ConstructionContext);
 
-  /** Track the sorted turn order of this combat encounter */
-  turns: Combatant.Implementation[];
+  /**
+   * Track the sorted turn order of this combat encounter
+   * @remarks Generated by iterating {@linkcode Combat.combatants | this.combatants} in {@linkcode Combat.setupTurns | Combat#setupTurns},
+   * so all elements will be persisted docs.
+   */
+  turns: Combatant.Stored[];
 
   /** Record the current round, turn, and tokenId to understand changes in the encounter state */
   current: Combat.HistoryData;

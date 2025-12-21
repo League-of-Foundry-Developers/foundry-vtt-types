@@ -1,8 +1,88 @@
-import { expectTypeOf } from "vitest";
+import { describe, expectTypeOf } from "vitest";
 import type { AnyMutableObject } from "fvtt-types/utils";
 
 import DataModel = foundry.abstract.DataModel;
 import Document = foundry.abstract.Document;
+
+export const realSource = {
+  _id: "R5ro4AuNjcdWD56O",
+  changes: [
+    {
+      key: "system.attributes.ac.calc",
+      mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+      value: "unarmoredMonk",
+      priority: null,
+    },
+  ],
+  disabled: false,
+  duration: {
+    startTime: 0,
+    seconds: null,
+    combat: null,
+    rounds: null,
+    turns: null,
+    startRound: null,
+    startTurn: null,
+  },
+  origin: "Item.cOdcNWy4hII029DT",
+  transfer: true,
+  flags: {},
+  tint: "#ffffff",
+  name: "Unarmored Defense",
+  description: "",
+  statuses: [],
+  _stats: {
+    createdTime: 1252345,
+    modifiedTime: 13245234623624,
+    compendiumSource: null,
+    duplicateSource: null,
+    exportSource: null,
+    coreVersion: "13.348",
+    systemId: "dnd5e",
+    systemVersion: "5.2.3",
+    lastModifiedBy: null,
+  },
+  img: "icons/magic/control/silhouette-hold-change-blue.webp",
+  type: "base",
+  system: {},
+  sort: 0,
+} satisfies ActiveEffect.Source;
+
+export const maximumSource = {
+  _id: "R5ro4AuNjcdWD56O",
+  changes: [
+    {
+      key: "system.attributes.ac.calc",
+      mode: CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+      value: "unarmoredMonk",
+      priority: 70,
+    },
+  ],
+  disabled: false,
+  duration: {
+    startTime: 0,
+    seconds: 12,
+    combat: "XXXXCOMBATIDXXXX",
+    rounds: 2,
+    turns: 7,
+    startRound: 1,
+    startTurn: 3,
+  },
+  origin: "Item.cOdcNWy4hII029DT",
+  transfer: true,
+  flags: {
+    core: {
+      overlay: true
+    }
+  },
+  tint: "#FEDCBA",
+  name: "A Name",
+  description: "Some Text",
+} satisfies ActiveEffect.Source;
+
+describe("ActiveEffect Tests", ()=>{
+
+})
 
 // @ts-expect-error ActiveEffect requires name.
 new ActiveEffect.implementation();

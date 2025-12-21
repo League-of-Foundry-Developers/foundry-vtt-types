@@ -786,16 +786,7 @@ export interface AllHooks extends DynamicHooks {
    * @param combat     - The Combat encounter which is starting
    * @param updateData - An object which contains Combat properties that will be updated. Can be mutated.
    */
-  combatStart: (
-    combat: Combat.Implementation,
-    updateData: {
-      /** The initial round */
-      round: number;
-
-      /** The initial turn */
-      turn: number;
-    },
-  ) => void;
+  combatStart: (combat: Combat.Implementation, updateData: Combat.CombatStartData) => void;
 
   /**
    * A hook event that fires when the turn of the Combat encounter changes.
@@ -806,20 +797,8 @@ export interface AllHooks extends DynamicHooks {
    */
   combatTurn: (
     combat: Combat.Implementation,
-    updateData: {
-      /** The current round of combat */
-      round: number;
-
-      /** The new turn number */
-      turn: number;
-    },
-    updateOptions: {
-      /** The amount of time in seconds that time is being advanced */
-      advanceTime: number;
-
-      /** A signed integer for whether the turn order is advancing or rewinding */
-      direction: number;
-    },
+    updateData: Combat.TurnUpdateData,
+    updateOptions: Combat.TurnUpdateOptions,
   ) => void;
 
   /**
@@ -830,23 +809,8 @@ export interface AllHooks extends DynamicHooks {
    */
   combatRound: (
     combat: Combat.Implementation,
-    updateData: {
-      /** The new round of combat */
-      round: number;
-
-      /**
-       * The new turn number
-       * @remarks `combatRound`, unlike `combatTurn` and `combatStart`, can have a `null` turn.
-       */
-      turn: number | null;
-    },
-    updateOptions: {
-      /** The amount of time in seconds that time is being advanced */
-      advanceTime: number;
-
-      /** A signed integer for whether the turn order is advancing or rewinding */
-      direction: number;
-    },
+    updateData: Combat.RoundUpdateData,
+    updateOptions: Combat.RoundUpdateOptions,
   ) => void;
 
   /**

@@ -449,7 +449,16 @@ declare namespace ActorDelta {
      */
     interface CreateOperation<
       Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<ActorDelta.CreateInput, ActorDelta.Parent, Temporary> {}
+    > extends DatabaseBackend.CreateOperation<ActorDelta.CreateInput, ActorDelta.Parent, Temporary> {
+      /**
+       * @remarks Not intended to be passed by user code, this gets set `true` in the operation if appropriate just before it goes over the
+       * socket in `ClientDatabaseBackend##buildRequest` by calling `##adjustActorDeltaRequest`.
+       *
+       * The only place non-private client code will see it is {@linkcode ActorDelta._onUpdateOperation}, due to how embedded document
+       * lifecycle methods aren't called if they're created/updated/deleted as part of a parent document operation.
+       */
+      syntheticActorUpdate?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode ActorDelta.create} or {@linkcode ActorDelta.createDocuments}.
@@ -586,7 +595,16 @@ declare namespace ActorDelta {
      * @remarks This interface was previously typed for passing to {@linkcode ActorDelta.update | ActorDelta#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<ActorDelta.UpdateInput, ActorDelta.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<ActorDelta.UpdateInput, ActorDelta.Parent> {
+      /**
+       * @remarks Not intended to be passed by user code, this gets set `true` in the operation if appropriate just before it goes over the
+       * socket in `ClientDatabaseBackend##buildRequest` by calling `##adjustActorDeltaRequest`.
+       *
+       * The only place non-private client code will see it is {@linkcode ActorDelta._onUpdateOperation}, due to how embedded document
+       * lifecycle methods aren't called if they're created/updated/deleted as part of a parent document operation.
+       */
+      syntheticActorUpdate?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode ActorDelta.update | ActorDelta#update}.
@@ -732,7 +750,16 @@ declare namespace ActorDelta {
      * @remarks This interface was previously typed for passing to {@linkcode ActorDelta.delete | ActorDelta#delete}.
      * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
      */
-    interface DeleteOperation extends DatabaseBackend.DeleteOperation<ActorDelta.Parent> {}
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<ActorDelta.Parent> {
+      /**
+       * @remarks Not intended to be passed by user code, this gets set `true` in the operation if appropriate just before it goes over the
+       * socket in `ClientDatabaseBackend##buildRequest` by calling `##adjustActorDeltaRequest`.
+       *
+       * The only place non-private client code will see it is {@linkcode ActorDelta._onUpdateOperation}, due to how embedded document
+       * lifecycle methods aren't called if they're created/updated/deleted as part of a parent document operation.
+       */
+      syntheticActorUpdate?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode ActorDelta.delete | ActorDelta#delete}.

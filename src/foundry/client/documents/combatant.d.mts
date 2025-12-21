@@ -386,7 +386,19 @@ declare namespace Combatant {
      */
     interface CreateOperation<
       Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<Combatant.CreateInput, Combatant.Parent, Temporary> {}
+    > extends DatabaseBackend.CreateOperation<Combatant.CreateInput, Combatant.Parent, Temporary> {
+      /**
+       * @remarks If passed, sets the parent {@linkcode Combat}'s current {@linkcode Combat.turn | turn} to this value as part of
+       * this operation.
+       */
+      combatTurn?: number;
+
+      /**
+       * If set `false`, skips calling {@linkcode Combat._manageTurnEvents | Combat#_manageTurnEvents} in `Combat##onModifyCombatants`
+       * (which gets passed this operation via {@linkcode Combat._onCreateDescendantDocuments | Combat#_onCreateDescendantDocuments}))
+       */
+      turnEvents?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode Combatant.create} or {@linkcode Combatant.createDocuments}.
@@ -523,7 +535,20 @@ declare namespace Combatant {
      * @remarks This interface was previously typed for passing to {@linkcode Combatant.update | Combatant#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Combatant.UpdateInput, Combatant.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Combatant.UpdateInput, Combatant.Parent> {
+      /**
+       * @remarks If passed, sets the parent {@linkcode Combat}'s current {@linkcode Combat.turn | turn} to this value as part of
+       * this operation.
+       */
+      combatTurn?: number;
+
+      /**
+       * If set `false`, skips calling {@linkcode Combat._manageTurnEvents | Combat#_manageTurnEvents} in `Combat##onModifyCombatants`
+       * (which gets passed this operation via {@linkcode Combat._onUpdateDescendantDocuments | Combat#_onUpdateDescendantDocuments})
+       * and {@linkcode Combat._onUpdate | Combat#_onUpdate}.
+       */
+      turnEvents?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode Combatant.update | Combatant#update}.
@@ -669,7 +694,19 @@ declare namespace Combatant {
      * @remarks This interface was previously typed for passing to {@linkcode Combatant.delete | Combatant#delete}.
      * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
      */
-    interface DeleteOperation extends DatabaseBackend.DeleteOperation<Combatant.Parent> {}
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<Combatant.Parent> {
+      /**
+       * @remarks If passed, sets the parent {@linkcode Combat}'s current {@linkcode Combat.turn | turn} to this value as part of
+       * this operation.
+       */
+      combatTurn?: number;
+
+      /**
+       * If set `false`, skips calling {@linkcode Combat._manageTurnEvents | Combat#_manageTurnEvents} in `Combat##onModifyCombatants`
+       * (which gets passed this operation via {@linkcode Combat._onDeleteDescendantDocuments | Combat#_onDeleteDescendantDocuments}).
+       */
+      turnEvents?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode Combatant.delete | Combatant#delete}.
