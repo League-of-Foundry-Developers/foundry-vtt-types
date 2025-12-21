@@ -1,4 +1,4 @@
-import type { AnyArray, Coalesce, GetKey, Identity, InexactPartial } from "#utils";
+import type { Coalesce, GetKey, Identity, InexactPartial, Override } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 
 /** @privateRemarks `EmbeddedCollection` used only for links */
@@ -11,20 +11,28 @@ import type { DocumentCollection } from "#client/documents/abstract/_module.d.mt
 
 // This class exists make it as sound as possible to override these parts of the class and make them
 // completely unrelated. It's done this way specifically to avoid situations with broken inheritance.
-declare class Map<K, V> extends globalThis.Map<K, V> {
-  [Symbol.iterator](): any;
-  forEach(...args: AnyArray): any;
-  get(...args: AnyArray): any;
-  set(...args: AnyArray): any;
-  delete(...args: AnyArray): any;
-}
+declare const Map: { [K in keyof MapConstructor as K extends "prototype" ? never : K]: MapConstructor[K] } & (new <
+  V,
+  Methods extends Collection.Methods.Any = Collection.Methods<V>,
+>(
+  ...args: ConstructorParameters<typeof globalThis.Map<string, V>>
+) => Override<
+  globalThis.Map<string, V>,
+  // `unknown extends Methods ? Collection.Methods.Any : Methods` is to catch when `Methods` is `any`.
+  // TypeScript will instantiate something like `DocumentCollection.prototype` to `DocumentCollection<any, any>`.
+  // This would lead to `Methods = any` which would break the type here.
+  (unknown extends Methods ? Collection.Methods.Any : Methods) & {
+    forEach(...args: unknown[]): unknown;
+    [Symbol.iterator](): unknown;
+  }
+>);
 
 /**
  * A reusable storage concept which blends the functionality of an Array with the efficient key-based lookup of a Map.
  * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
  * @template T - The type of the objects contained in the Collection
  */
-declare class Collection<V, Methods extends Collection.Methods.Any = Collection.Methods<V>> extends Map<string, V> {
+declare class Collection<V, Methods extends Collection.Methods.Any = Collection.Methods<V>> extends Map<V, Methods> {
   /**
    * This is to allow {@linkcode foundry.documents.abstract.DirectoryCollectionMixin | DirectoryCollectionMixin} (or any
    * theoretical future/user mixins) clean access to the value type for this Collection.
@@ -93,42 +101,6 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
    * ```
    */
   forEach(/** @immediate */ fn: (e: V) => void): void;
-
-  /**
-   * Get an element from the Collection by its key.
-   * @param key     - The key of the entry to retrieve
-   * @param strict  - Throw an Error if the requested key does not exist, otherwise return undefined. (default: `false`)
-   * @returns The retrieved entry value, if the key exists, otherwise undefined
-   *
-   * @example
-   * Get an element from the Collection by key
-   * ```ts
-   * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
-   * c.get("a"); // "A"
-   * c.get("d"); // null
-   * c.get("d", {strict: true}); // throws Error
-   * ```
-   *
-   * @remarks Go to definition breaks here, see {@linkcode Collection.Methods.get}
-   */
-  override get: Methods["get"];
-
-  /**
-   * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
-   *
-   * Go to definition breaks here, see {@linkcode Collection.Methods.set}
-   * @see {@linkcode globalThis.Map.set | Map#set}
-   * @see {@linkcode Collection.SetMethod}
-   */
-  override set: Collection.SetMethod<this, Methods>;
-
-  /**
-   * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
-   *
-   * Go to definition breaks here, see {@linkcode Collection.Methods.delete}
-   * @see {@linkcode globalThis.Map.delete | Map#delete}
-   */
-  override delete: Methods["delete"];
 
   /**
    * Get an entry from the Collection by name.
@@ -214,35 +186,43 @@ declare namespace Collection {
     strict?: boolean | undefined;
   }
 
-  /**
-   * This type exists to allow the `set` method provided by a given Collection subclass to accurately provide a `this` return,
-   * if it does return `this` and isn't broken like all {@linkcode DocumentCollection} subclasses in 13.350
-   * ({@link https://github.com/foundryvtt/foundryvtt/issues/13565})
-   */
-  type SetMethod<This, Methods extends Collection.Methods.Any> = ({ self: This } & Methods)["set"];
-
   /** Method signatures for {@linkcode Collection} */
   interface Methods<V> {
-    self: unknown;
-
+    /**
+     * Get an element from the Collection by its key.
+     * @param key     - The key of the entry to retrieve
+     * @param options - Additional options that affect how entries are retrieved
+     * @returns The retrieved entry value, if the key exists, otherwise undefined
+     *
+     * @example
+     * Get an element from the Collection by key
+     * ```ts
+     * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
+     * c.get("a"); // "A"
+     * c.get("d"); // null
+     * c.get("d", {strict: true}); // throws Error
+     * ```
+     */
     get<Options extends Collection.GetOptions | undefined = undefined>(
       key: string,
       options?: Options,
     ): Collection.GetReturn<V, Options>;
 
-    set(key: string, value: V): this["self"];
+    /**
+     * Adds a new element with a specified key and value to the Map. If an element with the same key already exists, the element will be updated.
+     * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
+     */
+    set(key: string, value: V): this;
 
+    /**
+     * @returns true if an element in the Map existed and has been removed, or false if the element does not exist.
+     * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
+     */
     delete(key: string): boolean;
   }
 
   namespace Methods {
-    /**
-     * The base requirements for a `Collection` subclass. `self` is a hack to allow a valid `this` return for `set`,
-     * where it isn't broken, see {@linkcode Collection.SetMethod}
-     */
     interface Any {
-      self: unknown;
-
       get(key: string, options?: never): unknown;
 
       set(key: string, value: unknown, options?: never): unknown;

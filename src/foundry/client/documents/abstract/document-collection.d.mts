@@ -12,7 +12,7 @@ import type DatabaseBackend from "#common/abstract/backend.d.mts";
 
 /** @privateRemarks `CompendiumCollection` and `CompendiumFolderCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { CompendiumCollection, CompendiumFolderCollection } from "#client/documents/collections/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /** @privateRemarks `WorldCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -103,29 +103,6 @@ declare abstract class DocumentCollection<
   ): DocumentCollection.GetInvalidReturn<DocumentName, Options>;
 
   /**
-   * Get an element from the `DocumentCollection` by its ID.
-   * @param id      - The ID of the Document to retrieve.
-   * @param options - Additional options to configure retrieval.
-   * @throws If strict is true and the Document cannot be found.
-   * @remarks Goto definition breaks here, see {@linkcode DocumentCollection.Methods.get} for the signature
-   */
-  get: Methods["get"];
-
-  /**
-   * @remarks Foundry fails to return the super call here, leading to a `void` return rather than `this` as of 13.350
-   * ({@link https://github.com/foundryvtt/foundryvtt/issues/13565}).
-   *
-   * The parameter `id` is ignored, instead `document.id` is used as the key. This guarantees that all values are stored documents.
-   *
-   * Goto definition breaks here, see {@linkcode DocumentCollection.Methods.set}.
-   * @privateRemarks The bug above means there's no need to use {@linkcode Collection.SetMethod} here.
-   */
-  set: Methods["set"];
-
-  /** @remarks Goto definition breaks here, see {@linkcode DocumentCollection.Methods.delete} */
-  delete: Methods["delete"];
-
-  /**
    * Render any Applications associated with this DocumentCollection.
    * @param force   - Force rendering  (default: `false`)
    * @param options - Optional options (default: `{}`)
@@ -213,16 +190,30 @@ declare namespace DocumentCollection {
    * to allow for invalid document handling.
    */
   interface Methods<DocumentName extends Document.Type> {
-    self: unknown;
-
+    /**
+     * Get an element from the `DocumentCollection` by its ID.
+     * @param id      - The ID of the Document to retrieve.
+     * @param options - Additional options to configure retrieval.
+     * @throws If strict is true and the Document cannot be found.
+     * @remarks Goto definition breaks here, see {@linkcode DocumentCollection.Methods.get} for the signature
+     */
     get<Options extends DocumentCollection.GetOptions | undefined = undefined>(
-      key: string,
+      id: string,
       options?: Options,
     ): DocumentCollection.GetReturn<DocumentName, Options>;
 
+    /**
+     * @remarks Foundry fails to return the super call here, leading to a `void` return rather than `this` as of 13.350
+     * ({@link https://github.com/foundryvtt/foundryvtt/issues/13565}).
+     *
+     * The parameter `id` is ignored, instead `document.id` is used as the key. This guarantees that all values are stored documents.
+     */
     set(id: string, document: Document.StoredForName<DocumentName>): void;
 
-    /** @privateRemarks This could be inherited from {@linkcode Collections.Methods}, but the `extends Pick<...` too long to bother */
+    /**
+     * @returns true if an element in the Map existed and has been removed, or false if the element does not exist.
+     * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
+     */
     delete(id: string): boolean;
   }
 

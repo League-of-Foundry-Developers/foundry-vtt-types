@@ -25,7 +25,7 @@ declare class ToursCollection extends Collection<Tour.Any> {
    * Go to definition breaks here, see {@linkcode Collection.Methods.set} and {@linkcode Collection.SetMethod}
    * @throws If `key` doesn't match the passed Tour's `namespace` and `id`
    */
-  override set: Collection.SetMethod<this, Collection.Methods<Tour.Any>>;
+  override set(key: string, value: Tour.Any): this;
 }
 
 declare namespace ToursCollection {}

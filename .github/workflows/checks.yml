@@ -38,7 +38,7 @@ jobs:
           node-version: ${{ env.node_version }}
 
       - name: Cache Node.js modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .npm
           key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -77,7 +77,7 @@ jobs:
           node-version: ${{ env.node_version }}
 
       - name: Cache Node.js modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .npm
           key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -111,7 +111,7 @@ jobs:
           node-version: ${{ env.node_version }}
 
       - name: Cache Node.js modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .npm
           key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -145,7 +145,7 @@ jobs:
           node-version: ${{ env.node_version }}
           registry-url: "https://registry.npmjs.org"
       - name: Cache Node.js modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .npm
           key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}

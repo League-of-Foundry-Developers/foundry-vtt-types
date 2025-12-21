@@ -91,7 +91,7 @@ class Runner extends VitestTestRunner {
   };
 
   override async importFile(filePath: string) {
-    await import(/* @vite-ignore */ filePath);
+    await import(/* @vite-ignore */ "/@fs/" + filePath);
   }
 
   override async onAfterRunSuite() {
@@ -108,7 +108,7 @@ function getRunner() {
 }
 
 window.__foundry_vitest__ = {
-  setup: setup,
+  setup,
   run: (context) => startTests(context.files, getRunner()),
   collect: (context) => collectTests(context.files, getRunner()),
 };

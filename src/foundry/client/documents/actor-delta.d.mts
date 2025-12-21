@@ -83,7 +83,7 @@ declare namespace ActorDelta {
    *
    * @see {@linkcode ActorDelta.SubType} for more information.
    */
-  type ConfiguredSubType = Actor.SubType;
+  type ConfiguredSubType = Actor.ConfiguredSubType;
 
   /**
    * `Known` represents the types of `ActorDelta` that a user explicitly registered.
