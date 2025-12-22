@@ -440,7 +440,13 @@ declare namespace AmbientLightDocument {
     interface UpdateOperation extends DatabaseBackend.UpdateOperation<
       AmbientLightDocument.UpdateInput,
       AmbientLightDocument.Parent
-    > {}
+    > {
+      /**
+       * @remarks Appears to be unused. {@linkcode AmbientLightDocument._onUpdate} conditionally sets this `false`, but nothing in
+       * `AmbientLightDocument`, {@linkcode BaseAmbientLight}, {@linkcode AmbientLight}, or anywhere else ever checks for it.
+       */
+      animate?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode AmbientLightDocument.update | AmbientLightDocument#update}.

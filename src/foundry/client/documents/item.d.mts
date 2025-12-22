@@ -461,7 +461,18 @@ declare namespace Item {
      */
     interface CreateOperation<
       Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<Item.CreateInput, Item.Parent, Temporary> {}
+    > extends DatabaseBackend.CreateOperation<Item.CreateInput, Item.Parent, Temporary> {
+      /**
+       * @remarks This property is not intended to be passed by user code, this is a signal to various parts of the database code that this
+       * operation is restoring some or all of the data on a {@link TokenDocument.actor | synthetic token actor} to match its
+       * {@link TokenDocument.baseActor | base actor}, moderated by its {@linkcode ActorDelta}.
+       *
+       * It can appear in the `CreateOperation`s and `UpdateOperation`s of any documents with an associated
+       * {@linkcode fields.EmbeddedCollectionDeltaField} in the {@linkcode ActorDelta.Schema}, via
+       * {@linkcode foundry.abstract.EmbeddedCollectionDelta.restoreDocuments | EmbeddedCollectionDelta#restoreDocuments}.
+       */
+      restoreDelta?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode Item.create} or {@linkcode Item.createDocuments}.
@@ -600,7 +611,18 @@ declare namespace Item {
      * @remarks This interface was previously typed for passing to {@linkcode Item.update | Item#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Item.UpdateInput, Item.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Item.UpdateInput, Item.Parent> {
+      /**
+       * @remarks This property is not intended to be passed by user code, this is a signal to various parts of the database code that this
+       * operation is restoring some or all of the data on a {@link TokenDocument.actor | synthetic token actor} to match its
+       * {@link TokenDocument.baseActor | base actor}, moderated by its {@linkcode ActorDelta}.
+       *
+       * It can appear in the `CreateOperation`s and `UpdateOperation`s of any documents with an associated
+       * {@linkcode fields.EmbeddedCollectionDeltaField} in the {@linkcode ActorDelta.Schema}, via
+       * {@linkcode foundry.abstract.EmbeddedCollectionDelta.restoreDocuments | EmbeddedCollectionDelta#restoreDocuments}.
+       */
+      restoreDelta?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode Item.update | Item#update}.

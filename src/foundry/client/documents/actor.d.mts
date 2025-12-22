@@ -701,7 +701,17 @@ declare namespace Actor {
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
      */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {
+      /**
+       * @remarks This property is not intended to be passed by user code, this is a signal to various parts of the database code that this
+       * operation is restoring some or all of the data on a {@link TokenDocument.actor | synthetic token actor} to match its
+       * {@link TokenDocument.baseActor | base actor}, moderated by its {@linkcode ActorDelta}.
+       *
+       * As of 13.351, in core this will only appear in an `Actor`'s `PreUpdateOptions` as part of an "emulated" update in
+       * {@linkcode ActorDelta._preDelete | ActorDelta#_preDelete}.
+       */
+      restoreDelta?: boolean;
+    }
 
     /**
      * The interface passed to {@linkcode Actor._preUpdateOperation}.

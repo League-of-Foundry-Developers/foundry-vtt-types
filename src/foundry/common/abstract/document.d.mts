@@ -2491,7 +2491,7 @@ declare namespace Document {
      * @remarks This type makes no optionality changes, only omits the keys that `ClientDatabaseBackend##preUpdateDocumentArray` pulls out
      * of `operation` before passing on the remainder as `options`.
      *
-     * See {@linkcode Actor.Database.UpdateOperation.restoreDelta} for more information on that property.
+     * See {@linkcode ActorDelta.Database.DeleteOperation.restoreDelta} for more information on that property.
      */
     type PreUpdateOptions<BaseOperation extends DatabaseBackend.UpdateOperation> = Omit<
       BaseOperation,

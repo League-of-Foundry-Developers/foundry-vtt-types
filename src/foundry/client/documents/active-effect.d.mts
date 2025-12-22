@@ -487,6 +487,17 @@ declare namespace ActiveEffect {
        * call in {@linkcode ActiveEffect._onCreate | ActiveEffect#_onCreate} is prevented.
        */
       animate?: boolean;
+
+      /**
+       * @remarks This property is not intended to be passed by user code, this is a signal to various parts of the database code that this
+       * operation is restoring some or all of the data on a {@link TokenDocument.actor | synthetic token actor} to match its
+       * {@link TokenDocument.baseActor | base actor}, moderated by its {@linkcode ActorDelta}.
+       *
+       * It can appear in the `CreateOperation`s and `UpdateOperation`s of any documents with an associated
+       * {@linkcode fields.EmbeddedCollectionDeltaField} in the {@linkcode ActorDelta.Schema}, via
+       * {@linkcode foundry.abstract.EmbeddedCollectionDelta.restoreDocuments | EmbeddedCollectionDelta#restoreDocuments}.
+       */
+      restoreDelta?: boolean;
     }
 
     /**
@@ -632,6 +643,17 @@ declare namespace ActiveEffect {
        * call in {@linkcode ActiveEffect._onUpdate | ActiveEffect#_onUpdate} is prevented.
        */
       animate?: boolean;
+
+      /**
+       * @remarks This property is not intended to be passed by user code, this is a signal to various parts of the database code that this
+       * operation is restoring some or all of the data on a {@link TokenDocument.actor | synthetic token actor} to match its
+       * {@link TokenDocument.baseActor | base actor}, moderated by its {@linkcode ActorDelta}.
+       *
+       * It can appear in the `CreateOperation`s and `UpdateOperation`s of any documents with an associated
+       * {@linkcode fields.EmbeddedCollectionDeltaField} in the {@linkcode ActorDelta.Schema}, via
+       * {@linkcode foundry.abstract.EmbeddedCollectionDelta.restoreDocuments | EmbeddedCollectionDelta#restoreDocuments}.
+       */
+      restoreDelta?: boolean;
     }
 
     /**

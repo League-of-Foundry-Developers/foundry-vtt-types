@@ -759,6 +759,16 @@ declare namespace ActorDelta {
        * lifecycle methods aren't called if they're created/updated/deleted as part of a parent document operation.
        */
       syntheticActorUpdate?: boolean;
+
+      /**
+       * @remarks This property is not intended to be passed by user code, this is a signal to various parts of the database code that this
+       * operation is restoring some or all of the data on a {@link TokenDocument.actor | synthetic token actor} to match its
+       * {@link TokenDocument.baseActor | base actor}, moderated by its {@linkcode ActorDelta}.
+       *
+       * As of 13.351, in core this will only appear in a `DeleteOperation` if it's triggered via
+       * {@linkcode ActorDelta.restore | ActorDelta#restore}.
+       */
+      restoreDelta?: boolean;
     }
 
     /**
