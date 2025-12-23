@@ -436,8 +436,7 @@ declare namespace DialogV2 {
 
   /** @internal */
   interface _PartialButtons<Dialog extends DialogV2.Any = DialogV2.Any>
-    extends Omit<WaitOptions<Dialog>, "buttons">,
-      InexactPartial<Pick<WaitOptions<Dialog>, "buttons">> {}
+    extends Omit<WaitOptions<Dialog>, "buttons">, InexactPartial<Pick<WaitOptions<Dialog>, "buttons">> {}
 
   // Note(LukeAbby): `IntentionalPartial` is used for all the buttons because `mergeObject` is
   // called. For example `{ action: undefined }` would be a logical bug.
@@ -456,7 +455,6 @@ declare namespace DialogV2 {
 
   type FormContent<FormData extends object> = (string | HTMLDivElement) & { " __fvtt_types_form_data": FormData };
 
-  /** @typeParam FD - The form data */
   interface InputConfig<Dialog extends DialogV2.Any = DialogV2.Any> extends PromptConfig<Dialog> {}
 
   type Type = "prompt" | "confirm" | "wait" | "input";
@@ -494,9 +492,9 @@ declare namespace DialogV2 {
       ? WaitReturn<
           {
             buttons: [
-              Internal.MergePartial<ConfirmYesButton, Options["yes"]>,
-              Internal.MergePartial<ConfirmNoButton, Options["no"]>,
-              ...Coalesce<Options["buttons"], []>,
+              Internal.MergePartial<ConfirmYesButton, GetKey<Options, "yes", undefined>>,
+              Internal.MergePartial<ConfirmNoButton, GetKey<Options, "no", undefined>>,
+              ...Coalesce<GetKey<Options, "buttons", undefined>, []>,
             ];
           } & Omit<Options, "buttons">
         >
@@ -574,7 +572,9 @@ declare namespace DialogV2 {
           : never
         : undefined;
 
-    type OneButtonReturnType<Callback, Action> = Callback extends () => infer Return ? Return : Action;
+    type OneButtonReturnType<Callback, Action> = Callback extends (...args: never) => infer Return
+      ? NullishCoalesce<Awaited<Return>, Action>
+      : Action;
 
     type ConfirmReturnType<Options extends ConfirmConfig<never> | undefined> =
       | (Options extends { readonly yes: { readonly callback: ButtonCallback<infer YesReturn> } }
@@ -629,7 +629,7 @@ declare namespace DialogV2 {
           // `exactOptionalPropertyTypes` set to false. Otherwise would cause a required prop like
           // `{ action: string }` to be able to be `{ action: string | undefined }`.
           V & {}
-        : T[K] | (U extends { readonly [_ in K]?: infer V } ? V & {} : never);
+        : T[K] | NonNullable<GetKey<U, K>>;
     } & Omit<U, keyof T>;
 
     class FormContent<Content extends AnyObject> {

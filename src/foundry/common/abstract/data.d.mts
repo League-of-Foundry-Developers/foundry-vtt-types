@@ -458,6 +458,7 @@ declare namespace DataModel {
    *
    * @internal
    */
+  // TODO: When updating this type to swap NullishProps for InexactPartial, also fix EmbeddedCollection.HandleInvalidDocumentOptions
   type _ValidateOptions<Schema extends DataSchema> = NullishProps<{
     /**
      * Validate each individual field?

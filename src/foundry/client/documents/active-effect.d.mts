@@ -47,19 +47,18 @@ declare namespace ActiveEffect {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "ActiveEffect";
-        collection: "effects";
-        hasTypeData: true;
-        label: string;
-        labelPlural: string;
-        schemaVersion: string;
-        permissions: Metadata.Permissions;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "ActiveEffect";
+      collection: "effects";
+      hasTypeData: true;
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
+      permissions: Metadata.Permissions;
+    }>
+  > {}
 
   namespace Metadata {
     interface Permissions {
@@ -104,15 +103,14 @@ declare namespace ActiveEffect {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredActiveEffect<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            ActiveEffect<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredActiveEffect<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          ActiveEffect<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `ActiveEffect` subtype.
@@ -209,7 +207,10 @@ declare namespace ActiveEffect {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -409,8 +410,8 @@ declare namespace ActiveEffect {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<ActiveEffect.Parent> {}
 
     /** Options passed along in Create operations for ActiveEffects */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<ActiveEffect.CreateData, ActiveEffect.Parent, Temporary> {
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<ActiveEffect.CreateData, ActiveEffect.Parent, Temporary> {
       animate?: boolean | undefined;
     }
 
@@ -420,26 +421,30 @@ declare namespace ActiveEffect {
     }
 
     /** Options passed along in Update operations for ActiveEffects */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<ActiveEffect.UpdateData, ActiveEffect.Parent> {
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      ActiveEffect.UpdateData,
+      ActiveEffect.Parent
+    > {
       animate?: boolean | undefined;
     }
 
     /** Operation for {@linkcode ActiveEffect.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<ActiveEffect.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      ActiveEffect.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode ActiveEffect.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<ActiveEffect.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<ActiveEffect.Database.Update> {}
 
     /** Operation for {@linkcode ActiveEffect.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<ActiveEffect.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<ActiveEffect.Database.Delete> {}
 
     /** Operation for {@linkcode ActiveEffect.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<ActiveEffect.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      ActiveEffect.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link ActiveEffect.update | `ActiveEffect#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -687,7 +692,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param data    - Initial data from which to construct the `ActiveEffect`
    * @param context - Construction context options
    */
-  constructor(data: ActiveEffect.CreateData, context?: ActiveEffect.ConstructionContext);
+  constructor(data: ActiveEffect.CreateData<SubType>, context?: ActiveEffect.ConstructionContext);
 
   /**
    * Create an ActiveEffect instance from some status effect ID.

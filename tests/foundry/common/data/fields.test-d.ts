@@ -69,7 +69,7 @@ expectTypeOf(JEPSystemTypes).toEqualTypeOf<
 
 declare const myJournalEntryPage: JournalEntryPage.Implementation;
 if (myJournalEntryPage.system instanceof foundry.abstract.TypeDataModel) {
-  myJournalEntryPage.system?.prepareBaseData();
+  myJournalEntryPage.system.prepareBaseData();
 }
 
 /** EmbeddedDataField */
@@ -128,7 +128,7 @@ expectTypeOf(ElementFieldType.hasTypeData).toEqualTypeOf<true>();
 expectTypeOf(ParentDataModel.name).toEqualTypeOf<string>();
 expectTypeOf(AssignmentElementType.documentName).toEqualTypeOf<"ActiveEffect">();
 expectTypeOf(InitializedElementType.collectionName).toEqualTypeOf<"effects">();
-expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffect.Implementation>();
+expectTypeOf(InitializedType.get("", { strict: true })).toEqualTypeOf<ActiveEffect.Stored>();
 
 const stringField = new foundry.data.fields.StringField();
 

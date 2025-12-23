@@ -347,6 +347,7 @@ export default BaseItem;
 declare namespace BaseItem {
   export import Name = Item.Name;
   export import ConstructionContext = Item.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = Item.ConstructorArgs;
   export import Hierarchy = Item.Hierarchy;
   export import Metadata = Item.Metadata;

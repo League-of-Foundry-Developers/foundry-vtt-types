@@ -46,7 +46,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * Return a reference to the parent Collection instance which contains this Document.
    */
-  get collection(): Collection<this> | null;
+  get collection(): Collection<Document.StoredForName<DocumentName>> | null;
 
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
@@ -556,6 +556,7 @@ declare global {
 
     /** @internal */
     type _OmitProperty<
+      // TODO: probably remove null from Omit
       Omit extends boolean | null | undefined,
       Default extends boolean,
       ToOmit extends string,
@@ -635,6 +636,7 @@ declare global {
       // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     > = _ToCompendiumReturnType<DocumentName, Coalesce<Options, {}>>;
 
+    // TODO: `ownership` and the `_stats` sources are recursively removed from descendent document sources, not just the top level
     type _ToCompendiumReturnType<DocumentName extends Document.Type, Options extends ToCompendiumOptions> = _ClearFog<
       Options["clearState"],
       _ClearStats<

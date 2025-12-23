@@ -262,10 +262,16 @@ export interface ModuleConfig {}
 export interface RequiredModules {}
 
 export interface SettingConfig {
-  "core.animateRollTable": boolean;
+  "core.animateRollTable": fields.BooleanField<{ initial: true }>;
   "core.chatBubbles": fields.BooleanField<{ initial: true }>;
   "core.chatBubblesPan": fields.BooleanField<{ initial: true }>;
-  "core.combatTrackerConfig": MaybeEmpty<{ resource: string; skipDefeated: boolean }>;
+
+  /** Registered with `type: Object`. */
+  "core.collectionSortingModes": Record<string, foundry.documents.abstract.DirectoryCollectionMixin.SortingMode>;
+
+  /** Registered with `type: Object`. */
+  "core.collectionSearchModes": Record<string, CONST.DIRECTORY_SEARCH_MODES>;
+  "core.combatTrackerConfig": fields.SchemaField<foundry.data.CombatConfiguration.ConfigSettingSchema>;
   "core.compendiumConfiguration": foundry.documents.collections.CompendiumCollection.SettingField;
   "core.gridTemplates": fields.BooleanField<{ initial: false }>;
   "core.coneTemplateType": fields.StringField<{
@@ -312,7 +318,7 @@ export interface SettingConfig {
   }>;
   "core.leftClickRelease": fields.BooleanField<{ initial: false }>;
   "core.lightAnimation": boolean;
-  "core.maxFPS": number;
+  "core.maxFPS": fields.NumberField<{ required: true; min: 10; max: 60; step: 10; initial: 60 }>;
   "core.mipmap": boolean;
   "core.moduleConfiguration": Record<string, boolean>;
   "core.noCanvas": fields.BooleanField<{ initial: false }>;

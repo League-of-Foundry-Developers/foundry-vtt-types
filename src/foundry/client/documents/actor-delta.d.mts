@@ -39,20 +39,19 @@ declare namespace ActorDelta {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "ActorDelta";
-        collection: "delta";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        embedded: Metadata.Embedded;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "ActorDelta";
+      collection: "delta";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      embedded: Metadata.Embedded;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -84,7 +83,7 @@ declare namespace ActorDelta {
    *
    * @see {@linkcode ActorDelta.SubType} for more information.
    */
-  type ConfiguredSubType = Actor.SubType;
+  type ConfiguredSubType = Actor.ConfiguredSubType;
 
   /**
    * `Known` represents the types of `ActorDelta` that a user explicitly registered.
@@ -101,15 +100,14 @@ declare namespace ActorDelta {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredActorDelta<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            ActorDelta<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredActorDelta<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          ActorDelta<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `ActorDelta` subtype.
@@ -135,6 +133,12 @@ declare namespace ActorDelta {
    * `ActorDelta` requires a parent so `null` is not an option here.
    */
   type Parent = TokenDocument.Implementation;
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantName = "Item" | "ActiveEffect";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -255,7 +259,10 @@ declare namespace ActorDelta {
    * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
-  interface Source extends fields.SchemaField.SourceData<Schema> {}
+  interface Source<SubType extends ActorDelta.SubType = ActorDelta.SubType> extends fields.SchemaField
+    .SourceData<Schema> {
+    type: SubType | null;
+  }
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode ActorDelta.create}
@@ -265,7 +272,10 @@ declare namespace ActorDelta {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends ActorDelta.SubType = ActorDelta.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -350,8 +360,8 @@ declare namespace ActorDelta {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<ActorDelta.Parent> {}
 
     /** Options passed along in Create operations for ActorDeltas */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<ActorDelta.CreateData, ActorDelta.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<ActorDelta.CreateData, ActorDelta.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for ActorDeltas */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<ActorDelta.Parent> {}
@@ -360,8 +370,9 @@ declare namespace ActorDelta {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<ActorDelta.UpdateData, ActorDelta.Parent> {}
 
     /** Operation for {@linkcode ActorDelta.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<ActorDelta.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      ActorDelta.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode ActorDelta.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<ActorDelta.Database.Update> {}
@@ -370,8 +381,9 @@ declare namespace ActorDelta {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<ActorDelta.Database.Delete> {}
 
     /** Operation for {@linkcode ActorDelta.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<ActorDelta.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      ActorDelta.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link ActorDelta.update | `ActorDelta#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -480,49 +492,49 @@ declare namespace ActorDelta {
   }
 
   type PreCreateDescendantDocumentsArgs =
-    | Document.PreCreateDescendantDocumentsArgs<
+    | Document.Internal.PreCreateDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.PreCreateDescendantDocumentsArgs;
 
   type OnCreateDescendantDocumentsArgs =
-    | Document.OnCreateDescendantDocumentsArgs<
+    | Document.Internal.OnCreateDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.OnCreateDescendantDocumentsArgs;
 
   type PreUpdateDescendantDocumentsArgs =
-    | Document.PreUpdateDescendantDocumentsArgs<
+    | Document.Internal.PreUpdateDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.PreUpdateDescendantDocumentsArgs;
 
   type OnUpdateDescendantDocumentsArgs =
-    | Document.OnUpdateDescendantDocumentsArgs<
+    | Document.Internal.OnUpdateDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.OnUpdateDescendantDocumentsArgs;
 
   type PreDeleteDescendantDocumentsArgs =
-    | Document.PreDeleteDescendantDocumentsArgs<
+    | Document.Internal.PreDeleteDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.PreDeleteDescendantDocumentsArgs;
 
   type OnDeleteDescendantDocumentsArgs =
-    | Document.OnDeleteDescendantDocumentsArgs<
+    | Document.Internal.OnDeleteDescendantDocumentsArgs<
         ActorDelta.Stored,
-        ActorDelta.DirectDescendant,
+        ActorDelta.DirectDescendantName,
         ActorDelta.Metadata.Embedded
       >
     | Item.OnDeleteDescendantDocumentsArgs;
@@ -573,7 +585,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    * @param context - Construction context options
    */
   // Note(LukeAbby): `data` is not actually required but `context.parent` is.
-  constructor(data: ActorDelta.CreateData | undefined, context: ActorDelta.ConstructionContext);
+  constructor(data: ActorDelta.CreateData<SubType> | undefined, context: ActorDelta.ConstructionContext);
 
   protected override _configure(options?: Document.ConfigureOptions): void;
 
@@ -756,7 +768,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    * this method must be overridden like so:
    * ```typescript
    * class BladesActorDelta extends ActorDelta {
-   *   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocuments) {
+   *   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs) {
    *     super._onDeleteDescendantDocuments(...args);
    *
    *     const [parent, collection, documents, ids, options, userId] = args;

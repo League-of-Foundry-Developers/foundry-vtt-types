@@ -304,11 +304,10 @@ declare namespace CanvasVisibility {
   /**
    * @remarks The subset of {@linkcode PIXI.IBaseTextureOptions} that `CanvasVisibility##createTextureConfiguration` returns.
    */
-  interface TextureConfiguration
-    extends Pick<
-      PIXI.IBaseTextureOptions,
-      "resolution" | "width" | "height" | "mipmap" | "multisample" | "scaleMode" | "alphaMode" | "format"
-    > {}
+  interface TextureConfiguration extends Pick<
+    PIXI.IBaseTextureOptions,
+    "resolution" | "width" | "height" | "mipmap" | "multisample" | "scaleMode" | "alphaMode" | "format"
+  > {}
 }
 
 export default CanvasVisibility;

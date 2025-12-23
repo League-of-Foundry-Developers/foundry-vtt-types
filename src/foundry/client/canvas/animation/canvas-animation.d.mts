@@ -180,8 +180,9 @@ declare namespace CanvasAnimation {
   /**
    * @privateRemarks `extends object[]` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    */
-  interface AnimateOptions<Parents extends object[] = object[]>
-    extends CanvasAnimation._AnimateOptions<Parents[number]> {}
+  interface AnimateOptions<Parents extends object[] = object[]> extends CanvasAnimation._AnimateOptions<
+    Parents[number]
+  > {}
 
   /** @internal */
   type _AnimationAttribute = InexactPartial<{
@@ -228,8 +229,9 @@ declare namespace CanvasAnimation {
    *
    * @privateRemarks `extends object` to allow {@linkcode foundry.canvas.interaction.Ping._animateFrame | Ping#_animateFrame} to take `CanvasAnimation.AnimationData<this>`
    */
-  interface ProcessedAttribute<AnimationParent extends object = object>
-    extends CanvasAnimation.Attribute<AnimationParent> {
+  interface ProcessedAttribute<
+    AnimationParent extends object = object,
+  > extends CanvasAnimation.Attribute<AnimationParent> {
     /**
      * The computed delta between to and from
      * @remarks This key is always computed inside {@linkcode CanvasAnimation.animate}, its passed value is irrelevant

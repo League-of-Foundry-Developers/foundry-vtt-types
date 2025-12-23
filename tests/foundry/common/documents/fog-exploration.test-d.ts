@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 
 class TestBaseFogExploration extends foundry.documents.BaseFogExploration {}
 
@@ -57,7 +57,7 @@ new TestBaseFogExploration({});
 declare const data: TestBaseFogExploration;
 
 expectTypeOf(data.explored).toEqualTypeOf<string | null>();
-expectTypeOf(data.positions).toEqualTypeOf<AnyObject>();
+expectTypeOf(data.positions).toEqualTypeOf<AnyMutableObject>();
 expectTypeOf(data.scene).toEqualTypeOf<Scene.Stored | null>();
 expectTypeOf(data.timestamp).toEqualTypeOf<number>();
 expectTypeOf(data.user).toEqualTypeOf<User.Stored | null>();

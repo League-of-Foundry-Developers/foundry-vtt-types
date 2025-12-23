@@ -429,6 +429,7 @@ export default BaseScene;
 declare namespace BaseScene {
   export import Name = Scene.Name;
   export import ConstructionContext = Scene.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = Scene.ConstructorArgs;
   export import Hierarchy = Scene.Hierarchy;
   export import Metadata = Scene.Metadata;

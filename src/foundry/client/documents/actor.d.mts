@@ -41,22 +41,21 @@ declare namespace Actor {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Actor";
-        collection: "actors";
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        hasTypeData: true;
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Actor";
+      collection: "actors";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      hasTypeData: true;
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -112,15 +111,14 @@ declare namespace Actor {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredActor<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Actor<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredActor<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Actor<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Actor` subtype.
@@ -142,6 +140,12 @@ declare namespace Actor {
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    */
   type Parent = TokenDocument.Implementation | null;
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantName = "Item" | "ActiveEffect";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -272,7 +276,9 @@ declare namespace Actor {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Actor.SubType = Actor.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type: SubType;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -381,8 +387,8 @@ declare namespace Actor {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Actor.Parent> {}
 
     /** Options passed along in Create operations for Actors */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Actor.CreateData, Actor.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Actor.CreateData, Actor.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Actors */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Actor.Parent> {}
@@ -391,8 +397,9 @@ declare namespace Actor {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Actor.UpdateData, Actor.Parent> {}
 
     /** Operation for {@linkcode Actor.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Actor.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Actor.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Actor.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Actor.Database.Update> {}
@@ -401,8 +408,9 @@ declare namespace Actor {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Actor.Database.Delete> {}
 
     /** Operation for {@linkcode Actor.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Actor.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Actor.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Actor.update | `Actor#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -511,27 +519,51 @@ declare namespace Actor {
   }
 
   type PreCreateDescendantDocumentsArgs =
-    | Document.PreCreateDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.PreCreateDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.PreCreateDescendantDocumentsArgs;
 
   type OnCreateDescendantDocumentsArgs =
-    | Document.OnCreateDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.OnCreateDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.OnCreateDescendantDocumentsArgs;
 
   type PreUpdateDescendantDocumentsArgs =
-    | Document.PreUpdateDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.PreUpdateDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.PreUpdateDescendantDocumentsArgs;
 
   type OnUpdateDescendantDocumentsArgs =
-    | Document.OnUpdateDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.OnUpdateDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.OnUpdateDescendantDocumentsArgs;
 
   type PreDeleteDescendantDocumentsArgs =
-    | Document.PreDeleteDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.PreDeleteDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.PreDeleteDescendantDocumentsArgs;
 
   type OnDeleteDescendantDocumentsArgs =
-    | Document.OnDeleteDescendantDocumentsArgs<Actor.Stored, Actor.DirectDescendant, Actor.Metadata.Embedded>
+    | Document.Internal.OnDeleteDescendantDocumentsArgs<
+        Actor.Stored,
+        Actor.DirectDescendantName,
+        Actor.Metadata.Embedded
+      >
     | Item.OnDeleteDescendantDocumentsArgs;
 
   interface DropData extends Document.Internal.DropData<Name> {}
@@ -691,7 +723,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param data    - Initial data from which to construct the `Actor`
    * @param context - Construction context options
    */
-  constructor(data: Actor.CreateData, context?: Actor.ConstructionContext);
+  constructor(data: Actor.CreateData<SubType>, context?: Actor.ConstructionContext);
 
   protected override _configure(options?: Document.ConfigureOptions): void;
 
@@ -849,7 +881,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param options - Configuration for how initiative for this Actor is rolled.
    * @returns A promise which resolves to the Combat document once rolls are complete.
    */
-  rollInitiative(options?: Actor.RollInitiativeOptions): Promise<void>;
+  rollInitiative(options?: Actor.RollInitiativeOptions): Promise<Combat.Implementation | null>;
 
   /**
    * Toggle a configured status effect for the Actor.

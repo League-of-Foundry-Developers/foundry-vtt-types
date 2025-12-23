@@ -47,20 +47,19 @@ declare namespace TokenDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Token";
-        collection: "tokens";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        embedded: TokenDocument.Metadata.Embedded;
-        permissions: TokenDocument.Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Token";
+      collection: "tokens";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      embedded: TokenDocument.Metadata.Embedded;
+      permissions: TokenDocument.Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -89,6 +88,12 @@ declare namespace TokenDocument {
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    */
   type Parent = Scene.Implementation | null;
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantName = "ActorDelta";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -718,8 +723,9 @@ declare namespace TokenDocument {
 
   interface MeasuredMovementWaypoint extends SchemaField.InitializedData<MeasuredMovementWaypointSchema> {}
 
-  interface GetCompleteMovementPathWaypoint
-    extends InexactPartial<Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost">> {}
+  interface GetCompleteMovementPathWaypoint extends InexactPartial<
+    Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost">
+  > {}
 
   interface CompleteMovementWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {}
 
@@ -839,19 +845,17 @@ declare namespace TokenDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<TokenDocument.Parent> {}
 
     /** Options passed along in Create operations for TokenDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        TokenDocument.CreateData,
-        TokenDocument.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<TokenDocument.CreateData, TokenDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for TokenDocuments */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TokenDocument.Parent> {}
 
     /** Options passed along in Update operations for TokenDocuments */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<TokenDocument.UpdateData, TokenDocument.Parent> {
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      TokenDocument.UpdateData,
+      TokenDocument.Parent
+    > {
       /** @remarks Added in {@linkcode TokenDocument._preUpdate | TokenDocument#_preUpdate} if `actorId` or `actorLink` in `changes` */
       previousActorId?: TokenDocument.Implementation["actorId"];
 
@@ -915,20 +919,22 @@ declare namespace TokenDocument {
     }
 
     /** Operation for {@linkcode TokenDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      TokenDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode TokenDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<TokenDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<TokenDocument.Database.Update> {}
 
     /** Operation for {@linkcode TokenDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<TokenDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<TokenDocument.Database.Delete> {}
 
     /** Operation for {@linkcode TokenDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<TokenDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      TokenDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link TokenDocument.update | `TokenDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1055,49 +1061,49 @@ declare namespace TokenDocument {
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   type PreCreateDescendantDocumentsArgs =
-    | Document.PreCreateDescendantDocumentsArgs<
+    | Document.Internal.PreCreateDescendantDocumentsArgs<
         TokenDocument.Stored,
-        TokenDocument.DirectDescendant,
+        TokenDocument.DirectDescendantName,
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.PreCreateDescendantDocumentsArgs;
 
   type OnCreateDescendantDocumentsArgs =
-    | Document.OnCreateDescendantDocumentsArgs<
+    | Document.Internal.OnCreateDescendantDocumentsArgs<
         TokenDocument.Stored,
-        TokenDocument.DirectDescendant,
+        TokenDocument.DirectDescendantName,
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.OnCreateDescendantDocumentsArgs;
 
   type PreUpdateDescendantDocumentsArgs =
-    | Document.PreUpdateDescendantDocumentsArgs<
+    | Document.Internal.PreUpdateDescendantDocumentsArgs<
         TokenDocument.Stored,
-        TokenDocument.DirectDescendant,
+        TokenDocument.DirectDescendantName,
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.PreUpdateDescendantDocumentsArgs;
 
   type OnUpdateDescendantDocumentsArgs =
-    | Document.OnUpdateDescendantDocumentsArgs<
+    | Document.Internal.OnUpdateDescendantDocumentsArgs<
         TokenDocument.Stored,
-        TokenDocument.DirectDescendant,
+        TokenDocument.DirectDescendantName,
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.OnUpdateDescendantDocumentsArgs;
 
   type PreDeleteDescendantDocumentsArgs =
-    | Document.PreDeleteDescendantDocumentsArgs<
+    | Document.Internal.PreDeleteDescendantDocumentsArgs<
         TokenDocument.Stored,
-        TokenDocument.DirectDescendant,
+        TokenDocument.DirectDescendantName,
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.PreDeleteDescendantDocumentsArgs;
 
   type OnDeleteDescendantDocumentsArgs =
-    | Document.OnDeleteDescendantDocumentsArgs<
+    | Document.Internal.OnDeleteDescendantDocumentsArgs<
         TokenDocument.Stored,
-        TokenDocument.DirectDescendant,
+        TokenDocument.DirectDescendantName,
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.OnDeleteDescendantDocumentsArgs;
@@ -1237,11 +1243,15 @@ declare namespace TokenDocument {
 
   interface ResizeOptions extends InexactPartial<Omit<TokenDocument.Database.UpdateOperation, "updates">> {}
 
-  interface MovementWaypoint
-    extends Omit<MeasuredMovementWaypoint, "terrain" | "intermediate" | "userId" | "movementId" | "cost"> {}
+  interface MovementWaypoint extends Omit<
+    MeasuredMovementWaypoint,
+    "terrain" | "intermediate" | "userId" | "movementId" | "cost"
+  > {}
 
-  interface MovementSegmentData
-    extends Pick<MeasuredMovementWaypoint, "width" | "height" | "shape" | "action" | "terrain"> {
+  interface MovementSegmentData extends Pick<
+    MeasuredMovementWaypoint,
+    "width" | "height" | "shape" | "action" | "terrain"
+  > {
     actionConfig: CONFIG.Token.MovementActionConfig;
     teleport: boolean;
   }
@@ -1487,20 +1497,19 @@ declare namespace TokenDocument {
     segment: MovementSegmentData,
   ) => number;
 
-  interface MeasureMovementPathOptions
-    extends InexactPartial<{
-      /**
-       * The function that returns the cost for a given move between grid spaces
-       * (default is the distance travelled along the direct path)
-       */
-      cost: MovementCostFunction;
+  interface MeasureMovementPathOptions extends InexactPartial<{
+    /**
+     * The function that returns the cost for a given move between grid spaces
+     * (default is the distance travelled along the direct path)
+     */
+    cost: MovementCostFunction;
 
-      /**
-       * The cost aggregator.
-       * @defaultValue `CONFIG.Token.movement.costAggregator`
-       */
-      aggregator: MovementCostAggregator;
-    }> {}
+    /**
+     * The cost aggregator.
+     * @defaultValue `CONFIG.Token.movement.costAggregator`
+     */
+    aggregator: MovementCostAggregator;
+  }> {}
 
   interface MovementOperation extends Omit<MovementData, "user" | "state" | "updateOptions"> {}
 
@@ -1527,16 +1536,16 @@ declare namespace TokenDocument {
   }
 
   interface PreMovementOptions
-    extends DeepReadonly<Omit<MovementOperation, "autoRotate" | "showRuler">>,
+    extends
+      DeepReadonly<Omit<MovementOperation, "autoRotate" | "showRuler">>,
       Pick<MovementOperation, "autoRotate" | "showRuler"> {}
 
-  interface SegmentizeMovementWaypoint
-    extends InexactPartial<
-      Pick<
-        MeasuredMovementWaypoint,
-        "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped"
-      >
-    > {}
+  interface SegmentizeMovementWaypoint extends InexactPartial<
+    Pick<
+      MeasuredMovementWaypoint,
+      "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped"
+    >
+  > {}
 
   /**
    * The arguments to construct the document.
@@ -1737,28 +1746,16 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   /**
    * Pause the movement of this Token document. The movement can be resumed after being paused.
+   *
    * Only the User that initiated the movement can pause it.
-   * Returns a callback that can be used to resume the movement later.
+   *
+   * Returns a promise that resolves to true if the movement was resumed by {@linkcode TokenDocument.resumeMovement | TokenDocument#resumeMovement}
+   * with the same key that was passed to this function.
+   *
    * Only after all callbacks and keys have been called the movement of the Token is resumed.
+   *
    * If the callback is called within the update operation workflow, the movement is resumed after the workflow.
-   * @returns The callback to resume movement if the movement was or is paused,
-   *                                              otherwise null
-   * @example
-   * ```js
-   * // This is an Execute Script Region Behavior that makes the token invisible
-   * // On TOKEN_MOVE_IN...
-   * if ( !event.user.isSelf ) return;
-   * const resumeMovement = event.data.token.pauseMovement();
-   * event.data.token.toggleStatusEffect("invisible", {active: true});
-   * const resumed = await resumeMovement();
-   * ```
-   * Pause the movement of this Token document. The movement can be resumed after being paused.
-   * Only the User that initiated the movement can pause it.
-   * Returns a promise that resolves to true if the movement was resumed by
-   * {@link foundry.documents.TokenDocument.resumeMovement | `TokenDocument#resumeMovement`} with the same key that was passed to this function.
-   * Only after all callbacks and keys have been called the movement of the Token is resumed.
-   * If the callback is called within the update operation workflow, the movement is resumed after the workflow.
-   * @param key - The key to resume movement with {@link foundry.documents.TokenDocument.resumeMovement | `TokenDocument#resumeMovement`}
+   * @param key - The key to resume movement with {@linkcode TokenDocument.resumeMovement | TokenDocument#resumeMovement}
    * @returns The continuation promise if the movement was paused, otherwise null
    * @example
    * ```js
@@ -1768,6 +1765,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    *   event.data.token.pauseMovement(this.parent.uuid);
    * }
    * if ( game.user.isActiveGM ) {
+   *   if ( event.data.token.rendered ) await event.data.token.object.movementAnimationPromise;
    *   const trapUuid; // The Region Behavior UUID of the trap
    *   const trapBehavior = await fromUuid(trapUuid);
    *   await trapBehavior.update({disabled: false});

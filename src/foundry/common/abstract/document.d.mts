@@ -36,6 +36,7 @@ import type {
   SchemaField,
   TypeDataField,
 } from "../data/fields.d.mts";
+import type { FormSelectOption } from "#client/applications/forms/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type {
   DatabaseAction,
@@ -77,6 +78,17 @@ declare const _InternalDocument: (new (...args: any[]) => {
   flags?: {} | undefined;
 }) &
   typeof DataModel;
+
+// Note(LukeAbby): Patterns of the form `interface Example<T> extends T {}` don't count as using `T`.
+// From tsc's point of view when calculating variance it may as well look like `interface Example<T> {}`.
+// Fundamentally this ordinarily means `Example<T>` will always be assignable to `Example<U>` and
+// vice versa.
+//
+// Obviously this is a problem, so `Uses` exists to add an unobtrusive covariant usage of the type
+// parameter, making `Example<T>` assignable to `Example<U>` only if `T` is a subtype of `U`.
+declare class Uses<T> {
+  #t?: T;
+}
 
 /**
  * An extension of the base DataModel which defines a Document.
@@ -505,7 +517,7 @@ declare abstract class Document<
    * returned.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#delete` directly.
-  delete(operation: never): Promise<this | undefined>;
+  delete(operation?: never): Promise<this | undefined>;
 
   /**
    * Get a World-level Document of this type by its id.
@@ -1247,7 +1259,7 @@ declare namespace Document {
 
     /** @internal */
     // @ts-expect-error This pattern is inherently an error.
-    interface _InvalidSystem<D extends Document.Any> extends D {
+    interface _InvalidSystem<D extends Document.Any> extends D, Uses<D> {
       // `Record<string, unknown>` is used to allow arbitrary property access since `in` checks are
       // a nuisance.
       _source: Record<string, unknown>;
@@ -1257,7 +1269,7 @@ declare namespace Document {
 
     /** @internal */
     // @ts-expect-error This pattern is inherently an error.
-    interface _Invalid<D extends Document.Any> extends D {
+    interface _Invalid<D extends Document.Any> extends D, Uses<D> {
       _source: Record<string, unknown>;
       get invalid(): true;
     }
@@ -1356,14 +1368,101 @@ declare namespace Document {
     // Note(LukeAbby): Will be updated with the CONFIG revamp.
     type ConfiguredCollectionClass<Name extends Document.Type> = CONFIG extends {
       readonly [K in Name]: {
-        readonly documentClass?: infer DocumentClass;
+        readonly collection?: infer CollectionClass;
       };
     }
-      ? DocumentClass
+      ? CollectionClass
       : never;
 
     // Note(LukeAbby): Will be updated with the CONFIG revamp.
     type ConfiguredCollection<Name extends Document.Type> = FixedInstanceType<ConfiguredCollectionClass<Name>>;
+
+    type PreCreateDescendantDocumentsArgs<
+      Parent extends Document.AnyStored,
+      DirectDescendantName extends Document.Type,
+      Embedded extends Document.Metadata.Embedded,
+    > = DirectDescendantName extends unknown
+      ? [
+          parent: Parent,
+          collection: Embedded[DirectDescendantName],
+          data: Document.CreateDataForName<DirectDescendantName>[],
+          options: Document.Database.CreateOptionsFor<DirectDescendantName>,
+          userId: string,
+        ]
+      : never;
+
+    type OnCreateDescendantDocumentsArgs<
+      Parent extends Document.AnyStored,
+      DirectDescendantName extends Document.Type,
+      Embedded extends Document.Metadata.Embedded,
+    > = DirectDescendantName extends unknown
+      ? [
+          parent: Parent,
+          collection: Embedded[DirectDescendantName],
+          documents: Document.StoredForName<DirectDescendantName>[],
+          data: Document.CreateDataForName<DirectDescendantName>[],
+          options: Document.Database.CreateOptionsFor<DirectDescendantName>,
+          userId: string,
+        ]
+      : never;
+
+    type PreUpdateDescendantDocumentsArgs<
+      Parent extends Document.AnyStored,
+      DirectDescendantName extends Document.Type,
+      Embedded extends Document.Metadata.Embedded,
+    > = DirectDescendantName extends unknown
+      ? [
+          parent: Parent,
+          collection: Embedded[DirectDescendantName],
+          changes: Document.UpdateDataForName<DirectDescendantName>[],
+          options: Document.Database.UpdateOptionsFor<DirectDescendantName>,
+          userId: string,
+        ]
+      : never;
+
+    type OnUpdateDescendantDocumentsArgs<
+      Parent extends Document.AnyStored,
+      DirectDescendantName extends Document.Type,
+      Embedded extends Document.Metadata.Embedded,
+    > = DirectDescendantName extends unknown
+      ? [
+          parent: Parent,
+          collection: Embedded[DirectDescendantName],
+          documents: Document.StoredForName<DirectDescendantName>[],
+          changes: Document.UpdateDataForName<DirectDescendantName>[],
+          options: Document.Database.UpdateOptionsFor<DirectDescendantName>,
+          userId: string,
+        ]
+      : never;
+
+    type PreDeleteDescendantDocumentsArgs<
+      Parent extends Document.AnyStored,
+      DirectDescendantName extends Document.Type,
+      Embedded extends Document.Metadata.Embedded,
+    > = DirectDescendantName extends unknown
+      ? [
+          parent: Parent,
+          collection: Embedded[DirectDescendantName],
+          ids: string[],
+          options: Document.Database.DeleteOptionsFor<DirectDescendantName>,
+          userId: string,
+        ]
+      : never;
+
+    type OnDeleteDescendantDocumentsArgs<
+      Parent extends Document.AnyStored,
+      DirectDescendantName extends Document.Type,
+      Embedded extends Document.Metadata.Embedded,
+    > = DirectDescendantName extends unknown
+      ? [
+          parent: Parent,
+          collection: Embedded[DirectDescendantName],
+          documents: Document.StoredForName<DirectDescendantName>[],
+          ids: string[],
+          options: Document.Database.DeleteOptionsFor<DirectDescendantName>,
+          userId: string,
+        ]
+      : never;
   }
 
   /** Any Document, that is a child of the given parent Document. */
@@ -1440,7 +1539,7 @@ declare namespace Document {
     | (DocumentType extends "Drawing" ? DrawingDocument.UpdateData : never)
     | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.UpdateData : never)
     | (DocumentType extends "Note" ? NoteDocument.UpdateData : never)
-    | (DocumentType extends "Region" ? NoteDocument.UpdateData : never)
+    | (DocumentType extends "Region" ? RegionDocument.UpdateData : never)
     | (DocumentType extends "Tile" ? TileDocument.UpdateData : never)
     | (DocumentType extends "Token" ? TokenDocument.UpdateData : never)
     | (DocumentType extends "Wall" ? WallDocument.UpdateData : never);
@@ -1476,7 +1575,7 @@ declare namespace Document {
     | (DocumentType extends "Drawing" ? DrawingDocument.Source : never)
     | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Source : never)
     | (DocumentType extends "Note" ? NoteDocument.Source : never)
-    | (DocumentType extends "Region" ? NoteDocument.Source : never)
+    | (DocumentType extends "Region" ? RegionDocument.Source : never)
     | (DocumentType extends "Tile" ? TileDocument.Source : never)
     | (DocumentType extends "Token" ? TokenDocument.Source : never)
     | (DocumentType extends "Wall" ? WallDocument.Source : never);
@@ -1512,7 +1611,7 @@ declare namespace Document {
     | (DocumentType extends "Drawing" ? DrawingDocument.Parent : never)
     | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Parent : never)
     | (DocumentType extends "Note" ? NoteDocument.Parent : never)
-    | (DocumentType extends "Region" ? NoteDocument.Parent : never)
+    | (DocumentType extends "Region" ? RegionDocument.Parent : never)
     | (DocumentType extends "Tile" ? TileDocument.Parent : never)
     | (DocumentType extends "Token" ? TokenDocument.Parent : never)
     | (DocumentType extends "Wall" ? WallDocument.Parent : never);
@@ -1560,7 +1659,7 @@ declare namespace Document {
     | (DocumentType extends "Drawing" ? DrawingDocument.Stored : never)
     | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Stored : never)
     | (DocumentType extends "Note" ? NoteDocument.Stored : never)
-    | (DocumentType extends "Region" ? NoteDocument.Stored : never)
+    | (DocumentType extends "Region" ? RegionDocument.Stored : never)
     | (DocumentType extends "Tile" ? TileDocument.Stored : never)
     | (DocumentType extends "Token" ? TokenDocument.Stored : never)
     | (DocumentType extends "Wall" ? WallDocument.Stored : never);
@@ -1596,7 +1695,7 @@ declare namespace Document {
     | (DocumentType extends "Drawing" ? DrawingDocument.Invalid : never)
     | (DocumentType extends "MeasuredTemplate" ? MeasuredTemplateDocument.Invalid : never)
     | (DocumentType extends "Note" ? NoteDocument.Invalid : never)
-    | (DocumentType extends "Region" ? NoteDocument.Invalid : never)
+    | (DocumentType extends "Region" ? RegionDocument.Invalid : never)
     | (DocumentType extends "Tile" ? TileDocument.Invalid : never)
     | (DocumentType extends "Token" ? TokenDocument.Invalid : never)
     | (DocumentType extends "Wall" ? WallDocument.Invalid : never);
@@ -1632,30 +1731,30 @@ declare namespace Document {
   }
 
   /** @internal */
-  interface _ParentContext<Parent extends Document.Any | null>
-    extends _DynamicBase<
-      Parent extends null
-        ? {
-            /**
-             * The parent Document of this one, if this one is embedded
-             * @defaultValue `null`
-             */
-            parent?: Parent | undefined;
-          }
-        : {
-            /**
-             * The parent Document of this one, if this one is embedded
-             */
-            parent: Parent;
-          }
-    > {}
+  interface _ParentContext<Parent extends Document.Any | null> extends _DynamicBase<
+    Parent extends null
+      ? {
+          /**
+           * The parent Document of this one, if this one is embedded
+           * @defaultValue `null`
+           */
+          parent?: Parent | undefined;
+        }
+      : {
+          /**
+           * The parent Document of this one, if this one is embedded
+           */
+          parent: Parent;
+        }
+  > {}
 
   // @ts-expect-error This pattern is inherently an error.
-  interface _DynamicBase<T extends object> extends T {}
+  interface _DynamicBase<T extends object> extends T, Uses<T> {}
 
   /** @internal */
   interface _ConstructionContext<Parent extends Document.Any | null>
-    extends _ParentContext<Parent>,
+    extends
+      _ParentContext<Parent>,
       NullishProps<{
         /**
          * The compendium collection ID which contains this Document, if any
@@ -1686,8 +1785,7 @@ declare namespace Document {
    * description takes precedence.
    */
   interface ConstructionContext<Parent extends Document.Any | null = Document.Any | null>
-    extends Omit<DataModel._ConstructionContext, "strict">,
-      _ConstructionContext<Parent> {}
+    extends Omit<DataModel._ConstructionContext, "strict">, _ConstructionContext<Parent> {}
 
   /** `DataModel#constructor` pulls `parent` and `strict` out of the passed context before forwarding to `#_configure` */
   interface ConfigureOptions extends Omit<ConstructionContext, "parent" | "strict"> {}
@@ -1813,8 +1911,7 @@ declare namespace Document {
    * the (parentless) construction context
    */
   interface CloneContext<Save extends boolean | null | undefined = boolean | null | undefined>
-    extends _CloneContext<Save>,
-      Omit<Document.ConstructionContext, "parent"> {}
+    extends _CloneContext<Save>, Omit<Document.ConstructionContext, "parent"> {}
 
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
@@ -1827,9 +1924,9 @@ declare namespace Document {
       [DocumentType in Document.Type]?: string;
     };
     readonly permissions: {
-      view: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
-      create: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
-      update: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: AnyObject) => boolean>;
+      view: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: object) => boolean>;
+      create: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: object) => boolean>;
+      update: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: object) => boolean>;
       delete: string | ToMethod<(user: User.Internal.Implementation, doc: ThisType, data: EmptyObject) => boolean>;
     };
     readonly hasTypeData?: boolean;
@@ -2440,6 +2537,12 @@ declare namespace Document {
     _PossibleSubtypesContext<DocumentName> &
     ParentContext<Parent>;
 
+  /** The interface for {@linkcode CreateDialogOptions.folders}, see remarks there */
+  interface DialogFoldersChoices extends Omit<FormSelectOption, "value" | "label"> {
+    id: string;
+    name: string;
+  }
+
   type CreateDialogOptions<DocumentName extends Document.Type> =
     InexactPartial<foundry.applications.api.DialogV2.PromptConfig> &
       NullishProps<{
@@ -2511,93 +2614,6 @@ declare namespace Document {
     Schema,
     EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
   >;
-
-  type PreCreateDescendantDocumentsArgs<
-    Parent extends Document.AnyStored,
-    DirectDescendant extends Document.Any,
-    Embedded extends Document.Metadata.Embedded,
-  > = DirectDescendant extends unknown
-    ? [
-        parent: Parent,
-        collection: Embedded[DirectDescendant["documentName"]],
-        data: Document.CreateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database.CreateOptionsFor<DirectDescendant["documentName"]>,
-        userId: string,
-      ]
-    : never;
-
-  type OnCreateDescendantDocumentsArgs<
-    Parent extends Document.AnyStored,
-    DirectDescendant extends Document.Any,
-    Embedded extends Document.Metadata.Embedded,
-  > = DirectDescendant extends unknown
-    ? [
-        parent: Parent,
-        collection: Embedded[DirectDescendant["documentName"]],
-        documents: DirectDescendant[],
-        data: Document.CreateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database.CreateOptionsFor<DirectDescendant["documentName"]>,
-        userId: string,
-      ]
-    : never;
-
-  type PreUpdateDescendantDocumentsArgs<
-    Parent extends Document.AnyStored,
-    DirectDescendant extends Document.Any,
-    Embedded extends Document.Metadata.Embedded,
-  > = DirectDescendant extends unknown
-    ? [
-        parent: Parent,
-        collection: Embedded[DirectDescendant["documentName"]],
-        changes: Document.UpdateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database.UpdateOptionsFor<DirectDescendant["documentName"]>,
-        userId: string,
-      ]
-    : never;
-
-  type OnUpdateDescendantDocumentsArgs<
-    Parent extends Document.AnyStored,
-    DirectDescendant extends Document.Any,
-    Embedded extends Document.Metadata.Embedded,
-  > = DirectDescendant extends unknown
-    ? [
-        parent: Parent,
-        collection: Embedded[DirectDescendant["documentName"]],
-        documents: DirectDescendant[],
-        changes: Document.UpdateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database.UpdateOptionsFor<DirectDescendant["documentName"]>,
-        userId: string,
-      ]
-    : never;
-
-  type PreDeleteDescendantDocumentsArgs<
-    Parent extends Document.AnyStored,
-    DirectDescendant extends Document.Any,
-    Embedded extends Document.Metadata.Embedded,
-  > = DirectDescendant extends unknown
-    ? [
-        parent: Parent,
-        collection: Embedded[DirectDescendant["documentName"]],
-        ids: string[],
-        options: Document.Database.DeleteOptionsFor<DirectDescendant["documentName"]>,
-        userId: string,
-      ]
-    : never;
-
-  type OnDeleteDescendantDocumentsArgs<
-    Parent extends Document.AnyStored,
-    DirectDescendant extends Document.Any,
-    Embedded extends Document.Metadata.Embedded,
-  > = DirectDescendant extends unknown
-    ? [
-        parent: Parent,
-        collection: Embedded[DirectDescendant["documentName"]],
-        documents: DirectDescendant[],
-        ids: string[],
-        options: Document.Database.DeleteOptionsFor<DirectDescendant["documentName"]>,
-        userId: string,
-      ]
-    : never;
 
   type Clone<This extends Document.Any, Save extends boolean | null | undefined> = Save extends true
     ? Promise<This>

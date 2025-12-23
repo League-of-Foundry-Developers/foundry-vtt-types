@@ -180,8 +180,10 @@ declare namespace DataModelValidationFailure {
    * @remarks {@linkcode DataModelValidationFailure.toObject | DataModelValidationFailure#toObject} returns
    * its instance's properties of the same names
    */
-  interface ToObjectReturn
-    extends Pick<DataModelValidationFailure, "invalidValue" | "fallback" | "dropped" | "message"> {}
+  interface ToObjectReturn extends Pick<
+    DataModelValidationFailure,
+    "invalidValue" | "fallback" | "dropped" | "message"
+  > {}
 }
 
 export { DataModelValidationFailure, DataModelValidationError };

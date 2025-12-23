@@ -14,6 +14,6 @@ const combat = await TestBaseCombat.create({ scene: "foo", active: true }, { tem
 if (combat) {
   expectTypeOf(combat).toEqualTypeOf<Combat.Implementation>();
   expectTypeOf(combat.collections.combatants).toEqualTypeOf<
-    foundry.abstract.EmbeddedCollection<Combatant.Implementation, Combat.Implementation>
+    foundry.abstract.EmbeddedCollection<Combatant.Stored, Combat.Implementation>
   >();
 }

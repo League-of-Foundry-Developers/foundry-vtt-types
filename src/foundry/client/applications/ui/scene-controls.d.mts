@@ -236,8 +236,9 @@ declare namespace SceneControls {
     reference: string;
   }
 
-  interface Configuration<SceneControls extends SceneControls.Any = SceneControls.Any>
-    extends ApplicationV2.Configuration<SceneControls> {}
+  interface Configuration<
+    SceneControls extends SceneControls.Any = SceneControls.Any,
+  > extends ApplicationV2.Configuration<SceneControls> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.
@@ -265,8 +266,10 @@ declare namespace SceneControls {
 
   type EmittedEvents = [...ApplicationV2.EmittedEvents, "activate"];
 
-  interface ActivateOptions
-    extends Pick<DeepPartial<SceneControls.RenderOptions>, "event" | "control" | "tool" | "toggles"> {}
+  interface ActivateOptions extends Pick<
+    DeepPartial<SceneControls.RenderOptions>,
+    "event" | "control" | "tool" | "toggles"
+  > {}
 }
 
 declare abstract class AnySceneControls extends SceneControls<

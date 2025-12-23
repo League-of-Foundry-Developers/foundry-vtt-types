@@ -209,8 +209,7 @@ declare namespace GridLayer {
   }>;
 
   interface InitializeMeshOptions
-    extends _InitializeMeshOptions,
-      Pick<GridMesh.InitializationMeshData, "thickness" | "color" | "alpha"> {}
+    extends _InitializeMeshOptions, Pick<GridMesh.InitializationMeshData, "thickness" | "color" | "alpha"> {}
 
   /** @internal */
   type _HighlightPositionOptions = InexactPartial<{

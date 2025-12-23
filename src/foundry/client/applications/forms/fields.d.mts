@@ -1,4 +1,4 @@
-import type { NullishProps } from "#utils";
+import type { InexactPartial, NullishProps } from "#utils";
 
 export type CustomFormGroup = (
   field: foundry.data.fields.DataField,
@@ -114,7 +114,7 @@ interface _FormInputConfig<FormInputValue = unknown> {
   input: CustomFormInput;
 }
 
-export interface FormInputConfig<FormInputValue> extends NullishProps<_FormInputConfig<FormInputValue>> {
+export interface FormInputConfig<FormInputValue> extends InexactPartial<_FormInputConfig<FormInputValue>> {
   /**
    * The name of the form element
    *
@@ -169,9 +169,15 @@ export interface NumberInputConfig extends FormInputConfig<number> {
  */
 export function createNumberInput(config: NumberInputConfig): HTMLInputElement;
 
+/**
+ * @remarks Foundry types `value` and `label` as required, but that doesn't account for the use of
+ * {@linkcode _SelectInputConfig.valueAttr | valueAttr} or {@linkcode _SelectInputConfig.labelAttr | labelAttr} in the config containing
+ * them to change which properties are used for the value and label, respectively, of the resulting `<option>`. To allow their use, `value`
+ * and `label` have been made optional here, despite being required if `valueAttr`/`labelAttr` are *not* provided.
+ */
 export interface FormSelectOption {
-  value: string;
-  label: string;
+  value?: string;
+  label?: string;
   group?: string;
   disabled?: boolean;
   selected?: boolean;
@@ -221,7 +227,7 @@ interface _SelectInputConfig {
 }
 
 // Compatible with multiple different types of FormInputConfig so this does *not* extend that interface
-export interface SelectInputConfig extends NullishProps<_SelectInputConfig> {
+export interface SelectInputConfig extends InexactPartial<_SelectInputConfig> {
   options: FormSelectOption[];
 }
 

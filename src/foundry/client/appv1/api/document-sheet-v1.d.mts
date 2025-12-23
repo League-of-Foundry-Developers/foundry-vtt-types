@@ -133,7 +133,8 @@ declare namespace DocumentSheet {
   interface Data<
     Options extends DocumentSheet.Options<ConcreteDocument>,
     ConcreteDocument extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
-  > extends FormApplication.FormApplicationData {
+  >
+    extends FormApplication.FormApplicationData {
     cssClass: string;
     editable: boolean;
     data: ReturnType<ConcreteDocument["toObject"]>;

@@ -26,6 +26,17 @@ interface _InternalTypeDataModelInterface extends DataModel.AnyConstructor {
   ): DataModelOverride<Schema, Parent, _ComputedInstance>;
 }
 
+// Patterns of the form `interface Example<T> extends T {}` don't count as using `T`. From tsc's
+// point of view when calculating variance it may as well look like `interface Example<T> {}`.
+// Fundamentally this ordinarily means `Example<T>` will always be assignable to `Example<U>` and
+// vice versa.
+//
+// Obviously this is a problem, so `Uses` exists to add an unobtrusive covariant usage of the type
+// parameter, making `Example<T>` assignable to `Example<U>` only if `T` is a subtype of `U`.
+declare class Uses<T> {
+  #t?: T;
+}
+
 // Note(LukeAbby): This is carefully written to ensure that TypeScript allows overriding `protected`
 // methods of `DataModel` in subclasses. If `Override<DataModel<Schema, Parent>, _ComputedInstance>`
 // is used instead. it doesn't work.
@@ -33,8 +44,7 @@ interface _InternalTypeDataModelInterface extends DataModel.AnyConstructor {
 // See: https://gist.github.com/LukeAbby/b9fd57eeba778a25297721e88b3e6bdd
 // @ts-expect-error This pattern is inherently an error.
 interface DataModelOverride<Schema extends DataSchema, Parent extends Document.Any, _ComputedInstance extends object>
-  extends _ComputedInstance,
-    DataModel<Schema, Parent> {}
+  extends _ComputedInstance, DataModel<Schema, Parent>, Uses<_ComputedInstance> {}
 
 type UnmergePartial<
   Schema extends DataSchema,

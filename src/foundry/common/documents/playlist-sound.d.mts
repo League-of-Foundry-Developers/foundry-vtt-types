@@ -290,6 +290,7 @@ export default BasePlaylistSound;
 declare namespace BasePlaylistSound {
   export import Name = PlaylistSound.Name;
   export import ConstructionContext = PlaylistSound.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = PlaylistSound.ConstructorArgs;
   export import Hierarchy = PlaylistSound.Hierarchy;
   export import Metadata = PlaylistSound.Metadata;

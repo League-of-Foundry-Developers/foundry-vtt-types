@@ -108,8 +108,7 @@ declare global {
        * to {@linkcode PIXI.Polygon.intersectPolygon | PIXI.Polygon#intersectPolygon}
        */
       interface ClipperLibIntersectPolygonOptions
-        extends PIXI.Rectangle.ClipperLibIntersectPolygonOptions,
-          Pick<PIXI.Circle.PointsForArcOptions, "density"> {}
+        extends PIXI.Rectangle.ClipperLibIntersectPolygonOptions, Pick<PIXI.Circle.PointsForArcOptions, "density"> {}
 
       /** @internal */
       type _PointsForArcOptions = InexactPartial<{
@@ -129,8 +128,7 @@ declare global {
       interface PointsForArcOptions extends _PointsForArcOptions {}
 
       interface IntersectClipperOptions
-        extends PIXI.Polygon.IntersectClipperOptions,
-          Pick<PIXI.Circle.PointsForArcOptions, "density"> {}
+        extends PIXI.Polygon.IntersectClipperOptions, Pick<PIXI.Circle.PointsForArcOptions, "density"> {}
     }
 
     class Circle extends _PIXI.Circle {

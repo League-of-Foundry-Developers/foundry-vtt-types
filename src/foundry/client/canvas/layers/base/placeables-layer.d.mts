@@ -622,14 +622,10 @@ declare namespace PlaceablesLayer {
   }
 
   interface RotateManyOptionsWithAngle
-    extends _RotateManyOptions,
-      InexactPartial<_RotateManyOptionsDelta>,
-      _RotateManyOptionsAngle {}
+    extends _RotateManyOptions, InexactPartial<_RotateManyOptionsDelta>, _RotateManyOptionsAngle {}
 
   interface RotateManyOptionsWithDelta
-    extends _RotateManyOptions,
-      InexactPartial<_RotateManyOptionsAngle>,
-      _RotateManyOptionsDelta {}
+    extends _RotateManyOptions, InexactPartial<_RotateManyOptionsAngle>, _RotateManyOptionsDelta {}
 
   /** @internal */
   type _MoveManyOptions = InexactPartial<{

@@ -38,31 +38,30 @@ declare namespace RegionBehavior {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "RegionBehavior";
-        collection: "behaviors";
-        label: string;
-        labelPlural: string;
-        coreTypes: [
-          "adjustDarknessLevel",
-          "displayScrollingText",
-          "executeMacro",
-          "executeScript",
-          "modifyMovementCost",
-          "pauseGame",
-          "suppressWeather",
-          "teleportToken",
-          "toggleBehavior",
-        ];
-        hasTypeData: true;
-        isEmbedded: true;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "RegionBehavior";
+      collection: "behaviors";
+      label: string;
+      labelPlural: string;
+      coreTypes: [
+        "adjustDarknessLevel",
+        "displayScrollingText",
+        "executeMacro",
+        "executeScript",
+        "modifyMovementCost",
+        "pauseGame",
+        "suppressWeather",
+        "teleportToken",
+        "toggleBehavior",
+      ];
+      hasTypeData: true;
+      isEmbedded: true;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -110,15 +109,14 @@ declare namespace RegionBehavior {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredRegionBehavior<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            RegionBehavior<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredRegionBehavior<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          RegionBehavior<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `RegionBehavior` subtype.
@@ -217,7 +215,10 @@ declare namespace RegionBehavior {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends RegionBehavior.SubType = RegionBehavior.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
+    type: SubType;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -293,35 +294,35 @@ declare namespace RegionBehavior {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<RegionBehavior.Parent> {}
 
     /** Options passed along in Create operations for RegionBehaviors */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        RegionBehavior.CreateData,
-        RegionBehavior.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<RegionBehavior.CreateData, RegionBehavior.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for RegionBehaviors */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RegionBehavior.Parent> {}
 
     /** Options passed along in Update operations for RegionBehaviors */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<RegionBehavior.UpdateData, RegionBehavior.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      RegionBehavior.UpdateData,
+      RegionBehavior.Parent
+    > {}
 
     /** Operation for {@linkcode RegionBehavior.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<RegionBehavior.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      RegionBehavior.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode RegionBehavior.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<RegionBehavior.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<RegionBehavior.Database.Update> {}
 
     /** Operation for {@linkcode RegionBehavior.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<RegionBehavior.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<RegionBehavior.Database.Delete> {}
 
     /** Operation for {@linkcode RegionBehavior.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<RegionBehavior.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      RegionBehavior.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link RegionBehavior.update | `RegionBehavior#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -462,7 +463,7 @@ declare class RegionBehavior<
    * @param data    - Initial data from which to construct the `RegionBehavior`
    * @param context - Construction context options
    */
-  constructor(data: RegionBehavior.CreateData, context?: RegionBehavior.ConstructionContext);
+  constructor(data: RegionBehavior.CreateData<SubType>, context?: RegionBehavior.ConstructionContext);
 
   /** A convenience reference to the RegionDocument which contains this RegionBehavior. */
   get region(): RegionDocument.Implementation | null;

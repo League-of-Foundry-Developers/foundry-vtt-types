@@ -40,21 +40,20 @@ declare namespace Scene {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Scene";
-        collection: "scenes";
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "thumb", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        label: string;
-        labelPlural: string;
-        preserveOnImport: ["_id", "sort", "ownership", "active"];
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Scene";
+      collection: "scenes";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "thumb", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      label: string;
+      labelPlural: string;
+      preserveOnImport: ["_id", "sort", "ownership", "active"];
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -78,6 +77,21 @@ declare namespace Scene {
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    */
   type Parent = null;
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantName =
+    | "AmbientLight"
+    | "AmbientSound"
+    | "Drawing"
+    | "MeasuredTemplate"
+    | "Note"
+    | "Region"
+    | "Tile"
+    | "Token"
+    | "Wall";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -699,7 +713,7 @@ declare namespace Scene {
 
   interface EnvironmentSchema extends DataSchema {
     /**
-     * The environment darkness level.
+     * The ambient darkness level in this Scene, where 0 represents midday (maximum illumination) and 1 represents midnight (maximum darkness)
      * @defaultValue `0`
      */
     darknessLevel: fields.AlphaField<{ initial: 0 }>;
@@ -721,64 +735,64 @@ declare namespace Scene {
       enabled: fields.BooleanField<{ required: true; initial: false }>;
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.alpha}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.alpha}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       alpha: LightData.Schema["alpha"];
 
       /**
        * Is the global light in bright mode?
        * @defaultValue `false`
-       * @remarks This is `boolean` here instead {@linkcode foundry.data.LightData} schema's `number`, because the global light has infinite range
+       * @remarks This is `boolean` here instead {@linkcode LightData} schema's `number`, because the global light has infinite range
        */
       bright: fields.BooleanField<{ required: true; initial: false }>;
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.color}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.color}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       color: LightData.Schema["color"];
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.coloration}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.coloration}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       coloration: LightData.Schema["coloration"];
 
       /**
        * The luminosity applied in the shader
        * @defaultValue `0`
-       * @remarks Doesn't pull from the {@linkcode foundry.data.LightData} schema, unlike its siblings, as it has a different `initial`
+       * @remarks Doesn't pull from the {@linkcode LightData} schema, unlike its siblings, as it has a different `initial`
        */
       luminosity: fields.NumberField<{ required: true; nullable: false; initial: 0; min: 0; max: 1 }>;
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.saturation}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.saturation}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       saturation: LightData.Schema["saturation"];
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.contrast}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.contrast}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       contrast: LightData.Schema["contrast"];
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.shadows}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.shadows}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       shadows: LightData.Schema["shadows"];
 
       /**
-       * @see {@linkcode foundry.data.LightData.Schema.darkness}
-       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode foundry.data.LightData} schema
+       * @see {@linkcode LightData.Schema.darkness}
+       * @privateRemarks The field is defined in Foundry by pulling from the {@linkcode LightData} schema
        */
       darkness: LightData.Schema["darkness"];
     }>;
 
     /**
-     * If cycling between Night and Day is activated.
+     * If cycling between {@linkcode base} and {@linkcode dark} is activated.
      * @defaultValue `true`
      */
     cycle: fields.BooleanField<{ initial: true }>;
@@ -873,8 +887,8 @@ declare namespace Scene {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Scene.Parent> {}
 
     /** Options passed along in Create operations for Scenes */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Scene.CreateData, Scene.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Scene.CreateData, Scene.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Scenes */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Scene.Parent> {}
@@ -887,8 +901,9 @@ declare namespace Scene {
     }
 
     /** Operation for {@linkcode Scene.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Scene.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Scene.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Scene.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Scene.Database.Update> {}
@@ -897,8 +912,9 @@ declare namespace Scene {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Scene.Database.Delete> {}
 
     /** Operation for {@linkcode Scene.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Scene.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Scene.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Scene.update | `Scene#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -1015,32 +1031,56 @@ declare namespace Scene {
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   type PreCreateDescendantDocumentsArgs =
-    | Document.PreCreateDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
+    | Document.Internal.PreCreateDescendantDocumentsArgs<
+        Scene.Stored,
+        Scene.DirectDescendantName,
+        Scene.Metadata.Embedded
+      >
     | TokenDocument.PreCreateDescendantDocumentsArgs
     | RegionDocument.PreCreateDescendantDocumentsArgs;
 
   type OnCreateDescendantDocumentsArgs =
-    | Document.OnCreateDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
+    | Document.Internal.OnCreateDescendantDocumentsArgs<
+        Scene.Stored,
+        Scene.DirectDescendantName,
+        Scene.Metadata.Embedded
+      >
     | TokenDocument.OnCreateDescendantDocumentsArgs
     | RegionDocument.OnCreateDescendantDocumentsArgs;
 
   type PreUpdateDescendantDocumentsArgs =
-    | Document.PreUpdateDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
+    | Document.Internal.PreUpdateDescendantDocumentsArgs<
+        Scene.Stored,
+        Scene.DirectDescendantName,
+        Scene.Metadata.Embedded
+      >
     | TokenDocument.PreUpdateDescendantDocumentsArgs
     | RegionDocument.PreUpdateDescendantDocumentsArgs;
 
   type OnUpdateDescendantDocumentsArgs =
-    | Document.OnUpdateDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
+    | Document.Internal.OnUpdateDescendantDocumentsArgs<
+        Scene.Stored,
+        Scene.DirectDescendantName,
+        Scene.Metadata.Embedded
+      >
     | TokenDocument.OnUpdateDescendantDocumentsArgs
     | RegionDocument.OnUpdateDescendantDocumentsArgs;
 
   type PreDeleteDescendantDocumentsArgs =
-    | Document.PreDeleteDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
+    | Document.Internal.PreDeleteDescendantDocumentsArgs<
+        Scene.Stored,
+        Scene.DirectDescendantName,
+        Scene.Metadata.Embedded
+      >
     | TokenDocument.PreDeleteDescendantDocumentsArgs
     | RegionDocument.PreDeleteDescendantDocumentsArgs;
 
   type OnDeleteDescendantDocumentsArgs =
-    | Document.OnDeleteDescendantDocumentsArgs<Scene.Stored, Scene.DirectDescendant, Scene.Metadata.Embedded>
+    | Document.Internal.OnDeleteDescendantDocumentsArgs<
+        Scene.Stored,
+        Scene.DirectDescendantName,
+        Scene.Metadata.Embedded
+      >
     | TokenDocument.OnDeleteDescendantDocumentsArgs
     | RegionDocument.OnDeleteDescendantDocumentsArgs;
 

@@ -287,6 +287,7 @@ export default BaseFogExploration;
 declare namespace BaseFogExploration {
   export import Name = FogExploration.Name;
   export import ConstructionContext = FogExploration.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = FogExploration.ConstructorArgs;
   export import Hierarchy = FogExploration.Hierarchy;
   export import Metadata = FogExploration.Metadata;

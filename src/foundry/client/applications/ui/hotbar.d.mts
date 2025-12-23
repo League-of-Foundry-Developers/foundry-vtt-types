@@ -58,6 +58,13 @@ declare class Hotbar<
   protected _getContextMenuOptions(): foundry.applications.ux.ContextMenu.Entry<HTMLElement>[];
 
   /**
+   * Update the presented state of toggle buttons.
+   * @internal
+   * @remarks Called externally in {@linkcode foundry.applications.sidebar.tabs.PlaylistDirectory._onGlobalVolume | PlaylistDirectory#_onGlobalVolume}
+   */
+  _updateToggles(): void;
+
+  /**
    * Change to a specific numbered page from 1 to 5
    * @param page - The page number to change to
    */
@@ -139,8 +146,7 @@ declare namespace Hotbar {
   }
 
   interface Configuration<Hotbar extends Hotbar.Any = Hotbar.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<Hotbar> {}
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<Hotbar> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

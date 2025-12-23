@@ -105,7 +105,7 @@ declare class HexagonalGrid extends BaseGrid {
   /**
    * Round the fractional cube coordinates (q, r, s).
    * @see {@link https://www.redblobgames.com/grids/hexagons/}
-   * @param cube- The fractional cube coordinates
+   * @param cube - The fractional cube coordinates
    * @returns The rounded integer cube coordinates
    */
   static cubeRound(cube: HexagonalGrid.Cube): HexagonalGrid.Cube;

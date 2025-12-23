@@ -301,6 +301,7 @@ export default BaseCombatant;
 declare namespace BaseCombatant {
   export import Name = Combatant.Name;
   export import ConstructionContext = Combatant.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = Combatant.ConstructorArgs;
   export import Hierarchy = Combatant.Hierarchy;
   export import Metadata = Combatant.Metadata;

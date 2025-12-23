@@ -328,6 +328,7 @@ export default BaseRollTable;
 declare namespace BaseRollTable {
   export import Name = RollTable.Name;
   export import ConstructionContext = RollTable.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = RollTable.ConstructorArgs;
   export import Hierarchy = RollTable.Hierarchy;
   export import Metadata = RollTable.Metadata;

@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 
 // Import necessary as this is otherwise inaccessible.
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
@@ -64,7 +64,7 @@ expectTypeOf(basePackage.id).toEqualTypeOf<string>();
 expectTypeOf(basePackage.changelog).toEqualTypeOf<string | undefined>();
 
 // Checking the sets
-expectTypeOf(basePackage._source.packs[0]!.banner).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage._source.packs[0]!.banner).toEqualTypeOf<string | undefined | null>();
 expectTypeOf(basePackage._source.authors[0]!.discord).toEqualTypeOf<string | undefined>();
 expectTypeOf(basePackage.languages.first()!.lang).toEqualTypeOf<string>();
 
@@ -86,21 +86,21 @@ expectTypeOf(basePackage.authors.first()!.name).toEqualTypeOf<string>();
 expectTypeOf(basePackage.authors.first()!.email).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.authors.first()!.url).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.authors.first()!.discord).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.authors.first()!.flags).toEqualTypeOf<AnyObject>();
+expectTypeOf(basePackage.authors.first()!.flags).toEqualTypeOf<AnyMutableObject>();
 
 expectTypeOf(basePackage.url).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.license).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.readme).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.bugs).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.changelog).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.flags).toEqualTypeOf<AnyObject>();
+expectTypeOf(basePackage.flags).toEqualTypeOf<AnyMutableObject>();
 
 expectTypeOf(basePackage.media.first()!.type).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.media.first()!.url).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.media.first()!.caption).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.media.first()!.loop).toEqualTypeOf<boolean>();
 expectTypeOf(basePackage.media.first()!.thumbnail).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.media.first()!.flags).toEqualTypeOf<AnyObject>();
+expectTypeOf(basePackage.media.first()!.flags).toEqualTypeOf<AnyMutableObject>();
 
 expectTypeOf(basePackage.compatibility.minimum).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.compatibility.verified).toEqualTypeOf<OptionalString>();
@@ -115,11 +115,11 @@ expectTypeOf(basePackage.languages.first()!.name).toEqualTypeOf<string | undefin
 expectTypeOf(basePackage.languages.first()!.path).toEqualTypeOf<string>();
 expectTypeOf(basePackage.languages.first()!.system).toEqualTypeOf<OptionalString>();
 expectTypeOf(basePackage.languages.first()!.module).toEqualTypeOf<OptionalString>();
-expectTypeOf(basePackage.languages.first()!.flags).toEqualTypeOf<AnyObject>();
+expectTypeOf(basePackage.languages.first()!.flags).toEqualTypeOf<AnyMutableObject>();
 
 expectTypeOf(basePackage.packs.first()!.name).toEqualTypeOf<string>();
 expectTypeOf(basePackage.packs.first()!.label).toEqualTypeOf<string>();
-expectTypeOf(basePackage.packs.first()!.banner).toEqualTypeOf<OptionalString>();
+expectTypeOf(basePackage.packs.first()!.banner).toEqualTypeOf<OptionalString | null>();
 expectTypeOf(basePackage.packs.first()!.path).toEqualTypeOf<string | undefined>();
 expectTypeOf(basePackage.packs.first()!.type).toEqualTypeOf<foundry.CONST.COMPENDIUM_DOCUMENT_TYPES>();
 
@@ -169,7 +169,7 @@ expectTypeOf(basePackage.relationships.conflicts.first()!.compatibility.verified
 expectTypeOf(basePackage.relationships.conflicts.first()!.compatibility.maximum).toEqualTypeOf<string | undefined>();
 expectTypeOf(basePackage.relationships.conflicts.first()!.reason).toEqualTypeOf<string | undefined>();
 
-expectTypeOf(basePackage.relationships.flags).toEqualTypeOf<AnyObject>();
+expectTypeOf(basePackage.relationships.flags).toEqualTypeOf<AnyMutableObject>();
 
 expectTypeOf(basePackage.relationships.systems.first()!.reason).toEqualTypeOf<string | undefined>();
 

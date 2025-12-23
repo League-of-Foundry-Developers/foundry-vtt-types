@@ -20,11 +20,11 @@ new TestBaseActor({});
 
 const baseActor = new TestBaseActor({ name: "foo", type: "character" });
 expectTypeOf(baseActor.name).toEqualTypeOf<string>();
-expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Implementation, Actor.Implementation>>();
-expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect.Implementation | undefined>();
+expectTypeOf(baseActor.effects).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Stored, Actor.Implementation>>();
+expectTypeOf(baseActor.effects.get("")).toEqualTypeOf<ActiveEffect.Stored | undefined>();
 expectTypeOf(baseActor.effects.get("")!.name).toEqualTypeOf<string>();
-expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item.Implementation, Actor.Implementation>>();
-expectTypeOf(baseActor.items.get("")).toEqualTypeOf<Item.Implementation | undefined>();
+expectTypeOf(baseActor.items).toEqualTypeOf<EmbeddedCollection<Item.Stored, Actor.Implementation>>();
+expectTypeOf(baseActor.items.get("")).toEqualTypeOf<Item.Stored | undefined>();
 expectTypeOf(baseActor.items.get("")!.img).toEqualTypeOf<string | null>();
 expectTypeOf(baseActor._source.effects[0]!.duration.seconds).toEqualTypeOf<number | null | undefined>();
 
@@ -221,7 +221,7 @@ class BoilerplateCharacter extends BoilerplateActorBase<
 
     expectTypeOf(this.extra.deep.check.propA).toEqualTypeOf<string>();
     expectTypeOf(this.extra.deep.check.deepDerivedProp).toEqualTypeOf<number | undefined>();
-    expectTypeOf(this.extra.deep.derived?.prop).toEqualTypeOf<string | undefined>();
+    expectTypeOf(this.extra.deep.derived.prop).toEqualTypeOf<string | undefined>();
 
     expectTypeOf(this.derivedString).toEqualTypeOf<string | undefined>();
   }

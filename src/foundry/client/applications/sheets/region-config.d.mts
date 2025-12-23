@@ -55,12 +55,10 @@ declare namespace RegionConfig {
   interface AnyConstructor extends Identity<typeof AnyRegionConfig> {}
 
   interface RenderContext
-    extends HandlebarsApplicationMixin.RenderContext,
-      DocumentSheetV2.RenderContext<RegionDocument.Implementation> {}
+    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<RegionDocument.Implementation> {}
 
   interface Configuration
-    extends HandlebarsApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<RegionDocument.Implementation> {}
+    extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<RegionDocument.Implementation> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
 }

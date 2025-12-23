@@ -341,6 +341,7 @@ export default BaseCombat;
 declare namespace BaseCombat {
   export import Name = Combat.Name;
   export import ConstructionContext = Combat.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = Combat.ConstructorArgs;
   export import Hierarchy = Combat.Hierarchy;
   export import Metadata = Combat.Metadata;

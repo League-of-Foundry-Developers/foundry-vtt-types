@@ -257,8 +257,10 @@ declare namespace TokenLayer {
   }
 
   /** @remarks The waypoint data {@linkcode TokenLayer.storeHistory | TokenLayer#storeHistory} includes in movement-including update `undoOptions` */
-  interface MovementUpdateHistoryWaypoint
-    extends Pick<TokenDocument.MeasuredMovementWaypoint, keyof TokenDocument.Position | "action"> {}
+  interface MovementUpdateHistoryWaypoint extends Pick<
+    TokenDocument.MeasuredMovementWaypoint,
+    keyof TokenDocument.Position | "action"
+  > {}
 
   /**
    * @remarks See {@linkcode PlaceablesLayer.UpdateHistoryEntry.options} remarks.

@@ -39,20 +39,19 @@ declare namespace Combatant {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Combatant";
-        collection: "combatants";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        hasTypeData: true;
-        schemaVersion: string;
-        permissions: Metadata.Permissions;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Combatant";
+      collection: "combatants";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      hasTypeData: true;
+      schemaVersion: string;
+      permissions: Metadata.Permissions;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -101,15 +100,14 @@ declare namespace Combatant {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredCombatant<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Combatant<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredCombatant<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Combatant<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Combatant` subtype.
@@ -208,7 +206,10 @@ declare namespace Combatant {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Combatant.SubType = Combatant.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -316,8 +317,8 @@ declare namespace Combatant {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Combatant.Parent> {}
 
     /** Options passed along in Create operations for Combatants */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Combatant.CreateData, Combatant.Parent, Temporary> {
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Combatant.CreateData, Combatant.Parent, Temporary> {
       combatTurn?: number;
       turnEvents?: boolean;
     }
@@ -335,8 +336,9 @@ declare namespace Combatant {
     }
 
     /** Operation for {@linkcode Combatant.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Combatant.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Combatant.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Combatant.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Combatant.Database.Update> {}
@@ -345,8 +347,9 @@ declare namespace Combatant {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Combatant.Database.Delete> {}
 
     /** Operation for {@linkcode Combatant.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Combatant.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Combatant.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Combatant.update | `Combatant#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -507,7 +510,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    * @param context - Construction context options
    */
   // Note(LukeAbby): `data` is not actually required but `context.parent` is.
-  constructor(data: Combatant.CreateData | undefined, context: Combatant.ConstructionContext);
+  constructor(data: Combatant.CreateData<SubType> | undefined, context: Combatant.ConstructionContext);
 
   /**
    * The token video source image (if any)
@@ -587,7 +590,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   /**
    * Clear the movement history of the Combatant's Token.
    */
-  clearMovementHistory: Promise<void>;
+  clearMovementHistory(): Promise<void>;
 
   // DatabaseLifecycle Events are overridden but with no signature changes.
   // These are already covered in BaseCombatant
