@@ -29,7 +29,7 @@ expectTypeOf(layer.configureDefault()).toEqualTypeOf<void>();
 expectTypeOf(layer["_deactivate"]()).toBeVoid();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(layer._getNewDrawingData(somePoint)).toEqualTypeOf<DrawingDocument.CreateData>();
+expectTypeOf(layer["_getNewDrawingData"](somePoint)).toEqualTypeOf<DrawingDocument.CreateData>();
 
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 expectTypeOf(layer["_onClickLeft"](pointerEvent)).toBeVoid();
