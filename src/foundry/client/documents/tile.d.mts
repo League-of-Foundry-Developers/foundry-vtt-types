@@ -515,7 +515,18 @@ declare namespace TileDocument {
      * @remarks This interface was previously typed for passing to {@linkcode TileDocument.update | TileDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<TileDocument.UpdateInput, TileDocument.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<TileDocument.UpdateInput, TileDocument.Parent> {
+      /**
+       * @remarks Sets video sources on tiles affected by this operation to either play or stop in
+       * {@linkcode Tile._onUpdate | Tile#_onUpdate}.
+       */
+      playVideo?: boolean;
+
+      /**
+       * @remarks Sets the video offset for tiles affected by this operation in {@linkcode Tile._onUpdate | Tile#_onUpdate}.
+       */
+      offset?: number;
+    }
 
     /**
      * The interface for passing to {@linkcode TileDocument.update | TileDocument#update}.

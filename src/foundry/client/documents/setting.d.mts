@@ -1,4 +1,4 @@
-import type { MaybeArray, Merge } from "#utils";
+import type { IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
 import type { BaseUser } from "#client/documents/_module.d.mts";
@@ -538,6 +538,12 @@ declare namespace Setting {
     interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
+     * This is the "real" {@linkcode OnUpdateOptionsW} for `Setting`, see that linked interface's privateRemarks.
+     * @internal
+     */
+    interface _OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
      * The interface passed to {@linkcode Setting._onUpdate | Setting#_onUpdate} and
      * {@link Hooks.UpdateDocument | the `updateSetting` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
@@ -549,8 +555,21 @@ declare namespace Setting {
      * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
+     *
+     * ---
+     *
+     * @privateRemarks This interface is mostly re-partialed due to the server, on receiving a `Combat` update that modifies the world time,
+     * emitting an `"update"` event for the `"core.time"` world setting, with what will usually (see {@linkcode Combat.TurnWorldTime}
+     * remarks) be an empty operation object. `parent` is inserted back into the operation object client-side, so it exists despite this.
      */
-    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+    interface OnUpdateOptions
+      extends IntentionalPartial<Omit<_OnUpdateOptions, "parent">>, Pick<_OnUpdateOptions, "parent"> {}
+
+    /**
+     * This is the "real" {@linkcode OnUpdateOperation} for `Setting`, see that linked interface's privateRemarks.
+     * @internal
+     */
+    interface _OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
 
     /**
      * The interface passed to {@linkcode Setting._onUpdateOperation} and `Setting`-related collections'
@@ -564,8 +583,18 @@ declare namespace Setting {
      * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
      * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
      * use case for doing so, please let us know.
+     *
+     * ---
+     *
+     * @privateRemarks This interface is mostly re-partialed due to the server, on receiving a `Combat` update that modifies the world time,
+     * emitting an `"update"` event for the `"core.time"` world setting, with what will usually (see {@linkcode Combat.TurnWorldTime}
+     * remarks) be an empty operation object. `parent` and `updates` are inserted back into the operation object client-side, so they exist
+     * despite this.
      */
-    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+    interface OnUpdateOperation
+      extends
+        IntentionalPartial<Omit<_OnUpdateOperation, "parent" | "updates">>,
+        Pick<_OnUpdateOperation, "parent" | "updates"> {}
 
     /* ***********************************************
      *              DELETE OPERATIONS                *

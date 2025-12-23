@@ -975,7 +975,14 @@ declare namespace Scene {
      */
     interface CreateOperation<
       Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<Scene.CreateInput, Scene.Parent, Temporary> {}
+    > extends DatabaseBackend.CreateOperation<Scene.CreateInput, Scene.Parent, Temporary> {
+      /**
+       * @remarks If there is an active scene, {@linkcode Scene._preCreateOperation} will set this to its `id`, and
+       * {@linkcode Scene._onCreate | Scene#_onCreate} will call {@linkcode game.playlists._onChangeScene} with the scene retrieved with
+       * that `id`.
+       */
+      priorActiveScene?: string;
+    }
 
     /**
      * The interface for passing to {@linkcode Scene.create} or {@linkcode Scene.createDocuments}.
@@ -1114,7 +1121,32 @@ declare namespace Scene {
      * @remarks This interface was previously typed for passing to {@linkcode Scene.update | Scene#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Scene.UpdateInput, Scene.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Scene.UpdateInput, Scene.Parent> {
+      /**
+       * @remarks If `true`, {@linkcode Scene._preUpdate | Scene#_preUpdate} will call `Scene##repositionObjects` on the associated change.
+       * Conditionally set by {@linkcode foundry.applications.sheets.SceneConfig._processSubmitData | SceneConfig#_processSubmitData}.
+       */
+      autoReposition?: boolean;
+
+      /**
+       * @remarks If the `active` value of any scenes affected by this operation is changed, {@linkcode Scene._preUpdate | Scene#_preUpdate}
+       * will set this to `game.scenes.active?.id`.
+       *
+       * {@linkcode Scene._onUpdate | Scene#_onUpdate} will call {@linkcode game.playlists._onChangeScene} with the scene retrieved with
+       * that `id`.
+       *
+       * {@linkcode Scene._onUpdateOperation} will then call its {@linkcode Scene._onActivate | #onActivate(false)}.
+       */
+      priorActiveScene?: string | undefined;
+
+      /**
+       * @remarks {@linkcode Scene._preUpdate | Scene#_preUpdate} adds its scene's `id` to this array (creating it if necessary) if its
+       * {@linkcode Scene.thumb | thumb} is being updated. {@linkcode Scene._onUpdate | Scene#_onUpdate} uses this in a confusing way that
+       * appears to do nothing unless something inserts `thumb` into the `changes` for the scene between `_preUpdate` and `_onUpdate`, which
+       * no core code does.
+       */
+      thumb?: string[];
+    }
 
     /**
      * The interface for passing to {@linkcode Scene.update | Scene#update}.

@@ -1054,10 +1054,26 @@ declare namespace TokenDocument {
      * @remarks This interface was previously typed for passing to {@linkcode TokenDocument.update | TokenDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
-      TokenDocument.UpdateInput,
-      TokenDocument.Parent
-    > {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<TokenDocument.UpdateInput, TokenDocument.Parent> {
+      /**
+       * @remarks If a token's {@linkcode TokenDocument.actorId | actorId} is being updated,
+       * {@linkcode TokenDocument._preUpdate | TokenDocument#_preUpdate} sets this property, and
+       * {@linkcode TokenDocument._onUpdate | TokenDocument#_onUpdate} tidies the previous actor's apps and dependent tokens.
+       *
+       * Note: since this mutates the one operation object, even for updates with more than one token affected, batching together two or
+       * more updates changing away *from* different `actorIds` can leave some erroneous references in one or more of the actors belonging
+       * to those IDs.
+       */
+      previousActorId?: string | null;
+
+      /**
+       * @remarks Passing `false` both prevents the current operation from animating and stops existing animations, via
+       * {@linkcode TokenDocument._onUpdate | TokenDocument#_onUpdate} calling `TokenDocument##onUpdateAnimation`.
+       */
+      animate?: boolean;
+
+      animation?: object;
+    }
 
     /**
      * The interface for passing to {@linkcode TokenDocument.update | TokenDocument#update}.

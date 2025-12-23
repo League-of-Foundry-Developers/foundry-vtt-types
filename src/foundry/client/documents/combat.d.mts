@@ -620,7 +620,13 @@ declare namespace Combat {
     interface UpdateOperation
       extends
         DatabaseBackend.UpdateOperation<Combat.UpdateInput, Combat.Parent>,
-        IntentionalPartial<Combat._TurnOrRoundUpdateOptions> {}
+        IntentionalPartial<Combat._TurnOrRoundUpdateOptions> {
+      /**
+       * If set `false`, skips calling {@linkcode Combat._manageTurnEvents | Combat#_manageTurnEvents} in
+       * {@linkcode Combat._onUpdate | Combat#_onUpdate}.
+       */
+      turnEvents?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode Combat.update | Combat#update}.
@@ -1201,8 +1207,13 @@ declare namespace Combat {
    */
   interface TurnUpdateData extends Omit<Combat.UpdateData, "round" | "turn">, _TurnUpdateData {}
 
-  /** The inner interface for `RoundUpdateOptions`/`TurnUpdateOptions`{@linkcode TurnUpdateOptions.worldTime | .worldTime} */
-  interface TurnWorldTime {
+  /**
+   * The inner interface for {@linkcode _TurnOrRoundUpdateOptions.worldTime | worldTime}.
+   *
+   * All properties other than `delta` are forwarded to the update operation for the `"core.time"` world setting that the server emits using
+   * that `delta`.
+   */
+  interface TurnWorldTime extends Setting.Database.UpdateOneDocumentOperation {
     /**
      * The amount of time in seconds that time is being advanced
      * @remarks The above is the description Foundry gives for `options.advanceTime` in the {@linkcode hookEvents.combatTurn}
@@ -1217,13 +1228,25 @@ declare namespace Combat {
    * @internal
    */
   interface _TurnOrRoundUpdateOptions {
+    /**
+     * @remarks The `delta` of time being changed, and optionally, options for the update operation using that delta.
+     * See {@linkcode TurnWorldTime} remarks.
+     */
     worldTime: TurnWorldTime;
 
     /**
      * A signed integer for whether the turn order is advancing or rewinding
-     * @remarks Core only ever provides `-1 | 1`, and doesn't appear to check it ever; this seems to exist just for user use.
+     * @remarks Foundry only ever provides `-1 | 1`, and doesn't appear to check it ever; this seems to exist just for user use.
      */
     direction: number;
+
+    /**
+     * The amount of time in seconds that time is being advanced
+     * @deprecated Since v12, Foundry has not been passing this in favour of {@linkcode TurnWorldTime.delta | worldTime.delta}, but if it's
+     * passed *and* no `worldTime` is passed, it will be honoured. There is no deprecation warning attached to this at runtime, as the
+     * server handles the migration, so there's no information on if this has an end date.
+     */
+    advanceTime?: number;
   }
 
   /**
@@ -1234,7 +1257,9 @@ declare namespace Combat {
    * {@linkcode Combat.previousTurn | #previousTurn}.
    */
   interface TurnUpdateOptions
-    extends Omit<Combat.Database.UpdateOneDocumentOperation, "direction" | "worldTime">, _TurnOrRoundUpdateOptions {}
+    extends
+      Omit<Combat.Database.UpdateOneDocumentOperation, keyof _TurnOrRoundUpdateOptions>,
+      _TurnOrRoundUpdateOptions {}
 
   /**
    * The interface for the second argument passed to {@linkcode hookEvents.combatRound}.
@@ -1253,7 +1278,9 @@ declare namespace Combat {
    * {@linkcode Combat.previousRound | #previousRound}.
    */
   interface RoundUpdateOptions
-    extends Omit<Combat.Database.UpdateOneDocumentOperation, "direction" | "worldTime">, _TurnOrRoundUpdateOptions {}
+    extends
+      Omit<Combat.Database.UpdateOneDocumentOperation, keyof _TurnOrRoundUpdateOptions>,
+      _TurnOrRoundUpdateOptions {}
 
   /** @internal */
   type _InitiativeOptions = NullishProps<{

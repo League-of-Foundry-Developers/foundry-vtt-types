@@ -291,7 +291,12 @@ declare namespace FogExploration {
      */
     interface CreateOperation<
       Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<FogExploration.CreateInput, FogExploration.Parent, Temporary> {}
+    > extends DatabaseBackend.CreateOperation<FogExploration.CreateInput, FogExploration.Parent, Temporary> {
+      /**
+       * @remarks If `false`, prevents retrieving fog from the server as part of this operation.
+       */
+      loadFog?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode FogExploration.create} or {@linkcode FogExploration.createDocuments}.
@@ -433,7 +438,12 @@ declare namespace FogExploration {
     interface UpdateOperation extends DatabaseBackend.UpdateOperation<
       FogExploration.UpdateInput,
       FogExploration.Parent
-    > {}
+    > {
+      /**
+       * @remarks If `false`, prevents retrieving fog from the server as part of this operation.
+       */
+      loadFog?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode FogExploration.update | FogExploration#update}.
@@ -581,7 +591,12 @@ declare namespace FogExploration {
      * @remarks This interface was previously typed for passing to {@linkcode FogExploration.delete | FogExploration#delete}.
      * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
      */
-    interface DeleteOperation extends DatabaseBackend.DeleteOperation<FogExploration.Parent> {}
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<FogExploration.Parent> {
+      /**
+       * @remarks If `false`, prevents retrieving fog from the server as part of this operation.
+       */
+      loadFog?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode FogExploration.delete | FogExploration#delete}.

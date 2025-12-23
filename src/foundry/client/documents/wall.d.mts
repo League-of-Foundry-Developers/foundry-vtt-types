@@ -618,7 +618,13 @@ declare namespace WallDocument {
      * @remarks This interface was previously typed for passing to {@linkcode WallDocument.update | WallDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<WallDocument.UpdateInput, WallDocument.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<WallDocument.UpdateInput, WallDocument.Parent> {
+      /**
+       * @remarks If `false`, prevents {@linkcode Wall._onUpdate | Wall#_onUpdate} from calling
+       * {@linkcode Wall._playDoorSound | Wall#_playDoorSound}.
+       */
+      sound?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode WallDocument.update | WallDocument#update}.

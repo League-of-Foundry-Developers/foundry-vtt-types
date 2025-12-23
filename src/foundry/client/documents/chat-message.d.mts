@@ -446,7 +446,22 @@ declare namespace ChatMessage {
      */
     interface CreateOperation<
       Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<ChatMessage.CreateInput, ChatMessage.Parent, Temporary> {}
+    > extends DatabaseBackend.CreateOperation<ChatMessage.CreateInput, ChatMessage.Parent, Temporary> {
+      /**
+       * @remarks Only affects messages with non-empty {@linkcode ChatMessage.rolls | rolls}. If this is passed,
+       * {@linkcode ChatMessage._preCreate | ChatMessage#_preCreate} will call {@linkcode ChatMessage.applyRollMode} with it, affecting the
+       * {@linkcode ChatMessage.whisper | whisper} and {@linkcode ChatMessage.blind | blind} properties of the to-be-created message.
+       */
+      rollMode?: ChatMessage.PassableRollMode;
+
+      /**
+       * @remarks If passed `true`, {@linkcode ChatMessage._onCreate | ChatMessage#_onCreate} will call
+       * {@linkcode foundry.canvas.animation.ChatBubbles.say | ChatBubbles#say} with the created message.
+       *
+       * This is automatically set `true` for `/ic` and `/emote` chat commands, nothing else in core as of 13.351.
+       */
+      chatBubble?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode ChatMessage.create} or {@linkcode ChatMessage.createDocuments}.

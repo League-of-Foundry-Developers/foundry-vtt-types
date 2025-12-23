@@ -583,7 +583,14 @@ declare namespace Playlist {
      * @remarks This interface was previously typed for passing to {@linkcode Playlist.update | Playlist#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Playlist.UpdateInput, Playlist.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Playlist.UpdateInput, Playlist.Parent> {
+      /**
+       * @remarks If `true`, {@linkcode Playlist._onUpdate | Playlist#_onUpdate} will call {@linkcode PlaylistSound.sync | sync} for every
+       * `PlaylistSound` in its {@linkcode Playlist.sounds | sounds}, even if no `sounds` changed (provided {@linkcode game.audio.locked}
+       * is false)
+       */
+      forceSync?: boolean;
+    }
 
     /**
      * The interface for passing to {@linkcode Playlist.update | Playlist#update}.

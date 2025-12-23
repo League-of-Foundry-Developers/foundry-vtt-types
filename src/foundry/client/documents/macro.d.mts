@@ -388,7 +388,14 @@ declare namespace Macro {
      */
     interface CreateOperation<
       Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<Macro.CreateInput, Macro.Parent, Temporary> {}
+    > extends DatabaseBackend.CreateOperation<Macro.CreateInput, Macro.Parent, Temporary> {
+      /**
+       * @remarks If provided, {@linkcode Macro._onCreate | Macro#_onCreate} calls
+       * {@linkcode User.assignHotbarMacro | User#assignHotbarMacro} with this value. It's limited by private method validation to the range
+       * `[1,50]` inclusive.
+       */
+      hotbarSlot?: number;
+    }
 
     /**
      * The interface for passing to {@linkcode Macro.create} or {@linkcode Macro.createDocuments}.

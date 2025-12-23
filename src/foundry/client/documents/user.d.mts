@@ -364,7 +364,9 @@ declare namespace User {
      */
     interface CreateOperation<
       Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<User.CreateInput, User.Parent, Temporary> {}
+    > extends DatabaseBackend.CreateOperation<User.CreateInput, User.Parent, Temporary> {
+      // `updateWorld` is omitted here as it only sees use server side and it's not something users should be passing
+    }
 
     /**
      * The interface for passing to {@linkcode User.create} or {@linkcode User.createDocuments}.
@@ -503,7 +505,9 @@ declare namespace User {
      * @remarks This interface was previously typed for passing to {@linkcode User.update | User#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<User.UpdateInput, User.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<User.UpdateInput, User.Parent> {
+      // `updateWorld` is omitted here as it only sees use server side and it's not something users should be passing
+    }
 
     /**
      * The interface for passing to {@linkcode User.update | User#update}.
