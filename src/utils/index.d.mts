@@ -33,11 +33,15 @@ export type LoggingLevels = "debug" | "log" | "info" | "warn" | "error";
 // - `T = never` might either distribute out or return `unknown`. The fix here is checking if `any` is assignable to it.
 // - `T = { prop?: U }` with `exactOptionalPropertyTypes` should return `U | undefined` not `U`.
 // - `T` has getters `GetKey` should still access it, this means checking `keyof T` is not helpful.
-export type GetKey<T, K extends PropertyKey, D = never> = [object] extends [T] // Handle `{}` and `object`
-  ? D
-  : [any] extends [T] // Handle never
-    ? _GetKey<T, K, D>
-    : D;
+export type GetKey<T, K extends PropertyKey, D = never> =
+  (<V>() => V extends object ? 1 : 0) extends <V>() => V extends T ? 1 : 0
+    ? D
+    : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      (<V>() => V extends {} ? 1 : 0) extends <V>() => V extends T ? 1 : 0
+      ? D
+      : [any] extends [T] // Handle never
+        ? _GetKey<T, K, D>
+        : D;
 
 // Note(LukeAbby): This uses `infer _V` specifically to avoid index signatures.
 // However it isn't `T extends { readonly [_ in K]?: infer V } ? V : D` as under
@@ -672,6 +676,17 @@ type _MergePlainObject<T extends object, U extends object> = {
 
 interface _MergeComplexObject<T extends object, U extends object> extends _Override<T, _MergePlainObject<T, U>> {}
 
+// Note(LukeAbby): Patterns of the form `interface Example<T> extends T {}` don't count as using `T`.
+// From tsc's point of view when calculating variance it may as well look like `interface Example<T> {}`.
+// Fundamentally this ordinarily means `Example<T>` will always be assignable to `Example<U>` and
+// vice versa.
+//
+// Obviously this is a problem, so `Uses` exists to add an unobtrusive covariant usage of the type
+// parameter, making `Example<T>` assignable to `Example<U>` only if `T` is a subtype of `U`.
+declare class Uses<T> {
+  #t?: T;
+}
+
 /**
  * Overrides properties of `T` with properties in `U`. Be careful using this type as its internal
  * implementation is likely a bit shaky.
@@ -681,7 +696,7 @@ interface _MergeComplexObject<T extends object, U extends object> extends _Overr
 export type Override<T extends object, U extends object> = T extends unknown ? _Override<T, U> : never;
 
 // @ts-expect-error This pattern is inherently an error.
-interface _Override<T extends object, U extends object> extends U, T {}
+interface _Override<T extends object, U extends object> extends U, T, Uses<T>, Uses<U> {}
 
 /**
  * Returns whether the type is a plain object. Excludes functions, arrays, and constructors while still being friendly to interfaces.
@@ -802,6 +817,9 @@ export type AnyObject = {
 export type AnyMutableObject = {
   [K: string]: unknown;
 };
+
+/** Very basic helper type, does what it says on the tin. */
+export type MaybeArray<T> = T | T[];
 
 /**
  * Use this type to allow any array. This allows readonly arrays which is
@@ -1319,8 +1337,7 @@ interface DeepReadonlyComplex<T extends object> extends _DeepReadonlyComplex<T> 
 // Note(LukeAbby): The two levels here, `DeepReadonlyComplex` and `_DeepReadonlyComplex`, could just be one.
 // However it gives a better type display as two levels.
 interface _DeepReadonlyComplex<T extends object, R extends object = { readonly [K in keyof T]: _DeepReadonly<T[K]> }>
-  extends R,
-    T {}
+  extends R, T, Uses<R>, Uses<T> {}
 
 /**
  * Currently indistinguishable from `DotKeys` but will eventually avoid `readonly` keys.

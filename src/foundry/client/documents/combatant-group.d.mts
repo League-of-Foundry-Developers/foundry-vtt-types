@@ -34,19 +34,18 @@ declare namespace CombatantGroup {
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "CombatantGroup";
-        collection: "groups";
-        label: string;
-        labelPlural: string;
-        isEmbedded: true;
-        hasTypeData: true;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "CombatantGroup";
+      collection: "groups";
+      label: string;
+      labelPlural: string;
+      isEmbedded: true;
+      hasTypeData: true;
+      schemaVersion: string;
+    }>
+  > {}
 
   /**
    * Allowed subtypes of `CombatantGroup`. This is configured through various methods. Modern Foundry
@@ -84,15 +83,14 @@ declare namespace CombatantGroup {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredCombatantGroup<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            CombatantGroup<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredCombatantGroup<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          CombatantGroup<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `CombatantGroup` subtype.
@@ -193,7 +191,10 @@ declare namespace CombatantGroup {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends CombatantGroup.SubType = CombatantGroup.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -278,35 +279,35 @@ declare namespace CombatantGroup {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<CombatantGroup.Parent> {}
 
     /** Options passed along in Create operations for CombatantGroups */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        CombatantGroup.CreateData,
-        CombatantGroup.Parent,
-        Temporary
-      > {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<CombatantGroup.CreateData, CombatantGroup.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for CombatantGroups */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<CombatantGroup.Parent> {}
 
     /** Options passed along in Update operation for CombatantGroups */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<CombatantGroup.UpdateData, CombatantGroup.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      CombatantGroup.UpdateData,
+      CombatantGroup.Parent
+    > {}
 
     /** Operation for {@linkcode CombatantGroup.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<CombatantGroup.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      CombatantGroup.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode CombatantGroup.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<CombatantGroup.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<CombatantGroup.Database.Update> {}
 
     /** Operation for {@linkcode CombatantGroup.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<CombatantGroup.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<CombatantGroup.Database.Delete> {}
 
     /** Operation for {@linkcode CombatantGroup.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<CombatantGroup.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      CombatantGroup.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link CombatantGroup.update | `CombatantGroup#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -466,7 +467,7 @@ declare class CombatantGroup<
    * @param data    - Initial data from which to construct the `CombatantGroup`
    * @param context - Construction context options
    */
-  constructor(data: CombatantGroup.CreateData, context?: CombatantGroup.ConstructionContext);
+  constructor(data: CombatantGroup.CreateData<SubType>, context?: CombatantGroup.ConstructionContext);
 
   /**
    * A group is considered defeated if all its members are defeated, or it has no members.

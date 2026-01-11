@@ -278,6 +278,7 @@ export default BaseAmbientSound;
 declare namespace BaseAmbientSound {
   export import Name = AmbientSoundDocument.Name;
   export import ConstructionContext = AmbientSoundDocument.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = AmbientSoundDocument.ConstructorArgs;
   export import Hierarchy = AmbientSoundDocument.Hierarchy;
   export import Metadata = AmbientSoundDocument.Metadata;

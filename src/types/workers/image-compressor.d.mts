@@ -50,25 +50,19 @@ type _Out = InexactPartial<{
 }>;
 
 export interface ProcessBufferToBase64Options
-  extends _ProcessBufferToBase64Options,
-    _CommonRequiredProperties,
-    _CommonOptionalProperties {
+  extends _ProcessBufferToBase64Options, _CommonRequiredProperties, _CommonOptionalProperties {
   /** Buffer used to create the image data. */
   buffer: Uint8ClampedArray;
 }
 
 export interface ProcessBufferRedToBufferRGBAOptions
-  extends _Out,
-    _CommonRequiredProperties,
-    _CommonOptionalProperties {
+  extends _Out, _CommonRequiredProperties, _CommonOptionalProperties {
   /** Buffer to expand. */
   buffer: Uint8ClampedArray;
 }
 
 export interface ProcessBufferRGBAToBufferRedOptions
-  extends _Out,
-    _CommonRequiredProperties,
-    _CommonOptionalProperties {
+  extends _Out, _CommonRequiredProperties, _CommonOptionalProperties {
   /** Buffer to reduce. */
   buffer: Uint8ClampedArray;
 }

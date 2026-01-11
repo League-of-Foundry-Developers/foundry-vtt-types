@@ -40,21 +40,20 @@ declare namespace JournalEntry {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "JournalEntry";
-        collection: "journal";
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "JournalEntry";
+      collection: "journal";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -79,6 +78,12 @@ declare namespace JournalEntry {
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    */
   type Parent = null;
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantName = "JournalEntryPage";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -298,31 +303,35 @@ declare namespace JournalEntry {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<JournalEntry.Parent> {}
 
     /** Options passed along in Create operations for  JournalEntries */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<JournalEntry.CreateData, JournalEntry.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<JournalEntry.CreateData, JournalEntry.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for  JournalEntries */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<JournalEntry.Parent> {}
 
     /** Options passed along in Update operations for  JournalEntries */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<JournalEntry.UpdateData, JournalEntry.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      JournalEntry.UpdateData,
+      JournalEntry.Parent
+    > {}
 
     /** Operation for {@linkcode JournalEntry.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<JournalEntry.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      JournalEntry.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode JournalEntry.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<JournalEntry.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<JournalEntry.Database.Update> {}
 
     /** Operation for {@linkcode JournalEntry.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<JournalEntry.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<JournalEntry.Database.Delete> {}
 
     /** Operation for {@linkcode JournalEntry.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<JournalEntry.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      JournalEntry.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link JournalEntry.update | `JournalEntry#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -445,39 +454,39 @@ declare namespace JournalEntry {
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
-  type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+  type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     JournalEntry.Stored,
-    JournalEntry.DirectDescendant,
+    JournalEntry.DirectDescendantName,
     JournalEntry.Metadata.Embedded
   >;
 
-  type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+  type OnCreateDescendantDocumentsArgs = Document.Internal.OnCreateDescendantDocumentsArgs<
     JournalEntry.Stored,
-    JournalEntry.DirectDescendant,
+    JournalEntry.DirectDescendantName,
     JournalEntry.Metadata.Embedded
   >;
 
-  type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+  type PreUpdateDescendantDocumentsArgs = Document.Internal.PreUpdateDescendantDocumentsArgs<
     JournalEntry.Stored,
-    JournalEntry.DirectDescendant,
+    JournalEntry.DirectDescendantName,
     JournalEntry.Metadata.Embedded
   >;
 
-  type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+  type OnUpdateDescendantDocumentsArgs = Document.Internal.OnUpdateDescendantDocumentsArgs<
     JournalEntry.Stored,
-    JournalEntry.DirectDescendant,
+    JournalEntry.DirectDescendantName,
     JournalEntry.Metadata.Embedded
   >;
 
-  type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+  type PreDeleteDescendantDocumentsArgs = Document.Internal.PreDeleteDescendantDocumentsArgs<
     JournalEntry.Stored,
-    JournalEntry.DirectDescendant,
+    JournalEntry.DirectDescendantName,
     JournalEntry.Metadata.Embedded
   >;
 
-  type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+  type OnDeleteDescendantDocumentsArgs = Document.Internal.OnDeleteDescendantDocumentsArgs<
     JournalEntry.Stored,
-    JournalEntry.DirectDescendant,
+    JournalEntry.DirectDescendantName,
     JournalEntry.Metadata.Embedded
   >;
 

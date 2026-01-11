@@ -27,6 +27,7 @@ class SpeciesSystem extends foundry.abstract.TypeDataModel<any, Item.Implementat
 }
 
 const _actorSystemSchema = {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   species: new foundry.data.fields.SchemaField(SpeciesSystem.defineSchema()),
 };
 

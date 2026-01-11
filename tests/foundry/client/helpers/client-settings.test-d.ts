@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { MaybeEmpty } from "fvtt-types/utils";
 
 import ClientSettings = foundry.helpers.ClientSettings;
 import SettingsConfig = foundry.applications.settings.SettingsConfig;
@@ -7,9 +6,10 @@ import WorldSettings = foundry.documents.collections.WorldSettings;
 
 const clientSettings = new ClientSettings([]);
 
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 expectTypeOf(clientSettings.settings).toEqualTypeOf<Map<keyof SettingConfig & string, ClientSettings.SettingConfig>>();
 expectTypeOf(clientSettings.menus).toEqualTypeOf<Map<string, ClientSettings.SettingSubmenuConfig>>();
-expectTypeOf(clientSettings.storage).toEqualTypeOf<Map<string, Storage | WorldSettings>>();
+expectTypeOf(clientSettings.storage).toEqualTypeOf<Map<string, Storage | WorldSettings.Implementation>>();
 expectTypeOf(clientSettings.sheet).toEqualTypeOf<SettingsConfig>();
 
 declare const subMenu: ClientSettings.RegisterSubmenu;
@@ -106,9 +106,9 @@ expectTypeOf(clientSettings.get("data-model", "setting")).toEqualTypeOf<Actor.Im
 
 // core settings
 
-expectTypeOf(clientSettings.get("core", "combatTrackerConfig")).toEqualTypeOf<
-  MaybeEmpty<{ resource: string; skipDefeated: boolean }>
->();
+expectTypeOf(
+  clientSettings.get("core", "combatTrackerConfig"),
+).toEqualTypeOf<foundry.data.CombatConfiguration.SettingData>();
 expectTypeOf(clientSettings.get("core", "compendiumConfiguration")).toEqualTypeOf<
   foundry.data.fields.DataField.InitializedTypeFor<foundry.documents.collections.CompendiumCollection.SettingField>
 >();

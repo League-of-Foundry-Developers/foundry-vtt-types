@@ -1,21 +1,44 @@
+import type { Coalesce, GetKey, Identity, InexactPartial, Override } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
+
+/** @privateRemarks `EmbeddedCollection` used only for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
+
+/** @privateRemarks `DocumentCollection` used only for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
+
 // This class exists make it as sound as possible to override these parts of the class and make them
-
-import type { AnyArray, GetKey, Identity } from "#utils";
-
 // completely unrelated. It's done this way specifically to avoid situations with broken inheritance.
-declare class Map<K, V> extends globalThis.Map<K, V> {
-  [Symbol.iterator](): any;
-  forEach(...args: AnyArray): any;
-  get(...args: AnyArray): any;
-}
+declare const Map: { [K in keyof MapConstructor as K extends "prototype" ? never : K]: MapConstructor[K] } & (new <
+  V,
+  Methods extends Collection.Methods.Any = Collection.Methods<V>,
+>(
+  ...args: ConstructorParameters<typeof globalThis.Map<string, V>>
+) => Override<
+  globalThis.Map<string, V>,
+  // `unknown extends Methods ? Collection.Methods.Any : Methods` is to catch when `Methods` is `any`.
+  // TypeScript will instantiate something like `DocumentCollection.prototype` to `DocumentCollection<any, any>`.
+  // This would lead to `Methods = any` which would break the type here.
+  (unknown extends Methods ? Collection.Methods.Any : Methods) & {
+    forEach(...args: unknown[]): unknown;
+    [Symbol.iterator](): unknown;
+  }
+>);
 
 /**
  * A reusable storage concept which blends the functionality of an Array with the efficient key-based lookup of a Map.
  * This concept is reused throughout Foundry VTT where a collection of uniquely identified elements is required.
  * @template T - The type of the objects contained in the Collection
  */
-declare class Collection<V, Methods extends Collection.Methods.Any = Collection.Methods<V>> extends Map<string, V> {
-  constructor(entries?: Iterable<readonly [string, V]> | null);
+declare class Collection<V, Methods extends Collection.Methods.Any = Collection.Methods<V>> extends Map<V, Methods> {
+  /**
+   * This is to allow {@linkcode foundry.documents.abstract.DirectoryCollectionMixin | DirectoryCollectionMixin} (or any
+   * theoretical future/user mixins) clean access to the value type for this Collection.
+   * @internal
+   */
+  " __fvtt_types_internal_value": V;
 
   /**
    * When iterating over a Collection, we should iterate over its values instead of over its entries
@@ -29,14 +52,15 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Find an entry in the Map using an functional condition.
-   * @see {@link Array.find | `Array#find`}
+   * @see {@linkcode Array.find | Array#find}
    *
    * @param condition - The functional condition to test. Positional arguments are the value, the index of
-   *                    iteration, and the collection being searched.
+   * iteration, and the collection being searched.
    * @returns The value, if found, otherwise undefined
    *
-   * @example Create a new Collection and reference its contents
-   * ```typescript
+   * @example
+   * Create a new Collection and reference its contents
+   * ```ts
    * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
    * c.get("a") === c.find(entry => entry === "A"); // true
    * ```
@@ -48,14 +72,15 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Filter the Collection, returning an Array of entries which match a functional condition.
-   * @see {@link Array.filter | `Array#filter`}
+   * @see {@linkcode Array.filter | Array#filter}
    *
    * @param condition - The functional condition to test. Positional arguments are the value, the
-   *                    index of iteration, and the collection being filtered.
+   * index of iteration, and the collection being filtered.
    * @returns An Array of matched values
    *
-   * @example Filter the Collection for specific entries
-   * ```typescript
+   * @example
+   * Filter the Collection for specific entries
+   * ```ts
    * let c = new Collection([["a", "AA"], ["b", "AB"], ["c", "CC"]]);
    * let hasA = c.filters(entry => entry.slice(0) === "A");
    * ```
@@ -65,11 +90,12 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Apply a function to each element of the collection
-   * @see {@link Array.forEach | `Array#forEach`}
+   * @see {@linkcode Array.forEach | Array#forEach}
    * @param fn - The function to apply to each element
    *
-   * @example Apply a function to each value in the collection
-   * ```typescript
+   * @example
+   * Apply a function to each value in the collection
+   * ```ts
    * let c = new Collection([["a", {active: false}], ["b", {active: false}], ["c", {active: false}]]);
    * c.forEach(e => e.active = true);
    * ```
@@ -77,61 +103,50 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
   forEach(/** @immediate */ fn: (e: V) => void): void;
 
   /**
-   * Get an element from the Collection by its key.
-   * @param key     - The key of the entry to retrieve
-   * @param strict  - Throw an Error if the requested key does not exist,
-   *                  otherwise return undefined. (default: `false`)
-   * @returns The retrieved entry value, if the key exists, otherwise undefined
-   *
-   * @example Get an element from the Collection by key
-   * ```typescript
-   * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
-   * c.get("a"); // "A"
-   * c.get("d"); // null
-   * c.get("d", {strict: true}); // throws Error
-   * ```
-   */
-  get: Methods["get"];
-
-  /**
    * Get an entry from the Collection by name.
    * Use of this method assumes that the objects stored in the collection have a "name" attribute.
    * @param name    - The name of the entry to retrieve
-   * @param strict  - Throw an Error if the requested name does not exist,
-   *                  otherwise return undefined. (default: `false`)
+   * @param strict  - Throw an Error if the requested name does not exist, otherwise return undefined. (default: `false`)
    * @returns The retrieved Entity, if one was found, otherwise undefined
    *
-   * @example Get an element from the Collection by name (if applicable)
-   * ```typescript
+   * @example
+   * Get an element from the Collection by name (if applicable)
+   * ```ts
    * let c = new Collection([["a", "Alfred"], ["b", "Bob"], ["c", "Cynthia"]]);
    * c.getName("Alfred"); // "Alfred"
    * c.getName("D"); // undefined
    * c.getName("D", {strict: true}); // throws Error
    * ```
+   *
+   * @remarks Will always return `undefined` if the `Collection`'s value isn't an object with a `name` property.
    */
-  getName(name: string, { strict }: { strict: true }): V;
-  getName(name: string, { strict }?: { strict?: false }): V | undefined;
+  getName<Options extends Collection.GetOptions | undefined = undefined>(
+    name: string,
+    options?: Options,
+  ): Collection.GetReturn<V, Options>;
 
   /**
    * Transform each element of the Collection into a new form, returning an Array of transformed values
-   * @param transformer - A transformation function applied to each entry value. Positional arguments are the value, the
-   *                      index of iteration, and the collection being mapped.
-   * @template M       - The type of the mapped values
+   * @see {@linkcode Array.map | Array#map}
+   * @param transformer - A transformation function applied to each entry value. Positional arguments are the value,
+   * the index of iteration, and the collection being mapped.
+   * @template M        - The type of the mapped values
    * @returns An Array of transformed values
    */
   map<M>(/** @immediate */ transformer: (entity: V, index: number, collection: Collection<V>) => M): M[];
 
   /**
    * Reduce the Collection by applying an evaluator function and accumulating entries
-   * @see {@link Array.reduce | `Array#reduce`}
-   * @param reducer   - A reducer function applied to each entry value. Positional arguments are the accumulator, the
-   *                    value, the index of iteration, and the collection being reduced.
-   * @param initial   - An initial value which accumulates with each iteration
-   * @template A     - The type of the accumulator and the return value
+   * @see {@linkcode Array.reduce | Array#reduce}
+   * @param reducer - A reducer function applied to each entry value. Positional arguments are the accumulator,
+   * the value, the index of iteration, and the collection being reduced.
+   * @param initial - An initial value which accumulates with each iteration
+   * @template A    - The type of the accumulator and the return value
    * @returns The accumulated result
    *
-   * @example Reduce a collection to an array of transformed values
-   * ```typescript
+   * @example
+   * Reduce a collection to an array of transformed values
+   * ```ts
    * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
    * let letters = c.reduce((s, l) => {
    *   return s + l;
@@ -145,9 +160,9 @@ declare class Collection<V, Methods extends Collection.Methods.Any = Collection.
 
   /**
    * Test whether a condition is met by some entry in the Collection.
-   * @see {@link Array.some | `Array#some`}
+   * @see {@linkcode Array.some | Array#some}
    * @param condition - The functional condition to test. Positional arguments are the value, the index of iteration,
-   *                    and the collection being tested.
+   * and the collection being tested.
    * @returns Was the test condition passed by at least one entry?
    */
   some(/** @immediate */ condition: (e: V, index: number, collection: Collection<V>) => boolean): boolean;
@@ -171,29 +186,142 @@ declare namespace Collection {
     strict?: boolean | undefined;
   }
 
+  /** Method signatures for {@linkcode Collection} */
   interface Methods<V> {
-    get<Options extends foundry.documents.abstract.DocumentCollection.GetOptions | undefined = undefined>(
+    /**
+     * Get an element from the Collection by its key.
+     * @param key     - The key of the entry to retrieve
+     * @param options - Additional options that affect how entries are retrieved
+     * @returns The retrieved entry value, if the key exists, otherwise undefined
+     *
+     * @example
+     * Get an element from the Collection by key
+     * ```ts
+     * let c = new Collection([["a", "A"], ["b", "B"], ["c", "C"]]);
+     * c.get("a"); // "A"
+     * c.get("d"); // null
+     * c.get("d", {strict: true}); // throws Error
+     * ```
+     */
+    get<Options extends Collection.GetOptions | undefined = undefined>(
       key: string,
-      { strict }?: Options,
-    ): Collection.GetReturnType<V, Options>;
+      options?: Options,
+    ): Collection.GetReturn<V, Options>;
+
+    /**
+     * Adds a new element with a specified key and value to the Map. If an element with the same key already exists, the element will be updated.
+     * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
+     */
+    set(key: string, value: V): this;
+
+    /**
+     * @returns true if an element in the Map existed and has been removed, or false if the element does not exist.
+     * @remarks Fake type override to handle foundry incorrectly subclassing {@linkcode Collection}.
+     */
+    delete(key: string): boolean;
   }
 
   namespace Methods {
     interface Any {
       get(key: string, options?: never): unknown;
+
+      set(key: string, value: unknown, options?: never): unknown;
+
+      delete(key: string, options?: never): unknown;
     }
   }
 
-  type GetReturnType<T, Options extends GetOptions | undefined> = _ApplyStrict<T, GetKey<Options, "strict", undefined>>;
-
   /** @internal */
-  type _ApplyStrict<ConcreteDocument, Strict extends boolean | undefined> =
-    | (Strict extends false | undefined ? undefined : never)
-    | ConcreteDocument;
+  type _GetOptions = InexactPartial<{
+    /**
+     * Throw an Error if the requested key does not exist.
+     * @defaultValue `false`
+     */
+    strict: boolean;
+  }>;
+
+  interface GetOptions extends _GetOptions {}
+
+  /**
+   * Options for {@linkcode EmbeddedCollection.getInvalid | EmbeddedCollection#getInvalid} and
+   * {@linkcode DocumentCollection.getInvalid | DocumentCollection#getInvalid}.
+   *
+   * Only differs from {@linkcode _GetOptions} in property description. Wording and default are shared between subclasses,
+   * so put here for re-use.
+   * @internal
+   */
+  type _GetInvalidOptions = InexactPartial<{
+    /**
+     * Throw an Error if the requested ID is not in the set of invalid IDs for this collection.
+     * @defaultValue `true`
+     */
+    strict: boolean;
+  }>;
+
+  /**
+   * Used for {@linkcode EmbeddedCollection.GetOptions} and {@linkcode DocumentCollection.GetOptions}.
+   * @internal
+   */
+  type _InvalidOption = InexactPartial<{
+    /**
+     * Allow retrieving an invalid Document.
+     * @defaultValue `false`
+     */
+    invalid: boolean;
+  }>;
+
+  /**
+   * The `#get` and `#getInvalid` methods of `Collection` and its various subclasses all take a `strict` boolean in their options, changing
+   * the behaviour of passing a key that the collection doesn't contain:
+   * - `true`: throw an error
+   * - `false`: return `undefined`
+   * @internal
+   */
+  type _ApplyStrict<Options extends Readonly<_GetOptions> | undefined, StrictDefault extends boolean = false> =
+    false extends Coalesce<GetKey<Options, "strict", undefined>, StrictDefault> ? undefined : never;
+
+  /**
+   * See {@linkcode _ApplyStrict}.
+   *
+   * `StrictDefault` is a param because {@linkcode DocumentCollection.getInvalid | DocumentCollection#getInvalid} and
+   * {@linkcode EmbeddedCollection.getInvalid | EmbeddedCollection#getInvalid} default `strict` to `true`
+   *
+   * The `Coalesce` is required to handle passing explicit `undefined`, either on its own or in a union.
+   * @internal
+   */
+  type _GetReturn<V, Options extends Readonly<_GetOptions> | undefined, StrictDefault extends boolean = false> =
+    | V
+    | _ApplyStrict<Options, StrictDefault>;
+
+  /** The return type for {@linkcode Collection.get | Collection#get}. */
+  type GetReturn<V, Options extends GetOptions | undefined> = _GetReturn<V, Options>;
+
+  /**
+   * Helper type for allowing invalid documents or not in {@linkcode DocumentCollection.get | DocumentCollection#get} and
+   * {@linkcode EmbeddedCollection.get | EmbeddedCollection#get}.
+   *
+   * This type assumes that all elements of the relevant collection are Stored documents; this is enforced at runtime in
+   * `DocumentCollection`s by its `#set` override, but not in {@linkcode EmbeddedCollection}.
+   *
+   * The `Coalesce` is required to handle passing explicit `undefined`, either on its own or in a union.
+   * @internal
+   */
+  type _ApplyInvalid<
+    DocumentName extends Document.Type,
+    Options extends Readonly<_InvalidOption> | undefined,
+    InvalidDefault extends boolean = false,
+  > =
+    | Document.StoredForName<DocumentName>
+    | (true extends Coalesce<GetKey<Options, "invalid", undefined>, InvalidDefault>
+        ? Document.InvalidForName<DocumentName>
+        : never);
+
+  /** @deprecated Use {@linkcode GetReturn} instead. This type will be removed in v14. */
+  type GetReturnType<V, Options extends GetOptions | undefined> = GetReturn<V, Options>;
 }
+
+export default Collection;
 
 declare abstract class AnyCollection extends Collection<unknown, Collection.Methods.Any> {
   constructor(...args: never);
 }
-
-export default Collection;

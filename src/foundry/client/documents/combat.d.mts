@@ -40,20 +40,19 @@ declare namespace Combat {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Combat";
-        collection: "combats";
-        label: string;
-        labelPlural: string;
-        embedded: Metadata.Embedded;
-        hasTypeData: true;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Combat";
+      collection: "combats";
+      label: string;
+      labelPlural: string;
+      embedded: Metadata.Embedded;
+      hasTypeData: true;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -108,15 +107,14 @@ declare namespace Combat {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredCombat<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Combat<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredCombat<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Combat<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Combat` subtype.
@@ -144,6 +142,12 @@ declare namespace Combat {
    * This is a union of all instances, or never if the document doesn't have any descendants.
    */
   type DescendantName = "Combatant";
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantName = "Combatant";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -274,7 +278,9 @@ declare namespace Combat {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Combat.SubType = Combat.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -380,8 +386,8 @@ declare namespace Combat {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Combat.Parent> {}
 
     /** Options passed along in Create operations for Combats */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Combat.CreateData, Combat.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Combat.CreateData, Combat.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Combats */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Combat.Parent> {}
@@ -394,8 +400,9 @@ declare namespace Combat {
     }
 
     /** Operation for {@linkcode Combat.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Combat.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Combat.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Combat.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Combat.Database.Update> {}
@@ -404,8 +411,9 @@ declare namespace Combat {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Combat.Database.Delete> {}
 
     /** Operation for {@linkcode Combat.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Combat.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Combat.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Combat.update | `Combat#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -521,39 +529,39 @@ declare namespace Combat {
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
-  type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+  type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     Combat.Stored,
-    Combat.DirectDescendant,
+    Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
 
-  type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+  type OnCreateDescendantDocumentsArgs = Document.Internal.OnCreateDescendantDocumentsArgs<
     Combat.Stored,
-    Combat.DirectDescendant,
+    Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
 
-  type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+  type PreUpdateDescendantDocumentsArgs = Document.Internal.PreUpdateDescendantDocumentsArgs<
     Combat.Stored,
-    Combat.DirectDescendant,
+    Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
 
-  type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+  type OnUpdateDescendantDocumentsArgs = Document.Internal.OnUpdateDescendantDocumentsArgs<
     Combat.Stored,
-    Combat.DirectDescendant,
+    Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
 
-  type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+  type PreDeleteDescendantDocumentsArgs = Document.Internal.PreDeleteDescendantDocumentsArgs<
     Combat.Stored,
-    Combat.DirectDescendant,
+    Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
 
-  type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+  type OnDeleteDescendantDocumentsArgs = Document.Internal.OnDeleteDescendantDocumentsArgs<
     Combat.Stored,
-    Combat.DirectDescendant,
+    Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
 
@@ -628,7 +636,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param context - Construction context options
    */
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
-  constructor(data?: Combat.CreateData, context?: Combat.ConstructionContext);
+  constructor(data?: Combat.CreateData<SubType>, context?: Combat.ConstructionContext);
 
   /** Track the sorted turn order of this combat encounter */
   turns: Combatant.Implementation[];
@@ -673,6 +681,11 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   /** Is this combat active in the current scene? */
   get isActive(): boolean;
+
+  /**
+   * Is this Combat currently being viewed?
+   */
+  get isView(): boolean;
 
   /**
    * Set the current Combat encounter as active within the Scene.

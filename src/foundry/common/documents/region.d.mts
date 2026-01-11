@@ -310,6 +310,7 @@ export default BaseRegion;
 declare namespace BaseRegion {
   export import Name = RegionDocument.Name;
   export import ConstructionContext = RegionDocument.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = RegionDocument.ConstructorArgs;
   export import Hierarchy = RegionDocument.Hierarchy;
   export import Metadata = RegionDocument.Metadata;

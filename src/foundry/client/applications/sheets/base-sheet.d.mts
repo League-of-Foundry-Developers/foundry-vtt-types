@@ -28,15 +28,13 @@ declare namespace BaseSheet {
   interface AnyConstructor extends Identity<typeof AnyBaseSheet> {}
 
   interface RenderContext<Document extends Document.Any>
-    extends HandlebarsApplicationMixin.RenderContext,
-      DocumentSheetV2.RenderContext<Document> {
+    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<Document> {
     descriptionHTML?: string;
     hasNothing: boolean;
   }
 
   interface Configuration<Document extends Document.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<Document> {}
+    extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<Document> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
 }

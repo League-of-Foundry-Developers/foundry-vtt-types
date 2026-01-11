@@ -493,6 +493,7 @@ export default BaseToken;
 declare namespace BaseToken {
   export import Name = TokenDocument.Name;
   export import ConstructionContext = TokenDocument.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = TokenDocument.ConstructorArgs;
   export import Hierarchy = TokenDocument.Hierarchy;
   export import Metadata = TokenDocument.Metadata;

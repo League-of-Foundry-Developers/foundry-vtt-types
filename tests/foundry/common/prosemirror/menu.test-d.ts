@@ -79,7 +79,8 @@ const toggleBlockWrapCommand = (node: NodeType, attrs?: Attrs) => {
   const t = new Transaction(pmNode);
   return (state: EditorState, dispatch: ProseMirrorKeyMaps.DispatchFunction, view: EditorView) => {
     dispatch(t);
-    return state.selection && view.dragging && node.isInline && attrs?.["foo"];
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    return !!state.selection && !!view.dragging && node.isInline && (attrs?.["foo"] as boolean);
   };
 };
 

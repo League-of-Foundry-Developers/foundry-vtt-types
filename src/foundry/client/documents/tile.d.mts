@@ -38,17 +38,16 @@ declare namespace TileDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Tile";
-        collection: "tiles";
-        label: string;
-        labelPlural: string;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Tile";
+      collection: "tiles";
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
+    }>
+  > {}
 
   // No need for Metadata namespace
 
@@ -306,31 +305,35 @@ declare namespace TileDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<TileDocument.Parent> {}
 
     /** Options passed along in Create operations for TileDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<TileDocument.CreateData, TileDocument.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<TileDocument.CreateData, TileDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for TileDocuments */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TileDocument.Parent> {}
 
     /** Options passed along in Update operations for TileDocuments */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<TileDocument.UpdateData, TileDocument.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      TileDocument.UpdateData,
+      TileDocument.Parent
+    > {}
 
     /** Operation for {@linkcode TileDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<TileDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      TileDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode TileDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<TileDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<TileDocument.Database.Update> {}
 
     /** Operation for {@linkcode TileDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<TileDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<TileDocument.Database.Delete> {}
 
     /** Operation for {@linkcode TileDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<TileDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      TileDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link TileDocument.update | `TileDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

@@ -38,20 +38,19 @@ declare namespace TableResult {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "TableResult";
-        collection: "results";
-        label: string;
-        labelPlural: string;
-        coreTypes: foundry.CONST.TABLE_RESULT_TYPES[];
-        permissions: Metadata.Permissions;
-        compendiumIndexFields: ["type"];
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "TableResult";
+      collection: "results";
+      label: string;
+      labelPlural: string;
+      coreTypes: foundry.CONST.TABLE_RESULT_TYPES[];
+      permissions: Metadata.Permissions;
+      compendiumIndexFields: ["type"];
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -99,15 +98,14 @@ declare namespace TableResult {
   type OfType<Type extends SubType> = _OfType[Type];
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredTableResult<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            TableResult<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredTableResult<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          TableResult<Type>
+      : never;
+  }> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -188,7 +186,10 @@ declare namespace TableResult {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends TableResult.SubType = TableResult.SubType> extends fields.SchemaField
+    .CreateData<Schema> {
+    type?: SubType | null | undefined;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -274,8 +275,11 @@ declare namespace TableResult {
         validate: (r: unknown) => r is [start: number, end: number];
         validationError: "must be a length-2 array of ascending integers";
       },
+      number,
+      number,
       [start: number, end: number],
       [start: number, end: number],
+      number,
       [start: number, end: number]
     >;
 
@@ -299,8 +303,8 @@ declare namespace TableResult {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<TableResult.Parent> {}
 
     /** Options passed along in Create operations for TableResults */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<TableResult.CreateData, TableResult.Parent, Temporary> {
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<TableResult.CreateData, TableResult.Parent, Temporary> {
       animate?: boolean;
     }
 
@@ -310,26 +314,30 @@ declare namespace TableResult {
     }
 
     /** Options passed along in Update operations for TableResults */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<TableResult.UpdateData, TableResult.Parent> {
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      TableResult.UpdateData,
+      TableResult.Parent
+    > {
       animate?: boolean;
     }
 
     /** Operation for {@linkcode TableResult.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<TableResult.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      TableResult.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode TableResult.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<TableResult.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<TableResult.Database.Update> {}
 
     /** Operation for {@linkcode TableResult.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<TableResult.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<TableResult.Database.Delete> {}
 
     /** Operation for {@linkcode TableResult.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<TableResult.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      TableResult.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link TableResult.update | `TableResult#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -472,7 +480,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
    * @param data    - Initial data from which to construct the `TableResult`
    * @param context - Construction context options
    */
-  constructor(data: TableResult.CreateData, context?: TableResult.ConstructionContext);
+  constructor(data: TableResult.CreateData<SubType>, context?: TableResult.ConstructionContext);
 
   /**
    * A path reference to the icon image used to represent this result
@@ -486,7 +494,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
   /**
    * Prepare a string representation for this result.
    */
-  getHTML: Promise<string>;
+  getHTML(): Promise<string>;
 
   /**
    * Create a content-link anchor from this Result's referenced Document.

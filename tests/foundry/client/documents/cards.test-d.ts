@@ -12,7 +12,7 @@ new Cards.implementation({});
 new Cards.implementation({ name: "Just a deck of cards", type: "german" });
 
 const cards = new Cards.implementation({ name: "Just a deck of cards", type: "deck" });
-expectTypeOf(cards).toEqualTypeOf<Cards.Implementation>();
+expectTypeOf(cards).toEqualTypeOf<Cards.OfType<"deck">>();
 
 expectTypeOf(cards.thumbnail).toEqualTypeOf<string | null>();
 expectTypeOf(cards.availableCards).toEqualTypeOf<Card.Implementation[]>();
@@ -85,7 +85,7 @@ cards.draw(cards, undefined, { unknownProp: 0 });
 cards.draw(cards, undefined, { updateData: { unknownProp: 3 } });
 
 // shuffle
-expectTypeOf(cards.shuffle()).toEqualTypeOf<Promise<Cards.Implementation>>();
+expectTypeOf(cards.shuffle()).toEqualTypeOf<Promise<Cards.OfType<"deck">>>();
 expectTypeOf(
   cards.shuffle({
     updateData: {
@@ -93,7 +93,7 @@ expectTypeOf(
     },
     chatNotification: true,
   }),
-).toEqualTypeOf<Promise<Cards.Implementation>>();
+).toEqualTypeOf<Promise<Cards.OfType<"deck">>>();
 
 // @ts-expect-error "unknownProp" is not a valid option
 cards.shuffle({ unknownProp: 0 });
@@ -102,7 +102,7 @@ cards.shuffle({ unknownProp: 0 });
 cards.shuffle({ updateData: { unknownProp: 3 } });
 
 // recall
-expectTypeOf(cards.recall()).toEqualTypeOf<Promise<Cards.Implementation>>();
+expectTypeOf(cards.recall()).toEqualTypeOf<Promise<Cards.OfType<"deck">>>();
 expectTypeOf(
   cards.recall({
     updateData: {
@@ -110,7 +110,7 @@ expectTypeOf(
     },
     chatNotification: true,
   }),
-).toEqualTypeOf<Promise<Cards.Implementation>>();
+).toEqualTypeOf<Promise<Cards.OfType<"deck">>>();
 
 // @ts-expect-error "unknownProp" is not a valid option
 cards.reset({ unknownProp: 0 });
@@ -119,13 +119,13 @@ cards.reset({ unknownProp: 0 });
 cards.reset({ updateData: { unknownProp: 3 } });
 
 // dealDialog
-expectTypeOf(cards.dealDialog()).toEqualTypeOf<Promise<Cards.Implementation | null>>();
+expectTypeOf(cards.dealDialog()).toEqualTypeOf<Promise<Cards.OfType<"deck"> | null>>();
 
 // drawDialog
 expectTypeOf(cards.drawDialog()).toEqualTypeOf<Promise<Card.Implementation[] | null>>();
 
 // passDialog
-expectTypeOf(cards.passDialog()).toEqualTypeOf<Promise<Cards.Implementation | null>>();
+expectTypeOf(cards.passDialog()).toEqualTypeOf<Promise<Cards.OfType<"deck"> | null>>();
 
 // playDialog
 expectTypeOf(cards.playDialog(new Card.implementation({ name: "Some Card" }))).toEqualTypeOf<
@@ -133,7 +133,7 @@ expectTypeOf(cards.playDialog(new Card.implementation({ name: "Some Card" }))).t
 >();
 
 // resetDialog
-expectTypeOf(cards.resetDialog()).toEqualTypeOf<Promise<Cards.Implementation | false | null>>();
+expectTypeOf(cards.resetDialog()).toEqualTypeOf<Promise<Cards.OfType<"deck"> | false | null>>();
 
 // TODO: Modify to Playlist | null once data can be grabbed from CONFIG
 expectTypeOf(cards.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();

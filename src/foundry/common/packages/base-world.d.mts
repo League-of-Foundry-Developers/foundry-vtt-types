@@ -2,6 +2,8 @@ import type BasePackage from "./base-package.d.mts";
 import type { AnyMutableObject, InexactPartial } from "#utils";
 import type { ReleaseData } from "../config.d.mts";
 
+import World = foundry.packages.World;
+
 declare namespace BaseWorld {
   export import Source = World.Source;
   export import CreateData = World.CreateData;

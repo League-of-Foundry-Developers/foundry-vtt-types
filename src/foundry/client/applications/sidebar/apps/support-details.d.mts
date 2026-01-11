@@ -28,8 +28,9 @@ declare namespace SupportDetails {
 
   interface RenderContext extends ApplicationV2.RenderContext {}
 
-  interface Configuration<SupportDetails extends SupportDetails.Any = SupportDetails.Any>
-    extends ApplicationV2.Configuration<SupportDetails> {}
+  interface Configuration<
+    SupportDetails extends SupportDetails.Any = SupportDetails.Any,
+  > extends ApplicationV2.Configuration<SupportDetails> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

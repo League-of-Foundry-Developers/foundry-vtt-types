@@ -32,8 +32,7 @@ declare namespace AVConfig {
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
 
   interface Configuration<AVConfig extends AVConfig.Any = AVConfig.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<AVConfig> {
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<AVConfig> {
     /**
      * The AVMaster instance being configured
      * @defaultValue `game.webrtc`

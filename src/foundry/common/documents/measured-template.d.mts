@@ -310,6 +310,7 @@ export default BaseMeasuredTemplate;
 declare namespace BaseMeasuredTemplate {
   export import Name = MeasuredTemplateDocument.Name;
   export import ConstructionContext = MeasuredTemplateDocument.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = MeasuredTemplateDocument.ConstructorArgs;
   export import Hierarchy = MeasuredTemplateDocument.Hierarchy;
   export import Metadata = MeasuredTemplateDocument.Metadata;

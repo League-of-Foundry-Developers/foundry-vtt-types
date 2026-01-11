@@ -307,6 +307,7 @@ export default BaseRegionBehavior;
 declare namespace BaseRegionBehavior {
   export import Name = RegionBehavior.Name;
   export import ConstructionContext = RegionBehavior.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = RegionBehavior.ConstructorArgs;
   export import Hierarchy = RegionBehavior.Hierarchy;
   export import Metadata = RegionBehavior.Metadata;

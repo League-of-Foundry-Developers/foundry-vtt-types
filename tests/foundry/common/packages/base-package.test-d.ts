@@ -64,7 +64,7 @@ expectTypeOf(basePackage.id).toEqualTypeOf<string>();
 expectTypeOf(basePackage.changelog).toEqualTypeOf<string | undefined>();
 
 // Checking the sets
-expectTypeOf(basePackage._source.packs[0]!.banner).toEqualTypeOf<string | undefined>();
+expectTypeOf(basePackage._source.packs[0]!.banner).toEqualTypeOf<string | undefined | null>();
 expectTypeOf(basePackage._source.authors[0]!.discord).toEqualTypeOf<string | undefined>();
 expectTypeOf(basePackage.languages.first()!.lang).toEqualTypeOf<string>();
 
@@ -119,7 +119,7 @@ expectTypeOf(basePackage.languages.first()!.flags).toEqualTypeOf<AnyMutableObjec
 
 expectTypeOf(basePackage.packs.first()!.name).toEqualTypeOf<string>();
 expectTypeOf(basePackage.packs.first()!.label).toEqualTypeOf<string>();
-expectTypeOf(basePackage.packs.first()!.banner).toEqualTypeOf<OptionalString>();
+expectTypeOf(basePackage.packs.first()!.banner).toEqualTypeOf<OptionalString | null>();
 expectTypeOf(basePackage.packs.first()!.path).toEqualTypeOf<string | undefined>();
 expectTypeOf(basePackage.packs.first()!.type).toEqualTypeOf<foundry.CONST.COMPENDIUM_DOCUMENT_TYPES>();
 

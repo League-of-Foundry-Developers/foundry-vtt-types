@@ -39,23 +39,22 @@ declare namespace Cards {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Cards";
-        collection: "cards";
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "description", "img", "type", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        hasTypeData: true;
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        coreTypes: ["deck", "hand", "pile"];
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Cards";
+      collection: "cards";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "description", "img", "type", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      hasTypeData: true;
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      coreTypes: ["deck", "hand", "pile"];
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -107,15 +106,14 @@ declare namespace Cards {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredCards<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Cards<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredCards<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Cards<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Cards` subtype.
@@ -137,6 +135,12 @@ declare namespace Cards {
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    */
   type Parent = null;
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantName = "Card";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -267,7 +271,9 @@ declare namespace Cards {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Cards.SubType = Cards.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type: SubType;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -400,8 +406,8 @@ declare namespace Cards {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Cards.Parent> {}
 
     /** Options passed along in Create operations for Cards Documents */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Cards.CreateData, Cards.Parent, Temporary> {
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Cards.CreateData, Cards.Parent, Temporary> {
       animate?: boolean;
     }
 
@@ -416,8 +422,9 @@ declare namespace Cards {
     }
 
     /** Operation for {@linkcode Cards.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Cards.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Cards.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Cards.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Cards.Database.Update> {}
@@ -426,8 +433,9 @@ declare namespace Cards {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Cards.Database.Delete> {}
 
     /** Operation for {@linkcode Cards.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Cards.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Cards.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Cards.update | `Cards#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -535,39 +543,39 @@ declare namespace Cards {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
-  type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+  type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     Cards.Stored,
-    Cards.DirectDescendant,
+    Cards.DirectDescendantName,
     Cards.Metadata.Embedded
   >;
 
-  type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+  type OnCreateDescendantDocumentsArgs = Document.Internal.OnCreateDescendantDocumentsArgs<
     Cards.Stored,
-    Cards.DirectDescendant,
+    Cards.DirectDescendantName,
     Cards.Metadata.Embedded
   >;
 
-  type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+  type PreUpdateDescendantDocumentsArgs = Document.Internal.PreUpdateDescendantDocumentsArgs<
     Cards.Stored,
-    Cards.DirectDescendant,
+    Cards.DirectDescendantName,
     Cards.Metadata.Embedded
   >;
 
-  type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+  type OnUpdateDescendantDocumentsArgs = Document.Internal.OnUpdateDescendantDocumentsArgs<
     Cards.Stored,
-    Cards.DirectDescendant,
+    Cards.DirectDescendantName,
     Cards.Metadata.Embedded
   >;
 
-  type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+  type PreDeleteDescendantDocumentsArgs = Document.Internal.PreDeleteDescendantDocumentsArgs<
     Cards.Stored,
-    Cards.DirectDescendant,
+    Cards.DirectDescendantName,
     Cards.Metadata.Embedded
   >;
 
-  type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+  type OnDeleteDescendantDocumentsArgs = Document.Internal.OnDeleteDescendantDocumentsArgs<
     Cards.Stored,
-    Cards.DirectDescendant,
+    Cards.DirectDescendantName,
     Cards.Metadata.Embedded
   >;
 
@@ -759,7 +767,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    * @param data    - Initial data from which to construct the `Cards`
    * @param context - Construction context options
    */
-  constructor(data: Cards.CreateData, context?: Cards.ConstructionContext);
+  constructor(data: Cards.CreateData<SubType>, context?: Cards.ConstructionContext);
 
   /**
    * Provide a thumbnail image path used to represent this document.

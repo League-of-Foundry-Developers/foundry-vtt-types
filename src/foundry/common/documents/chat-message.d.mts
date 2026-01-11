@@ -312,6 +312,7 @@ export default BaseChatMessage;
 declare namespace BaseChatMessage {
   export import Name = ChatMessage.Name;
   export import ConstructionContext = ChatMessage.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = ChatMessage.ConstructorArgs;
   export import Hierarchy = ChatMessage.Hierarchy;
   export import Metadata = ChatMessage.Metadata;

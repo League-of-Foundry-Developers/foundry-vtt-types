@@ -168,8 +168,9 @@ declare function PrimaryCanvasObjectMixin<BaseClass extends PrimaryCanvasObjectM
 ): Mixin<typeof PrimaryCanvasObject, ReturnType<typeof CanvasTransformMixin<BaseClass>>>;
 
 declare namespace PrimaryCanvasObjectMixin {
-  interface AnyMixedConstructor
-    extends ReturnType<typeof PrimaryCanvasObjectMixin<PrimaryCanvasObjectMixin.BaseClass>> {}
+  interface AnyMixedConstructor extends ReturnType<
+    typeof PrimaryCanvasObjectMixin<PrimaryCanvasObjectMixin.BaseClass>
+  > {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = PIXI.Container.AnyConstructor;

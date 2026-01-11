@@ -32,8 +32,7 @@ declare namespace ModuleManagement {
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
 
   interface Configuration<ModuleManagement extends ModuleManagement.Any = ModuleManagement.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<ModuleManagement> {}
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<ModuleManagement> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

@@ -158,4 +158,4 @@ expectTypeOf(myLight.flags).toEqualTypeOf<
 >();
 
 // document-specific flag(s)
-expectTypeOf(myLight.flags?.core?.animationSeed).toEqualTypeOf<number | undefined>();
+expectTypeOf(myLight.flags.core?.animationSeed).toEqualTypeOf<number | undefined>();

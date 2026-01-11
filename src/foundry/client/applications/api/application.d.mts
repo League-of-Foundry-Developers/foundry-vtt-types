@@ -390,9 +390,9 @@ declare namespace ApplicationV2 {
     id: string;
     group: string;
     active: boolean;
-    cssClass: string;
-    icon?: string | null | undefined;
-    label?: string | null | undefined;
+    cssClass?: string | undefined;
+    icon?: string | undefined;
+    label?: string | undefined;
   }
 
   /** @remarks Used with `templates/generic/form-fields.hbs` */
@@ -439,30 +439,29 @@ declare namespace ApplicationV2 {
    * @remarks InexactPartial is used over NullishProps because event/navElement are not called with null as a possible value,
    *          and null interferes with the defaults of force/updatePosition
    */
-  interface ChangeTabOptions
-    extends InexactPartial<{
-      /**
-       * An interaction event which caused the tab change, if any
-       */
-      event: Event;
+  interface ChangeTabOptions extends InexactPartial<{
+    /**
+     * An interaction event which caused the tab change, if any
+     */
+    event: Event;
 
-      /**
-       * An explicit navigation element being modified
-       */
-      navElement: HTMLElement;
+    /**
+     * An explicit navigation element being modified
+     */
+    navElement: HTMLElement;
 
-      /**
-       * Force changing the tab even if the new tab is already active
-       * @defaultValue `false`
-       */
-      force: boolean;
+    /**
+     * Force changing the tab even if the new tab is already active
+     * @defaultValue `false`
+     */
+    force: boolean;
 
-      /**
-       * Update application position after changing the tab?
-       * @defaultValue `false`
-       */
-      updatePosition: boolean;
-    }> {}
+    /**
+     * Update application position after changing the tab?
+     * @defaultValue `false`
+     */
+    updatePosition: boolean;
+  }> {}
 
   type CreateContextMenuHandler = () => ContextMenu.Entry<HTMLElement>[];
 
@@ -978,7 +977,11 @@ declare class ApplicationV2<
   bringToTop(): void;
 }
 
-declare abstract class AnyApplicationV2 extends ApplicationV2<any, any, any> {
+declare abstract class AnyApplicationV2 extends ApplicationV2<
+  object,
+  ApplicationV2.Configuration,
+  ApplicationV2.RenderOptions
+> {
   constructor(...args: never);
 }
 

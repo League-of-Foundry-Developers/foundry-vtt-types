@@ -18,7 +18,7 @@ expectTypeOf(docIndex.lookup("Val", { documentTypes: ["Region"] })).toEqualTypeO
 expectTypeOf(
   docIndex.lookup("Val", {
     documentTypes: ["Actor", "Playlist"],
-    filterEntries: (entry: WordTree.Entry.Any) => entry.entry?.name === "Bob",
+    filterEntries: (entry: WordTree.Entry.Any) => entry.entry.name === "Bob",
     limit: 5,
     ownership: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
   }),

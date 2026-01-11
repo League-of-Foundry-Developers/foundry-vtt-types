@@ -315,6 +315,7 @@ export default BaseActiveEffect;
 declare namespace BaseActiveEffect {
   export import Name = ActiveEffect.Name;
   export import ConstructionContext = ActiveEffect.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = ActiveEffect.ConstructorArgs;
   export import Hierarchy = ActiveEffect.Hierarchy;
   export import Metadata = ActiveEffect.Metadata;

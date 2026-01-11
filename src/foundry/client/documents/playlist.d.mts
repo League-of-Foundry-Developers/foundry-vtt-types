@@ -37,21 +37,20 @@ declare namespace Playlist {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Playlist";
-        collection: "playlists";
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Playlist";
+      collection: "playlists";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -75,6 +74,12 @@ declare namespace Playlist {
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    */
   type Parent = null;
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantName = "PlaylistSound";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -350,8 +355,8 @@ declare namespace Playlist {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Playlist.Parent> {}
 
     /** Options passed along in Create operations for Playlists */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Playlist.CreateData, Playlist.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Playlist.CreateData, Playlist.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Playlists */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Playlist.Parent> {}
@@ -360,8 +365,9 @@ declare namespace Playlist {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Playlist.UpdateData, Playlist.Parent> {}
 
     /** Operation for {@linkcode Playlist.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Playlist.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Playlist.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Playlist.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Playlist.Database.Update> {}
@@ -370,8 +376,9 @@ declare namespace Playlist {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Playlist.Database.Delete> {}
 
     /** Operation for {@linkcode Playlist.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Playlist.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Playlist.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Playlist.update | `Playlist#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -487,39 +494,39 @@ declare namespace Playlist {
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
-  type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+  type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     Playlist.Stored,
-    Playlist.DirectDescendant,
+    Playlist.DirectDescendantName,
     Playlist.Metadata.Embedded
   >;
 
-  type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+  type OnCreateDescendantDocumentsArgs = Document.Internal.OnCreateDescendantDocumentsArgs<
     Playlist.Stored,
-    Playlist.DirectDescendant,
+    Playlist.DirectDescendantName,
     Playlist.Metadata.Embedded
   >;
 
-  type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+  type PreUpdateDescendantDocumentsArgs = Document.Internal.PreUpdateDescendantDocumentsArgs<
     Playlist.Stored,
-    Playlist.DirectDescendant,
+    Playlist.DirectDescendantName,
     Playlist.Metadata.Embedded
   >;
 
-  type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+  type OnUpdateDescendantDocumentsArgs = Document.Internal.OnUpdateDescendantDocumentsArgs<
     Playlist.Stored,
-    Playlist.DirectDescendant,
+    Playlist.DirectDescendantName,
     Playlist.Metadata.Embedded
   >;
 
-  type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+  type PreDeleteDescendantDocumentsArgs = Document.Internal.PreDeleteDescendantDocumentsArgs<
     Playlist.Stored,
-    Playlist.DirectDescendant,
+    Playlist.DirectDescendantName,
     Playlist.Metadata.Embedded
   >;
 
-  type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+  type OnDeleteDescendantDocumentsArgs = Document.Internal.OnDeleteDescendantDocumentsArgs<
     Playlist.Stored,
-    Playlist.DirectDescendant,
+    Playlist.DirectDescendantName,
     Playlist.Metadata.Embedded
   >;
 

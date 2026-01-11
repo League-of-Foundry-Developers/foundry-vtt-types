@@ -30,11 +30,13 @@ declare namespace MeasuredTemplateConfig {
   interface AnyConstructor extends Identity<typeof AnyMeasuredTemplateConfig> {}
 
   interface RenderContext
-    extends HandlebarsApplicationMixin.RenderContext,
+    extends
+      HandlebarsApplicationMixin.RenderContext,
       DocumentSheetV2.RenderContext<MeasuredTemplateDocument.Implementation> {}
 
   interface Configuration
-    extends HandlebarsApplicationMixin.Configuration,
+    extends
+      HandlebarsApplicationMixin.Configuration,
       DocumentSheetV2.Configuration<MeasuredTemplateDocument.Implementation> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}

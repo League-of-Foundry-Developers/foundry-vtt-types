@@ -53,8 +53,9 @@ declare namespace BasePlaceableHUD {
     // TODO: Remaining properties
   }
 
-  interface Configuration<BasePlaceableHUD extends BasePlaceableHUD.Any = BasePlaceableHUD.Any>
-    extends ApplicationV2.Configuration<BasePlaceableHUD> {}
+  interface Configuration<
+    BasePlaceableHUD extends BasePlaceableHUD.Any = BasePlaceableHUD.Any,
+  > extends ApplicationV2.Configuration<BasePlaceableHUD> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

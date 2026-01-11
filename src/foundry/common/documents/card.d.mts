@@ -296,6 +296,7 @@ export default BaseCard;
 declare namespace BaseCard {
   export import Name = Card.Name;
   export import ConstructionContext = Card.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = Card.ConstructorArgs;
   export import Hierarchy = Card.Hierarchy;
   export import Metadata = Card.Metadata;

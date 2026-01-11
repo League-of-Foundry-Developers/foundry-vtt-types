@@ -283,6 +283,7 @@ declare abstract class BaseCombatantGroup<
 declare namespace BaseCombatantGroup {
   export import Name = CombatantGroup.Name;
   export import ConstructionContext = Item.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = CombatantGroup.ConstructorArgs;
   export import Hierarchy = CombatantGroup.Hierarchy;
   export import Metadata = CombatantGroup.Metadata;

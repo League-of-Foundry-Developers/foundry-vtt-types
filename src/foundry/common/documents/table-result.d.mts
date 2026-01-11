@@ -316,11 +316,14 @@ export default BaseTableResult;
 declare namespace BaseTableResult {
   export import Name = TableResult.Name;
   export import ConstructionContext = TableResult.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = TableResult.ConstructorArgs;
   export import Hierarchy = TableResult.Hierarchy;
   export import Metadata = TableResult.Metadata;
   export import SubType = TableResult.SubType;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConfiguredSubType = TableResult.ConfiguredSubType;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import Known = TableResult.Known;
   export import OfType = TableResult.OfType;
   export import Parent = TableResult.Parent;

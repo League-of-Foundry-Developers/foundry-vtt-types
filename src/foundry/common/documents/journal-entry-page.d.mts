@@ -290,6 +290,7 @@ export default BaseJournalEntryPage;
 declare namespace BaseJournalEntryPage {
   export import Name = JournalEntryPage.Name;
   export import ConstructionContext = JournalEntryPage.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = JournalEntryPage.ConstructorArgs;
   export import Hierarchy = JournalEntryPage.Hierarchy;
   export import Metadata = JournalEntryPage.Metadata;

@@ -28,8 +28,9 @@ declare namespace ChatPopout {
 
   interface RenderContext extends ApplicationV2.RenderContext {}
 
-  interface Configuration<ChatPopout extends ChatPopout.Any = ChatPopout.Any>
-    extends ApplicationV2.Configuration<ChatPopout> {
+  interface Configuration<
+    ChatPopout extends ChatPopout.Any = ChatPopout.Any,
+  > extends ApplicationV2.Configuration<ChatPopout> {
     /** The message being rendered. */
     message: ChatMessage.Implementation;
   }

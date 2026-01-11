@@ -321,6 +321,7 @@ export default BaseDrawing;
 declare namespace BaseDrawing {
   export import Name = DrawingDocument.Name;
   export import ConstructionContext = DrawingDocument.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = DrawingDocument.ConstructorArgs;
   export import Hierarchy = DrawingDocument.Hierarchy;
   export import Metadata = DrawingDocument.Metadata;

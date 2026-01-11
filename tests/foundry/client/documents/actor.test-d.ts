@@ -10,7 +10,7 @@ new Actor.implementation();
 new Actor.implementation({});
 
 const actor = new Actor.implementation({ name: "Beren", type: "base" });
-expectTypeOf(actor).toEqualTypeOf<Actor.Implementation>();
+expectTypeOf(actor).toEqualTypeOf<Actor.OfType<"base">>();
 
 expectTypeOf(actor.overrides).toEqualTypeOf<Record<string, unknown>>();
 expectTypeOf(actor.statuses).toEqualTypeOf<Set<string>>();
@@ -19,7 +19,7 @@ expectTypeOf(actor.itemTypes).toEqualTypeOf<Actor.ItemTypes>();
 
 expectTypeOf(actor.isToken).toEqualTypeOf<boolean>();
 expectTypeOf(actor.appliedEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
-expectTypeOf(actor.temporaryEffects).toEqualTypeOf<ReturnType<typeof actor.effects.filter>>();
+expectTypeOf(actor.temporaryEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
 expectTypeOf(actor.token).toEqualTypeOf<TokenDocument.Implementation | null>();
 expectTypeOf(actor.inCombat).toEqualTypeOf<boolean>();
 
@@ -42,11 +42,11 @@ for (const effect of actor.allApplicableEffects()) {
 
 expectTypeOf(actor.getRollData()).toEqualTypeOf<AnyObject>();
 expectTypeOf(actor.getTokenImages()).toEqualTypeOf<Promise<string[]>>();
-expectTypeOf(actor.modifyTokenAttribute("", 2, true, true)).toEqualTypeOf<Promise<Actor.Implementation | undefined>>();
+expectTypeOf(actor.modifyTokenAttribute("", 2, true, true)).toEqualTypeOf<Promise<Actor.OfType<"base"> | undefined>>();
 
 expectTypeOf(actor.prepareEmbeddedDocuments()).toEqualTypeOf<void>();
 
-expectTypeOf(actor.rollInitiative()).toEqualTypeOf<Promise<void>>();
+expectTypeOf(actor.rollInitiative()).toEqualTypeOf<Promise<Combat.Implementation | null>>();
 expectTypeOf(actor.getDependentTokens()).toEqualTypeOf<TokenDocument.Implementation[]>();
 
 test("actor system update", () => {

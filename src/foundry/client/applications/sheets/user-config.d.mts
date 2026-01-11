@@ -43,8 +43,7 @@ declare namespace UserConfig {
   interface AnyConstructor extends Identity<typeof AnyUserConfig> {}
 
   interface RenderContext
-    extends HandlebarsApplicationMixin.RenderContext,
-      DocumentSheetV2.RenderContext<User.Implementation> {
+    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<User.Implementation> {
     user: User.Implementation;
     source: foundry.documents.BaseUser.Source;
     fields: foundry.documents.BaseUser.Schema;
@@ -52,8 +51,7 @@ declare namespace UserConfig {
   }
 
   interface Configuration
-    extends HandlebarsApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<User.Implementation> {}
+    extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<User.Implementation> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
 }

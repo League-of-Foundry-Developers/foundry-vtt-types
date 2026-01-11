@@ -104,7 +104,7 @@ expectTypeOf(myRegion.elevation.bottom).toEqualTypeOf<number | null>();
 expectTypeOf(myRegion.elevation.top).toEqualTypeOf<number | null>();
 
 expectTypeOf(myRegion.behaviors).toEqualTypeOf<
-  EmbeddedCollection<RegionBehavior.Implementation, RegionDocument.Implementation>
+  EmbeddedCollection<RegionBehavior.Stored, RegionDocument.Implementation>
 >();
 
 expectTypeOf(myRegion.visibility).toEqualTypeOf<CONST.REGION_VISIBILITY | null>();

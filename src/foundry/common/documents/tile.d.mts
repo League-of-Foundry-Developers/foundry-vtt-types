@@ -322,6 +322,7 @@ export default BaseTile;
 declare namespace BaseTile {
   export import Name = TileDocument.Name;
   export import ConstructionContext = TileDocument.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = TileDocument.ConstructorArgs;
   export import Hierarchy = TileDocument.Hierarchy;
   export import Metadata = TileDocument.Metadata;

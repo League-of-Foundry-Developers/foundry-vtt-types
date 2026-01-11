@@ -73,8 +73,9 @@ type _RenderFlag<Keys extends string> = InexactPartial<{
 // Note(LukeAbby): The usage of `ConcreteKeys` is a hazard; if tsc were to become smarter it might
 // notice that `ConcreteKeys<Flags>` is actually contravariant and reject this type. However
 // `RenderFlags` is built upon the assumption this is only used in safe ways.
-declare interface RenderFlag<out Flags extends object, Key extends keyof Flags>
-  extends _RenderFlag<Exclude<Extract<ConcreteKeys<Flags>, string>, Key>> {}
+declare interface RenderFlag<out Flags extends object, Key extends keyof Flags> extends _RenderFlag<
+  Exclude<Extract<ConcreteKeys<Flags>, string>, Key>
+> {}
 
 declare namespace RenderFlag {
   interface Any extends _RenderFlag<string> {}

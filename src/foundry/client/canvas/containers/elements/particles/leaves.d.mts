@@ -41,7 +41,8 @@ declare namespace AutumnLeavesWeatherEffect {
   }
 
   interface LeafConfig
-    extends Omit<PIXI.particles.EmitterConfigV3, keyof _EmitterConfigOptionalProperties>,
+    extends
+      Omit<PIXI.particles.EmitterConfigV3, keyof _EmitterConfigOptionalProperties>,
       _EmitterConfigOptionalProperties {}
 }
 

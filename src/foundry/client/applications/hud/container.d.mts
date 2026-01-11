@@ -37,8 +37,9 @@ declare namespace HeadsUpDisplayContainer {
 
   interface RenderContext extends ApplicationV2.RenderContext {}
 
-  interface Configuration<HeadsUpDisplayContainer extends HeadsUpDisplayContainer.Any = HeadsUpDisplayContainer.Any>
-    extends ApplicationV2.Configuration<HeadsUpDisplayContainer> {}
+  interface Configuration<
+    HeadsUpDisplayContainer extends HeadsUpDisplayContainer.Any = HeadsUpDisplayContainer.Any,
+  > extends ApplicationV2.Configuration<HeadsUpDisplayContainer> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

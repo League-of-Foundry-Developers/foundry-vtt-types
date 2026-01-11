@@ -35,8 +35,7 @@ declare namespace CombatTrackerConfig {
   }
 
   interface Configuration<CombatTrackerConfig extends CombatTrackerConfig.Any = CombatTrackerConfig.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<CombatTrackerConfig> {}
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<CombatTrackerConfig> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

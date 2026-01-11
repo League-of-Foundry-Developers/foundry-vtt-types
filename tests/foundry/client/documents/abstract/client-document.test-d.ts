@@ -109,16 +109,22 @@ item.apps["bar"] = someAppV2;
 // @ts-expect-error apps is readonly
 item.apps = { foo: someApp, bar: someAppV2 };
 
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 expectTypeOf(item["_sheet"]).toEqualTypeOf<FixedInstanceType<Document.SheetClassFor<"Item">> | null>();
 
 // _initialize overridden with no signature changes
 
 // TODO This will also match `Item`, but not `Item.Implementation`
-expectTypeOf(item.collection).toEqualTypeOf<Collection<typeof item> | null>();
+expectTypeOf(item.collection).toEqualTypeOf<Collection<Item.Stored> | null>();
 // @ts-expect-error Only getter, no setter
 item.collection = new Collection<typeof item>();
 
 expectTypeOf(item.compendium).toEqualTypeOf<CompendiumCollection<"Item">>();
+
+// Regression test for `Type` not being passed through to metadata.
+// Reported by @123499, see https://discord.com/channels/732325252788387980/803646399014109205/1419142467214770317.
+expectTypeOf(item.compendium.metadata.type).toEqualTypeOf<"Item">();
+
 // @ts-expect-error Only getter, no setter
 item.compendium = game.packs!.contents[0]!;
 

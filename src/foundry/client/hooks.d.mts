@@ -55,7 +55,8 @@ type GetApplicationEntryContextHooks = {
 };
 
 interface ApplicationHooks
-  extends RenderApplicationHooks,
+  extends
+    RenderApplicationHooks,
     GetApplicationHeaderButtonsHooks,
     CloseApplicationHooks,
     GetApplicationEntryContextHooks {}
@@ -87,7 +88,8 @@ type CloseApplicationV2Hooks = {
 };
 
 interface ApplicationV2Hooks
-  extends RenderApplicationV2Hooks,
+  extends
+    RenderApplicationV2Hooks,
     GetHeaderControlsApplicationV2Hooks,
     GetApplicationV2ContextOptionsHooks,
     CloseApplicationV2Hooks {}
@@ -117,7 +119,8 @@ type DeleteDocumentHooks = {
 };
 
 interface DocumentHooks
-  extends PreCreateDocumentHooks,
+  extends
+    PreCreateDocumentHooks,
     CreateDocumentHooks,
     PreUpdateDocumentHooks,
     UpdateDocumentHooks,
@@ -155,11 +158,7 @@ type HoverObjectHooks = {
 };
 
 interface PlaceableObjectHooks
-  extends DrawObjectHooks,
-    RefreshObjectHooks,
-    DestroyObjectHooks,
-    ControlObjectHooks,
-    HoverObjectHooks {}
+  extends DrawObjectHooks, RefreshObjectHooks, DestroyObjectHooks, ControlObjectHooks, HoverObjectHooks {}
 
 // TODO(LukeAbby): Add warning for invalid configuration.
 // Grabs only valid items.
@@ -231,9 +230,7 @@ interface ActivateCanvasLayerHook {
 }
 
 interface InteractionLayerHooks
-  extends ActivateInteractionLayerHooks,
-    DeactivateInteractionLayerHooks,
-    ActivateCanvasLayerHook {}
+  extends ActivateInteractionLayerHooks, DeactivateInteractionLayerHooks, ActivateCanvasLayerHook {}
 
 // TODO(LukeAbby): Add warning for invalid configuration.
 // Grabs only valid items.
@@ -254,7 +251,8 @@ type PastePlaceableLayerHooks = {
 interface PlaceableLayerHooks extends PastePlaceableLayerHooks {}
 
 interface DynamicHooks
-  extends ApplicationHooks,
+  extends
+    ApplicationHooks,
     ApplicationV2Hooks,
     DocumentHooks,
     PlaceableObjectHooks,
@@ -410,9 +408,8 @@ export interface AllHooks extends DynamicHooks {
    * @param controls - The SceneControl configurations
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@link SceneControls._getControlButtons | `SceneControls#_getControlButtons`}
-   * TODO: This saw a major rework in v13 and needs individual attention
    */
-  // getSceneControlButtons: (controls: foundry.applications.ui.SceneControls.Control[]) => void;
+  getSceneControlButtons: (controls: Record<string, foundry.applications.ui.SceneControls.Control>) => void;
 
   /**
    * A hook event that fires whenever data is dropped into a Hotbar slot.

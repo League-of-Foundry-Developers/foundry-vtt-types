@@ -60,8 +60,10 @@ declare namespace ItemSheet {
 
   interface Options extends DocumentSheet.Options<Item.Implementation> {}
 
-  interface Data<Options extends ItemSheet.Options = ItemSheet.Options>
-    extends DocumentSheet.Data<Options, Item.Implementation> {
+  interface Data<Options extends ItemSheet.Options = ItemSheet.Options> extends DocumentSheet.Data<
+    Options,
+    Item.Implementation
+  > {
     item: this["document"];
   }
 

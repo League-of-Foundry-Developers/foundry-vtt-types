@@ -37,18 +37,17 @@ declare namespace WallDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Wall";
-        collection: "walls";
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Wall";
+      collection: "walls";
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -407,31 +406,35 @@ declare namespace WallDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<WallDocument.Parent> {}
 
     /** Options passed along in Create operations for WallDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<WallDocument.CreateData, WallDocument.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<WallDocument.CreateData, WallDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for WallDocuments */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<WallDocument.Parent> {}
 
     /** Options passed along in Update operations for WallDocuments */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<WallDocument.UpdateData, WallDocument.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      WallDocument.UpdateData,
+      WallDocument.Parent
+    > {}
 
     /** Operation for {@linkcode WallDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<WallDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      WallDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode WallDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<WallDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<WallDocument.Database.Update> {}
 
     /** Operation for {@linkcode WallDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<WallDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<WallDocument.Database.Delete> {}
 
     /** Operation for {@linkcode WallDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<WallDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      WallDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link WallDocument.update | `WallDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

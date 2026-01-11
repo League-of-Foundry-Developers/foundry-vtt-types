@@ -1,8 +1,6 @@
 import { expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
 
-import Document = foundry.abstract.Document;
-
 type DataSchema = foundry.data.fields.DataSchema;
 
 declare namespace ArmorData {
@@ -53,7 +51,7 @@ expectTypeOf(item.actor).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(item.img).toEqualTypeOf<string | null>();
 expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
-expectTypeOf(item.type).toEqualTypeOf<"base" | "armor" | "weapon" | Document.ModuleSubType>();
+expectTypeOf(item.type).toEqualTypeOf<"weapon">();
 expectTypeOf(item.getRollData()).toEqualTypeOf<AnyObject>();
 
 declare const known: Item.Known;

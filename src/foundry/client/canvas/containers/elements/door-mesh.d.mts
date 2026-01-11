@@ -111,8 +111,7 @@ declare namespace DoorMesh {
    * to `##configure` via {@linkcode DoorMesh.initialize | #initialize}, where it has a default applied
    */
   interface ConstructorOptions
-    extends Omit<PrimarySpriteMesh.ConstructorOptions, "object" | "texture">,
-      AnimationConfiguration {
+    extends Omit<PrimarySpriteMesh.ConstructorOptions, "object" | "texture">, AnimationConfiguration {
     /**
      * Texture passed to the SpriteMesh.
      * @remarks Required for {@linkcode DoorMesh}, as the constructor calls `##configure` which calls `##getClosedPosition`

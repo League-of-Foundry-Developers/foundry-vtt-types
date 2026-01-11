@@ -5,7 +5,7 @@ import PointDarknessSource = foundry.canvas.sources.PointDarknessSource;
 import PointLightSource = foundry.canvas.sources.PointLightSource;
 
 expectTypeOf(AmbientLight.embeddedName).toEqualTypeOf<"AmbientLight">();
-expectTypeOf(AmbientLight.RENDER_FLAGS.redraw?.propagate).toEqualTypeOf<
+expectTypeOf(AmbientLight.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   // undefined only from the optional chain, not underlying type
   Array<"refresh" | "refreshState" | "refreshField" | "refreshPosition" | "refreshElevation"> | undefined
 >();

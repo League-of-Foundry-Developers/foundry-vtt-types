@@ -1,38 +1,53 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
+import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 
 /**
  * The singleton collection of Actor documents which exist within the active World.
- * This Collection is accessible within the Game object as game.actors.
+ * This Collection is accessible within the Game object as {@linkcode foundry.Game.actors | game.actors}.
  *
- * @see {@linkcode Actor} The Actor document
- * @see {@linkcode ActorDirectory} The ActorDirectory sidebar directory
+ * @see {@linkcode foundry.documents.Actor} The Actor document
+ * @see {@linkcode foundry.applications.sidebar.tabs.ActorDirectory} The ActorDirectory sidebar directory
  *
- * @example <caption>Retrieve an existing Actor by its id</caption>
- * ```typescript
+ * @example
+ * Retrieve an existing Actor by its `id`
+ * ```ts
  * let actor = game.actors.get(actorId);
  * ```
  */
-declare class Actors extends foundry.documents.abstract.WorldCollection<"Actor", "Actors"> {
+declare class Actors extends WorldCollection<"Actor"> {
   /**
    * A mapping of synthetic Token Actors which are currently active within the viewed Scene.
    * Each Actor is referenced by the Token.id.
    */
-  get tokens(): Partial<Record<string, Actor.Implementation>>;
+  get tokens(): Record<string, Actor.Stored>;
 
-  static documentName: "Actor";
+  static override documentName: "Actor";
 
-  override fromCompendium<Options extends foundry.documents.abstract.WorldCollection.FromCompendiumOptions | undefined>(
-    document: Actor.Implementation | foundry.documents.BaseActor.CreateData,
+  /** @privateRemarks Fake type override */
+  static override get instance(): Actors.Implementation;
+
+  /**
+   * @remarks This override doesn't change the type at all, just updates {@link ActiveEffect.origin | `ActiveEffect` origins} if
+   * {@linkcode WorldCollection.FromCompendiumOptions.keepId | keepId} is `true`
+   */
+  override fromCompendium<Options extends WorldCollection.FromCompendiumOptions | undefined = undefined>(
+    document: Actor.Implementation | Actor.Source,
     options?: Options,
-  ): foundry.documents.abstract.WorldCollection.FromCompendiumReturnType<"Actor", Options>;
+  ): WorldCollection.FromCompendiumReturnType<"Actor", Options>;
 }
 
 declare namespace Actors {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Actors.Implementation} instead. This will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Actors.ImplementationClass} instead. This will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -43,27 +58,20 @@ declare namespace Actors {
   interface ImplementationClass extends Document.Internal.ConfiguredCollectionClass<"Actor"> {}
   interface Implementation extends Document.Internal.ConfiguredCollection<"Actor"> {}
 
-  interface FromCompendiumOptions extends foundry.documents.abstract.WorldCollection.FromCompendiumOptions {
-    /**
-     * Clear prototype token data to allow default token settings to be applied.
-     * @defaultValue `true`
-     */
-    clearPrototypeToken: boolean;
+  interface FromCompendiumOptions extends WorldCollection.FromCompendiumOptions {
+    /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
+    clearPrototypeToken?: never;
   }
 
-  /**
-   * @deprecated Replaced by {@linkcode Actors.ImplementationClass}.
-   */
+  /** @deprecated Replaced by {@linkcode Actors.ImplementationClass}. Will be removed in v15. */
   type ConfiguredClass = ImplementationClass;
 
-  /**
-   * @deprecated Replaced by {@linkcode Actors.Implementation}.
-   */
+  /** @deprecated Replaced by {@linkcode Actors.Implementation}. Will be removed in v15. */
   type Configured = Implementation;
 }
+
+export default Actors;
 
 declare abstract class AnyActors extends Actors {
   constructor(...args: never);
 }
-
-export default Actors;

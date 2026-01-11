@@ -45,7 +45,7 @@ declare class GridHex {
 
   /**
    * Return whether this GridHex equals the same position as some other GridHex instance.
-   * @param other- Some other GridHex
+   * @param other - Some other GridHex
    * @returns Are the positions equal?
    */
   equals(other: GridHex): boolean;

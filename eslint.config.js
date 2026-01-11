@@ -171,6 +171,24 @@ const placeables = [
   "Wall",
 ];
 
+// TODO: Wire up what parts of this work. These classes only have `.instance` getters, no `.implementation` equivalent; point users toward CONFIG[documentName].collection
+const _worldCollections = [
+  "Actors",
+  "CardStacks",
+  "ChatMessages",
+  "CombatEncounters",
+  "FogExplorations",
+  "Folders",
+  "Items",
+  "Journal", // singular on purpose, grr foundry
+  "Macros",
+  "Playlists",
+  "RollTables",
+  "Scenes",
+  "Users",
+  "WorldSettings",
+];
+
 /** @type {{ selector: string; message: string }[]} */
 const noRestrictedSyntax = [];
 
@@ -315,7 +333,6 @@ const rules = [
       // non-null assertions are useful in tests
       "@typescript-eslint/no-non-null-assertion": "off",
 
-      // TODO(LukeAbby): reenable once all document declaration merges can be removed
       "@typescript-eslint/no-unsafe-declaration-merging": "off",
       "@typescript-eslint/no-unused-expressions": "off", // expectTypeOf seems to trip this rule.
       "@typescript-eslint/no-unused-vars": [
@@ -323,6 +340,7 @@ const rules = [
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
         },
       ],
       "@typescript-eslint/no-unnecessary-type-parameters": "off",
@@ -401,6 +419,8 @@ const rules = [
       "jsdoc/require-jsdoc": "off",
       "jsdoc/require-param": "off",
       "jsdoc/require-returns": "off",
+      "jsdoc/require-throws-type": "off",
+      "jsdoc/require-yields-type": "off",
       "jsdoc/tag-lines": "off",
 
       "tsdoc/syntax": "warn",
@@ -450,15 +470,6 @@ const rules = [
       // There aren't even function bodies in the majority of the codebase.
       // It can make sense to have empty functions in tests.
       "@typescript-eslint/no-empty-function": "off",
-
-      // While test are broken these errors are disabled.
-      "@typescript-eslint/no-unsafe-member-access": "off",
-      "@typescript-eslint/no-unsafe-call": "off",
-      "@typescript-eslint/no-redundant-type-constituents": "off",
-      "@typescript-eslint/no-unnecessary-condition": "off",
-      "@typescript-eslint/no-unsafe-assignment": "off",
-      "@typescript-eslint/no-unsafe-return": "off",
-      "@typescript-eslint/no-unsafe-argument": "off",
 
       "@typescript-eslint/no-restricted-imports": [
         "error",

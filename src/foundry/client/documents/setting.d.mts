@@ -37,18 +37,17 @@ declare namespace Setting {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Setting";
-        collection: "settings";
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Setting";
+      collection: "settings";
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -181,6 +180,8 @@ declare namespace Setting {
      * The setting key, a composite of \{scope\}.\{name\}
      * @defaultValue `""`
      */
+    // TODO: why is this not required in CreateData like it should be?
+    // TODO: why are is the string template not being enforced?
     key: fields.StringField<
       {
         required: true;
@@ -222,8 +223,8 @@ declare namespace Setting {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Setting.Parent> {}
 
     /** Options passed along in Create operations for Settings */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Setting.CreateData, Setting.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Setting.CreateData, Setting.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Settings */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Setting.Parent> {}
@@ -232,8 +233,9 @@ declare namespace Setting {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Setting.UpdateData, Setting.Parent> {}
 
     /** Operation for {@linkcode Setting.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Setting.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Setting.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Setting.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Setting.Database.Update> {}
@@ -242,8 +244,9 @@ declare namespace Setting {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Setting.Database.Delete> {}
 
     /** Operation for {@linkcode Setting.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Setting.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Setting.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Setting.update | `Setting#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

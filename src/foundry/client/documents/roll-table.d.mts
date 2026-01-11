@@ -39,20 +39,19 @@ declare namespace RollTable {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "RollTable";
-        collection: "tables";
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        label: string;
-        labelPlural: string;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "RollTable";
+      collection: "tables";
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      label: string;
+      labelPlural: string;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -68,6 +67,12 @@ declare namespace RollTable {
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    */
   type Parent = null;
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantName = "TableResult";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -315,8 +320,8 @@ declare namespace RollTable {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<RollTable.Parent> {}
 
     /** Options passed along in Create operations for RollTables */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<RollTable.CreateData, RollTable.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<RollTable.CreateData, RollTable.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for RollTables */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<RollTable.Parent> {}
@@ -325,8 +330,9 @@ declare namespace RollTable {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<RollTable.UpdateData, RollTable.Parent> {}
 
     /** Operation for {@linkcode RollTable.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<RollTable.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      RollTable.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode RollTable.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<RollTable.Database.Update> {}
@@ -335,8 +341,9 @@ declare namespace RollTable {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<RollTable.Database.Delete> {}
 
     /** Operation for {@linkcode RollTable.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<RollTable.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      RollTable.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link RollTable.update | `RollTable#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -467,39 +474,39 @@ declare namespace RollTable {
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
-  type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+  type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     RollTable.Stored,
-    RollTable.DirectDescendant,
+    RollTable.DirectDescendantName,
     RollTable.Metadata.Embedded
   >;
 
-  type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+  type OnCreateDescendantDocumentsArgs = Document.Internal.OnCreateDescendantDocumentsArgs<
     RollTable.Stored,
-    RollTable.DirectDescendant,
+    RollTable.DirectDescendantName,
     RollTable.Metadata.Embedded
   >;
 
-  type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+  type PreUpdateDescendantDocumentsArgs = Document.Internal.PreUpdateDescendantDocumentsArgs<
     RollTable.Stored,
-    RollTable.DirectDescendant,
+    RollTable.DirectDescendantName,
     RollTable.Metadata.Embedded
   >;
 
-  type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+  type OnUpdateDescendantDocumentsArgs = Document.Internal.OnUpdateDescendantDocumentsArgs<
     RollTable.Stored,
-    RollTable.DirectDescendant,
+    RollTable.DirectDescendantName,
     RollTable.Metadata.Embedded
   >;
 
-  type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+  type PreDeleteDescendantDocumentsArgs = Document.Internal.PreDeleteDescendantDocumentsArgs<
     RollTable.Stored,
-    RollTable.DirectDescendant,
+    RollTable.DirectDescendantName,
     RollTable.Metadata.Embedded
   >;
 
-  type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+  type OnDeleteDescendantDocumentsArgs = Document.Internal.OnDeleteDescendantDocumentsArgs<
     RollTable.Stored,
-    RollTable.DirectDescendant,
+    RollTable.DirectDescendantName,
     RollTable.Metadata.Embedded
   >;
 
@@ -510,30 +517,30 @@ declare namespace RollTable {
     /**
      * An existing Roll instance to use for drawing from the table
      */
-    roll: Roll;
+    roll?: Roll | undefined;
 
     /**
      * Allow drawing recursively from inner RollTable results
      * @defaultValue `true`
      */
-    recursive: boolean;
+    recursive?: boolean | undefined;
 
     /**
      * One or more table results which have been drawn
      * @defaultValue `[]`
      */
-    results: TableResult.Implementation[];
+    results?: TableResult.Implementation[] | undefined;
 
     /**
      * Whether to automatically display the results in chat
      * @defaultValue `true`
      */
-    displayChat: boolean;
+    displayChat?: boolean | undefined;
 
     /**
      * The chat roll mode to use when displaying the result
      */
-    rollMode: ChatMessage.PassableRollMode;
+    rollMode?: ChatMessage.PassableRollMode | undefined;
   }
 
   /**
@@ -639,7 +646,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * @param options - Optional arguments which customize the draw
    * @returns The drawn results
    */
-  drawMany(number: number, options?: InexactPartial<RollTable.DrawOptions>): Promise<RollTable.Draw>;
+  drawMany(number: number, options?: RollTable.DrawOptions): Promise<RollTable.Draw>;
 
   /**
    * Normalize the probabilities of rolling each item in the RollTable based on their assigned weights
@@ -802,7 +809,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
   static fromFolder<Temporary extends boolean | undefined = undefined>(
     folder: Folder.Implementation,
     options?: RollTable.Database.CreateOperation<Temporary>,
-  ): Promise<WallDocument.TemporaryIf<Temporary> | undefined>;
+  ): Promise<RollTable.TemporaryIf<Temporary> | undefined>;
 
   /*
    * After this point these are not really overridden methods.

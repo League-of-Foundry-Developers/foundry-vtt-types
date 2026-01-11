@@ -39,19 +39,18 @@ declare namespace FogExploration {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "FogExploration";
-        collection: "fog";
-        label: string;
-        labelPlural: string;
-        isPrimary: true;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "FogExploration";
+      collection: "fog";
+      label: string;
+      labelPlural: string;
+      isPrimary: true;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -224,12 +223,8 @@ declare namespace FogExploration {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<FogExploration.Parent> {}
 
     /** Options passed along in Create operations for FogExplorations */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<
-        FogExploration.CreateData,
-        FogExploration.Parent,
-        Temporary
-      > {
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<FogExploration.CreateData, FogExploration.Parent, Temporary> {
       loadFog?: boolean;
     }
 
@@ -239,26 +234,30 @@ declare namespace FogExploration {
     }
 
     /** Options passed along in Update operations for FogExplorations */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<FogExploration.UpdateData, FogExploration.Parent> {
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      FogExploration.UpdateData,
+      FogExploration.Parent
+    > {
       loadFog?: boolean;
     }
 
     /** Operation for {@linkcode FogExploration.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<FogExploration.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      FogExploration.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode FogExploration.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<FogExploration.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<FogExploration.Database.Update> {}
 
     /** Operation for {@linkcode FogExploration.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<FogExploration.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<FogExploration.Database.Delete> {}
 
     /** Operation for {@linkcode FogExploration.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<FogExploration.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      FogExploration.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link FogExploration.update | `FogExploration#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

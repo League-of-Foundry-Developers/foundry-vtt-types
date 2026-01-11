@@ -29,8 +29,7 @@ declare namespace DiceConfig {
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
 
   interface Configuration<DiceConfig extends DiceConfig.Any = DiceConfig.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<DiceConfig> {}
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<DiceConfig> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

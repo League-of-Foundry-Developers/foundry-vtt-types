@@ -126,7 +126,7 @@ declare abstract class BaseGrid {
    * Returns the center point of the grid space corresponding to the given coordinates.
    * If given a point, the center point of the grid space that contains it is returned.
    * In gridless grids a point with the same coordinates as the given point is returned.
-   * @param coords- The coordinates
+   * @param coords - The coordinates
    * @returns The center point
    */
   abstract getCenterPoint(coords: BaseGrid.Coordinates): Canvas.Point;

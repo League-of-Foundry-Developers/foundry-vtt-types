@@ -284,6 +284,7 @@ export default BaseWall;
 declare namespace BaseWall {
   export import Name = WallDocument.Name;
   export import ConstructionContext = WallDocument.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = WallDocument.ConstructorArgs;
   export import Hierarchy = WallDocument.Hierarchy;
   export import Metadata = WallDocument.Metadata;

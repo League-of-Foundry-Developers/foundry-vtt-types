@@ -198,7 +198,11 @@ declare namespace VisionMode {
  */
 declare const ShaderField: clientFields.ShaderField;
 
-export { VisionMode as default, ShaderField };
+export {
+  VisionMode as default,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  ShaderField,
+};
 
 declare class AnyVisionMode extends VisionMode {
   constructor(...args: never);

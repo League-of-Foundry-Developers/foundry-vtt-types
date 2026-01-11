@@ -93,8 +93,7 @@ declare namespace CategoryBrowser {
   }
 
   interface Configuration<CategoryBrowser extends CategoryBrowser.Any = CategoryBrowser.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<CategoryBrowser> {
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<CategoryBrowser> {
     /** The initial category tab: omitting this will result in an initial active tab that corresponds with the first category by insertion order. */
     initialCategory: string | null;
 

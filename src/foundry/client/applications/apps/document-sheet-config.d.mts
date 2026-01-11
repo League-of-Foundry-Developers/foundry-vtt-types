@@ -43,14 +43,13 @@ declare namespace DocumentSheetConfig {
   interface AnyConstructor extends Identity<typeof AnyDocumentSheetConfig> {}
 
   interface RenderContext<Document extends Document.Any>
-    extends HandlebarsApplicationMixin.RenderContext,
-      DocumentSheetV2.RenderContext<Document> {}
+    extends HandlebarsApplicationMixin.RenderContext, DocumentSheetV2.RenderContext<Document> {}
 
   interface Configuration<Document extends Document.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      DocumentSheetV2.Configuration<Document> {}
+    extends HandlebarsApplicationMixin.Configuration, DocumentSheetV2.Configuration<Document> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
+
   interface SheetRegistrationOptions {
     /**
      * A human-readable label for the sheet name, or a function that returns one. Will be localized.

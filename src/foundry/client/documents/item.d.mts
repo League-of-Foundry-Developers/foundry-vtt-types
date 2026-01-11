@@ -39,22 +39,21 @@ declare namespace Item {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Item";
-        collection: "items";
-        hasTypeData: true;
-        indexed: true;
-        compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
-        embedded: Metadata.Embedded;
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Item";
+      collection: "items";
+      hasTypeData: true;
+      indexed: true;
+      compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
+      embedded: Metadata.Embedded;
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -109,15 +108,14 @@ declare namespace Item {
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredItem<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Item<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredItem<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Item<Type>
+      : never;
+  }> {}
 
   /**
    * `SystemOfType` returns the system property for a specific `Item` subtype.
@@ -139,6 +137,12 @@ declare namespace Item {
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    */
   type Parent = Actor.Implementation | null;
+
+  /**
+   * A document's direct descendants are documents that are contained directly within its schema.
+   * This is a union of all such instances, or never if the document doesn't have any descendants.
+   */
+  type DirectDescendantName = "ActiveEffect";
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -269,7 +273,9 @@ declare namespace Item {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Item.SubType = Item.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type: SubType;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -369,8 +375,8 @@ declare namespace Item {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Item.Parent> {}
 
     /** Options passed along in Create operations for Items */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Item.CreateData, Item.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Item.CreateData, Item.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Items */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Item.Parent> {}
@@ -379,8 +385,9 @@ declare namespace Item {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Item.UpdateData, Item.Parent> {}
 
     /** Operation for {@linkcode Item.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Item.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Item.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Item.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Item.Database.Update> {}
@@ -389,8 +396,9 @@ declare namespace Item {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Item.Database.Delete> {}
 
     /** Operation for {@linkcode Item.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Item.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Item.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Item.update | `Item#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -504,39 +512,39 @@ declare namespace Item {
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
-  type PreCreateDescendantDocumentsArgs = Document.PreCreateDescendantDocumentsArgs<
+  type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     Item.Stored,
-    Item.DirectDescendant,
+    Item.DirectDescendantName,
     Item.Metadata.Embedded
   >;
 
-  type OnCreateDescendantDocumentsArgs = Document.OnCreateDescendantDocumentsArgs<
+  type OnCreateDescendantDocumentsArgs = Document.Internal.OnCreateDescendantDocumentsArgs<
     Item.Stored,
-    Item.DirectDescendant,
+    Item.DirectDescendantName,
     Item.Metadata.Embedded
   >;
 
-  type PreUpdateDescendantDocumentsArgs = Document.PreUpdateDescendantDocumentsArgs<
+  type PreUpdateDescendantDocumentsArgs = Document.Internal.PreUpdateDescendantDocumentsArgs<
     Item.Stored,
-    Item.DirectDescendant,
+    Item.DirectDescendantName,
     Item.Metadata.Embedded
   >;
 
-  type OnUpdateDescendantDocumentsArgs = Document.OnUpdateDescendantDocumentsArgs<
+  type OnUpdateDescendantDocumentsArgs = Document.Internal.OnUpdateDescendantDocumentsArgs<
     Item.Stored,
-    Item.DirectDescendant,
+    Item.DirectDescendantName,
     Item.Metadata.Embedded
   >;
 
-  type PreDeleteDescendantDocumentsArgs = Document.PreDeleteDescendantDocumentsArgs<
+  type PreDeleteDescendantDocumentsArgs = Document.Internal.PreDeleteDescendantDocumentsArgs<
     Item.Stored,
-    Item.DirectDescendant,
+    Item.DirectDescendantName,
     Item.Metadata.Embedded
   >;
 
-  type OnDeleteDescendantDocumentsArgs = Document.OnDeleteDescendantDocumentsArgs<
+  type OnDeleteDescendantDocumentsArgs = Document.Internal.OnDeleteDescendantDocumentsArgs<
     Item.Stored,
-    Item.DirectDescendant,
+    Item.DirectDescendantName,
     Item.Metadata.Embedded
   >;
 
@@ -575,7 +583,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    * @param data    - Initial data from which to construct the `Item`
    * @param context - Construction context options
    */
-  constructor(data: Item.CreateData, context?: Item.ConstructionContext);
+  constructor(data: Item.CreateData<SubType>, context?: Item.ConstructionContext);
 
   /**
    * A convenience alias of Item#parent which is more semantically intuitive

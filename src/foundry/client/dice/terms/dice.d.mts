@@ -192,14 +192,14 @@ declare abstract class DiceTerm extends RollTerm {
    * Sequentially evaluate each dice roll modifier by passing the term to its evaluation function
    * Augment or modify the results array.
    */
-  protected _evaluateModifiers(): void;
+  protected _evaluateModifiers(): Promise<void>;
 
   /**
    * Evaluate a single modifier command, recording it in the array of evaluated modifiers
    * @param command - The parsed modifier command
    * @param modifier -  The full modifier request
    */
-  protected _evaluateModifier(command: string, modifier: string): void;
+  protected _evaluateModifier(command: string, modifier: string): Promise<void>;
 
   /**
    * A helper comparison function.

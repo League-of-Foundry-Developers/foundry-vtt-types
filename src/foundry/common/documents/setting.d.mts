@@ -267,6 +267,7 @@ export default BaseSetting;
 declare namespace BaseSetting {
   export import Name = Setting.Name;
   export import ConstructionContext = Setting.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = Setting.ConstructorArgs;
   export import Hierarchy = Setting.Hierarchy;
   export import Metadata = Setting.Metadata;

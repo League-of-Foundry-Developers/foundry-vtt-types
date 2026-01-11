@@ -311,11 +311,14 @@ export default BaseMacro;
 declare namespace BaseMacro {
   export import Name = Macro.Name;
   export import ConstructionContext = Macro.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = Macro.ConstructorArgs;
   export import Hierarchy = Macro.Hierarchy;
   export import Metadata = Macro.Metadata;
   export import SubType = Macro.SubType;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConfiguredSubType = Macro.ConfiguredSubType;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import Known = Macro.Known;
   export import OfType = Macro.OfType;
   export import Parent = Macro.Parent;

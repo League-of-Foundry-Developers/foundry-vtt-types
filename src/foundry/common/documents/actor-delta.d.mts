@@ -380,6 +380,7 @@ declare namespace BaseActorDelta {
 
   export import Name = ActorDelta.Name;
   export import ConstructionContext = ActorDelta.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = ActorDelta.ConstructorArgs;
   export import Hierarchy = ActorDelta.Hierarchy;
   export import Metadata = ActorDelta.Metadata;

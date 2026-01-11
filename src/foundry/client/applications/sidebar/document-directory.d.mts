@@ -36,8 +36,7 @@ declare namespace DocumentDirectory {
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, AbstractSidebarTab.RenderContext {}
 
   interface Configuration<DocumentDirectory extends DocumentDirectory.Any = DocumentDirectory.Any>
-    extends HandlebarsApplicationMixin.RenderContext,
-      ApplicationV2.Configuration<DocumentDirectory> {
+    extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.Configuration<DocumentDirectory> {
     /** The Document collection that this directory represents. */
     collection: foundry.documents.abstract.DirectoryCollectionMixin.AnyMixed;
 

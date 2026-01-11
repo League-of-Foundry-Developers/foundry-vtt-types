@@ -214,9 +214,9 @@ declare namespace Die {
   interface Any extends AnyDie {}
   interface AnyConstructor extends Identity<typeof AnyDie> {}
 
-  interface TermData extends DiceTerm.TermData {
-    modifiers: Array<keyof Modifiers>;
-  }
+  // Note(LukeAbby): It may be tempting to write something like `modifiers: Array<keyof Modifiers>` but modifiers are actually matched using a regex.
+  // Therefore to do this accurately would require too large a union.
+  interface TermData extends DiceTerm.TermData {}
 
   interface Modifiers {
     r: "reroll";

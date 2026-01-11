@@ -6,23 +6,22 @@ import type { InvertObject } from "#common/utils/helpers.d.mts";
 declare namespace DisplayScrollingTextRegionBehaviorType {
   type VISIBILITY_MODES = Brand<number, "DisplayScrollingTextRegionBehaviorType.VISIBILITY_MODES">;
 
-  interface VisibilityModes
-    extends Readonly<{
-      /**
-       * Display only for gamemaster users
-       */
-      GAMEMASTER: 0;
+  interface VisibilityModes extends Readonly<{
+    /**
+     * Display only for gamemaster users
+     */
+    GAMEMASTER: 0;
 
-      /**
-       * Display only for users with observer permissions on the triggering token (and for the GM)
-       */
-      OBSERVER: 1;
+    /**
+     * Display only for users with observer permissions on the triggering token (and for the GM)
+     */
+    OBSERVER: 1;
 
-      /**
-       * Display for all users
-       */
-      ANYONE: 2;
-    }> {}
+    /**
+     * Display for all users
+     */
+    ANYONE: 2;
+  }> {}
 
   interface Schema extends foundry.data.fields.DataSchema {
     events: RegionBehaviorType.EventsField;

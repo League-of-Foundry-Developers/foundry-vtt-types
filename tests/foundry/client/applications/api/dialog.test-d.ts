@@ -8,11 +8,14 @@ import type { AnyObject, EmptyObject } from "fvtt-types/utils";
 
 const numberCallback = async () => 5;
 
+const boolean = Math.random() > 0.5;
+
 expectTypeOf(await DialogV2.confirm()).toEqualTypeOf<boolean | null>();
+expectTypeOf(await DialogV2.confirm({})).toEqualTypeOf<boolean | null>();
 expectTypeOf(await DialogV2.confirm({ yes: {} })).toEqualTypeOf<boolean | null>();
 expectTypeOf(await DialogV2.confirm({ rejectClose: true })).toEqualTypeOf<boolean>();
 expectTypeOf(await DialogV2.confirm({ rejectClose: false })).toEqualTypeOf<boolean | null>();
-expectTypeOf(await DialogV2.confirm({ rejectClose: 3 > 2, window: {} })).toEqualTypeOf<boolean | null>();
+expectTypeOf(await DialogV2.confirm({ rejectClose: boolean, window: {} })).toEqualTypeOf<boolean | null>();
 expectTypeOf(
   await DialogV2.confirm({
     yes: {
@@ -73,7 +76,7 @@ expectTypeOf(
       {
         label: "Foo",
         action: "foo",
-        callback: async () => 3 > 2,
+        callback: async () => boolean,
       },
       {
         label: "Bar",
@@ -141,7 +144,7 @@ expectTypeOf(
       {
         label: "Foo",
         action: "foo",
-        callback: async () => 3 > 2,
+        callback: async () => boolean,
       },
       {
         label: "Bar",
@@ -190,7 +193,7 @@ expectTypeOf(
       {
         label: "Foo",
         action: "foo",
-        callback: async () => 3 > 2,
+        callback: async () => boolean,
       },
       {
         label: "Bar",
@@ -207,7 +210,7 @@ expectTypeOf(
       {
         label: "Foo",
         action: "foo",
-        callback: async () => 3 > 2,
+        callback: async () => boolean,
       },
       {
         label: "Bar",
@@ -257,7 +260,7 @@ expectTypeOf(await DialogV2.confirm(unhandledOptionalYes)).toEqualTypeOf<number 
 const unsoundTest: {} = { yes: { callback: numberCallback } };
 
 // At runtime this will be `number`, however the provided type is `{}` which has no indication about the type.
-expectTypeOf(await DialogV2.confirm(unsoundTest)).toEqualTypeOf<number | false | null>();
+expectTypeOf(await DialogV2.confirm(unsoundTest)).toEqualTypeOf<boolean | null>();
 
 // Edge case: `config.ok.callback` is overriden, this makes it useless to use over `DialogV2.submit`
 // but is a valid call.
@@ -280,7 +283,7 @@ expectTypeOf(
       {
         label: "Foo",
         action: "foo",
-        callback: async () => 3 > 2,
+        callback: async () => boolean,
       },
       {
         label: "Bar",

@@ -39,8 +39,7 @@ declare namespace FontConfig {
   interface RenderContext extends HandlebarsApplicationMixin.RenderContext, ApplicationV2.RenderContext {}
 
   interface Configuration<FontConfig extends FontConfig.Any = FontConfig.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<FontConfig> {}
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<FontConfig> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

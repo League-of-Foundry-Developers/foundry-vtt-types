@@ -179,8 +179,10 @@ declare namespace ActorSheet {
     token?: TokenDocument.Implementation | null;
   }
 
-  interface Data<Options extends ActorSheet.Options = ActorSheet.Options>
-    extends DocumentSheet.Data<Options, Actor.Implementation> {
+  interface Data<Options extends ActorSheet.Options = ActorSheet.Options> extends DocumentSheet.Data<
+    Options,
+    Actor.Implementation
+  > {
     actor: ActorSheet["actor"];
     items: this["data"]["items"];
     effects: this["data"]["effects"];

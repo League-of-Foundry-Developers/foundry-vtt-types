@@ -39,18 +39,17 @@ declare namespace NoteDocument {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Note";
-        collection: "notes";
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Note";
+      collection: "notes";
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -306,31 +305,35 @@ declare namespace NoteDocument {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<NoteDocument.Parent> {}
 
     /** Options passed along in Create operations for NoteDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<NoteDocument.CreateData, NoteDocument.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<NoteDocument.CreateData, NoteDocument.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for NoteDocuments */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<NoteDocument.Parent> {}
 
     /** Options passed along in Update operations for NoteDocuments */
-    interface Update
-      extends foundry.abstract.types.DatabaseUpdateOperation<NoteDocument.UpdateData, NoteDocument.Parent> {}
+    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
+      NoteDocument.UpdateData,
+      NoteDocument.Parent
+    > {}
 
     /** Operation for {@linkcode NoteDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<NoteDocument.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      NoteDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode NoteDocument.updateDocuments} */
-    interface UpdateDocumentsOperation
-      extends Document.Database.UpdateDocumentsOperation<NoteDocument.Database.Update> {}
+    interface UpdateDocumentsOperation extends Document.Database
+      .UpdateDocumentsOperation<NoteDocument.Database.Update> {}
 
     /** Operation for {@linkcode NoteDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation
-      extends Document.Database.DeleteDocumentsOperation<NoteDocument.Database.Delete> {}
+    interface DeleteDocumentsOperation extends Document.Database
+      .DeleteDocumentsOperation<NoteDocument.Database.Delete> {}
 
     /** Operation for {@linkcode NoteDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<NoteDocument.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      NoteDocument.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link NoteDocument.update | `NoteDocument#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

@@ -63,8 +63,7 @@ declare namespace MainMenu {
   }
 
   interface Configuration<MainMenu extends MainMenu.Any = MainMenu.Any>
-    extends HandlebarsApplicationMixin.Configuration,
-      ApplicationV2.Configuration<MainMenu> {}
+    extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<MainMenu> {}
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily
   // Without it then `static override DEFAULT_OPTIONS = { unrelatedProp: 123 }` would error.

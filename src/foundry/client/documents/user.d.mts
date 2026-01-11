@@ -41,18 +41,17 @@ declare namespace User {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "User";
-        collection: "users";
-        label: string;
-        labelPlural: string;
-        permissions: Metadata.Permissions;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "User";
+      collection: "users";
+      label: string;
+      labelPlural: string;
+      permissions: Metadata.Permissions;
+      schemaVersion: string;
+    }>
+  > {}
 
   namespace Metadata {
     /**
@@ -288,8 +287,8 @@ declare namespace User {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<User.Parent> {}
 
     /** Options passed along in Create operations for Users */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<User.CreateData, User.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<User.CreateData, User.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Users */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<User.Parent> {}
@@ -298,8 +297,9 @@ declare namespace User {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<User.UpdateData, User.Parent> {}
 
     /** Operation for {@linkcode User.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<User.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      User.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode User.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<User.Database.Update> {}
@@ -308,8 +308,9 @@ declare namespace User {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<User.Database.Delete> {}
 
     /** Operation for {@linkcode User.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<User.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      User.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link User.update | `User#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}

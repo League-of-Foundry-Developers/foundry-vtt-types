@@ -291,6 +291,7 @@ export default BaseAdventure;
 declare namespace BaseAdventure {
   export import Name = Adventure.Name;
   export import ConstructionContext = Adventure.ConstructionContext;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = Adventure.ConstructorArgs;
   export import Hierarchy = Adventure.Hierarchy;
   export import Metadata = Adventure.Metadata;

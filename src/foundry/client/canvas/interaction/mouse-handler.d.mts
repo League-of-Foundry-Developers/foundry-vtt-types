@@ -330,8 +330,9 @@ declare namespace MouseInteractionManager {
   ) => boolean;
 
   /** @remarks All values that aren't `boolean` or {@linkcode PermissionFunction} are treated as `true`, i.e, "always allow" */
-  interface Permissions<ObjectFor extends PIXI.Container = PIXI.Container>
-    extends InexactPartial<Record<PermissionAction, PermissionFunction<ObjectFor> | boolean>> {}
+  interface Permissions<ObjectFor extends PIXI.Container = PIXI.Container> extends InexactPartial<
+    Record<PermissionAction, PermissionFunction<ObjectFor> | boolean>
+  > {}
 
   /**
    * @remarks The full list of possible callback actions.
@@ -358,8 +359,9 @@ declare namespace MouseInteractionManager {
    *
    * See {@linkcode CallbackFunction}
    */
-  interface Callbacks<ObjectFor extends PIXI.Container = PIXI.Container>
-    extends InexactPartial<Record<Action, CallbackFunction<ObjectFor>>> {}
+  interface Callbacks<ObjectFor extends PIXI.Container = PIXI.Container> extends InexactPartial<
+    Record<Action, CallbackFunction<ObjectFor>>
+  > {}
 
   /** @internal */
   type _Options = InexactPartial<{
@@ -407,8 +409,10 @@ declare namespace MouseInteractionManager {
 
   interface ResetOptions extends _ResetOptions {}
 
-  interface InteractionData<ObjectFor extends PIXI.Container = PIXI.Container>
-    extends Pick<Canvas.Event.InteractionData<ObjectFor>, "object" | "origin" | "screenOrigin" | "destination"> {}
+  interface InteractionData<ObjectFor extends PIXI.Container = PIXI.Container> extends Pick<
+    Canvas.Event.InteractionData<ObjectFor>,
+    "object" | "origin" | "screenOrigin" | "destination"
+  > {}
 
   type Event<ObjectFor extends PIXI.Container = PIXI.Container> = Canvas.Event._Base<ObjectFor>;
 }

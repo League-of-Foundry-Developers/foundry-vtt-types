@@ -10,6 +10,7 @@ import type {
   InexactPartial,
   Brand,
   InterfaceToObject,
+  MaybeArray,
 } from "#utils";
 import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
@@ -2535,7 +2536,7 @@ declare global {
       }
 
       /**
-       * @privateRemarks Foundry types this as {@linkcode geometry.PointSourcePolygon | @enum PointSourcePolygon}, but all the runtime defaults are
+       * @privateRemarks Foundry types this as {@linkcode geometry.PointSourcePolygon | \@enum PointSourcePolygon}, but all the runtime defaults are
        * {@linkcode geometry.ClockwiseSweepPolygon | ClockwiseSweepPolygon}, and CSP types and methods are assumed in other canvas classes, so entries
        * have been constrained to it instead of `PointSourcePolygon`.
        *
@@ -2642,7 +2643,8 @@ declare global {
       }
 
       interface LightSourceAnimationConfig
-        extends RenderedEffectSource._AnimationConfigBase,
+        extends
+          RenderedEffectSource._AnimationConfigBase,
           Pick<RenderedEffectSource._AnimationConfigLightingShaders, "colorationShader">,
           InexactPartial<Omit<RenderedEffectSource._AnimationConfigLightingShaders, "colorationShader">>,
           RenderedEffectSource._Seed {}
@@ -2911,7 +2913,8 @@ declare global {
       }
 
       interface DarknessSourceAnimationConfig
-        extends RenderedEffectSource._AnimationConfigBase,
+        extends
+          RenderedEffectSource._AnimationConfigBase,
           RenderedEffectSource._AnimationConfigDarknessShaders,
           RenderedEffectSource._Seed {}
 
@@ -3271,7 +3274,7 @@ declare global {
 
     namespace Font {
       interface Definition extends FontFaceDescriptors {
-        url: string[];
+        urls: string[];
       }
 
       interface FamilyDefinition {
@@ -3370,11 +3373,10 @@ declare global {
         segment: TokenDocument.MovementSegmentData,
       ) => number;
 
-      interface AnimationOptions
-        extends Pick<
-          foundry.canvas.placeables.Token.AnimateOptions,
-          "duration" | "movementSpeed" | "easing" | "ontick"
-        > {}
+      interface AnimationOptions extends Pick<
+        foundry.canvas.placeables.Token.AnimateOptions,
+        "duration" | "movementSpeed" | "easing" | "ontick"
+      > {}
 
       interface _MovementActionConfig {
         /**
@@ -3504,31 +3506,31 @@ declare global {
          * One or more sound paths for when the door is closed
          * @remarks If an array is provided, a random entry is chosen
          */
-        close: string | string[];
+        close: MaybeArray<string>;
 
         /**
          * One or more sound paths for when the door becomes locked
          * @remarks If an array is provided, a random entry is chosen
          */
-        lock: string | string[];
+        lock: MaybeArray<string>;
 
         /**
          * One or more sound paths for when opening the door
          * @remarks If an array is provided, a random entry is chosen
          */
-        open: string | string[];
+        open: MaybeArray<string>;
 
         /**
          * One or more sound paths for when attempting to open a locked door
          * @remarks If an array is provided, a random entry is chosen
          */
-        test: string | string[];
+        test: MaybeArray<string>;
 
         /**
          * One or more sound paths for when the door becomes unlocked
          * @remarks If an array is provided, a random entry is chosen
          */
-        unlock: string | string[];
+        unlock: MaybeArray<string>;
       }>;
 
       interface DoorSoundConfig extends _DoorSoundConfig {

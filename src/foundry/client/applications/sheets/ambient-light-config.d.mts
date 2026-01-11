@@ -75,7 +75,8 @@ declare namespace AmbientLightConfig {
   interface AnyConstructor extends Identity<typeof AnyAmbientLightConfig> {}
 
   interface RenderContext
-    extends HandlebarsApplicationMixin.RenderContext,
+    extends
+      HandlebarsApplicationMixin.RenderContext,
       DocumentSheetV2.RenderContext<AmbientLightDocument.Implementation> {
     document: AmbientLightDocument.Implementation;
     light: AmbientLightDocument.Implementation;
@@ -98,7 +99,8 @@ declare namespace AmbientLightConfig {
   }
 
   interface Configuration
-    extends HandlebarsApplicationMixin.Configuration,
+    extends
+      HandlebarsApplicationMixin.Configuration,
       DocumentSheetV2.Configuration<AmbientLightDocument.Implementation> {}
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}

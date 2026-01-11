@@ -38,18 +38,17 @@ declare namespace Folder {
    * A document's metadata is special information about the document ranging anywhere from its name,
    * whether it's indexed, or to the permissions a user has over it.
    */
-  interface Metadata
-    extends Merge<
-      Document.Metadata.Default,
-      Readonly<{
-        name: "Folder";
-        collection: "folders";
-        label: string;
-        labelPlural: string;
-        coreTypes: typeof CONST.FOLDER_DOCUMENT_TYPES;
-        schemaVersion: string;
-      }>
-    > {}
+  interface Metadata extends Merge<
+    Document.Metadata.Default,
+    Readonly<{
+      name: "Folder";
+      collection: "folders";
+      label: string;
+      labelPlural: string;
+      coreTypes: typeof CONST.FOLDER_DOCUMENT_TYPES;
+      schemaVersion: string;
+    }>
+  > {}
 
   // No need for Metadata namespace
 
@@ -95,15 +94,14 @@ declare namespace Folder {
   type OfType<Type extends SubType> = _OfType[Type];
 
   /** @internal */
-  interface _OfType
-    extends Identity<{
-      [Type in SubType]: Type extends unknown
-        ? ConfiguredFolder<Type> extends { document: infer Document }
-          ? Document
-          : // eslint-disable-next-line @typescript-eslint/no-restricted-types
-            Folder<Type>
-        : never;
-    }> {}
+  interface _OfType extends Identity<{
+    [Type in SubType]: Type extends unknown
+      ? ConfiguredFolder<Type> extends { document: infer Document }
+        ? Document
+        : // eslint-disable-next-line @typescript-eslint/no-restricted-types
+          Folder<Type>
+      : never;
+  }> {}
 
   /**
    * A document's parent is something that can contain it.
@@ -185,7 +183,9 @@ declare namespace Folder {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+  interface CreateData<SubType extends Folder.SubType = Folder.SubType> extends fields.SchemaField.CreateData<Schema> {
+    type: SubType;
+  }
 
   /**
    * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
@@ -276,8 +276,8 @@ declare namespace Folder {
     interface Get extends foundry.abstract.types.DatabaseGetOperation<Folder.Parent> {}
 
     /** Options passed along in Create operations for Folders */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined>
-      extends foundry.abstract.types.DatabaseCreateOperation<Folder.CreateData, Folder.Parent, Temporary> {}
+    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
+      .DatabaseCreateOperation<Folder.CreateData, Folder.Parent, Temporary> {}
 
     /** Options passed along in Delete operations for Folders */
     interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<Folder.Parent> {}
@@ -286,8 +286,9 @@ declare namespace Folder {
     interface Update extends foundry.abstract.types.DatabaseUpdateOperation<Folder.UpdateData, Folder.Parent> {}
 
     /** Operation for {@linkcode Folder.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Folder.Database.Create<Temporary>> {}
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Folder.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@linkcode Folder.updateDocuments} */
     interface UpdateDocumentsOperation extends Document.Database.UpdateDocumentsOperation<Folder.Database.Update> {}
@@ -296,8 +297,9 @@ declare namespace Folder {
     interface DeleteDocumentsOperation extends Document.Database.DeleteDocumentsOperation<Folder.Database.Delete> {}
 
     /** Operation for {@linkcode Folder.create} */
-    interface CreateOperation<Temporary extends boolean | undefined>
-      extends Document.Database.CreateOperation<Folder.Database.Create<Temporary>> {}
+    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
+      Folder.Database.Create<Temporary>
+    > {}
 
     /** Operation for {@link Folder.update | `Folder#update`} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
@@ -418,8 +420,9 @@ declare namespace Folder {
    */
   // TODO: Generally fix this up to be correct, temp fix here for the appv1 removal
   // TODO (v13): `options.document` is also force set
-  interface CreateDialogOptions
-    extends InexactPartial<Omit<foundry.applications.sheets.FolderConfig.Configuration, "resolve">> {
+  interface CreateDialogOptions extends InexactPartial<
+    Omit<foundry.applications.sheets.FolderConfig.Configuration, "resolve">
+  > {
     /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
     resolve?: never;
   }
@@ -464,8 +467,7 @@ declare namespace Folder {
 
   /** @privateRemarks `keepId` omitted to override comment */
   interface ExportToCompendiumOptions
-    extends _ExportToCompendiumOptions,
-      Omit<ClientDocument.ToCompendiumOptions, "keepId"> {}
+    extends _ExportToCompendiumOptions, Omit<ClientDocument.ToCompendiumOptions, "keepId"> {}
 
   /** @internal */
   type _ExportDialogOptions = NullishProps<{
@@ -532,7 +534,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * @param data    - Initial data from which to construct the `Folder`
    * @param context - Construction context options
    */
-  constructor(data: Folder.CreateData, context?: Folder.ConstructionContext);
+  constructor(data: Folder.CreateData<SubType>, context?: Folder.ConstructionContext);
 
   /**
    * The depth of this folder in its sidebar tree
