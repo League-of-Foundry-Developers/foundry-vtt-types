@@ -73,40 +73,40 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseAmbientSound.CreateInput[],
-    operation?: BaseAmbientSound.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseAmbientSound.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseAmbientSound.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseAmbientSound.UpdateInput[],
-    operation?: BaseAmbientSound.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<AmbientSoundDocument.Implementation>>;
+    operation?: BaseAmbientSound.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<AmbientSoundDocument.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseAmbientSound.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<AmbientSoundDocument.Implementation>>;
+    operation?: BaseAmbientSound.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<AmbientSoundDocument.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseAmbientSound.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseAmbientSound.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseAmbientSound.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseAmbientSound.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseAmbientSound.UpdateInput,
-    operation?: BaseAmbientSound.Database2.UpdateOneDocumentOperation,
+    operation?: BaseAmbientSound.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseAmbientSound.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseAmbientSound.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   /**
    * @privateRemarks `AmbientSoundDocument`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
    * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
    * chance of index entry return), so this always returns `null`
    */
-  static override get(documentId: string, operation?: BaseAmbientSound.Database2.GetDocumentsOperation): null;
+  static override get(documentId: string, operation?: BaseAmbientSound.Database.GetDocumentsOperation): null;
 
   /** @privateRemarks `AmbientSoundDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
@@ -129,69 +129,69 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   protected override _preCreate(
     data: BaseAmbientSound.CreateData,
-    options: BaseAmbientSound.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseAmbientSound.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseAmbientSound.CreateData,
-    options: BaseAmbientSound.Database2.OnCreateOptions,
+    options: BaseAmbientSound.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: AmbientSoundDocument.Implementation[],
-    operation: BaseAmbientSound.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseAmbientSound.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: AmbientSoundDocument.Stored[],
-    operation: BaseAmbientSound.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseAmbientSound.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseAmbientSound.UpdateData,
-    options: BaseAmbientSound.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseAmbientSound.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseAmbientSound.UpdateData,
-    options: BaseAmbientSound.Database2.OnUpdateOptions,
+    options: BaseAmbientSound.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: AmbientSoundDocument.Stored[],
-    operation: BaseAmbientSound.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseAmbientSound.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: AmbientSoundDocument.Stored[],
-    operation: BaseAmbientSound.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseAmbientSound.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseAmbientSound.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseAmbientSound.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseAmbientSound.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseAmbientSound.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: AmbientSoundDocument.Stored[],
-    operation: BaseAmbientSound.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseAmbientSound.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: AmbientSoundDocument.Stored[],
-    operation: BaseAmbientSound.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseAmbientSound.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -201,7 +201,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   protected static override _onCreateDocuments(
     documents: AmbientSoundDocument.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAmbientSound.Database2.OnCreateDocumentsOperation,
+    context: BaseAmbientSound.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -211,7 +211,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   protected static override _onUpdateDocuments(
     documents: AmbientSoundDocument.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAmbientSound.Database2.OnUpdateDocumentsOperation,
+    context: BaseAmbientSound.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -221,7 +221,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   protected static override _onDeleteDocuments(
     documents: AmbientSoundDocument.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseAmbientSound.Database2.OnDeleteDocumentsOperation,
+    context: BaseAmbientSound.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -267,7 +267,7 @@ declare namespace BaseAmbientSound {
   export import UpdateData = AmbientSoundDocument.UpdateData;
   export import UpdateInput = AmbientSoundDocument.UpdateInput;
   export import Schema = AmbientSoundDocument.Schema;
-  export import Database2 = AmbientSoundDocument.Database;
+  export import Database = AmbientSoundDocument.Database;
   export import TemporaryIf = AmbientSoundDocument.TemporaryIf;
   export import Flags = AmbientSoundDocument.Flags;
 

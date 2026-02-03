@@ -102,33 +102,33 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseFolder.CreateInput[],
-    operation?: BaseFolder.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseFolder.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseFolder.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseFolder.UpdateInput[],
-    operation?: BaseFolder.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<Folder.Implementation>>;
+    operation?: BaseFolder.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<Folder.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseFolder.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<Folder.Implementation>>;
+    operation?: BaseFolder.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<Folder.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseFolder.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseFolder.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseFolder.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseFolder.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseFolder.UpdateInput,
-    operation?: BaseFolder.Database2.UpdateOneDocumentOperation,
+    operation?: BaseFolder.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseFolder.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseFolder.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   /** @privateRemarks `Folder`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
@@ -151,69 +151,69 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   protected override _preCreate(
     data: BaseFolder.CreateData,
-    options: BaseFolder.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseFolder.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseFolder.CreateData,
-    options: BaseFolder.Database2.OnCreateOptions,
+    options: BaseFolder.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Folder.Implementation[],
-    operation: BaseFolder.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseFolder.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Folder.Stored[],
-    operation: BaseFolder.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseFolder.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseFolder.UpdateData,
-    options: BaseFolder.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseFolder.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseFolder.UpdateData,
-    options: BaseFolder.Database2.OnUpdateOptions,
+    options: BaseFolder.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Folder.Stored[],
-    operation: BaseFolder.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseFolder.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Folder.Stored[],
-    operation: BaseFolder.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseFolder.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseFolder.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseFolder.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseFolder.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseFolder.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Folder.Stored[],
-    operation: BaseFolder.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseFolder.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Folder.Stored[],
-    operation: BaseFolder.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseFolder.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -223,7 +223,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   protected static override _onCreateDocuments(
     documents: Folder.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseFolder.Database2.OnCreateDocumentsOperation,
+    context: BaseFolder.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -233,7 +233,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   protected static override _onUpdateDocuments(
     documents: Folder.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseFolder.Database2.OnUpdateDocumentsOperation,
+    context: BaseFolder.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -243,7 +243,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   protected static override _onDeleteDocuments(
     documents: Folder.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseFolder.Database2.OnDeleteDocumentsOperation,
+    context: BaseFolder.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -293,7 +293,7 @@ declare namespace BaseFolder {
   export import UpdateData = Folder.UpdateData;
   export import UpdateInput = Folder.UpdateInput;
   export import Schema = Folder.Schema;
-  export import Database2 = Folder.Database;
+  export import Database = Folder.Database;
   export import TemporaryIf = Folder.TemporaryIf;
   export import Flags = Folder.Flags;
 

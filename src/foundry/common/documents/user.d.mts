@@ -119,35 +119,35 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseUser.CreateInput[],
-    operation?: BaseUser.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseUser.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseUser.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseUser.UpdateInput[],
-    operation?: BaseUser.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<User.Implementation>>;
+    operation?: BaseUser.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<User.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseUser.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<User.Implementation>>;
+    operation?: BaseUser.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<User.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseUser.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseUser.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseUser.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseUser.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseUser.UpdateInput,
-    operation?: BaseUser.Database2.UpdateOneDocumentOperation,
+    operation?: BaseUser.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseUser.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseUser.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, operation?: BaseUser.Database2.GetDocumentsOperation): User.Stored | null;
+  static override get(documentId: string, operation?: BaseUser.Database.GetDocumentsOperation): User.Stored | null;
 
   /** @privateRemarks `User`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
@@ -170,69 +170,69 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   protected override _preCreate(
     data: BaseUser.CreateData,
-    options: BaseUser.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseUser.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseUser.CreateData,
-    options: BaseUser.Database2.OnCreateOptions,
+    options: BaseUser.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: User.Implementation[],
-    operation: BaseUser.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseUser.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: User.Stored[],
-    operation: BaseUser.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseUser.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseUser.UpdateData,
-    options: BaseUser.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseUser.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseUser.UpdateData,
-    options: BaseUser.Database2.OnUpdateOptions,
+    options: BaseUser.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: User.Stored[],
-    operation: BaseUser.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseUser.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: User.Stored[],
-    operation: BaseUser.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseUser.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseUser.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseUser.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseUser.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseUser.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: User.Stored[],
-    operation: BaseUser.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseUser.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: User.Stored[],
-    operation: BaseUser.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseUser.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -242,7 +242,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   protected static override _onCreateDocuments(
     documents: User.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseUser.Database2.OnCreateDocumentsOperation,
+    context: BaseUser.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -252,7 +252,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   protected static override _onUpdateDocuments(
     documents: User.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseUser.Database2.OnUpdateDocumentsOperation,
+    context: BaseUser.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -262,7 +262,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   protected static override _onDeleteDocuments(
     documents: User.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseUser.Database2.OnDeleteDocumentsOperation,
+    context: BaseUser.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -307,7 +307,7 @@ declare namespace BaseUser {
   export import UpdateData = User.UpdateData;
   export import UpdateInput = User.UpdateInput;
   export import Schema = User.Schema;
-  export import Database2 = User.Database;
+  export import Database = User.Database;
   export import TemporaryIf = User.TemporaryIf;
   export import Flags = User.Flags;
   export import PingData = User.PingData;

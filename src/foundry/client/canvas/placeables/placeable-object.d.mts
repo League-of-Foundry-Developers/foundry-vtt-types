@@ -372,7 +372,8 @@ declare abstract class PlaceableObject<
    * @param user   - The User performing the action
    * @param action - The named action being attempted
    * @returns Does the User have rights to perform the action?
-   * @see {@linkcode PlaceableObject.Action}
+   * @remarks See {@linkcode PlaceableObject.Action}.
+   * @privateRemarks `can` and its associated methods are all temporary-document-safe as of 13.351.
    */
   can(user: User.Implementation, action: PlaceableObject.Action): boolean;
 
@@ -725,6 +726,7 @@ declare namespace PlaceableObject {
    * While in theory a custom action could be added through a custom `_can*` method method Atropos
    * has indicated that this is not intended to be user-extensible.
    */
+  // TODO: They also check non-titlecase in v13
   type BaseAction = "configure" | "control" | "view" | "create" | "drag" | "hover" | "update" | "delete";
 
   type Action = Titlecase<BaseAction> | BaseAction;

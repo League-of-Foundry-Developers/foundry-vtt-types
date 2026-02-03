@@ -14,11 +14,11 @@ new TestAD();
 // @ts-expect-error ActorDeltas require a valid `parent` to be passed in its `context`
 new TestAD(undefined, { strict: false });
 
-const myDelta = new TestAD({}, { parent: someToken });
+const myDelta = new ActorDelta.implementation({}, { parent: someToken });
 
-declare const someActor: Actor.Implementation;
-expectTypeOf(TestAD.applyDelta(myDelta, someActor)).toEqualTypeOf<Actor.Implementation | null>();
-expectTypeOf(TestAD.applyDelta(myDelta, someActor, {})).toEqualTypeOf<Actor.Implementation | null>();
+declare const someActor: Actor.Stored;
+expectTypeOf(TestAD.applyDelta(myDelta, someActor)).toEqualTypeOf<Actor.Implementation | Actor.Stored>();
+expectTypeOf(TestAD.applyDelta(myDelta, someActor, {})).toEqualTypeOf<Actor.Implementation | Actor.Stored>();
 // @ts-expect-error parent is not allowed to be passed, as that context is used for the synthetic actor creation, its parent must be the same as the delta's parent
 expectTypeOf(TestAD.applyDelta(myDelta, someActor, { parent: someToken })).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(
@@ -27,7 +27,7 @@ expectTypeOf(
     parentCollection: "foo",
     strict: false,
   }),
-).toEqualTypeOf<Actor.Implementation | null>();
+).toEqualTypeOf<Actor.Implementation | Actor.Stored>();
 
 new TestAD(
   {
@@ -90,7 +90,7 @@ new TestAD(
   { parent: someToken },
 );
 
-expectTypeOf(myDelta).toEqualTypeOf<BaseActorDelta>();
+expectTypeOf(myDelta).toEqualTypeOf<ActorDelta.Implementation>();
 
 expectTypeOf(myDelta._id).toEqualTypeOf<string | null>();
 expectTypeOf(myDelta.name).toEqualTypeOf<string | null>();
@@ -120,8 +120,8 @@ expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", { exact: undefined
 // @ts-expect-error Tile is not a valid name of an embedded document of Actor
 myDelta.getBaseCollection("Tile");
 expectTypeOf(myDelta.getBaseCollection("ActiveEffect")).toEqualTypeOf<
-  EmbeddedCollection<ActiveEffect.Implementation, Actor.Implementation> | undefined
+  EmbeddedCollection<ActiveEffect.Stored, Actor.Implementation> | undefined
 >();
 expectTypeOf(myDelta.getBaseCollection("Item")).toEqualTypeOf<
-  EmbeddedCollection<Item.Implementation, Actor.Implementation> | undefined
+  EmbeddedCollection<Item.Stored, Actor.Implementation> | undefined
 >();

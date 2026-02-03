@@ -94,37 +94,37 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseJournalEntry.CreateInput[],
-    operation?: BaseJournalEntry.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseJournalEntry.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseJournalEntry.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseJournalEntry.UpdateInput[],
-    operation?: BaseJournalEntry.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<JournalEntry.Implementation>>;
+    operation?: BaseJournalEntry.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<JournalEntry.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseJournalEntry.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<JournalEntry.Implementation>>;
+    operation?: BaseJournalEntry.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<JournalEntry.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseJournalEntry.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseJournalEntry.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseJournalEntry.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseJournalEntry.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseJournalEntry.UpdateInput,
-    operation?: BaseJournalEntry.Database2.UpdateOneDocumentOperation,
+    operation?: BaseJournalEntry.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseJournalEntry.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseJournalEntry.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    operation?: BaseJournalEntry.Database2.GetDocumentsOperation,
+    operation?: BaseJournalEntry.Database.GetDocumentsOperation,
   ): JournalEntry.Stored | CompendiumCollection.IndexEntry<"JournalEntry"> | null;
 
   static override getCollectionName<Name extends string>(
@@ -180,69 +180,69 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   protected override _preCreate(
     data: BaseJournalEntry.CreateData,
-    options: BaseJournalEntry.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseJournalEntry.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseJournalEntry.CreateData,
-    options: BaseJournalEntry.Database2.OnCreateOptions,
+    options: BaseJournalEntry.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: JournalEntry.Implementation[],
-    operation: BaseJournalEntry.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntry.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: JournalEntry.Stored[],
-    operation: BaseJournalEntry.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntry.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseJournalEntry.UpdateData,
-    options: BaseJournalEntry.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseJournalEntry.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseJournalEntry.UpdateData,
-    options: BaseJournalEntry.Database2.OnUpdateOptions,
+    options: BaseJournalEntry.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: JournalEntry.Stored[],
-    operation: BaseJournalEntry.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntry.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: JournalEntry.Stored[],
-    operation: BaseJournalEntry.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntry.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseJournalEntry.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseJournalEntry.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseJournalEntry.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseJournalEntry.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: JournalEntry.Stored[],
-    operation: BaseJournalEntry.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntry.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: JournalEntry.Stored[],
-    operation: BaseJournalEntry.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntry.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -252,7 +252,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   protected static override _onCreateDocuments(
     documents: JournalEntry.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntry.Database2.OnCreateDocumentsOperation,
+    context: BaseJournalEntry.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -262,7 +262,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   protected static override _onUpdateDocuments(
     documents: JournalEntry.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntry.Database2.OnUpdateDocumentsOperation,
+    context: BaseJournalEntry.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -272,7 +272,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   protected static override _onDeleteDocuments(
     documents: JournalEntry.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntry.Database2.OnDeleteDocumentsOperation,
+    context: BaseJournalEntry.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -318,7 +318,7 @@ declare namespace BaseJournalEntry {
   export import UpdateData = JournalEntry.UpdateData;
   export import UpdateInput = JournalEntry.UpdateInput;
   export import Schema = JournalEntry.Schema;
-  export import Database2 = JournalEntry.Database;
+  export import Database = JournalEntry.Database;
   export import TemporaryIf = JournalEntry.TemporaryIf;
   export import Flags = JournalEntry.Flags;
   export import CoreFlags = JournalEntry.CoreFlags;

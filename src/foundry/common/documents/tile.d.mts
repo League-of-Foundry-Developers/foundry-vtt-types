@@ -113,40 +113,40 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseTile.CreateInput[],
-    operation?: BaseTile.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseTile.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseTile.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseTile.UpdateInput[],
-    operation?: BaseTile.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<TileDocument.Implementation>>;
+    operation?: BaseTile.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<TileDocument.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseTile.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<TileDocument.Implementation>>;
+    operation?: BaseTile.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<TileDocument.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseTile.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseTile.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseTile.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseTile.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseTile.UpdateInput,
-    operation?: BaseTile.Database2.UpdateOneDocumentOperation,
+    operation?: BaseTile.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseTile.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseTile.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   /**
    * @privateRemarks `TileDocument`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
    * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
    * chance of index entry return), so this always returns `null`
    */
-  static override get(documentId: string, operation?: BaseTile.Database2.GetDocumentsOperation): null;
+  static override get(documentId: string, operation?: BaseTile.Database.GetDocumentsOperation): null;
 
   /** @privateRemarks `TileDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
@@ -169,69 +169,69 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   protected override _preCreate(
     data: BaseTile.CreateData,
-    options: BaseTile.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseTile.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseTile.CreateData,
-    options: BaseTile.Database2.OnCreateOptions,
+    options: BaseTile.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: TileDocument.Implementation[],
-    operation: BaseTile.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseTile.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: TileDocument.Stored[],
-    operation: BaseTile.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseTile.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseTile.UpdateData,
-    options: BaseTile.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseTile.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseTile.UpdateData,
-    options: BaseTile.Database2.OnUpdateOptions,
+    options: BaseTile.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: TileDocument.Stored[],
-    operation: BaseTile.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseTile.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: TileDocument.Stored[],
-    operation: BaseTile.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseTile.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseTile.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseTile.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseTile.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseTile.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: TileDocument.Stored[],
-    operation: BaseTile.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseTile.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: TileDocument.Stored[],
-    operation: BaseTile.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseTile.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -241,7 +241,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   protected static override _onCreateDocuments(
     documents: TileDocument.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseTile.Database2.OnCreateDocumentsOperation,
+    context: BaseTile.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -251,7 +251,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   protected static override _onUpdateDocuments(
     documents: TileDocument.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseTile.Database2.OnUpdateDocumentsOperation,
+    context: BaseTile.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -261,7 +261,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   protected static override _onDeleteDocuments(
     documents: TileDocument.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseTile.Database2.OnDeleteDocumentsOperation,
+    context: BaseTile.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -307,7 +307,7 @@ declare namespace BaseTile {
   export import UpdateData = TileDocument.UpdateData;
   export import UpdateInput = TileDocument.UpdateInput;
   export import Schema = TileDocument.Schema;
-  export import Database2 = TileDocument.Database;
+  export import Database = TileDocument.Database;
   export import TemporaryIf = TileDocument.TemporaryIf;
   export import Flags = TileDocument.Flags;
   export import CoreFlags = TileDocument.CoreFlags;

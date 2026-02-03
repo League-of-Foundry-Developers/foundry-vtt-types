@@ -1244,7 +1244,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @param condition - The condition the Users must satisfy
    * @returns Is designated User?
    */
-  isDesignated(condition: (user: User.Implementation) => boolean): boolean;
+  isDesignated(condition: (user: User.Stored) => boolean): boolean;
 
   /**
    * @remarks Doesn't exist prior to data prep, set in {@link User.prepareDerivedData | `User#prepareDerivedData`}

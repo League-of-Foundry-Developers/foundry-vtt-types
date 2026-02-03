@@ -104,40 +104,40 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseMeasuredTemplate.CreateInput[],
-    operation?: BaseMeasuredTemplate.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseMeasuredTemplate.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseMeasuredTemplate.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseMeasuredTemplate.UpdateInput[],
-    operation?: BaseMeasuredTemplate.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<MeasuredTemplateDocument.Implementation>>;
+    operation?: BaseMeasuredTemplate.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<MeasuredTemplateDocument.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseMeasuredTemplate.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<MeasuredTemplateDocument.Implementation>>;
+    operation?: BaseMeasuredTemplate.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<MeasuredTemplateDocument.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseMeasuredTemplate.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseMeasuredTemplate.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseMeasuredTemplate.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseMeasuredTemplate.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseMeasuredTemplate.UpdateInput,
-    operation?: BaseMeasuredTemplate.Database2.UpdateOneDocumentOperation,
+    operation?: BaseMeasuredTemplate.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseMeasuredTemplate.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseMeasuredTemplate.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   /**
    * @privateRemarks `MeasuredTemplateDocument`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
    * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
    * chance of index entry return), so this always returns `null`
    */
-  static override get(documentId: string, operation?: BaseMeasuredTemplate.Database2.GetDocumentsOperation): null;
+  static override get(documentId: string, operation?: BaseMeasuredTemplate.Database.GetDocumentsOperation): null;
 
   /** @privateRemarks `MeasuredTemplateDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
@@ -160,69 +160,69 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   protected override _preCreate(
     data: BaseMeasuredTemplate.CreateData,
-    options: BaseMeasuredTemplate.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseMeasuredTemplate.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseMeasuredTemplate.CreateData,
-    options: BaseMeasuredTemplate.Database2.OnCreateOptions,
+    options: BaseMeasuredTemplate.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: MeasuredTemplateDocument.Implementation[],
-    operation: BaseMeasuredTemplate.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseMeasuredTemplate.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: MeasuredTemplateDocument.Stored[],
-    operation: BaseMeasuredTemplate.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseMeasuredTemplate.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseMeasuredTemplate.UpdateData,
-    options: BaseMeasuredTemplate.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseMeasuredTemplate.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseMeasuredTemplate.UpdateData,
-    options: BaseMeasuredTemplate.Database2.OnUpdateOptions,
+    options: BaseMeasuredTemplate.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: MeasuredTemplateDocument.Stored[],
-    operation: BaseMeasuredTemplate.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseMeasuredTemplate.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: MeasuredTemplateDocument.Stored[],
-    operation: BaseMeasuredTemplate.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseMeasuredTemplate.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseMeasuredTemplate.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseMeasuredTemplate.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseMeasuredTemplate.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseMeasuredTemplate.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: MeasuredTemplateDocument.Stored[],
-    operation: BaseMeasuredTemplate.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseMeasuredTemplate.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: MeasuredTemplateDocument.Stored[],
-    operation: BaseMeasuredTemplate.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseMeasuredTemplate.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -232,7 +232,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   protected static override _onCreateDocuments(
     documents: MeasuredTemplateDocument.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseMeasuredTemplate.Database2.OnCreateDocumentsOperation,
+    context: BaseMeasuredTemplate.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -242,7 +242,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   protected static override _onUpdateDocuments(
     documents: MeasuredTemplateDocument.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseMeasuredTemplate.Database2.OnUpdateDocumentsOperation,
+    context: BaseMeasuredTemplate.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -252,7 +252,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   protected static override _onDeleteDocuments(
     documents: MeasuredTemplateDocument.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseMeasuredTemplate.Database2.OnDeleteDocumentsOperation,
+    context: BaseMeasuredTemplate.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -300,7 +300,7 @@ declare namespace BaseMeasuredTemplate {
   export import UpdateData = MeasuredTemplateDocument.UpdateData;
   export import UpdateInput = MeasuredTemplateDocument.UpdateInput;
   export import Schema = MeasuredTemplateDocument.Schema;
-  export import Database2 = MeasuredTemplateDocument.Database;
+  export import Database = MeasuredTemplateDocument.Database;
   export import TemporaryIf = MeasuredTemplateDocument.TemporaryIf;
   export import Flags = MeasuredTemplateDocument.Flags;
 

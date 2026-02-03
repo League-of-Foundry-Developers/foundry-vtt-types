@@ -293,7 +293,7 @@ declare namespace FogExploration {
       Temporary extends boolean | undefined = boolean | undefined,
     > extends DatabaseBackend.CreateOperation<FogExploration.CreateInput, FogExploration.Parent, Temporary> {
       /**
-       * @remarks If `false`, prevents retrieving fog from the server as part of this operation.
+       * @remarks If explicitly `false`, prevents retrieving fog from the server as part of this operation.
        */
       loadFog?: boolean;
     }
@@ -440,7 +440,7 @@ declare namespace FogExploration {
       FogExploration.Parent
     > {
       /**
-       * @remarks If `false`, prevents retrieving fog from the server as part of this operation.
+       * @remarks If explicitly `false`, prevents retrieving fog from the server as part of this operation.
        */
       loadFog?: boolean;
     }
@@ -593,7 +593,7 @@ declare namespace FogExploration {
      */
     interface DeleteOperation extends DatabaseBackend.DeleteOperation<FogExploration.Parent> {
       /**
-       * @remarks If `false`, prevents retrieving fog from the server as part of this operation.
+       * @remarks If explicitly `false`, prevents retrieving fog from the server as part of this operation.
        */
       loadFog?: boolean;
     }

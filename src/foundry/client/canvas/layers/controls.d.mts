@@ -168,22 +168,24 @@ declare class ControlsLayer extends InteractionLayer {
 
   /**
    * Create and draw the Cursor object for a given User
-   * @param user - The User docuwment for whom to draw the cursor Container
+   * @param user - The User document for whom to draw the cursor Container
+   * @privateRemarks Despite {@linkcode Cursor}s allowing temporary users, doing so via this method would set `this.#cursors[null]`
    */
-  drawCursor(user: User.Implementation): Cursor;
+  drawCursor(user: User.Stored): Cursor;
 
   /**
    * Update the cursor when the user moves to a new position
    * @param user     - The User for whom to update the cursor
    * @param position - The new cursor position
+   * @privateRemarks See {@linkcode drawCursor} remarks
    */
-  updateCursor(user: User.Implementation, position: Canvas.Point | null): void;
+  updateCursor(user: User.Stored, position: Canvas.Point | null): void;
 
   /**
    * Update display of an active Ruler object for a user given provided data
    * @see {@link Ruler#update}
    */
-  updateRuler(user: User.Implementation, rulerData?: Ruler.UpdateData | null): void;
+  updateRuler(user: User.Stored, rulerData?: Ruler.UpdateData | null): void;
 
   /**
    * Handle a broadcast ping.
@@ -192,6 +194,7 @@ declare class ControlsLayer extends InteractionLayer {
    * @param position - The position on the canvas that was pinged.
    * @param data     - The broadcast ping data.
    * @returns A promise which resolves once the Ping has been drawn and animated
+   * @privateRemarks In practice this will always be passed a `User.Stored` by core, but passing a temporary one doesn't error.
    */
   handlePing(
     user: User.Implementation,
@@ -265,7 +268,8 @@ declare namespace ControlsLayer {
     /**
      * The user who pinged.
      * @remarks Only used to set the color of the ping. If `user?.color` ends up `undefined`, the relevant Ping class will provide a default color.
-     * If a `color` property is passed along with this, `color` will take precedence
+     * If a `color` property is passed along with this, `color` will take precedence.
+     * @privateRemarks Since only {@linkcode User.color | color} is accessed, temporary users are allowed.
      */
     user: User.Implementation;
   }>;

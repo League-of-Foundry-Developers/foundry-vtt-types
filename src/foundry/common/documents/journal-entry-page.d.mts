@@ -85,40 +85,40 @@ declare abstract class BaseJournalEntryPage<
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseJournalEntryPage.CreateInput[],
-    operation?: BaseJournalEntryPage.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseJournalEntryPage.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseJournalEntryPage.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseJournalEntryPage.UpdateInput[],
-    operation?: BaseJournalEntryPage.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<JournalEntryPage.Implementation>>;
+    operation?: BaseJournalEntryPage.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<JournalEntryPage.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseJournalEntryPage.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<JournalEntryPage.Implementation>>;
+    operation?: BaseJournalEntryPage.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<JournalEntryPage.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseJournalEntryPage.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseJournalEntryPage.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseJournalEntryPage.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseJournalEntryPage.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseJournalEntryPage.UpdateInput,
-    operation?: BaseJournalEntryPage.Database2.UpdateOneDocumentOperation,
+    operation?: BaseJournalEntryPage.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseJournalEntryPage.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseJournalEntryPage.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   /**
    * @privateRemarks `JournalEntryPage`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
    * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
    * chance of index entry return), so this always returns `null`
    */
-  static override get(documentId: string, operation?: BaseJournalEntryPage.Database2.GetDocumentsOperation): null;
+  static override get(documentId: string, operation?: BaseJournalEntryPage.Database.GetDocumentsOperation): null;
 
   /** @privateRemarks `JournalEntryPage`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
@@ -141,69 +141,69 @@ declare abstract class BaseJournalEntryPage<
 
   protected override _preCreate(
     data: BaseJournalEntryPage.CreateData,
-    options: BaseJournalEntryPage.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseJournalEntryPage.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseJournalEntryPage.CreateData,
-    options: BaseJournalEntryPage.Database2.OnCreateOptions,
+    options: BaseJournalEntryPage.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: JournalEntryPage.Implementation[],
-    operation: BaseJournalEntryPage.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntryPage.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: JournalEntryPage.Stored[],
-    operation: BaseJournalEntryPage.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntryPage.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseJournalEntryPage.UpdateData,
-    options: BaseJournalEntryPage.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseJournalEntryPage.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseJournalEntryPage.UpdateData,
-    options: BaseJournalEntryPage.Database2.OnUpdateOptions,
+    options: BaseJournalEntryPage.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: JournalEntryPage.Stored[],
-    operation: BaseJournalEntryPage.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntryPage.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: JournalEntryPage.Stored[],
-    operation: BaseJournalEntryPage.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntryPage.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseJournalEntryPage.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseJournalEntryPage.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseJournalEntryPage.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseJournalEntryPage.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: JournalEntryPage.Stored[],
-    operation: BaseJournalEntryPage.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntryPage.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: JournalEntryPage.Stored[],
-    operation: BaseJournalEntryPage.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntryPage.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -213,7 +213,7 @@ declare abstract class BaseJournalEntryPage<
   protected static override _onCreateDocuments(
     documents: JournalEntryPage.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryPage.Database2.OnCreateDocumentsOperation,
+    context: BaseJournalEntryPage.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -223,7 +223,7 @@ declare abstract class BaseJournalEntryPage<
   protected static override _onUpdateDocuments(
     documents: JournalEntryPage.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryPage.Database2.OnUpdateDocumentsOperation,
+    context: BaseJournalEntryPage.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -233,7 +233,7 @@ declare abstract class BaseJournalEntryPage<
   protected static override _onDeleteDocuments(
     documents: JournalEntryPage.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryPage.Database2.OnDeleteDocumentsOperation,
+    context: BaseJournalEntryPage.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -284,7 +284,7 @@ declare namespace BaseJournalEntryPage {
   export import UpdateData = JournalEntryPage.UpdateData;
   export import UpdateInput = JournalEntryPage.UpdateInput;
   export import Schema = JournalEntryPage.Schema;
-  export import Database2 = JournalEntryPage.Database;
+  export import Database = JournalEntryPage.Database;
   export import TemporaryIf = JournalEntryPage.TemporaryIf;
   export import Flags = JournalEntryPage.Flags;
 

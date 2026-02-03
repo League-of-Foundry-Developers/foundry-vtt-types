@@ -7,7 +7,7 @@ const doc = new AmbientLightDocument.implementation();
 
 // Test the inheritance
 expectTypeOf(doc.documentName).toEqualTypeOf<"AmbientLight">(); // Document
-expectTypeOf(doc.uuid).toEqualTypeOf<string>(); // clientDocumentMixin
+expectTypeOf(doc.uuid).toEqualTypeOf<string | null>(); // clientDocumentMixin
 expectTypeOf(CONFIG.AmbientLight.objectClass).toEqualTypeOf<AmbientLight.ImplementationClass>(); // proof the following should work
 expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Implementation | null>(); // canvasDocumentMixin
 expectTypeOf(doc.layer).toEqualTypeOf<LightingLayer>(); // canvasDocumentMixin

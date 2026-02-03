@@ -1096,7 +1096,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    * @remarks "Upgrade to OBSERVER ownership if the journal entry is in a LIMITED compendium,
    * as LIMITED has no special meaning for journal entries in this context."
    */
-  override getUserLevel(user?: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  override getUserLevel(user?: User.Stored): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Return a reference to the Note instance for this Journal Entry in the current Scene, if any.

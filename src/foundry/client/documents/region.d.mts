@@ -618,9 +618,10 @@ declare namespace RegionDocument {
      * @remarks This interface was previously typed for passing to {@linkcode RegionDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<RegionDocument.CreateInput, RegionDocument.Parent, Temporary> {}
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<RegionDocument.CreateInput, RegionDocument.Parent, Temporary>,
+        DatabaseBackend._CommonCanvasDocumentCreateProperties {}
 
     /**
      * The interface for passing to {@linkcode RegionDocument.create} or {@linkcode RegionDocument.createDocuments}.
@@ -757,10 +758,10 @@ declare namespace RegionDocument {
      * @remarks This interface was previously typed for passing to {@linkcode RegionDocument.update | RegionDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
-      RegionDocument.UpdateInput,
-      RegionDocument.Parent
-    > {}
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<RegionDocument.UpdateInput, RegionDocument.Parent>,
+        DatabaseBackend._CommonCanvasDocumentUpdateProperties {}
 
     /**
      * The interface for passing to {@linkcode RegionDocument.update | RegionDocument#update}.
@@ -1296,7 +1297,7 @@ declare namespace RegionDocument {
     region: RegionDocument.Implementation;
 
     /** The User that triggered the event */
-    user: User.Implementation;
+    user: User.Stored;
   }
 
   interface SocketRegionEvent {

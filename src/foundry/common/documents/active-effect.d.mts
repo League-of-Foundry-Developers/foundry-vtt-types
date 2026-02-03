@@ -51,8 +51,8 @@ declare abstract class BaseActiveEffect<
 
   protected override _preCreate(
     data: BaseActiveEffect.CreateData,
-    options: BaseActiveEffect.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseActiveEffect.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /**
@@ -115,40 +115,40 @@ declare abstract class BaseActiveEffect<
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActiveEffect.CreateInput[],
-    operation?: BaseActiveEffect.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseActiveEffect.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseActiveEffect.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseActiveEffect.UpdateInput[],
-    operation?: BaseActiveEffect.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<ActiveEffect.Implementation>>;
+    operation?: BaseActiveEffect.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<ActiveEffect.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseActiveEffect.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<ActiveEffect.Implementation>>;
+    operation?: BaseActiveEffect.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<ActiveEffect.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseActiveEffect.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseActiveEffect.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseActiveEffect.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseActiveEffect.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseActiveEffect.UpdateInput,
-    operation?: BaseActiveEffect.Database2.UpdateOneDocumentOperation,
+    operation?: BaseActiveEffect.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseActiveEffect.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseActiveEffect.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   /**
    * @privateRemarks `ActiveEffect`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
    * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
    * chance of index entry return), so this always returns `null`
    */
-  static override get(documentId: string, operation?: BaseActiveEffect.Database2.GetDocumentsOperation): null;
+  static override get(documentId: string, operation?: BaseActiveEffect.Database.GetDocumentsOperation): null;
 
   /** @privateRemarks `ActiveEffect`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
@@ -171,63 +171,63 @@ declare abstract class BaseActiveEffect<
 
   protected override _onCreate(
     data: BaseActiveEffect.CreateData,
-    options: BaseActiveEffect.Database2.OnCreateOptions,
+    options: BaseActiveEffect.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: ActiveEffect.Implementation[],
-    operation: BaseActiveEffect.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseActiveEffect.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: ActiveEffect.Stored[],
-    operation: BaseActiveEffect.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseActiveEffect.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseActiveEffect.UpdateData,
-    options: BaseActiveEffect.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseActiveEffect.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseActiveEffect.UpdateData,
-    options: BaseActiveEffect.Database2.OnUpdateOptions,
+    options: BaseActiveEffect.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: ActiveEffect.Stored[],
-    operation: BaseActiveEffect.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseActiveEffect.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: ActiveEffect.Stored[],
-    operation: BaseActiveEffect.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseActiveEffect.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseActiveEffect.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseActiveEffect.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseActiveEffect.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseActiveEffect.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: ActiveEffect.Stored[],
-    operation: BaseActiveEffect.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseActiveEffect.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: ActiveEffect.Stored[],
-    operation: BaseActiveEffect.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseActiveEffect.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -237,7 +237,7 @@ declare abstract class BaseActiveEffect<
   protected static override _onCreateDocuments(
     documents: ActiveEffect.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActiveEffect.Database2.OnCreateDocumentsOperation,
+    context: BaseActiveEffect.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -247,7 +247,7 @@ declare abstract class BaseActiveEffect<
   protected static override _onUpdateDocuments(
     documents: ActiveEffect.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActiveEffect.Database2.OnUpdateDocumentsOperation,
+    context: BaseActiveEffect.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -257,7 +257,7 @@ declare abstract class BaseActiveEffect<
   protected static override _onDeleteDocuments(
     documents: ActiveEffect.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActiveEffect.Database2.OnDeleteDocumentsOperation,
+    context: BaseActiveEffect.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -308,7 +308,7 @@ declare namespace BaseActiveEffect {
   export import UpdateData = ActiveEffect.UpdateData;
   export import UpdateInput = ActiveEffect.UpdateInput;
   export import Schema = ActiveEffect.Schema;
-  export import Database2 = ActiveEffect.Database;
+  export import Database = ActiveEffect.Database;
   export import TemporaryIf = ActiveEffect.TemporaryIf;
   export import Flags = ActiveEffect.Flags;
   export import CoreFlags = ActiveEffect.CoreFlags;

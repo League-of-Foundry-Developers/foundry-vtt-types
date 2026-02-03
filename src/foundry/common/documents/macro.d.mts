@@ -84,8 +84,8 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   protected override _preCreate(
     data: BaseMacro.CreateData,
-    options: BaseMacro.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseMacro.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   type: SubType;
@@ -124,37 +124,37 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseMacro.CreateInput[],
-    operation?: BaseMacro.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseMacro.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseMacro.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseMacro.UpdateInput[],
-    operation?: BaseMacro.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<Macro.Implementation>>;
+    operation?: BaseMacro.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<Macro.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseMacro.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<Macro.Implementation>>;
+    operation?: BaseMacro.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<Macro.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseMacro.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseMacro.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseMacro.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseMacro.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseMacro.UpdateInput,
-    operation?: BaseMacro.Database2.UpdateOneDocumentOperation,
+    operation?: BaseMacro.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseMacro.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseMacro.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    operation?: BaseMacro.Database2.GetDocumentsOperation,
+    operation?: BaseMacro.Database.GetDocumentsOperation,
   ): Macro.Stored | CompendiumCollection.IndexEntry<"Macro"> | null;
 
   /** @privateRemarks `Macro`s have no embedded documents, so this always returns `null` */
@@ -178,63 +178,63 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   protected override _onCreate(
     data: BaseMacro.CreateData,
-    options: BaseMacro.Database2.OnCreateOptions,
+    options: BaseMacro.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Macro.Implementation[],
-    operation: BaseMacro.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseMacro.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Macro.Stored[],
-    operation: BaseMacro.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseMacro.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseMacro.UpdateData,
-    options: BaseMacro.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseMacro.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseMacro.UpdateData,
-    options: BaseMacro.Database2.OnUpdateOptions,
+    options: BaseMacro.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Macro.Stored[],
-    operation: BaseMacro.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseMacro.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Macro.Stored[],
-    operation: BaseMacro.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseMacro.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseMacro.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseMacro.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseMacro.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseMacro.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Macro.Stored[],
-    operation: BaseMacro.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseMacro.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Macro.Stored[],
-    operation: BaseMacro.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseMacro.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -244,7 +244,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   protected static override _onCreateDocuments(
     documents: Macro.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseMacro.Database2.OnCreateDocumentsOperation,
+    context: BaseMacro.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -254,7 +254,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   protected static override _onUpdateDocuments(
     documents: Macro.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseMacro.Database2.OnUpdateDocumentsOperation,
+    context: BaseMacro.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -264,7 +264,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   protected static override _onDeleteDocuments(
     documents: Macro.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseMacro.Database2.OnDeleteDocumentsOperation,
+    context: BaseMacro.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -313,7 +313,7 @@ declare namespace BaseMacro {
   export import UpdateData = Macro.UpdateData;
   export import UpdateInput = Macro.UpdateInput;
   export import Schema = Macro.Schema;
-  export import Database2 = Macro.Database;
+  export import Database = Macro.Database;
   export import TemporaryIf = Macro.TemporaryIf;
   export import Flags = Macro.Flags;
 

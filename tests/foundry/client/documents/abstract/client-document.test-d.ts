@@ -113,7 +113,7 @@ expectTypeOf(Item.fromImport(itemSource, constructionContext)).toEqualTypeOf<Pro
 // Test the inheritance
 expectTypeOf(item.documentName).toEqualTypeOf<"Item">(); // Document
 expectTypeOf(item.migrateSystemData()).toEqualTypeOf<object>(); // Base-Document
-expectTypeOf(item.uuid).toEqualTypeOf<string>(); // ClientDocumentMixin
+expectTypeOf(item.uuid).toEqualTypeOf<string | null>(); // ClientDocumentMixin
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>(); // class itself
 
 // Properties

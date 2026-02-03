@@ -6,7 +6,9 @@ const sceneNavigation = new foundry.applications.ui.SceneNavigation({});
 expectTypeOf(sceneNavigation.expanded).toEqualTypeOf<boolean>();
 
 Hooks.on("getSceneContextOptions", (app, contextOptions) => {
-  expectTypeOf(app).toEqualTypeOf<foundry.applications.ui.SceneNavigation>();
+  expectTypeOf(app).toEqualTypeOf<
+    foundry.applications.ui.SceneNavigation.Any | foundry.applications.sidebar.tabs.SceneDirectory.Any
+  >();
   expectTypeOf(contextOptions).toEqualTypeOf<foundry.applications.ux.ContextMenu.Entry<HTMLElement>[]>();
 });
 

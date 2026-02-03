@@ -61,6 +61,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    * @param user - The user attempting to change the round
    * @returns Is the user allowed to change the round?
    * @remarks Foundry's implementation always returns `true`
+   * @privateRemarks Called by the permission check methods, so a temporary `User` is possible
    */
   protected _canChangeRound(user: User.Implementation): boolean;
 
@@ -69,13 +70,14 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    * @param user - The user attempting to change the turn
    * @returns Is the user allowed to change the turn?
    * @remarks Foundry's implementation always returns `true`
+   * @privateRemarks Called by the permission check methods, so a temporary `User` is possible
    */
   protected _canChangeTurn(user: User.Implementation): boolean;
 
   protected override _preUpdate(
     changed: BaseCombat.UpdateData,
-    options: BaseCombat.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseCombat.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /*
@@ -117,35 +119,35 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseCombat.CreateInput[],
-    operation?: BaseCombat.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseCombat.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseCombat.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseCombat.UpdateInput[],
-    operation?: BaseCombat.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<Combat.Implementation>>;
+    operation?: BaseCombat.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<Combat.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseCombat.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<Combat.Implementation>>;
+    operation?: BaseCombat.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<Combat.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseCombat.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseCombat.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseCombat.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseCombat.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseCombat.UpdateInput,
-    operation?: BaseCombat.Database2.UpdateOneDocumentOperation,
+    operation?: BaseCombat.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseCombat.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseCombat.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, operation?: BaseCombat.Database2.GetDocumentsOperation): Combat.Stored | null;
+  static override get(documentId: string, operation?: BaseCombat.Database.GetDocumentsOperation): Combat.Stored | null;
 
   static override getCollectionName<Name extends string>(
     name: OverlapsWith<Name, BaseCombat.Embedded.CollectionName>,
@@ -196,63 +198,63 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   protected override _preCreate(
     data: BaseCombat.CreateData,
-    options: BaseCombat.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseCombat.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseCombat.CreateData,
-    options: BaseCombat.Database2.OnCreateOptions,
+    options: BaseCombat.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Combat.Implementation[],
-    operation: BaseCombat.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseCombat.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Combat.Stored[],
-    operation: BaseCombat.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseCombat.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _onUpdate(
     changed: BaseCombat.UpdateData,
-    options: BaseCombat.Database2.OnUpdateOptions,
+    options: BaseCombat.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Combat.Stored[],
-    operation: BaseCombat.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseCombat.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Combat.Stored[],
-    operation: BaseCombat.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseCombat.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseCombat.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseCombat.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseCombat.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseCombat.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Combat.Stored[],
-    operation: BaseCombat.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseCombat.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Combat.Stored[],
-    operation: BaseCombat.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseCombat.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -262,7 +264,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   protected static override _onCreateDocuments(
     documents: Combat.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCombat.Database2.OnCreateDocumentsOperation,
+    context: BaseCombat.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -272,7 +274,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   protected static override _onUpdateDocuments(
     documents: Combat.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCombat.Database2.OnUpdateDocumentsOperation,
+    context: BaseCombat.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -282,7 +284,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   protected static override _onDeleteDocuments(
     documents: Combat.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseCombat.Database2.OnDeleteDocumentsOperation,
+    context: BaseCombat.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -335,7 +337,7 @@ declare namespace BaseCombat {
   export import UpdateData = Combat.UpdateData;
   export import UpdateInput = Combat.UpdateInput;
   export import Schema = Combat.Schema;
-  export import Database2 = Combat.Database;
+  export import Database = Combat.Database;
   export import TemporaryIf = Combat.TemporaryIf;
   export import Flags = Combat.Flags;
 

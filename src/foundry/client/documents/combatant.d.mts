@@ -1129,7 +1129,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   get token(): TokenDocument.Implementation | null;
 
   /** An array of non-Gamemaster Users who have ownership of this Combatant. */
-  get players(): User.Implementation[];
+  get players(): User.Stored[];
 
   /**
    * Has this combatant been marked as defeated?

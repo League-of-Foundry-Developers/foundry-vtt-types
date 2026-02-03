@@ -194,6 +194,7 @@ declare class CompendiumCollection<
    * Get the ownership level that a User has for this Compendium pack.
    * @param user - The user being tested (default: {@linkcode Game.user | game.user})
    * @returns The ownership level in {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}
+   * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} methods work without error, so `Implementation` over `Stored`.
    */
   getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
@@ -203,6 +204,7 @@ declare class CompendiumCollection<
    * @param permission - The permission level from {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS} to test
    * @param options    - Additional options involved in the permission test
    * @returns Does the user have this permission level over the Compendium pack?
+   * @privateRemarks Temporary `User`s still have {@linkcode User.role | role}s, so `Implementation` over `Stored`.
    */
   testUserPermission(
     user: User.Implementation,

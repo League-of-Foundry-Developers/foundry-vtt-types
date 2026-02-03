@@ -520,6 +520,9 @@ declare global {
        */
       collection: typeof foundry.documents.collections.CombatEncounters;
 
+      /** @defaultValue `new `{@linkcode foundry.data.CombatConfiguration}`()` */
+      settings: foundry.data.CombatConfiguration;
+
       /** @defaultValue `"fas fa-swords"` */
       sidebarIcon: string;
 
@@ -1993,8 +1996,11 @@ declare global {
         /** @defaultValue `data.TerrainData` */
         TerrainData: typeof foundry.data.BaseTerrainData;
 
+        /** The movement cost aggregator. */
+        costAggregator: TokenDocument.MovementCostAggregator;
+
         /**
-         * The default movementa nimation speed in grid spaces per second.
+         * The default movement animation speed in grid spaces per second.
          * @defaultValue `6`
          */
         defaultSpeed: number;
@@ -2009,27 +2015,32 @@ declare global {
          *   walk: {
          *     label: "TOKEN.MOVEMENT.ACTIONS.walk.label",
          *     icon: "fa-solid fa-person-walking",
+         *     img: "icons/svg/walk.svg",
          *     order: 0
          *   },
          *   fly: {
          *     label: "TOKEN.MOVEMENT.ACTIONS.fly.label",
          *     icon: "fa-solid fa-person-fairy",
+         *     img: "icons/svg/wing.svg",
          *     order: 1
          *   },
          *   swim: {
          *     label: "TOKEN.MOVEMENT.ACTIONS.swim.label",
          *     icon: "fa-solid fa-person-swimming",
+         *     img: "icons/svg/whale.svg",
          *     order: 2,
          *     getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2})
          *   },
          *   burrow: {
          *     label: "TOKEN.MOVEMENT.ACTIONS.burrow.label",
          *     icon: "fa-solid fa-person-digging",
+         *     img: "icons/svg/burrow.svg",
          *     order: 3
          *   },
          *   crawl: {
          *     label: "TOKEN.MOVEMENT.ACTIONS.crawl.label",
          *     icon: "fa-solid fa-person-praying",
+         *     img: "icons/svg/leg.svg",
          *     order: 4,
          *     getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
          *     deriveTerrainDifficulty: ({walk}) => walk,
@@ -2038,6 +2049,7 @@ declare global {
          *   climb: {
          *     label: "TOKEN.MOVEMENT.ACTIONS.climb.label",
          *     icon: "fa-solid fa-person-through-window",
+         *     img: "icons/svg/ladder.svg",
          *     order: 5,
          *     getAnimationOptions: () => ({movementSpeed: CONFIG.Token.movement.defaultSpeed / 2}),
          *     deriveTerrainDifficulty: ({walk}) => walk,
@@ -2046,6 +2058,7 @@ declare global {
          *   jump: {
          *     label: "TOKEN.MOVEMENT.ACTIONS.jump.label",
          *     icon: "fa-solid fa-person-running-fast",
+         *     img: "icons/svg/jump.svg",
          *     order: 6,
          *     deriveTerrainDifficulty: ({walk, fly}) => Math.max(walk, fly),
          *     getCostFunction: () => cost => cost * 2
@@ -2053,6 +2066,7 @@ declare global {
          *   blink: {
          *     label: "TOKEN.MOVEMENT.ACTIONS.blink.label",
          *     icon: "fa-solid fa-person-from-portal",
+         *     img: "icons/svg/teleport.svg",
          *     order: 7,
          *     teleport: true,
          *     getAnimationOptions: () => ({duration: 0}),
@@ -2061,6 +2075,7 @@ declare global {
          *   displace: {
          *     label: "TOKEN.MOVEMENT.ACTIONS.displace.label",
          *     icon: "fa-solid fa-transporter-1",
+         *     img: "icons/svg/portal.svg",
          *     order: 8,
          *     teleport: true,
          *     measure: false,
@@ -2080,12 +2095,8 @@ declare global {
       /** @defaultValue `"TOKEN.Adjectives"` */
       adjectivesPrefix: string;
 
-      /**
-       * @defaultValue `foundry.canvas.tokens.TokenRingConfig`
-       * @remarks Foundry leaves a comment claiming `"ring property is initialized in foundry.canvas.tokens.TokenRingConfig.initialize"`,
-       * and while that's true, it's _instantiated_ here in `config.js` via defineProperty (`enumerable: true`)
-       */
-      readonly ring: foundry.canvas.placeables.tokens.TokenRingConfig;
+      /** @defaultValue `new`{@linkcode foundry.canvas.placeables.tokens.TokenRingConfig}`()` */
+      ring: foundry.canvas.placeables.tokens.TokenRingConfig;
     };
 
     /**

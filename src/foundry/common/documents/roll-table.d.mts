@@ -97,37 +97,37 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseRollTable.CreateInput[],
-    operation?: BaseRollTable.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseRollTable.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseRollTable.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseRollTable.UpdateInput[],
-    operation?: BaseRollTable.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<RollTable.Implementation>>;
+    operation?: BaseRollTable.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<RollTable.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseRollTable.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<RollTable.Implementation>>;
+    operation?: BaseRollTable.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<RollTable.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseRollTable.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseRollTable.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseRollTable.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseRollTable.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseRollTable.UpdateInput,
-    operation?: BaseRollTable.Database2.UpdateOneDocumentOperation,
+    operation?: BaseRollTable.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseRollTable.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseRollTable.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    operation?: BaseRollTable.Database2.GetDocumentsOperation,
+    operation?: BaseRollTable.Database.GetDocumentsOperation,
   ): RollTable.Stored | CompendiumCollection.IndexEntry<"RollTable"> | null;
 
   static override getCollectionName<Name extends string>(
@@ -179,69 +179,69 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   protected override _preCreate(
     data: BaseRollTable.CreateData,
-    options: BaseRollTable.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseRollTable.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseRollTable.CreateData,
-    options: BaseRollTable.Database2.OnCreateOptions,
+    options: BaseRollTable.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: RollTable.Implementation[],
-    operation: BaseRollTable.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseRollTable.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: RollTable.Stored[],
-    operation: BaseRollTable.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseRollTable.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseRollTable.UpdateData,
-    options: BaseRollTable.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseRollTable.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseRollTable.UpdateData,
-    options: BaseRollTable.Database2.OnUpdateOptions,
+    options: BaseRollTable.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: RollTable.Stored[],
-    operation: BaseRollTable.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseRollTable.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: RollTable.Stored[],
-    operation: BaseRollTable.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseRollTable.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseRollTable.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseRollTable.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseRollTable.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseRollTable.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: RollTable.Stored[],
-    operation: BaseRollTable.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseRollTable.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: RollTable.Stored[],
-    operation: BaseRollTable.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseRollTable.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -251,7 +251,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   protected static override _onCreateDocuments(
     documents: RollTable.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRollTable.Database2.OnCreateDocumentsOperation,
+    context: BaseRollTable.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -261,7 +261,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   protected static override _onUpdateDocuments(
     documents: RollTable.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRollTable.Database2.OnUpdateDocumentsOperation,
+    context: BaseRollTable.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -271,7 +271,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   protected static override _onDeleteDocuments(
     documents: RollTable.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseRollTable.Database2.OnDeleteDocumentsOperation,
+    context: BaseRollTable.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -318,7 +318,7 @@ declare namespace BaseRollTable {
   export import UpdateData = RollTable.UpdateData;
   export import UpdateInput = RollTable.UpdateInput;
   export import Schema = RollTable.Schema;
-  export import Database2 = RollTable.Database;
+  export import Database = RollTable.Database;
   export import TemporaryIf = RollTable.TemporaryIf;
   export import Flags = RollTable.Flags;
 

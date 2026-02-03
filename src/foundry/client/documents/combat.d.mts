@@ -475,10 +475,9 @@ declare namespace Combat {
      * @remarks This interface was previously typed for passing to {@linkcode Combat.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
-      extends
-        DatabaseBackend.CreateOperation<Combat.CreateInput, Combat.Parent, Temporary>,
-        IntentionalPartial<Combat.TurnUpdateOptions> {}
+    interface CreateOperation<
+      Temporary extends boolean | undefined = boolean | undefined,
+    > extends DatabaseBackend.CreateOperation<Combat.CreateInput, Combat.Parent, Temporary> {}
 
     /**
      * The interface for passing to {@linkcode Combat.create} or {@linkcode Combat.createDocuments}.
@@ -1657,7 +1656,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   protected static _onDeleteTokens(
     documents: TokenDocument.Stored[],
     operation: TokenDocument.Database.OnDeleteOperation,
-    user: User.Implementation,
+    user: User.Stored,
   ): void;
 
   /**

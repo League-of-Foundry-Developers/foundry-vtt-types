@@ -294,13 +294,10 @@ declare namespace AmbientLightDocument {
      * @remarks This interface was previously typed for passing to {@linkcode AmbientLightDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<
-      AmbientLightDocument.CreateInput,
-      AmbientLightDocument.Parent,
-      Temporary
-    > {}
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<AmbientLightDocument.CreateInput, AmbientLightDocument.Parent, Temporary>,
+        DatabaseBackend._CommonCanvasDocumentCreateProperties {}
 
     /**
      * The interface for passing to {@linkcode AmbientLightDocument.create} or {@linkcode AmbientLightDocument.createDocuments}.
@@ -437,10 +434,10 @@ declare namespace AmbientLightDocument {
      * @remarks This interface was previously typed for passing to {@linkcode AmbientLightDocument.update | AmbientLightDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
-      AmbientLightDocument.UpdateInput,
-      AmbientLightDocument.Parent
-    > {
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<AmbientLightDocument.UpdateInput, AmbientLightDocument.Parent>,
+        DatabaseBackend._CommonCanvasDocumentUpdateProperties {
       /**
        * @remarks Appears to be unused. {@linkcode AmbientLightDocument._onUpdate} conditionally sets this `false`, but nothing in
        * `AmbientLightDocument`, {@linkcode BaseAmbientLight}, {@linkcode AmbientLight}, or anywhere else ever checks for it.

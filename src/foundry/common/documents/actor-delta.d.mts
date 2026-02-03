@@ -148,40 +148,40 @@ declare abstract class BaseActorDelta<
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActorDelta.CreateInput[],
-    operation?: BaseActorDelta.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseActorDelta.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseActorDelta.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseActorDelta.UpdateInput[],
-    operation?: BaseActorDelta.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<ActorDelta.Implementation>>;
+    operation?: BaseActorDelta.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<ActorDelta.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseActorDelta.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<ActorDelta.Implementation>>;
+    operation?: BaseActorDelta.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<ActorDelta.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseActorDelta.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseActorDelta.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseActorDelta.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseActorDelta.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseActorDelta.UpdateInput,
-    operation?: BaseActorDelta.Database2.UpdateOneDocumentOperation,
+    operation?: BaseActorDelta.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseActorDelta.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseActorDelta.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   /**
    * @privateRemarks `ActorDelta`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
    * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
    * chance of index entry return), so this always returns `null`
    */
-  static override get(documentId: string, operation?: BaseActorDelta.Database2.GetDocumentsOperation): null;
+  static override get(documentId: string, operation?: BaseActorDelta.Database.GetDocumentsOperation): null;
 
   static override getCollectionName<Name extends string>(
     name: OverlapsWith<Name, BaseActorDelta.Embedded.CollectionName>,
@@ -236,69 +236,69 @@ declare abstract class BaseActorDelta<
 
   protected override _preCreate(
     data: BaseActorDelta.CreateData,
-    options: BaseActorDelta.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseActorDelta.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseActorDelta.CreateData,
-    options: BaseActorDelta.Database2.OnCreateOptions,
+    options: BaseActorDelta.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: ActorDelta.Implementation[],
-    operation: BaseActorDelta.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseActorDelta.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: ActorDelta.Stored[],
-    operation: BaseActorDelta.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseActorDelta.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseActorDelta.UpdateData,
-    options: BaseActorDelta.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseActorDelta.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseActorDelta.UpdateData,
-    options: BaseActorDelta.Database2.OnUpdateOptions,
+    options: BaseActorDelta.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: ActorDelta.Stored[],
-    operation: BaseActorDelta.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseActorDelta.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: ActorDelta.Stored[],
-    operation: BaseActorDelta.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseActorDelta.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseActorDelta.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseActorDelta.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseActorDelta.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseActorDelta.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: ActorDelta.Stored[],
-    operation: BaseActorDelta.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseActorDelta.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: ActorDelta.Stored[],
-    operation: BaseActorDelta.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseActorDelta.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -308,7 +308,7 @@ declare abstract class BaseActorDelta<
   protected static override _onCreateDocuments(
     documents: ActorDelta.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActorDelta.Database2.OnCreateDocumentsOperation,
+    context: BaseActorDelta.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -318,7 +318,7 @@ declare abstract class BaseActorDelta<
   protected static override _onUpdateDocuments(
     documents: ActorDelta.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActorDelta.Database2.OnUpdateDocumentsOperation,
+    context: BaseActorDelta.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -328,7 +328,7 @@ declare abstract class BaseActorDelta<
   protected static override _onDeleteDocuments(
     documents: ActorDelta.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseActorDelta.Database2.OnDeleteDocumentsOperation,
+    context: BaseActorDelta.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -384,7 +384,7 @@ declare namespace BaseActorDelta {
   export import UpdateData = ActorDelta.UpdateData;
   export import UpdateInput = ActorDelta.UpdateInput;
   export import Schema = ActorDelta.Schema;
-  export import Database2 = ActorDelta.Database;
+  export import Database = ActorDelta.Database;
   export import TemporaryIf = ActorDelta.TemporaryIf;
   export import Flags = ActorDelta.Flags;
 

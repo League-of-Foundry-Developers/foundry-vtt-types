@@ -113,40 +113,40 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseDrawing.CreateInput[],
-    operation?: BaseDrawing.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseDrawing.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseDrawing.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseDrawing.UpdateInput[],
-    operation?: BaseDrawing.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<DrawingDocument.Implementation>>;
+    operation?: BaseDrawing.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<DrawingDocument.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseDrawing.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<DrawingDocument.Implementation>>;
+    operation?: BaseDrawing.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<DrawingDocument.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseDrawing.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseDrawing.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseDrawing.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseDrawing.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseDrawing.UpdateInput,
-    operation?: BaseDrawing.Database2.UpdateOneDocumentOperation,
+    operation?: BaseDrawing.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseDrawing.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseDrawing.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   /**
    * @privateRemarks `DrawingDocument`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
    * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
    * chance of index entry return), so this always returns `null`
    */
-  static override get(documentId: string, operation?: BaseDrawing.Database2.GetDocumentsOperation): null;
+  static override get(documentId: string, operation?: BaseDrawing.Database.GetDocumentsOperation): null;
 
   /** @privateRemarks `DrawingDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
@@ -169,69 +169,69 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   protected override _preCreate(
     data: BaseDrawing.CreateData,
-    options: BaseDrawing.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseDrawing.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseDrawing.CreateData,
-    options: BaseDrawing.Database2.OnCreateOptions,
+    options: BaseDrawing.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: DrawingDocument.Implementation[],
-    operation: BaseDrawing.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseDrawing.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: DrawingDocument.Stored[],
-    operation: BaseDrawing.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseDrawing.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseDrawing.UpdateData,
-    options: BaseDrawing.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseDrawing.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseDrawing.UpdateData,
-    options: BaseDrawing.Database2.OnUpdateOptions,
+    options: BaseDrawing.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: DrawingDocument.Stored[],
-    operation: BaseDrawing.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseDrawing.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: DrawingDocument.Stored[],
-    operation: BaseDrawing.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseDrawing.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseDrawing.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseDrawing.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseDrawing.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseDrawing.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: DrawingDocument.Stored[],
-    operation: BaseDrawing.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseDrawing.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: DrawingDocument.Stored[],
-    operation: BaseDrawing.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseDrawing.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -241,7 +241,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   protected static override _onCreateDocuments(
     documents: DrawingDocument.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseDrawing.Database2.OnCreateDocumentsOperation,
+    context: BaseDrawing.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -251,7 +251,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   protected static override _onUpdateDocuments(
     documents: DrawingDocument.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseDrawing.Database2.OnUpdateDocumentsOperation,
+    context: BaseDrawing.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -261,7 +261,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   protected static override _onDeleteDocuments(
     documents: DrawingDocument.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseDrawing.Database2.OnDeleteDocumentsOperation,
+    context: BaseDrawing.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -307,7 +307,7 @@ declare namespace BaseDrawing {
   export import UpdateData = DrawingDocument.UpdateData;
   export import UpdateInput = DrawingDocument.UpdateInput;
   export import Schema = DrawingDocument.Schema;
-  export import Database2 = DrawingDocument.Database;
+  export import Database = DrawingDocument.Database;
   export import TemporaryIf = DrawingDocument.TemporaryIf;
   export import Flags = DrawingDocument.Flags;
 

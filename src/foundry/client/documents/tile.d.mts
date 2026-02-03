@@ -376,9 +376,10 @@ declare namespace TileDocument {
      * @remarks This interface was previously typed for passing to {@linkcode TileDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<TileDocument.CreateInput, TileDocument.Parent, Temporary> {}
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<TileDocument.CreateInput, TileDocument.Parent, Temporary>,
+        DatabaseBackend._CommonCanvasDocumentCreateProperties {}
 
     /**
      * The interface for passing to {@linkcode TileDocument.create} or {@linkcode TileDocument.createDocuments}.
@@ -515,7 +516,10 @@ declare namespace TileDocument {
      * @remarks This interface was previously typed for passing to {@linkcode TileDocument.update | TileDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<TileDocument.UpdateInput, TileDocument.Parent> {
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<TileDocument.UpdateInput, TileDocument.Parent>,
+        DatabaseBackend._CommonCanvasDocumentUpdateProperties {
       /**
        * @remarks Sets video sources on tiles affected by this operation to either play or stop in
        * {@linkcode Tile._onUpdate | Tile#_onUpdate}.

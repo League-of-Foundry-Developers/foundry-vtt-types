@@ -42,10 +42,10 @@ declare global {
   }
 }
 
-const actor = game.actors.contents[0]!;
-const item = actor.items.contents[0]!;
+const actor = game.actors!.contents[0]!;
+const actorItem = actor.items.contents[0]!;
 
-expectTypeOf(item.configured).toBeBoolean();
+expectTypeOf(actorItem.configured).toBeBoolean();
 
 describe("Item Tests", () => {});
 

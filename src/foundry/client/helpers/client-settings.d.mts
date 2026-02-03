@@ -263,8 +263,6 @@ declare namespace ClientSettings {
 
   type Scope = "world" | "client" | "user";
 
-  interface OnChangeOptions extends Omit<SetOptions, "document"> {}
-
   /**
    * A function that gets called when a setting is changed, either by `ClientSettings##setClient`
    * or {@linkcode Setting._onUpdate | Setting#_onUpdate}.
@@ -426,6 +424,13 @@ declare namespace ClientSettings {
     extends _SetOptions<Doc>, Setting.Database.UpdateOneDocumentOperation {}
 
   type SetOptions<Doc extends boolean | undefined = undefined> = _SetOptionsCreate<Doc> | _SetOptionsUpdate<Doc>;
+
+  /**
+   * @remarks The object that gets passed to `ClientSettings##setWorld`, and via that {@linkcode Setting._onUpdate | Setting#_onUpdate};
+   * or `##setClient`, and via that, the {@linkcode AllHooks.clientSettingChanged | clientSettingChanged} hook. Both paths also send this
+   * to the Setting's registered {@linkcode ClientSettings.SettingConfig.onChange | onChange} function, so that's the name that was chosen.
+   */
+  type OnChangeOptions = Setting.Database.CreateDocumentsOperation | Setting.Database.UpdateOneDocumentOperation;
 
   /**
    * @deprecated Replaced with {@linkcode ClientSettings.SettingInitializedType}.

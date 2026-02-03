@@ -28,11 +28,14 @@ declare abstract class DatabaseBackend {
    * @param operation     - Parameters of the get operation
    * @param user          - The requesting User
    * @returns An array of retrieved Document instances or index objects
+   *
+   * @remarks `user` has no default provided by this method, and unlike the other operations, core's implementation in
+   * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments} doesn't make use of it at all.
    */
   get<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
     operation: Document.Database.BackendGetOperationForName<DocClass["documentName"]>,
-    user?: User.Implementation,
+    user?: User.Stored,
   ): Promise<FixedInstanceType<DocClass>>[];
 
   /**
@@ -41,30 +44,34 @@ declare abstract class DatabaseBackend {
    * @param operation      - Parameters of the get operation
    * @param user           - The requesting User
    * @returns An array of retrieved Document instances or index objects
+   *
+   * @remarks Abstract; See {@linkcode DatabaseBackend.get | DatabaseBackend#get} remarks.
    */
   protected abstract _getDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
     operation: Document.Database.GetOperationForName<DocClass["documentName"]>,
-    user?: User.Implementation,
+    user?: User.Stored,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
    * Create new Documents using provided data and context.
-   * It is recommended to use {@linkcode Document.createDocuments} or {@linkcode Document.create} rather than calling this
-   * method directly.
+   * It is recommended to use {@linkcode Document.createDocuments} or {@linkcode Document.create}
+   * rather than calling this method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the create operation
    * @param user          - The requesting User
    * @returns An array of created Document instances
    *
-   * @remarks If `user` isn't passed, {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments} defaults
-   * to `game.user`
+   * @remarks `user` has no default provided in this method; if it isn't passed, core's provided implementation in
+   * {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments} defaults to `game.user`.
+   * Core *does not* pass `user` when calling this method in {@linkcode Document.createDocuments}, relying on the handling in
+   * `CDB#_createDocuments`, so user-provided subclasses must account for this.
    */
   // TODO: possible improvements around Stored types and inferring type data
   create<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
     operation: Document.Database.BackendCreateOperationForName<DocClass["documentName"]>,
-    user?: User.Implementation,
+    user?: User.Stored,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
@@ -73,27 +80,34 @@ declare abstract class DatabaseBackend {
    * @param operation     - Parameters of the create operation
    * @param user          - The requesting User
    * @returns An array of created Document instances
+   *
+   * @remarks Abstract; See {@linkcode DatabaseBackend.create | DatabaseBackend#create} remarks.
    */
   // TODO: possible improvements around Stored types and inferring type data
-  protected _createDocuments<DocClass extends Document.AnyConstructor>(
+  protected abstract _createDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
     operation: Document.Database.CreateOperationForName<DocClass["documentName"]>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
    * Update Documents using provided data and context.
-   * It is recommended to use {@linkcode Document.updateDocuments} or {@linkcode Document.update | Document#update} rather than calling this
-   * method directly.
+   * It is recommended to use {@linkcode Document.updateDocuments} or {@linkcode Document.update | Document#update}
+   * rather than calling this method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the update operation
    * @param user          - The requesting User
    * @returns  An array of updated Document instances
+   *
+   * @remarks `user` has no default provided in this method; if it isn't passed, core's provided implementation in
+   * {@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments} defaults to `game.user`.
+   * Core *does not* pass `user` when calling this method in {@linkcode Document.updateDocuments}, relying on the handling in
+   * `CDB#_updateDocuments`, so user-provided subclasses must account for this.
    */
   update<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
     operation: Document.Database.BackendUpdateOperationForName<DocClass["documentName"]>,
-    user?: User.Implementation,
+    user?: User.Stored,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
@@ -102,26 +116,33 @@ declare abstract class DatabaseBackend {
    * @param operation     - Parameters of the update operation
    * @param user          - The requesting User
    * @returns  An array of updated Document instances
+   *
+   * @remarks Abstract; See {@linkcode DatabaseBackend.update | DatabaseBackend#update} remarks.
    */
   protected abstract _updateDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
     operation: Document.Database.UpdateOperationForName<DocClass["documentName"]>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
    * Delete Documents using provided ids and context.
-   * It is recommended to use {@linkcode foundry.abstract.Document.deleteDocuments} or
-   * {@link foundry.abstract.Document.delete | `foundry.abstract.Document#delete`} rather than calling this method directly.
+   * It is recommended to use {@linkcode Document.deleteDocuments} or {@link Document.delete | `Document#delete`}
+   * rather than calling this method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the delete operation
    * @param user          - The requesting User
    * @returns The deleted Document instances
+   *
+   * @remarks `user` has no default provided in this method; if it isn't passed, core's provided implementation in
+   * {@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments} defaults to `game.user`.
+   * Core *does not* pass `user` when calling this method in {@linkcode Document.deleteDocuments}, relying on the handling in
+   * `CDB#_deleteDocuments`, so user-provided subclasses must account for this.
    */
   delete<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
     operation: Document.Database.BackendDeleteOperationForName<DocClass["documentName"]>,
-    user?: User.Implementation,
+    user?: User.Stored,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
@@ -129,17 +150,19 @@ declare abstract class DatabaseBackend {
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the delete operation
    * @param user          - The requesting User
+   *
+   * @remarks Abstract; See {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} remarks.
    */
   protected abstract _deleteDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
     operation: Document.Database.DeleteOperationForName<DocClass["documentName"]>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
    * Get the parent Document (if any) associated with a request context.
    * @param operation - The requested database operation
-   * @returns The parent Document, or null
+   * @returns The parent Document, or `null`
    */
   _getParent(operation: DatabaseBackend.DatabaseOperation): Promise<Document.Any | null>;
 
@@ -180,7 +203,7 @@ declare abstract class DatabaseBackend {
    * Construct a standardized error message given the context of an attempted operation
    * @remarks This method is only called in server-side code
    */
-  protected _logError(user: User.Implementation, action: string, context?: DatabaseBackend.LogErrorContext): string;
+  protected _logError(user: User.Stored, action: string, context?: DatabaseBackend.LogErrorContext): string;
 
   #DatabaseBackend: true;
 }
@@ -541,6 +564,13 @@ declare namespace DatabaseBackend {
      * set via `??=`, so passed values are respected.
      */
     recursive: boolean;
+
+    /**
+     * @remarks {@linkcode ClientDocumentMixin.AnyMixed._onUpdate | ClientDocument#_onUpdate} checks for this being truthy, and if so skips
+     * calling {@linkcode ClientDocumentMixing.AnyMixed._onSheetChange | ClientDocument#_onSheetChange}. No core code passes this property
+     * as of 13.351.
+     */
+    preview?: boolean;
   }
 
   /**
@@ -627,6 +657,35 @@ declare namespace DatabaseBackend {
      */
     replacements?: Record<string, string>;
   }
+
+  /** @internal */
+  interface _IsUndo {
+    /**
+     * @remarks Designates this operation as reversing a previous one. Only relevant for Canvas Documents.
+     *
+     * Passed `true` by core in {@linkcode PlaceablesLayer._onUndoCreate | PlaceablesLayer#_onUndoCreate}, `#_onUndoUpdate`, and
+     * `#_onUndoDelete`, and {@linkcode TokenDocument.revertRecordedMovement | TokenDocument#revertRecordedMovement}; Checked in
+     * {@linkcode Scene._preCreateDescendantDocuments | Scene#_preCreateDescendantDocuments}, `#_preUpdateDescendantDocuments`, and
+     * `#_preDeleteDescendantDocuments`, and `TokenDocument##preUpdateMovement`.
+     */
+    isUndo?: boolean;
+  }
+
+  /** @internal */
+  interface _IsPaste {
+    /**
+     * @remarks Designates this operation as the result of a paste action. Only relevant for Canvas Documents.
+     *
+     * Passed `true` by core in {@linkcode PlaceablesLayer.pasteObjects | PlaceablesLayer#placeObjects}, but
+     * `TokenDocument##preUpdateMovement` is the only meaningful consumer as of 13.351.
+     */
+    isPaste?: boolean;
+  }
+
+  /** @internal */
+  interface _CommonCanvasDocumentCreateProperties extends _IsUndo {}
+
+  interface _CommonCanvasDocumentUpdateProperties extends _IsUndo, _IsPaste {}
 }
 
 export default DatabaseBackend;

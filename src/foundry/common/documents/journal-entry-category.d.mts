@@ -80,40 +80,40 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseJournalEntryCategory.CreateInput[],
-    operation?: BaseJournalEntryCategory.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseJournalEntryCategory.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseJournalEntryCategory.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseJournalEntryCategory.UpdateInput[],
-    operation?: BaseJournalEntryCategory.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<JournalEntryCategory.Implementation>>;
+    operation?: BaseJournalEntryCategory.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<JournalEntryCategory.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseJournalEntryCategory.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<JournalEntryCategory.Implementation>>;
+    operation?: BaseJournalEntryCategory.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<JournalEntryCategory.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseJournalEntryCategory.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseJournalEntryCategory.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseJournalEntryCategory.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseJournalEntryCategory.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseJournalEntryCategory.UpdateInput,
-    operation?: BaseJournalEntryCategory.Database2.UpdateOneDocumentOperation,
+    operation?: BaseJournalEntryCategory.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseJournalEntryCategory.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseJournalEntryCategory.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   /**
    * @privateRemarks `JournalEntryCategory`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
    * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
    * chance of index entry return), so this always returns `null`
    */
-  static override get(documentId: string, operation?: BaseJournalEntryCategory.Database2.GetDocumentsOperation): null;
+  static override get(documentId: string, operation?: BaseJournalEntryCategory.Database.GetDocumentsOperation): null;
 
   /** @privateRemarks `JournalEntryCategory`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
@@ -136,69 +136,69 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   protected override _preCreate(
     data: BaseJournalEntryCategory.CreateData,
-    options: BaseJournalEntryCategory.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseJournalEntryCategory.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseJournalEntryCategory.CreateData,
-    options: BaseJournalEntryCategory.Database2.OnCreateOptions,
+    options: BaseJournalEntryCategory.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: JournalEntryCategory.Implementation[],
-    operation: BaseJournalEntryCategory.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntryCategory.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: JournalEntryCategory.Stored[],
-    operation: BaseJournalEntryCategory.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntryCategory.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseJournalEntryCategory.UpdateData,
-    options: BaseJournalEntryCategory.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseJournalEntryCategory.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseJournalEntryCategory.UpdateData,
-    options: BaseJournalEntryCategory.Database2.OnUpdateOptions,
+    options: BaseJournalEntryCategory.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: JournalEntryCategory.Stored[],
-    operation: BaseJournalEntryCategory.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntryCategory.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: JournalEntryCategory.Stored[],
-    operation: BaseJournalEntryCategory.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntryCategory.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseJournalEntryCategory.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseJournalEntryCategory.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseJournalEntryCategory.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseJournalEntryCategory.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: JournalEntryCategory.Stored[],
-    operation: BaseJournalEntryCategory.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntryCategory.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: JournalEntryCategory.Stored[],
-    operation: BaseJournalEntryCategory.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseJournalEntryCategory.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -208,7 +208,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
   protected static override _onCreateDocuments(
     documents: JournalEntryCategory.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryCategory.Database2.OnCreateDocumentsOperation,
+    context: BaseJournalEntryCategory.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -218,7 +218,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
   protected static override _onUpdateDocuments(
     documents: JournalEntryCategory.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryCategory.Database2.OnUpdateDocumentsOperation,
+    context: BaseJournalEntryCategory.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -228,7 +228,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
   protected static override _onDeleteDocuments(
     documents: JournalEntryCategory.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseJournalEntryCategory.Database2.OnDeleteDocumentsOperation,
+    context: BaseJournalEntryCategory.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -272,7 +272,7 @@ declare namespace BaseJournalEntryCategory {
   export import UpdateData = JournalEntryCategory.UpdateData;
   export import UpdateInput = JournalEntryCategory.UpdateInput;
   export import Schema = JournalEntryCategory.Schema;
-  export import Database2 = JournalEntryCategory.Database;
+  export import Database = JournalEntryCategory.Database;
   export import TemporaryIf = JournalEntryCategory.TemporaryIf;
   export import Flags = JournalEntryCategory.Flags;
 

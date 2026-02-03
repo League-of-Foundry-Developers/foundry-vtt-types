@@ -372,9 +372,10 @@ declare namespace NoteDocument {
      * @remarks This interface was previously typed for passing to {@linkcode NoteDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<NoteDocument.CreateInput, NoteDocument.Parent, Temporary> {}
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<NoteDocument.CreateInput, NoteDocument.Parent, Temporary>,
+        DatabaseBackend._CommonCanvasDocumentCreateProperties {}
 
     /**
      * The interface for passing to {@linkcode NoteDocument.create} or {@linkcode NoteDocument.createDocuments}.
@@ -511,7 +512,10 @@ declare namespace NoteDocument {
      * @remarks This interface was previously typed for passing to {@linkcode NoteDocument.update | NoteDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<NoteDocument.UpdateInput, NoteDocument.Parent> {}
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<NoteDocument.UpdateInput, NoteDocument.Parent>,
+        DatabaseBackend._CommonCanvasDocumentUpdateProperties {}
 
     /**
      * The interface for passing to {@linkcode NoteDocument.update | NoteDocument#update}.

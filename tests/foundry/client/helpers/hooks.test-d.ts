@@ -44,16 +44,16 @@ Hooks.on("deleteToken", (document, options) => {
 Hooks.on("preCreateActiveEffect", (document, data, options) => {
   expectTypeOf(document).toEqualTypeOf<ActiveEffect.Implementation>();
   expectTypeOf(data).toEqualTypeOf<ActiveEffect.CreateData>();
-  expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database2.PreCreateOptions>();
+  expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database.PreCreateOptions>();
 });
 
 Hooks.on("preUpdateActiveEffect", (document, changed, options) => {
   expectTypeOf(document).toEqualTypeOf<ActiveEffect.Implementation>();
   expectTypeOf(changed).toEqualTypeOf<ActiveEffect.UpdateData>();
-  expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database2.PreUpdateOptions>();
+  expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database.PreUpdateOptions>();
 });
 
 Hooks.on("preDeleteActiveEffect", (document, options) => {
   expectTypeOf(document).toEqualTypeOf<ActiveEffect.Implementation>();
-  expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database2.PreDeleteOptions>();
+  expectTypeOf(options).toEqualTypeOf<ActiveEffect.Database.PreDeleteOptions>();
 });

@@ -420,9 +420,10 @@ declare namespace DrawingDocument {
      * @remarks This interface was previously typed for passing to {@linkcode DrawingDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<DrawingDocument.CreateInput, DrawingDocument.Parent, Temporary> {}
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<DrawingDocument.CreateInput, DrawingDocument.Parent, Temporary>,
+        DatabaseBackend._CommonCanvasDocumentCreateProperties {}
 
     /**
      * The interface for passing to {@linkcode DrawingDocument.create} or {@linkcode DrawingDocument.createDocuments}.
@@ -559,10 +560,10 @@ declare namespace DrawingDocument {
      * @remarks This interface was previously typed for passing to {@linkcode DrawingDocument.update | DrawingDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
-      DrawingDocument.UpdateInput,
-      DrawingDocument.Parent
-    > {}
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<DrawingDocument.UpdateInput, DrawingDocument.Parent>,
+        DatabaseBackend._CommonCanvasDocumentUpdateProperties {}
 
     /**
      * The interface for passing to {@linkcode DrawingDocument.update | DrawingDocument#update}.

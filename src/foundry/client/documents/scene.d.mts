@@ -1143,7 +1143,8 @@ declare namespace Scene {
        * @remarks {@linkcode Scene._preUpdate | Scene#_preUpdate} adds its scene's `id` to this array (creating it if necessary) if its
        * {@linkcode Scene.thumb | thumb} is being updated. {@linkcode Scene._onUpdate | Scene#_onUpdate} uses this in a confusing way that
        * appears to do nothing unless something inserts `thumb` into the `changes` for the scene between `_preUpdate` and `_onUpdate`, which
-       * no core code does.
+       * no core code does; {@linkcode foundry.applications.sheets.SceneConfig._processSubmitData | SceneConfig#_processSubmitData} handles
+       * thumbnail creation and adds it into the submit data before `_preUpdate` even sees it.
        */
       thumb?: string[];
     }
@@ -1850,7 +1851,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * Pull the specified users to this Scene.
    * @param users - An array of User documents or IDs.
    */
-  pullUsers(users?: (User.Implementation | string)[]): void;
+  pullUsers(users?: (User.Stored | string)[]): void;
 
   /**
    * Set this scene as currently active

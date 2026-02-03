@@ -632,24 +632,23 @@ declare namespace Folder {
      * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
      */
     interface DeleteOperation extends DatabaseBackend.DeleteOperation<Folder.Parent> {
-
-      /** 
-       * @remarks If `true`, the any documents with this as their `folder` are also deleted, otherwise they will have their `folder` set to 
+      /**
+       * @remarks If `true`, the any documents with this as their `folder` are also deleted, otherwise they will have their `folder` set to
        * the target of this operation's value, whether that is its parent folder or `null`
-       * 
-       * If this and {@linkcode deleteSubfolders} are both `true`, the subfolders' contents will also be deleted, otherwise they will be 
-       * untouched; on its own, this option only refers to documents directly under this folder.
+       *
+       * If this and {@linkcode deleteSubfolders} are both `true`, the subfolders' contents will also be deleted, otherwise they will be
+       * untouched; on its own, this option only refers to documents contained directly this folder.
        */
-      deleteContents?: boolean
+      deleteContents?: boolean;
 
-      /** 
+      /**
        * @remarks If `true`, this operation will also delete any subfolders (recursive), otherwise any direct child folders will have their
        * parent `folder` set to the target of this operation's value, whether that is its parent folder or `null`.
-       * 
-       * If this and {@linkcode deleteContents} are both `true`, the subfolders' contents will also be deleted, otherwise, all documents 
+       *
+       * If this and {@linkcode deleteContents} are both `true`, the subfolders' contents will also be deleted, otherwise, all documents
        * within this folder tree will be dumped into the target of this operation's `folder` (the directory root, if `null`).
        */
-      deleteSubfolders?: boolean
+      deleteSubfolders?: boolean;
     }
 
     /**

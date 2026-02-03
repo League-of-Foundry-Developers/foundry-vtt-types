@@ -25,7 +25,7 @@ declare class Folders extends WorldCollection<"Folder"> {
     documents: Folder.Stored[],
     result: Collection.OnModifyContentsResult<"Folder", Action>,
     operation: Collection.OnModifyContentsOperation<"Folder", Action>,
-    user: User.Implementation,
+    user: User.Stored,
   ): void;
 
   /** @remarks This is a no-op in {@linkcode Folders}, Foundry logs "The Folders collection is not directly rendered" as a warning.  */

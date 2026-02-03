@@ -118,7 +118,7 @@ class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementat
 
   protected override async _preCreate(
     data: TypeDataModel.ParentAssignmentType<QuestSchema, JournalEntryPage.Implementation>,
-    _options: JournalEntryPage.Database2.PreCreateOptions,
+    _options: JournalEntryPage.Database.PreCreateOptions,
     _user: User.Implementation,
   ): Promise<boolean | void> {
     expectTypeOf(data.system.steps).toEqualTypeOf<string[]>();
@@ -126,7 +126,7 @@ class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementat
 
   protected override async _preUpdate(
     changes: DeepPartial<TypeDataModel.ParentAssignmentType<QuestSchema, JournalEntryPage.Implementation>>,
-    _options: JournalEntryPage.Database2.PreUpdateOptions,
+    _options: JournalEntryPage.Database.PreUpdateOptions,
     _user: User.Implementation,
   ): Promise<boolean | void> {
     expectTypeOf(changes.system?.steps).toEqualTypeOf<string[] | undefined>();

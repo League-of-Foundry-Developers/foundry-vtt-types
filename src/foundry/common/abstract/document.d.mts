@@ -272,6 +272,9 @@ declare abstract class Document<
    * Documents of this type in the UI.
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
+   *
+   * @privateRemarks Temporary `User`s {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
+   * without error, so `Implementation` over `Stored`.
    */
   static canUserCreate(user: User.Implementation): boolean;
 
@@ -287,10 +290,9 @@ declare abstract class Document<
    * @param user - The User being tested (default: `game.user`)
    * @returns A numeric permission level from `CONST.DOCUMENT_OWNERSHIP_LEVELS` or null
    *
-   * @privateRemarks Making this just `User.Implementation` causes circularities
+   * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} methods work without error, so `Implementation` over `Stored`.
    */
-  // TODO: removing the `.Internal` seems to not break things immediately as of 12 Dec 2025, leaving for future further testing
-  getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -299,11 +301,10 @@ declare abstract class Document<
    * @param options    - Additional options involved in the permission test
    * @returns Does the user have this permission level over the Document?
    *
-   * @privateRemarks Making this just `User.Implementation` causes circularities
+   * @privateRemarks Temporary `User`s still have {@linkcode User.role | role}s, so `Implementation` over `Stored`.
    */
-  // TODO: removing the `.Internal` seems to not break things immediately as of 12 Dec 2025, leaving for future further testing
   testUserPermission(
-    user: User.Internal.Implementation,
+    user: User.Implementation,
     permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
@@ -315,11 +316,11 @@ declare abstract class Document<
    * @param data   - Data involved in the attempted action (default: `{}`)
    * @returns Does the User have permission?
    *
-   * @privateRemarks Making this just `User.Implementation` causes circularities
+   * @privateRemarks Temporary `User`s {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
+   * without error, so `Implementation` over `Stored`.
    */
-  // TODO: removing the `.Internal` seems to not break things immediately as of 12 Dec 2025, leaving for future further testing
   canUserModify<Action extends "create" | "update" | "delete">(
-    user: User.Internal.Implementation,
+    user: User.Implementation,
     action: Action,
     data?: Document.CanUserModifyData<Schema, Action>,
   ): boolean;
@@ -729,7 +730,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document creation
    * @returns Return false to exclude this Document from the creation operation
    */
-  protected _preCreate(data: never, options: never, user: User.Internal.Implementation): Promise<boolean | void>;
+  protected _preCreate(data: never, options: never, user: User.Stored): Promise<boolean | void>;
 
   /**
    * Post-process a creation operation for a single Document instance.
@@ -758,7 +759,7 @@ declare abstract class Document<
   protected static _preCreateOperation(
     documents: never[],
     operation: never,
-    user: User.Internal.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /**
@@ -772,11 +773,7 @@ declare abstract class Document<
    * @param user      - The User who performed the creation operation
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onCreateOperation` directly.
-  protected static _onCreateOperation(
-    documents: never,
-    operation: never,
-    user: User.Internal.Implementation,
-  ): Promise<void>;
+  protected static _onCreateOperation(documents: never, operation: never, user: User.Stored): Promise<void>;
 
   /**
    * Perform preliminary operations before a Document of this type is updated.
@@ -786,7 +783,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    * @returns A return value of false indicates the update operation should be cancelled
    */
-  protected _preUpdate(changed: never, options: never, user: User.Internal.Implementation): Promise<boolean | void>;
+  protected _preUpdate(changed: never, options: never, user: User.Stored): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is updated.
@@ -813,11 +810,7 @@ declare abstract class Document<
    * @returns Return false to cancel the update operation entirely
    */
   // Note: This uses `never` because it's unsound to try to do `Document._preUpdateOperation` directly.
-  protected static _preUpdateOperation(
-    documents: never,
-    operation: never,
-    user: User.Internal.Implementation,
-  ): Promise<boolean | void>;
+  protected static _preUpdateOperation(documents: never, operation: never, user: User.Stored): Promise<boolean | void>;
 
   /**
    * Post-process an update operation, reacting to database changes which have occurred. Post-operation events occur
@@ -830,11 +823,7 @@ declare abstract class Document<
    * @param user      - The User who performed the update operation
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onUpdateOperation` directly.
-  protected static _onUpdateOperation(
-    documents: never,
-    operation: never,
-    user: User.Internal.Implementation,
-  ): Promise<void>;
+  protected static _onUpdateOperation(documents: never, operation: never, user: User.Stored): Promise<void>;
 
   /**
    * Perform preliminary operations before a Document of this type is deleted.
@@ -843,7 +832,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  protected _preDelete(options: never, user: User.Internal.Implementation): Promise<boolean | void>;
+  protected _preDelete(options: never, user: User.Stored): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
@@ -870,11 +859,7 @@ declare abstract class Document<
    * @internal
    */
   // Note: This uses `never` because it's unsound to try to do `Document._preDeleteOperation` directly.
-  protected static _preDeleteOperation(
-    documents: never,
-    operation: never,
-    user: User.Internal.Implementation,
-  ): Promise<unknown>;
+  protected static _preDeleteOperation(documents: never, operation: never, user: User.Stored): Promise<unknown>;
 
   /**
    * Post-process a deletion operation, reacting to database changes which have occurred. Post-operation events occur
@@ -887,11 +872,7 @@ declare abstract class Document<
    * @param user      - The User who performed the deletion operation
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onDeleteOperation` directly.
-  protected static _onDeleteOperation(
-    documents: never,
-    operation: never,
-    user: User.Internal.Implementation,
-  ): Promise<unknown>;
+  protected static _onDeleteOperation(documents: never, operation: never, user: User.Stored): Promise<unknown>;
 
   /**
    * A reusable helper for adding migration shims.

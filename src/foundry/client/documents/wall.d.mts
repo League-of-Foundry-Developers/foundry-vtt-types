@@ -479,9 +479,10 @@ declare namespace WallDocument {
      * @remarks This interface was previously typed for passing to {@linkcode WallDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<WallDocument.CreateInput, WallDocument.Parent, Temporary> {}
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<WallDocument.CreateInput, WallDocument.Parent, Temporary>,
+        DatabaseBackend._CommonCanvasDocumentCreateProperties {}
 
     /**
      * The interface for passing to {@linkcode WallDocument.create} or {@linkcode WallDocument.createDocuments}.
@@ -618,7 +619,10 @@ declare namespace WallDocument {
      * @remarks This interface was previously typed for passing to {@linkcode WallDocument.update | WallDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<WallDocument.UpdateInput, WallDocument.Parent> {
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<WallDocument.UpdateInput, WallDocument.Parent>,
+        DatabaseBackend._CommonCanvasDocumentUpdateProperties {
       /**
        * @remarks If `false`, prevents {@linkcode Wall._onUpdate | Wall#_onUpdate} from calling
        * {@linkcode Wall._playDoorSound | Wall#_playDoorSound}.

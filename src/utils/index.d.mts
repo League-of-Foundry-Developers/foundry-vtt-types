@@ -981,7 +981,7 @@ export type EmptyObject = Record<string, never>;
  * type NaiveType = { foo: number; [K: string]: boolean };
  * //                 ^ Property 'foo' of type 'number' is not assignable to 'string' index type 'boolean'.
  *
- * type NaiveIntersection = { foo: number } & { [K: string]: string };
+ * type NaiveIntersection = { foo: number } & { [K: string]: boolean };
  *
  * function usesIntersection(intersection: NaiveIntersection) { ... }
  *

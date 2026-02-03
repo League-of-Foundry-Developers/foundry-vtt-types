@@ -34,7 +34,7 @@ describe("EmbeddedCollection Tests", async () => {
     modifiedTime: 7,
     parent: null,
     renderSheet: true,
-  } satisfies Item.Database2.OnCreateOperation;
+  } satisfies Item.Database.OnCreateOperation;
 
   const onItemUpdateOperation = {
     action: "update",
@@ -43,7 +43,7 @@ describe("EmbeddedCollection Tests", async () => {
     parent: null,
     recursive: true,
     updates: [itemUpdateData],
-  } satisfies Item.Database2.OnUpdateOperation;
+  } satisfies Item.Database.OnUpdateOperation;
 
   const onItemDeleteOperation = {
     action: "delete",
@@ -51,7 +51,7 @@ describe("EmbeddedCollection Tests", async () => {
     ids: ["XXXXXITEMIDXXXXX"],
     modifiedTime: 7,
     parent: null,
-  } satisfies Item.Database2.OnDeleteOperation;
+  } satisfies Item.Database.OnDeleteOperation;
 
   const onSceneUpdateOperation = {
     action: "update",
@@ -60,7 +60,7 @@ describe("EmbeddedCollection Tests", async () => {
     parent: null,
     recursive: true,
     updates: [{ folder: null }],
-  } satisfies Scene.Database2.OnUpdateOperation;
+  } satisfies Scene.Database.OnUpdateOperation;
 
   const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
   const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;

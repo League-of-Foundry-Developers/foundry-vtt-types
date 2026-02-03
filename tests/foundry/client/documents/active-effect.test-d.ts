@@ -72,17 +72,31 @@ export const maximumSource = {
   transfer: true,
   flags: {
     core: {
-      overlay: true
-    }
+      overlay: true,
+    },
   },
   tint: "#FEDCBA",
   name: "A Name",
   description: "Some Text",
+  _stats: {
+    systemVersion: null,
+    compendiumSource: null,
+    coreVersion: null,
+    createdTime: 0,
+    modifiedTime: 1,
+    duplicateSource: null,
+    exportSource: null,
+    lastModifiedBy: "UserID",
+    systemId: null,
+  },
+  img: null,
+  sort: 0,
+  statuses: [],
+  system: {},
+  type: "base",
 } satisfies ActiveEffect.Source;
 
-describe("ActiveEffect Tests", ()=>{
-
-})
+describe("ActiveEffect Tests", () => {});
 
 // @ts-expect-error ActiveEffect requires name.
 new ActiveEffect.implementation();

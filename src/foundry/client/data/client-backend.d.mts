@@ -9,26 +9,26 @@ declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
   protected override _getDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
     request: Document.Database.GetOperationForName<DocClass["documentName"]>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   // TODO: possible improvements around Stored types and inferring type data
   protected override _createDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
     operation: Document.Database.CreateOperationForName<DocClass["documentName"]>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   protected override _updateDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
     request: Document.Database.UpdateOperationForName<DocClass["documentName"]>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   protected override _deleteDocuments<DocClass extends Document.AnyConstructor>(
     documentClass: DocClass,
     request: Document.Database.DeleteOperationForName<DocClass["documentName"]>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**

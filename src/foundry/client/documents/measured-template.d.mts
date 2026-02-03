@@ -356,13 +356,14 @@ declare namespace MeasuredTemplateDocument {
      * @remarks This interface was previously typed for passing to {@linkcode MeasuredTemplateDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<
-      MeasuredTemplateDocument.CreateInput,
-      MeasuredTemplateDocument.Parent,
-      Temporary
-    > {}
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<
+          MeasuredTemplateDocument.CreateInput,
+          MeasuredTemplateDocument.Parent,
+          Temporary
+        >,
+        DatabaseBackend._CommonCanvasDocumentCreateProperties {}
 
     /**
      * The interface for passing to {@linkcode MeasuredTemplateDocument.create} or {@linkcode MeasuredTemplateDocument.createDocuments}.
@@ -499,10 +500,10 @@ declare namespace MeasuredTemplateDocument {
      * @remarks This interface was previously typed for passing to {@linkcode MeasuredTemplateDocument.update | MeasuredTemplateDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
-      MeasuredTemplateDocument.UpdateInput,
-      MeasuredTemplateDocument.Parent
-    > {}
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<MeasuredTemplateDocument.UpdateInput, MeasuredTemplateDocument.Parent>,
+        DatabaseBackend._CommonCanvasDocumentUpdateProperties {}
 
     /**
      * The interface for passing to {@linkcode MeasuredTemplateDocument.update | MeasuredTemplateDocument#update}.

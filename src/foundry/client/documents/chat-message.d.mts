@@ -448,7 +448,7 @@ declare namespace ChatMessage {
       Temporary extends boolean | undefined = boolean | undefined,
     > extends DatabaseBackend.CreateOperation<ChatMessage.CreateInput, ChatMessage.Parent, Temporary> {
       /**
-       * @remarks Only affects messages with non-empty {@linkcode ChatMessage.rolls | rolls}. If this is passed,
+       * @remarks Only affects messages whose {@link ChatMessage.isRoll | `#isRoll` getter} returns true. If this is passed,
        * {@linkcode ChatMessage._preCreate | ChatMessage#_preCreate} will call {@linkcode ChatMessage.applyRollMode} with it, affecting the
        * {@linkcode ChatMessage.whisper | whisper} and {@linkcode ChatMessage.blind | blind} properties of the to-be-created message.
        */
@@ -458,7 +458,7 @@ declare namespace ChatMessage {
        * @remarks If passed `true`, {@linkcode ChatMessage._onCreate | ChatMessage#_onCreate} will call
        * {@linkcode foundry.canvas.animation.ChatBubbles.say | ChatBubbles#say} with the created message.
        *
-       * This is automatically set `true` for `/ic` and `/emote` chat commands, nothing else in core as of 13.351.
+       * This is automatically set `true` for `/ic` and `/emote` chat commands, which is the only use in core as of 13.351.
        */
       chatBubble?: boolean;
     }
@@ -1169,7 +1169,7 @@ declare namespace ChatMessage {
     user: User.Stored;
 
     /** @remarks The message's {@link ChatMessage.author | `author`} */
-    author: User.Implementation;
+    author: User.Stored;
 
     /** @remarks The message's {@link ChatMessage.alias | `alias`} */
     alias: string;
@@ -1278,6 +1278,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
 
   /**
    * Test whether the chat message contains a dice roll
+   * @remarks Core's implementation checks for `this.rolls.length > 0`
    */
   get isRoll(): boolean;
 

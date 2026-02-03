@@ -46,7 +46,7 @@ declare class Players<
   /**
    * Format the display of a user's name using their name, pronouns (if defined), and character name (if defined).
    */
-  protected _formatName(user: User.Implementation): string;
+  protected _formatName(user: User.Stored): string;
 
   protected override _onFirstRender(
     context: DeepPartial<RenderContext>,

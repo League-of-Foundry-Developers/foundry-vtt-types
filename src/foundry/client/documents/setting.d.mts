@@ -293,7 +293,9 @@ declare namespace Setting {
      */
     interface CreateOperation<
       Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<Setting.CreateInput, Setting.Parent, Temporary> {}
+    > extends DatabaseBackend.CreateOperation<Setting.CreateInput, Setting.Parent, Temporary> {
+      // The server-side `updateWorld` property has been omitted because it would never be safe to pass from the client.
+    }
 
     /**
      * The interface for passing to {@linkcode Setting.create} or {@linkcode Setting.createDocuments}.
@@ -432,7 +434,9 @@ declare namespace Setting {
      * @remarks This interface was previously typed for passing to {@linkcode Setting.update | Setting#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Setting.UpdateInput, Setting.Parent> {}
+    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Setting.UpdateInput, Setting.Parent> {
+      // The server-side `updateWorld` property has been omitted because it would never be safe to pass from the client.
+    }
 
     /**
      * The interface for passing to {@linkcode Setting.update | Setting#update}.

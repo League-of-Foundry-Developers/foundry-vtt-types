@@ -3,13 +3,13 @@ import { expectTypeOf } from "vitest";
 const combat = new Combat.implementation();
 
 // properties
-expectTypeOf(combat.turns).toEqualTypeOf<Combatant.Implementation[]>();
+expectTypeOf(combat.turns).toEqualTypeOf<Combatant.Stored[]>();
 expectTypeOf(combat.current).toEqualTypeOf<Combat.HistoryData>();
 expectTypeOf(combat.previous).toEqualTypeOf<Combat.HistoryData | undefined>();
 
 expectTypeOf(Combat.CONFIG_SETTING).toEqualTypeOf<"combatTrackerConfig">();
 
-expectTypeOf(combat.combatant).toEqualTypeOf<Combat.Implementation["turns"][number] | null | undefined>();
+expectTypeOf(combat.combatant).toEqualTypeOf<Combatant.Implementation | null | undefined>();
 expectTypeOf(combat.started).toEqualTypeOf<boolean>();
 expectTypeOf(combat.visible).toEqualTypeOf<boolean>();
 expectTypeOf(combat.isActive).toEqualTypeOf<boolean>();
@@ -34,7 +34,7 @@ expectTypeOf(combat.rollInitiative("")).toEqualTypeOf<Promise<Combat.Implementat
 expectTypeOf(combat.rollAll()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.rollNPC()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.setInitiative("", 1)).toEqualTypeOf<Promise<void>>();
-expectTypeOf(combat.setupTurns()).toEqualTypeOf<Combat.Implementation["turns"]>();
+expectTypeOf(combat.setupTurns()).toEqualTypeOf<Combatant.Implementation[]>();
 expectTypeOf(combat.debounceSetup()).toEqualTypeOf<void>();
 expectTypeOf(combat.updateCombatantActors()).toEqualTypeOf<void>();
 
@@ -51,7 +51,6 @@ class MyCombatDocumentSubclass extends Combat {
     switch (collection) {
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       case "combatants":
-        // @ts-expect-error TODO: specific document doc ops props
         expectTypeOf(options.combatTurn).toEqualTypeOf<number | undefined>();
         for (const d of data) {
           expectTypeOf(d.initiative).toEqualTypeOf<number | null | undefined>();

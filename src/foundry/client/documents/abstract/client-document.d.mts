@@ -207,11 +207,20 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    */
   _onClickDocumentLink(event: MouseEvent): MaybePromise<unknown>;
 
-  // _preCreate, _preUpdate, and _preDelete are all overridden with no signature changes,
-  // just to call `this.system._preX` if `super` doesn't return `false`
+  // These lifecycle hook methods have the same `never`-using signatures as `Document` because it is similarly unsound to call
+  // `ClientDocument._(pre|on)(Create|Update|Delete)`; They are provided here for mostly for linking to.
 
-  //  _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  protected _preCreate(data: never, options: never, user: User.Stored): Promise<boolean | void>;
+
+  protected _onCreate(data: never, options: never, userId: string): MaybePromise<void>;
+
+  protected _preUpdate(changed: never, options: never, user: User.Stored): Promise<boolean | void>;
+
+  protected _onUpdate(changed: never, options: never, userId: string): MaybePromise<void>;
+
+  protected _preDelete(options: never, user: User.Stored): Promise<boolean | void>;
+
+  protected _onDelete(options: never, userId: string): MaybePromise<void>;
 
   /**
    * Orchestrate dispatching descendant document events to parent documents when embedded children are modified.
@@ -789,9 +798,5 @@ declare global {
     interface OnSheetChangeOptions extends InexactPartial<_OnSheetChangeOptions> {}
   }
 }
-
-// declare class Foo<out DocumentName extends Document.Type> {
-//   x: Document.Database2.UpdateManyDocumentsOperationForName<DocumentName>;
-// }
 
 export { ClientDocumentMixin as default, InternalClientDocument };

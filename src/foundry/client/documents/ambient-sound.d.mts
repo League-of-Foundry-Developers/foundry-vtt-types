@@ -354,13 +354,10 @@ declare namespace AmbientSoundDocument {
      * @remarks This interface was previously typed for passing to {@linkcode AmbientSoundDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<
-      AmbientSoundDocument.CreateInput,
-      AmbientSoundDocument.Parent,
-      Temporary
-    > {}
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<AmbientSoundDocument.CreateInput, AmbientSoundDocument.Parent, Temporary>,
+        DatabaseBackend._CommonCanvasDocumentCreateProperties {}
 
     /**
      * The interface for passing to {@linkcode AmbientSoundDocument.create} or {@linkcode AmbientSoundDocument.createDocuments}.
@@ -497,10 +494,10 @@ declare namespace AmbientSoundDocument {
      * @remarks This interface was previously typed for passing to {@linkcode AmbientSoundDocument.update | AmbientSoundDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<
-      AmbientSoundDocument.UpdateInput,
-      AmbientSoundDocument.Parent
-    > {}
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<AmbientSoundDocument.UpdateInput, AmbientSoundDocument.Parent>,
+        DatabaseBackend._CommonCanvasDocumentUpdateProperties {}
 
     /**
      * The interface for passing to {@linkcode AmbientSoundDocument.update | AmbientSoundDocument#update}.

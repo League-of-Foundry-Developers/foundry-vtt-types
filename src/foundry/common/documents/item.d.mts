@@ -118,37 +118,37 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseItem.CreateInput[],
-    operation?: BaseItem.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseItem.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseItem.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseItem.UpdateInput[],
-    operation?: BaseItem.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<Item.Implementation>>;
+    operation?: BaseItem.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<Item.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseItem.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<Item.Implementation>>;
+    operation?: BaseItem.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<Item.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseItem.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseItem.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseItem.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseItem.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseItem.UpdateInput,
-    operation?: BaseItem.Database2.UpdateOneDocumentOperation,
+    operation?: BaseItem.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseItem.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseItem.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    operation?: BaseItem.Database2.GetDocumentsOperation,
+    operation?: BaseItem.Database.GetDocumentsOperation,
   ): Item.Stored | CompendiumCollection.IndexEntry<"Item"> | null;
 
   static override getCollectionName<Name extends string>(
@@ -200,69 +200,69 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   protected override _preCreate(
     data: BaseItem.CreateData,
-    options: BaseItem.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseItem.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseItem.CreateData,
-    options: BaseItem.Database2.OnCreateOptions,
+    options: BaseItem.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Item.Implementation[],
-    operation: BaseItem.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseItem.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Item.Stored[],
-    operation: BaseItem.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseItem.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseItem.UpdateData,
-    options: BaseItem.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseItem.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseItem.UpdateData,
-    options: BaseItem.Database2.OnUpdateOptions,
+    options: BaseItem.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Item.Stored[],
-    operation: BaseItem.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseItem.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Item.Stored[],
-    operation: BaseItem.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseItem.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseItem.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseItem.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseItem.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseItem.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Item.Stored[],
-    operation: BaseItem.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseItem.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Item.Stored[],
-    operation: BaseItem.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseItem.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -272,7 +272,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   protected static override _onCreateDocuments(
     documents: Item.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseItem.Database2.OnCreateDocumentsOperation,
+    context: BaseItem.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -282,7 +282,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   protected static override _onUpdateDocuments(
     documents: Item.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseItem.Database2.OnUpdateDocumentsOperation,
+    context: BaseItem.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -292,7 +292,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   protected static override _onDeleteDocuments(
     documents: Item.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseItem.Database2.OnDeleteDocumentsOperation,
+    context: BaseItem.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -340,7 +340,7 @@ declare namespace BaseItem {
   export import UpdateData = Item.UpdateData;
   export import UpdateInput = Item.UpdateInput;
   export import Schema = Item.Schema;
-  export import Database2 = Item.Database;
+  export import Database = Item.Database;
   export import TemporaryIf = Item.TemporaryIf;
   export import Flags = Item.Flags;
   export import GetDefaultArtworkReturn = Item.GetDefaultArtworkReturn;

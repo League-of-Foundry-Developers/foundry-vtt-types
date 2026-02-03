@@ -7,7 +7,7 @@ import type { BaseGrid } from "#common/grid/_module.d.mts";
  * The default implementation of the Ruler.
  */
 declare class Ruler extends BaseRuler {
-  constructor(user: User.Implementation);
+  constructor(user: User.Stored);
 
   /**
    * A handlebars template used to render each waypoint label.

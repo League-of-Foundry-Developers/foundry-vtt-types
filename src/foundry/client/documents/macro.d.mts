@@ -1147,6 +1147,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    * Test whether the given User is capable of executing this Macro.
    * @param user - The User to test.
    * @returns Can this User execute this Macro?
+   * @privateRemarks Only does role checks, so temporary `User`s are allowed.
    */
   canUserExecute(user: User.Implementation): boolean;
 
@@ -1160,7 +1161,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    */
   execute(scope?: Macro.ExecuteScope<SubType>): Macro.ExecuteReturn<SubType>;
 
-  /** @remarks Returns `this.execute({event})` */
+  /** @remarks Returns {@linkcode Macro.execute | this.execute}`({event})` */
   override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
 
   // _onCreate is overridden but with no signature changes from its definition in BaseMacro.

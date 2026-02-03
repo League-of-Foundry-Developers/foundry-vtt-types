@@ -230,40 +230,40 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseToken.CreateInput[],
-    operation?: BaseToken.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseToken.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseToken.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseToken.UpdateInput[],
-    operation?: BaseToken.Database2.UpdateManyDocumentsOperation,
-  ): Promise<Array<TokenDocument.Implementation>>;
+    operation?: BaseToken.Database.UpdateManyDocumentsOperation,
+  ): Promise<Array<TokenDocument.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseToken.Database2.DeleteManyDocumentsOperation,
-  ): Promise<Array<TokenDocument.Implementation>>;
+    operation?: BaseToken.Database.DeleteManyDocumentsOperation,
+  ): Promise<Array<TokenDocument.Stored>>;
 
   static override create<
     Data extends MaybeArray<BaseToken.CreateInput>,
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseToken.Database2.CreateDocumentsOperation<Temporary>,
+    operation?: BaseToken.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseToken.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseToken.UpdateInput,
-    operation?: BaseToken.Database2.UpdateOneDocumentOperation,
+    operation?: BaseToken.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseToken.Database2.DeleteOneDocumentOperation): Promise<this | undefined>;
+  override delete(operation?: BaseToken.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   /**
    * @privateRemarks `TokenDocument`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
    * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
    * chance of index entry return), so this always returns `null`
    */
-  static override get(documentId: string, operation?: BaseToken.Database2.GetDocumentsOperation): null;
+  static override get(documentId: string, operation?: BaseToken.Database.GetDocumentsOperation): null;
 
   static override getCollectionName<Name extends string>(
     name: OverlapsWith<Name, BaseToken.Embedded.CollectionName>,
@@ -323,69 +323,69 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   protected override _preCreate(
     data: BaseToken.CreateData,
-    options: BaseToken.Database2.PreCreateOptions,
-    user: User.Implementation,
+    options: BaseToken.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
     data: BaseToken.CreateData,
-    options: BaseToken.Database2.OnCreateOptions,
+    options: BaseToken.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: TokenDocument.Implementation[],
-    operation: BaseToken.Database2.PreCreateOperation,
-    user: User.Implementation,
+    operation: BaseToken.Database.PreCreateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: TokenDocument.Stored[],
-    operation: BaseToken.Database2.OnCreateOperation,
-    user: User.Implementation,
+    operation: BaseToken.Database.OnCreateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseToken.UpdateData,
-    options: BaseToken.Database2.PreUpdateOptions,
-    user: User.Implementation,
+    options: BaseToken.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
     changed: BaseToken.UpdateData,
-    options: BaseToken.Database2.OnUpdateOptions,
+    options: BaseToken.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: TokenDocument.Stored[],
-    operation: BaseToken.Database2.PreUpdateOperation,
-    user: User.Implementation,
+    operation: BaseToken.Database.PreUpdateOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: TokenDocument.Stored[],
-    operation: BaseToken.Database2.OnUpdateOperation,
-    user: User.Implementation,
+    operation: BaseToken.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseToken.Database2.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseToken.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseToken.Database2.OnDeleteOptions, userId: string): void;
+  protected override _onDelete(options: BaseToken.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: TokenDocument.Stored[],
-    operation: BaseToken.Database2.PreDeleteOperation,
-    user: User.Implementation,
+    operation: BaseToken.Database.PreDeleteOperation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: TokenDocument.Stored[],
-    operation: BaseToken.Database2.OnDeleteOperation,
-    user: User.Implementation,
+    operation: BaseToken.Database.OnDeleteOperation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
@@ -395,7 +395,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   protected static override _onCreateDocuments(
     documents: TokenDocument.Implementation[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseToken.Database2.OnCreateDocumentsOperation,
+    context: BaseToken.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -405,7 +405,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   protected static override _onUpdateDocuments(
     documents: TokenDocument.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseToken.Database2.OnUpdateDocumentsOperation,
+    context: BaseToken.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -415,7 +415,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   protected static override _onDeleteDocuments(
     documents: TokenDocument.Stored[],
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    context: BaseToken.Database2.OnDeleteDocumentsOperation,
+    context: BaseToken.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -480,7 +480,7 @@ declare namespace BaseToken {
   export import UpdateData = TokenDocument.UpdateData;
   export import UpdateInput = TokenDocument.UpdateInput;
   export import Schema = TokenDocument.Schema;
-  export import Database2 = TokenDocument.Database;
+  export import Database = TokenDocument.Database;
   export import TemporaryIf = TokenDocument.TemporaryIf;
   export import Flags = TokenDocument.Flags;
   export import CoreFlags = TokenDocument.CoreFlags;
