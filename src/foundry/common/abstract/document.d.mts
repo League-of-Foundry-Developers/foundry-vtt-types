@@ -2158,14 +2158,16 @@ declare namespace Document {
     type AnyGetOperation = IntentionalPartial<DatabaseBackend.GetOperation>;
 
     /** @see {@linkcode DatabaseBackend.GetOperation} */
-    type GetOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["GetOperation"];
+    type GetOperationForName<DocName extends Document.Type> = Internal.Lookup<"GetOperation", DocName>;
 
     /** @see {@linkcode Document.Database.GetDocumentsOperation} */
-    type GetDocumentsOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["GetDocumentsOperation"];
+    type GetDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "GetDocumentsOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.BackendGetOperation} */
-    type BackendGetOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["BackendGetOperation"];
+    type BackendGetOperationForName<DocName extends Document.Type> = Internal.Lookup<"BackendGetOperation", DocName>;
 
     /* ***********************************************
      *           CREATE OPERATION HELPERS            *
@@ -2351,45 +2353,49 @@ declare namespace Document {
     type CreateOperationForName<
       DocName extends Document.Type,
       Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<DocName, Temporary>["CreateOperation"];
+    > = Internal.Lookup<"CreateOperation", DocName, Temporary>;
 
     /** @see {@linkcode Document.Database.CreateDocumentsOperation} */
     type CreateDocumentsOperationForName<
       DocName extends Document.Type,
       Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<DocName, Temporary>["CreateDocumentsOperation"];
+    > = Internal.Lookup<"CreateDocumentsOperation", DocName, Temporary>;
 
     /** @see {@linkcode Document.Database.CreateEmbeddedOperation} */
-    type CreateEmbeddedOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["CreateEmbeddedOperation"];
+    type CreateEmbeddedOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "CreateEmbeddedOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.BackendCreateOperation} */
     type BackendCreateOperationForName<
       DocName extends Document.Type,
       Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<DocName, Temporary>["BackendCreateOperation"];
+    > = Internal.Lookup<"BackendCreateOperation", DocName, Temporary>;
 
     /** @see {@linkcode Document.Database.PreCreateOptions} */
     type PreCreateOptionsForName<
       DocName extends Document.Type,
       Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<DocName, Temporary>["PreCreateOptions"];
+    > = Internal.Lookup<"PreCreateOptions", DocName, Temporary>;
 
     /** @see {@linkcode Document.Database.PreCreateOperation} */
     type PreCreateOperationForName<
       DocName extends Document.Type,
       Temporary extends boolean | undefined = boolean | undefined,
-    > = Internal.Lookup<DocName, Temporary>["PreCreateOperation"];
+    > = Internal.Lookup<"PreCreateOperation", DocName, Temporary>;
 
     /** @see {@linkcode Document.Database.OnCreateDocumentsOperation} */
-    type OnCreateDocumentsOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["OnCreateDocumentsOperation"];
+    type OnCreateDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "OnCreateDocumentsOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.OnCreateOptions} */
-    type OnCreateOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnCreateOptions"];
+    type OnCreateOptionsForName<DocName extends Document.Type> = Internal.Lookup<"OnCreateOptions", DocName>;
 
     /** @see {@linkcode Document.Database.OnCreateOperation} */
-    type OnCreateOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnCreateOperation"];
+    type OnCreateOperationForName<DocName extends Document.Type> = Internal.Lookup<"OnCreateOperation", DocName>;
 
     /* ***********************************************
      *           UPDATE OPERATION HELPERS            *
@@ -2567,39 +2573,49 @@ declare namespace Document {
      * {@linkcode UpdateOneDocumentOperationForName} performs that duty now, while this returns types valid for
      * {@linkcode DatabaseBackend._updateDocuments | DatabaseBackend#_updateDocuments}
      */
-    type UpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["UpdateOperation"];
+    type UpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<"UpdateOperation", DocName>;
 
     /** @see {@linkcode Document.Database.UpdateOneDocumentOperation} */
-    type UpdateOneDocumentOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["UpdateOneDocumentOperation"];
+    type UpdateOneDocumentOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "UpdateOneDocumentOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.UpdateOneDocumentOperation} */
-    type UpdateEmbeddedOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["UpdateEmbeddedOperation"];
+    type UpdateEmbeddedOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "UpdateEmbeddedOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.UpdateManyDocumentsOperation} */
-    type UpdateManyDocumentsOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["UpdateManyDocumentsOperation"];
+    type UpdateManyDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "UpdateManyDocumentsOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.BackendUpdateOperation} */
-    type BackendUpdateOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["BackendUpdateOperation"];
+    type BackendUpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "BackendUpdateOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.PreUpdateOptions} */
-    type PreUpdateOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["PreUpdateOptions"];
+    type PreUpdateOptionsForName<DocName extends Document.Type> = Internal.Lookup<"PreUpdateOptions", DocName>;
 
     /** @see {@linkcode Document.Database.PreUpdateOperation} */
-    type PreUpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["PreUpdateOperation"];
+    type PreUpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<"PreUpdateOperation", DocName>;
 
     /** @see {@linkcode Document.Database.OnUpdateDocumentsOperation} */
-    type OnUpdateDocumentsOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["OnUpdateDocumentsOperation"];
+    type OnUpdateDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "OnUpdateDocumentsOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.OnUpdateOptions} */
-    type OnUpdateOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnUpdateOptions"];
+    type OnUpdateOptionsForName<DocName extends Document.Type> = Internal.Lookup<"OnUpdateOptions", DocName>;
 
     /** @see {@linkcode Document.Database.OnUpdateOperation} */
-    type OnUpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnUpdateOperation"];
+    type OnUpdateOperationForName<DocName extends Document.Type> = Internal.Lookup<"OnUpdateOperation", DocName>;
 
     /* ***********************************************
      *           DELETE OPERATION HELPERS            *
@@ -2769,80 +2785,142 @@ declare namespace Document {
      * {@linkcode DeleteOneDocumentOperationForName} performs that duty now, while this returns types valid
      * for {@linkcode DatabaseBackend._deleteDocuments | DatabaseBackend#_deleteDocuments}
      */
-    type DeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["DeleteOperation"];
+    type DeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<"DeleteOperation", DocName>;
 
     /** @see {@linkcode Document.Database.DeleteOneDocumentOperation} */
-    type DeleteOneDocumentOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["DeleteOneDocumentOperation"];
+    type DeleteOneDocumentOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "DeleteOneDocumentOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.DeleteOneDocumentOperation} */
-    type DeleteEmbeddedOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["DeleteEmbeddedOperation"];
+    type DeleteEmbeddedOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "DeleteEmbeddedOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.DeleteManyDocumentsOperation} */
-    type DeleteManyDocumentsOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["DeleteManyDocumentsOperation"];
+    type DeleteManyDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "DeleteManyDocumentsOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.BackendDeleteOperation} */
-    type BackendDeleteOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["BackendDeleteOperation"];
+    type BackendDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "BackendDeleteOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.PreDeleteOptions} */
-    type PreDeleteOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["PreDeleteOptions"];
+    type PreDeleteOptionsForName<DocName extends Document.Type> = Internal.Lookup<"PreDeleteOptions", DocName>;
 
     /** @see {@linkcode Document.Database.PreDeleteOperation} */
-    type PreDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["PreDeleteOperation"];
+    type PreDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<"PreDeleteOperation", DocName>;
 
     /** @see {@linkcode Document.Database.OnDeleteDocumentsOperation} */
-    type OnDeleteDocumentsOperationForName<DocName extends Document.Type> =
-      Internal.Lookup<DocName>["OnDeleteDocumentsOperation"];
+    type OnDeleteDocumentsOperationForName<DocName extends Document.Type> = Internal.Lookup<
+      "OnDeleteDocumentsOperation",
+      DocName
+    >;
 
     /** @see {@linkcode Document.Database.OnDeleteOptions} */
-    type OnDeleteOptionsForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnDeleteOptions"];
+    type OnDeleteOptionsForName<DocName extends Document.Type> = Internal.Lookup<"OnDeleteOptions", DocName>;
 
     /** @see {@linkcode Document.Database.OnDeleteOperation} */
-    type OnDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<DocName>["OnDeleteOperation"];
+    type OnDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<"OnDeleteOperation", DocName>;
 
     namespace Internal {
-      type Lookup<Name extends Document.Type, Temporary extends boolean | undefined = boolean | undefined> =
-        | (Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "ActorDelta" ? ActorDelta.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Actor" ? Actor.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Adventure" ? Adventure.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "AmbientLight" ? AmbientLightDocument.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "AmbientSound" ? AmbientSoundDocument.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Card" ? Card.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Cards" ? Cards.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "ChatMessage" ? ChatMessage.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Combat" ? Combat.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Combatant" ? Combatant.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "CombatantGroup" ? CombatantGroup.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Drawing" ? DrawingDocument.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "FogExploration" ? FogExploration.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Folder" ? Folder.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Item" ? Item.Database.Internal.OperationNameMap<Temporary> : never)
+      type Operation =
+        | "GetDocumentsOperation"
+        | "BackendGetOperation"
+        | "GetOperation"
+        | "CreateDocumentsOperation"
+        | "CreateEmbeddedOperation"
+        | "BackendCreateOperation"
+        | "CreateOperation"
+        | "PreCreateOptions"
+        | "PreCreateOperation"
+        | "OnCreateDocumentsOperation"
+        | "OnCreateOptions"
+        | "OnCreateOperation"
+        | "UpdateOneDocumentOperation"
+        | "UpdateEmbeddedOperation"
+        | "UpdateManyDocumentsOperation"
+        | "BackendUpdateOperation"
+        | "UpdateOperation"
+        | "PreUpdateOptions"
+        | "PreUpdateOperation"
+        | "OnUpdateDocumentsOperation"
+        | "OnUpdateOptions"
+        | "OnUpdateOperation"
+        | "DeleteOneDocumentOperation"
+        | "DeleteEmbeddedOperation"
+        | "DeleteManyDocumentsOperation"
+        | "BackendDeleteOperation"
+        | "DeleteOperation"
+        | "PreDeleteOptions"
+        | "PreDeleteOperation"
+        | "OnDeleteDocumentsOperation"
+        | "OnDeleteOptions"
+        | "OnDeleteOperation";
+
+      type Lookup<
+        Operation extends Document.Database.Internal.Operation,
+        Name extends Document.Type,
+        Temporary extends boolean | undefined = boolean | undefined,
+      > =
+        | (Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "ActorDelta" ? ActorDelta.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Actor" ? Actor.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Adventure" ? Adventure.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "AmbientLight"
+            ? AmbientLightDocument.Database.Internal.OperationNameMap<Temporary>[Operation]
+            : never)
+        | (Name extends "AmbientSound"
+            ? AmbientSoundDocument.Database.Internal.OperationNameMap<Temporary>[Operation]
+            : never)
+        | (Name extends "Card" ? Card.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Cards" ? Cards.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "ChatMessage" ? ChatMessage.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Combat" ? Combat.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Combatant" ? Combatant.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "CombatantGroup"
+            ? CombatantGroup.Database.Internal.OperationNameMap<Temporary>[Operation]
+            : never)
+        | (Name extends "Drawing" ? DrawingDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "FogExploration"
+            ? FogExploration.Database.Internal.OperationNameMap<Temporary>[Operation]
+            : never)
+        | (Name extends "Folder" ? Folder.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Item" ? Item.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
         | (Name extends "JournalEntryCategory"
-            ? JournalEntryCategory.Database.Internal.OperationNameMap<Temporary>
+            ? JournalEntryCategory.Database.Internal.OperationNameMap<Temporary>[Operation]
             : never)
-        | (Name extends "JournalEntryPage" ? JournalEntryPage.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "JournalEntry" ? JournalEntry.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Macro" ? Macro.Database.Internal.OperationNameMap<Temporary> : never)
+        | (Name extends "JournalEntryPage"
+            ? JournalEntryPage.Database.Internal.OperationNameMap<Temporary>[Operation]
+            : never)
+        | (Name extends "JournalEntry" ? JournalEntry.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Macro" ? Macro.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
         | (Name extends "MeasuredTemplate"
-            ? MeasuredTemplateDocument.Database.Internal.OperationNameMap<Temporary>
+            ? MeasuredTemplateDocument.Database.Internal.OperationNameMap<Temporary>[Operation]
             : never)
-        | (Name extends "Note" ? NoteDocument.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "PlaylistSound" ? PlaylistSound.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Playlist" ? Playlist.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "RegionBehavior" ? RegionBehavior.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Region" ? RegionDocument.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "RollTable" ? RollTable.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Scene" ? Scene.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Setting" ? Setting.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "TableResult" ? TableResult.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Tile" ? TileDocument.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Token" ? TokenDocument.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "User" ? User.Database.Internal.OperationNameMap<Temporary> : never)
-        | (Name extends "Wall" ? WallDocument.Database.Internal.OperationNameMap<Temporary> : never);
+        | (Name extends "Note" ? NoteDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "PlaylistSound"
+            ? PlaylistSound.Database.Internal.OperationNameMap<Temporary>[Operation]
+            : never)
+        | (Name extends "Playlist" ? Playlist.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "RegionBehavior"
+            ? RegionBehavior.Database.Internal.OperationNameMap<Temporary>[Operation]
+            : never)
+        | (Name extends "Region" ? RegionDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "RollTable" ? RollTable.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Scene" ? Scene.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Setting" ? Setting.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "TableResult" ? TableResult.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Tile" ? TileDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Token" ? TokenDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "User" ? User.Database.Internal.OperationNameMap<Temporary>[Operation] : never)
+        | (Name extends "Wall" ? WallDocument.Database.Internal.OperationNameMap<Temporary>[Operation] : never);
     }
 
     /* ***********************************************

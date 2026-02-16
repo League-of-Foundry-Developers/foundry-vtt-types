@@ -13,9 +13,9 @@ import type { DocumentCollection } from "#client/documents/abstract/_module.d.mt
  * breaks the `AnyEmbeddedDocument` type, among other things.
  */
 declare class EmbeddedCollection<
-  ContainedDocument extends Document.Any,
-  ParentDocument extends Document.Any,
-  Methods extends Collection.Methods.Any = EmbeddedCollection.Methods<ContainedDocument>,
+  out ContainedDocument extends Document.Any,
+  out ParentDocument extends Document.Any,
+  out Methods extends Collection.Methods.Any = EmbeddedCollection.Methods<ContainedDocument>,
 > extends Collection<ContainedDocument, Methods> {
   /**
    * @param name        - The name of this collection in the parent Document.
