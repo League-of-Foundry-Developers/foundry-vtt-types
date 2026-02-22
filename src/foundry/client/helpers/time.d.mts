@@ -69,7 +69,7 @@ declare class GameTime {
    * @param userId    - The ID of the User who advanced the time
    * @remarks This is (effectively, not directly) used as the `onChange` function for the `core.time` setting.
    */
-  onUpdateWorldTime(worldTime: number, options: GameTime.OnUpdateWorldTimeOptions, userId: string): void;
+  onUpdateWorldTime(worldTime: number, options: ClientSettings.OnChangeOptions, userId: string): void;
 
   #GameTime: true;
 }
@@ -79,10 +79,6 @@ declare namespace GameTime {
   interface AnyConstructor extends Identity<typeof AnyGameTime> {}
 
   type SettingField = foundry.data.fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
-
-  interface OnUpdateWorldTimeOptions extends ClientSettings.OnChangeFunction<
-    ClientSettings.ToSettingInitializedType<SettingField>
-  > {}
 }
 
 export default GameTime;

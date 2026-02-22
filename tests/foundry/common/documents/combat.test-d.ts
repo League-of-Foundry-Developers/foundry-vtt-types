@@ -7,8 +7,8 @@ expectTypeOf(TestBaseCombat.create({ scene: "foo", active: true, sort: 1 })).toE
   Promise<Combat.Stored | undefined>
 >();
 expectTypeOf(TestBaseCombat.createDocuments([])).toEqualTypeOf<Promise<Combat.Stored[]>>();
-expectTypeOf(TestBaseCombat.updateDocuments([])).toEqualTypeOf<Promise<Combat.Implementation[]>>();
-expectTypeOf(TestBaseCombat.deleteDocuments([])).toEqualTypeOf<Promise<Combat.Implementation[]>>();
+expectTypeOf(TestBaseCombat.updateDocuments([])).toEqualTypeOf<Promise<Combat.Stored[]>>();
+expectTypeOf(TestBaseCombat.deleteDocuments([])).toEqualTypeOf<Promise<Combat.Stored[]>>();
 
 const combat = await TestBaseCombat.create({ scene: "foo", active: true }, { temporary: true });
 if (combat) {
