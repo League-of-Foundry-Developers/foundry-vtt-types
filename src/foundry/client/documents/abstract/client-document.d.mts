@@ -12,6 +12,7 @@ import type {
 import type Document from "#common/abstract/document.d.mts";
 import type { Application, FormApplication } from "#client/appv1/api/_module.d.mts";
 import type { ApplicationV2 } from "#client/applications/api/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
 
 declare class InternalClientDocument<DocumentName extends Document.Type> {
@@ -46,14 +47,16 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * Return a reference to the parent Collection instance which contains this Document.
    */
-  get collection(): Collection<Document.StoredForName<DocumentName>> | null;
+  get collection():
+    | (DocumentName extends "ActorDelta" ? ActorDelta.Stored : Collection<Document.StoredForName<DocumentName>>)
+    | null;
 
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): DocumentName extends foundry.documents.collections.CompendiumCollection.DocumentName
-    ? foundry.documents.collections.CompendiumCollection<DocumentName>
-    : null;
+  get compendium():
+    | (DocumentName extends CompendiumCollection.DocumentName ? CompendiumCollection<DocumentName> : never)
+    | null;
 
   /**
    * Is this document in a compendium? A stricter check than {@link Document.inCompendium | `Document#inCompendium`}.
@@ -638,7 +641,9 @@ declare function ClientDocumentMixin<BaseClass extends ClientDocumentMixin.BaseC
 ): ClientDocumentMixin.Mix<BaseClass>;
 
 declare namespace ClientDocumentMixin {
-  interface AnyMixedConstructor extends ReturnType<typeof foundry.documents.abstract.ClientDocumentMixin<BaseClass>> {}
+  interface AnyMixedConstructor extends ReturnType<
+    typeof foundry.documents.abstract.ClientDocumentMixin<Document.AnyConstructor>
+  > {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = Document.Internal.Constructor;
