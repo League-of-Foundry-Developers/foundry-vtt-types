@@ -121,11 +121,13 @@ expectTypeOf(item["_sheet"]).toEqualTypeOf<FixedInstanceType<Document.SheetClass
 type AnyRealEmbeddedCollection = _AnyRealEmbeddedCollection<Exclude<Document.EmbeddedType, "ActorDelta">>;
 
 type _AnyRealEmbeddedCollection<Name extends Document.Type> = Name extends unknown
-  ? EmbeddedCollection<Document.StoredForName<Name>, Exclude<Document.ParentForName<Name>, null>>
+  ? EmbeddedCollection<Document.StoredForName<Name>, ClientDocument.StoredNonNullishParentForName<Name>>
   : never;
 
 expectTypeOf(item.collection).toEqualTypeOf<
-  Document.WorldCollectionForName<"Item"> | EmbeddedCollection<Item.Stored, Exclude<Item.Parent, null>> | null
+  | Document.WorldCollectionForName<"Item">
+  | EmbeddedCollection<Item.Stored, ClientDocument.StoredNonNullishParentForName<"Item">>
+  | null
 >();
 // @ts-expect-error Only getter, no setter
 item.collection = new Collection<typeof item>();

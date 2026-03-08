@@ -548,10 +548,19 @@ declare global {
       updateData?: AnyObject;
     }
 
+    type StoredNonNullishParentForName<Name extends Document.Type> = _StoredNonNullishParentForName<
+      Exclude<Document.ParentForName<Name>, null>
+    >;
+
+    /** @internal */
+    type _StoredNonNullishParentForName<Doc extends Document.Any> = Doc extends unknown
+      ? Document.StoredForName<Doc["documentName"]>
+      : never;
+
     type CollectionForName<Name extends Document.Type> =
       | (Name extends "ActorDelta" ? ActorDelta.Stored : never)
       | (Name extends Exclude<Document.EmbeddedType, "ActorDelta">
-          ? EmbeddedCollection<Document.StoredForName<Name>, Exclude<Document.ParentForName<Name>, null>>
+          ? EmbeddedCollection<Document.StoredForName<Name>, StoredNonNullishParentForName<Name>>
           : never)
       | (Name extends Document.WorldType ? Document.WorldCollectionForName<Name> : never)
       | null;
