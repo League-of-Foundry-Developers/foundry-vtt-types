@@ -49,6 +49,7 @@ import type {
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
+import type WorldCollection from "#client/documents/abstract/world-collection.d.mts";
 import type { SystemConfig } from "#configuration";
 
 export default Document;
@@ -1080,29 +1081,13 @@ declare namespace Document {
     type CollectionName<Embedded extends Document.Metadata.Embedded> = {
       [K in keyof Embedded]: K extends Document.Type ? Extract<K | Embedded[K], string> : never;
     }[keyof Embedded];
+
+    type ParentForName<Name extends Document.EmbeddedType> = Document.StoredForName<
+      Document.Internal.DocumentNameFor<Exclude<Document.ParentForName<Name>, null>>
+    >;
   }
 
-  /**
-   * @internal
-   */
-  interface _WorldCollectionMap {
-    Actor: foundry.documents.collections.Actors.Implementation;
-    Cards: foundry.documents.collections.CardStacks;
-    Combat: foundry.documents.collections.CombatEncounters;
-    FogExploration: foundry.documents.collections.FogExplorations;
-    Folder: foundry.documents.collections.Folders;
-    Item: foundry.documents.collections.Items;
-    JournalEntry: foundry.documents.collections.Journal;
-    Macro: foundry.documents.collections.Macros;
-    ChatMessage: foundry.documents.collections.ChatMessages;
-    Playlist: foundry.documents.collections.Playlists;
-    Scene: foundry.documents.collections.Scenes;
-    Setting: foundry.documents.collections.WorldSettings;
-    RollTable: foundry.documents.collections.RollTables;
-    User: foundry.documents.collections.Users;
-  }
-
-  type WorldCollectionFor<Name extends Document.WorldType> = _WorldCollectionMap[Name];
+  type WorldCollectionForName<Name extends Document.WorldType> = WorldCollection.ForName<Name>;
 
   type IsParentOf<
     ParentDocument extends Document.Internal.Instance.Any,

@@ -13,6 +13,8 @@ import type Document from "#common/abstract/document.d.mts";
 import type { Application, FormApplication } from "#client/appv1/api/_module.d.mts";
 import type ApplicationV2 from "#client/applications/api/application.d.mts";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
+import type { EmbeddedCollection } from "#common/abstract/_module.mjs";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 declare class InternalClientDocument<DocumentName extends Document.Type> {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
@@ -46,14 +48,12 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * Return a reference to the parent Collection instance which contains this Document.
    */
-  get collection(): Collection<Document.StoredForName<DocumentName>> | null;
+  get collection(): ClientDocument.CollectionForName<DocumentName>;
 
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): DocumentName extends foundry.documents.collections.CompendiumCollection.DocumentName
-    ? foundry.documents.collections.CompendiumCollection<DocumentName>
-    : null;
+  get compendium(): ClientDocument.CompendiumForName<DocumentName>;
 
   /**
    * Is this document in a compendium? A stricter check than {@link Document.inCompendium | `Document#inCompendium`}.
@@ -547,6 +547,18 @@ declare global {
        */
       updateData?: AnyObject;
     }
+
+    type CollectionForName<Name extends Document.Type> =
+      | (Name extends "ActorDelta" ? ActorDelta.Stored : never)
+      | (Name extends Exclude<Document.EmbeddedType, "ActorDelta">
+          ? EmbeddedCollection<Document.StoredForName<Name>, Document.Embedded.ParentForName<Name>>
+          : never)
+      | (Name extends Document.WorldType ? Document.WorldCollectionForName<Name> : never)
+      | null;
+
+    type CompendiumForName<Name extends Document.Type> =
+      | (Name extends CompendiumCollection.DocumentName ? CompendiumCollection<Name> : never)
+      | null;
 
     // TODO: This may be better defined elsewhere
     type LifeCycleEventName = "preCreate" | "onCreate" | "preUpdate" | "onUpdate" | "preDelete" | "onDelete";
