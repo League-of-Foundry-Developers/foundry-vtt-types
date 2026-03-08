@@ -1183,8 +1183,12 @@ declare namespace Document {
       [K in keyof Embedded]: K extends Document.Type ? Extract<K | Embedded[K], string> : never;
     }[keyof Embedded];
 
+    type ParentForName<Name extends Document.EmbeddedType> = Document.StoredForName<
+      Document.Internal.DocumentNameFor<Exclude<Document.ParentForName<Name>, null>>
+    >;
+
     /**
-     * @deprecated @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
+     * @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
      * This type will be removed in v15.
      */
     type CollectionNameFor<
