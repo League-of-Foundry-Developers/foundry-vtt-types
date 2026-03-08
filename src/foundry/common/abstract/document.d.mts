@@ -1081,6 +1081,10 @@ declare namespace Document {
     type CollectionName<Embedded extends Document.Metadata.Embedded> = {
       [K in keyof Embedded]: K extends Document.Type ? Extract<K | Embedded[K], string> : never;
     }[keyof Embedded];
+
+    type ParentForName<Name extends Document.EmbeddedType> = Document.StoredForName<
+      Document.Internal.DocumentNameFor<Exclude<Document.ParentForName<Name>, null>>
+    >;
   }
 
   type WorldCollectionForName<Name extends Document.WorldType> = WorldCollection.ForName<Name>;

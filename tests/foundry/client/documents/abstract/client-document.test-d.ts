@@ -14,6 +14,7 @@ import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 const item = new Item.implementation({ name: "foo", type: "base" });
 declare const someActor: Actor.Implementation;
 declare const actorDelta: ActorDelta.Stored;
+declare const activeEffect: ActiveEffect.Stored;
 const anyClientDoc: ClientDocumentMixin.AnyMixed = item;
 // Test the inheritance of static members
 expectTypeOf(Item.documentName).toEqualTypeOf<"Item">(); // Document
@@ -120,19 +121,23 @@ expectTypeOf(item["_sheet"]).toEqualTypeOf<FixedInstanceType<Document.SheetClass
 
 type AnyRealEmbeddedCollection = _AnyRealEmbeddedCollection<Exclude<Document.EmbeddedType, "ActorDelta">>;
 
-type _AnyRealEmbeddedCollection<Name extends Document.Type> = Name extends unknown
-  ? EmbeddedCollection<Document.StoredForName<Name>, ClientDocument.StoredNonNullishParentForName<Name>>
+type _AnyRealEmbeddedCollection<Name extends Document.EmbeddedType> = Name extends unknown
+  ? EmbeddedCollection<Document.StoredForName<Name>, Document.Embedded.ParentForName<Name>>
   : never;
 
 expectTypeOf(item.collection).toEqualTypeOf<
   | Document.WorldCollectionForName<"Item">
-  | EmbeddedCollection<Item.Stored, ClientDocument.StoredNonNullishParentForName<"Item">>
+  | EmbeddedCollection<Item.Stored, Document.Embedded.ParentForName<"Item">>
   | null
 >();
 // @ts-expect-error Only getter, no setter
 item.collection = new Collection<typeof item>();
 
 expectTypeOf(actorDelta.collection).toEqualTypeOf<ActorDelta.Stored | null>();
+expectTypeOf(activeEffect.collection).toEqualTypeOf<EmbeddedCollection<
+  ActiveEffect.Stored,
+  Actor.Stored | Item.Stored
+> | null>();
 
 if (anyClientDoc.collection) {
   expectTypeOf(anyClientDoc.collection).toEqualTypeOf<
