@@ -45,7 +45,7 @@ expectTypeOf(chat.execute()).toEqualTypeOf<void | Promise<unknown>>();
 
 // properties and functions of `ClientDocumentMixin`
 expectTypeOf(script.apps).toEqualTypeOf<Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>>();
-expectTypeOf(script.collection).toEqualTypeOf<Collection<Macro.Stored> | null>();
+expectTypeOf(script.collection).toEqualTypeOf<foundry.documents.collections.Macros.Implementation | null>();
 expectTypeOf(script.folder).toEqualTypeOf<Folder.Stored | null>();
 expectTypeOf(script.isOwner).toEqualTypeOf<boolean>();
 

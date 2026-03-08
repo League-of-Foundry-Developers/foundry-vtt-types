@@ -335,7 +335,7 @@ export interface AllHooks extends DynamicHooks {
   updateWorldTime: (
     worldTime: number,
     delta: number,
-    options: foundry.helpers.GameTime.OnUpdateWorldTimeOptions,
+    options: foundry.helpers.ClientSettings.OnChangeOptions,
     userId: string,
   ) => void;
 
