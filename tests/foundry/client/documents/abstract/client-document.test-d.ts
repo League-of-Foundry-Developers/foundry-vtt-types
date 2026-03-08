@@ -8,9 +8,13 @@ import Document = foundry.abstract.Document;
 import Dialog = foundry.appv1.api.Dialog;
 import FormApplication = foundry.appv1.api.FormApplication;
 import TextEditor = foundry.applications.ux.TextEditor;
+import ClientDocumentMixin = foundry.documents.abstract.ClientDocumentMixin;
+import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
 const item = new Item.implementation({ name: "foo", type: "base" });
 declare const someActor: Actor.Implementation;
+declare const actorDelta: ActorDelta.Stored;
+const anyClientDoc: ClientDocumentMixin.AnyMixed = item;
 // Test the inheritance of static members
 expectTypeOf(Item.documentName).toEqualTypeOf<"Item">(); // Document
 expectTypeOf(Item.createDialog()).toEqualTypeOf<Promise<Item.Stored | null | undefined>>(); // ClientDocumentMixin
@@ -114,16 +118,33 @@ expectTypeOf(item["_sheet"]).toEqualTypeOf<FixedInstanceType<Document.SheetClass
 
 // _initialize overridden with no signature changes
 
-// TODO This will also match `Item`, but not `Item.Implementation`
-expectTypeOf(item.collection).toEqualTypeOf<Collection<Item.Stored> | null>();
+type AnyRealEmbeddedCollection = _AnyRealEmbeddedCollection<Exclude<Document.EmbeddedType, "ActorDelta">>;
+
+type _AnyRealEmbeddedCollection<Name extends Document.Type> = Name extends unknown
+  ? EmbeddedCollection<Document.StoredForName<Name>, Exclude<Document.ParentForName<Name>, null>>
+  : never;
+
+expectTypeOf(item.collection).toEqualTypeOf<
+  Document.WorldCollectionForName<"Item"> | EmbeddedCollection<Item.Stored, Exclude<Item.Parent, null>> | null
+>();
 // @ts-expect-error Only getter, no setter
 item.collection = new Collection<typeof item>();
 
-expectTypeOf(item.compendium).toEqualTypeOf<CompendiumCollection<"Item">>();
+expectTypeOf(actorDelta.collection).toEqualTypeOf<ActorDelta.Stored | null>();
 
-// Regression test for `Type` not being passed through to metadata.
-// Reported by @123499, see https://discord.com/channels/732325252788387980/803646399014109205/1419142467214770317.
-expectTypeOf(item.compendium.metadata.type).toEqualTypeOf<"Item">();
+if (anyClientDoc.collection) {
+  expectTypeOf(anyClientDoc.collection).toEqualTypeOf<
+    Document.WorldCollectionForName<Document.WorldType> | AnyRealEmbeddedCollection | ActorDelta.Stored
+  >();
+}
+
+expectTypeOf(item.compendium).toEqualTypeOf<CompendiumCollection<"Item"> | null>();
+
+if (item.compendium) {
+  // Regression test for `Type` not being passed through to metadata.
+  // Reported by @123499, see https://discord.com/channels/732325252788387980/803646399014109205/1419142467214770317.
+  expectTypeOf(item.compendium.metadata.type).toEqualTypeOf<"Item">();
+}
 
 // @ts-expect-error Only getter, no setter
 item.compendium = game.packs!.contents[0]!;
