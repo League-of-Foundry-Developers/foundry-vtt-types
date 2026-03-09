@@ -10,42 +10,23 @@ import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
 import TextureTransitionFilter = foundry.canvas.rendering.filters.TextureTransitionFilter;
 
 expectTypeOf(Token.embeddedName).toEqualTypeOf<"Token">();
-expectTypeOf(Token.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
-  | Array<
-      | "redrawEffects"
-      | "refresh"
-      | "refreshState"
-      | "refreshVisibility"
-      | "refreshTransform"
-      | "refreshPosition"
-      | "refreshRotation"
-      | "refreshSize"
-      | "refreshElevation"
-      | "refreshMesh"
-      | "refreshShader"
-      | "refreshShape"
-      | "refreshBorder"
-      | "refreshBars"
-      | "refreshEffects"
-      | "refreshNameplate"
-      | "refreshTarget"
-      | "refreshTooltip"
-      | "refreshRingVisuals"
-    >
-  | undefined
->();
+expectTypeOf(Token.RENDER_FLAGS.redraw.propagate).toExtend<string[] | undefined>();
 
 declare const doc: TokenDocument.Stored;
 const token = new CONFIG.Token.objectClass(doc);
 
 expectTypeOf(token.controlIcon).toBeNull();
-expectTypeOf(token.shape).toEqualTypeOf<PIXI.Rectangle | PIXI.Polygon | undefined>();
+expectTypeOf(token.shape).toEqualTypeOf<PIXI.Rectangle | PIXI.Polygon | PIXI.Circle | PIXI.Ellipse | undefined>();
 expectTypeOf(token.detectionFilter).toEqualTypeOf<PIXI.Filter | null>();
 expectTypeOf(token.border).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(token.bars).toEqualTypeOf<Token.Bars | undefined>();
+expectTypeOf(token.effects).toEqualTypeOf<PIXI.Container | undefined>();
 expectTypeOf(token.tooltip).toEqualTypeOf<PreciseText | undefined>();
-expectTypeOf(token.target).toEqualTypeOf<PIXI.Graphics | undefined>();
+expectTypeOf(token.targetArrows).toEqualTypeOf<PIXI.Graphics | undefined>();
+expectTypeOf(token.targetPips).toEqualTypeOf<PIXI.Graphics | undefined>();
 expectTypeOf(token.nameplate).toEqualTypeOf<PreciseText | undefined>();
+expectTypeOf(token.ruler).toEqualTypeOf<foundry.canvas.placeables.tokens.BaseTokenRuler | null | undefined>();
+expectTypeOf(token.turnMarker).toEqualTypeOf<foundry.canvas.placeables.tokens.TokenTurnMarker | null>();
 expectTypeOf(token.targeted).toEqualTypeOf<Set<User.Stored>>();
 expectTypeOf(token.mesh).toEqualTypeOf<PrimarySpriteMesh | undefined>();
 
@@ -81,12 +62,12 @@ expectTypeOf(
 ).toEqualTypeOf<Canvas.Point>();
 
 expectTypeOf(token.sourceId).toBeString();
-expectTypeOf(token.sourceElement).toEqualTypeOf<PIXI.ImageSource | undefined>();
+expectTypeOf(token.sourceElement).toEqualTypeOf<PIXI.ImageSource | null>();
 expectTypeOf(token.isVideo).toBeBoolean();
 expectTypeOf(token.inCombat).toBeBoolean();
-// TODO: see if we can fix the 'possibly infinite' here
-expectTypeOf(token.combatant).toEqualTypeOf<Combatant.Stored>();
+expectTypeOf(token.combatant).toEqualTypeOf<Combatant.Stored | null>();
 expectTypeOf(token.isTargeted).toBeBoolean();
+expectTypeOf(token.isDragged).toBeBoolean();
 expectTypeOf(token.detectionModes).toEqualTypeOf<
   { id: string | undefined; enabled: boolean; range: number | null }[]
 >();
@@ -183,9 +164,10 @@ expectTypeOf(token["_refreshBorder"]()).toBeVoid();
 expectTypeOf(token["_getBorderColor"]()).toBeNumber();
 
 expectTypeOf(token["_refreshTarget"]()).toBeVoid();
-expectTypeOf(token["_refreshTarget"]({})).toBeVoid();
+expectTypeOf(token["_drawTargetArrows"]()).toBeVoid();
+expectTypeOf(token["_drawTargetArrows"]({})).toBeVoid();
 expectTypeOf(
-  token["_refreshTarget"]({
+  token["_drawTargetArrows"]({
     alpha: 0.5,
     border: {
       color: Color.from("#787878"),
@@ -197,7 +179,7 @@ expectTypeOf(
   }),
 ).toBeVoid();
 expectTypeOf(
-  token["_refreshTarget"]({
+  token["_drawTargetArrows"]({
     alpha: undefined,
     border: { color: undefined, width: undefined },
     color: null,
@@ -205,32 +187,8 @@ expectTypeOf(
     size: undefined,
   }),
 ).toBeVoid();
-expectTypeOf(token["_refreshTarget"]({ border: undefined })).toBeVoid();
-
-expectTypeOf(token["_drawTarget"]()).toBeVoid();
-expectTypeOf(token["_drawTarget"]({})).toBeVoid();
-expectTypeOf(
-  token["_drawTarget"]({
-    alpha: 0.5,
-    border: {
-      color: Color.from("#787878"),
-      width: 4,
-    },
-    color: Color.from("#987654"),
-    margin: 2,
-    size: 0.23,
-  }),
-).toBeVoid();
-expectTypeOf(
-  token["_drawTarget"]({
-    alpha: undefined,
-    border: { color: undefined, width: undefined },
-    color: null,
-    margin: null,
-    size: undefined,
-  }),
-).toBeVoid();
-expectTypeOf(token["_drawTarget"]({ border: undefined })).toBeVoid();
+expectTypeOf(token["_drawTargetArrows"]({ border: undefined })).toBeVoid();
+expectTypeOf(token["_drawTargetPips"]()).toBeVoid();
 
 expectTypeOf(token.drawBars()).toBeVoid();
 expectTypeOf(token["_drawBar"](1, token.bars!.bar1, doc.getBarAttribute("foo")!)).toBeBoolean();
@@ -323,11 +281,13 @@ expectTypeOf(
 ).toBeNumber();
 
 const someAnimationContext = {
+  chain: [],
   duration: 750,
   name: "foo",
   onAnimate: [],
   postAnimate: [],
   preAnimate: [],
+  promise: Promise.resolve(),
   time: 437,
   to: { x: 500 },
 };
@@ -404,7 +364,7 @@ expectTypeOf(
 ).toEqualTypeOf<foundry.canvas.geometry.edges.PolygonVertex | null>(); // actual return for `"closest"
 
 expectTypeOf(token.getSize()).toEqualTypeOf<{ width: number; height: number }>();
-expectTypeOf(token.getShape()).toEqualTypeOf<PIXI.Rectangle | PIXI.Polygon>();
+expectTypeOf(token.getShape()).toEqualTypeOf<PIXI.Rectangle | PIXI.Polygon | PIXI.Circle | PIXI.Ellipse>();
 
 expectTypeOf(token.getCenterPoint()).toEqualTypeOf<Canvas.Point>();
 expectTypeOf(token.getCenterPoint({ x: 5, y: 7 })).toEqualTypeOf<Canvas.Point>();
@@ -439,15 +399,15 @@ expectTypeOf(token.segmentizeRegionMovement(someRegion, waypoints, { teleport: n
   Region.MovementSegment[]
 >();
 
-declare const someUser: User.Stored;
 expectTypeOf(token.setTarget()).toBeVoid();
 expectTypeOf(token.setTarget(true)).toBeVoid();
 expectTypeOf(token.setTarget(false, {})).toBeVoid();
-expectTypeOf(token.setTarget(true, { user: someUser, groupSelection: true, releaseOthers: false })).toBeVoid();
-expectTypeOf(token.setTarget(false, { user: null, groupSelection: null, releaseOthers: null })).toBeVoid();
+expectTypeOf(token.setTarget(true, { releaseOthers: false })).toBeVoid();
+expectTypeOf(token.setTarget(false, { releaseOthers: null })).toBeVoid();
 
 expectTypeOf(token.externalRadius).toBeNumber();
 expectTypeOf(token.getLightRadius(5)).toBeNumber();
+expectTypeOf(token.getDispositionColor()).toBeNumber();
 expectTypeOf(token["_getShiftedPosition"](20, -10)).toEqualTypeOf<Canvas.Point>();
 
 expectTypeOf(token["_updateRotation"]()).toBeNumber();
@@ -455,6 +415,7 @@ expectTypeOf(token["_updateRotation"]({})).toBeNumber();
 // you would never actually pass `delta` if you're passing `angle` as it would get ignored
 expectTypeOf(token["_updateRotation"]({ angle: 90, delta: 20, snap: 4 })).toBeNumber();
 expectTypeOf(token["_updateRotation"]({ angle: null, delta: undefined, snap: undefined })).toBeNumber();
+expectTypeOf(token["_initializeRuler"]()).toEqualTypeOf<foundry.canvas.placeables.tokens.BaseTokenRuler | null>();
 
 expectTypeOf(token["_onApplyStatusEffect"]("flying", true)).toBeVoid();
 expectTypeOf(token["_configureFilterEffect"]("invisible", false)).toBeVoid();
@@ -494,7 +455,9 @@ expectTypeOf(token["_onRelease"]({})).toBeVoid();
 
 expectTypeOf(token["_overlapsSelection"](new PIXI.Rectangle())).toBeBoolean();
 
+declare const someUser: User.Stored;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
+expectTypeOf(token["_updateTarget"](true, someUser)).toBeVoid();
 expectTypeOf(token["_canControl"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(token["_canHUD"](someUser, pointerEvent)).toBeBoolean();
 expectTypeOf(token["_canConfigure"](someUser, pointerEvent)).toBeBoolean();
@@ -513,8 +476,29 @@ expectTypeOf(token["_propagateLeftClick"](pointerEvent)).toBeBoolean();
 expectTypeOf(token["_onClickLeft2"](pointerEvent)).toBeVoid();
 expectTypeOf(token["_onClickRight2"](pointerEvent)).toBeVoid();
 expectTypeOf(token["_onDragLeftStart"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_initializeDragLeft"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_getDragConstrainOptions"]()).toEqualTypeOf<Token.DragConstrainOptions>();
+expectTypeOf(token["_getDragPathfindingOptions"]()).toEqualTypeOf<Token.FindMovementPathOptions>();
+expectTypeOf(token["_getDragMovementAction"]()).toBeString();
+expectTypeOf(token["_onDragLeftDrop"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_shouldPreventDragLeftDrop"](pointerEvent)).toBeBoolean();
 expectTypeOf(token["_prepareDragLeftDropUpdates"](pointerEvent)).toEqualTypeOf<Token.DragLeftDropUpdate[]>();
 expectTypeOf(token["_onDragLeftMove"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_updateDragDestination"]({ x: 10, y: 20 })).toBeVoid();
+expectTypeOf(token["_updateDragDestination"]({ x: 10, y: 20 }, {})).toBeVoid();
+expectTypeOf(token["_updateDragDestination"]({ x: 10, y: 20 }, { snap: true })).toBeVoid();
+expectTypeOf(token["_onDragClickLeft"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_onDragClickLeft2"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_onDragClickRight"](pointerEvent)).toBeVoid();
+expectTypeOf(token["_changeDragElevation"](1)).toBeVoid();
+expectTypeOf(token["_changeDragElevation"](-1, {})).toBeVoid();
+expectTypeOf(token["_changeDragElevation"](2, { precise: true })).toBeVoid();
+expectTypeOf(
+  token["_getDragWaypointPosition"]({ x: 0, y: 0, elevation: 0 }, { x: 10, y: 20 }),
+).toEqualTypeOf<Token.DragWaypointPosition>();
+expectTypeOf(
+  token["_getDragWaypointPosition"]({ x: 0, y: 0, elevation: 0 }, { elevation: 30 }, { snap: true }),
+).toEqualTypeOf<Token.DragWaypointPosition>();
 expectTypeOf(token["_onDragEnd"]()).toBeVoid();
 
 // deprecated since v11, until v13
