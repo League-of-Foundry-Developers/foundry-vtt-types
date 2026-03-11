@@ -118,7 +118,7 @@ declare abstract class BaseActiveEffect<
 
   override parent: BaseActiveEffect.Parent;
 
-  override " fvtt_types_internal_document_parent": ActiveEffect.Parent;
+  override " fvtt_types_internal_document_parent": BaseActiveEffect.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<ActiveEffect.Implementation | ActiveEffect.CreateData> | undefined,
