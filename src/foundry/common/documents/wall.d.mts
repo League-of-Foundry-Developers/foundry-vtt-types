@@ -79,6 +79,8 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   override parent: WallDocument.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseWall.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<WallDocument.Implementation | WallDocument.CreateData> | undefined,
     operation?: WallDocument.Database.CreateDocumentsOperation<Temporary>,

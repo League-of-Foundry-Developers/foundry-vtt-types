@@ -102,6 +102,8 @@ declare abstract class BaseRegionBehavior<
 
   override parent: BaseRegionBehavior.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseRegionBehavior.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<RegionBehavior.Implementation | RegionBehavior.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RegionBehavior.Database.Create<Temporary>>,

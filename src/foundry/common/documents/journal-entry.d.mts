@@ -98,6 +98,8 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   override parent: JournalEntry.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseJournalEntry.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<JournalEntry.Implementation | JournalEntry.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<JournalEntry.Database.Create<Temporary>>,

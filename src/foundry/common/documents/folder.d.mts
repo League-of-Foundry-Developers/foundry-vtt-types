@@ -103,6 +103,8 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   override parent: BaseFolder.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseFolder.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Folder.Implementation | Folder.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Folder.Database.Create<Temporary>>,

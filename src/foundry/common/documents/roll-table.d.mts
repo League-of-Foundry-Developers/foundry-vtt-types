@@ -101,6 +101,8 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   override parent: RollTable.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseRollTable.Parent;
+
   static createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<RollTable.Implementation | RollTable.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<RollTable.Database.Create<Temporary>>,
