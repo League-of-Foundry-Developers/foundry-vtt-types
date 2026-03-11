@@ -111,6 +111,8 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   override parent: BaseDrawing.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseDrawing.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseDrawing.CreateInput[],
     operation?: BaseDrawing.Database.CreateDocumentsOperation<Temporary>,

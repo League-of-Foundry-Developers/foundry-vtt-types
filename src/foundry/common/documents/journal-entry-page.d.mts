@@ -83,6 +83,8 @@ declare abstract class BaseJournalEntryPage<
 
   override parent: BaseJournalEntryPage.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseJournalEntryPage.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseJournalEntryPage.CreateInput[],
     operation?: BaseJournalEntryPage.Database.CreateDocumentsOperation<Temporary>,

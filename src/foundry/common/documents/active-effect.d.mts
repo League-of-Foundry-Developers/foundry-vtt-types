@@ -113,6 +113,8 @@ declare abstract class BaseActiveEffect<
 
   override parent: BaseActiveEffect.Parent;
 
+  override " fvtt_types_internal_document_parent": ActiveEffect.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActiveEffect.CreateInput[],
     operation?: BaseActiveEffect.Database.CreateDocumentsOperation<Temporary>,

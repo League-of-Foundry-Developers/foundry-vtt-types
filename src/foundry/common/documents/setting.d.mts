@@ -80,6 +80,8 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   override parent: BaseSetting.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseSetting.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseSetting.CreateInput[],
     operation?: BaseSetting.Database.CreateDocumentsOperation<Temporary>,
