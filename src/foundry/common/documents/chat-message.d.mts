@@ -110,6 +110,8 @@ declare abstract class BaseChatMessage<
 
   override parent: BaseChatMessage.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseChatMessage.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<ChatMessage.Implementation | ChatMessage.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ChatMessage.Database.Create<Temporary>>,

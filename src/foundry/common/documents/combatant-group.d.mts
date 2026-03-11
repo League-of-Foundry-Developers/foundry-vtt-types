@@ -84,6 +84,8 @@ declare abstract class BaseCombatantGroup<
 
   override parent: BaseCombatantGroup.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseCombatantGroup.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<CombatantGroup.Implementation | CombatantGroup.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<CombatantGroup.Database.Create<Temporary>>,

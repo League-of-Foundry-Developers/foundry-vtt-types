@@ -101,6 +101,8 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   override parent: BaseCard.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseCard.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Card.Implementation | Card.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Card.Database.Create<Temporary>>,
