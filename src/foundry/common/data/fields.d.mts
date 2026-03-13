@@ -125,7 +125,7 @@ declare abstract class DataField<
    * The initial value of a field, or a function which assigns that initial value.
    * @defaultValue `undefined`
    */
-  initial: DataField.Options.InitialType<InitializedType>;
+  initial: DataField.Options.InitialType<PersistedType>;
 
   /**
    * Should the prepared value of the field be read-only, preventing it from being
@@ -1348,7 +1348,7 @@ declare class BooleanField<
   override nullable: boolean;
 
   /** @defaultValue `false` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   protected static override get _defaults(): BooleanField.Options;
 
@@ -1460,7 +1460,7 @@ declare class NumberField<
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `undefined` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /**
    * @defaultValue `true`
@@ -1729,7 +1729,7 @@ declare class StringField<
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `undefined` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /**
    * Is the string allowed to be blank (empty)?
@@ -3725,7 +3725,7 @@ declare class ColorField<
   override nullable: boolean;
 
   /** @defaultValue `null` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /** @defaultValue `false` */
   override blank: boolean;
@@ -3865,7 +3865,7 @@ declare class FilePathField<
   override blank: boolean;
 
   /** @defaultValue `null` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   protected static override get _defaults(): FilePathField.Options;
 
@@ -3982,7 +3982,7 @@ declare class AngleField<
   override nullable: boolean;
 
   /** @defaultValue `0` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /**
    * Whether the angle should be normalized to [0,360) before being clamped to [0,360]. The default is true.
@@ -4089,7 +4089,7 @@ declare class AlphaField<
   override nullable: boolean;
 
   /** @defaultValue `1` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /** @defaultValue `0` */
   override min: number | undefined;
@@ -4240,7 +4240,7 @@ declare class DocumentOwnershipField<
     DocumentOwnershipField.InitializedType<Options>,
 > extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `{default: DOCUMENT_OWNERSHIP_LEVELS.NONE}` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /** @defaultValue `"is not a mapping of user IDs and document permission levels"` */
   override validationError: string;
@@ -4333,7 +4333,7 @@ declare class JSONField<
   override choices: undefined;
 
   /** @defaultValue `undefined` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /** @defaultValue `"is not a valid JSON string"` */
   override validationError: string;
@@ -4589,7 +4589,7 @@ declare class IntegerSortField<
   override integer: boolean;
 
   /** @defaultValue `0` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   static override get _defaults(): NumberField.Options;
 }
@@ -4934,23 +4934,23 @@ declare namespace DocumentStatsField {
   }
 
   interface Data extends SchemaField.InitializedData<Schema> {}
-}
 
-interface ExportSourceSchema extends DataSchema {
-  /** @defaultValue `game.world.id` */
-  worldId: StringField<{ required: true; blank: false; nullable: true }>;
+  interface ExportSourceSchema extends DataSchema {
+    /** @defaultValue `game.world.id` */
+    worldId: StringField<{ required: true; blank: false; nullable: true }>;
 
-  /** @defaultValue `this.uuid` (`this` being a `ClientDocument`) */
-  uuid: DocumentUUIDField<{ initial: undefined }>;
+    /** @defaultValue `this.uuid` (`this` being a `ClientDocument`) */
+    uuid: DocumentUUIDField<{ initial: undefined }>;
 
-  /** @defaultValue `game.version` */
-  coreVersion: StringField<{ required: true; blank: false; nullable: true }>;
+    /** @defaultValue `game.version` */
+    coreVersion: StringField<{ required: true; blank: false; nullable: true }>;
 
-  /** @defaultValue `game.system.id` */
-  systemId: StringField<{ required: true; blank: false; nullable: true }>;
+    /** @defaultValue `game.system.id` */
+    systemId: StringField<{ required: true; blank: false; nullable: true }>;
 
-  /** @defaultValue `game.system.version` */
-  systemVersion: StringField<{ required: true; blank: false; nullable: true }>;
+    /** @defaultValue `game.system.version` */
+    systemVersion: StringField<{ required: true; blank: false; nullable: true }>;
+  }
 }
 
 /**

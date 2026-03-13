@@ -121,9 +121,11 @@ declare abstract class Document<
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
    * @defaultValue {@linkcode Document._getParentCollection | this._getParentCollection(parentCollection)}
+   *
    * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`.
    *
    * Always `null` in temporary documents, except {@linkcode foundry.documents.BaseActorDelta.parentCollection | ActorDelta}s.
+   *
    * @privateRemarks This could realistically be any string passed as
    * {@linkcode Document.ConstructionContext.parentCollection | parentCollection} in the construction context of a `new Document()`. It's
    * typed as-is because everywhere it is specified by core, it happens to match the `metadata.collection` of the given document type, and
@@ -260,7 +262,8 @@ declare abstract class Document<
 
   /**
    * A Universally Unique Identifier (uuid) for this Document instance.
-   * @remarks Always `null` for temporary documents, always `string` for persisted.
+   * @remarks Always `null` for temporary documents, always `string` for persisted,  though embedded
+   * documents in non-persisted parents may have incorrect values at runtime.
    */
   get uuid(): string | null;
 
@@ -613,7 +616,7 @@ declare abstract class Document<
   getEmbeddedDocument(
     embeddedName: never,
     id: string,
-    options: Document.GetEmbeddedDocumentOptions,
+    options?: Document.GetEmbeddedDocumentOptions,
   ): Document.Any | undefined;
 
   /**
@@ -995,7 +998,7 @@ declare abstract class AnyDocument extends Document<Document.Type, {}, Document.
 
 declare namespace Document {
   interface Any extends AnyDocument {}
-  interface AnyStored extends Document.Internal.Stored<Any> {}
+  interface AnyStored extends Document.Internal.Stored<ClientDocumentMixin.AnyMixed> {}
   interface AnyValid extends AnyDocument {
     get invalid(): false;
   }
@@ -1020,6 +1023,9 @@ declare namespace Document {
   type EmbeddedType = CONST.EMBEDDED_DOCUMENT_TYPES;
   type WorldType = CONST.WORLD_DOCUMENT_TYPES;
   type CompendiumType = CONST.COMPENDIUM_DOCUMENT_TYPES;
+
+  /** Documents that require a parent for persisted creation. Most of them do not require one for temporary construction. */
+  type AlwaysEmbedded = Exclude<EmbeddedType, PrimaryType>;
 
   type WithSubTypes = WithSystem | "Folder" | "Macro" | "TableResult";
 
@@ -1153,7 +1159,8 @@ declare namespace Document {
     > = Name extends keyof Embedded ? Name : Name extends ValueOf<Embedded> ? PropertiesOfType<Embedded, Name> : never;
 
     /**
-     * Gets the document(s) associated with the passed `CollectionName`, which could be either a collection or document name
+     * Gets the document(s) associated with the passed `CollectionName`, which could be either a collection or document name.
+     * Returns `Stored` because even on temporary parents, embedded documents
      */
     type DocumentFor<
       Embedded extends Document.Metadata.Embedded,
@@ -1338,16 +1345,57 @@ declare namespace Document {
           }
       : never;
 
+    /** Persisted, non-primary, embedded documents always have a non-`null` `parent` */
+    type StoredParent<D extends Document.Any> = D["documentName"] extends Document.AlwaysEmbedded
+      ? NonNullable<D["parent"]>
+      : D["parent"];
+
+    /** Persisted, non-primary, embedded documents always have a non-`null` `parent` */
+    type StoredParentCollection<D extends Document.Any> = D["documentName"] extends Document.AlwaysEmbedded
+      ? NonNullable<D["parentCollection"]>
+      : D["parentCollection"];
+
+    /** Persisted documents will always have a `collection`, whether it's a pack, a world collection, or another document. */
+    type StoredCollection<D extends ClientDocumentMixin.AnyMixed> = Exclude<D["collection"], null>;
+
     // TODO(LukeAbby): Improve the type display with a helper here.
     // TODO(LukeAbby): Add `StoredSource` for a better type display there.
-    type Stored<D extends Document.Any> = Override<
+    type Stored<D extends ClientDocumentMixin.AnyMixed> = Override<
       D,
       {
+        /**
+         * The canonical identifier for this Document
+         * @remarks As this is a persisted Document, it is guaranteed to have an ID.
+         */
         get id(): string;
+
+        /** @remarks As this is a persisted Document, it is guaranteed to have an ID. */
         _id: string;
+
+        /**
+         * A Universally Unique Identifier (uuid) for this Document instance.
+         * @remarks Always `null` for temporary documents, always `string` for persisted,  though embedded
+         * documents in non-persisted parents may have incorrect values at runtime.
+         */
         get uuid(): string;
+
+        /** @remarks As this is a persisted Document, its source is guaranteed to have an ID. */
         _source: Override<D["_source"], { _id: string }>;
+
+        /**
+         * Extract the source data for the DataModel into a simple object format that can be serialized.
+         * @returns The document source data expressed as a plain object
+         */
         toJSON(): Override<D["_source"], { _id: string }>;
+
+        /** @remarks As this is a persisted Document, it is guaranteed to have a non-`null` `parent`. */
+        parent: Document.Internal.StoredParent<D>;
+
+        /** @remarks As this is a persisted Document, it is guaranteed to have a non-`null` `parentCollection`. */
+        parentCollection: Document.Internal.StoredParentCollection<D>;
+
+        /** @remarks As this is a persisted Document, it is guaranteed to have a non-`null` `collection`. */
+        collection: Document.Internal.StoredCollection<D>;
       }
     >;
 
@@ -1827,8 +1875,10 @@ declare namespace Document {
     };
   }
 
-  // TODO: this does nothing, all parents currently extend null
-  /** @internal */
+  /**
+   * This ensures that Documents that require a parent even for temporary construction
+   * @internal
+   */
   interface _ParentContext<Parent extends Document.Any | null> extends _DynamicBase<
     Parent extends null
       ? {
@@ -2025,11 +2075,15 @@ declare namespace Document {
    * @privateRemarks `temporary` is not being supported here; returning a temporary doc is the default behaviour of `clone()`, passing
    * `{ save: true, temporary: true }` is nonsensical.
    */
+  // TODO: remove temporary from the omit in v14
   interface CloneContext<Save extends boolean | undefined = undefined>
     extends
       _CloneContext<Save>,
       Omit<Document.ConstructionContext, "parent" | "strict">,
-      Omit<Document.Database.CreateDocumentsOperation<DatabaseBackend.CreateOperation>, "parent" | "pack" | "keepId"> {}
+      Omit<
+        Document.Database.CreateDocumentsOperation<DatabaseBackend.CreateOperation>,
+        "parent" | "pack" | "keepId" | "temporary"
+      > {}
 
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
@@ -2188,7 +2242,7 @@ declare namespace Document {
      */
     type CreateEmbeddedOperation<BaseOperation extends DatabaseBackend.CreateOperation> = Omit<
       CreateDocumentsOperation<BaseOperation>,
-      "pack" | "parent"
+      "pack" | "parent" | "parentUuid"
     >;
 
     /**
@@ -2401,7 +2455,7 @@ declare namespace Document {
      */
     type UpdateOneDocumentOperation<BaseOperation extends DatabaseBackend.UpdateOperation> = Omit<
       UpdateManyDocumentsOperation<BaseOperation>,
-      "pack" | "parent"
+      "pack" | "parent" | "parentUuid"
     >;
 
     /**
@@ -2621,7 +2675,7 @@ declare namespace Document {
      */
     type DeleteOneDocumentOperation<BaseOperation extends DatabaseBackend.DeleteOperation> = Omit<
       DeleteManyDocumentsOperation<BaseOperation>,
-      "pack" | "parent"
+      "pack" | "parent" | "parentUuid"
     >;
 
     /**
@@ -2815,10 +2869,9 @@ declare namespace Document {
     type OnDeleteOperationForName<DocName extends Document.Type> = Internal.Lookup<"OnDeleteOperation", DocName>;
 
     namespace Internal {
-      type Operation =
-        | "GetDocumentsOperation"
-        | "BackendGetOperation"
-        | "GetOperation"
+      type GetOperation = "GetDocumentsOperation" | "BackendGetOperation" | "GetOperation";
+
+      type CreateOperation =
         | "CreateDocumentsOperation"
         | "CreateEmbeddedOperation"
         | "BackendCreateOperation"
@@ -2827,7 +2880,9 @@ declare namespace Document {
         | "PreCreateOperation"
         | "OnCreateDocumentsOperation"
         | "OnCreateOptions"
-        | "OnCreateOperation"
+        | "OnCreateOperation";
+
+      type UpdateOperation =
         | "UpdateOneDocumentOperation"
         | "UpdateEmbeddedOperation"
         | "UpdateManyDocumentsOperation"
@@ -2837,7 +2892,9 @@ declare namespace Document {
         | "PreUpdateOperation"
         | "OnUpdateDocumentsOperation"
         | "OnUpdateOptions"
-        | "OnUpdateOperation"
+        | "OnUpdateOperation";
+
+      type DeleteOperation =
         | "DeleteOneDocumentOperation"
         | "DeleteEmbeddedOperation"
         | "DeleteManyDocumentsOperation"
@@ -2848,6 +2905,8 @@ declare namespace Document {
         | "OnDeleteDocumentsOperation"
         | "OnDeleteOptions"
         | "OnDeleteOperation";
+
+      type Operation = GetOperation | CreateOperation | UpdateOperation | DeleteOperation;
 
       type Lookup<
         Operation extends Document.Database.Internal.Operation,
@@ -3452,7 +3511,7 @@ declare namespace Document {
    * @deprecated This type should not be used directly. Use {@linkcode StoredForName} as this type does not account for anything declaration
    * merged into `Stored`.
    */
-  type Stored<D extends Document.Any> = Document.Internal.Stored<D>;
+  type Stored<D extends ClientDocumentMixin.AnyMixed> = Document.Internal.Stored<D>;
 
   /**
    * @deprecated This type should not be used directly. Use `InvalidForName` as this type does not account for anything declaration merged
@@ -3465,7 +3524,7 @@ declare namespace Document {
    * into `Stored`.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type ToStored<D extends Document.AnyConstructor> = Stored<FixedInstanceType<D>>;
+  type ToStored<D extends ClientDocumentMixin.AnyMixedConstructor> = Stored<FixedInstanceType<D>>;
 
   /**
    * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged
@@ -3611,7 +3670,10 @@ declare namespace Document {
     K
   >;
 
-  type TemporaryIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true
+  type TemporaryIf<
+    D extends ClientDocumentMixin.AnyMixed,
+    Temporary extends boolean | undefined,
+  > = Temporary extends true
     ? D
     : // eslint-disable-next-line @typescript-eslint/no-deprecated
       Stored<D>;

@@ -471,19 +471,7 @@ const rules = [
       // It can make sense to have empty functions in tests.
       "@typescript-eslint/no-empty-function": "off",
 
-      "@typescript-eslint/no-restricted-imports": [
-        "error",
-        {
-          paths: noRestrictedImportsPaths,
-          patterns: [
-            {
-              group: ["../"],
-              message:
-                "Relative imports are not allowed in tests. This is to prevent importing the main repo. If you have a need to import other test files this can be adjusted.",
-            },
-          ],
-        },
-      ],
+      "@typescript-eslint/no-restricted-imports": "off",
     },
   },
 ];

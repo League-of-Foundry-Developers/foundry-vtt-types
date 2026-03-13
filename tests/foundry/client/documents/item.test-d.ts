@@ -1,11 +1,12 @@
 import { describe, expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
+import { source as activeEffectSource } from "./active-effect.test-d.ts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
 declare namespace ArmorData {
   interface Schema extends DataSchema {
-    defense: foundry.data.fields.NumberField<{ required: true; nullable: false }>;
+    defense: foundry.data.fields.NumberField<{ required: false; nullable: false }>;
   }
 }
 
@@ -41,6 +42,70 @@ declare global {
     };
   }
 }
+
+export const itemSource = {
+  _id: "XXXXXItemIDXXXXX",
+  type: "armor",
+  name: "Stuff",
+  img: "icons/svg/item-bag.svg",
+  system: { defense: 2 },
+  effects: [],
+  folder: null,
+  flags: {},
+  _stats: {
+    compendiumSource: null,
+    duplicateSource: null,
+    exportSource: {
+      worldId: "uts1",
+      uuid: "Item.AT1aBkg7uvGAKjLY",
+      coreVersion: "13.351",
+      systemId: "universal-tabletop-system",
+      systemVersion: "1.1.2",
+    },
+    coreVersion: "13.348",
+    systemId: "universal-tabletop-system",
+    systemVersion: "1.1.2",
+    createdTime: 1763000814765,
+    modifiedTime: 1763000814765,
+    lastModifiedBy: "qBvUsXk4totXg4Hs",
+  },
+  ownership: {
+    default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
+  },
+  sort: 0,
+} as const satisfies Item.Source;
+
+export const itemSourceWithEffect = {
+  _id: "XXXXXItemIDXXXXX",
+  type: "armor", // using one of our test subtypes because a blank system is disallowed, so using `base` is out
+  name: "Stuff",
+  img: "icons/svg/item-bag.svg",
+  system: { defense: 2 },
+  effects: [activeEffectSource],
+  folder: null,
+  flags: {},
+  _stats: {
+    compendiumSource: null,
+    duplicateSource: null,
+    exportSource: {
+      worldId: "uts1",
+      uuid: "Item.AT1aBkg7uvGAKjLY",
+      coreVersion: "13.351",
+      systemId: "universal-tabletop-system",
+      systemVersion: "1.1.2",
+    },
+    coreVersion: "13.348",
+    systemId: "universal-tabletop-system",
+    systemVersion: "1.1.2",
+    createdTime: 1763000814765,
+    modifiedTime: 1763000814765,
+    lastModifiedBy: "qBvUsXk4totXg4Hs",
+  },
+  ownership: {
+    default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
+  },
+  sort: 0,
+} as const satisfies Item.Source;
 
 const actor = game.actors!.contents[0]!;
 const actorItem = actor.items.contents[0]!;

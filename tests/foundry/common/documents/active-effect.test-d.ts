@@ -9,87 +9,97 @@ class TestActiveEffect<
   out SubType extends BaseActiveEffect.SubType = BaseActiveEffect.SubType,
 > extends BaseActiveEffect<SubType> {}
 
+export const activeEffectSource = {
+  _id: "XXXXXSomeIDXXXXX",
+  name: "Stuff +1", // necessary for construction
+  img: "path/to/tex.webp",
+  type: "base",
+  system: {},
+  changes: [
+    {
+      key: "system.stuff.value",
+      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+      priority: 60,
+      value: "1",
+    },
+  ],
+  disabled: true,
+  duration: {
+    startTime: 1700000,
+    seconds: 300,
+    combat: "CCCCCSomeIDCCCCC",
+    rounds: 20,
+    turns: 3,
+    startRound: 1,
+    startTurn: 3,
+  },
+  description: "Increment your Stuff",
+  origin: "Item.WWWWWSomeIDWWWWW.ActiveEffect.VVVVVSomeIDVVVVV",
+  tint: "#C8888C",
+  transfer: true,
+  statuses: ["invisible", "flying"],
+  sort: 7,
+  flags: {
+    core: {
+      overlay: true,
+    },
+  },
+  _stats: {
+    coreVersion: "13.348",
+    systemId: "universal-tabletop-system",
+    systemVersion: "1.0.1",
+    createdTime: null,
+    modifiedTime: null,
+    lastModifiedBy: null,
+    compendiumSource: "Compendium.mysystem.pack-id.Item.YYYYYSomeIDYYYYY.ActiveEffect.ZZZZZSomeIDZZZZZ",
+    duplicateSource: "Item.WWWWWSomeIDWWWWW.ActiveEffect.VVVVVSomeIDVVVVV",
+    exportSource: null,
+  },
+} as const satisfies ActiveEffect.Source;
+
+export const minimalCreateData = {
+  name: "An Active Effect",
+} satisfies ActiveEffect.CreateData;
+
+export const nullishCreateData = {
+  _id: null,
+  name: "Stuff +1", // necessary for construction
+  img: null,
+  type: null,
+  system: null,
+  changes: [
+    {
+      key: null,
+      mode: null,
+      priority: null,
+      value: null,
+    },
+  ],
+  disabled: null,
+  duration: {
+    startTime: null,
+    seconds: null,
+    combat: null,
+    rounds: null,
+    turns: null,
+    startRound: null,
+    startTurn: null,
+  },
+  description: null,
+  origin: null,
+  tint: null,
+  transfer: null,
+  statuses: null,
+  sort: null,
+  flags: null,
+  _stats: {
+    // coreVersion, systemId, systemVersion, createdTime, modifiedTime, and lastModifiedBy are managed by the server and ignored if passed
+    compendiumSource: null,
+    duplicateSource: null,
+  },
+} satisfies ActiveEffect.CreateData;
+
 describe("BaseActiveEffect Tests", () => {
-  const fullCreateData = {
-    _id: "XXXXXSomeIDXXXXX",
-    name: "Stuff +1", // necessary for construction
-    img: "path/to/tex.webp",
-    type: "base",
-    system: {},
-    changes: [
-      {
-        key: "system.stuff.value",
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-        priority: 60,
-        value: "1",
-      },
-    ],
-    disabled: true,
-    duration: {
-      startTime: 1700000,
-      seconds: 300,
-      combat: "CCCCCSomeIDCCCCC",
-      rounds: 20,
-      turns: 3,
-      startRound: 1,
-      startTurn: 3,
-    },
-    description: "Increment your Stuff",
-    origin: "Item.WWWWWSomeIDWWWWW.ActiveEffect.VVVVVSomeIDVVVVV",
-    tint: "#C8888C",
-    transfer: true,
-    statuses: ["invisible", "flying"],
-    sort: 7,
-    flags: {
-      core: {
-        overlay: true,
-      },
-    },
-    _stats: {
-      // coreVersion, systemId, systemVersion, createdTime, modifiedTime, and lastModifiedBy are managed by the server and ignored if passed
-      compendiumSource: "Compendium.mysystem.pack-id.Item.YYYYYSomeIDYYYYY.ActiveEffect.ZZZZZSomeIDZZZZZ",
-      duplicateSource: "Item.WWWWWSomeIDWWWWW.ActiveEffect.VVVVVSomeIDVVVVV",
-    },
-  } as const satisfies ActiveEffect.CreateData;
-
-  const nullishCreateData = {
-    _id: null,
-    name: "Stuff +1", // necessary for construction
-    img: null,
-    type: null,
-    system: null,
-    changes: [
-      {
-        key: null,
-        mode: null,
-        priority: null,
-        value: null,
-      },
-    ],
-    disabled: null,
-    duration: {
-      startTime: null,
-      seconds: null,
-      combat: null,
-      rounds: null,
-      turns: null,
-      startRound: null,
-      startTurn: null,
-    },
-    description: null,
-    origin: null,
-    tint: null,
-    transfer: null,
-    statuses: null,
-    sort: null,
-    flags: null,
-    _stats: {
-      // coreVersion, systemId, systemVersion, createdTime, modifiedTime, and lastModifiedBy are managed by the server and ignored if passed
-      compendiumSource: null,
-      duplicateSource: null,
-    },
-  } satisfies ActiveEffect.CreateData;
-
   test("Construction", () => {
     // @ts-expect-error Active effects require a `name` in construction data
     new TestActiveEffect();
@@ -103,10 +113,14 @@ describe("BaseActiveEffect Tests", () => {
     new TestActiveEffect(nullishCreateData);
 
     // TODO: infer type from creation data
-    expectTypeOf(new TestActiveEffect(fullCreateData)).not.toEqualTypeOf<"base">();
+    expectTypeOf(new TestActiveEffect(activeEffectSource)).not.toEqualTypeOf<"base">();
   });
 
-  const ae = new TestActiveEffect(fullCreateData);
+  const ae = new TestActiveEffect(activeEffectSource);
+
+  if (ae.type === "base") {
+    expectTypeOf(ae.type).toEqualTypeOf<"base">();
+  }
 
   test("Miscellaneous", () => {
     const source = ae.toObject();

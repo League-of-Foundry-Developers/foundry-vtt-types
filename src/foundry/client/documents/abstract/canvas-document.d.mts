@@ -8,7 +8,7 @@ declare class CanvasDocument<
   DocumentName extends Document.Type,
   PlaceableType extends Document.PlaceableType = Extract<DocumentName, Document.PlaceableType>,
 > extends InternalClientDocument<DocumentName> {
-  /** @privateRemarks All mixin classses should accept anything for its constructor. */
+  /** @privateRemarks All mixin classes should accept anything for its constructor. */
   constructor(...args: any[]);
 
   /**

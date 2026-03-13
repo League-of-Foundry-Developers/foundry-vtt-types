@@ -638,7 +638,9 @@ declare function ClientDocumentMixin<BaseClass extends ClientDocumentMixin.BaseC
 ): ClientDocumentMixin.Mix<BaseClass>;
 
 declare namespace ClientDocumentMixin {
-  interface AnyMixedConstructor extends ReturnType<typeof foundry.documents.abstract.ClientDocumentMixin<BaseClass>> {}
+  interface AnyMixedConstructor extends ReturnType<
+    typeof foundry.documents.abstract.ClientDocumentMixin<Document.AnyConstructor>
+  > {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type BaseClass = Document.Internal.Constructor;

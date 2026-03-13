@@ -440,6 +440,8 @@ declare namespace ActiveEffect {
     startTurn: fields.NumberField<{ integer: true; min: 0 }>;
   }
 
+  interface DurationData extends fields.SchemaField.InitializedData<DurationSchema> {}
+
   namespace Database {
     /* ***********************************************
      *                GET OPERATIONS                 *
@@ -516,8 +518,6 @@ declare namespace ActiveEffect {
       .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
-     * @deprecated `ActiveEffect` documents are never embedded. This interface exists for consistency with other documents.
-     *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
      * can contain `ActiveEffect` documents. (see {@linkcode ActiveEffect.Parent})
      * @see {@linkcode Document.Database.CreateEmbeddedOperation}
@@ -671,8 +671,6 @@ declare namespace ActiveEffect {
     interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
-     * @deprecated `ActiveEffect` documents are never embedded. This interface exists for consistency with other documents.
-     *
      * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
      * can contain `ActiveEffect` documents (see {@linkcode ActiveEffect.Parent}). This interface is just an alias
      * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
@@ -825,8 +823,6 @@ declare namespace ActiveEffect {
     interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
-     * @deprecated `ActiveEffect` documents are never embedded. This interface exists for consistency with other documents.
-     *
      * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
      * can contain `ActiveEffect` documents (see {@linkcode ActiveEffect.Parent}). This interface is just an alias
      * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
@@ -950,7 +946,6 @@ declare namespace ActiveEffect {
         GetOperation: ActiveEffect.Database.GetOperation;
 
         CreateDocumentsOperation: ActiveEffect.Database.CreateDocumentsOperation<Temporary>;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
         CreateEmbeddedOperation: ActiveEffect.Database.CreateEmbeddedOperation;
         BackendCreateOperation: ActiveEffect.Database.BackendCreateOperation<Temporary>;
         CreateOperation: ActiveEffect.Database.CreateOperation<Temporary>;
@@ -962,7 +957,6 @@ declare namespace ActiveEffect {
         OnCreateOperation: ActiveEffect.Database.OnCreateOperation;
 
         UpdateOneDocumentOperation: ActiveEffect.Database.UpdateOneDocumentOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
         UpdateEmbeddedOperation: ActiveEffect.Database.UpdateEmbeddedOperation;
         UpdateManyDocumentsOperation: ActiveEffect.Database.UpdateManyDocumentsOperation;
         BackendUpdateOperation: ActiveEffect.Database.BackendUpdateOperation;
@@ -975,7 +969,6 @@ declare namespace ActiveEffect {
         OnUpdateOperation: ActiveEffect.Database.OnUpdateOperation;
 
         DeleteOneDocumentOperation: ActiveEffect.Database.DeleteOneDocumentOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
         DeleteEmbeddedOperation: ActiveEffect.Database.DeleteEmbeddedOperation;
         DeleteManyDocumentsOperation: ActiveEffect.Database.DeleteManyDocumentsOperation;
         BackendDeleteOperation: ActiveEffect.Database.BackendDeleteOperation;
@@ -1161,29 +1154,6 @@ declare namespace ActiveEffect {
   /* ***********************************************
    *         ACTIVE-EFFECT-SPECIFIC TYPES          *
    *************************************************/
-
-  interface DurationData {
-    /** The world time when the active effect first started */
-    startTime?: number | null | undefined;
-
-    /** The maximum duration of the effect, in seconds */
-    seconds?: number | null | undefined;
-
-    /** The _id of the CombatEncounter in which the effect first started */
-    combat?: string | null | undefined;
-
-    /** The maximum duration of the effect, in combat rounds */
-    rounds?: number | null | undefined;
-
-    /** The maximum duration of the effect, in combat turns */
-    turns?: number | null | undefined;
-
-    /** The round of the CombatEncounter in which the effect first started */
-    startRound?: number | null | undefined;
-
-    /** The turn of the CombatEncounter in which the effect first started */
-    startTurn?: number | null | undefined;
-  }
 
   type DurationType = "seconds" | "turns" | "none";
 
