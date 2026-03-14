@@ -1,7 +1,13 @@
 import { expectTypeOf } from "vitest";
 
 // This exists to make the class non-abstract.
-class TestBaseMacro extends foundry.documents.BaseMacro {}
+class TestBaseMacro extends foundry.documents.BaseMacro {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"Macro"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"Macro">;
+  }
+}
 
 // @ts-expect-error a MacroData requires data.
 new TestBaseMacro();

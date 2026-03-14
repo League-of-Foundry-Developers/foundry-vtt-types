@@ -4,7 +4,13 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseAmbientSound = foundry.documents.BaseAmbientSound;
 import Document = foundry.abstract.Document;
 
-class TestBaseAmbientSound extends BaseAmbientSound {}
+class TestBaseAmbientSound extends BaseAmbientSound {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"AmbientSound"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"AmbientSound">;
+  }
+}
 
 // AmbientSound has no hard required fields for construction
 new TestBaseAmbientSound();

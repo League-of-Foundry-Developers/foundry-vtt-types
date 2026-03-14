@@ -3,7 +3,13 @@ import { expectTypeOf } from "vitest";
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
 // This exists to make the class non-abstract.
-class TestBaseCards extends foundry.documents.BaseCards {}
+class TestBaseCards extends foundry.documents.BaseCards {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"Cards"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"Cards">;
+  }
+}
 
 // @ts-expect-error data argument is non-optional
 new TestBaseCards();

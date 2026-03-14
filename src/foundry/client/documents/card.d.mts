@@ -152,15 +152,6 @@ declare namespace Card {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Cards">;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *

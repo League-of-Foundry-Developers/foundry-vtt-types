@@ -3,6 +3,12 @@ import type Document from "#common/abstract/document.d.mts";
 import type { InternalClientDocument } from "./client-document.d.mts";
 import type { PlaceablesLayer } from "#client/canvas/layers/_module.d.mts";
 
+/**
+ * @privateRemarks The type parameters are like this for backwards compatibility of the types project.
+ *
+ * That compatibility will be removed in v14.
+ */
+// TODO: simplify type parameters
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare class CanvasDocument<
   DocumentName extends Document.Type,
@@ -47,13 +53,14 @@ declare class CanvasDocument<
 /**
  * A specialized sub-class of the ClientDocumentMixin which is used for document types that are intended to be represented upon the game Canvas.
  */
-// TODO(LukeAbby): The constraint here should ideally be something like `Document<Document.PlaceableType, any, Scene.Implementation | null>` but this causes circularities.
 declare function CanvasDocumentMixin<BaseClass extends CanvasDocumentMixin.BaseClass>(
   Base: BaseClass,
 ): CanvasDocumentMixin.Mix<BaseClass>;
 
 declare namespace CanvasDocumentMixin {
-  interface AnyMixedConstructor extends ReturnType<typeof foundry.documents.abstract.CanvasDocumentMixin<BaseClass>> {}
+  interface AnyMixedConstructor extends ReturnType<
+    typeof foundry.documents.abstract.CanvasDocumentMixin<Document.AnyConstructor>
+  > {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   type Mix<BaseClass extends CanvasDocumentMixin.BaseClass> = Mixin<
@@ -61,6 +68,7 @@ declare namespace CanvasDocumentMixin {
     BaseClass
   >;
 
+  // TODO(LukeAbby): The constraint here should ideally be something like `Document<Document.PlaceableType, any, Scene.Implementation | null>` but this causes circularities.
   type BaseClass = Document.Internal.Constructor;
 }
 

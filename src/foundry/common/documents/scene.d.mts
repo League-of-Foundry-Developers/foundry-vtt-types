@@ -411,7 +411,6 @@ declare namespace BaseScene {
   export import Parent = Scene.Parent;
   export import Descendant = Scene.Descendant;
   export import DescendantClass = Scene.DescendantClass;
-  export import Pack = Scene.Pack;
   export import Embedded = Scene.Embedded;
   export import ParentCollectionName = Scene.ParentCollectionName;
   export import CollectionClass = Scene.CollectionClass;

@@ -285,7 +285,6 @@ declare namespace BaseCard {
   export import Parent = Card.Parent;
   export import Descendant = Card.Descendant;
   export import DescendantClass = Card.DescendantClass;
-  export import Pack = Card.Pack;
   export import Embedded = Card.Embedded;
   export import ParentCollectionName = Card.ParentCollectionName;
   export import CollectionClass = Card.CollectionClass;

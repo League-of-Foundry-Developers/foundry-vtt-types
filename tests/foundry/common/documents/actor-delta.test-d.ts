@@ -5,7 +5,13 @@ import BaseActorDelta = foundry.documents.BaseActorDelta;
 import Document = foundry.abstract.Document;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
-class TestAD extends BaseActorDelta {}
+class TestAD extends BaseActorDelta {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"ActorDelta"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"ActorDelta">;
+  }
+}
 
 declare const someToken: TokenDocument.Implementation;
 // @ts-expect-error ActorDeltas require a valid `parent` to be passed in its `context`

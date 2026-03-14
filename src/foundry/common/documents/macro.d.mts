@@ -301,7 +301,6 @@ declare namespace BaseMacro {
   export import Parent = Macro.Parent;
   export import Descendant = Macro.Descendant;
   export import DescendantClass = Macro.DescendantClass;
-  export import Pack = Macro.Pack;
   export import Embedded = Macro.Embedded;
   export import ParentCollectionName = Macro.ParentCollectionName;
   export import CollectionClass = Macro.CollectionClass;

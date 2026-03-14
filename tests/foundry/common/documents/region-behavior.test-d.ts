@@ -3,7 +3,13 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseRegionBehavior = foundry.documents.BaseRegionBehavior;
 import Document = foundry.abstract.Document;
 
-class TestRegionBehavior extends BaseRegionBehavior {}
+class TestRegionBehavior extends BaseRegionBehavior {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"RegionBehavior"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"RegionBehavior">;
+  }
+}
 
 // @ts-expect-error RegionBehavior requires a `type` for creation
 new TestRegionBehavior();

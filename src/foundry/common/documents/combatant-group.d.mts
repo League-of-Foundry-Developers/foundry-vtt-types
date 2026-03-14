@@ -268,7 +268,6 @@ declare namespace BaseCombatantGroup {
   export import Parent = CombatantGroup.Parent;
   export import Descendant = CombatantGroup.Descendant;
   export import DescendantClass = CombatantGroup.DescendantClass;
-  export import Pack = CombatantGroup.Pack;
   export import Embedded = CombatantGroup.Embedded;
   export import ParentCollectionName = CombatantGroup.ParentCollectionName;
   export import CollectionClass = CombatantGroup.CollectionClass;

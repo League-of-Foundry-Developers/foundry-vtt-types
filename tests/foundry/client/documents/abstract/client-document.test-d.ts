@@ -1,5 +1,7 @@
-import { expectTypeOf } from "vitest";
+import { afterAll, describe, expectTypeOf } from "vitest";
 import type { FixedInstanceType } from "fvtt-types/utils";
+import { cleanupDocuments } from "../../../../utils.ts";
+import * as itemHelpers from "../item.test-d.ts";
 
 import Application = foundry.appv1.api.Application;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
@@ -11,17 +13,28 @@ import TextEditor = foundry.applications.ux.TextEditor;
 import ClientDocumentMixin = foundry.documents.abstract.ClientDocumentMixin;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
-const item = new Item.implementation({ name: "foo", type: "base" });
+const tempItem = new Item.implementation(itemHelpers.source);
+const docsToCleanUp = new Set<foundry.documents.abstract.ClientDocumentMixin.AnyMixed>();
+
+describe("ClientDocument Tests", async () => {
+  const item = await Item.implementation.create(itemHelpers.source);
+  if (!item) throw new Error("Failed to create test Item");
+  docsToCleanUp.add(item);
+
+  afterAll(async () => {
+    await cleanupDocuments(docsToCleanUp);
+  });
+});
 declare const someActor: Actor.Implementation;
 declare const actorDelta: ActorDelta.Stored;
 declare const activeEffect: ActiveEffect.Stored;
-const anyClientDoc: ClientDocumentMixin.AnyMixed = item;
+const anyClientDoc: ClientDocumentMixin.AnyMixed = tempItem;
 // Test the inheritance of static members
 expectTypeOf(Item.documentName).toEqualTypeOf<"Item">(); // Document
 expectTypeOf(Item.createDialog()).toEqualTypeOf<Promise<Item.Stored | null | "ok">>(); // ClientDocumentMixin
 
 // ensure source can be used to create a new document with createDialog
-expectTypeOf(Item.createDialog(item.toObject())).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
+expectTypeOf(Item.createDialog(tempItem.toObject())).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 
 declare const itemCreateData: Item.CreateData;
 declare const macroCreateData: Macro.CreateData;
@@ -116,23 +129,23 @@ expectTypeOf(Item.fromImport(itemSource, {})).toEqualTypeOf<Promise<Item.Impleme
 expectTypeOf(Item.fromImport(itemSource, constructionContext)).toEqualTypeOf<Promise<Item.Implementation>>();
 
 // Test the inheritance
-expectTypeOf(item.documentName).toEqualTypeOf<"Item">(); // Document
-expectTypeOf(item.migrateSystemData()).toEqualTypeOf<object>(); // Base-Document
-expectTypeOf(item.uuid).toEqualTypeOf<string | null>(); // ClientDocumentMixin
-expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>(); // class itself
+expectTypeOf(tempItem.documentName).toEqualTypeOf<"Item">(); // Document
+expectTypeOf(tempItem.migrateSystemData()).toEqualTypeOf<object>(); // Base-Document
+expectTypeOf(tempItem.uuid).toEqualTypeOf<string | null>(); // ClientDocumentMixin
+expectTypeOf(tempItem.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>(); // class itself
 
 // Properties
 declare const someApp: Application.Any;
 declare const someAppV2: ApplicationV2.Any;
 
-expectTypeOf(item.apps).toEqualTypeOf<Record<string, Application.Any | ApplicationV2.Any>>();
-item.apps["foo"] = someApp;
-item.apps["bar"] = someAppV2;
+expectTypeOf(tempItem.apps).toEqualTypeOf<Record<string, Application.Any | ApplicationV2.Any>>();
+tempItem.apps["foo"] = someApp;
+tempItem.apps["bar"] = someAppV2;
 // @ts-expect-error apps is readonly
-item.apps = { foo: someApp, bar: someAppV2 };
+tempItem.apps = { foo: someApp, bar: someAppV2 };
 
 // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-expectTypeOf(item["_sheet"]).toEqualTypeOf<FixedInstanceType<Document.SheetClassFor<"Item">> | null>();
+expectTypeOf(tempItem["_sheet"]).toEqualTypeOf<FixedInstanceType<Document.SheetClassFor<"Item">> | null>();
 
 // _initialize overridden with no signature changes
 
@@ -142,17 +155,17 @@ type _AnyRealEmbeddedCollection<Name extends Document.EmbeddedType> = Name exten
   ? EmbeddedCollection<Document.StoredForName<Name>, Document.Embedded.ParentForName<Name>>
   : never;
 
-expectTypeOf(item.collection).toEqualTypeOf<
+expectTypeOf(tempItem.collection).toEqualTypeOf<
   | Document.WorldCollectionForName<"Item">
   | EmbeddedCollection<Item.Stored, Document.Embedded.ParentForName<"Item">>
   | null
 >();
 // @ts-expect-error Only getter, no setter
-item.collection = new Collection<typeof item>();
+tempItem.collection = new Collection<typeof tempItem>();
 
 expectTypeOf(actorDelta.collection).toEqualTypeOf<ActorDelta.Stored>();
 expectTypeOf(activeEffect.collection).toEqualTypeOf<
-  EmbeddedCollection<ActiveEffect.Stored, Actor.Stored | Item.Stored>
+  EmbeddedCollection<ActiveEffect.Stored, Actor.Implementation | Item.Implementation>
 >();
 
 if (anyClientDoc.collection) {
@@ -161,85 +174,85 @@ if (anyClientDoc.collection) {
   >();
 }
 
-expectTypeOf(item.compendium).toEqualTypeOf<CompendiumCollection<"Item"> | null>();
+expectTypeOf(tempItem.compendium).toEqualTypeOf<CompendiumCollection<"Item"> | null>();
 
-if (item.compendium) {
+if (tempItem.compendium) {
   // Regression test for `Type` not being passed through to metadata.
   // Reported by @123499, see https://discord.com/channels/732325252788387980/803646399014109205/1419142467214770317.
-  expectTypeOf(item.compendium.metadata.type).toEqualTypeOf<"Item">();
+  expectTypeOf(tempItem.compendium.metadata.type).toEqualTypeOf<"Item">();
 }
 
 // @ts-expect-error Only getter, no setter
-item.compendium = game.packs!.contents[0]!;
+tempItem.compendium = game.packs!.contents[0]!;
 
-expectTypeOf(item.isOwner).toBeBoolean();
+expectTypeOf(tempItem.isOwner).toBeBoolean();
 // @ts-expect-error Only getter, no setter
-item.isOwner = false;
+tempItem.isOwner = false;
 
-expectTypeOf(item.hasPlayerOwner).toBeBoolean();
+expectTypeOf(tempItem.hasPlayerOwner).toBeBoolean();
 // @ts-expect-error Only getter, no setter
-item.hasPlayerOwner = false;
+tempItem.hasPlayerOwner = false;
 
-expectTypeOf(item.limited).toBeBoolean();
+expectTypeOf(tempItem.limited).toBeBoolean();
 // @ts-expect-error Only getter, no setter
-item.limited = false;
+tempItem.limited = false;
 
-expectTypeOf(item.link).toBeString();
+expectTypeOf(tempItem.link).toBeString();
 // @ts-expect-error Only getter, no setter
-item.link = "foo";
+tempItem.link = "foo";
 
-expectTypeOf(item.permission).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS | null>();
+expectTypeOf(tempItem.permission).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS | null>();
 // @ts-expect-error Only getter, no setter
-item.permission = CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER;
+tempItem.permission = CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER;
 
 // TODO: change to <FixedInstanceType<ConfiguredSheetClass<Item>> | null> once the circular reference problem has been solved
-expectTypeOf(item.sheet).toEqualTypeOf<FormApplication.Any | ApplicationV2.Any | null>();
+expectTypeOf(tempItem.sheet).toEqualTypeOf<FormApplication.Any | ApplicationV2.Any | null>();
 // @ts-expect-error Only getter, no setter
-item.sheet = someAppV2;
+tempItem.sheet = someAppV2;
 
-expectTypeOf(item.visible).toBeBoolean();
+expectTypeOf(tempItem.visible).toBeBoolean();
 // @ts-expect-error Only getter, no setter
-item.visible = false;
+tempItem.visible = false;
 
-expectTypeOf(item["_getSheetClass"]()).toEqualTypeOf<
+expectTypeOf(tempItem["_getSheetClass"]()).toEqualTypeOf<
   FormApplication.AnyConstructor | ApplicationV2.AnyConstructor | null
 >();
 
-expectTypeOf(item["_safePrepareData"]()).toBeVoid();
-expectTypeOf(item.prepareData()).toBeVoid();
-expectTypeOf(item.prepareBaseData()).toBeVoid();
-expectTypeOf(item.prepareEmbeddedDocuments()).toBeVoid();
-expectTypeOf(item.prepareDerivedData()).toBeVoid();
+expectTypeOf(tempItem["_safePrepareData"]()).toBeVoid();
+expectTypeOf(tempItem.prepareData()).toBeVoid();
+expectTypeOf(tempItem.prepareBaseData()).toBeVoid();
+expectTypeOf(tempItem.prepareEmbeddedDocuments()).toBeVoid();
+expectTypeOf(tempItem.prepareDerivedData()).toBeVoid();
 
-expectTypeOf(item.render()).toBeVoid();
-expectTypeOf(item.render(true)).toBeVoid();
-expectTypeOf(item.render(true, {})).toBeVoid();
-expectTypeOf(item.render(true, { title: "foo" })).toBeVoid();
+expectTypeOf(tempItem.render()).toBeVoid();
+expectTypeOf(tempItem.render(true)).toBeVoid();
+expectTypeOf(tempItem.render(true, {})).toBeVoid();
+expectTypeOf(tempItem.render(true, { title: "foo" })).toBeVoid();
 // TODO: This will error as long as ApplicationV2.RenderOptions isn't inherently DeepPartialed
 // @ts-expect-error Render options not partial yet.
-expectTypeOf(item.render(true, { window: { title: "foo" } })).toBeVoid();
+expectTypeOf(tempItem.render(true, { window: { title: "foo" } })).toBeVoid();
 
-declare const sortOptions: foundry.utils.SortOptions<typeof item>;
+declare const sortOptions: foundry.utils.SortOptions<typeof tempItem>;
 declare const updateData: Item.UpdateData;
-expectTypeOf(item.sortRelative()).toEqualTypeOf<Promise<typeof item>>();
-expectTypeOf(item.sortRelative({})).toEqualTypeOf<Promise<typeof item>>();
-expectTypeOf(item.sortRelative({ updateData, ...sortOptions })).toEqualTypeOf<Promise<typeof item>>();
+expectTypeOf(tempItem.sortRelative()).toEqualTypeOf<Promise<typeof tempItem>>();
+expectTypeOf(tempItem.sortRelative({})).toEqualTypeOf<Promise<typeof tempItem>>();
+expectTypeOf(tempItem.sortRelative({ updateData, ...sortOptions })).toEqualTypeOf<Promise<typeof tempItem>>();
 
-expectTypeOf(item.getRelativeUUID(someActor)).toBeString();
+expectTypeOf(tempItem.getRelativeUUID(someActor)).toBeString();
 
 // The first argument is unused in core except in JournalEntryPage
-expectTypeOf(item._createDocumentLink()).toBeString();
-expectTypeOf(item._createDocumentLink({})).toBeString();
-expectTypeOf(item._createDocumentLink(null)).toBeString();
-expectTypeOf(item._createDocumentLink(null, {})).toBeString();
+expectTypeOf(tempItem._createDocumentLink()).toBeString();
+expectTypeOf(tempItem._createDocumentLink({})).toBeString();
+expectTypeOf(tempItem._createDocumentLink(null)).toBeString();
+expectTypeOf(tempItem._createDocumentLink(null, {})).toBeString();
 expectTypeOf(
-  item._createDocumentLink(undefined, {
+  tempItem._createDocumentLink(undefined, {
     label: "Some Label",
     relativeTo: someActor,
   }),
 ).toBeString();
 expectTypeOf(
-  item._createDocumentLink(
+  tempItem._createDocumentLink(
     {},
     {
       label: null,
@@ -250,7 +263,7 @@ expectTypeOf(
 
 declare const mouseEvent: MouseEvent;
 // this is typed by a fake overload, but does represent the average case
-expectTypeOf(item._onClickDocumentLink(mouseEvent)).toEqualTypeOf<ClientDocument.OnClickDocumentLinkReturn>();
+expectTypeOf(tempItem._onClickDocumentLink(mouseEvent)).toEqualTypeOf<ClientDocument.OnClickDocumentLinkReturn>();
 
 declare const storedItem: Item.Stored;
 declare const aeCreateDataArray: ActiveEffect.CreateData[];
@@ -258,7 +271,7 @@ declare const aeUpdateDataArray: ActiveEffect.UpdateData[];
 declare const createdAEs: ActiveEffect.Stored[];
 declare const aeIDs: string[];
 expectTypeOf(
-  item["_preCreateDescendantDocuments"](
+  tempItem["_preCreateDescendantDocuments"](
     storedItem, // cannot just be `item`
     "effects",
     aeCreateDataArray,
@@ -267,18 +280,18 @@ expectTypeOf(
   ),
 ).toBeVoid();
 expectTypeOf(
-  item["_onCreateDescendantDocuments"](
+  tempItem["_onCreateDescendantDocuments"](
     storedItem,
     "effects",
     createdAEs,
     aeCreateDataArray,
-    { action: "create", modifiedTime: 0, render: false, renderSheet: false, parent: item },
+    { action: "create", modifiedTime: 0, render: false, renderSheet: false, parent: tempItem },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
 expectTypeOf(
-  item["_preUpdateDescendantDocuments"](
+  tempItem["_preUpdateDescendantDocuments"](
     storedItem, // cannot just be `item`
     "effects",
     aeUpdateDataArray,
@@ -287,18 +300,18 @@ expectTypeOf(
   ),
 ).toBeVoid();
 expectTypeOf(
-  item["_onUpdateDescendantDocuments"](
+  tempItem["_onUpdateDescendantDocuments"](
     storedItem,
     "effects",
     createdAEs,
     aeUpdateDataArray,
-    { action: "update", modifiedTime: 0, render: false, diff: true, recursive: true, parent: item },
+    { action: "update", modifiedTime: 0, render: false, diff: true, recursive: true, parent: tempItem },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
 expectTypeOf(
-  item["_preDeleteDescendantDocuments"](
+  tempItem["_preDeleteDescendantDocuments"](
     storedItem, // cannot just be `item`
     "effects",
     aeIDs,
@@ -307,30 +320,30 @@ expectTypeOf(
   ),
 ).toBeVoid();
 expectTypeOf(
-  item["_onDeleteDescendantDocuments"](
+  tempItem["_onDeleteDescendantDocuments"](
     storedItem,
     "effects",
     createdAEs,
     aeIDs,
-    { action: "delete", modifiedTime: 0, render: false, parent: item },
+    { action: "delete", modifiedTime: 0, render: false, parent: tempItem },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(item["_onSheetChange"]()).toEqualTypeOf<Promise<void>>();
-expectTypeOf(item["_onSheetChange"]({})).toEqualTypeOf<Promise<void>>();
-expectTypeOf(item["_onSheetChange"]({ sheetOpen: true })).toEqualTypeOf<Promise<void>>();
-expectTypeOf(item["_onSheetChange"]({ sheetOpen: undefined })).toEqualTypeOf<Promise<void>>();
+expectTypeOf(tempItem["_onSheetChange"]()).toEqualTypeOf<Promise<void>>();
+expectTypeOf(tempItem["_onSheetChange"]({})).toEqualTypeOf<Promise<void>>();
+expectTypeOf(tempItem["_onSheetChange"]({ sheetOpen: true })).toEqualTypeOf<Promise<void>>();
+expectTypeOf(tempItem["_onSheetChange"]({ sheetOpen: undefined })).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(item.deleteDialog()).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
-expectTypeOf(item.deleteDialog({})).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
-expectTypeOf(item.deleteDialog(dialogOptions)).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
+expectTypeOf(tempItem.deleteDialog()).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
+expectTypeOf(tempItem.deleteDialog({})).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
+expectTypeOf(tempItem.deleteDialog(dialogOptions)).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
 
 // Using exportToJSON to test ToCompendiumOptions for now
-expectTypeOf(item.exportToJSON()).toBeVoid();
-expectTypeOf(item.exportToJSON({})).toBeVoid();
+expectTypeOf(tempItem.exportToJSON()).toBeVoid();
+expectTypeOf(tempItem.exportToJSON({})).toBeVoid();
 expectTypeOf(
-  item.exportToJSON({
+  tempItem.exportToJSON({
     clearFlags: true,
     clearFolder: true,
     clearOwnership: true,
@@ -341,7 +354,7 @@ expectTypeOf(
   }),
 ).toBeVoid();
 expectTypeOf(
-  item.exportToJSON({
+  tempItem.exportToJSON({
     clearFlags: null,
     clearFolder: null,
     clearOwnership: null,
@@ -352,7 +365,7 @@ expectTypeOf(
   }),
 ).toBeVoid();
 expectTypeOf(
-  item.exportToJSON({
+  tempItem.exportToJSON({
     clearFlags: undefined,
     clearFolder: undefined,
     clearOwnership: undefined,
@@ -363,45 +376,47 @@ expectTypeOf(
   }),
 ).toBeVoid();
 
-expectTypeOf(item.toDragData()).toEqualTypeOf<Item.DropData>();
+expectTypeOf(tempItem.toDragData()).toEqualTypeOf<Item.DropData>();
 
-expectTypeOf(item.importFromJSON(`{"foo":true}`)).toEqualTypeOf<Promise<typeof item>>();
-expectTypeOf(item.importFromJSONDialog()).toEqualTypeOf<Promise<void>>();
+expectTypeOf(tempItem.importFromJSON(`{"foo":true}`)).toEqualTypeOf<Promise<typeof tempItem>>();
+expectTypeOf(tempItem.importFromJSONDialog()).toEqualTypeOf<Promise<void>>();
 
 // TODO: more thorough tests after `ToCompendiumReturnType` is rewritten or the v13 pass, whichever comes first
-expectTypeOf(item.toCompendium()).toEqualTypeOf<ClientDocument.ToCompendiumReturnType<"Item", undefined>>();
+expectTypeOf(tempItem.toCompendium()).toEqualTypeOf<ClientDocument.ToCompendiumReturnType<"Item", undefined>>();
 
 declare const enrichmentAnchorOptions: TextEditor.EnrichmentAnchorOptions;
-expectTypeOf(item.toAnchor()).toEqualTypeOf<HTMLAnchorElement>();
-expectTypeOf(item.toAnchor({})).toEqualTypeOf<HTMLAnchorElement>();
-expectTypeOf(item.toAnchor(enrichmentAnchorOptions)).toEqualTypeOf<HTMLAnchorElement>();
+expectTypeOf(tempItem.toAnchor()).toEqualTypeOf<HTMLAnchorElement>();
+expectTypeOf(tempItem.toAnchor({})).toEqualTypeOf<HTMLAnchorElement>();
+expectTypeOf(tempItem.toAnchor(enrichmentAnchorOptions)).toEqualTypeOf<HTMLAnchorElement>();
 
 declare const enrichmentOptions: TextEditor.EnrichmentOptions;
 declare const embedConfig: TextEditor.DocumentHTMLEmbedConfig;
-expectTypeOf(item.toEmbed(embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
-expectTypeOf(item.toEmbed(embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | null>>();
-expectTypeOf(item.toEmbed(embedConfig, enrichmentOptions)).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(tempItem.toEmbed(embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(tempItem.toEmbed(embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(tempItem.toEmbed(embedConfig, enrichmentOptions)).toEqualTypeOf<Promise<HTMLElement | null>>();
 
-expectTypeOf(item["_buildEmbedHTML"](embedConfig)).toEqualTypeOf<Promise<HTMLElement | HTMLCollection | null>>();
-expectTypeOf(item["_buildEmbedHTML"](embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | HTMLCollection | null>>();
-expectTypeOf(item["_buildEmbedHTML"](embedConfig, enrichmentOptions)).toEqualTypeOf<
+expectTypeOf(tempItem["_buildEmbedHTML"](embedConfig)).toEqualTypeOf<Promise<HTMLElement | HTMLCollection | null>>();
+expectTypeOf(tempItem["_buildEmbedHTML"](embedConfig, {})).toEqualTypeOf<
+  Promise<HTMLElement | HTMLCollection | null>
+>();
+expectTypeOf(tempItem["_buildEmbedHTML"](embedConfig, enrichmentOptions)).toEqualTypeOf<
   Promise<HTMLElement | HTMLCollection | null>
 >();
 
 declare const element: HTMLElement;
 declare const htmlCollection: HTMLCollection;
 
-expectTypeOf(item["_createInlineEmbed"](element, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
-expectTypeOf(item["_createInlineEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
-expectTypeOf(item["_createInlineEmbed"](element, embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | null>>();
-expectTypeOf(item["_createInlineEmbed"](element, embedConfig, enrichmentOptions)).toEqualTypeOf<
+expectTypeOf(tempItem["_createInlineEmbed"](element, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(tempItem["_createInlineEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(tempItem["_createInlineEmbed"](element, embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(tempItem["_createInlineEmbed"](element, embedConfig, enrichmentOptions)).toEqualTypeOf<
   Promise<HTMLElement | null>
 >();
 
-expectTypeOf(item["_createFigureEmbed"](element, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
-expectTypeOf(item["_createFigureEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
-expectTypeOf(item["_createFigureEmbed"](element, embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | null>>();
-expectTypeOf(item["_createFigureEmbed"](element, embedConfig, enrichmentOptions)).toEqualTypeOf<
+expectTypeOf(tempItem["_createFigureEmbed"](element, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(tempItem["_createFigureEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(tempItem["_createFigureEmbed"](element, embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(tempItem["_createFigureEmbed"](element, embedConfig, enrichmentOptions)).toEqualTypeOf<
   Promise<HTMLElement | null>
 >();
 

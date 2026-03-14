@@ -295,7 +295,6 @@ declare namespace BaseUser {
   export import Parent = User.Parent;
   export import Descendant = User.Descendant;
   export import DescendantClass = User.DescendantClass;
-  export import Pack = User.Pack;
   export import Embedded = User.Embedded;
   export import ParentCollectionName = User.ParentCollectionName;
   export import CollectionClass = User.CollectionClass;

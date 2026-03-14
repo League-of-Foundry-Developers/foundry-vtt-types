@@ -267,7 +267,6 @@ declare namespace BasePlaylistSound {
   export import Parent = PlaylistSound.Parent;
   export import Descendant = PlaylistSound.Descendant;
   export import DescendantClass = PlaylistSound.DescendantClass;
-  export import Pack = PlaylistSound.Pack;
   export import Embedded = PlaylistSound.Embedded;
   export import ParentCollectionName = PlaylistSound.ParentCollectionName;
   export import CollectionClass = PlaylistSound.CollectionClass;

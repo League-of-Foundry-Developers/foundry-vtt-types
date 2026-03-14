@@ -3,7 +3,13 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseTile = foundry.documents.BaseTile;
 import Document = foundry.abstract.Document;
 
-class TestTile extends BaseTile {}
+class TestTile extends BaseTile {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"Tile"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"Tile">;
+  }
+}
 
 // @ts-expect-error Tiles require a provided width and height
 new TestTile();

@@ -280,7 +280,6 @@ declare namespace BaseCombatant {
   export import Parent = Combatant.Parent;
   export import Descendant = Combatant.Descendant;
   export import DescendantClass = Combatant.DescendantClass;
-  export import Pack = Combatant.Pack;
   export import Embedded = Combatant.Embedded;
   export import ParentCollectionName = Combatant.ParentCollectionName;
   export import CollectionClass = Combatant.CollectionClass;

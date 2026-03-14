@@ -3,7 +3,13 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseAmbientLight = foundry.documents.BaseAmbientLight;
 import Document = foundry.abstract.Document;
 
-class TestBaseAmbientLight extends BaseAmbientLight {}
+class TestBaseAmbientLight extends BaseAmbientLight {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"AmbientLight"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"AmbientLight">;
+  }
+}
 
 // AmbientLight has no hard required fields for construction
 new TestBaseAmbientLight();

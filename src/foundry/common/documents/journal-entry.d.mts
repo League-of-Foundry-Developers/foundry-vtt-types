@@ -306,7 +306,6 @@ declare namespace BaseJournalEntry {
   export import Parent = JournalEntry.Parent;
   export import Descendant = JournalEntry.Descendant;
   export import DescendantClass = JournalEntry.DescendantClass;
-  export import Pack = JournalEntry.Pack;
   export import Embedded = JournalEntry.Embedded;
   export import ParentCollectionName = JournalEntry.ParentCollectionName;
   export import CollectionClass = JournalEntry.CollectionClass;

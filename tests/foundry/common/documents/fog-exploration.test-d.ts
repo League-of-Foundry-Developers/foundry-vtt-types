@@ -1,7 +1,12 @@
 import { expectTypeOf } from "vitest";
 import type { AnyMutableObject } from "fvtt-types/utils";
 
-class TestBaseFogExploration extends foundry.documents.BaseFogExploration {}
+class TestBaseFogExploration extends foundry.documents.BaseFogExploration {
+  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
+  get compendium() {
+    return null;
+  }
+}
 
 expectTypeOf(new TestBaseFogExploration()).toEqualTypeOf<TestBaseFogExploration>();
 expectTypeOf(new TestBaseFogExploration({})).toEqualTypeOf<TestBaseFogExploration>();

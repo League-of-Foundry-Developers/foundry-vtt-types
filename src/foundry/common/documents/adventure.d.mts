@@ -71,8 +71,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   /** @privateRemarks `Adventure`s are never embedded. */
   override readonly parentCollection: null;
 
-  /** @privateRemarks There is no world `Adventure` collection, they only exist inside compendia. */
-  override get pack(): string;
+  /** @privateRemarks `Adventure`s are only persisted in compendia, but temporary docs cam still have a `null` pack. */
+  override get pack(): string | null;
 
   static override get implementation(): Adventure.ImplementationClass;
 
@@ -276,7 +276,6 @@ declare namespace BaseAdventure {
   export import Parent = Adventure.Parent;
   export import Descendant = Adventure.Descendant;
   export import DescendantClass = Adventure.DescendantClass;
-  export import Pack = Adventure.Pack;
   export import Embedded = Adventure.Embedded;
   export import ParentCollectionName = Adventure.ParentCollectionName;
   export import CollectionClass = Adventure.CollectionClass;

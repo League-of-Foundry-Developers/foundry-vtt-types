@@ -1,7 +1,12 @@
 import { expectTypeOf } from "vitest";
 
 // This exists to make the class non-abstract.
-class TestBaseCombat extends foundry.documents.BaseCombat {}
+class TestBaseCombat extends foundry.documents.BaseCombat {
+  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
+  get compendium() {
+    return null;
+  }
+}
 
 expectTypeOf(TestBaseCombat.create({ scene: "foo", active: true, sort: 1 })).toEqualTypeOf<
   Promise<Combat.Stored | undefined>

@@ -249,7 +249,6 @@ declare namespace BaseSetting {
   export import Parent = Setting.Parent;
   export import Descendant = Setting.Descendant;
   export import DescendantClass = Setting.DescendantClass;
-  export import Pack = Setting.Pack;
   export import Embedded = Setting.Embedded;
   export import ParentCollectionName = Setting.ParentCollectionName;
   export import CollectionClass = Setting.CollectionClass;

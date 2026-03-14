@@ -34,7 +34,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @remarks Created during construction via `defineProperty`, with options `{value: null, writable: true, enumerable: false}`
    * @internal
    */
-  protected readonly _sheet: FixedInstanceType<Document.SheetClassFor<DocumentName>> | null;
+  protected _sheet: FixedInstanceType<Document.SheetClassFor<DocumentName>> | null;
 
   static name: "ClientDocumentMixin";
 
@@ -42,7 +42,6 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @see {@link foundry.abstract.Document._initialize | `abstract.Document#_initialize`}
    * @remarks ClientDocument override calls `super`, then if `game._documentsReady`, calls {@link InternalClientDocument._safePrepareData | `this._safePrepareData`}
    */
-  // options: not null (parameter default only)
   protected _initialize(options?: Document.InitializeOptions): void;
 
   /**
@@ -51,15 +50,16 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   get collection(): ClientDocument.CollectionForName<DocumentName>;
 
   /**
-   * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
+   * A reference to the Compendium Collection which contains this Document, if any, otherwise `null`.
+   * @remarks Actually overrides {@linkcode Document.compendium | Document#compendium}.
    */
-  get compendium(): ClientDocument.CompendiumForName<DocumentName>;
+  get compendium(): CompendiumCollection.ForDocument<DocumentName> | null;
 
   /**
    * Is this document in a compendium? A stricter check than {@link Document.inCompendium | `Document#inCompendium`}.
    */
   // Note(LukeAbby): See https://github.com/microsoft/TypeScript/issues/61967
-  // get inCompendium(): boolean;
+  get inCompendium(): boolean;
 
   /**
    * A boolean indicator for whether the current game User has ownership rights for this Document.
@@ -672,10 +672,6 @@ declare global {
           ? EmbeddedCollection<Document.StoredForName<Name>, Document.Embedded.ParentForName<Name>>
           : never)
       | (Name extends Document.WorldType ? Document.WorldCollectionForName<Name> : never)
-      | null;
-
-    type CompendiumForName<Name extends Document.Type> =
-      | (Name extends CompendiumCollection.DocumentName ? CompendiumCollection<Name> : never)
       | null;
 
     // TODO: This may be better defined elsewhere

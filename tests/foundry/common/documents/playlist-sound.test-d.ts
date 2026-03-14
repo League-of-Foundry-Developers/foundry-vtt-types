@@ -1,7 +1,13 @@
 import { expectTypeOf } from "vitest";
 
 // This exists to make the class non-abstract.
-class TestBasePlaylistSound extends foundry.documents.BasePlaylistSound {}
+class TestBasePlaylistSound extends foundry.documents.BasePlaylistSound {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"PlaylistSound"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"PlaylistSound">;
+  }
+}
 
 // @ts-expect-error name is a required field
 new TestBasePlaylistSound();

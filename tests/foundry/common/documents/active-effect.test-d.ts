@@ -7,7 +7,13 @@ import BaseActiveEffect = foundry.documents.BaseActiveEffect;
 // BaseActiveEffect is abstract
 class TestActiveEffect<
   out SubType extends BaseActiveEffect.SubType = BaseActiveEffect.SubType,
-> extends BaseActiveEffect<SubType> {}
+> extends BaseActiveEffect<SubType> {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"ActiveEffect"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"ActiveEffect">;
+  }
+}
 
 export const activeEffectSource = {
   _id: "XXXXXSomeIDXXXXX",

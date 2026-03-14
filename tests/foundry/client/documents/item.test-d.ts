@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
-import { source as activeEffectSource } from "./active-effect.test-d.ts";
+import * as activeEffectHelpers from "./active-effect.test-d.ts";
 
 type DataSchema = foundry.data.fields.DataSchema;
 
@@ -43,7 +43,7 @@ declare global {
   }
 }
 
-export const itemSource = {
+export const source = {
   _id: "XXXXXItemIDXXXXX",
   type: "armor",
   name: "Stuff",
@@ -81,7 +81,7 @@ export const itemSourceWithEffect = {
   name: "Stuff",
   img: "icons/svg/item-bag.svg",
   system: { defense: 2 },
-  effects: [activeEffectSource],
+  effects: [activeEffectHelpers.source],
   folder: null,
   flags: {},
   _stats: {

@@ -3,7 +3,13 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseWall = foundry.documents.BaseWall;
 import Document = foundry.abstract.Document;
 
-class TestBaseWall extends BaseWall {}
+class TestBaseWall extends BaseWall {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"Wall"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"Wall">;
+  }
+}
 
 // TODO: ensure `c` required for creation
 // @ts-expect-error Wall requires `c` for creation

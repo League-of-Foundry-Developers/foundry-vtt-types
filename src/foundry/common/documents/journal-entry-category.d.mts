@@ -260,7 +260,6 @@ declare namespace BaseJournalEntryCategory {
   export import Parent = JournalEntryCategory.Parent;
   export import Descendant = JournalEntryCategory.Descendant;
   export import DescendantClass = JournalEntryCategory.DescendantClass;
-  export import Pack = JournalEntryCategory.Pack;
   export import Embedded = JournalEntryCategory.Embedded;
   export import ParentCollectionName = JournalEntryCategory.ParentCollectionName;
   export import CollectionClass = JournalEntryCategory.CollectionClass;

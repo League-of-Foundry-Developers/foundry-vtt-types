@@ -4,7 +4,13 @@ import Document = foundry.abstract.Document;
 import BaseJournalEntryPage = foundry.documents.BaseJournalEntryPage;
 
 // This exists to make the class non-abstract.
-class TestBaseJournalEntryPage extends foundry.documents.BaseJournalEntryPage {}
+class TestBaseJournalEntryPage extends foundry.documents.BaseJournalEntryPage {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"JournalEntryPage"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"JournalEntryPage">;
+  }
+}
 
 // @ts-expect-error name is a required field
 new TestBaseJournalEntryPage();

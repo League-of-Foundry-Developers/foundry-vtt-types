@@ -254,7 +254,6 @@ declare namespace BaseAmbientLight {
   export import Parent = AmbientLightDocument.Parent;
   export import Descendant = AmbientLightDocument.Descendant;
   export import DescendantClass = AmbientLightDocument.DescendantClass;
-  export import Pack = AmbientLightDocument.Pack;
   export import Embedded = AmbientLightDocument.Embedded;
   export import ParentCollectionName = AmbientLightDocument.ParentCollectionName;
   export import CollectionClass = AmbientLightDocument.CollectionClass;

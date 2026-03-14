@@ -10,7 +10,12 @@ if (chat) {
   expectTypeOf(chat).toEqualTypeOf<ChatMessage.Implementation>();
 }
 
-class TestBaseChatMessage extends foundry.documents.BaseChatMessage {}
+class TestBaseChatMessage extends foundry.documents.BaseChatMessage {
+  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
+  get compendium() {
+    return null;
+  }
+}
 
 expectTypeOf(new TestBaseChatMessage()).toEqualTypeOf<foundry.documents.BaseChatMessage>();
 expectTypeOf(new TestBaseChatMessage({})).toEqualTypeOf<foundry.documents.BaseChatMessage>();

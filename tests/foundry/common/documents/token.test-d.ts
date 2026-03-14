@@ -5,7 +5,13 @@ import { TokenRing } from "#client/canvas/placeables/tokens/_module.mjs";
 import BaseToken = foundry.documents.BaseToken;
 import Document = foundry.abstract.Document;
 
-class TestBaseToken extends foundry.documents.BaseToken {}
+class TestBaseToken extends foundry.documents.BaseToken {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"Token"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"Token">;
+  }
+}
 
 // Token has no hard required fields for construction
 new TestBaseToken();

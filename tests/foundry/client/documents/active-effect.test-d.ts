@@ -1,13 +1,13 @@
 import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 import type { InterfaceToObject, AnyMutableObject, EmptyObject } from "fvtt-types/utils";
-import { itemSource } from "./item.test-d.ts";
 import { cleanupDocuments, currentUser, database, testID } from "../../../utils.ts";
+import * as itemHelpers from "./item.test-d.ts";
 
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
 import DataModel = foundry.abstract.DataModel;
 import Document = foundry.abstract.Document;
 import fields = foundry.data.fields;
-import type EmbeddedCollection from "#common/abstract/embedded-collection.mjs";
+import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
 const documentName = "ActiveEffect";
 const DocCls = ActiveEffect.implementation;
@@ -29,7 +29,7 @@ type ParentCollectionName = ActiveEffect.ParentCollectionName;
 const docsToCleanUp = new Set<foundry.documents.abstract.ClientDocumentMixin.AnyMixed>();
 
 /** The parent document that runtime tests in this file will use. */
-const parent = await Item.create(itemSource);
+const parent = await Item.create(itemHelpers.source);
 if (!parent) throw new Error("Couldn't create test Item");
 expectTypeOf(parent).toEqualTypeOf<Item.Stored>();
 docsToCleanUp.add(parent);
@@ -1240,9 +1240,11 @@ describe("ActiveEffect Tests", async () => {
 
     expectTypeOf(tempDoc.collection).toEqualTypeOf<EmbeddedCollection<
       ActiveEffect.Stored,
-      Actor.Stored | Item.Stored
+      Actor.Implementation | Item.Implementation
     > | null>();
-    expectTypeOf(doc.collection).toEqualTypeOf<EmbeddedCollection<ActiveEffect.Stored, Actor.Stored | Item.Stored>>();
+    expectTypeOf(doc.collection).toEqualTypeOf<
+      EmbeddedCollection<ActiveEffect.Stored, Actor.Implementation | Item.Implementation>
+    >();
   });
 
   test("Embedded Documents and Collections", async () => {
@@ -1274,10 +1276,6 @@ describe("ActiveEffect Tests", async () => {
 
   test("Non-overridden Document properties and methods.", () => {
     expectTypeOf(() => doc["_configure"]()).returns.toEqualTypeOf<void>();
-
-    // AEs have no embedded collections
-    expectTypeOf(doc.collections).toExtend<EmptyObject>();
-    expect(doc.collections).toBe({});
   });
 
   test("`Document` overrides: `#type`", () => {
@@ -1292,7 +1290,7 @@ describe("ActiveEffect Tests", async () => {
     }
   });
 
-  test("`Document` overrides: `#parent` & `#parentCollection`", () => {
+  test("`Document` overrides: `#parent`", () => {
     // Temporary AEs can exist without parents
     expectTypeOf(tempDoc.parent).toEqualTypeOf<Parent>();
     expectTypeOf(tempDoc.parent).extract<null>().toBeNull();

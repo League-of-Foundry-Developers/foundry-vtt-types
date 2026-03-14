@@ -3,7 +3,13 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseNote = foundry.documents.BaseNote;
 import Document = foundry.abstract.Document;
 
-class TestBaseNote extends BaseNote {}
+class TestBaseNote extends BaseNote {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"Note"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"Note">;
+  }
+}
 
 let myNote;
 // Note has no hard required fields for creation

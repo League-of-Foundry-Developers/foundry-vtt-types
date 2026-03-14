@@ -251,6 +251,13 @@ declare abstract class Document<
   get id(): string | null;
 
   /**
+   * A reference to the Compendium Collection containing this Document, if any, and otherwise null.
+   * @remarks The body in `Document` simply throws; {@linkcode ClientDocumentMixin.AnyMixed.compendium | ClientDocument#compendium} defines
+   * the standard override.
+   */
+  abstract get compendium(): CompendiumCollection.ForDocument<DocumentName> | null;
+
+  /**
    * Test whether this Document is embedded within a parent Document
    */
   get isEmbedded(): boolean;
@@ -1025,7 +1032,10 @@ declare namespace Document {
   type CompendiumType = CONST.COMPENDIUM_DOCUMENT_TYPES;
 
   /** Documents that require a parent for persisted creation. Most of them do not require one for temporary construction. */
-  type AlwaysEmbedded = Exclude<EmbeddedType, PrimaryType>;
+  type AlwaysEmbeddedType = Exclude<EmbeddedType, PrimaryType>;
+
+  /** Documents which can only be persisted inside compendia. As of 13.351 this is only `Adventure`. */
+  type AlwaysCompendiumType = "Adventure";
 
   type WithSubTypes = WithSystem | "Folder" | "Macro" | "TableResult";
 
@@ -1190,7 +1200,7 @@ declare namespace Document {
       [K in keyof Embedded]: K extends Document.Type ? Extract<K | Embedded[K], string> : never;
     }[keyof Embedded];
 
-    type ParentForName<Name extends Document.EmbeddedType> = Document.StoredForName<
+    type ParentForName<Name extends Document.EmbeddedType> = Document.ImplementationFor<
       Document.Internal.DocumentNameFor<Exclude<Document.ParentForName<Name>, null>>
     >;
 
@@ -1213,6 +1223,18 @@ declare namespace Document {
 
   type SocketRequest<Action extends DatabaseBackend.DatabaseAction> = DocumentSocketRequest<Action>;
   type SocketResponse<Action extends DatabaseBackend.DatabaseAction> = DocumentSocketResponse<Action>;
+
+  /**
+   * Documents that can't be either directly in compendia, or embedded in documents that can be in compendia, should always return `false`
+   * for {@linkcode Document.inCompendium | Document#inCompendium}. We can't force `true` for documents that can only be persisted in
+   * compendia (e.g `Adventure`) here, because they could be temporary.
+   */
+  type InCompendium<Name extends Document.Type> = Name extends
+    | CONST.COMPENDIUM_DOCUMENT_TYPES
+    | CONST.EMBEDDED_DOCUMENT_TYPES
+    | "Folder"
+    ? boolean
+    : false;
 
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
@@ -1346,17 +1368,25 @@ declare namespace Document {
       : never;
 
     /** Persisted, non-primary, embedded documents always have a non-`null` `parent` */
-    type StoredParent<D extends Document.Any> = D["documentName"] extends Document.AlwaysEmbedded
+    type StoredParent<D extends Document.Any> = D["documentName"] extends Document.AlwaysEmbeddedType
       ? NonNullable<D["parent"]>
       : D["parent"];
 
     /** Persisted, non-primary, embedded documents always have a non-`null` `parent` */
-    type StoredParentCollection<D extends Document.Any> = D["documentName"] extends Document.AlwaysEmbedded
+    type StoredParentCollection<D extends Document.Any> = D["documentName"] extends Document.AlwaysEmbeddedType
       ? NonNullable<D["parentCollection"]>
       : D["parentCollection"];
 
     /** Persisted documents will always have a `collection`, whether it's a pack, a world collection, or another document. */
     type StoredCollection<D extends ClientDocumentMixin.AnyMixed> = Exclude<D["collection"], null>;
+
+    /** Some documents can only be persisted in compendia. */
+    type StoredInCompendium<D extends ClientDocumentMixin.AnyMixed> =
+      D["documentName"] extends Document.AlwaysCompendiumType ? Exclude<D["inCompendium"], false> : D["inCompendium"];
+
+    /** Some documents can only be persisted in compendia. */
+    type StoredCompendium<D extends ClientDocumentMixin.AnyMixed> =
+      D["documentName"] extends Document.AlwaysCompendiumType ? Exclude<D["compendium"], null> : D["compendium"];
 
     // TODO(LukeAbby): Improve the type display with a helper here.
     // TODO(LukeAbby): Add `StoredSource` for a better type display there.
@@ -1396,6 +1426,11 @@ declare namespace Document {
 
         /** @remarks As this is a persisted Document, it is guaranteed to have a non-`null` `collection`. */
         collection: Document.Internal.StoredCollection<D>;
+
+        /** Is this document in a compendium? */
+        get inCompendium(): StoredInCompendium<D>;
+
+        get compendium(): StoredCompendium<D>;
       }
     >;
 

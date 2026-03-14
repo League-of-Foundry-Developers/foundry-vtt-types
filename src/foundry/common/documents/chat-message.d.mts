@@ -298,7 +298,6 @@ declare namespace BaseChatMessage {
   export import Parent = ChatMessage.Parent;
   export import Descendant = ChatMessage.Descendant;
   export import DescendantClass = ChatMessage.DescendantClass;
-  export import Pack = ChatMessage.Pack;
   export import Embedded = ChatMessage.Embedded;
   export import ParentCollectionName = ChatMessage.ParentCollectionName;
   export import CollectionClass = ChatMessage.CollectionClass;

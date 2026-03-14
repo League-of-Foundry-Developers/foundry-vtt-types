@@ -5,7 +5,13 @@ import BaseRegion = foundry.documents.BaseRegion;
 import Document = foundry.abstract.Document;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
-class TestRegion extends BaseRegion {}
+class TestRegion extends BaseRegion {
+  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"Region"> | null {
+    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
+    if (!pack) return null;
+    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"Region">;
+  }
+}
 
 declare const someScriptBehavior: RegionBehavior.OfType<"executeScript">;
 
