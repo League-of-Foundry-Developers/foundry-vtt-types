@@ -91,6 +91,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   override parent: Adventure.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseAdventure.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Adventure.Implementation | Adventure.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Adventure.Database.Create<Temporary>>,

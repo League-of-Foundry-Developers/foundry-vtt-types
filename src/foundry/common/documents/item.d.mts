@@ -124,6 +124,8 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   override parent: BaseItem.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseItem.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<Item.Implementation | Item.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<Item.Database.Create<Temporary>>,

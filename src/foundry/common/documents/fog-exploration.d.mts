@@ -88,6 +88,8 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   override parent: FogExploration.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseFogExploration.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<FogExploration.Implementation | FogExploration.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<FogExploration.Database.Create<Temporary>>,

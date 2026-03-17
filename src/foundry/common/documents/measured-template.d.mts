@@ -107,6 +107,8 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   override parent: MeasuredTemplateDocument.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseMeasuredTemplate.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<MeasuredTemplateDocument.Implementation | MeasuredTemplateDocument.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<MeasuredTemplateDocument.Database.Create<Temporary>>,
