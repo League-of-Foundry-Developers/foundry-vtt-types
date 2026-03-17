@@ -2,7 +2,6 @@ import type { NodeSpec } from "prosemirror-model";
 import { expectTypeOf } from "vitest";
 
 // Import necessary as this is otherwise inaccessible.
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
   builtInTableNodes,
   tableComplex,
@@ -18,8 +17,7 @@ import {
   tableCellComplexBlock,
   tableHeaderComplex,
   tableHeaderComplexBlock,
-  // eslint-disable-next-line import-x/extensions
-} from "../../../../../src/foundry/common/prosemirror/schema/tables.mjs";
+} from "../../../../../src/foundry/common/prosemirror/schema/tables.mts";
 
 expectTypeOf(builtInTableNodes).toEqualTypeOf<{
   table: NodeSpec;
