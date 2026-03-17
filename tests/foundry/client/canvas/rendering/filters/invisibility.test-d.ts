@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { InvisibilityFilter } from "#client/canvas/rendering/filters/_module.mjs";
+
+import InvisibilityFilter = foundry.canvas.rendering.filters.InvisibilityFilter;
 
 import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 

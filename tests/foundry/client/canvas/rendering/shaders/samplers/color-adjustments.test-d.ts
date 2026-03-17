@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { AbstractBaseShader, ColorAdjustmentsSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
+
+import ColorAdjustmentsSamplerShader = foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader;
+import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 
 const myCASS = ColorAdjustmentsSamplerShader.create();
 

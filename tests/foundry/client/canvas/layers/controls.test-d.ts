@@ -1,10 +1,10 @@
 import { expectTypeOf } from "vitest";
-import type { LineIntersection } from "#common/utils/_module.d.mts";
-import { ControlsLayer } from "#client/canvas/layers/_module.mjs";
 
+import utils = foundry.utils;
 import Canvas = foundry.canvas.Canvas;
 import Cursor = foundry.canvas.containers.Cursor;
 import InteractionLayer = foundry.canvas.layers.InteractionLayer;
+import ControlsLayer = foundry.canvas.layers.ControlsLayer;
 import Ruler = foundry.canvas.interaction.Ruler;
 import Ray = foundry.canvas.geometry.Ray;
 
@@ -99,7 +99,7 @@ expectTypeOf(
 
 expectTypeOf(layer["_findViewportIntersection"](somePoint)).toEqualTypeOf<{
   ray: Ray;
-  intersection: LineIntersection | undefined;
+  intersection: utils.LineIntersection | undefined;
 }>();
 
 Hooks.on("drawControlsLayer", (layer) => {

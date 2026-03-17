@@ -10,10 +10,9 @@ import * as tables from "prosemirror-tables";
 import * as state from "prosemirror-state";
 import * as transform from "prosemirror-transform";
 import * as list from "prosemirror-schema-list";
-import { nodes, marks } from "#common/prosemirror/schema.mjs";
+import type { nodes, marks } from "../../../../src/foundry/common/prosemirror/schema.d.mts";
 
 // Import necessary as this is otherwise inaccessible.
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type { parseHTMLString, serializeHTMLString } from "../../../../src/foundry/common/prosemirror/util.d.mts";
 
 expectTypeOf(foundry.prosemirror.commands).toEqualTypeOf<typeof commands>();

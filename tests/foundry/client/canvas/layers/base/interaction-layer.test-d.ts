@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { HandleEmptyObject } from "fvtt-types/utils";
-import { InteractionLayer } from "#client/canvas/layers/_module.mjs";
+
+import InteractionLayer = foundry.canvas.layers.InteractionLayer;
 
 interface MyInteractionLayerOptions extends InteractionLayer.LayerOptions {
   name: "MyInteractionLayer";

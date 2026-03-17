@@ -1,9 +1,9 @@
 import { assertType, expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
-import type { HandleEmptyObject } from "#utils";
-import { PlaceableObject } from "#client/canvas/placeables/_module.mjs";
+import type { HandleEmptyObject } from "fvtt-types/utils";
 
+import Document = foundry.abstract.Document;
 import Canvas = foundry.canvas.Canvas;
+import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import ControlIcon = foundry.canvas.containers.ControlIcon;
 import FormApplication = foundry.appv1.api.FormApplication;
 import LightingLayer = foundry.canvas.layers.LightingLayer;

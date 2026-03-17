@@ -1,8 +1,8 @@
 import { expectTypeOf } from "vitest";
-import LinkMark from "#common/prosemirror/schema/link-mark.mjs";
+import LinkMark from "../../../../../src/foundry/common/prosemirror/schema/link-mark.mts";
 import type { Attrs, AttributeSpec, Node, Mark, MarkSpec } from "prosemirror-model";
 import type { EditorView } from "prosemirror-view";
-import type SchemaDefinition from "#common/prosemirror/schema/schema-definition.mjs";
+import type SchemaDefinition from "../../../../../src/foundry/common/prosemirror/schema/schema-definition.d.mts";
 
 new LinkMark();
 

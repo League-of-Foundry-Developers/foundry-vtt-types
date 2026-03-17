@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
-import type { HandleEmptyObject } from "#utils";
-import { CanvasLayer } from "#client/canvas/layers/_module.mjs";
+import type { HandleEmptyObject } from "fvtt-types/utils";
+
+import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 
 interface MyLayerOptions extends CanvasLayer.LayerOptions {
   name: "MyLayer";

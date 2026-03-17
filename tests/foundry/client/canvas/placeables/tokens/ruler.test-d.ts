@@ -1,5 +1,5 @@
 // import { expectTypeOf } from "vitest";
-import type { DeepReadonly } from "#utils";
+import type { DeepReadonly } from "fvtt-types/utils";
 import TokenRuler = foundry.canvas.placeables.tokens.TokenRuler;
 import Ruler = foundry.canvas.interaction.Ruler;
 
