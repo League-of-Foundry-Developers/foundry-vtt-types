@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { NotesLayer } from "#client/canvas/layers/_module.mjs";
-import type { Note } from "#client/canvas/placeables/_module.d.mts";
+
+import NotesLayer = foundry.canvas.layers.NotesLayer;
+import Note = foundry.canvas.placeables.Note;
 
 expectTypeOf(NotesLayer.documentName).toEqualTypeOf<"Note">();
 expectTypeOf(NotesLayer.instance).toEqualTypeOf<NotesLayer | undefined>();

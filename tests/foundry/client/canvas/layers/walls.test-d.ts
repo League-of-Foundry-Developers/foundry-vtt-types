@@ -1,11 +1,11 @@
 import { expectTypeOf } from "vitest";
-import type { Document } from "#common/abstract/_module.d.mts";
-import { WallsLayer } from "#client/canvas/layers/_module.mjs";
-import type { Wall } from "#client/canvas/placeables/_module.d.mts";
 
+import WallsLayer = foundry.canvas.layers.WallsLayer;
+import Wall = foundry.canvas.placeables.Wall;
 import Canvas = foundry.canvas.Canvas;
 import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
 import Ray = foundry.canvas.geometry.Ray;
+import Document = foundry.abstract.Document;
 
 expectTypeOf(WallsLayer.documentName).toEqualTypeOf<"Wall">();
 expectTypeOf(WallsLayer.instance).toEqualTypeOf<WallsLayer | undefined>();

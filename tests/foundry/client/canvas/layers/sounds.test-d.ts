@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { SoundsLayer } from "#client/canvas/layers/_module.mjs";
-import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
+
+import SoundsLayer = foundry.canvas.layers.SoundsLayer;
+import AmbientSound = foundry.canvas.placeables.AmbientSound;
 
 expectTypeOf(SoundsLayer.documentName).toEqualTypeOf<"AmbientSound">();
 expectTypeOf(SoundsLayer.instance).toEqualTypeOf<SoundsLayer | undefined>();

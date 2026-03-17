@@ -272,6 +272,17 @@ const noRestrictedImportsPaths = [
   },
 ];
 
+const testsOnlyPaths = [
+  {
+    name: "#tests",
+    message: "Importing from tests is not supported outside tests/",
+  },
+  {
+    name: "#testUtils",
+    message: "Importing from tests is not supported outside tests/",
+  },
+];
+
 /**
  * @type {import("@typescript-eslint/utils").TSESLint.FlatConfig.ConfigArray}
  */
@@ -347,7 +358,7 @@ const rules = [
       "@typescript-eslint/no-restricted-imports": [
         "error",
         {
-          paths: noRestrictedImportsPaths,
+          paths: noRestrictedImportsPaths.concat(testsOnlyPaths),
         },
       ],
       "@typescript-eslint/prefer-namespace-keyword": "error",
@@ -475,13 +486,6 @@ const rules = [
         "error",
         {
           paths: noRestrictedImportsPaths,
-          patterns: [
-            {
-              group: ["../"],
-              message:
-                "Relative imports are not allowed in tests. This is to prevent importing the main repo. If you have a need to import other test files this can be adjusted.",
-            },
-          ],
         },
       ],
     },

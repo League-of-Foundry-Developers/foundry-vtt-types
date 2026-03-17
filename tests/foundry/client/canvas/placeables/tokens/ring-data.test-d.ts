@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
-import { TokenRing, DynamicRingData } from "#client/canvas/placeables/tokens/_module.mjs";
-import type { PrimaryBaseSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
+
+import TokenRing = foundry.canvas.placeables.tokens.TokenRing;
+import DynamicRingData = foundry.canvas.placeables.tokens.DynamicRingData;
+import PrimaryBaseSamplerShader = foundry.canvas.rendering.shaders.PrimaryBaseSamplerShader;
 
 declare class MyTokenRing extends TokenRing {
   #differentClass: true;

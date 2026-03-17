@@ -1,5 +1,6 @@
 import { expectTypeOf, test } from "vitest";
-import type { Roll } from "#client/dice/_module.d.mts";
+
+import Roll = foundry.dice.Roll;
 
 const combatant = new Combatant.implementation({}, { parent: new Combat.implementation() });
 

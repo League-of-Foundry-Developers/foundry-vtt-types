@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { AbstractBaseShader, AmplificationBackgroundVisionShader } from "#client/canvas/rendering/shaders/_module.mjs";
+
+import AmplificationBackgroundVisionShader = foundry.canvas.rendering.shaders.AmplificationBackgroundVisionShader;
+import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 
 const ABVS = AmplificationBackgroundVisionShader;
 let myABVS;

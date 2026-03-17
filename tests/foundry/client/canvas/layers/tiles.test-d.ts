@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { TilesLayer } from "#client/canvas/layers/_module.mjs";
-import type { Tile } from "#client/canvas/placeables/_module.d.mts";
 
+import TilesLayer = foundry.canvas.layers.TilesLayer;
+import Tile = foundry.canvas.placeables.Tile;
 import Canvas = foundry.canvas.Canvas;
 import TileHUD = foundry.applications.hud.TileHUD;
 

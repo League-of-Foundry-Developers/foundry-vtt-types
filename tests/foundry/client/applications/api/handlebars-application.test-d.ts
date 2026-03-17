@@ -2,7 +2,7 @@ import { expectTypeOf, test } from "vitest";
 
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import ContextMenu = foundry.applications.ux.ContextMenu;
-import type { DeepPartial } from "#utils";
+import type { DeepPartial } from "fvtt-types/utils";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 

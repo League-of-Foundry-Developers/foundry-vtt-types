@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { DepthSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
-import { BatchRenderer } from "#client/canvas/rendering/batching/_module.mjs";
+
+import DepthSamplerShader = foundry.canvas.rendering.shaders.DepthSamplerShader;
+import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
 
 const myDSS = DepthSamplerShader.create();
 expectTypeOf(myDSS).toEqualTypeOf<DepthSamplerShader>();
