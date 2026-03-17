@@ -1,0 +1,16 @@
+{
+  "imports": {
+    "#tests/*": {
+      "import": "./foundry/*"
+    },
+    "#testUtils": {
+      "import": "./utils.ts"
+    },
+    "#utils": {
+      "import": "../src/utils/index.d.mts"
+    }
+  },
+  "devDependencies": {
+    "vitest": "^4.0.15"
+  }
+}
