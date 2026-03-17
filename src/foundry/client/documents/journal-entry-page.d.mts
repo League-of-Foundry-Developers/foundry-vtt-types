@@ -1204,7 +1204,7 @@ declare class JournalEntryPage<
    */
   get toc(): Record<string, JournalEntryPage.JournalEntryPageHeading>;
 
-  override get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  override get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Return a reference to the Note instance for this Journal Entry Page in the current Scene, if any.

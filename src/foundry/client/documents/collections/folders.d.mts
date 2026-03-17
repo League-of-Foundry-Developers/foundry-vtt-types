@@ -1,6 +1,9 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { DocumentCollection, WorldCollection } from "#client/documents/abstract/_module.d.mts";
+import type { Application } from "#client/appv1/api/_module.d.mts";
+import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
+import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 
 /**
  * The singleton collection of Folder documents which exist within the active World.
@@ -33,6 +36,20 @@ declare class Folders extends WorldCollection<"Folder"> {
 
   /** @deprecated Foundry made this method truly private in v13. This warning will be removed in v14. */
   protected _refreshJournalEntrySheets(): never;
+
+  /** @privateRemarks Fake override for the purpose of typing `options` */
+  static override registerSheet(
+    scope: string,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.RegisterSheetOptions<Folder.ImplementationClass>,
+  ): void;
+
+  /** @privateRemarks Fake override for the purpose of typing `options` */
+  static override unregisterSheet(
+    scope: string,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.UnregisterSheetOptions<Folder.ImplementationClass>,
+  ): void;
 
   #Folders: true;
 }

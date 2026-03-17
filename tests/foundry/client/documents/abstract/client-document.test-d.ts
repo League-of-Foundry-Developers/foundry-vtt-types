@@ -1,4 +1,4 @@
-import { afterAll, describe, expectTypeOf } from "vitest";
+import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
 import type { FixedInstanceType } from "fvtt-types/utils";
 import { cleanupDocuments } from "../../../../utils.ts";
 import * as itemHelpers from "../item.test-d.ts";
@@ -16,10 +16,44 @@ import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 const tempItem = new Item.implementation(itemHelpers.source);
 const docsToCleanUp = new Set<foundry.documents.abstract.ClientDocumentMixin.AnyMixed>();
 
+// Only properties and methods that both aren't overridden in the document template,
+// and aren't conditional in their parameters or return type, are tested here.
 describe("ClientDocument Tests", async () => {
   const item = await Item.implementation.create(itemHelpers.source);
   if (!item) throw new Error("Failed to create test Item");
   docsToCleanUp.add(item);
+
+  test("Passthrough of inherited statics", () => {
+    // Test the inheritance of static members
+
+    // Document
+    expectTypeOf(Item.documentName).toEqualTypeOf<"Item">();
+    expect(Item.documentName).toBe("Item");
+
+    // BaseItem
+    expectTypeOf(Item.DEFAULT_ICON).toBeString();
+  });
+
+  // `#_initialize` overridden with no signature change
+
+  // `#collection`, `#compendium`, and `#inCompendium` are tested per Document
+
+  test("Ownership & Permissions", () => {
+    expectTypeOf(item.isOwner).toBeBoolean();
+    expect(item.isOwner).toBe(true);
+
+    expectTypeOf(item.hasPlayerOwner).toBeBoolean();
+    expect(item.hasPlayerOwner).toBe(false);
+
+    expectTypeOf(item.limited).toBeBoolean();
+    expect(item.limited).toBe(false);
+
+    expectTypeOf(item.permission).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();
+    expect(item.permission).toBe(CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER);
+
+    expectTypeOf(item.visible).toBeBoolean();
+    expect(item.visible).toBe(true);
+  });
 
   afterAll(async () => {
     await cleanupDocuments(docsToCleanUp);
@@ -29,10 +63,6 @@ declare const someActor: Actor.Implementation;
 declare const actorDelta: ActorDelta.Stored;
 declare const activeEffect: ActiveEffect.Stored;
 const anyClientDoc: ClientDocumentMixin.AnyMixed = tempItem;
-// Test the inheritance of static members
-expectTypeOf(Item.documentName).toEqualTypeOf<"Item">(); // Document
-expectTypeOf(Item.createDialog()).toEqualTypeOf<Promise<Item.Stored | null | "ok">>(); // ClientDocumentMixin
-
 // ensure source can be used to create a new document with createDialog
 expectTypeOf(Item.createDialog(tempItem.toObject())).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 
@@ -143,9 +173,6 @@ tempItem.apps["foo"] = someApp;
 tempItem.apps["bar"] = someAppV2;
 // @ts-expect-error apps is readonly
 tempItem.apps = { foo: someApp, bar: someAppV2 };
-
-// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-expectTypeOf(tempItem["_sheet"]).toEqualTypeOf<FixedInstanceType<Document.SheetClassFor<"Item">> | null>();
 
 // _initialize overridden with no signature changes
 

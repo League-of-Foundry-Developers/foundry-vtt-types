@@ -75,7 +75,7 @@ export const source = {
   sort: 0,
 } as const satisfies Item.Source;
 
-export const itemSourceWithEffect = {
+export const sourceWithEmbedded = {
   _id: "XXXXXItemIDXXXXX",
   type: "armor", // using one of our test subtypes because a blank system is disallowed, so using `base` is out
   name: "Stuff",
@@ -106,6 +106,11 @@ export const itemSourceWithEffect = {
   },
   sort: 0,
 } as const satisfies Item.Source;
+
+export const minimalCreateData = {
+  name: "FVTT-Types Test Item",
+  type: "base",
+} satisfies Item.CreateData;
 
 const actor = game.actors!.contents[0]!;
 const actorItem = actor.items.contents[0]!;

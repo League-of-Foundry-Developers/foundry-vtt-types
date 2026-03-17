@@ -11,7 +11,7 @@ import type {
 } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { Application, FormApplication } from "#client/appv1/api/_module.d.mts";
-import type { ApplicationV2 } from "#client/applications/api/_module.d.mts";
+import type { ApplicationV2, DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
 import type { EmbeddedCollection } from "#common/abstract/_module.mjs";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
@@ -34,7 +34,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @remarks Created during construction via `defineProperty`, with options `{value: null, writable: true, enumerable: false}`
    * @internal
    */
-  protected _sheet: FixedInstanceType<Document.SheetClassFor<DocumentName>> | null;
+  protected _sheet: Application.Any | DocumentSheetV2.Any | null;
 
   static name: "ClientDocumentMixin";
 
@@ -58,8 +58,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * Is this document in a compendium? A stricter check than {@link Document.inCompendium | `Document#inCompendium`}.
    */
-  // Note(LukeAbby): See https://github.com/microsoft/TypeScript/issues/61967
-  get inCompendium(): boolean;
+  get inCompendium(): Document.InCompendium<DocumentName>;
 
   /**
    * A boolean indicator for whether the current game User has ownership rights for this Document.
@@ -84,7 +83,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
 
   /**
    * Return the permission level that the current game User has over this Document.
-   * See the CONST.DOCUMENT_OWNERSHIP_LEVELS object for an enumeration of these levels.
+   * See the {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS} object for an enumeration of these levels.
    *
    * @example
    * ```typescript
@@ -93,12 +92,12 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * actor.permission; // 2
    * ```
    */
-  get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
-   * Lazily obtain a FormApplication instance used to configure this Document, or null if no sheet is available.
+   * Lazily obtain a Application instance used to configure this Document, or null if no sheet is available.
    */
-  get sheet(): FormApplication.Any | ApplicationV2.Any | null;
+  get sheet(): Application.Any | DocumentSheetV2.Any | null;
 
   /**
    * A boolean indicator for whether or not the current game User has at least limited visibility for this Document.
@@ -107,9 +106,12 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   get visible(): boolean;
 
   /**
-   * Obtain the FormApplication class constructor which should be used to configure this Document.
+   * Obtain the Application class constructor which should be used to configure this Document.
+   * @remarks Nothing in this method's body prevents returning whatever is put into `CONFIG[doc][sheetClasses][type].cls`,
+   * but {@linkcode InternalClientDocument.sheet | #sheet} will return `null` if the found class does not extent either `Application` (v1)
+   * or `DocumentSheetV2`, so that's the constraint used here
    */
-  protected _getSheetClass(): FormApplication.AnyConstructor | ApplicationV2.AnyConstructor | null;
+  protected _getSheetClass(): Application.AnyConstructor | DocumentSheetV2.AnyConstructor | undefined;
 
   /**
    * Safely prepare data for a Document, catching any errors.
@@ -191,7 +193,6 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @remarks Core's implementation doesn't use `eventData` here, but when it's passed in it's the return from
    * {@link TextEditor.getDragEventData | `TextEditor.getDragEventData(someDragEvent)`}
    */
-  // options: not null (destructured)
   _createDocumentLink(eventData?: AnyObject | null, options?: ClientDocument.CreateDocumentLinkOptions): string;
 
   /**
@@ -557,9 +558,8 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param options - Additional options which modify how the document is converted (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import
    */
-  // options: not null (destructured)
   toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
-    pack?: foundry.documents.collections.CompendiumCollection<foundry.documents.collections.CompendiumCollection.DocumentName> | null,
+    pack?: CompendiumCollection.Any | null,
     options?: Options,
   ): ClientDocument.ToCompendiumReturnType<DocumentName, Options>;
 
@@ -666,6 +666,13 @@ declare global {
       updateData?: AnyObject;
     }
 
+    /**
+     * Encodes the special casing for which Documents can be in which Collections.
+     *
+     * As of 13.351, {@linkcode TokenDocument.Schema.delta | ActorDeltaField}s containing {@linkcode ActorDelta}s are the only use of
+     * {@linkcode foundry.data.fields.EmbeddedDocumentField | EmbeddedDocumentField},
+     * which is the special case where a document can be its own parent.
+     */
     type CollectionForName<Name extends Document.Type> =
       | (Name extends "ActorDelta" ? ActorDelta.Stored : never)
       | (Name extends Exclude<Document.EmbeddedType, "ActorDelta">
@@ -674,7 +681,6 @@ declare global {
       | (Name extends Document.WorldType ? Document.WorldCollectionForName<Name> : never)
       | null;
 
-    // TODO: This may be better defined elsewhere
     type LifeCycleEventName = "preCreate" | "onCreate" | "preUpdate" | "onUpdate" | "preDelete" | "onDelete";
 
     // Note(LukeAbby): If the property could be omitted it is. This is the safest option because in indeterminate cases access would be unsafe.

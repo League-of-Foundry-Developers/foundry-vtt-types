@@ -6,7 +6,6 @@ import type {
 import type {
   GetKey,
   InterfaceToObject,
-  MakeConform,
   ToMethod,
   AnyObject,
   EmptyObject,
@@ -1031,11 +1030,17 @@ declare namespace Document {
   type WorldType = CONST.WORLD_DOCUMENT_TYPES;
   type CompendiumType = CONST.COMPENDIUM_DOCUMENT_TYPES;
 
-  /** Documents that require a parent for persisted creation. Most of them do not require one for temporary construction. */
+  /**
+   * Documents that require a parent for persisted creation. Most of them do not require
+   * one for temporary construction; only `ActorDelta` does, as of 13.351.
+   */
   type AlwaysEmbeddedType = Exclude<EmbeddedType, PrimaryType>;
 
   /** Documents which can only be persisted inside compendia. As of 13.351 this is only `Adventure`. */
   type AlwaysCompendiumType = "Adventure";
+
+  /** Documents which can never be found inside compendia. */
+  type NeverCompendiumType = Exclude<Type, CompendiumType | EmbeddedType | "Folder">;
 
   type WithSubTypes = WithSystem | "Folder" | "Macro" | "TableResult";
 
@@ -1200,6 +1205,7 @@ declare namespace Document {
       [K in keyof Embedded]: K extends Document.Type ? Extract<K | Embedded[K], string> : never;
     }[keyof Embedded];
 
+    // TODO: description
     type ParentForName<Name extends Document.EmbeddedType> = Document.ImplementationFor<
       Document.Internal.DocumentNameFor<Exclude<Document.ParentForName<Name>, null>>
     >;
@@ -2167,11 +2173,6 @@ declare namespace Document {
 
     interface Embedded extends Identity<{ [K in Document.Type]?: string }> {}
   }
-
-  type SheetClassFor<Name extends Document.Type> = MakeConform<
-    GetKey<GetKey<CONFIG, Name>, "sheetClass">,
-    AnyConstructor
-  >;
 
   type LayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
 
@@ -3572,11 +3573,6 @@ declare namespace Document {
 
   /** @deprecated This type currently does not have a replacement as it was deemed too niche. If you have a use case for it let us know. */
   type Temporary<D extends Document.Any> = D extends Internal.Stored<infer U> ? U : D;
-
-  /**
-   * @deprecated Replaced with {@linkcode Document.SheetClassFor}
-   */
-  export import ConfiguredSheetClassFor = Document.SheetClassFor;
 
   /**
    * @deprecated Replaced with {@linkcode Document.ObjectClassFor}

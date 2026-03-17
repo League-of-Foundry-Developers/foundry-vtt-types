@@ -2,6 +2,9 @@ import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { Sound } from "#client/audio/_module.d.mts";
+import type { Application } from "#client/appv1/api/_module.d.mts";
+import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
+import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 
 /**
  * The singleton collection of Scene documents which exist within the active World.
@@ -51,6 +54,20 @@ declare class Scenes extends WorldCollection<"Scene"> {
 
   /** @deprecated Foundry made this method truly private in v13. This warning will be removed in v14. */
   protected static _pullToScene(sceneId: never): never;
+
+  /** @privateRemarks Fake override for the purpose of typing `options` */
+  static override registerSheet(
+    scope: string,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.RegisterSheetOptions<Scene.ImplementationClass>,
+  ): void;
+
+  /** @privateRemarks Fake override for the purpose of typing `options` */
+  static override unregisterSheet(
+    scope: string,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.UnregisterSheetOptions<Scene.ImplementationClass>,
+  ): void;
 
   static #Scenes: true;
 }

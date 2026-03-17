@@ -1391,15 +1391,6 @@ type _GetProperty<T, K, Depth extends number[] = []> = K extends keyof T
     : never;
 
 /**
- * @deprecated Replaced by {@linkcode Document.SheetClassFor}
- */
-export type ConfiguredSheetClass<T extends Document.AnyConstructor> = GetKey<
-  GetKey<CONFIG, T["metadata"]["name"]>,
-  "sheetClass",
-  T
->;
-
-/**
  * @deprecated Replaced by {@linkcode Document.ObjectClassFor}
  */
 export type ObjectClass<T extends Document.AnyConstructor> = GetKey<

@@ -1,5 +1,3 @@
-import type * as CONST from "#common/constants.d.mts";
-import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type {
   GetKey,
   AnyObject,
@@ -11,9 +9,11 @@ import type {
   Brand,
   InterfaceToObject,
   MaybeArray,
+  InitializedOn,
+  IntentionalPartial,
 } from "#utils";
-import type BaseLightSource from "#client/canvas/sources/base-light-source.d.mts";
-import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
+import type { BaseLightSource, RenderedEffectSource } from "#client/canvas/sources/_module.d.mts";
 import type * as shaders from "#client/canvas/rendering/shaders/_module.d.mts";
 import type * as canvasLayers from "#client/canvas/layers/_module.d.mts";
 import type * as canvasGroups from "#client/canvas/groups/_module.d.mts";
@@ -22,11 +22,25 @@ import type * as placeables from "#client/canvas/placeables/_module.d.mts";
 import type { DoorControl, DoorMesh } from "#client/canvas/containers/_module.d.mts";
 import type * as geometry from "#client/canvas/geometry/_module.d.mts";
 import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
+import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
+import type { SimplePeerAVClient } from "#client/av/clients/_module.d.mts";
 
-import SimplePeerAVClient = foundry.av.clients.SimplePeerAVClient;
+// import SimplePeerAVClient = foundry.av.clients.SimplePeerAVClient;
 
 declare global {
   namespace CONFIG {
+    /** @remarks Encodes the initialization details */
+    type SheetClasses<Name extends Document.Type> = InitializedOn<
+      _SheetClasses<Name>,
+      "ready",
+      IntentionalPartial<_SheetClasses<Name>>
+    >;
+
+    type _SheetClasses<Name extends Document.Type> = Record<
+      Document.SubTypesOf<Name>,
+      Record<string, DocumentSheetConfig.SheetRegistrationDescriptor<Document.ImplementationClassFor<Name>>>
+    >;
+
     namespace Dice {
       interface FulfillmentConfiguration {
         /** The die denominations available for configuration. */
@@ -349,9 +363,10 @@ declare global {
       dataModels: Record<string, typeof DataModel<any, Actor.Implementation>>;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<Actor.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Actor">;
 
       /**
        * @defaultValue `{}`
@@ -376,9 +391,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Adventure">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Adventure">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -440,9 +456,10 @@ declare global {
       presets: Record<string, CONFIG.Cards.Preset>;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<foundry.documents.BaseCards.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Cards">;
 
       /**
        * @defaultValue `{}`
@@ -490,9 +507,10 @@ declare global {
       dataModels: Record<string, typeof DataModel<any, ChatMessage.Implementation>>;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<foundry.documents.BaseChatMessage.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"ChatMessage">;
 
       /**
        * @defaultValue `{}`
@@ -533,9 +551,10 @@ declare global {
       dataModels: Record<string, typeof DataModel<any, Combat.Implementation>>;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<foundry.documents.BaseCombat.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Combat">;
 
       /**
        * @defaultValue `{}`
@@ -592,9 +611,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"FogExploration">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"FogExploration">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -625,9 +645,10 @@ declare global {
       sidebarIcon: string;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<foundry.CONST.FOLDER_DOCUMENT_TYPES, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Folder">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -670,9 +691,10 @@ declare global {
       typeLabels: Record<foundry.documents.BaseItem.SubType, string>;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<foundry.documents.BaseItem.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Item">;
     };
 
     /**
@@ -683,9 +705,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"JournalEntry">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"JournalEntry">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -799,9 +822,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Macro">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<foundry.documents.BaseMacro.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Macro">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -832,9 +856,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Playlist">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Playlist">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -868,9 +893,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"RollTable">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"RollTable">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -907,9 +933,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Scene">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Scene">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -937,9 +964,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Setting">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Setting">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -963,9 +991,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"User">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"User">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -1531,9 +1560,10 @@ declare global {
       dataModels: Record<string, typeof DataModel<any, ActiveEffect.Implementation>>;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<foundry.documents.BaseActiveEffect.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"ActiveEffect">;
 
       /**
        * @defaultValue `{}`
@@ -1562,9 +1592,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"ActorDelta">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"ActorDelta">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -1586,9 +1617,10 @@ declare global {
       dataModels: Record<string, typeof DataModel<any, Card.Implementation>>;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<foundry.documents.BaseCard.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Card">;
 
       /**
        * @defaultValue `{}`
@@ -1608,9 +1640,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"TableResult">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<foundry.documents.BaseTableResult.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"TableResult">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -1629,9 +1662,10 @@ declare global {
       dataModels: Record<string, typeof DataModel<any, JournalEntryPage.Implementation>>;
 
       /**
-       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor}
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<foundry.documents.BaseJournalEntryPage.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"JournalEntryPage">;
 
       /**
        * @defaultValue `{}`
@@ -1670,9 +1704,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"PlaylistSound">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"PlaylistSound">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -1688,9 +1723,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"AmbientLight">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"AmbientLight">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -1712,9 +1748,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"AmbientSound">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"AmbientSound">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -1742,9 +1779,10 @@ declare global {
       dataModels: Record<string, typeof DataModel<any, Combatant.Implementation>>;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<foundry.documents.BaseCombatant.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Combatant">;
 
       /**
        * @defaultValue `{}`
@@ -1770,9 +1808,10 @@ declare global {
       dataModels: Record<string, typeof DataModel<any, CombatantGroup.Implementation>>;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<foundry.documents.BaseCombatantGroup.SubType, Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"CombatantGroup">;
 
       /**
        * @defaultValue `{}`
@@ -1792,9 +1831,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Drawing">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Drawing">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -1819,9 +1859,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"JournalEntryCategory">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"JournalEntryCategory">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -1859,9 +1900,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"MeasuredTemplate">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"MeasuredTemplate">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -1883,9 +1925,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Note">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Note">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -1910,9 +1953,10 @@ declare global {
       layerClass: canvasLayers.RegionLayer.AnyConstructor;
 
       /**
-       * @remarks added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Region">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -1931,6 +1975,12 @@ declare global {
       >;
       typeLabels?: Record<"base", string>;
       typeIcons: Record<string, string>;
+
+      /**
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
+       */
+      sheetClasses: CONFIG.SheetClasses<"RegionBehavior">;
     };
 
     /**
@@ -1941,9 +1991,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Tile">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Tile">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -1968,9 +2019,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Token">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Token">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -2107,9 +2159,10 @@ declare global {
       documentClass: Document.ImplementationClassFor<"Wall">;
 
       /**
-       * @remarks Added by `DocumentSheetConfig._registerDefaultSheets` in `tail.js`
+       * @remarks Added by {@linkcode foundry.applications.sheets._registerDefaultSheets} in {@linkcode Game | Game#constructor} as an
+       * empty object, filled in by {@linkcode DocumentSheetConfig.initializeSheets} between `setup` and `ready`.
        */
-      sheetClasses: Record<"base", Record<string, SheetClassConfig>>;
+      sheetClasses: CONFIG.SheetClasses<"Wall">;
 
       /**
        * @remarks Initialized by `Localization#initialize`, is undefined until `i18nInit`
@@ -3954,25 +4007,11 @@ type ConfiguredObjectClassOrDefault<Fallback extends placeables.PlaceableObject.
   Fallback
 >;
 
-interface SheetClassConfig {
-  canBeDefault: boolean;
-
-  canConfigure: boolean;
-
-  cls: foundry.applications.api.DocumentSheetV2.AnyConstructor | foundry.appv1.api.DocumentSheet.AnyConstructor;
-
-  default: boolean;
-
-  id: string;
-
-  label: string;
-}
-
-declare const Mixed: canvasGroups.CanvasGroupMixin.AnyMixedConstructor;
+declare const _MixedCanvasGroup: canvasGroups.CanvasGroupMixin.AnyMixedConstructor;
 
 /**
  * @privateRemarks Used to enforce user-provided group classes taking no constructor arguments
  */
-declare class MixedCanvasGroup extends Mixed {
+declare class MixedCanvasGroup extends _MixedCanvasGroup {
   constructor();
 }
