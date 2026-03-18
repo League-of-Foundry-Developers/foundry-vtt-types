@@ -1,12 +1,12 @@
 import { expectTypeOf } from "vitest";
-import type { FixedInstanceType, InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial } from "fvtt-types/utils";
 
 import Application = foundry.appv1.api.Application;
+import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
 import Document = foundry.abstract.Document;
 import Dialog = foundry.appv1.api.Dialog;
-import FormApplication = foundry.appv1.api.FormApplication;
 import TextEditor = foundry.applications.ux.TextEditor;
 import ClientDocumentMixin = foundry.documents.abstract.ClientDocumentMixin;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
@@ -114,8 +114,7 @@ item.apps["bar"] = someAppV2;
 // @ts-expect-error apps is readonly
 item.apps = { foo: someApp, bar: someAppV2 };
 
-// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-expectTypeOf(item["_sheet"]).toEqualTypeOf<FixedInstanceType<Document.SheetClassFor<"Item">> | null>();
+expectTypeOf(item["_sheet"]).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
 
 // _initialize overridden with no signature changes
 
@@ -177,7 +176,7 @@ expectTypeOf(item.permission).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS | nu
 item.permission = CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER;
 
 // TODO: change to <FixedInstanceType<ConfiguredSheetClass<Item>> | null> once the circular reference problem has been solved
-expectTypeOf(item.sheet).toEqualTypeOf<FormApplication.Any | ApplicationV2.Any | null>();
+expectTypeOf(item.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
 // @ts-expect-error Only getter, no setter
 item.sheet = someAppV2;
 
@@ -186,7 +185,7 @@ expectTypeOf(item.visible).toBeBoolean();
 item.visible = false;
 
 expectTypeOf(item["_getSheetClass"]()).toEqualTypeOf<
-  FormApplication.AnyConstructor | ApplicationV2.AnyConstructor | null
+  Application.AnyConstructor | DocumentSheetV2.AnyConstructor | undefined
 >();
 
 expectTypeOf(item["_safePrepareData"]()).toBeVoid();
@@ -304,7 +303,7 @@ expectTypeOf(
 expectTypeOf(item["_onSheetChange"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({ sheetOpen: true })).toEqualTypeOf<Promise<void>>();
-expectTypeOf(item["_onSheetChange"]({ sheetOpen: null })).toEqualTypeOf<Promise<void>>();
+expectTypeOf(item["_onSheetChange"]({ sheetOpen: undefined })).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(item.deleteDialog()).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
 expectTypeOf(item.deleteDialog({})).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
