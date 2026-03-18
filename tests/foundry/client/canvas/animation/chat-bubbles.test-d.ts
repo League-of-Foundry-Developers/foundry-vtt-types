@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, test } from "vitest";
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 
 import ChatBubbles = foundry.canvas.animation.ChatBubbles;
 

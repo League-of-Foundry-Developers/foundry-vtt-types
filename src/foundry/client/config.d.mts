@@ -1,16 +1,16 @@
 import type {
-  GetKey,
   AnyObject,
-  HandleEmptyObject,
-  MaybePromise,
-  ConcreteKeys,
-  RemoveIndexSignatures,
-  InexactPartial,
   Brand,
-  InterfaceToObject,
-  MaybeArray,
+  ConcreteKeys,
+  GetKey,
+  HandleEmptyObject,
+  InexactPartial,
   InitializedOn,
   IntentionalPartial,
+  InterfaceToObject,
+  MaybeArray,
+  MaybePromise,
+  RemoveIndexSignatures,
 } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { BaseLightSource, RenderedEffectSource } from "#client/canvas/sources/_module.d.mts";
@@ -29,7 +29,6 @@ import type { SimplePeerAVClient } from "#client/av/clients/_module.d.mts";
 
 declare global {
   namespace CONFIG {
-    /** @remarks Encodes the initialization details */
     type SheetClasses<Name extends Document.Type> = InitializedOn<
       _SheetClasses<Name>,
       "ready",

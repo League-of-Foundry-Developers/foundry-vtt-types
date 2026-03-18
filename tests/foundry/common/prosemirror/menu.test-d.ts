@@ -5,7 +5,7 @@ import { EditorState, Plugin, Transaction } from "prosemirror-state";
 import ProseMirrorMenu = foundry.prosemirror.ProseMirrorMenu;
 import ProseMirrorDropDown = foundry.prosemirror.ProseMirrorDropDown;
 import type { Attrs, Node, NodeType } from "prosemirror-model";
-import type ProseMirrorKeyMaps from "#common/prosemirror/keymaps.mjs";
+import type ProseMirrorKeyMaps from "../../../../src/foundry/common/prosemirror/keymaps.d.mts";
 
 declare const schema: foundry.prosemirror.Schema;
 declare const view: EditorView;

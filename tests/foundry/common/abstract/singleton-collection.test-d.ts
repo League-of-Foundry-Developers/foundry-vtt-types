@@ -1,6 +1,6 @@
 import { afterAll, describe, expectTypeOf, test } from "vitest";
 
-import SingletonEmbeddedCollection from "#common/abstract/singleton-collection.mjs";
+import SingletonEmbeddedCollection = foundry.abstract.SingletonEmbeddedCollection;
 
 describe("SingletonEmbeddedCollection Tests", async () => {
   const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();

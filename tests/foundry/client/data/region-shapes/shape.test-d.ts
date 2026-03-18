@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { RegionShape } from "#client/data/region-shapes/_module.mjs";
+
+import RegionShape = foundry.data.regionShapes.RegionShape;
 
 declare const cData: foundry.data.CircleShapeData;
 declare const eData: foundry.data.EllipseShapeData;

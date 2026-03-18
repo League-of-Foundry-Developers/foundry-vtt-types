@@ -1,5 +1,5 @@
 import type { DeepPartial, InterfaceToObject, MaybeEmpty } from "#utils";
-import type { fields } from "../foundry/common/data/_module.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
 import type * as documents from "./documents.d.mts";
 import type { DefaultSheetsConfig } from "#client/applications/settings/menus/_module.d.mts";
 
@@ -365,7 +365,7 @@ export interface SettingConfig {
   /** @remarks Registered by {@linkcode foundry.Game.registerSettings | Game#registerSettings} as just `type: Object`. */
   "core.sheetThemes": Record<string, string>;
 
-  "core.time": foundry.helpers.GameTime.SettingField;
+  "core.time": fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
   "core.tokenDragPreview": boolean;
   "core.visionAnimation": boolean;
 }

@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { AdaptiveBackgroundShader } from "#client/canvas/rendering/shaders/_module.mjs";
+
+import AdaptiveBackgroundShader = foundry.canvas.rendering.shaders.AdaptiveBackgroundShader;
 
 let myABS;
 

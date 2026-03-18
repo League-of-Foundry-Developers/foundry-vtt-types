@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type { AmbientLight } from "#client/canvas/placeables/_module.d.mts";
+
+import AmbientLight = foundry.canvas.placeables.AmbientLight;
 
 import LightingLayer = foundry.canvas.layers.LightingLayer;
 

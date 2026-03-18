@@ -1,14 +1,13 @@
 import { afterAll, describe, expect, expectTypeOf, test } from "vitest";
-import type { FixedInstanceType } from "fvtt-types/utils";
 import { cleanupDocuments } from "../../../../utils.ts";
 import * as itemHelpers from "../item.test-d.ts";
 
 import Application = foundry.appv1.api.Application;
+import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
 import Document = foundry.abstract.Document;
 import DialogV2 = foundry.applications.api.DialogV2;
-import FormApplication = foundry.appv1.api.FormApplication;
 import TextEditor = foundry.applications.ux.TextEditor;
 import ClientDocumentMixin = foundry.documents.abstract.ClientDocumentMixin;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
@@ -228,12 +227,11 @@ expectTypeOf(tempItem.link).toBeString();
 // @ts-expect-error Only getter, no setter
 tempItem.link = "foo";
 
-expectTypeOf(tempItem.permission).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS | null>();
+expectTypeOf(tempItem.permission).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();
 // @ts-expect-error Only getter, no setter
 tempItem.permission = CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER;
 
-// TODO: change to <FixedInstanceType<ConfiguredSheetClass<Item>> | null> once the circular reference problem has been solved
-expectTypeOf(tempItem.sheet).toEqualTypeOf<FormApplication.Any | ApplicationV2.Any | null>();
+expectTypeOf(tempItem.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
 // @ts-expect-error Only getter, no setter
 tempItem.sheet = someAppV2;
 
@@ -242,7 +240,7 @@ expectTypeOf(tempItem.visible).toBeBoolean();
 tempItem.visible = false;
 
 expectTypeOf(tempItem["_getSheetClass"]()).toEqualTypeOf<
-  FormApplication.AnyConstructor | ApplicationV2.AnyConstructor | null
+  Application.AnyConstructor | DocumentSheetV2.AnyConstructor | undefined
 >();
 
 expectTypeOf(tempItem["_safePrepareData"]()).toBeVoid();

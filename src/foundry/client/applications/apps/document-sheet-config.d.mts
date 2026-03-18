@@ -95,14 +95,14 @@ declare class DocumentSheetConfig<
    */
   static registerSheet<DocumentClass extends ClientDocumentMixin.AnyMixedConstructor>(
     documentClass: DocumentClass,
-    scope: ClientDatabaseBackend.FlagScopes,
+    scope: ClientDatabaseBackend.FlagScope,
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.RegisterSheetOptions<DocumentClass>,
   ): void;
 
   static unregisterSheet<DocumentClass extends ClientDocumentMixin.AnyMixedConstructor>(
     documentClass: DocumentClass,
-    scope: ClientDatabaseBackend.FlagScopes,
+    scope: ClientDatabaseBackend.FlagScope,
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.UnregisterSheetOptions<DocumentClass>,
   ): void;

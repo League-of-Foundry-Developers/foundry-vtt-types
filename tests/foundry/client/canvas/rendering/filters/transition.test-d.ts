@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { TextureTransitionFilter } from "#client/canvas/rendering/filters/_module.mjs";
+
+import TextureTransitionFilter = foundry.canvas.rendering.filters.TextureTransitionFilter;
 
 declare const someSprite: PIXI.Sprite;
 declare const someTex: PIXI.Texture;

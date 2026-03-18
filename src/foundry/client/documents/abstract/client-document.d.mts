@@ -95,7 +95,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
-   * Lazily obtain a Application instance used to configure this Document, or null if no sheet is available.
+   * Lazily obtain an Application instance used to configure this Document, or null if no sheet is available.
    */
   get sheet(): Application.Any | DocumentSheetV2.Any | null;
 

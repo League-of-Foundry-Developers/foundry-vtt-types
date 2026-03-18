@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { VisualEffectsMaskingFilter } from "#client/canvas/rendering/filters/_module.mjs";
+
+import VisualEffectsMaskingFilter = foundry.canvas.rendering.filters.VisualEffectsMaskingFilter;
 
 expectTypeOf(VisualEffectsMaskingFilter.FILTER_MODES).toExtend<
   Record<keyof VisualEffectsMaskingFilter.FilterModes, VisualEffectsMaskingFilter.FILTER_MODES>

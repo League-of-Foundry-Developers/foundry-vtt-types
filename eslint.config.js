@@ -272,6 +272,17 @@ const noRestrictedImportsPaths = [
   },
 ];
 
+const testsOnlyPaths = [
+  {
+    name: "#tests",
+    message: "Importing from tests is not supported outside tests/",
+  },
+  {
+    name: "#testUtils",
+    message: "Importing from tests is not supported outside tests/",
+  },
+];
+
 /**
  * @type {import("@typescript-eslint/utils").TSESLint.FlatConfig.ConfigArray}
  */
@@ -347,7 +358,7 @@ const rules = [
       "@typescript-eslint/no-restricted-imports": [
         "error",
         {
-          paths: noRestrictedImportsPaths,
+          paths: noRestrictedImportsPaths.concat(testsOnlyPaths),
         },
       ],
       "@typescript-eslint/prefer-namespace-keyword": "error",
@@ -471,7 +482,12 @@ const rules = [
       // It can make sense to have empty functions in tests.
       "@typescript-eslint/no-empty-function": "off",
 
-      "@typescript-eslint/no-restricted-imports": "off",
+      "@typescript-eslint/no-restricted-imports": [
+        "error",
+        {
+          paths: noRestrictedImportsPaths,
+        },
+      ],
     },
   },
 ];
