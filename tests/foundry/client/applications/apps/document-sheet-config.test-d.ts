@@ -1,4 +1,4 @@
-import { afterAll, describe, test } from "vitest";
+import { describe, test } from "vitest";
 
 import DocumentSheetConfig = foundry.applications.apps.DocumentSheetConfig;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
@@ -18,9 +18,7 @@ class TestDSCExtension extends DocumentSheetConfig {
 }
 
 describe("DocumentSheetConfig Tests", async () => {
-  // TODO: switch to importing create data once db-ops pr is in
-
   test("Construction", () => {
-    const app = new DocumentSheetConfig();
+    // const app = new DocumentSheetConfig();
   });
 });

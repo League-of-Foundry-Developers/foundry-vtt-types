@@ -528,7 +528,7 @@ declare namespace ClientDocumentMixin {
   interface AnyMixedConstructor extends ReturnType<typeof foundry.documents.abstract.ClientDocumentMixin<BaseClass>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
-  type BaseClass = Document.AnyConstructor;
+  type BaseClass = Document.Internal.Constructor;
 
   type Mix<BaseClass extends Document.Internal.Constructor> = Mixin<
     typeof InternalClientDocument<Document.NameFor<BaseClass>>,
