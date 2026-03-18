@@ -1,7 +1,9 @@
 import type { Identity } from "#utils";
-import type { DatabaseAction, DatabaseOperationMap } from "#common/abstract/_types.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { DocumentCollection, WorldCollection } from "#client/documents/abstract/_module.d.mts";
+import type { Application } from "#client/appv1/api/_module.d.mts";
+import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
+import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 
 /**
  * The singleton collection of Folder documents which exist within the active World.
@@ -21,20 +23,34 @@ declare class Folders extends WorldCollection<"Folder"> {
    */
   _expanded: Record<string, boolean>;
 
-  // TODO: This is updated on the db-ops branch
-  _onModifyContents<A extends DatabaseAction>(
-    action: A,
-    documents: Folder.Stored[],
-    result: readonly foundry.documents.BaseFolder.UpdateData[] | readonly string[],
-    operation: DatabaseOperationMap[A],
-    user: User.Implementation,
-  ): void;
+  // TODO: The following is working on the db-ops branch
+  // override _onModifyContents<Action extends Document.Database.OperationAction>(
+  //   action: Action,
+  //   documents: Folder.Stored[],
+  //   result: Collection.OnModifyContentsResult<"Folder", Action>,
+  //   operation: Collection.OnModifyContentsOperation<"Folder", Action>,
+  //   user: User.Stored,
+  // ): void;
 
   /** @remarks This is a no-op in {@linkcode Folders}, Foundry logs "The Folders collection is not directly rendered" as a warning.  */
   override render(force?: boolean, context?: DocumentCollection.RenderOptions): void;
 
   /** @deprecated Foundry made this method truly private in v13. This warning will be removed in v14. */
   protected _refreshJournalEntrySheets(): never;
+
+  /** @privateRemarks Fake override for the purpose of typing `options` */
+  static override registerSheet(
+    scope: string,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.RegisterSheetOptions<Folder.ImplementationClass>,
+  ): void;
+
+  /** @privateRemarks Fake override for the purpose of typing `options` */
+  static override unregisterSheet(
+    scope: string,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.UnregisterSheetOptions<Folder.ImplementationClass>,
+  ): void;
 
   #Folders: true;
 }
