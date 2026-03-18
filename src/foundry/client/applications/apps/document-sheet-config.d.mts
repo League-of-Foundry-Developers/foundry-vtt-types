@@ -27,8 +27,6 @@ declare class DocumentSheetConfig<
   Configuration extends DocumentSheetConfig.Configuration<Document> = DocumentSheetConfig.Configuration<Document>,
   RenderOptions extends DocumentSheetConfig.RenderOptions = DocumentSheetConfig.RenderOptions,
 > extends HandlebarsApplicationMixin(DocumentSheetV2)<Document, RenderContext, Configuration, RenderOptions> {
-  constructor(options: DocumentSheetV2.InputOptions<Configuration>);
-
   static override DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 
   static override PARTS: Record<string, HandlebarsApplicationMixin.HandlebarsTemplatePart>;
