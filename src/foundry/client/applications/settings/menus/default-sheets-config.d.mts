@@ -1,5 +1,5 @@
 import type { StringField } from "#common/data/fields.mjs";
-import type { EmptyObject, Identity } from "#utils";
+import type { Identity } from "#utils";
 import type CategoryBrowser from "../../api/category-browser.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { fields } from "#client/data/_module.d.mts";
@@ -12,9 +12,6 @@ declare module "#configuration" {
   }
 }
 
-/**
- * @remarks TODO: Stub
- */
 declare class DefaultSheetsConfig<
   Entry extends DefaultSheetsConfig.Entry = DefaultSheetsConfig.Entry,
   RenderContext extends DefaultSheetsConfig.RenderContext<Entry> = DefaultSheetsConfig.RenderContext<Entry>,
@@ -62,7 +59,7 @@ declare namespace DefaultSheetsConfig {
 
   interface Schema extends Record<DefaultSheetDocument, _DocTOF>, fields.DataSchema {}
 
-  type SettingField = fields.SchemaField<DefaultSheetsConfig.Schema, EmptyObject>;
+  type SettingField = fields.SchemaField<DefaultSheetsConfig.Schema>;
 
   interface SettingData extends fields.SchemaField.InitializedData<Schema> {}
 

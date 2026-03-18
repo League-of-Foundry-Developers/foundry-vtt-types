@@ -1,7 +1,7 @@
 import type { DeepPartial, InterfaceToObject, MaybeEmpty } from "#utils";
-import type { fields } from "../foundry/common/data/_module.d.mts";
-import type Document from "../foundry/common/abstract/document.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
 import type * as documents from "./documents.d.mts";
+import type { DefaultSheetsConfig } from "#client/applications/settings/menus/_module.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
 import Game = foundry.Game;
@@ -355,12 +355,16 @@ export interface SettingConfig {
   "core.rtcClientSettings": typeof AVSettings.schemaFields.client;
   "core.rtcWorldSettings": typeof AVSettings.schemaFields.world;
   "core.scrollingStatusText": fields.BooleanField<{ initial: true }>;
-  "core.sheetClasses": {
-    [Key in Document.Type as Document.SubTypesOf<Key> extends string ? Key : never]?: Record<
-      Document.SubTypesOf<Key> & string,
-      string
-    >;
-  };
+
+  /**
+   * @remarks Registered by {@linkcode DefaultSheetsConfig.registerSetting}, which is called by
+   *  {@linkcode foundry.Game.registerSettings | Game#registerSettings}.
+   */
+  "core.sheetClasses": DefaultSheetsConfig.SettingField;
+
+  /** @remarks Registered by {@linkcode foundry.Game.registerSettings | Game#registerSettings} as just `type: Object`. */
+  "core.sheetThemes": Record<string, string>;
+
   "core.time": fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
   "core.tokenDragPreview": boolean;
   "core.visionAnimation": boolean;
