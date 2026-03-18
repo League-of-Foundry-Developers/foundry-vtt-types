@@ -77,6 +77,19 @@ declare namespace ClientDatabaseBackend {
     | (string & {});
 }
 
+declare namespace ClientDatabaseBackend {
+  type FlagScope =
+    | "core"
+    | "world"
+    | (foundry.packages.System.Id & {})
+    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    | keyof RequiredModules
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents, @typescript-eslint/no-redundant-type-constituents
+    | keyof ModuleConfig
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
+    | (string & {});
+}
+
 export default ClientDatabaseBackend;
 
 declare abstract class AnyClientDatabaseBackend extends ClientDatabaseBackend {

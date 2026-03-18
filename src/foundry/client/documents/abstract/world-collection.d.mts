@@ -12,6 +12,7 @@ import type {
   DocumentCollection,
 } from "#client/documents/abstract/_module.d.mts";
 import type { collections } from "#client/documents/_module.d.mts";
+import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
 
 /**
  * A collection of world-level Document objects with a singleton instance per primary Document type.

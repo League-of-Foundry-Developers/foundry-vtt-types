@@ -231,6 +231,7 @@ expectTypeOf(tempItem.permission).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>
 // @ts-expect-error Only getter, no setter
 tempItem.permission = CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER;
 
+// TODO: change to <FixedInstanceType<ConfiguredSheetClass<Item>> | null> once the circular reference problem has been solved
 expectTypeOf(tempItem.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
 // @ts-expect-error Only getter, no setter
 tempItem.sheet = someAppV2;
