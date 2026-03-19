@@ -23,9 +23,11 @@ import type {
   Override,
   PickValue,
   PrettifyType,
+  PropertiesOfType,
   RemoveIndexSignatures,
   SimpleMerge,
   ToMethod,
+  ValueOf,
 } from "#utils";
 import type * as CONST from "../constants.mts";
 import type {
@@ -1142,15 +1144,46 @@ declare namespace Document {
     | "RegionBehavior";
 
   namespace Embedded {
-    type CollectionNameFor<
-      Embedded extends Document.Metadata.Embedded,
-      CollectionName extends Document.Embedded.CollectionName<Embedded>,
-    > = Extract<GetKey<Metadata.Embedded, CollectionName, CollectionName>, Document.Type>;
+    /**
+     * @template Embedded - The specific document's `Metadata.Embedded`, e.g {@linkcode Actor.Metadata.Embedded}
+     * @template Name     - A document type or collection name
+     * @example
+     * ```ts
+     * // Document names convert to collection names, so this is "items":
+     * type ItemCollectionName = Document.Embedded.CollectionNameForName<Actor.Metadata.Embedded, "Item">
+     * // Collection names pass through
+     * type ItemCollectionNameAlso = Document.Embedded.CollectionNameForName<Actor.Metadata.Embedded, "items">
+     * ```
+     * @internal
+     */
+    type _CollectionNameForName<Embedded extends Document.Metadata.Embedded, Name extends string> =
+      Name extends ValueOf<Embedded> ? Name : Name extends keyof Embedded ? Embedded[Name] : never;
 
+    /**
+     * @template Embedded - The specific document's `Metadata.Embedded`, e.g {@linkcode Actor.Metadata.Embedded}
+     * @template Name     - A document type or collection name
+     * @example
+     * ```ts
+     * // Collection names convert to document names, so this is "Item":
+     * type ItemDocumentName = Document.Embedded.DocumentNameForName<Actor.Metadata.Embedded, "items">
+     * // Document names pass through
+     * type ItemDocumentNameAlso = Document.Embedded.DocumentNameForName<Actor.Metadata.Embedded, "Item">
+     * ```
+     * @internal
+     */
+    type _DocumentNameForName<
+      Embedded extends Document.Metadata.Embedded,
+      Name extends string,
+    > = Name extends keyof Embedded ? Name : Name extends ValueOf<Embedded> ? PropertiesOfType<Embedded, Name> : never;
+
+    /**
+     * Gets the document(s) associated with the passed `CollectionName`, which could be either a collection or document name.
+     * Returns `Stored` because even on temporary parents, embedded documents
+     */
     type DocumentFor<
       Embedded extends Document.Metadata.Embedded,
       CollectionName extends Document.Embedded.CollectionName<Embedded>,
-    > = Document.ImplementationFor<CollectionNameFor<Embedded, CollectionName>>;
+    > = Document.StoredForName<Extract<_DocumentNameForName<Embedded, CollectionName>, Document.Type>>;
 
     type CollectionFor<
       Parent extends Document.Any,
@@ -1158,13 +1191,36 @@ declare namespace Document {
       CollectionName extends Document.Embedded.CollectionName<Embedded>,
     > = EmbeddedCollection<DocumentFor<Embedded, CollectionName>, Parent>;
 
+    /**
+     * Given a Record with document name keys and collection name values, returns keys and values as a union
+     * @example
+     * ```ts
+     * namespace Actor.Embedded {
+     *   // `"ActiveEffect" | "Item" | "effects" | "items"`
+     *   type CollectionName = Document.Embedded.CollectionName<{
+     *     ActiveEffect: "effects";
+     *     Item: "items";
+     *   }>
+     * }
+     * ```
+     */
     type CollectionName<Embedded extends Document.Metadata.Embedded> = {
       [K in keyof Embedded]: K extends Document.Type ? Extract<K | Embedded[K], string> : never;
     }[keyof Embedded];
 
-    type ParentForName<Name extends Document.EmbeddedType> = Document.StoredForName<
+    // TODO: description
+    type ParentForName<Name extends Document.EmbeddedType> = Document.ImplementationFor<
       Document.Internal.DocumentNameFor<Exclude<Document.ParentForName<Name>, null>>
     >;
+
+    /**
+     * @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
+     * This type will be removed in v15.
+     */
+    type CollectionNameFor<
+      Embedded extends Document.Metadata.Embedded,
+      Name extends Document.Embedded.CollectionName<Embedded>,
+    > = _CollectionNameForName<Embedded, Name>;
   }
 
   type WorldCollectionForName<Name extends Document.WorldType> = WorldCollection.ForName<Name>;

@@ -135,7 +135,7 @@ item.collection = new Collection<typeof item>();
 expectTypeOf(actorDelta.collection).toEqualTypeOf<ActorDelta.Stored | null>();
 expectTypeOf(activeEffect.collection).toEqualTypeOf<EmbeddedCollection<
   ActiveEffect.Stored,
-  Actor.Stored | Item.Stored
+  Actor.Implementation | Item.Implementation
 > | null>();
 
 if (anyClientDoc.collection) {
