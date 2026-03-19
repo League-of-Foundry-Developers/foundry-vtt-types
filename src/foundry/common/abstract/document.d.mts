@@ -689,7 +689,7 @@ declare abstract class Document<
 
   /**
    * Get the value of a "flag" for this document
-   * See the setFlag method for more details on flags
+   * See the {@linkcode Document.setFlag | #setFlag} method for more details on flags
    *
    * @param scope - The flag scope which namespaces the key
    * @param key   - The flag key
@@ -714,21 +714,27 @@ declare abstract class Document<
    * @param key   - The flag key
    * @param value - The flag value
    * @returns A Promise resolving to the updated document
+   *
+   * @remarks This method is a wrapper on {@linkcode Document.update | #update}, so it can return `undefined` if the update
+   * is cancelled by {@linkcode Document._preUpdate | #_preUpdate} or the associated hook.
    */
-  setFlag(scope: never, key: never, value: never): Promise<this>;
+  setFlag(scope: never, key: never, value: never): Promise<this | undefined>;
 
   /**
    * Remove a flag assigned to the document
    * @param scope - The flag scope which namespaces the key
    * @param key   - The flag key
    * @returns The updated document instance
+   *
+   * @remarks This method is a wrapper on {@linkcode Document.delete | #delete}, so it can return `undefined` if the update
+   * is cancelled by {@linkcode Document._preDelete | #_preDelete} or the associated hook.
    */
-  unsetFlag(scope: never, key: never): Promise<this>;
+  unsetFlag(scope: never, key: never): Promise<this | undefined>;
 
   /**
    * Pre-process a creation operation for a single Document instance.
    * Pre-operation events only occur for the client which requested the operation.
-   * Modifications to the pending Document instance must be performed using {@link Document.updateSource | `Document#updateSource`}.
+   * Modifications to the pending Document instance must be performed using {@linkcode Document.updateSource | Document#updateSource}.
    * @param data    - The initial data object provided to the document creation request
    * @param options - Additional options which modify the creation request
    * @param user    - The User requesting the document creation
