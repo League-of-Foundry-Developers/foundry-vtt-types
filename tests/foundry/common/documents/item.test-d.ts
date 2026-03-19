@@ -94,11 +94,11 @@ class _TestFlags extends Item {
 }
 
 class _TestFlagsFail<Type extends Document.Type> extends Document<Type, BaseItem.Schema, any> {
-  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<Type> | null {
-    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
-    if (!pack) return null;
-    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<Type>;
+  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
+  get compendium() {
+    return null;
   }
+
   testFlagsFail() {
     // @ts-expect-error Because `Type` is passed in a generic fashion suddenly the safety of generic parameters kick in and make this unusable.
     this.getFlag("my-system", "countable");

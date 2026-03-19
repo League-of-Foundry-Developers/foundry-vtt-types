@@ -5,10 +5,10 @@ import BaseAmbientSound = foundry.documents.BaseAmbientSound;
 import Document = foundry.abstract.Document;
 
 class TestBaseAmbientSound extends BaseAmbientSound {
-  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"AmbientSound"> | null {
-    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
-    if (!pack) return null;
-    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"AmbientSound">;
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"ActiveEffect">)
+      : null;
   }
 }
 
@@ -119,7 +119,7 @@ new TestBaseAmbientSound({
 
 const mySound = new TestBaseAmbientSound({ effects: undefined });
 
-expectTypeOf(mySound).toEqualTypeOf<BaseAmbientSound>();
+expectTypeOf(mySound).toEqualTypeOf<TestBaseAmbientSound>();
 
 expectTypeOf(mySound._id).toEqualTypeOf<string | null>();
 expectTypeOf(mySound.x).toBeNumber();

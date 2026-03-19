@@ -1,7 +1,7 @@
+import type { MaybeArray } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-import type { MaybeArray } from "#utils";
 
 /**
  * The Document definition for a Note.
@@ -86,7 +86,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseNote.Hierarchy;
+  static override readonly hierarchy: BaseNote.Hierarchy;
 
   override parent: BaseNote.Parent;
 

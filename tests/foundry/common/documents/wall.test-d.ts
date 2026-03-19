@@ -4,10 +4,10 @@ import BaseWall = foundry.documents.BaseWall;
 import Document = foundry.abstract.Document;
 
 class TestBaseWall extends BaseWall {
-  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"Wall"> | null {
-    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
-    if (!pack) return null;
-    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"Wall">;
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Wall">)
+      : null;
   }
 }
 
@@ -134,7 +134,7 @@ new TestBaseWall({
 
 const myWall = new TestBaseWall({ c: [20, 30, 240, 340], threshold: undefined });
 
-expectTypeOf(myWall).toEqualTypeOf<foundry.documents.BaseWall>();
+expectTypeOf(myWall).toEqualTypeOf<TestBaseWall>();
 
 expectTypeOf(myWall._id).toEqualTypeOf<string | null>();
 expectTypeOf(myWall.c).toEqualTypeOf<[number, number, number, number]>();

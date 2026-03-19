@@ -2,9 +2,12 @@ import { expectTypeOf } from "vitest";
 import type { AnyMutableObject } from "fvtt-types/utils";
 
 class TestBaseFogExploration extends foundry.documents.BaseFogExploration {
-  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
   get compendium() {
-    return null;
+    return this.inCompendium
+      ? (game.packs!.get(
+          this.pack!,
+        ) as foundry.documents.collections.CompendiumCollection.ForDocument<"FogExploration">)
+      : null;
   }
 }
 

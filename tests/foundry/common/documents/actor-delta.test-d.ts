@@ -6,10 +6,10 @@ import Document = foundry.abstract.Document;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
 class TestAD extends BaseActorDelta {
-  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"ActorDelta"> | null {
-    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
-    if (!pack) return null;
-    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"ActorDelta">;
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"ActorDelta">)
+      : null;
   }
 }
 
@@ -96,7 +96,7 @@ new TestAD(
   { parent: someToken },
 );
 
-expectTypeOf(myDelta).toEqualTypeOf<ActorDelta.Implementation>();
+expectTypeOf(myDelta).toEqualTypeOf<TestAD>();
 
 expectTypeOf(myDelta._id).toEqualTypeOf<string | null>();
 expectTypeOf(myDelta.name).toEqualTypeOf<string | null>();

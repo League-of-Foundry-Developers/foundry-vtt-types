@@ -4,10 +4,10 @@ import BaseNote = foundry.documents.BaseNote;
 import Document = foundry.abstract.Document;
 
 class TestBaseNote extends BaseNote {
-  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"Note"> | null {
-    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
-    if (!pack) return null;
-    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"Note">;
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Note">)
+      : null;
   }
 }
 
@@ -113,7 +113,7 @@ myNote = new TestBaseNote({
 });
 myNote = new TestBaseNote({ texture: undefined });
 
-expectTypeOf(myNote).toEqualTypeOf<BaseNote>();
+expectTypeOf(myNote).toEqualTypeOf<TestBaseNote>();
 
 expectTypeOf(myNote._id).toEqualTypeOf<string | null>();
 expectTypeOf(myNote.entryId).toEqualTypeOf<string | null>();

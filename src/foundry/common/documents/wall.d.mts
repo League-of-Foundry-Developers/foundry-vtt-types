@@ -1,7 +1,7 @@
+import type { MaybeArray } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-import type { MaybeArray } from "#utils";
 
 /**
  * The Document definition for a Wall.
@@ -71,7 +71,7 @@ declare abstract class BaseWall extends Document<WallDocument.Name, BaseWall.Sch
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseWall.Hierarchy;
+  static override readonly hierarchy: BaseWall.Hierarchy;
 
   override parent: BaseWall.Parent;
 

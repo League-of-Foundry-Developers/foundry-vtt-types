@@ -214,7 +214,7 @@ declare namespace Item {
      * Gets the collection for an embedded document.
      */
     type CollectionFor<CollectionName extends Embedded.CollectionName> = Document.Embedded.CollectionFor<
-      Folder.Implementation,
+      Item.Implementation,
       Metadata.Embedded,
       CollectionName
     >;
@@ -238,7 +238,7 @@ declare namespace Item {
 
     /**
      * @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
-     * This type will be removed
+     * This type will be removed in v15.
      */
     type CollectionNameOf<Name extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
       Metadata.Embedded,

@@ -77,7 +77,7 @@ declare abstract class BaseJournalEntryPage<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): BaseJournalEntryPage.Hierarchy;
+  static override readonly hierarchy: BaseJournalEntryPage.Hierarchy;
 
   override system: BaseJournalEntryPage.SystemOfType<SubType>;
 

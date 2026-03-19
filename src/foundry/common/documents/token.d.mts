@@ -224,7 +224,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseToken.Hierarchy;
+  static override readonly hierarchy: BaseToken.Hierarchy;
 
   override parent: BaseToken.Parent;
 

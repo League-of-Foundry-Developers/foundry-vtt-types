@@ -1,7 +1,7 @@
+import type { MaybeArray } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-import type { MaybeArray } from "#utils";
 
 /**
  * The Folder Document.
@@ -96,7 +96,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseFolder.Hierarchy;
+  static override readonly hierarchy: BaseFolder.Hierarchy;
 
   override parent: BaseFolder.Parent;
 

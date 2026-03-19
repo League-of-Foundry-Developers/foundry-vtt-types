@@ -643,7 +643,7 @@ declare namespace ClientDocumentMixin {
   > {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
-  type BaseClass = Document.Internal.Constructor;
+  type BaseClass = Document.AnyConstructor;
 
   type Mix<BaseClass extends Document.Internal.Constructor> = Mixin<
     typeof InternalClientDocument<Document.NameFor<BaseClass>>,

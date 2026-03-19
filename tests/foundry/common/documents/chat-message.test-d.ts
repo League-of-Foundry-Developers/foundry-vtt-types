@@ -11,14 +11,15 @@ if (chat) {
 }
 
 class TestBaseChatMessage extends foundry.documents.BaseChatMessage {
-  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
   get compendium() {
-    return null;
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"ChatMessage">)
+      : null;
   }
 }
 
-expectTypeOf(new TestBaseChatMessage()).toEqualTypeOf<foundry.documents.BaseChatMessage>();
-expectTypeOf(new TestBaseChatMessage({})).toEqualTypeOf<foundry.documents.BaseChatMessage>();
+expectTypeOf(new TestBaseChatMessage()).toEqualTypeOf<TestBaseChatMessage>();
+expectTypeOf(new TestBaseChatMessage({})).toEqualTypeOf<TestBaseChatMessage>();
 expectTypeOf(
   new TestBaseChatMessage({
     blind: null,
@@ -35,7 +36,7 @@ expectTypeOf(
     whisper: null,
     _id: null,
   }),
-).toEqualTypeOf<foundry.documents.BaseChatMessage>();
+).toEqualTypeOf<TestBaseChatMessage>();
 expectTypeOf(
   new TestBaseChatMessage({
     blind: undefined,
@@ -52,7 +53,7 @@ expectTypeOf(
     whisper: undefined,
     _id: undefined,
   }),
-).toEqualTypeOf<foundry.documents.BaseChatMessage>();
+).toEqualTypeOf<TestBaseChatMessage>();
 
 expectTypeOf(
   new TestBaseChatMessage({
@@ -63,12 +64,12 @@ expectTypeOf(
       alias: null,
     },
   }),
-).toEqualTypeOf<foundry.documents.BaseChatMessage>();
+).toEqualTypeOf<TestBaseChatMessage>();
 expectTypeOf(
   new TestBaseChatMessage({
     speaker: {},
   }),
-).toEqualTypeOf<foundry.documents.BaseChatMessage>();
+).toEqualTypeOf<TestBaseChatMessage>();
 expectTypeOf(
   new TestBaseChatMessage({
     speaker: {
@@ -78,18 +79,18 @@ expectTypeOf(
       alias: undefined,
     },
   }),
-).toEqualTypeOf<foundry.documents.BaseChatMessage>();
+).toEqualTypeOf<TestBaseChatMessage>();
 
 expectTypeOf(
   new TestBaseChatMessage({
     whisper: null,
   }),
-).toEqualTypeOf<foundry.documents.BaseChatMessage>();
+).toEqualTypeOf<TestBaseChatMessage>();
 expectTypeOf(
   new TestBaseChatMessage({
     whisper: ["someId"],
   }),
-).toEqualTypeOf<foundry.documents.BaseChatMessage>();
+).toEqualTypeOf<TestBaseChatMessage>();
 
 declare const myUser: User.Stored;
 
@@ -97,4 +98,4 @@ expectTypeOf(
   new TestBaseChatMessage({
     whisper: [myUser],
   }),
-).toEqualTypeOf<foundry.documents.BaseChatMessage>();
+).toEqualTypeOf<TestBaseChatMessage>();

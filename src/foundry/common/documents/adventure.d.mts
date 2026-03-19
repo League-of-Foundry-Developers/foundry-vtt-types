@@ -1,9 +1,9 @@
+import type { MaybeArray } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
-import type { MaybeArray } from "#utils";
 
 /**
  * The Adventure Document.
@@ -86,7 +86,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseAdventure.Hierarchy;
+  static override readonly hierarchy: BaseAdventure.Hierarchy;
 
   override parent: BaseAdventure.Parent;
 

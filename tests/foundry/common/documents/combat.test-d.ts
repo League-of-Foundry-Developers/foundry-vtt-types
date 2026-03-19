@@ -2,9 +2,10 @@ import { expectTypeOf } from "vitest";
 
 // This exists to make the class non-abstract.
 class TestBaseCombat extends foundry.documents.BaseCombat {
-  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
   get compendium() {
-    return null;
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Combat">)
+      : null;
   }
 }
 

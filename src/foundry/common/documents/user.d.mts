@@ -1,7 +1,7 @@
+import type { MaybeArray } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-import type { MaybeArray } from "#utils";
 
 /**
  * The User Document.
@@ -113,7 +113,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseUser.Hierarchy;
+  static override readonly hierarchy: BaseUser.Hierarchy;
 
   override parent: BaseUser.Parent;
 

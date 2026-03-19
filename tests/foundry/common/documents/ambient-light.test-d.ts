@@ -4,10 +4,10 @@ import BaseAmbientLight = foundry.documents.BaseAmbientLight;
 import Document = foundry.abstract.Document;
 
 class TestBaseAmbientLight extends BaseAmbientLight {
-  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"AmbientLight"> | null {
-    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
-    if (!pack) return null;
-    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"AmbientLight">;
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"AmbientLight">)
+      : null;
   }
 }
 
@@ -143,7 +143,7 @@ const myLight = new TestBaseAmbientLight({
   config: undefined,
 });
 
-expectTypeOf(myLight).toEqualTypeOf<BaseAmbientLight>();
+expectTypeOf(myLight).toEqualTypeOf<TestBaseAmbientLight>();
 
 expectTypeOf(myLight._id).toEqualTypeOf<string | null>();
 expectTypeOf(myLight.x).toBeNumber();

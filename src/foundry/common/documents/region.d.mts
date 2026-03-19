@@ -1,7 +1,7 @@
+import type { MaybeArray, OverlapsWith } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "#common/data/fields.mjs";
-import type { MaybeArray, OverlapsWith } from "#utils";
 
 /**
  * The Region Document.
@@ -69,7 +69,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseRegion.Hierarchy;
+  static override readonly hierarchy: BaseRegion.Hierarchy;
 
   override parent: BaseRegion.Parent;
 

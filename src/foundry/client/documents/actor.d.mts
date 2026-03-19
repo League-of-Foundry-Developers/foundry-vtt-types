@@ -1,5 +1,6 @@
-import type { ConfiguredActor } from "#configuration";
 import type { AnyObject, InexactPartial, NullishProps, Merge, Identity, MaybeArray } from "#utils";
+import type { documents } from "#client/client.d.mts";
+import type { ConfiguredActor } from "#configuration";
 import type { fields } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseItem, BaseActiveEffect, BaseFolder } from "#client/documents/_module.d.mts";

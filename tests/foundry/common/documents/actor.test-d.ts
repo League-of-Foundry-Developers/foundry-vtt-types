@@ -11,10 +11,10 @@ type DataSchema = foundry.data.fields.DataSchema;
 
 // This exists to make the class non-abstract.
 class TestBaseActor extends foundry.documents.BaseActor {
-  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"Actor"> | null {
-    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
-    if (!pack) return null;
-    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"Actor">;
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Actor">)
+      : null;
   }
 }
 

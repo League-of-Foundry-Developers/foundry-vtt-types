@@ -1,7 +1,7 @@
+import type { MaybeArray } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-import type { MaybeArray } from "#utils";
 
 /**
  * The PlaylistSound Document.
@@ -79,7 +79,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BasePlaylistSound.Hierarchy;
+  static override readonly hierarchy: BasePlaylistSound.Hierarchy;
 
   override parent: BasePlaylistSound.Parent;
 

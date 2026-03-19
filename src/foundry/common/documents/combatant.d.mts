@@ -1,7 +1,7 @@
+import type { MaybeArray } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-import type { MaybeArray } from "#utils";
 
 /**
  * The Combatant Document.
@@ -83,7 +83,7 @@ declare abstract class BaseCombatant<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): BaseCombatant.Hierarchy;
+  static override readonly hierarchy: BaseCombatant.Hierarchy;
 
   override system: BaseCombatant.SystemOfType<SubType>;
 

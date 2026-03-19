@@ -1,7 +1,7 @@
+import type { MaybeArray } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "#common/data/fields.mjs";
-import type { MaybeArray } from "#utils";
 
 /**
  * The RegionBehavior Document.
@@ -91,7 +91,7 @@ declare abstract class BaseRegionBehavior<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): BaseRegionBehavior.Hierarchy;
+  static override readonly hierarchy: BaseRegionBehavior.Hierarchy;
 
   override system: BaseRegionBehavior.SystemOfType<SubType>;
 

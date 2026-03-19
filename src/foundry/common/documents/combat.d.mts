@@ -1,7 +1,7 @@
+import type { MaybeArray, OverlapsWith } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-import type { MaybeArray, OverlapsWith } from "#utils";
 
 /**
  * The Combat Document.
@@ -111,7 +111,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): BaseCombat.Hierarchy;
+  static override readonly hierarchy: BaseCombat.Hierarchy;
 
   override system: BaseCombat.SystemOfType<SubType>;
 

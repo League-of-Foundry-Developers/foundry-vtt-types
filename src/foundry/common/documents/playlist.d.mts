@@ -88,7 +88,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BasePlaylist.Hierarchy;
+  static override readonly hierarchy: BasePlaylist.Hierarchy;
 
   override parent: BasePlaylist.Parent;
 
@@ -129,6 +129,9 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     operation?: BasePlaylist.Database.GetDocumentsOperation,
   ): Playlist.Stored | CompendiumCollection.IndexEntry<"Playlist"> | null;
 
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BasePlaylist.Embedded.CollectionName>,
+  ): BasePlaylist.Embedded.GetCollectionNameReturn<Name>;
   static override getCollectionName<Name extends string>(
     name: OverlapsWith<Name, BasePlaylist.Embedded.CollectionName>,
   ): BasePlaylist.Embedded.GetCollectionNameReturn<Name>;

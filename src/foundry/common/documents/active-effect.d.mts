@@ -107,7 +107,7 @@ declare abstract class BaseActiveEffect<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): BaseActiveEffect.Hierarchy;
+  static override readonly hierarchy: BaseActiveEffect.Hierarchy;
 
   override system: BaseActiveEffect.SystemOfType<SubType>;
 

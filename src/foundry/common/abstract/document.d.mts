@@ -4,34 +4,34 @@ import type {
   ConfiguredMetadata,
 } from "../../../types/documentConfiguration.d.mts";
 import type {
-  GetKey,
-  InterfaceToObject,
-  ToMethod,
-  AnyObject,
-  EmptyObject,
-  InexactPartial,
-  RemoveIndexSignatures,
-  FixedInstanceType,
-  NullishProps,
-  PickValue,
-  Identity,
-  Brand,
-  AnyMutableObject,
-  MaybePromise,
-  SimpleMerge,
-  PrettifyType,
   AllKeysOf,
-  Override,
-  ConcreteKeys,
-  IntentionalPartial,
-  MaybeArray,
+  AnyMutableObject,
+  AnyObject,
+  Brand,
   Coalesce,
-  ValueOf,
+  ConcreteKeys,
+  EmptyObject,
+  FixedInstanceType,
+  GetKey,
+  Identity,
+  InexactPartial,
+  IntentionalPartial,
+  InterfaceToObject,
+  MaybeArray,
+  MaybePromise,
+  NullishProps,
+  Override,
+  PickValue,
+  PrettifyType,
   PropertiesOfType,
+  RemoveIndexSignatures,
+  SimpleMerge,
+  ToMethod,
+  ValueOf,
 } from "#utils";
 import type {
-  DataSchema,
   DataField,
+  DataSchema,
   DocumentStatsField,
   EmbeddedCollectionField,
   EmbeddedDocumentField,
@@ -244,6 +244,9 @@ declare abstract class Document<
    */
   _getParentCollection(parentCollection?: string | null): string | null;
 
+  // TODO: is this fake property necessary?
+  _id: string | null;
+
   /**
    * The canonical identifier for this Document
    */
@@ -254,7 +257,7 @@ declare abstract class Document<
    * @remarks The body in `Document` simply throws; {@linkcode ClientDocumentMixin.AnyMixed.compendium | ClientDocument#compendium} defines
    * the standard override.
    */
-  abstract get compendium(): CompendiumCollection.ForDocument<DocumentName> | null;
+  abstract get compendium(): unknown;
 
   /**
    * Test whether this Document is embedded within a parent Document
@@ -283,7 +286,7 @@ declare abstract class Document<
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
    *
-   * @privateRemarks Temporary `User`s {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
+   * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
    * without error, so `Implementation` over `Stored`.
    */
   static canUserCreate(user: User.Implementation): boolean;
@@ -364,7 +367,7 @@ declare abstract class Document<
    * Data is provided as an array of objects where each individual object becomes one new Document.
    *
    * @param data      - An array of data objects or existing Documents to persist. (default: `[]`)
-   * @param operation - Parameters of the requested creation operation default: `{}`)
+   * @param operation - Parameters of the requested creation operation (default: `{}`)
    * @returns An array of created Document instances
    *
    * @example
@@ -689,7 +692,7 @@ declare abstract class Document<
 
   /**
    * Get the value of a "flag" for this document
-   * See the {@linkcode Document.setFlag | setFlag} method for more details on flags
+   * See the {@linkcode Document.setFlag | #setFlag} method for more details on flags
    *
    * @param scope - The flag scope which namespaces the key
    * @param key   - The flag key
@@ -1436,6 +1439,7 @@ declare namespace Document {
         /** Is this document in a compendium? */
         get inCompendium(): StoredInCompendium<D>;
 
+        /** A reference to the Compendium Collection containing this Document, if any, and otherwise null. */
         get compendium(): StoredCompendium<D>;
       }
     >;

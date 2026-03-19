@@ -4,10 +4,12 @@ import BaseMeasuredTemplate = foundry.documents.BaseMeasuredTemplate;
 import Document = foundry.abstract.Document;
 
 class TestBaseMeasuredTemplate extends BaseMeasuredTemplate {
-  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"MeasuredTemplate"> | null {
-    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
-    if (!pack) return null;
-    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"MeasuredTemplate">;
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(
+          this.pack!,
+        ) as foundry.documents.collections.CompendiumCollection.ForDocument<"MeasuredTemplate">)
+      : null;
   }
 }
 

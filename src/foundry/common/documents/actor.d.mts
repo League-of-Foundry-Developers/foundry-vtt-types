@@ -127,7 +127,7 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): BaseActor.Hierarchy;
+  static override readonly hierarchy: BaseActor.Hierarchy;
 
   override system: BaseActor.SystemOfType<SubType>;
 

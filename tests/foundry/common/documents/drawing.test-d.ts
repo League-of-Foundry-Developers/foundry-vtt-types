@@ -3,11 +3,11 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseDrawing = foundry.documents.BaseDrawing;
 import Document = foundry.abstract.Document;
 
-class TestBaseDrawing extends foundry.documents.BaseDrawing {
-  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"Drawing"> | null {
-    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
-    if (!pack) return null;
-    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"Drawing">;
+class TestBaseDrawing extends BaseDrawing {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Drawing">)
+      : null;
   }
 }
 
@@ -124,7 +124,7 @@ new TestBaseDrawing({
 
 const myDrawing = new TestBaseDrawing({ shape: undefined });
 
-expectTypeOf(myDrawing).toEqualTypeOf<BaseDrawing>();
+expectTypeOf(myDrawing).toEqualTypeOf<TestBaseDrawing>();
 
 expectTypeOf(myDrawing._id).toEqualTypeOf<string | null>();
 expectTypeOf(myDrawing.author).toEqualTypeOf<User.Stored | null>();

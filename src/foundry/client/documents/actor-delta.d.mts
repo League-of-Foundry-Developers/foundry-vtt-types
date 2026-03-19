@@ -1,3 +1,4 @@
+import type { DataSchema } from "#common/data/fields.d.mts";
 import type { ConfiguredActorDelta } from "#configuration";
 import type { Identity, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
@@ -234,7 +235,7 @@ declare namespace ActorDelta {
 
     /**
      * @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
-     * This type will be removed
+     * This type will be removed in v15.
      */
     type CollectionNameOf<Name extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
       Metadata.Embedded,

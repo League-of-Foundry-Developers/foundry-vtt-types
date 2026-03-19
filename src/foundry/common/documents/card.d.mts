@@ -91,7 +91,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): BaseCard.Hierarchy;
+  static override readonly hierarchy: BaseCard.Hierarchy;
 
   override system: BaseCard.SystemOfType<SubType>;
 

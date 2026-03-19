@@ -3,21 +3,23 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseRegionBehavior = foundry.documents.BaseRegionBehavior;
 import Document = foundry.abstract.Document;
 
-class TestRegionBehavior extends BaseRegionBehavior {
-  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"RegionBehavior"> | null {
-    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
-    if (!pack) return null;
-    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"RegionBehavior">;
+class TestBaseRegionBehavior extends BaseRegionBehavior {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(
+          this.pack!,
+        ) as foundry.documents.collections.CompendiumCollection.ForDocument<"RegionBehavior">)
+      : null;
   }
 }
 
 // @ts-expect-error RegionBehavior requires a `type` for creation
-new TestRegionBehavior();
+new TestBaseRegionBehavior();
 
 // @ts-expect-error RegionBehavior requires a `type` for creation
-new TestRegionBehavior({});
+new TestBaseRegionBehavior({});
 
-new TestRegionBehavior({
+new TestBaseRegionBehavior({
   _id: "XXXXXSomeIDXXXXX",
   name: "Some Behaviour",
   type: "executeScript", // required for creation
@@ -40,7 +42,7 @@ new TestRegionBehavior({
   },
 });
 
-new TestRegionBehavior({
+new TestBaseRegionBehavior({
   _id: null,
   name: null,
   type: "executeScript", // required for creation
@@ -59,12 +61,12 @@ new TestRegionBehavior({
   },
 });
 
-new TestRegionBehavior({
+new TestBaseRegionBehavior({
   type: "executeScript", // required for creation
   _stats: null,
 });
 
-new TestRegionBehavior({
+new TestBaseRegionBehavior({
   _id: undefined,
   name: undefined,
   type: "executeScript", // required for creation
@@ -83,14 +85,14 @@ new TestRegionBehavior({
   },
 });
 
-new TestRegionBehavior({
+new TestBaseRegionBehavior({
   type: "executeScript", // required for creation
   _stats: undefined,
 });
 
-declare const myRB: TestRegionBehavior;
+declare const myRB: TestBaseRegionBehavior;
 
-expectTypeOf(myRB).toEqualTypeOf<BaseRegionBehavior>();
+expectTypeOf(myRB).toEqualTypeOf<TestBaseRegionBehavior>();
 
 expectTypeOf(myRB._id).toEqualTypeOf<string | null>();
 expectTypeOf(myRB.name).toBeString();

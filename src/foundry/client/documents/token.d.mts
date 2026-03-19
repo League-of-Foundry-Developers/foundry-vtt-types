@@ -204,7 +204,7 @@ declare namespace TokenDocument {
 
     /**
      * @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
-     * This type will be removed
+     * This type will be removed in v15.
      */
     type CollectionNameOf<Name extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
       Metadata.Embedded,

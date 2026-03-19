@@ -1,15 +1,15 @@
 import type { ConfiguredCombat } from "#configuration";
-import type { Identity, InexactPartial, IntentionalPartial, MaybeArray, Merge, NullishProps } from "#utils";
-import type { fields } from "#common/data/_module.d.mts";
-import type { BaseCombatantGroup, BaseCombatant, BaseScene } from "#client/documents/_module.d.mts";
-import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { Identity, InexactPartial, Merge, NullishProps, MaybeArray, IntentionalPartial } from "#utils";
+import type { documents } from "#client/client.d.mts";
+import type Document from "#common/abstract/document.d.mts";
 import type BaseCombat from "#common/documents/combat.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.mjs";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+import type { ClientDatabaseBackend, fields } from "#client/data/_module.d.mts";
 
 /** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -247,7 +247,7 @@ declare namespace Combat {
 
     /**
      * @deprecated This type has been made internal. If you are actively using it for some reason, please let us know.
-     * This type will be removed
+     * This type will be removed in v15.
      */
     type CollectionNameOf<Name extends Embedded.CollectionName> = Document.Embedded._CollectionNameForName<
       Metadata.Embedded,
@@ -370,19 +370,19 @@ declare namespace Combat {
      * The _id of a Scene within which this Combat occurs
      * @defaultValue `null`
      */
-    scene: fields.ForeignDocumentField<typeof BaseScene>;
+    scene: fields.ForeignDocumentField<typeof documents.BaseScene>;
 
     /**
      * A Collection of Documents that represent a grouping of individual Combatants
      * @defaultValue `[]`
      */
-    groups: fields.EmbeddedCollectionField<typeof BaseCombatantGroup, Combat.Implementation>;
+    groups: fields.EmbeddedCollectionField<typeof documents.BaseCombatantGroup, Combat.Implementation>;
 
     /**
      * A Collection of Combatant embedded Documents
      * @defaultValue `[]`
      */
-    combatants: fields.EmbeddedCollectionField<typeof BaseCombatant, Combat.Implementation>;
+    combatants: fields.EmbeddedCollectionField<typeof documents.BaseCombatant, Combat.Implementation>;
 
     /**
      * Is the Combat encounter currently active?

@@ -76,7 +76,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseSetting.Hierarchy;
+  static override readonly hierarchy: BaseSetting.Hierarchy;
 
   override parent: BaseSetting.Parent;
 
