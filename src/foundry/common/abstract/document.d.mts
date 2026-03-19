@@ -49,6 +49,7 @@ import type {
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 import type WorldCollection from "#client/documents/abstract/world-collection.d.mts";
 import type { SystemConfig } from "#configuration";
 
@@ -255,7 +256,7 @@ declare abstract class Document<
    * @remarks The body in `Document` simply throws; {@linkcode ClientDocumentMixin.AnyMixed.compendium | ClientDocument#compendium} defines
    * the standard override.
    */
-  abstract get compendium(): never;
+  abstract get compendium(): CompendiumCollection.ForDocument<DocumentName> | null;
 
   /**
    * Test whether this Document is embedded within a parent Document
