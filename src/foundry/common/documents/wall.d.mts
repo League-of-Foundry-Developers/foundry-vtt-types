@@ -75,7 +75,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): WallDocument.Hierarchy;
+  static override readonly hierarchy: WallDocument.Hierarchy;
 
   override parent: WallDocument.Parent;
 

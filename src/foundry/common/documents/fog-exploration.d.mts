@@ -84,7 +84,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): FogExploration.Hierarchy;
+  static override readonly hierarchy: FogExploration.Hierarchy;
 
   override parent: FogExploration.Parent;
 

@@ -114,7 +114,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): DrawingDocument.Hierarchy;
+  static override readonly hierarchy: DrawingDocument.Hierarchy;
 
   override parent: DrawingDocument.Parent;
 

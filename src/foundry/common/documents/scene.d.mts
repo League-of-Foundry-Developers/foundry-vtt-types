@@ -200,7 +200,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   static get hasTypeData(): false;
 
-  static get hierarchy(): Scene.Hierarchy;
+  static readonly hierarchy: Scene.Hierarchy;
 
   override parent: Scene.Parent;
 

@@ -90,7 +90,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): NoteDocument.Hierarchy;
+  static override readonly hierarchy: NoteDocument.Hierarchy;
 
   override parent: NoteDocument.Parent;
 

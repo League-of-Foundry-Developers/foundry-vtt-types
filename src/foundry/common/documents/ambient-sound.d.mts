@@ -71,7 +71,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): AmbientSoundDocument.Hierarchy;
+  static override readonly hierarchy: AmbientSoundDocument.Hierarchy;
 
   override parent: BaseAmbientSound.Parent;
 

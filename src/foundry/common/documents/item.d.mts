@@ -118,7 +118,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): Item.Hierarchy;
+  static override readonly hierarchy: Item.Hierarchy;
 
   override system: Item.SystemOfType<SubType>;
 

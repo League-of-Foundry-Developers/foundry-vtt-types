@@ -99,7 +99,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): Folder.Hierarchy;
+  static override readonly hierarchy: Folder.Hierarchy;
 
   override parent: BaseFolder.Parent;
 

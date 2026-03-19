@@ -103,7 +103,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): MeasuredTemplateDocument.Hierarchy;
+  static override readonly hierarchy: MeasuredTemplateDocument.Hierarchy;
 
   override parent: MeasuredTemplateDocument.Parent;
 

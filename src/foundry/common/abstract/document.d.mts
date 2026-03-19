@@ -229,8 +229,10 @@ declare abstract class Document<
 
   /**
    * The Embedded Document hierarchy for this Document.
+   * @remarks This is a getter until first access, at which point it calculates the value, and replaces itself via
+   * `Object.defineProperty(this, "hierarchy", { value: Object.freeze(hierarchy), writable: false });`
    */
-  static get hierarchy(): Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>;
+  static readonly hierarchy: Readonly<Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>>;
 
   /**
    * Identify the collection in a parent Document that this Document exists belongs to, if any.
@@ -240,6 +242,7 @@ declare abstract class Document<
    */
   _getParentCollection(parentCollection?: string | null): string | null;
 
+  // TODO: is this fake property necessary?
   _id: string | null;
 
   /**

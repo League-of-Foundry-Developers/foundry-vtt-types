@@ -104,7 +104,7 @@ declare abstract class BaseChatMessage<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): ChatMessage.Hierarchy;
+  static override readonly hierarchy: ChatMessage.Hierarchy;
 
   override system: ChatMessage.SystemOfType<SubType>;
 

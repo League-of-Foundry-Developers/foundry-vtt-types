@@ -78,7 +78,7 @@ declare abstract class BaseCombatantGroup<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): CombatantGroup.Hierarchy;
+  static override readonly hierarchy: CombatantGroup.Hierarchy;
 
   override system: CombatantGroup.SystemOfType<SubType>;
 

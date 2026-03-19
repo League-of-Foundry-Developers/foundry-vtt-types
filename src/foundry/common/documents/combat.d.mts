@@ -112,7 +112,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): Combat.Hierarchy;
+  static override readonly hierarchy: Combat.Hierarchy;
 
   override system: Combat.SystemOfType<SubType>;
 

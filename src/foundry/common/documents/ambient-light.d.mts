@@ -70,7 +70,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): AmbientLightDocument.Hierarchy;
+  static override readonly hierarchy: AmbientLightDocument.Hierarchy;
 
   override parent: BaseAmbientLight.Parent;
 

@@ -94,7 +94,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): JournalEntry.Hierarchy;
+  static override readonly hierarchy: JournalEntry.Hierarchy;
 
   override parent: JournalEntry.Parent;
 

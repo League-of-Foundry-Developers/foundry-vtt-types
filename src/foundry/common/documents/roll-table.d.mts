@@ -97,7 +97,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   static get hasTypeData(): false;
 
-  static get hierarchy(): RollTable.Hierarchy;
+  static readonly hierarchy: RollTable.Hierarchy;
 
   override parent: RollTable.Parent;
 

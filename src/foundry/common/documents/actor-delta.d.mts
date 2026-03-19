@@ -139,7 +139,7 @@ declare abstract class BaseActorDelta<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): ActorDelta.Hierarchy;
+  static override readonly hierarchy: ActorDelta.Hierarchy;
 
   override system: ActorDelta.SystemOfType<SubType>;
 

@@ -83,7 +83,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): PlaylistSound.Hierarchy;
+  static override readonly hierarchy: PlaylistSound.Hierarchy;
 
   override parent: PlaylistSound.Parent;
 

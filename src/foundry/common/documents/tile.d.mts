@@ -115,7 +115,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): TileDocument.Hierarchy;
+  static override readonly hierarchy: TileDocument.Hierarchy;
 
   override parent: TileDocument.Parent;
 

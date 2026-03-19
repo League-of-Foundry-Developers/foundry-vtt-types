@@ -133,7 +133,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): Actor.Hierarchy;
+  static override readonly hierarchy: Actor.Hierarchy;
 
   override system: Actor.SystemOfType<SubType>;
 

@@ -110,7 +110,7 @@ declare abstract class BaseTableResult<
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): TableResult.Hierarchy;
+  static override readonly hierarchy: TableResult.Hierarchy;
 
   override parent: BaseTableResult.Parent;
 

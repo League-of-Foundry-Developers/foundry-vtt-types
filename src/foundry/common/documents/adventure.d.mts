@@ -87,7 +87,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): Adventure.Hierarchy;
+  static override readonly hierarchy: Adventure.Hierarchy;
 
   override parent: Adventure.Parent;
 

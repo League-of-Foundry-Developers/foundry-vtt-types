@@ -96,7 +96,7 @@ declare abstract class BaseRegionBehavior<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): RegionBehavior.Hierarchy;
+  static override readonly hierarchy: RegionBehavior.Hierarchy;
 
   override system: RegionBehavior.SystemOfType<SubType>;
 
