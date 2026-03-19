@@ -53,6 +53,7 @@ import type EmbeddedCollection from "./embedded-collection.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 import type WorldCollection from "#client/documents/abstract/world-collection.d.mts";
 import type { SystemConfig } from "#configuration";
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 export default Document;
 
@@ -967,34 +968,25 @@ declare abstract class Document<
   ): void;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
+   * (since v12, until v14)
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onCreateDocuments` directly.
-  protected static _onCreateDocuments(
-    documents: never,
-    context: Document.ModificationContext<Document.Any | null>,
-  ): Promise<void>;
+  protected static _onCreateDocuments(documents: never, context: never): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
+   * (since v12, until v14)
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onUpdateDocuments` directly.
-  protected static _onUpdateDocuments(
-    documents: never,
-    context: Document.ModificationContext<Document.Any | null>,
-  ): Promise<unknown>;
+  protected static _onUpdateDocuments(documents: never, context: never): Promise<unknown>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
+   * (since v12, until v14)
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onDeleteDocuments` directly.
-  protected static _onDeleteDocuments(
-    documents: never,
-    context: Document.ModificationContext<Document.Any | null>,
-  ): Promise<unknown>;
+  protected static _onDeleteDocuments(documents: never, context: never): Promise<unknown>;
 
   " fvtt_types_internal_document_name": DocumentName;
   " fvtt_types_internal_document_schema": Schema;
@@ -1013,7 +1005,7 @@ declare abstract class AnyDocument extends Document<Document.Type, {}, Document.
 
 declare namespace Document {
   interface Any extends AnyDocument {}
-  interface AnyStored extends Document.Internal.Stored<Any> {}
+  interface AnyStored extends Document.Internal.Stored<ClientDocumentMixin.AnyMixed> {}
   interface AnyValid extends AnyDocument {
     get invalid(): false;
   }
@@ -1038,6 +1030,18 @@ declare namespace Document {
   type EmbeddedType = CONST.EMBEDDED_DOCUMENT_TYPES;
   type WorldType = CONST.WORLD_DOCUMENT_TYPES;
   type CompendiumType = CONST.COMPENDIUM_DOCUMENT_TYPES;
+
+  /**
+   * Documents that require a parent for persisted creation. Most of them do not require
+   * one for temporary construction; only `ActorDelta` does, as of 13.351.
+   */
+  type AlwaysEmbeddedType = Exclude<EmbeddedType, PrimaryType>;
+
+  /** Documents which can only be persisted inside compendia. As of 13.351 this is only `Adventure`. */
+  type AlwaysCompendiumType = "Adventure";
+
+  /** Documents which can never be found inside compendia. */
+  type NeverCompendiumType = Exclude<Type, CompendiumType | EmbeddedType | "Folder">;
 
   type WithSubTypes = WithSystem | "Folder" | "Macro" | "TableResult";
 
@@ -1121,7 +1125,9 @@ declare namespace Document {
    */
   type UnknownSystem = UnknownSourceData | TypeDataField.UnknownTypeDataModel | DataModel.UnknownDataModel;
 
-  // TODO: Probably a way to auto-determine this
+  /**
+   * @privateRemarks This is hand-written here as a preemptive anti-circularity measure, it is checked against calculated values in tests.
+   */
   type SystemType =
     | "ActiveEffect"
     | "Actor"
