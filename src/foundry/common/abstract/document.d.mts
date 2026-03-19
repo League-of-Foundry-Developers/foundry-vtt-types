@@ -283,37 +283,39 @@ declare abstract class Document<
    * Documents of this type in the UI.
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
+   *
+   * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
+   * without error, so `Implementation` over `Stored`.
    */
   static canUserCreate(user: User.Implementation): boolean;
 
   /**
-   * Get the explicit permission level that a User has over this Document, a value in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}.
+   * Get the explicit permission level that a User has over this Document, a value in {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}.
    * Compendium content ignores the ownership field in favor of User role-based ownership. Otherwise, Documents use
    * granular per-User ownership definitions and Embedded Documents defer to their parent ownership.
    *
    * This method returns the value recorded in Document ownership, regardless of the User's role, for example a
-   * GAMEMASTER user might still return a result of NONE if they are not explicitly denoted as having a level.
+   * `GAMEMASTER` user might still return a result of `NONE` if they are not explicitly denoted as having a level.
    *
    * To test whether a user has a certain capability over the document, testUserPermission should be used.
    * @param user - The User being tested (default: `game.user`)
-   * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
+   * @returns A numeric permission level from `CONST.DOCUMENT_OWNERSHIP_LEVELS` or null
    *
-   * @privateRemarks Making this just `User.Implementation` causes circularities
+   * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} methods work without error, so `Implementation` over `Stored`.
    */
-  getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
    * @param user       - The User being tested
-   * @param permission - The permission level from DOCUMENT_PERMISSION_LEVELS to test
+   * @param permission - The permission level from {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS} to test
    * @param options    - Additional options involved in the permission test
    * @returns Does the user have this permission level over the Document?
    *
-   * @privateRemarks Making this just `User.Implementation` causes circularities
+   * @privateRemarks Temporary `User`s still have {@linkcode User.role | role}s, so `Implementation` over `Stored`.
    */
-  // options: not null (destructured)
   testUserPermission(
-    user: User.Internal.Implementation,
+    user: User.Implementation,
     permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
   ): boolean;
@@ -325,11 +327,11 @@ declare abstract class Document<
    * @param data   - Data involved in the attempted action (default: `{}`)
    * @returns Does the User have permission?
    *
-   * @privateRemarks Making this just `User.Implementation` causes circularities
+   * @privateRemarks Temporary `User`s {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
+   * without error, so `Implementation` over `Stored`.
    */
-  // data: not null (parameter default only)
   canUserModify<Action extends "create" | "update" | "delete">(
-    user: User.Internal.Implementation,
+    user: User.Implementation,
     action: Action,
     data?: Document.CanUserModifyData<Schema, Action>,
   ): boolean;
@@ -341,8 +343,7 @@ declare abstract class Document<
    * @param context - Additional context options passed to the create method
    * @returns The cloned Document instance
    */
-  // data: not null (property access), context: not null (destructured)
-  override clone<Save extends boolean | null | undefined = undefined>(
+  override clone<Save extends boolean | undefined = undefined>(
     data?: SchemaField.UpdateData<Schema>,
     context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;
