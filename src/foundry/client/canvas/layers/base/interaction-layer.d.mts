@@ -82,6 +82,9 @@ declare class InteractionLayer extends CanvasLayer {
    * Does the User have permission to left-click drag on the Canvas?
    * @param user  - The User performing the action.
    * @param event - The event object.
+   * @privateRemarks In practice this will always be passed a `User.Stored`, but no core implementation in any subclass even looks at `user`,
+   * and user-provided layer classes would likely only use permission/role checks that also work on temporary docs, so `Implementation`s
+   * are allowed.
    */
   protected _canDragLeftStart(user: User.Implementation, event: Canvas.Event.Pointer): boolean;
 

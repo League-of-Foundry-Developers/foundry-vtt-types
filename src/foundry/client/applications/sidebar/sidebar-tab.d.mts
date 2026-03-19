@@ -105,7 +105,8 @@ declare namespace AbstractSidebarTab {
   type EmittedEvents = Readonly<["render", "close", "position", "activate", "deactivate"]>;
 
   interface RenderContext extends ApplicationV2.RenderContext {
-    user: User.Implementation;
+    /** @defaultValue {@linkcode game.user} */
+    user: User.Stored;
   }
 }
 
