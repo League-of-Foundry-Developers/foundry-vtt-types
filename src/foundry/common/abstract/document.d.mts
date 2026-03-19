@@ -50,6 +50,7 @@ import type {
 import type DataModel from "./data.mts";
 import type DocumentSocketResponse from "./socket.d.mts";
 import type EmbeddedCollection from "./embedded-collection.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 import type WorldCollection from "#client/documents/abstract/world-collection.d.mts";
 import type { SystemConfig } from "#configuration";
 
@@ -537,10 +538,8 @@ declare abstract class Document<
   /**
    * Update this Document using incremental data, saving it to the database.
    * @see {@linkcode Document.updateDocuments}
-   * @param data      - Differential update data which modifies the existing values of this document data
-   *                    (default: `{}`)
-   * @param operation - Parameters of the update operation
-   *                    (default: `{}`)
+   * @param data      - Differential update data which modifies the existing values of this document data (default: `{}`)
+   * @param operation - Parameters of the update operation (default: `{}`)
    * @returns The updated Document instance
    *
    * @remarks If the document update is skipped by a hook or `_preUpdate` then `undefined` is
@@ -552,11 +551,10 @@ declare abstract class Document<
   /**
    * Delete this Document, removing it from the database.
    * @see {@linkcode Document.deleteDocuments}
-   * @param operation - Parameters of the deletion operation
-   *                    (default: `{}`)
+   * @param operation - Parameters of the deletion operation (default: `{}`)
    * @returns The deleted Document instance
    *
-   * @remarks If the document deletion is skipped by a hook or `_preUpdate` then `undefined` is
+   * @remarks If the document deletion is skipped by a hook or `_preDelete` then `undefined` is
    * returned.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#delete` directly.
@@ -568,39 +566,45 @@ declare abstract class Document<
    * @param operation  - Additional options which customize the request
    * @returns The retrieved Document, or null
    *
-   * @remarks If the Document is in a compendium (i.e `operation.pack` is provided), returns the index
-   * entry (or `null`), instead of the Document.
+   * @remarks Contrary to the above, this *can* be used to 'get' compendium documents by passing `operation.pack`, this will return the
+   * index entry (or `null`), instead of the Document.
    *
-   * {@link FogExploration.get | `FogExploration.get`} can possibly forward args and return to/from
-   * {@link FogExploration.load | `FogExploration.load`}, which accounts for the `Promise<>` part
-   * of the return; All other documents return `SomeDoc.Implementation | null`
+   * {@linkcode FogExploration.get} can possibly forward args and return to/from {@linkcode FogExploration.load},
+   * which accounts for the `Promise<>` part of the return; All other documents return `SomeDoc.Implementation | IndexEntry<DocName> | null`
    */
-  // TODO: Type for possible index entry return
-  static get(documentId: string, operation?: Document.Database.GetOptions): MaybePromise<Document.Any | null>;
+  // TODO: improve with a conditional return possibly: https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3545
+  static get(
+    documentId: string,
+    operation?: never,
+  ): MaybePromise<Document.Any | CompendiumCollection.IndexEntry | null>;
 
   /**
    * A compatibility method that returns the appropriate name of an embedded collection within this Document.
    * @param name - An existing collection name or a document name.
-   * @returns The provided collection name if it exists, the first available collection for the
-   *          document name provided, or null if no appropriate embedded collection could be found.
-   * @example Passing an existing collection name.
+   * @returns The provided collection name if it exists, the first available collection for the document name
+   * provided, or null if no appropriate embedded collection could be found.
+   *
+   * @example
+   * Passing an existing collection name.
    * ```js
-   * Actor.getCollectionName("items");
+   * Actor.implementation.getCollectionName("items");
    * // returns "items"
    * ```
    *
-   * @example Passing a document name.
+   * @example
+   * Passing a document name.
    * ```js
-   * Actor.getCollectionName("Item");
+   * Actor.implementation.getCollectionName("Item");
    * // returns "items"
    * ```
    */
-  static getCollectionName(name: never): string | null;
+  static getCollectionName(name: string): string | null;
 
   /**
    * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
    * @param embeddedName - The name of the embedded Document type
    * @returns The Collection instance of embedded Documents of the requested type
+   *
    * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
   // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedCollection` directly.
@@ -612,60 +616,62 @@ declare abstract class Document<
    * @param id           - The id of the child document to retrieve
    * @param options      - Additional options which modify how embedded documents are retrieved
    * @returns The retrieved embedded Document instance, or undefined
+   *
+   * @remarks `embeddedName` can also be the collection name, e.g to get an `Item` from an `Actor` instance, both `"Item"` and `"items"` are
+   * valid.
    * @throws If the embedded collection does not exist, or if strict is true and the Embedded Document could not be found.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedDocument` directly.
   getEmbeddedDocument(
     embeddedName: never,
     id: string,
-    options: Document.GetEmbeddedDocumentOptions,
+    options?: Document.GetEmbeddedDocumentOptions,
   ): Document.Any | undefined;
 
   /**
    * Create multiple embedded Document instances within this parent Document using provided input data.
    * @see {@linkcode Document.createDocuments}
    * @param embeddedName - The name of the embedded Document type
-   * @param data         - An array of data objects used to create multiple documents
-   *                       (default: `[]`)
-   * @param operation    - Parameters of the database creation workflow
-   *                       (default: `{}`)
+   * @param data         - An array of data objects used to create multiple documents (default: `[]`)
+   * @param operation    - Parameters of the database creation workflow (default: `{}`)
    * @returns An array of created Document instances
+   *
+   * @remarks Unlike {@linkcode Document.getEmbeddedDocument | Document#getEmbeddedDocument}, `embeddedName` must be a document type;
+   * collection names are not valid.
+   *
+   * As this is a create operation, `| undefined` is included in the specific document overrides' return type
+   *
+   * @privateRemarks `data` has a parameter default but passing no updates is nonsensical, so it's not marked optional here.
+   *
+   * `Temporary` is not handled here as making temporary embedded documents is nonsense, and it's going away in v14.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#createEmbeddedDocuments` directly.
   // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
-  createEmbeddedDocuments(
-    embeddedName: never,
-    // Note: Not optional because `createEmbeddedDocuments("Actor")` does effectively nothing.
-    data: never,
-    operation?: never,
-  ): unknown;
+  createEmbeddedDocuments(embeddedName: never, data: never, operation?: never): unknown;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
    * @see {@linkcode Document.updateDocuments}
    * @param embeddedName - The name of the embedded Document type
-   * @param updates      - An array of differential data objects, each used to update a single Document
-   *                       (default: `[]`)
-   * @param operation    - Parameters of the database update workflow
-   *                       (default: `{}`)
+   * @param updates      - An array of differential data objects, each used to update a single Document (default: `[]`)
+   * @param operation    - Parameters of the database update workflow (default: `{}`)
    * @returns An array of updated Document instances
+   *
+   * @remarks Unlike {@linkcode Document.getEmbeddedDocument | Document#getEmbeddedDocument}, `embeddedName` must be a document type;
+   * collection names are not valid.
+   *
+   * @privateRemarks `updates` has a parameter default but passing no updates is nonsensical, so it's not marked optional here
    */
   // Note: This uses `never` because it's unsound to try to call `Document#updateEmbeddedDocuments` directly.
   // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
-  updateEmbeddedDocuments(
-    embeddedName: never,
-    // Note: Not optional because `updateEmbeddedDocuments("Actor")` does effectively nothing.
-    updates: never,
-    context?: never,
-  ): unknown;
+  updateEmbeddedDocuments(embeddedName: never, updates: never, context?: never): unknown;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
    * @see {@linkcode Document.deleteDocuments}
    * @param embeddedName - The name of the embedded Document type
    * @param ids          - An array of string ids for each Document to be deleted
-   * @param operation    - Parameters of the database deletion workflow
-   *                       (default: `{}`)
+   * @param operation    - Parameters of the database deletion workflow (default: `{}`)
    * @returns An array of deleted Document instances
    */
   // Note: This uses `never` because it's unsound to try to call `Document#deleteEmbeddedDocuments` directly.
@@ -677,7 +683,9 @@ declare abstract class Document<
    * @param _parentPath - A parent field path already traversed
    * @remarks Not called within Foundry's client-side code, likely exists for server documents
    */
-  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>], void, undefined>;
+  // TODO: Put this into the document template with types that recurse Doc.Hierarchy for embedded documents
+  // TODO: https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3546
+  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.Any], void, undefined>;
 
   /**
    * Get the value of a "flag" for this document
