@@ -3,7 +3,13 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseWall = foundry.documents.BaseWall;
 import Document = foundry.abstract.Document;
 
-class TestBaseWall extends BaseWall {}
+class TestBaseWall extends BaseWall {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Wall">)
+      : null;
+  }
+}
 
 // TODO: ensure `c` required for creation
 // @ts-expect-error Wall requires `c` for creation
@@ -128,7 +134,7 @@ new TestBaseWall({
 
 const myWall = new TestBaseWall({ c: [20, 30, 240, 340], threshold: undefined });
 
-expectTypeOf(myWall).toEqualTypeOf<foundry.documents.BaseWall>();
+expectTypeOf(myWall).toEqualTypeOf<TestBaseWall>();
 
 expectTypeOf(myWall._id).toEqualTypeOf<string | null>();
 expectTypeOf(myWall.c).toEqualTypeOf<[number, number, number, number]>();

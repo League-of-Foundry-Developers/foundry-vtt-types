@@ -17,7 +17,13 @@ if (myScene) {
 }
 
 // Subclass `BaseScene` to avoid it being abstract.
-class BaseScene extends foundry.documents.BaseScene {}
+class BaseScene extends foundry.documents.BaseScene {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Scene">)
+      : null;
+  }
+}
 
 // @ts-expect-error A BaseScene requires a name.
 new BaseScene({});

@@ -5,7 +5,13 @@ import BaseActorDelta = foundry.documents.BaseActorDelta;
 import Document = foundry.abstract.Document;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
-class TestAD extends BaseActorDelta {}
+class TestAD extends BaseActorDelta {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"ActorDelta">)
+      : null;
+  }
+}
 
 declare const someToken: TokenDocument.Implementation;
 // @ts-expect-error ActorDeltas require a valid `parent` to be passed in its `context`
@@ -90,7 +96,7 @@ new TestAD(
   { parent: someToken },
 );
 
-expectTypeOf(myDelta).toEqualTypeOf<BaseActorDelta>();
+expectTypeOf(myDelta).toEqualTypeOf<TestAD>();
 
 expectTypeOf(myDelta._id).toEqualTypeOf<string | null>();
 expectTypeOf(myDelta.name).toEqualTypeOf<string | null>();

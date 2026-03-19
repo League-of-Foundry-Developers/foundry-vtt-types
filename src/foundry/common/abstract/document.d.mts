@@ -255,7 +255,7 @@ declare abstract class Document<
    * @remarks The body in `Document` simply throws; {@linkcode ClientDocumentMixin.AnyMixed.compendium | ClientDocument#compendium} defines
    * the standard override.
    */
-  abstract get compendium(): never;
+  abstract get compendium(): unknown;
 
   /**
    * Test whether this Document is embedded within a parent Document
@@ -269,8 +269,10 @@ declare abstract class Document<
 
   /**
    * A Universally Unique Identifier (uuid) for this Document instance.
+   * @remarks Always `null` for temporary documents, always `string` for persisted,  though embedded
+   * documents in non-persisted parents may have incorrect values at runtime.
    */
-  get uuid(): string;
+  get uuid(): string | null;
 
   /**
    * Test whether a given User has sufficient permissions to create Documents of this type in general. This does not

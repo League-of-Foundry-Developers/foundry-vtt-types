@@ -11,7 +11,12 @@ if (user) {
   expectTypeOf(user.character).toEqualTypeOf<Actor.Stored | null>();
 }
 
-class TestBaseUser extends foundry.documents.BaseUser {}
+class TestBaseUser extends foundry.documents.BaseUser {
+  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
+  get compendium() {
+    return null;
+  }
+}
 
 // @ts-expect-error name may not be undefined
 new TestBaseUser();

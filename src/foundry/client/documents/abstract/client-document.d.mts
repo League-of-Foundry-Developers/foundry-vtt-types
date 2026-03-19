@@ -53,7 +53,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): CompendiumCollection.ForDocument<DocumentName>;
+  get compendium(): CompendiumCollection.ForDocument<DocumentName> | null;
 
   /**
    * Is this document in a compendium? A stricter check than {@link Document.inCompendium | `Document#inCompendium`}.
