@@ -1233,6 +1233,18 @@ declare namespace Document {
   type SocketRequest<Action extends DatabaseAction> = DocumentSocketRequest<Action>;
   type SocketResponse<Action extends DatabaseAction> = DocumentSocketResponse<Action>;
 
+  /**
+   * Documents that can't be either directly in compendia, or embedded in documents that can be in compendia, should always return `false`
+   * for {@linkcode Document.inCompendium | Document#inCompendium}. We can't force `true` for documents that can only be persisted in
+   * compendia (e.g `Adventure`) here, because they could be temporary.
+   */
+  type InCompendium<Name extends Document.Type> = Name extends
+    | CONST.COMPENDIUM_DOCUMENT_TYPES
+    | CONST.EMBEDDED_DOCUMENT_TYPES
+    | "Folder"
+    ? boolean
+    : false;
+
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
     type Constructor = (abstract new (...args: never) => Instance.Any) & {
@@ -1364,15 +1376,71 @@ declare namespace Document {
           }
       : never;
 
+    /** Persisted, non-primary, embedded documents always have a non-`null` `parent` */
+    type StoredParent<D extends Document.Any> = D["documentName"] extends Document.AlwaysEmbeddedType
+      ? NonNullable<D["parent"]>
+      : D["parent"];
+
+    /** Persisted, non-primary, embedded documents always have a non-`null` `parent` */
+    type StoredParentCollection<D extends Document.Any> = D["documentName"] extends Document.AlwaysEmbeddedType
+      ? NonNullable<D["parentCollection"]>
+      : D["parentCollection"];
+
+    /** Persisted documents will always have a `collection`, whether it's a pack, a world collection, or another document. */
+    type StoredCollection<D extends ClientDocumentMixin.AnyMixed> = Exclude<D["collection"], null>;
+
+    /** Some documents can only be persisted in compendia. */
+    type StoredInCompendium<D extends ClientDocumentMixin.AnyMixed> =
+      D["documentName"] extends Document.AlwaysCompendiumType ? Exclude<D["inCompendium"], false> : D["inCompendium"];
+
+    /** Some documents can only be persisted in compendia. */
+    type StoredCompendium<D extends ClientDocumentMixin.AnyMixed> =
+      D["documentName"] extends Document.AlwaysCompendiumType ? Exclude<D["compendium"], null> : D["compendium"];
+
     // TODO(LukeAbby): Improve the type display with a helper here.
     // TODO(LukeAbby): Add `StoredSource` for a better type display there.
-    type Stored<D extends Document.Any> = Override<
+    type Stored<D extends ClientDocumentMixin.AnyMixed> = Override<
       D,
       {
-        id: string;
+        /**
+         * The canonical identifier for this Document
+         * @remarks As this is a persisted Document, it is guaranteed to have an ID.
+         */
+        get id(): string;
+
+        /** @remarks As this is a persisted Document, it is guaranteed to have an ID. */
         _id: string;
+
+        /**
+         * A Universally Unique Identifier (uuid) for this Document instance.
+         * @remarks Always `null` for temporary documents, always `string` for persisted,  though embedded
+         * documents in non-persisted parents may have incorrect values at runtime.
+         */
+        get uuid(): string;
+
+        /** @remarks As this is a persisted Document, its source is guaranteed to have an ID. */
         _source: Override<D["_source"], { _id: string }>;
+
+        /**
+         * Extract the source data for the DataModel into a simple object format that can be serialized.
+         * @returns The document source data expressed as a plain object
+         */
         toJSON(): Override<D["_source"], { _id: string }>;
+
+        /** @remarks As this is a persisted Document, it is guaranteed to have a non-`null` `parent`. */
+        parent: Document.Internal.StoredParent<D>;
+
+        /** @remarks As this is a persisted Document, it is guaranteed to have a non-`null` `parentCollection`. */
+        parentCollection: Document.Internal.StoredParentCollection<D>;
+
+        /** @remarks As this is a persisted Document, it is guaranteed to have a non-`null` `collection`. */
+        collection: Document.Internal.StoredCollection<D>;
+
+        /** Is this document in a compendium? */
+        get inCompendium(): StoredInCompendium<D>;
+
+        /** A reference to the Compendium Collection containing this Document, if any, and otherwise null. */
+        get compendium(): StoredCompendium<D>;
       }
     >;
 
@@ -2781,7 +2849,7 @@ declare namespace Document {
   /**
    * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
    */
-  type Stored<D extends Document.Any> = Document.Internal.Stored<D>;
+  type Stored<D extends ClientDocumentMixin.AnyMixed> = Document.Internal.Stored<D>;
 
   /**
    * @deprecated This type should not be used directly. Use `InvalidForName` as this type does not account for anything declaration merged into `Invalid`.
@@ -2792,7 +2860,7 @@ declare namespace Document {
    * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type ToStored<D extends Document.AnyConstructor> = Stored<FixedInstanceType<D>>;
+  type ToStored<D extends ClientDocumentMixin.AnyMixedConstructor> = Stored<FixedInstanceType<D>>;
 
   /**
    * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
@@ -2938,7 +3006,10 @@ declare namespace Document {
   /**
    * @deprecated Use the `TemporaryIf` available on each sub-document.
    */
-  type TemporaryIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true
+  type TemporaryIf<
+    D extends ClientDocumentMixin.AnyMixed,
+    Temporary extends boolean | undefined,
+  > = Temporary extends true
     ? D
     : // eslint-disable-next-line @typescript-eslint/no-deprecated
       Stored<D>;

@@ -132,11 +132,10 @@ expectTypeOf(item.collection).toEqualTypeOf<
 // @ts-expect-error Only getter, no setter
 item.collection = new Collection<typeof item>();
 
-expectTypeOf(actorDelta.collection).toEqualTypeOf<ActorDelta.Stored | null>();
-expectTypeOf(activeEffect.collection).toEqualTypeOf<EmbeddedCollection<
-  ActiveEffect.Stored,
-  Actor.Implementation | Item.Implementation
-> | null>();
+expectTypeOf(actorDelta.collection).toEqualTypeOf<ActorDelta.Stored>();
+expectTypeOf(activeEffect.collection).toEqualTypeOf<
+  EmbeddedCollection<ActiveEffect.Stored, Actor.Implementation | Item.Implementation>
+>();
 
 if (anyClientDoc.collection) {
   expectTypeOf(anyClientDoc.collection).toEqualTypeOf<
