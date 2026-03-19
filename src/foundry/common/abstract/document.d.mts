@@ -740,7 +740,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document creation
    * @returns Return false to exclude this Document from the creation operation
    */
-  protected _preCreate(data: never, options: never, user: User.Internal.Implementation): Promise<boolean | void>;
+  protected _preCreate(data: never, options: never, user: User.Stored): Promise<boolean | void>;
 
   /**
    * Post-process a creation operation for a single Document instance.
@@ -755,11 +755,11 @@ declare abstract class Document<
    * Pre-process a creation operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document._preCreate | `Document#_preCreate`} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@linkcode Document._preCreate | Document#_preCreate} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to pending documents must mutate the documents array or alter individual document instances using
-   * {@link Document.updateSource | `Document#updateSource`}.
+   * {@linkcode Document.updateSource | Document#updateSource}.
    * @param documents - Pending document instances ot be created
    * @param operation - Parameters of the database creation operation
    * @param user      - The User requesting the creation operation
@@ -769,25 +769,21 @@ declare abstract class Document<
   protected static _preCreateOperation(
     documents: never[],
     operation: never,
-    user: User.Internal.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /**
    * Post-process a creation operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document._onCreate | `Document#_onCreate`} workflows.
+   * This batch-wise workflow occurs after individual {@linkcode Document._onCreate | Document#_onCreate} workflows.
    *
    * @param documents - The Document instances which were created
    * @param operation - Parameters of the database creation operation
    * @param user      - The User who performed the creation operation
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onCreateOperation` directly.
-  protected static _onCreateOperation(
-    documents: never,
-    operation: never,
-    user: User.Internal.Implementation,
-  ): Promise<void>;
+  protected static _onCreateOperation(documents: never, operation: never, user: User.Stored): Promise<void>;
 
   /**
    * Perform preliminary operations before a Document of this type is updated.
@@ -797,7 +793,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document update
    * @returns A return value of false indicates the update operation should be cancelled
    */
-  protected _preUpdate(changed: never, options: never, user: User.Internal.Implementation): Promise<boolean | void>;
+  protected _preUpdate(changed: never, options: never, user: User.Stored): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is updated.
@@ -812,11 +808,11 @@ declare abstract class Document<
    * Pre-process an update operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document._preUpdate | `Document#_preUpdate`} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@linkcode Document._preUpdate | Document#_preUpdate} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to the requested updates are performed by mutating the data array of the operation.
-   * {@link Document.updateSource | `Document#updateSource`}.
+   * {@linkcode Document.updateSource | Document#updateSource}.
    *
    * @param documents - Document instances to be updated
    * @param operation - Parameters of the database update operation
@@ -824,28 +820,20 @@ declare abstract class Document<
    * @returns Return false to cancel the update operation entirely
    */
   // Note: This uses `never` because it's unsound to try to do `Document._preUpdateOperation` directly.
-  protected static _preUpdateOperation(
-    documents: never,
-    operation: never,
-    user: User.Internal.Implementation,
-  ): Promise<boolean | void>;
+  protected static _preUpdateOperation(documents: never, operation: never, user: User.Stored): Promise<boolean | void>;
 
   /**
    * Post-process an update operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document._onUpdate | `Document#_onUpdate`} workflows.
+   * This batch-wise workflow occurs after individual {@linkcode Document._onUpdate | Document#_onUpdate} workflows.
    *
    * @param documents - The Document instances which were updated
    * @param operation - Parameters of the database update operation
    * @param user      - The User who performed the update operation
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onUpdateOperation` directly.
-  protected static _onUpdateOperation(
-    documents: never,
-    operation: never,
-    user: User.Internal.Implementation,
-  ): Promise<void>;
+  protected static _onUpdateOperation(documents: never, operation: never, user: User.Stored): Promise<void>;
 
   /**
    * Perform preliminary operations before a Document of this type is deleted.
@@ -854,7 +842,7 @@ declare abstract class Document<
    * @param user    - The User requesting the document deletion
    * @returns A return value of false indicates the delete operation should be cancelled
    */
-  protected _preDelete(options: never, user: User.Internal.Implementation): Promise<boolean | void>;
+  protected _preDelete(options: never, user: User.Stored): Promise<boolean | void>;
 
   /**
    * Perform follow-up operations after a Document of this type is deleted.
@@ -868,11 +856,11 @@ declare abstract class Document<
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document._preDelete | `Document#_preDelete`} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@linkcode Document._preDelete | Document#_preDelete} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to the requested deletions are performed by mutating the operation object.
-   * {@link Document.updateSource | `Document#updateSource`}.
+   * {@linkcode Document.updateSource | Document#updateSource}.
    *
    * @param documents - Document instances to be deleted
    * @param operation - Parameters of the database update operation
@@ -881,33 +869,30 @@ declare abstract class Document<
    * @internal
    */
   // Note: This uses `never` because it's unsound to try to do `Document._preDeleteOperation` directly.
-  protected static _preDeleteOperation(
-    documents: never,
-    operation: never,
-    user: User.Internal.Implementation,
-  ): Promise<unknown>;
+  protected static _preDeleteOperation(documents: never, operation: never, user: User.Stored): Promise<unknown>;
 
   /**
    * Post-process a deletion operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document._onDelete | `Document#_onDelete`} workflows.
+   * This batch-wise workflow occurs after individual {@linkcode Document._onDelete | Document#_onDelete} workflows.
    *
    * @param documents - The Document instances which were deleted
    * @param operation - Parameters of the database deletion operation
    * @param user      - The User who performed the deletion operation
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onDeleteOperation` directly.
-  protected static _onDeleteOperation(
-    documents: never,
-    operation: never,
-    user: User.Internal.Implementation,
-  ): Promise<unknown>;
+  protected static _onDeleteOperation(documents: never, operation: never, user: User.Stored): Promise<unknown>;
 
   /**
    * A reusable helper for adding migration shims.
+   * @param data    - The data object being shimmed
+   * @param shims   - The mapping of old keys to new keys
+   * @param options - Options passed to {@linkcode foundry.utils.logCompatibilityWarning}
+   * @internal
+   *
+   * @remarks See {@linkcode Document._addDataFieldShim} remarks
    */
-  // options: not null (parameter default only in _addDataFieldShim)
   protected static _addDataFieldShims(
     data: AnyMutableObject,
     shims: Record<string, string>,
@@ -916,8 +901,17 @@ declare abstract class Document<
 
   /**
    * A reusable helper for adding a migration shim
+   * The value of the data can be transformed during the migration by an optional application function.
+   * @param data    - The data object being shimmed
+   * @param oldKey  - The old field name
+   * @param newKey  - The new field name
+   * @param options - Options passed to {@linkcode foundry.utils.logCompatibilityWarning} (default: `{}`)
+   * @internal
+   *
+   * @remarks This method calls {@linkcode Document._logDataFieldMigration | this._logDataFieldMigration}, but that is the only reference to
+   * `this`, meaning if you're okay with nonsense being logged, it's valid to call for any data object, and if you provide your own
+   * `_logDataFieldMigration`, doing `Document._addDataFieldShim.call(MyClass, ...)` can avoid even that.
    */
-  // options: not null (parameter default only)
   protected static _addDataFieldShim(
     data: AnyMutableObject,
     oldKey: string,
