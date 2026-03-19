@@ -1,8 +1,7 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, OverlapsWith } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Playlist Document.
@@ -80,7 +79,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   override readonly parentCollection: Playlist.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): Playlist.ImplementationClass;
 
@@ -92,9 +91,9 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): Playlist.Hierarchy;
+  static override readonly hierarchy: Playlist.Hierarchy;
 
   override parent: Playlist.Parent;
 
@@ -129,9 +128,9 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static override get(documentId: string, options?: Playlist.Database.GetOptions): Playlist.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Playlist.Embedded.Name>(
-    name: CollectionName,
-  ): Playlist.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BasePlaylist.Embedded.CollectionName>,
+  ): BasePlaylist.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends Playlist.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
@@ -248,38 +247,6 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     operation: Playlist.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
 
   /**
    * @deprecated since v12, will be removed in v14

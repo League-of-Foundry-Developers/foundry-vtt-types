@@ -1,7 +1,15 @@
 import { expectTypeOf } from "vitest";
 import type { AnyMutableObject } from "fvtt-types/utils";
 
-class TestBaseFogExploration extends foundry.documents.BaseFogExploration {}
+class TestBaseFogExploration extends foundry.documents.BaseFogExploration {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(
+          this.pack!,
+        ) as foundry.documents.collections.CompendiumCollection.ForDocument<"FogExploration">)
+      : null;
+  }
+}
 
 expectTypeOf(new TestBaseFogExploration()).toEqualTypeOf<TestBaseFogExploration>();
 expectTypeOf(new TestBaseFogExploration({})).toEqualTypeOf<TestBaseFogExploration>();

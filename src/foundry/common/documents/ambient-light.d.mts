@@ -1,8 +1,6 @@
-import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Document definition for an AmbientLight.
@@ -56,7 +54,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   override readonly parentCollection: AmbientLightDocument.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): AmbientLightDocument.ImplementationClass;
 
@@ -68,9 +66,9 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): AmbientLightDocument.Hierarchy;
+  static override readonly hierarchy: AmbientLightDocument.Hierarchy;
 
   override parent: BaseAmbientLight.Parent;
 
@@ -108,6 +106,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     options?: AmbientLightDocument.Database.GetOptions,
   ): AmbientLightDocument.Implementation | null;
 
+  /** @privateRemarks `AmbientLightDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
@@ -197,38 +196,6 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     operation: AmbientLightDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
 
   /**
    * @deprecated since v12, will be removed in v14

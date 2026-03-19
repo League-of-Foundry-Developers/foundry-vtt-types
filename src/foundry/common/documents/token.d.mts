@@ -1,10 +1,9 @@
-import type { AnyMutableObject, DeepReadonly, InexactPartial } from "#utils";
+import type { AnyMutableObject, DeepReadonly, InexactPartial, OverlapsWith } from "#utils";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The base Token model definition which defines common behavior of an Token document between both client and server.
@@ -218,7 +217,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   override readonly parentCollection: TokenDocument.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): TokenDocument.ImplementationClass;
 
@@ -230,9 +229,9 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): TokenDocument.Hierarchy;
+  static override readonly hierarchy: TokenDocument.Hierarchy;
 
   override parent: TokenDocument.Parent;
 
@@ -270,9 +269,9 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: TokenDocument.Database.GetOptions,
   ): TokenDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends TokenDocument.Embedded.Name>(
-    name: CollectionName,
-  ): TokenDocument.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseToken.Embedded.CollectionName>,
+  ): BaseToken.Embedded.GetCollectionNameReturn<Name>;
 
   /**
    * @remarks Calling `BaseToken#getEmbeddedCollection` would result in entirely typical results at
@@ -394,38 +393,6 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     operation: TokenDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
 
   /**
    * @deprecated since v12, will be removed in v14

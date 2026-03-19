@@ -101,7 +101,7 @@ expectTypeOf(Item.fromImport(itemSource, constructionContext)).toEqualTypeOf<Pro
 // Test the inheritance
 expectTypeOf(item.documentName).toEqualTypeOf<"Item">(); // Document
 expectTypeOf(item.migrateSystemData()).toEqualTypeOf<object>(); // Base-Document
-expectTypeOf(item.uuid).toEqualTypeOf<string>(); // ClientDocumentMixin
+expectTypeOf(item.uuid).toEqualTypeOf<string | null>(); // ClientDocumentMixin
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>(); // class itself
 
 // Properties
@@ -132,11 +132,10 @@ expectTypeOf(item.collection).toEqualTypeOf<
 // @ts-expect-error Only getter, no setter
 item.collection = new Collection<typeof item>();
 
-expectTypeOf(actorDelta.collection).toEqualTypeOf<ActorDelta.Stored | null>();
-expectTypeOf(activeEffect.collection).toEqualTypeOf<EmbeddedCollection<
-  ActiveEffect.Stored,
-  Actor.Stored | Item.Stored
-> | null>();
+expectTypeOf(actorDelta.collection).toEqualTypeOf<ActorDelta.Stored>();
+expectTypeOf(activeEffect.collection).toEqualTypeOf<
+  EmbeddedCollection<ActiveEffect.Stored, Actor.Implementation | Item.Implementation>
+>();
 
 if (anyClientDoc.collection) {
   expectTypeOf(anyClientDoc.collection).toEqualTypeOf<

@@ -1,7 +1,6 @@
-import type { AnyMutableObject } from "#utils";
+import type { OverlapsWith } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 import type { DataField, SchemaField } from "#common/data/fields.mjs";
 
 /**
@@ -59,7 +58,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   override readonly parentCollection: RegionDocument.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): RegionDocument.ImplementationClass;
 
@@ -71,9 +70,9 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): RegionDocument.Hierarchy;
+  static override readonly hierarchy: RegionDocument.Hierarchy;
 
   override parent: BaseRegion.Parent;
 
@@ -111,10 +110,9 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     options?: RegionDocument.Database.GetOptions,
   ): RegionDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends RegionDocument.Embedded.Name>(
-    name: CollectionName,
-  ): RegionDocument.Embedded.CollectionNameOf<CollectionName> | null;
-
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseRegion.Embedded.CollectionName>,
+  ): BaseRegion.Embedded.GetCollectionNameReturn<Name>;
   override getEmbeddedCollection<EmbeddedName extends RegionDocument.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
   ): RegionDocument.Embedded.CollectionFor<EmbeddedName>;
@@ -230,38 +228,6 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     operation: RegionDocument.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
 
   /**
    * @deprecated since v12, will be removed in v14

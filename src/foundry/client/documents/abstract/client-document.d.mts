@@ -53,7 +53,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): ClientDocument.CompendiumForName<DocumentName>;
+  get compendium(): CompendiumCollection.ForDocument<DocumentName> | null;
 
   /**
    * Is this document in a compendium? A stricter check than {@link Document.inCompendium | `Document#inCompendium`}.
@@ -528,7 +528,7 @@ declare namespace ClientDocumentMixin {
   interface AnyMixedConstructor extends ReturnType<typeof foundry.documents.abstract.ClientDocumentMixin<BaseClass>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
-  type BaseClass = Document.Internal.Constructor;
+  type BaseClass = Document.AnyConstructor;
 
   type Mix<BaseClass extends Document.Internal.Constructor> = Mixin<
     typeof InternalClientDocument<Document.NameFor<BaseClass>>,

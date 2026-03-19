@@ -1,7 +1,13 @@
 import { expectTypeOf } from "vitest";
 
 // This exists to make the class non-abstract.
-class TestBaseCombat extends foundry.documents.BaseCombat {}
+class TestBaseCombat extends foundry.documents.BaseCombat {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Combat">)
+      : null;
+  }
+}
 
 expectTypeOf(TestBaseCombat.create({ scene: "foo", active: true, sort: 1 })).toEqualTypeOf<
   Promise<Combat.Stored | undefined>
