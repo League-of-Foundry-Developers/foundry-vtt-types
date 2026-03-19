@@ -117,23 +117,36 @@ declare abstract class Document<
 
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
+   * @defaultValue {@linkcode Document._getParentCollection | this._getParentCollection(parentCollection)}
+   *
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`.
+   *
+   * Always `null` in temporary documents, except {@linkcode foundry.documents.BaseActorDelta.parentCollection | ActorDelta}s.
+   *
+   * @privateRemarks This could realistically be any string passed as
+   * {@linkcode Document.ConstructionContext.parentCollection | parentCollection} in the construction context of a `new Document()`. It's
+   * typed as-is because everywhere it is specified by core, it happens to match the `metadata.collection` of the given document type, and
+   * users are not realistically going to pass it, since they can't define new `EmbeddedCollectionField`s or `EmbeddedDocumentField`s.
    */
   readonly parentCollection: Document.MetadataFor<DocumentName>["collection"] | null;
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`
    */
-  readonly pack: string | null;
+  get pack(): string | null;
 
   /**
    * A mapping of embedded Document collections which exist in this model.
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`, and the value is
+   * {@linkcode Object.seal}ed.
    */
   readonly collections: Document.CollectionRecord<Schema>;
 
   /**
    * Ensure that all Document classes share the same schema of their base declaration.
    */
-  static get schema(): SchemaField.Any;
+  static override get schema(): SchemaField.Any;
 
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
@@ -210,8 +223,9 @@ declare abstract class Document<
 
   /**
    * Does this Document support additional subtypes?
+   * @remarks This is `false` in `Document.metadata`, and is only true in subclasses that override
    */
-  static get hasTypeData(): undefined | true;
+  static get hasTypeData(): boolean;
 
   /**
    * The Embedded Document hierarchy for this Document.
@@ -221,11 +235,10 @@ declare abstract class Document<
   /**
    * Identify the collection in a parent Document that this Document exists belongs to, if any.
    * @param parentCollection - An explicitly provided parent collection name.
-   * @remarks If passed a value for `parentCollection`, simply returns that value
-   *
-   * Foundry marked `@internal`
+   * @remarks If passed a value for `parentCollection`, simply returns that value.
+   * @internal
    */
-  _getParentCollection(parentCollection?: string): string | null;
+  _getParentCollection(parentCollection?: string | null): string | null;
 
   _id: string | null;
 

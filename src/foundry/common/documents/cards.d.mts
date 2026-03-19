@@ -95,7 +95,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   override readonly parentCollection: Cards.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): Cards.ImplementationClass;
 

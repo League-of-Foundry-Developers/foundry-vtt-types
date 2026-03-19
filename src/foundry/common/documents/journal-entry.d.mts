@@ -80,7 +80,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   override readonly parentCollection: JournalEntry.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): JournalEntry.ImplementationClass;
 
@@ -92,7 +92,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): JournalEntry.Hierarchy;
 

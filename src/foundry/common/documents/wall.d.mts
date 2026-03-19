@@ -61,7 +61,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   override readonly parentCollection: WallDocument.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): WallDocument.ImplementationClass;
 
@@ -73,7 +73,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): WallDocument.Hierarchy;
 

@@ -83,7 +83,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   readonly parentCollection: RollTable.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): RollTable.ImplementationClass;
 
@@ -95,7 +95,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static get hasTypeData(): false;
 
   static get hierarchy(): RollTable.Hierarchy;
 

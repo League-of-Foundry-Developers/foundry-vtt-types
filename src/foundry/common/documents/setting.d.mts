@@ -66,7 +66,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   override readonly parentCollection: Setting.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get baseDocument(): typeof BaseSetting;
 
@@ -78,7 +78,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): Setting.Hierarchy;
 

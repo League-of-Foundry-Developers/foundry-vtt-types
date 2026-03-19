@@ -73,7 +73,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   override readonly parentCollection: Adventure.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): Adventure.ImplementationClass;
 
@@ -85,7 +85,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): Adventure.Hierarchy;
 

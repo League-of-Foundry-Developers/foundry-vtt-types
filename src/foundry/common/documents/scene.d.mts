@@ -186,7 +186,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   readonly parentCollection: Scene.ParentCollectionName | null;
 
-  readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): Scene.ImplementationClass;
 
@@ -198,7 +198,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static get hasTypeData(): false;
 
   static get hierarchy(): Scene.Hierarchy;
 

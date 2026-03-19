@@ -104,7 +104,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override readonly parentCollection: User.ParentCollectionName | null;
 
-  override readonly pack: null;
+  override get pack(): null;
 
   static override get implementation(): User.ImplementationClass;
 
@@ -116,7 +116,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): User.Hierarchy;
 

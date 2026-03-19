@@ -76,7 +76,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   override readonly parentCollection: NoteDocument.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): NoteDocument.ImplementationClass;
 
@@ -88,7 +88,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): NoteDocument.Hierarchy;
 
