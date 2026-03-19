@@ -352,46 +352,49 @@ declare abstract class Document<
    * For Documents which include game system data, migrate the system data object to conform to its latest data model.
    * The data model is defined by the template.json specification included by the game system.
    * @returns The migrated system data object
-   * @throws If this document type either doesn't have subtypes or it does but the one on this document is a DataModel
+   * @remarks
+   * @throws If this document type either doesn't have subtypes or it does but the one on this document is a `DataModel`
    */
   migrateSystemData(): object;
 
   /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
-  override toObject(source?: boolean | null): SchemaField.SourceData<Schema>;
+  override toObject(source?: boolean): SchemaField.SourceData<Schema>;
 
   /**
    * Create multiple Documents using provided input data.
    * Data is provided as an array of objects where each individual object becomes one new Document.
    *
-   * @param data    - An array of data objects or existing Documents to persist.
-   *                  (default: `[]`)
-   * @param operation - Parameters of the requested creation operation
-   *                  (default: `{}`)
+   * @param data      - An array of data objects or existing Documents to persist. (default: `[]`)
+   * @param operation - Parameters of the requested creation operation (default: `{}`)
    * @returns An array of created Document instances
    *
-   * @example Create a single Document
-   * ```typescript
+   * @example
+   * Create a single Document
+   * ```js
    * const data = [{name: "New Actor", type: "character", img: "path/to/profile.jpg"}];
-   * const created = await Actor.createDocuments(data);
+   * const created = await Actor.implementation.createDocuments(data);
    * ```
    *
-   * @example Create multiple Documents
-   * ```typescript
-   * const data = [{name: "Tim", type: "npc"], [{name: "Tom", type: "npc"}];
-   * const created = await Actor.createDocuments(data);
+   * @example
+   * Create multiple Documents
+   * ```js
+   * const data = [{name: "Tim", type: "npc"}, {name: "Tom", type: "npc"}];
+   * const created = await Actor.implementation.createDocuments(data);
    * ```
    *
-   * @example Create multiple embedded Documents within a parent
-   * ```typescript
+   * @example
+   * Create multiple embedded Documents within a parent
+   * ```js
    * const actor = game.actors.getName("Tim");
    * const data = [{name: "Sword", type: "weapon"}, {name: "Breastplate", type: "equipment"}];
-   * const created = await Item.createDocuments(data, {parent: actor});
+   * const created = await Item.implementation.createDocuments(data, {parent: actor});
    * ```
    *
-   * @example Create a Document within a Compendium pack
-   * ```typescript
+   * @example
+   * Create a Document within a Compendium pack
+   * ```js
    * const data = [{name: "Compendium Actor", type: "character", img: "path/to/profile.jpg"}];
-   * const created = await Actor.createDocuments(data, {pack: "mymodule.mypack"});
+   * const created = await Actor.implementation.createDocuments(data, {pack: "mymodule.mypack"});
    * ```
    *
    * @remarks If a document is skipped by a hook or `_preCreate` then that element is skipped in the
@@ -404,35 +407,38 @@ declare abstract class Document<
    * Update multiple Document instances using provided differential data.
    * Data is provided as an array of objects where each individual object updates one existing Document.
    *
-   * @param updates - An array of differential data objects, each used to update a single Document
-   *                  (default: `[]`)
-   * @param operation - Parameters of the database update operation
-   *                  (default: `{}`)
+   * @param updates   - An array of differential data objects, each used to update a single Document (default: `[]`)
+   * @param operation - Parameters of the database update operation (default: `{}`)
    * @returns An array of updated Document instances
    *
-   * @example Update a single Document
-   * ```typescript
+   * @example
+   * Update a single Document
+   * ```js
    * const updates = [{_id: "12ekjf43kj2312ds", name: "Timothy"}];
-   * const updated = await Actor.updateDocuments(updates);
+   * const updated = await Actor.implementation.updateDocuments(updates);
    * ```
    *
-   * @example Update multiple Documents
-   * ```typescript
+   * @example
+   * Update multiple Documents
+   * ```js
    * const updates = [{_id: "12ekjf43kj2312ds", name: "Timothy"}, {_id: "kj549dk48k34jk34", name: "Thomas"}]};
-   * const updated = await Actor.updateDocuments(updates);
+   * const updated = await Actor.implementation.updateDocuments(updates);
    * ```
    *
-   * @example Update multiple embedded Documents within a parent
-   * ```typescript
+   * @example
+   * Update multiple embedded Documents within a parent
+   * ```js
    * const actor = game.actors.getName("Timothy");
    * const updates = [{_id: sword.id, name: "Magic Sword"}, {_id: shield.id, name: "Magic Shield"}];
-   * const updated = await Item.updateDocuments(updates, {parent: actor});
+   * const updated = await Item.implementation.updateDocuments(updates, {parent: actor});
    * ```
    *
-   * @example Update Documents within a Compendium pack
-   * ```typescript
+   * @example
+   * Update Documents within a Compendium pack
+   * ```js
    * const actor = await pack.getDocument(documentId);
-   * const updated = await Actor.updateDocuments([{_id: actor.id, name: "New Name"}], {pack: "mymodule.mypack"});
+   * const updated = await Actor.implementation.updateDocuments([{_id: actor.id, name: "New Name"}],
+   *   {pack: "mymodule.mypack"});
    * ```
    *
    * @remarks If a document is skipped by a hook or `_preCreate` then that element is skipped in the
@@ -445,44 +451,50 @@ declare abstract class Document<
    * Delete one or multiple existing Documents using an array of provided ids.
    * Data is provided as an array of string ids for the documents to delete.
    *
-   * @param ids - An array of string ids for the documents to be deleted
-   *              (default: `[]`)
-   * @param operation - Parameters of the database deletion operation
-   *                  (default: `{}`)
+   * @param ids       - An array of string ids for the documents to be deleted (default: `[]`)
+   * @param operation - Parameters of the database deletion operation (default: `{}`)
    * @returns An array of deleted Document instances
    *
-   * @example Delete a single Document
-   * ```typescript
+   * @example
+   * Delete a single Document
+   * ```js
    * const tim = game.actors.getName("Tim");
-   * const deleted = await Actor.deleteDocuments([tim.id]);
+   * const deleted = await Actor.implementation.deleteDocuments([tim.id]);
    * ```
    *
-   * @example Delete multiple Documents
-   * ```typescript
+   * @example
+   * Delete multiple Documents
+   * ```js
    * const tim = game.actors.getName("Tim");
    * const tom = game.actors.getName("Tom");
-   * const deleted = await Actor.deleteDocuments([tim.id, tom.id]);
+   * const deleted = await Actor.implementation.deleteDocuments([tim.id, tom.id]);
    * ```
    *
-   * @example Delete multiple embedded Documents within a parent
-   * ```typescript
+   * @example
+   * Delete multiple embedded Documents within a parent
+   * ```js
    * const tim = game.actors.getName("Tim");
    * const sword = tim.items.getName("Sword");
    * const shield = tim.items.getName("Shield");
-   * const deleted = await Item.deleteDocuments([sword.id, shield.id], parent: actor});
+   * const deleted = await Item.implementation.deleteDocuments([sword.id, shield.id], parent: actor});
    * ```
    *
-   * @example Delete Documents within a Compendium pack
-   * ```typescript
+   * @example
+   * Delete Documents within a Compendium pack
+   * ```js
    * const actor = await pack.getDocument(documentId);
-   * const deleted = await Actor.deleteDocuments([actor.id], {pack: "mymodule.mypack"});
+   * const deleted = await Actor.implementation.deleteDocuments([actor.id], {pack: "mymodule.mypack"});
    * ```
    *
    * @remarks If a document is skipped by a hook or `_preDelete` then that element is skipped in the
    * return type. This means that you receive only documents that were actually deleted.
+   *
+   * `ids` is required because despite it having a parameter default, passing no IDs is a nonsense call on its own; however, specific
+   * document overrides type `ids` as `| undefined` because the {@linkcode DatabaseBackend.DeleteOperation.deleteAll | deleteAll} operation
+   * property exists, but using it requires passing *something* to the first parameter.
    */
-  // Note: This uses `never` because it's unsound to try to pass the operation for `Document.deleteDocument`
-  static deleteDocuments(ids?: readonly string[], operation?: never): Promise<Document.Any[]>;
+  // Note: This uses `never` because it's unsound to try to call `Document.deleteDocument` rather than a specific document's method.
+  static deleteDocuments(ids?: never, operation?: never): Promise<Document.Any[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
