@@ -10,7 +10,7 @@ declare abstract class BaseRuler extends RenderFlagsMixin() {
   /**
    * @param user - The User for whom to construct the Ruler instance
    */
-  constructor(user: User.Implementation);
+  constructor(user: User.Stored);
 
   static override RENDER_FLAGS: BaseRuler.RENDER_FLAGS;
 
@@ -31,7 +31,7 @@ declare abstract class BaseRuler extends RenderFlagsMixin() {
   /**
    * The User who this Ruler belongs to.
    */
-  get user(): User.Implementation;
+  get user(): User.Stored;
 
   /**
    * Is this Ruler active? True, if the path of the Ruler is nonempty.

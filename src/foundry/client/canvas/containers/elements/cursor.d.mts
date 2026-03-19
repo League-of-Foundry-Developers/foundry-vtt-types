@@ -2,6 +2,7 @@ import type { Identity } from "#utils";
 
 /**
  * A single Mouse Cursor
+ * @privateRemarks Nothing seems to prevent rendering a `Cursor` for a temporary `User`, so `Implementation`s are allowed.
  */
 declare class Cursor extends PIXI.Container {
   constructor(user: User.Implementation);

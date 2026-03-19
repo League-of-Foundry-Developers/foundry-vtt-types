@@ -87,6 +87,7 @@ declare abstract class DocumentSheet<
    * Test whether a certain User has permission to view this Document Sheet.
    * @param user - The user requesting to render the sheet
    * @returns Does the User have permission to view this sheet?
+   * @privateRemarks Only does a permission check, so temporary `User`s are allowed.
    */
   protected _canUserView(user: User.Implementation): boolean;
 

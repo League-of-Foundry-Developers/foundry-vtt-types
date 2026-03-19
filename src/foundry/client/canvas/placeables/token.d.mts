@@ -1278,6 +1278,7 @@ declare namespace Token {
      * @defaultValue `game.user`
      * @remarks `null` is the parameter default, but it's `||=`d with `game.user`
      */
+    // TODO: This is removed in v13, so it doesn't need updated to Stored
     user: User.Implementation;
 
     /**

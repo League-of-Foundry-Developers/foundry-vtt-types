@@ -535,6 +535,7 @@ export interface AllHooks extends DynamicHooks {
    * @param targeted - Whether the Token has been targeted or untargeted
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@link UserTargets._hook | `UserTargets#_hook`}
+   * @privateRemarks Temporary `User`s *can* add targets without error, so `Implementation` instead of `Stored`.
    */
   targetToken: (user: User.Implementation, token: Token.Implementation, targeted: boolean) => void;
 
@@ -764,7 +765,7 @@ export interface AllHooks extends DynamicHooks {
    * @param connected - Is the user now connected (true) or disconnected (false)
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  userConnected: (user: User.Implementation, connected: boolean) => void;
+  userConnected: (user: User.Stored, connected: boolean) => void;
 
   /** Combat */
 

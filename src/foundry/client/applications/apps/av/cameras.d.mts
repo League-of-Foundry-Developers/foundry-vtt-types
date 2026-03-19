@@ -48,7 +48,7 @@ declare namespace CameraViews {
 
   interface UserContext {
     /** The User instance. */
-    user: User.Implementation;
+    user: User.Stored;
 
     /** The user's AV settings. */
     settings: AVSettings.Data;

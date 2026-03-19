@@ -46,7 +46,7 @@ declare const somePoint: PIXI.Point;
 expectTypeOf(layer["_onLongPress"](pointerEvent, somePoint)).toEqualTypeOf<Promise<boolean>>();
 expectTypeOf(layer["_onCanvasPan"]()).toBeVoid();
 
-declare const someUser: User.Implementation;
+declare const someUser: User.Stored;
 expectTypeOf(layer.drawCursor(someUser)).toEqualTypeOf<Cursor>();
 expectTypeOf(layer.updateCursor(someUser, somePoint)).toBeVoid();
 expectTypeOf(layer.updateCursor(someUser, null)).toBeVoid();
