@@ -926,20 +926,44 @@ declare abstract class Document<
    * @param oldKey - The old field name
    * @param newKey - The new field name
    * @param apply  - An application function, otherwise the old value is applied
-   * @remarks Foundry marked `@internal`
+   * @returns Whether a migration was applied.
+   * @internal
+   *
+   * @remarks This method has no references to `this` at all, and is not limited to operating on `Document` source data; it can be
+   * used as a helper on any data object, making it one of the few static methods on `Document` it's valid to call on the base
+   * class.
    */
-  protected static _addDataFieldMigration(
-    data: AnyMutableObject,
+  protected static _addDataFieldMigration<Data extends AnyMutableObject>(
+    data: Data,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyMutableObject) => unknown,
-  ): unknown;
+    apply?: (data: Data) => unknown,
+  ): boolean;
 
-  // options: not null (destructured where forwarded)
+  /**
+   * Log a compatibility warning for the data field migration.
+   * @param oldKey  - The old field name
+   * @param newKey  - The new field name
+   * @param options - Options passed to {@linkcode foundry.utils.logCompatibilityWarning} (default: `{}`)
+   * @internal
+   */
   protected static _logDataFieldMigration(
     oldKey: string,
     newKey: string,
     options?: LogCompatibilityWarningOptions,
+  ): void;
+
+  /**
+   * Clear the fields from the given Document data recursively.
+   * @param data       - The (partial) Document data
+   * @param fieldNames - The fields that are cleared
+   * @param options    - (default: `{}`)
+   * @internal
+   */
+  protected static _clearFieldsRecursively(
+    data: AnyMutableObject,
+    fieldNames: string[],
+    options?: Document.ClearFieldsRecursivelyOptions,
   ): void;
 
   /**
@@ -2467,6 +2491,13 @@ declare namespace Document {
      * @remarks Foundry uses `if ("value" in options)` to determine whether to override the default value.
      */
     value?: unknown;
+  }
+
+  type RecursiveFieldClearCallback = (data: AnyMutableObject, fieldName: string) => void;
+
+  interface ClearFieldsRecursivelyOptions {
+    /** A callback that is invoked on each field in order to clear it. */
+    callback?: RecursiveFieldClearCallback | undefined;
   }
 
   /**
