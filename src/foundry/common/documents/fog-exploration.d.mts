@@ -120,6 +120,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     options?: FogExploration.Database.GetOptions,
   ): Promise<FogExploration.Implementation | null> | FogExploration.Implementation | null;
 
+  /** @privateRemarks `FogExploration`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

@@ -1,4 +1,4 @@
-import type { AnyMutableObject, DeepReadonly, InexactPartial } from "#utils";
+import type { AnyMutableObject, DeepReadonly, InexactPartial, OverlapsWith } from "#utils";
 import type { DataModel } from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type * as CONST from "../constants.mts";
@@ -269,9 +269,9 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     options?: TokenDocument.Database.GetOptions,
   ): TokenDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends TokenDocument.Embedded.Name>(
-    name: CollectionName,
-  ): TokenDocument.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseToken.Embedded.CollectionName>,
+  ): BaseToken.Embedded.GetCollectionNameReturn<Name>;
 
   /**
    * @remarks Calling `BaseToken#getEmbeddedCollection` would result in entirely typical results at

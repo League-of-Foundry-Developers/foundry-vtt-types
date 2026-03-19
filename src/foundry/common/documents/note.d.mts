@@ -126,6 +126,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     options?: NoteDocument.Database.GetOptions,
   ): NoteDocument.Implementation | null;
 
+  /** @privateRemarks `NoteDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

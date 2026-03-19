@@ -106,6 +106,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     options?: AmbientLightDocument.Database.GetOptions,
   ): AmbientLightDocument.Implementation | null;
 
+  /** @privateRemarks `AmbientLightDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

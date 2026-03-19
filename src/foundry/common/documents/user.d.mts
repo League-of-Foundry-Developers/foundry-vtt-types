@@ -151,6 +151,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static override get(documentId: string, options?: User.Database.GetOptions): User.Implementation | null;
 
+  /** @privateRemarks `User`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

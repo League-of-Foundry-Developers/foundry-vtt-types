@@ -111,6 +111,7 @@ declare abstract class BaseWall extends Document<WallDocument.Name, BaseWall.Sch
     options?: WallDocument.Database.GetOptions,
   ): WallDocument.Implementation | null;
 
+  /** @privateRemarks `Wall`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

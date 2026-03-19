@@ -155,6 +155,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   static override get(documentId: string, options?: Macro.Database.GetOptions): Macro.Implementation | null;
 
+  /** @privateRemarks `Macro`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, OverlapsWith } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -145,9 +145,9 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   static override get(documentId: string, options?: Cards.Database.GetOptions): Cards.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Cards.Embedded.Name>(
-    name: CollectionName,
-  ): Cards.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseCards.Embedded.CollectionName>,
+  ): BaseCards.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends Cards.Embedded.CollectionName>(
     embeddedName: EmbeddedName,

@@ -120,6 +120,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static override get(documentId: string, options?: Adventure.Database.GetOptions): Adventure.Implementation | null;
 
+  /** @privateRemarks `Adventure`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, OverlapsWith } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -234,9 +234,9 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   static override get(documentId: string, options?: Scene.Database.GetOptions): Scene.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Scene.Embedded.Name>(
-    name: CollectionName,
-  ): Scene.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseScene.Embedded.CollectionName>,
+  ): BaseScene.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends Scene.Embedded.CollectionName>(
     embeddedName: EmbeddedName,

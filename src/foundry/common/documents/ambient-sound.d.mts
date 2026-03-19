@@ -107,6 +107,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     options?: AmbientSoundDocument.Database.GetOptions,
   ): AmbientSoundDocument.Implementation | null;
 
+  /** @privateRemarks `AmbientSoundDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

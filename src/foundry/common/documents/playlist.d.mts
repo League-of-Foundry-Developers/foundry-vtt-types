@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, OverlapsWith } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -128,9 +128,9 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static override get(documentId: string, options?: Playlist.Database.GetOptions): Playlist.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Playlist.Embedded.Name>(
-    name: CollectionName,
-  ): Playlist.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BasePlaylist.Embedded.CollectionName>,
+  ): BasePlaylist.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends Playlist.Embedded.CollectionName>(
     embeddedName: EmbeddedName,

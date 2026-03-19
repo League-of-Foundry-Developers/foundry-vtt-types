@@ -119,6 +119,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     options?: PlaylistSound.Database.GetOptions,
   ): PlaylistSound.Implementation | null;
 
+  /** @privateRemarks `PlaylistSound`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

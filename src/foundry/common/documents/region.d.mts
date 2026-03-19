@@ -1,3 +1,4 @@
+import type { OverlapsWith } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "#common/data/fields.mjs";
@@ -109,10 +110,9 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     options?: RegionDocument.Database.GetOptions,
   ): RegionDocument.Implementation | null;
 
-  static override getCollectionName<CollectionName extends RegionDocument.Embedded.Name>(
-    name: CollectionName,
-  ): RegionDocument.Embedded.CollectionNameOf<CollectionName> | null;
-
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseRegion.Embedded.CollectionName>,
+  ): BaseRegion.Embedded.GetCollectionNameReturn<Name>;
   override getEmbeddedCollection<EmbeddedName extends RegionDocument.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
   ): RegionDocument.Embedded.CollectionFor<EmbeddedName>;

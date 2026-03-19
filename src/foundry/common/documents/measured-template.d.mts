@@ -140,6 +140,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     options?: MeasuredTemplateDocument.Database.GetOptions,
   ): MeasuredTemplateDocument.Implementation | null;
 
+  /** @privateRemarks `MeasuredTemplateDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

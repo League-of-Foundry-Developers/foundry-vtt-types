@@ -128,6 +128,7 @@ declare abstract class BaseCombatant<
 
   static override get(documentId: string, options?: Combatant.Database.GetOptions): Combatant.Implementation | null;
 
+  /** @privateRemarks `Combatant`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

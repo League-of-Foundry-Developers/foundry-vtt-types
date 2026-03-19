@@ -144,6 +144,7 @@ declare abstract class BaseTableResult<
 
   static override get(documentId: string, options?: TableResult.Database.GetOptions): TableResult.Implementation | null;
 
+  /** @privateRemarks `TableResult`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

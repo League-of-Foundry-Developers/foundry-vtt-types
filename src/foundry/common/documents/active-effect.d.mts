@@ -151,6 +151,7 @@ declare abstract class BaseActiveEffect<
     options?: ActiveEffect.Database.GetOptions,
   ): ActiveEffect.Implementation | null;
 
+  /** @privateRemarks `ActiveEffect`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now

@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, OverlapsWith } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
@@ -131,9 +131,9 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     options?: JournalEntry.Database.GetOptions,
   ): JournalEntry.Implementation | null;
 
-  static override getCollectionName<CollectionName extends JournalEntry.Embedded.Name>(
-    name: CollectionName,
-  ): JournalEntry.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseJournalEntry.Embedded.CollectionName>,
+  ): BaseJournalEntry.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends JournalEntry.Embedded.CollectionName>(
     embeddedName: EmbeddedName,

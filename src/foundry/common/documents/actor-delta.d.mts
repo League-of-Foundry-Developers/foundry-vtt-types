@@ -1,4 +1,4 @@
-import type { AnyMutableObject, Identity } from "#utils";
+import type { AnyMutableObject, Identity, OverlapsWith } from "#utils";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type DataModel from "../abstract/data.d.mts";
@@ -175,9 +175,9 @@ declare abstract class BaseActorDelta<
 
   static override get(documentId: string, options?: ActorDelta.Database.GetOptions): ActorDelta.Implementation | null;
 
-  static override getCollectionName<CollectionName extends ActorDelta.Embedded.Name>(
-    name: CollectionName,
-  ): ActorDelta.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseActorDelta.Embedded.CollectionName>,
+  ): BaseActorDelta.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends ActorDelta.Embedded.CollectionName>(
     embeddedName: EmbeddedName,

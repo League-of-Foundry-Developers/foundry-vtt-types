@@ -152,6 +152,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     options?: TileDocument.Database.GetOptions,
   ): TileDocument.Implementation | null;
 
+  /** @privateRemarks `TileDocument`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
