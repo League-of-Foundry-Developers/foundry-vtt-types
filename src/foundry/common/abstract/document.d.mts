@@ -4,32 +4,33 @@ import type {
   ConfiguredMetadata,
 } from "../../../types/documentConfiguration.d.mts";
 import type {
+  AllKeysOf,
+  AnyMutableObject,
+  AnyObject,
+  Brand,
+  ConcreteKeys,
+  EmptyObject,
+  FixedInstanceType,
   GetKey,
+  Identity,
+  InexactPartial,
   InterfaceToObject,
   MakeConform,
-  MustConform,
-  ToMethod,
-  AnyObject,
-  EmptyObject,
-  InexactPartial,
-  RemoveIndexSignatures,
-  FixedInstanceType,
-  NullishProps,
-  PickValue,
-  Identity,
-  Brand,
-  AnyMutableObject,
+  MaybeArray,
   MaybePromise,
-  SimpleMerge,
-  PrettifyType,
-  AllKeysOf,
+  MustConform,
+  NullishProps,
   Override,
-  ConcreteKeys,
+  PickValue,
+  PrettifyType,
+  RemoveIndexSignatures,
+  SimpleMerge,
+  ToMethod,
 } from "#utils";
 import type * as CONST from "../constants.mts";
 import type {
-  DataSchema,
   DataField,
+  DataSchema,
   DocumentStatsField,
   EmbeddedCollectionField,
   EmbeddedDocumentField,
@@ -500,35 +501,38 @@ declare abstract class Document<
    * Create a new Document using provided input data, saving it to the database.
    * @see {@linkcode Document.createDocuments}
    * @param data      - Initial data used to create this Document, or a Document instance to persist.
-   * @param operation - Parameters of the creation operation
-   *                    (default: `{}`)
+   * @param operation - Parameters of the creation operation (default: `{}`)
    * @returns The created Document instance
    *
-   * @example Create a World-level Item
-   * ```typescript
+   * @example
+   * Create a World-level Item
+   * ```js
    * const data = [{name: "Special Sword", type: "weapon"}];
-   * const created = await Item.create(data);
+   * const created = await Item.implementation.create(data);
    * ```
    *
-   * @example Create an Actor-owned Item
-   * ```typescript
+   * @example
+   * Create an Actor-owned Item
+   * ```js
    * const data = [{name: "Special Sword", type: "weapon"}];
    * const actor = game.actors.getName("My Hero");
-   * const created = await Item.create(data, {parent: actor});
+   * const created = await Item.implementation.create(data, {parent: actor});
    * ```
    *
-   * @example Create an Item in a Compendium pack
-   * ```typescript
+   * @example
+   * Create an Item in a Compendium pack
+   * ```js
    * const data = [{name: "Special Sword", type: "weapon"}];
-   * const created = await Item.create(data, {pack: "mymodule.mypack"});
+   * const created = await Item.implementation.create(data, {pack: "mymodule.mypack"});
    * ```
    *
-   * @remarks If the document creation is skipped by a hook or `_preCreate` then `undefined` is
-   * returned.
+   * @remarks If the document creation is skipped by a hook or `_preCreate` then `undefined` is returned.
+   *
+   * `data` can be a `CreateData` object, an instance of this specific Document, or a possibly-mixed array of those types.
+   * If an array is passed, an array will be returned.
    */
   // Note: This uses `never` because it's unsound to try to call `Document.create` directly.
-  // TODO: This can take an array of data and return an array of documents, in addition to its current typing
-  static create(data: never, operation?: never): Promise<Document.Any | undefined>;
+  static create(data: never, operation?: never): Promise<MaybeArray<Document.Any> | undefined>;
 
   /**
    * Update this Document using incremental data, saving it to the database.
