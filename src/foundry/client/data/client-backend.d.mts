@@ -38,7 +38,7 @@ declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
    */
   activateSocketListeners(socket: Game["socket"]): void;
 
-  override getFlagScopes(): ClientDatabaseBackend.FlagScopes[];
+  override getFlagScopes(): ClientDatabaseBackend.FlagScope[];
 
   // TODO: consider adding configuration for pack names
   override getCompendiumScopes(): string[];
@@ -52,19 +52,6 @@ declare namespace ClientDatabaseBackend {
   interface Any extends AnyClientDatabaseBackend {}
   interface AnyConstructor extends Identity<typeof AnyClientDatabaseBackend> {}
 
-  type FlagScopes =
-    | "core"
-    | "world"
-    | (foundry.packages.System.Id & {})
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-    | keyof RequiredModules
-    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents, @typescript-eslint/no-redundant-type-constituents
-    | keyof ModuleConfig
-    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
-    | (string & {});
-}
-
-declare namespace ClientDatabaseBackend {
   type FlagScope =
     | "core"
     | "world"
