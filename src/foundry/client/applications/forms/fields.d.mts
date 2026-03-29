@@ -237,10 +237,7 @@ export type MultiSelectInputReturn<Config extends MultiSelectInputConfig> = _Mul
 /** @internal */
 type _MultiSelectInputReturn<Type extends MultiSelectInputConfig["type"]> = Type extends "checkboxes"
   ? HTMLMultiCheckboxElement
-  : // all values other than "checkboxes" are effectively the same
-    Type extends Exclude<MultiSelectInputConfig["type"], "checkboxes">
-    ? HTMLMultiSelectElement
-    : never;
+  : HTMLMultiSelectElement;
 
 /**
  * Create a `<multi-select>` or `<multi-checkbox>` element for fields supporting multiple choices.
@@ -472,10 +469,12 @@ export interface CreateFontAwesomeIconOptions extends InexactPartial<_CreateFont
  * @param options - Additional options to configure the icon
  * @returns The configured FontAwesome icon element
  * @see {@link https://fontawesome.com/v6/search}
- * @remarks While Foundry has a license to use the FontAwesome Pro icons, you, the user reading this, do not, by default. For legal reasons,
- * if you don't positively know you're licensed to use more, stick to the `Free` list on the page linked above (you used to be able to link
- * directly to a page showing only free icons, but FA broke that recently; the button is top right above the icon grid at time of writing).
- * Said link has been changed from Foundry's to point to the FA v6.7.2 list, as that's what's shipped with Foundry in both 13.351 and 14.352.
+ * @remarks While we (the FVTT-Types devs) are neither lawyers generally nor your lawyer specifically, based on our understanding of the
+ * relevant licenses and information received from Foundry staff: Foundry has a license to use the FontAwesome Pro icons, you, the user
+ * reading this, do not, by default. If you don't positively know you're licensed to use more, for safety we recommending sticking to the
+ * `Free` list on the page linked above (you used to be able to link directly to a page showing only free icons, but FA broke that recently;
+ * the button is top right above the icon grid at time of writing). Said link has been changed from Foundry's to point to the FA v6.7.2 list,
+ * as that's what's shipped with Foundry in both 13.351 and 14.358.
  *
  * `glyph` will take identifiers with or without the `fa-` prefix.
  *
