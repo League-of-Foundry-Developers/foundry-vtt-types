@@ -35,14 +35,14 @@ declare class Playlists extends WorldCollection<"Playlist"> {
    */
   _onChangeScene(scene: Scene.Stored | null, priorScene: Scene.Stored | null): Promise<void>;
 
-  /** @privateRemarks Fake override for the purpose of typing `options` */
+  // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.RegisterSheetOptions<Playlist.ImplementationClass>,
   ): void;
 
-  /** @privateRemarks Fake override for the purpose of typing `options` */
+  // Fake override for the purpose of typing `options`.
   static override unregisterSheet(
     scope: string,
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,

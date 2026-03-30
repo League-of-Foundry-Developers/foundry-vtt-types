@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity, InexactPartial } from "#utils";
+import type { DeepPartial, Identity, InexactPartial, IntentionalPartial } from "#utils";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type {
   ApplicationV2,
@@ -123,57 +123,29 @@ declare namespace DocumentSheetConfig {
   /**
    * @remarks `document` is omitted/extended from the `DocumentSheetV2` context because it is (sometimes)
    * overwritten by {@linkcode DocumentSheetConfig._prepareFormContext | #_prepareFormContext}.
+   * Additional part context is `IntentionalPartial`ed because its all conditional.
    */
   interface RenderContext<Document extends Document.Any>
-    extends HandlebarsApplicationMixin.RenderContext, Omit<DocumentSheetV2.RenderContext<Document>, "document"> {
-    /** @remarks Added by `#_preparePartContext` */
-    partId?: "form" | "footer" | (string & {});
-
+    extends
+      HandlebarsApplicationMixin.RenderContext,
+      Omit<DocumentSheetV2.RenderContext<Document>, "document">,
+      IntentionalPartial<PreparePartContext> {
     /**
      * @remarks {@linkcode DocumentSheetConfig._prepareFormContext | #_prepareFormContext}
      * overwrites the value from {@linkcode DocumentSheetV2._prepareContext | DocumentSheetV2#_prepareContext}.
      */
-    document:
-      | Document
-      | {
-          sheet: {
-            field: fields.StringField<{
-              label: "SHEETS.ThisSheet";
+    document: Document | DocumentSheetConfig.DocumentContextOverride;
+  }
 
-              hint: "SHEETS.DocumentSheetHint";
+  interface PreparePartContext
+    extends IntentionalPartial<PrepareFooterContext>, IntentionalPartial<PrepareFormContext> {
+    /** @remarks Added by `#_preparePartContext` */
+    partId: "form" | "footer" | (string & {});
+  }
 
-              /** @remarks `choices` is `{ sheetClasses } = `{@linkcode DocumentSheetConfig.getSheetClassesForSubType}`(documentName, type)` */
-              choices: Record<string, string>;
-            }>;
-
-            name: "sheetClass";
-
-            /** @remarks Either the instance override stored in `flags.core.sheetClass`, or `""` */
-            value: string;
-          };
-
-          theme: {
-            field: fields.StringField<{
-              label: "SHEETS.Theme";
-
-              hint: "SHEETS.ThemeHint";
-
-              /** @remarks `CONFIG[documentName]["sheetClasses"][type]?.themes ?? {}` */
-              choices: Record<string, string>;
-            }>;
-
-            name: "theme";
-
-            /** @remarks `game.settings.get("core", "sheetThemes").documents?.[document.uuid] || ""` */
-            value: string;
-
-            /** @remarks `true` if the current sheet class for this document is `AppV1` */
-            disabled: boolean;
-          };
-        };
-
-    /** @remarks Added by {@linkcode DocumentSheetConfig._prepareFormContext | #_prepareFormContext} */
-    defaults?: {
+  /** @remarks Added by {@linkcode DocumentSheetConfig._prepareFormContext | #_prepareFormContext} */
+  interface PrepareFormContext {
+    defaults: {
       sheet: {
         field: fields.StringField<{
           label: "SHEETS.DefaultSheet";
@@ -217,9 +189,49 @@ declare namespace DocumentSheetConfig {
         disabled: boolean;
       };
     };
+  }
 
-    /** @remarks Added by {@linkcode DocumentSheetConfig._prepareFooterContext | #_prepareFooterContext}. */
-    buttons?: { type: string; icon: string; label: string }[];
+  /** @remarks Added by {@linkcode DocumentSheetConfig._prepareFooterContext | #_prepareFooterContext}. */
+  interface PrepareFooterContext {
+    buttons: { type: string; icon: string; label: string }[];
+  }
+
+  /** The type {@linkcode DocumentSheetConfig._prepareFormContext | #_prepareFormContext} overwrites `context.document` with */
+  interface DocumentContextOverride {
+    sheet: {
+      field: fields.StringField<{
+        label: "SHEETS.ThisSheet";
+
+        hint: "SHEETS.DocumentSheetHint";
+
+        /** @remarks `choices` is `{ sheetClasses } = `{@linkcode DocumentSheetConfig.getSheetClassesForSubType}`(documentName, type)` */
+        choices: Record<string, string>;
+      }>;
+
+      name: "sheetClass";
+
+      /** @remarks Either the instance override stored in `flags.core.sheetClass`, or `""` */
+      value: string;
+    };
+
+    theme: {
+      field: fields.StringField<{
+        label: "SHEETS.Theme";
+
+        hint: "SHEETS.ThemeHint";
+
+        /** @remarks `CONFIG[documentName]["sheetClasses"][type]?.themes ?? {}` */
+        choices: Record<string, string>;
+      }>;
+
+      name: "theme";
+
+      /** @remarks `game.settings.get("core", "sheetThemes").documents?.[document.uuid] || ""` */
+      value: string;
+
+      /** @remarks `true` if the current sheet class for this document is `AppV1` */
+      disabled: boolean;
+    };
   }
 
   interface Configuration<Document extends Document.Any>

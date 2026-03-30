@@ -37,14 +37,14 @@ declare class Folders extends WorldCollection<"Folder"> {
   /** @deprecated Foundry made this method truly private in v13. This warning will be removed in v14. */
   protected _refreshJournalEntrySheets(): never;
 
-  /** @privateRemarks Fake override for the purpose of typing `options` */
+  // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.RegisterSheetOptions<Folder.ImplementationClass>,
   ): void;
 
-  /** @privateRemarks Fake override for the purpose of typing `options` */
+  // Fake override for the purpose of typing `options`.
   static override unregisterSheet(
     scope: string,
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,

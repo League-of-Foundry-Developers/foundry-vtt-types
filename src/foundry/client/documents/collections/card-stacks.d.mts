@@ -17,14 +17,14 @@ declare class CardStacks extends WorldCollection<"Cards"> {
   /** @privateRemarks Fake type override */
   static override get instance(): CardStacks.Implementation;
 
-  /** @privateRemarks Fake override for the purpose of typing `options` */
+  // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.RegisterSheetOptions<Cards.ImplementationClass>,
   ): void;
 
-  /** @privateRemarks Fake override for the purpose of typing `options` */
+  // Fake override for the purpose of typing `options`.
   static override unregisterSheet(
     scope: string,
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,

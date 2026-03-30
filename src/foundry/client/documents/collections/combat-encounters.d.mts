@@ -42,14 +42,14 @@ declare class CombatEncounters extends WorldCollection<"Combat"> {
   /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
   protected _onDeleteToken(...args: never): never;
 
-  /** @privateRemarks Fake override for the purpose of typing `options` */
+  // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.RegisterSheetOptions<Combat.ImplementationClass>,
   ): void;
 
-  /** @privateRemarks Fake override for the purpose of typing `options` */
+  // Fake override for the purpose of typing `options`.
   static override unregisterSheet(
     scope: string,
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,

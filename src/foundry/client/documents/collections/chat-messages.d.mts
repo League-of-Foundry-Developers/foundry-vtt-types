@@ -39,14 +39,14 @@ declare class ChatMessages extends WorldCollection<"ChatMessage"> {
    */
   flush(): Promise<ChatMessages.FlushDialogReturn>;
 
-  /** @privateRemarks Fake override for the purpose of typing `options` */
+  // Fake override for the purpose of typing `options`.
   static override registerSheet(
     scope: string,
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
     options?: DocumentSheetConfig.RegisterSheetOptions<ChatMessage.ImplementationClass>,
   ): void;
 
-  /** @privateRemarks Fake override for the purpose of typing `options` */
+  // Fake override for the purpose of typing `options`.
   static override unregisterSheet(
     scope: string,
     sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,

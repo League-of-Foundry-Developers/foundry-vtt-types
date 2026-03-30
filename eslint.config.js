@@ -265,6 +265,7 @@ for (const placeable of placeables) {
   };
 }
 
+/** Imports that aren't allowed in `/src/**` *or* `/tests/**` */
 const noRestrictedImportsPaths = [
   {
     name: "type-fest",
@@ -272,7 +273,8 @@ const noRestrictedImportsPaths = [
   },
 ];
 
-const testsOnlyPaths = [
+/** Imports that only aren't allowed in `/src/**` */
+const pathsOnlyAllowedInTests = [
   {
     name: "#tests",
     message: "Importing from tests is not supported outside tests/",
@@ -358,7 +360,7 @@ const rules = [
       "@typescript-eslint/no-restricted-imports": [
         "error",
         {
-          paths: noRestrictedImportsPaths.concat(testsOnlyPaths),
+          paths: noRestrictedImportsPaths.concat(pathsOnlyAllowedInTests),
         },
       ],
       "@typescript-eslint/prefer-namespace-keyword": "error",
