@@ -1,8 +1,6 @@
-import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * A Document that represents a grouping of individual Combatants in a Combat.
@@ -64,7 +62,7 @@ declare abstract class BaseCombatantGroup<
 
   override readonly parentCollection: CombatantGroup.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): CombatantGroup.ImplementationClass;
 
@@ -78,7 +76,7 @@ declare abstract class BaseCombatantGroup<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): CombatantGroup.Hierarchy;
+  static override readonly hierarchy: CombatantGroup.Hierarchy;
 
   override system: CombatantGroup.SystemOfType<SubType>;
 
@@ -118,6 +116,7 @@ declare abstract class BaseCombatantGroup<
     options?: CombatantGroup.Database.GetOptions,
   ): CombatantGroup.Implementation | null;
 
+  /** @privateRemarks `CombatantGroup`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
@@ -205,38 +204,6 @@ declare abstract class BaseCombatantGroup<
     operation: CombatantGroup.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
 
   /**
    * @deprecated since v12, will be removed in v14

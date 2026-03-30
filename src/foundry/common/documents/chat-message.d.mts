@@ -2,7 +2,6 @@ import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The ChatMessage Document.
@@ -90,7 +89,7 @@ declare abstract class BaseChatMessage<
 
   override readonly parentCollection: ChatMessage.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): ChatMessage.ImplementationClass;
 
@@ -104,7 +103,7 @@ declare abstract class BaseChatMessage<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): ChatMessage.Hierarchy;
+  static override readonly hierarchy: ChatMessage.Hierarchy;
 
   override system: ChatMessage.SystemOfType<SubType>;
 
@@ -141,6 +140,7 @@ declare abstract class BaseChatMessage<
 
   static override get(documentId: string, options?: ChatMessage.Database.GetOptions): ChatMessage.Implementation | null;
 
+  /** @privateRemarks `ChatMessage`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
@@ -230,38 +230,6 @@ declare abstract class BaseChatMessage<
     operation: ChatMessage.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
 
   /**
    * @deprecated since v12, will be removed in v14

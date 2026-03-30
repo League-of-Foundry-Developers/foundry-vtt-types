@@ -1,8 +1,6 @@
-import type { AnyMutableObject } from "#utils";
 import type DataModel from "../abstract/data.d.mts";
 import type Document from "../abstract/document.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Document definition for a Wall.
@@ -11,7 +9,7 @@ import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any> {
+declare abstract class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the `BaseWall`
    * @param context - Construction context options
@@ -61,7 +59,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   override readonly parentCollection: WallDocument.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): WallDocument.ImplementationClass;
 
@@ -73,9 +71,9 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): WallDocument.Hierarchy;
+  static override readonly hierarchy: WallDocument.Hierarchy;
 
   override parent: WallDocument.Parent;
 
@@ -113,6 +111,7 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     options?: WallDocument.Database.GetOptions,
   ): WallDocument.Implementation | null;
 
+  /** @privateRemarks `Wall`s have no embedded collections, so this always returns `null` */
   static override getCollectionName(name: string): null;
 
   // Same as Document for now
@@ -202,38 +201,6 @@ declare class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any>
     operation: WallDocument.Database.OnDeleteOperation,
     user: User.Implementation,
   ): Promise<void>;
-
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
 
   /**
    * @deprecated since v12, will be removed in v14
