@@ -30,7 +30,7 @@ declare class HTMLHueSelectorSlider extends AbstractFormInputElement<number> {
 
   /**
    * @remarks
-   * @throws If the provided value is outside the range `[0,1]`
+   * @throws If the provided value is outside the range `[0, 1]`
    */
   protected override _setValue(value: number): void;
 

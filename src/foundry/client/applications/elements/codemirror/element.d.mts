@@ -13,7 +13,7 @@ import type { fields } from "#common/data/_module.d.mts";
 declare class HTMLCodeMirrorElement extends AbstractFormInputElement<string> {
   /**
    * @remarks This constructor is protected because additional work must be done after creation for this element to be valid in the DOM.
-   * Use {@linkcode HTMLCodeMirrorElement.create}  instead.
+   * Use {@linkcode HTMLCodeMirrorElement.create} instead.
    */
   protected constructor(options?: HTMLCodeMirrorElement.Options);
 
