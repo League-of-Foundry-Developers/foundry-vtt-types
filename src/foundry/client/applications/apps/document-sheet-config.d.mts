@@ -133,44 +133,7 @@ declare namespace DocumentSheetConfig {
      * @remarks {@linkcode DocumentSheetConfig._prepareFormContext | #_prepareFormContext}
      * overwrites the value from {@linkcode DocumentSheetV2._prepareContext | DocumentSheetV2#_prepareContext}.
      */
-    document:
-      | Document
-      | {
-          sheet: {
-            field: fields.StringField<{
-              label: "SHEETS.ThisSheet";
-
-              hint: "SHEETS.DocumentSheetHint";
-
-              /** @remarks `choices` is `{ sheetClasses } = `{@linkcode DocumentSheetConfig.getSheetClassesForSubType}`(documentName, type)` */
-              choices: Record<string, string>;
-            }>;
-
-            name: "sheetClass";
-
-            /** @remarks Either the instance override stored in `flags.core.sheetClass`, or `""` */
-            value: string;
-          };
-
-          theme: {
-            field: fields.StringField<{
-              label: "SHEETS.Theme";
-
-              hint: "SHEETS.ThemeHint";
-
-              /** @remarks `CONFIG[documentName]["sheetClasses"][type]?.themes ?? {}` */
-              choices: Record<string, string>;
-            }>;
-
-            name: "theme";
-
-            /** @remarks `game.settings.get("core", "sheetThemes").documents?.[document.uuid] || ""` */
-            value: string;
-
-            /** @remarks `true` if the current sheet class for this document is `AppV1` */
-            disabled: boolean;
-          };
-        };
+    document: Document | DocumentSheetConfig.DocumentContext;
 
     /** @remarks Added by {@linkcode DocumentSheetConfig._prepareFormContext | #_prepareFormContext} */
     defaults?: {
@@ -220,6 +183,44 @@ declare namespace DocumentSheetConfig {
 
     /** @remarks Added by {@linkcode DocumentSheetConfig._prepareFooterContext | #_prepareFooterContext}. */
     buttons?: { type: string; icon: string; label: string }[];
+  }
+
+  /** The type {@linkcode DocumentSheetConfig._prepareFormContext | #_prepareFormContext} overwrites `context.document` with */
+  interface DocumentContext {
+    sheet: {
+      field: fields.StringField<{
+        label: "SHEETS.ThisSheet";
+
+        hint: "SHEETS.DocumentSheetHint";
+
+        /** @remarks `choices` is `{ sheetClasses } = `{@linkcode DocumentSheetConfig.getSheetClassesForSubType}`(documentName, type)` */
+        choices: Record<string, string>;
+      }>;
+
+      name: "sheetClass";
+
+      /** @remarks Either the instance override stored in `flags.core.sheetClass`, or `""` */
+      value: string;
+    };
+
+    theme: {
+      field: fields.StringField<{
+        label: "SHEETS.Theme";
+
+        hint: "SHEETS.ThemeHint";
+
+        /** @remarks `CONFIG[documentName]["sheetClasses"][type]?.themes ?? {}` */
+        choices: Record<string, string>;
+      }>;
+
+      name: "theme";
+
+      /** @remarks `game.settings.get("core", "sheetThemes").documents?.[document.uuid] || ""` */
+      value: string;
+
+      /** @remarks `true` if the current sheet class for this document is `AppV1` */
+      disabled: boolean;
+    };
   }
 
   interface Configuration<Document extends Document.Any>

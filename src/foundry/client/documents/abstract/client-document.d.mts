@@ -108,7 +108,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
 
   /**
    * Obtain the Application class constructor which should be used to configure this Document.
-   * @remarks Nothing in this method's body prevents returning whatever is put into `CONFIG[doc][sheetClasses][type].cls`,
+   * @remarks Nothing in this method's body prevents returning whatever is put into `CONFIG[doc]["sheetClasses"][type].cls`,
    * but {@linkcode InternalClientDocument.sheet | #sheet} will return `null` if the found class does not extent either `Application` (v1)
    * or `DocumentSheetV2`, so that's the constraint used here
    */

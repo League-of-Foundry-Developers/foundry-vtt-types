@@ -34,6 +34,7 @@ declare global {
       IntentionalPartial<_SheetClasses<Name>>
     >;
 
+    /** @internal */
     type _SheetClasses<Name extends Document.Type> = Record<
       Document.SubTypesOf<Name>,
       Record<string, DocumentSheetConfig.SheetRegistrationDescriptor<Document.ImplementationClassFor<Name>>>

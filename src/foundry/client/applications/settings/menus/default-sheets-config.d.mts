@@ -20,7 +20,7 @@ declare class DefaultSheetsConfig<
 > extends CategoryBrowser<Entry, RenderContext, Configuration, RenderOptions> {
   /**
    * The Default Sheets setting name
-   * @remarks Foundry does nothing to make this readonly, but they do type is as the literal and it's clearly assumed not to change.
+   * @remarks This is mutable at runtime, but Foundry types it as the literal, and it is not intended to ever change.
    */
   static SETTING: "sheetClasses";
 
