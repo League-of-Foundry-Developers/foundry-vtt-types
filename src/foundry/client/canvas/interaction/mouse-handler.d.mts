@@ -325,7 +325,7 @@ declare namespace MouseInteractionManager {
 
   type PermissionFunction<ObjectFor extends PIXI.Container = PIXI.Container> = (
     this: ObjectFor,
-    user: User.Implementation,
+    user: User.Stored,
     event: MouseInteractionManager.Event<ObjectFor>,
   ) => boolean;
 
