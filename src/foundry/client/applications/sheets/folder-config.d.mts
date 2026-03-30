@@ -1,4 +1,4 @@
-import type { DeepPartial, Identity, MaybePromise } from "#utils";
+import type { DeepPartial, Identity } from "#utils";
 import type {
   ApplicationV2,
   DocumentSheetV2,
@@ -111,7 +111,7 @@ declare namespace FolderConfig {
 
   interface RenderOptions extends HandlebarsApplicationMixin.RenderOptions, DocumentSheetV2.RenderOptions {}
 
-  type ResolveFunction = (doc: ClientDocumentMixin.AnyMixed | null) => MaybePromise<void>;
+  type ResolveFunction = (doc: ClientDocumentMixin.AnyMixed | null) => void;
 }
 
 declare abstract class AnyFolderConfig extends FolderConfig<
