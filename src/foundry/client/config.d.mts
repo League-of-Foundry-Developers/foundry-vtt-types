@@ -25,8 +25,6 @@ import type { CanvasAnimation } from "#client/canvas/animation/_module.d.mts";
 import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 import type { SimplePeerAVClient } from "#client/av/clients/_module.d.mts";
 
-// import SimplePeerAVClient = foundry.av.clients.SimplePeerAVClient;
-
 declare global {
   namespace CONFIG {
     type SheetClasses<Name extends Document.Type> = InitializedOn<
