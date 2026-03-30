@@ -5,7 +5,8 @@ import Document = foundry.abstract.Document;
 import Canvas = foundry.canvas.Canvas;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import ControlIcon = foundry.canvas.containers.ControlIcon;
-import FormApplication = foundry.appv1.api.FormApplication;
+import Application = foundry.appv1.api.Application;
+import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 import LightingLayer = foundry.canvas.layers.LightingLayer;
 import MouseInteractionManager = foundry.canvas.interaction.MouseInteractionManager;
 
@@ -45,7 +46,7 @@ expectTypeOf(placeable.hasPreview).toBeBoolean();
 expectTypeOf(placeable.layer).toEqualTypeOf<LightingLayer.Any>();
 
 // TODO: investigate AmbientLightDocument#sheet to see if this should be a more narrowed type
-expectTypeOf(placeable.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
+expectTypeOf(placeable.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
 
 expectTypeOf(placeable.controlled).toBeBoolean();
 expectTypeOf(placeable.hover).toBeBoolean();
