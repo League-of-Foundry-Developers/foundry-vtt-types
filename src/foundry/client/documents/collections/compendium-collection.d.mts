@@ -99,8 +99,9 @@ declare class CompendiumCollection<
 
   /**
    * Assign this CompendiumCollection to be organized within a specific Folder.
-   * @param folder - The desired Folder within the World or null to clear the folder
+   * @param folder - The desired Folder within the World or `null` to clear the folder
    * @returns A promise which resolves once the transaction is complete
+   * @remarks Can either pass a `Folder` instance or the ID of one in {@linkcode foundry.Game.folders | game.folders}
    */
   setFolder(folder: Folder.Stored<"Compendium"> | string | null): Promise<void>;
 
@@ -194,6 +195,7 @@ declare class CompendiumCollection<
    * Get the ownership level that a User has for this Compendium pack.
    * @param user - The user being tested (default: {@linkcode Game.user | game.user})
    * @returns The ownership level in {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}
+   * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} methods work without error, so `Implementation` over `Stored`.
    */
   getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
@@ -203,6 +205,7 @@ declare class CompendiumCollection<
    * @param permission - The permission level from {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS} to test
    * @param options    - Additional options involved in the permission test
    * @returns Does the user have this permission level over the Compendium pack?
+   * @privateRemarks Temporary `User`s still have {@linkcode User.role | role}s, so `Implementation` over `Stored`.
    */
   testUserPermission(
     user: User.Implementation,
@@ -692,7 +695,7 @@ export default CompendiumCollection;
 
 type IsComparable<T> = T extends boolean | string | number | bigint | symbol | null | undefined ? true : false;
 
-type IndexTypeForMetadata<Type extends CompendiumCollection.DocumentName> = foundry.utils.Collection<
+type IndexTypeForMetadata<Type extends CompendiumCollection.DocumentName> = Collection<
   CompendiumCollection.IndexEntry<Type>
 >;
 
