@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { CanvasBackgroundAlterationEffects, CanvasLayer } from "#client/canvas/layers/_module.mjs";
+
+import CanvasBackgroundAlterationEffects = foundry.canvas.layers.CanvasBackgroundAlterationEffects;
+import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 
 const layer = new CanvasBackgroundAlterationEffects();
 

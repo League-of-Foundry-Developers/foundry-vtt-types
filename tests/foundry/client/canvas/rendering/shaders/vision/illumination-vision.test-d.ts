@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { AbstractBaseShader, IlluminationVisionShader } from "#client/canvas/rendering/shaders/_module.mjs";
+
+import IlluminationVisionShader = foundry.canvas.rendering.shaders.IlluminationVisionShader;
+import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 
 const IVS = IlluminationVisionShader;
 let myIVS;

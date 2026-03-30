@@ -37,6 +37,12 @@
     },
     "#configuration": {
       "import": "./src/configuration/index.d.mts"
+    },
+    "#tests/*": {
+      "import": "./src/foundry/*"
+    },
+    "#testUtils": {
+      "import": "./tests/utils.ts"
     }
   },
   "scripts": {
