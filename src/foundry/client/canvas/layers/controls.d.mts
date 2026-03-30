@@ -169,7 +169,7 @@ declare class ControlsLayer extends InteractionLayer {
   /**
    * Create and draw the Cursor object for a given User
    * @param user - The User document for whom to draw the cursor Container
-   * @privateRemarks Despite {@linkcode Cursor}s allowing temporary users, doing so via this method would set `this.#cursors[null]`
+   * @privateRemarks Despite {@linkcode Cursor}s allowing temporary users, doing so via this method would set `this.#cursors[null]`.
    */
   drawCursor(user: User.Stored): Cursor;
 
@@ -177,7 +177,7 @@ declare class ControlsLayer extends InteractionLayer {
    * Update the cursor when the user moves to a new position
    * @param user     - The User for whom to update the cursor
    * @param position - The new cursor position
-   * @privateRemarks See {@linkcode drawCursor} remarks
+   * @privateRemarks See {@linkcode drawCursor} remarks.
    */
   updateCursor(user: User.Stored, position: Canvas.Point | null): void;
 

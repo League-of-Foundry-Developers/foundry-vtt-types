@@ -98,7 +98,7 @@ declare class CompendiumCollection<
 
   /**
    * Assign this CompendiumCollection to be organized within a specific Folder.
-   *  @param folder - The desired Folder within the World or `null` to clear the folder
+   * @param folder - The desired Folder within the World or `null` to clear the folder
    * @returns A promise which resolves once the transaction is complete
    * @remarks Can either pass a `Folder` instance or the ID of one in {@linkcode foundry.Game.folders | game.folders}
    */

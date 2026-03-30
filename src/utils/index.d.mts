@@ -1262,7 +1262,7 @@ export type DiscriminatedUnion<U extends object> = _DiscriminatedUnion<U, AllKey
 // Note(LukeAbby): The `extends object` is effectively the same as `extends unknown` but used here
 // to keep `Document.SystemOfType<Document.ModuleSubType>` from being `unknown` in dependencies.
 // Inlining `Extract<..., object>` by comparison causes issues, specifically in not counting as
-// covaraint. This isn't an ideal change to make but it works.
+// covariant. This isn't an ideal change to make but it works.
 type _DiscriminatedUnion<U extends object, AllKeys extends AllKeysOf<U>> = U extends object
   ? [Exclude<AllKeys, keyof U>] extends [never]
     ? U
