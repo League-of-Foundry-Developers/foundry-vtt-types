@@ -267,14 +267,14 @@ export interface AllHooks extends DynamicHooks {
   /**
    * A hook event that fires as Foundry is initializing, right before any initialization tasks have begun.
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Game.initialize | `Game#initialize`}
+   * @see {@linkcode Game.initialize | Game#initialize}
    */
   init: () => void;
 
   /**
    * A hook event that fires once Localization translations have been loaded and are ready for use.
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Localization.initialize | `Localization#initialize`}
+   * @see {@linkcode Localization.initialize | Localization#initialize}
    */
   i18nInit: () => void;
 
@@ -283,14 +283,14 @@ export interface AllHooks extends DynamicHooks {
    * before the game state has been set up. Fires before any Documents, UI
    * applications, or the Canvas have been initialized.
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Game.setupGame | `Game#setupGame`}
+   * @see {@linkcode Game.setupGame | Game#setupGame}
    */
   setup: () => void;
 
   /**
    * A hook event that fires when the game is fully ready.
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Game.setupGame | `Game#setupGame`}
+   * @see {@linkcode Game.setupGame | Game#setupGame}
    */
   ready: () => void;
 
@@ -319,7 +319,7 @@ export interface AllHooks extends DynamicHooks {
    * @param paused  - Is the game now paused (true) or un-paused (false)
    * @param options - Options which modified the pause game request
    * @remarks
-   * @see {@link Game.togglePause | `Game#togglePause`}
+   * @see {@linkcode Game.togglePause | Game#togglePause}
    */
   pauseGame: (paused: boolean, pauseOptions: foundry.Game.TogglePauseOptions) => void;
 
@@ -330,7 +330,7 @@ export interface AllHooks extends DynamicHooks {
    * @param options   - Options passed from the requesting client where the change was made
    * @param userId    - The ID of the User who advanced the time
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link GameTime.onUpdateWorldTime | `GameTime#onUpdateWorldTime`}
+   * @see {@linkcode GameTime.onUpdateWorldTime | GameTime#onUpdateWorldTime}
    */
   updateWorldTime: (
     worldTime: number,
@@ -352,7 +352,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the Canvas is initialized.
    * @param canvas - the Canvas instance being initialized
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Canvas.draw | `Canvas#draw`}
+   * @see {@linkcode Canvas.draw | Canvas#draw}
    */
   canvasInit: (canvas: Canvas) => void;
 
@@ -362,8 +362,8 @@ export interface AllHooks extends DynamicHooks {
    * @param view   - The applied camera position
    * @remarks When called during animated panning, the callback is called on every tick.
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Canvas.pan | `Canvas#pan`}
-   * @see {@link Canvas.animatePan | `Canvas#animatePan`}
+   * @see {@linkcode Canvas.pan | Canvas#pan}
+   * @see {@linkcode Canvas.animatePan | Canvas#animatePan}
    */
   canvasPan: (canvas: Canvas, view: Canvas.ViewPosition) => void;
 
@@ -371,7 +371,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the Canvas is ready.
    * @param canvas - The Canvas which is now ready for use
    * @remarks This is called by {@linkcode Hooks.call}.
-   * @see {@link Canvas.draw | `Canvas#draw`}
+   * @see {@linkcode Canvas.draw | Canvas#draw}
    */
   canvasReady: (canvas: Canvas) => boolean | void;
 
@@ -403,7 +403,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when objects are highlighted on the canvas.
    * Callers may use this hook to apply their own modifications or enhancements to highlighted objects.
    * @param active - Is the highlight state now active
-   * @see {@link Canvas.highlightObjects | `Canvas#highlightObjects``}
+   * @see {@linkcode Canvas.highlightObjects | Canvas#highlightObjects}
    */
   highlightObjects: (active: boolean) => void;
 
@@ -419,7 +419,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the Scene controls are initialized.
    * @param controls - The SceneControl configurations
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link SceneControls._getControlButtons | `SceneControls#_getControlButtons`}
+   * @see {@linkcode SceneControls._getControlButtons | SceneControls#_getControlButtons}
    */
   getSceneControlButtons: (controls: Record<string, foundry.applications.ui.SceneControls.Control>) => void;
 
@@ -432,7 +432,7 @@ export interface AllHooks extends DynamicHooks {
    * @param slot   - The target hotbar slot
    * @remarks This is called by {@linkcode Hooks.call}.
    * @remarks An explicit return value of `false` prevents the Document being created.
-   * @see {@link Hotbar._onDrop | `Hotbar#_onDrop`}
+   * @see {@linkcode Hotbar._onDrop | Hotbar#_onDrop}
    */
   hotbarDrop: (hotbar: foundry.applications.ui.Hotbar.Any, data: Macro.DropData, slot: number) => boolean | void;
 
@@ -635,8 +635,8 @@ export interface AllHooks extends DynamicHooks {
    * @param sidebar   - The Sidebar application
    * @param collapsed - Whether the Sidebar is now collapsed or not
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Sidebar.expand | `Sidebar#expand`}
-   * @see {@link Sidebar.collapse | `Sidebar#collapse`}
+   * @see {@linkcode Sidebar.expand | Sidebar#expand}
+   * @see {@linkcode Sidebar.collapse | Sidebar#collapse}
    */
   collapseSidebar: (sidebar: foundry.applications.sidebar.Sidebar, collapsed: boolean) => void;
 
@@ -644,7 +644,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the Sidebar tab is changed.
    * @param app - The SidebarTab application which is now active
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Sidebar._onChangeTab | `Sidebar#_onChangeTab`}
+   * @see {@linkcode Sidebar._onChangeTab | Sidebar#_onChangeTab}
    */
   changeSidebarTab: (app: foundry.applications.sidebar.AbstractSidebarTab) => void;
 
@@ -653,12 +653,12 @@ export interface AllHooks extends DynamicHooks {
    * @param nav       - The SceneNavigation application
    * @param collapsed - Whether the navigation is now collapsed or not
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link SceneNavigation.expand | `SceneNavigation#expand`}
-   * @see {@link SceneNavigation.collapse | `SceneNavigation#collapse`}
+   * @see {@linkcode SceneNavigation.expand | SceneNavigation#expand}
+   * @see {@linkcode SceneNavigation.collapse | SceneNavigation#collapse}
    */
   collapseSceneNavigation: (nav: foundry.applications.ui.SceneNavigation, collapsed: boolean) => void;
 
-  /** Active Effects */
+  /* Active Effects */
 
   /**
    * A hook event that fires when a custom active effect is applied.
@@ -668,7 +668,7 @@ export interface AllHooks extends DynamicHooks {
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @remarks This is called by {@linkcode Hooks.call}.
-   * @see {@link ActiveEffect._applyCustom | `ActiveEffect#_applyCustom`}
+   * @see {@linkcode ActiveEffect._applyCustom | ActiveEffect#_applyCustom}
    */
   applyActiveEffect: (
     actor: Actor.Implementation,
@@ -791,8 +791,8 @@ export interface AllHooks extends DynamicHooks {
    * @param updates - The update delta that will be applied to the Token's actor
    * @returns whether the Actor should be updated
    * @remarks This is called by {@linkcode Hooks.call}.
-   * @see {@link Actor.modifyTokenAttribute | `Actor#modifyTokenAttribute`}
-   * @see {@link Actor.update | `Actor#update`}
+   * @see {@linkcode Actor.modifyTokenAttribute | Actor#modifyTokenAttribute}
+   * @see {@linkcode Actor.update | Actor#update}
    */
   modifyTokenAttribute: (data: Actor.ModifyTokenAttributeData, updates: Record<string, number>) => boolean | void;
 
@@ -802,7 +802,7 @@ export interface AllHooks extends DynamicHooks {
    * @param token    - The targeted Token
    * @param targeted - Whether the Token has been targeted or untargeted
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link UserTargets._hook | `UserTargets#_hook`}
+   * @see {@linkcode UserTargets._hook | UserTargets#_hook}
    * @privateRemarks Temporary `User`s *can* add targets without error, so `Implementation` instead of `Stored`.
    */
   targetToken: (user: User.Implementation, token: Token.Implementation, targeted: boolean) => void;
@@ -891,7 +891,7 @@ export interface AllHooks extends DynamicHooks {
    * @param sheet - The ActorSheet application
    * @param data  - The data that has been dropped onto the sheet
    * @remarks This is called by {@linkcode Hooks.call}. An explicit return value of `false` prevents the Document being created.
-   * @see {@link ActorSheet._onDrop | `ActorSheet#_onDrop`}
+   * @see {@linkcode ActorSheet._onDrop | ActorSheet#_onDrop}
    */
   dropActorSheetData: (
     actor: Actor.Implementation,
@@ -954,7 +954,7 @@ export interface AllHooks extends DynamicHooks {
    * This hook can be used to add programmatic light sources to the Scene.
    * @param source - The {@linkcode EffectsCanvasGroup} where light sources are initialized
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link EffectsCanvasGroup.Implementation.initializeLightSources | `EffectsCanvasGroup#initializeLightSources`}
+   * @see {@linkcode EffectsCanvasGroup.Implementation.initializeLightSources | EffectsCanvasGroup#initializeLightSources}
    */
   initializeLightSources: (group: EffectsCanvasGroup.Implementation) => void;
 
@@ -970,7 +970,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the CanvasVisibility layer has been refreshed.
    * @param visibility - The CanvasVisibility layer
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link CanvasVisibility.restrictVisibility | `CanvasVisibility#restrictVisibility`}
+   * @see {@linkcode CanvasVisibility.restrictVisibility | CanvasVisibility#restrictVisibility}
    */
   sightRefresh: (visibility: CanvasVisibility.Implementation) => void;
 
@@ -1144,7 +1144,7 @@ export interface AllHooks extends DynamicHooks {
    * @param chatData - The basic chat data
    * @remarks This is called by {@linkcode Hooks.call}.
    * @remarks An explicit return value of `false` prevents the chat message from being created.
-   * @see {@link ChatLog.processMessage | `ChatLog#processMessage`}
+   * @see {@linkcode ChatLog.processMessage | ChatLog#processMessage}
    */
   chatMessage: (
     chatLog: foundry.applications.sidebar.tabs.ChatLog,
@@ -1179,7 +1179,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the user modifies a global volume slider.
    * @param volume - The new volume level
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link AudioHelper._onChangeGlobalVolume | `AudioHelper#_onChangeGlobalVolume`}
+   * @see {@linkcode AudioHelper._onChangeGlobalVolume | AudioHelper#_onChangeGlobalVolume}
    */
   globalAmbientVolumeChanged: (volume: number) => void;
 
@@ -1187,7 +1187,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the user modifies a global volume slider.
    * @param volume - The new volume level
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link AudioHelper._onChangeGlobalVolume | `AudioHelper#_onChangeGlobalVolume`}
+   * @see {@linkcode AudioHelper._onChangeGlobalVolume | AudioHelper#_onChangeGlobalVolume}
    */
   globalInterfaceVolumeChanged: (volume: number) => void;
 
@@ -1195,7 +1195,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the user modifies a global volume slider.
    * @param volume - The new volume level
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link AudioHelper._onChangeGlobalVolume | `AudioHelper#_onChangeGlobalVolume`}
+   * @see {@linkcode AudioHelper._onChangeGlobalVolume | AudioHelper#_onChangeGlobalVolume}
    */
   globalPlaylistVolumeChanged: (volume: number) => void;
 
@@ -1204,7 +1204,7 @@ export interface AllHooks extends DynamicHooks {
    * @param settings - The AVSettings manager
    * @param changed  - The delta of the settings that have been changed
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link AVSettings._onSettingsChanged | `AVSettings#_onSettingsChanged`}
+   * @see {@linkcode AVSettings._onSettingsChanged | AVSettings#_onSettingsChanged}
    */
   rtcSettingsChanged: (settings: AVSettings, changed: DeepPartial<AVSettings.Settings>) => void;
 
@@ -1226,7 +1226,7 @@ export interface AllHooks extends DynamicHooks {
    * @param data   - The data dropped onto the RollTableConfig
    * @remarks This is called by {@linkcode Hooks.call}.
    * @remarks An explicit return value of `false` prevents the Document being created.
-   * @see {@link RollTableConfig._onDrop | `RollTableConfig#_onDrop`}
+   * @see {@linkcode RollTableConfig._onDrop | RollTableConfig#_onDrop}
    */
   dropRollTableSheetData: (
     table: RollTable.Implementation,
@@ -1362,7 +1362,7 @@ declare global {
      * @template A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "render" with the type name of the Application.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link Application._render | `Application#_render`}
+     * @see {@linkcode Application._render | Application#_render}
      */
     type RenderApplication<A extends Application.Any = Application.Any> = (
       app: A,
@@ -1378,7 +1378,7 @@ declare global {
      * @remarks The name for this hook is dynamically created by joining "get" with the type name of the Application and
      * "HeaderButtons".
      * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@link Application._getHeaderButtons | `Application#_getHeaderButtons`}
+     * @see {@linkcode Application._getHeaderButtons | Application#_getHeaderButtons}
      */
     type GetApplicationHeaderButtons<A extends Application.Any = Application.Any> = (
       app: A,
@@ -1392,7 +1392,7 @@ declare global {
      * @template A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "close" with the type name of the Application.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link Application.close | `Application#close`}
+     * @see {@linkcode Application.close | Application#close}
      */
     type CloseApplication<A extends Application.Any = Application.Any> = (app: A, html: JQuery) => void;
 
@@ -1440,7 +1440,7 @@ declare global {
      * @remarks The name for this hook is dynamically created by joining "paste" with the type name of the
      * PlaceableObject.
      * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@link PlaceablesLayer.pasteObjects | `PlaceablesLayer#pasteObjects`}
+     * @see {@linkcode PlaceablesLayer.pasteObjects | PlaceablesLayer#pasteObjects}
      */
     type PastePlaceableObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (
       objects: P[],
