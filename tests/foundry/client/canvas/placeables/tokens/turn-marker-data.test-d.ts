@@ -1,4 +1,4 @@
 // import { expectTypeOf } from "vitest";
-// import { TurnMarkerData } from "#client/canvas/placeables/tokens/_module.mjs"
+// import TurnMarkerData = foundry.canvas.placeables.tokens.TurnMarkerData
 
 // TODO: new in v13

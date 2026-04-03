@@ -1,7 +1,9 @@
 import { expectTypeOf } from "vitest";
-import { TokenRingConfig, TokenRing, DynamicRingData } from "#client/canvas/placeables/tokens/_module.mjs";
-import type { PrimaryBaseSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
 
+import TokenRingConfig = foundry.canvas.placeables.tokens.TokenRingConfig;
+import TokenRing = foundry.canvas.placeables.tokens.TokenRing;
+import DynamicRingData = foundry.canvas.placeables.tokens.DynamicRingData;
+import PrimaryBaseSamplerShader = foundry.canvas.rendering.shaders.PrimaryBaseSamplerShader;
 import TokenRingSamplerShader = foundry.canvas.rendering.shaders.TokenRingSamplerShader;
 
 expectTypeOf(TokenRingConfig.CORE_TOKEN_RINGS).toEqualTypeOf<TokenRingConfig.MaybeCoreRings>;

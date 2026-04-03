@@ -37,6 +37,12 @@
     },
     "#configuration": {
       "import": "./src/configuration/index.d.mts"
+    },
+    "#tests/*": {
+      "import": "./tests/foundry/*"
+    },
+    "#testUtils": {
+      "import": "./tests/utils.ts"
     }
   },
   "scripts": {
@@ -145,6 +151,7 @@
     "@actions/core": "^2.0.0",
     "@actions/github": "^6.0.0",
     "@ark/attest": "^0.56.0",
+    "@codemirror/lint": "^6.9.2",
     "@eslint/compat": "^2.0.0",
     "@eslint/js": "^9.19.0",
     "@playwright/test": "^1.57.0",

@@ -262,19 +262,19 @@ interface DynamicHooks
     PlaceableLayerHooks {}
 
 export interface AllHooks extends DynamicHooks {
-  /** Core lifecycle */
+  /* Core lifecycle */
 
   /**
    * A hook event that fires as Foundry is initializing, right before any initialization tasks have begun.
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Game.initialize | `Game#initialize`}
+   * @see {@linkcode Game.initialize | Game#initialize}
    */
   init: () => void;
 
   /**
    * A hook event that fires once Localization translations have been loaded and are ready for use.
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Localization.initialize | `Localization#initialize`}
+   * @see {@linkcode Localization.initialize | Localization#initialize}
    */
   i18nInit: () => void;
 
@@ -283,16 +283,22 @@ export interface AllHooks extends DynamicHooks {
    * before the game state has been set up. Fires before any Documents, UI
    * applications, or the Canvas have been initialized.
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Game.setupGame | `Game#setupGame`}
+   * @see {@linkcode Game.setupGame | Game#setupGame}
    */
   setup: () => void;
 
   /**
    * A hook event that fires when the game is fully ready.
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Game.setupGame | `Game#setupGame`}
+   * @see {@linkcode Game.setupGame | Game#setupGame}
    */
   ready: () => void;
+
+  /**
+   * A hook event that fires when the stream view is fully ready.
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  streamReady: () => void;
 
   /**
    * A hook event that fires whenever foundry experiences an error.
@@ -306,14 +312,14 @@ export interface AllHooks extends DynamicHooks {
    */
   error: (...args: ValueOf<Hooks.ErrorCallbackParameters>) => void;
 
-  /** Game */
+  /* Game */
 
   /**
    * A hook event that fires when the game is paused or un-paused.
    * @param paused  - Is the game now paused (true) or un-paused (false)
    * @param options - Options which modified the pause game request
    * @remarks
-   * @see {@link Game.togglePause | `Game#togglePause`}
+   * @see {@linkcode Game.togglePause | Game#togglePause}
    */
   pauseGame: (paused: boolean, pauseOptions: foundry.Game.TogglePauseOptions) => void;
 
@@ -324,7 +330,7 @@ export interface AllHooks extends DynamicHooks {
    * @param options   - Options passed from the requesting client where the change was made
    * @param userId    - The ID of the User who advanced the time
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link GameTime.onUpdateWorldTime | `GameTime#onUpdateWorldTime`}
+   * @see {@linkcode GameTime.onUpdateWorldTime | GameTime#onUpdateWorldTime}
    */
   updateWorldTime: (
     worldTime: number,
@@ -333,7 +339,7 @@ export interface AllHooks extends DynamicHooks {
     userId: string,
   ) => void;
 
-  /** CanvasLifecycle */
+  /* CanvasLifecycle */
 
   /**
    * A hook event that fires immediately prior to PIXI Application construction with the configuration parameters.
@@ -346,7 +352,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the Canvas is initialized.
    * @param canvas - the Canvas instance being initialized
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Canvas.draw | `Canvas#draw`}
+   * @see {@linkcode Canvas.draw | Canvas#draw}
    */
   canvasInit: (canvas: Canvas) => void;
 
@@ -356,8 +362,8 @@ export interface AllHooks extends DynamicHooks {
    * @param view   - The applied camera position
    * @remarks When called during animated panning, the callback is called on every tick.
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Canvas.pan | `Canvas#pan`}
-   * @see {@link Canvas.animatePan | `Canvas#animatePan`}
+   * @see {@linkcode Canvas.pan | Canvas#pan}
+   * @see {@linkcode Canvas.animatePan | Canvas#animatePan}
    */
   canvasPan: (canvas: Canvas, view: Canvas.ViewPosition) => void;
 
@@ -365,7 +371,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the Canvas is ready.
    * @param canvas - The Canvas which is now ready for use
    * @remarks This is called by {@linkcode Hooks.call}.
-   * @see {@link Canvas.draw | `Canvas#draw`}
+   * @see {@linkcode Canvas.draw | Canvas#draw}
    */
   canvasReady: (canvas: Canvas) => boolean | void;
 
@@ -397,17 +403,23 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when objects are highlighted on the canvas.
    * Callers may use this hook to apply their own modifications or enhancements to highlighted objects.
    * @param active - Is the highlight state now active
-   * @see {@link Canvas.highlightObjects | `Canvas#highlightObjects``}
+   * @see {@linkcode Canvas.highlightObjects | Canvas#highlightObjects}
    */
   highlightObjects: (active: boolean) => void;
 
-  /** Application */
+  /**
+   * A hook event that fires when canvas edges are being initialized.
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  initializeEdges: () => void;
+
+  /* Application */
 
   /**
    * A hook event that fires when the Scene controls are initialized.
    * @param controls - The SceneControl configurations
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link SceneControls._getControlButtons | `SceneControls#_getControlButtons`}
+   * @see {@linkcode SceneControls._getControlButtons | SceneControls#_getControlButtons}
    */
   getSceneControlButtons: (controls: Record<string, foundry.applications.ui.SceneControls.Control>) => void;
 
@@ -420,27 +432,211 @@ export interface AllHooks extends DynamicHooks {
    * @param slot   - The target hotbar slot
    * @remarks This is called by {@linkcode Hooks.call}.
    * @remarks An explicit return value of `false` prevents the Document being created.
-   * @see {@link Hotbar._onDrop | `Hotbar#_onDrop`}
+   * @see {@linkcode Hotbar._onDrop | Hotbar#_onDrop}
    */
-  hotbarDrop: (hotbar: foundry.applications.ui.Hotbar, data: Macro.DropData, slot: number) => boolean | void;
+  hotbarDrop: (hotbar: foundry.applications.ui.Hotbar.Any, data: Macro.DropData, slot: number) => boolean | void;
+
+  /* Document Directory Context Menu Hooks */
+
+  // Foundry provides one dynamic hook for all of the following, but implementing them as dynamic on our end would restrict narrowing of the
+  // first parameter to only `ApplicationV2`, as there's no way to reliably associate which app is registering the context menu for any
+  // given document. Also, not all documents will see this called; there's no generic process that works for any document, unlike the
+  // document lifecycle hooks, and every one of these hooks requires overriding the default behaviour of replacing/appending the Application
+  // class name. They are organized below by order first called in 13.351. Several get called multiple times for different Applications.
 
   /**
-   * A hook event that fires when the SceneNavigation menu is expanded or collapsed.
-   * @param nav       - The SceneNavigation application
-   * @param collapsed - Whether the navigation is now collapsed or not
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.ui.SceneNavigation | SceneNavigation} or
+   * {@linkcode foundry.applications.sidebar.tabs.SceneDirectory | SceneDirectory} is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link SceneNavigation.expand | `SceneNavigation#expand`}
-   * @see {@link SceneNavigation.collapse | `SceneNavigation#collapse`}
+   * @see {@linkcode foundry.applications.ui.SceneNavigation._onFirstRender | SceneNavigation#_onFirstRender}
+   * @see {@linkcode foundry.applications.sidebar.tabs.SceneDirectory._onFirstRender | SceneDirectory#_onFirstRender}
    */
-  collapseSceneNavigation: (nav: foundry.applications.ui.SceneNavigation, collapsed: boolean) => void;
+  getSceneContextOptions: (
+    app: foundry.applications.ui.SceneNavigation.Any | foundry.applications.sidebar.tabs.SceneDirectory.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.ui.Players | Players} is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.ui.Players._onFirstRender | Players#_onFirstRender}
+   */
+  getUserContextOptions: (
+    app: foundry.applications.ui.Players.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.ui.Hotbar | Hotbar} or
+   * {@linkcode foundry.applications.sidebar.tabs.MacroDirectory | MacroDirectory} is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.ui.Hotbar._onFirstRender | Hotbar#_onFirstRender}
+   * @see {@linkcode foundry.applications.sidebar.tabs.MacroDirectory._onFirstRender | MacroDirectory#_onFirstRender}
+   */
+  getMacroContextOptions: (
+    app: foundry.applications.ui.Hotbar.Any | foundry.applications.sidebar.tabs.MacroDirectory.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.sidebar.tabs.CombatTracker | CombatTracker}
+   * is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sidebar.tabs.CombatTracker._onFirstRender | CombatTracker#_onFirstRender}
+   */
+  getCombatContextOptions: (
+    app: foundry.applications.sidebar.tabs.CombatTracker.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.sidebar.DocumentDirectory | DocumentDirectory}
+   * or {@linkcode foundry.applications.sidebar.tabs.CompendiumDirectory | CompendiumDirectory} is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sidebar.DocumentDirectory._onFirstRender | DocumentDirectory#_onFirstRender}
+   * @see {@linkcode foundry.applications.sidebar.tabs.CompendiumDirectory._onFirstRender | CompendiumDirectory#_onFirstRender}
+   */
+  getFolderContextOptions: (
+    app: foundry.applications.sidebar.DocumentDirectory.Any | foundry.applications.sidebar.tabs.CompendiumDirectory.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.sidebar.tabs.ActorDirectory | ActorDirectory}
+   * is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sidebar.tabs.ActorDirectory._onFirstRender | ActorDirectory#_onFirstRender}
+   */
+  getActorContextOptions: (
+    app: foundry.applications.sidebar.tabs.ActorDirectory.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.sidebar.tabs.ItemDirectory | ItemDirectory}
+   * is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sidebar.tabs.ItemDirectory._onFirstRender | ItemDirectory#_onFirstRender}
+   */
+  getItemContextOptions: (
+    app: foundry.applications.sidebar.tabs.ItemDirectory.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.sidebar.tabs.JournalDirectory | JournalDirectory}
+   * is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sidebar.tabs.JournalDirectory._onFirstRender | JournalDirectory#_onFirstRender}
+   */
+  getJournalContextOptions: (
+    app: foundry.applications.sidebar.tabs.JournalDirectory.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.sidebar.tabs.RollTableDirectory | RollTableDirectory}
+   * is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sidebar.tabs.RollTableDirectory._onFirstRender | RollTableDirectory#_onFirstRender}
+   */
+  getRollTableContextOptions: (
+    app: foundry.applications.sidebar.tabs.RollTableDirectory.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.sidebar.tabs.CardsDirectory | CardsDirectory}
+   * is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sidebar.tabs.CardsDirectory._onFirstRender | CardsDirectory#_onFirstRender}
+   */
+  getCardsContextOptions: (
+    app: foundry.applications.sidebar.tabs.CardsDirectory.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.sidebar.tabs.PlaylistDirectory | PlaylistDirectory}
+   * is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sidebar.tabs.PlaylistDirectory._onFirstRender | PlaylistDirectory#_onFirstRender}
+   */
+  getPlaylistContextOptions: (
+    app: foundry.applications.sidebar.tabs.PlaylistDirectory.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.sidebar.tabs.PlaylistDirectory | PlaylistDirectory}
+   * is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sidebar.tabs.PlaylistDirectory._onFirstRender | PlaylistDirectory#_onFirstRender}
+   */
+  getPlaylistSoundContextOptions: (
+    app: foundry.applications.sidebar.tabs.PlaylistDirectory.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a {@linkcode foundry.applications.sidebar.tabs.ChatLog | ChatLog}
+   * is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sidebar.tabs.ChatLog._onFirstRender | ChatLog#_onFirstRender}
+   */
+  getChatMessageContextOptions: (
+    app: foundry.applications.sidebar.tabs.ChatLog.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /**
+   * A hook event that fires when the context menu for a
+   * {@linkcode foundry.applications.sheets.journal.JournalEntrySheet | JournalEntrySheet} is constructed.
+   * @param app            - The Application instance that the context menu is constructed in
+   * @param contextOptions - The context menu entries
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode foundry.applications.sheets.journal.JournalEntrySheet._onFirstRender | JournalEntrySheet#_onFirstRender}
+   */
+  getJournalEntryPageContextOptions: (
+    app: foundry.applications.sheets.journal.JournalEntrySheet.Any,
+    contextOptions: ContextMenu.Entry<HTMLElement>[],
+  ) => void;
+
+  /* More Application */
 
   /**
    * A hook event that fires when the Sidebar is collapsed or expanded.
    * @param sidebar   - The Sidebar application
    * @param collapsed - Whether the Sidebar is now collapsed or not
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Sidebar.expand | `Sidebar#expand`}
-   * @see {@link Sidebar.collapse | `Sidebar#collapse`}
+   * @see {@linkcode Sidebar.expand | Sidebar#expand}
+   * @see {@linkcode Sidebar.collapse | Sidebar#collapse}
    */
   collapseSidebar: (sidebar: foundry.applications.sidebar.Sidebar, collapsed: boolean) => void;
 
@@ -448,11 +644,21 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the Sidebar tab is changed.
    * @param app - The SidebarTab application which is now active
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link Sidebar._onChangeTab | `Sidebar#_onChangeTab`}
+   * @see {@linkcode Sidebar._onChangeTab | Sidebar#_onChangeTab}
    */
   changeSidebarTab: (app: foundry.applications.sidebar.AbstractSidebarTab) => void;
 
-  /** Active Effects */
+  /**
+   * A hook event that fires when the SceneNavigation menu is expanded or collapsed.
+   * @param nav       - The SceneNavigation application
+   * @param collapsed - Whether the navigation is now collapsed or not
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @see {@linkcode SceneNavigation.expand | SceneNavigation#expand}
+   * @see {@linkcode SceneNavigation.collapse | SceneNavigation#collapse}
+   */
+  collapseSceneNavigation: (nav: foundry.applications.ui.SceneNavigation, collapsed: boolean) => void;
+
+  /* Active Effects */
 
   /**
    * A hook event that fires when a custom active effect is applied.
@@ -462,7 +668,7 @@ export interface AllHooks extends DynamicHooks {
    * @param delta   - The parsed value of the change object
    * @param changes - An object which accumulates changes to be applied
    * @remarks This is called by {@linkcode Hooks.call}.
-   * @see {@link ActiveEffect._applyCustom | `ActiveEffect#_applyCustom`}
+   * @see {@linkcode ActiveEffect._applyCustom | ActiveEffect#_applyCustom}
    */
   applyActiveEffect: (
     actor: Actor.Implementation,
@@ -472,7 +678,7 @@ export interface AllHooks extends DynamicHooks {
     changes: AnyMutableObject,
   ) => boolean | void;
 
-  /** Compendium */
+  /* Compendium */
 
   /**
    * A hook event that fires whenever the contents of a Compendium pack were modified.
@@ -483,7 +689,7 @@ export interface AllHooks extends DynamicHooks {
    * @param options   - Additional options which modified the modification request
    * @param userId    - The ID of the User who triggered the modification workflow
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link foundry.documents.collections.CompendiumCollection._onModifyContents | `foundry.documents.collections.CompendiumCollection#_onModifyContents`}
+   * @see {@linkcode foundry.documents.collections.CompendiumCollection._onModifyContents | foundry.documents.collections.CompendiumCollection#_onModifyContents}
    */
   updateCompendium: (
     pack: foundry.documents.collections.CompendiumCollection.Any,
@@ -492,7 +698,32 @@ export interface AllHooks extends DynamicHooks {
     userId: string,
   ) => void;
 
-  /** Token */
+  /* TokenDocument */
+
+  // TODO: `preMoveToken` and `moveToken`
+
+  /**
+   * A hook event that fires when the current movement of a Token document is stopped.
+   * @param document - The TokenDocument whose movement was stopped
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  stopToken: (document: TokenDocument.Implementation) => void;
+
+  /**
+   * A hook event that fires when the current movement of a Token document is paused.
+   * @param document - The TokenDocument whose movement was paused
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  pauseToken: (document: TokenDocument.Implementation) => void;
+
+  /**
+   * A hook event that fires when the movement of a Token document is recorded or cleared.
+   * @param document - The TokenDocument whose movement was recorded or cleared
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   */
+  recordToken: (document: TokenDocument.Implementation) => void;
+
+  /* Token */
 
   /**
    * A hook event that fires when a token {@linkcode Token} should apply a specific status effect.
@@ -509,6 +740,7 @@ export interface AllHooks extends DynamicHooks {
    * @param message - The spoken message text
    * @param options - Provided options which affect bubble appearance
    * @returns May return false to prevent the calling workflow
+   * @remarks This is called by {@linkcode Hooks.call}.
    */
   chatBubbleHTML: (
     token: Token.Implementation,
@@ -523,10 +755,10 @@ export interface AllHooks extends DynamicHooks {
    * @param updates - The update delta that will be applied to the Token's actor
    * @returns whether the Actor should be updated
    * @remarks This is called by {@linkcode Hooks.call}.
-   * @see {@link Actor.modifyTokenAttribute | `Actor#modifyTokenAttribute`}
-   * @see {@link Actor.update | `Actor#update`}
+   * @see {@linkcode Actor.modifyTokenAttribute | Actor#modifyTokenAttribute}
+   * @see {@linkcode Actor.update | Actor#update}
    */
-  modifyTokenAttribute: (data: Actor.ModifyTokenAttributeData, updates: Record<string, number>) => boolean;
+  modifyTokenAttribute: (data: Actor.ModifyTokenAttributeData, updates: Record<string, number>) => boolean | void;
 
   /**
    * A hook event that fires when a token is targeted or un-targeted.
@@ -534,11 +766,12 @@ export interface AllHooks extends DynamicHooks {
    * @param token    - The targeted Token
    * @param targeted - Whether the Token has been targeted or untargeted
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link UserTargets._hook | `UserTargets#_hook`}
+   * @see {@linkcode UserTargets._hook | UserTargets#_hook}
+   * @privateRemarks Temporary `User`s *can* add targets without error, so `Implementation` instead of `Stored`.
    */
   targetToken: (user: User.Implementation, token: Token.Implementation, targeted: boolean) => void;
 
-  /** Note */
+  /* Note */
 
   /**
    * A hook event that fires whenever a map note is double-clicked.
@@ -555,15 +788,14 @@ export interface AllHooks extends DynamicHooks {
       | foundry.applications.sheets.journal.JournalEntrySheet.RenderOptions,
   ) => true | false;
 
-  /** Cards */
+  /* Cards */
 
   /**
    * A hook event that fires when Cards are dealt from a deck to other hands
    * @param origin             - The origin Cards document
    * @param destinations       - An array of destination Cards documents
    * @param context            - Additional context which describes the operation
-   * @remarks This is called by {@linkcode Hooks.call}.
-   * @remarks An explicit return value of `false` prevents the operation.
+   * @remarks This is called by {@linkcode Hooks.call}. An explicit return value of `false` prevents the operation.
    */
   dealCards: (
     origin: Cards.Implementation,
@@ -576,8 +808,7 @@ export interface AllHooks extends DynamicHooks {
    * @param origin      - The origin Cards document
    * @param destination - The destination Cards document
    * @param context     - Additional context which describes the operation
-   * @remarks This is called by {@linkcode Hooks.call}.
-   * @remarks An explicit return value of `false` prevents the operation.
+   * @remarks This is called by {@linkcode Hooks.call}. An explicit return value of `false` prevents the operation.
    */
   passCards: (
     origin: Cards.Implementation,
@@ -590,6 +821,7 @@ export interface AllHooks extends DynamicHooks {
    * @param origin   - The origin Cards document.
    * @param returned - The cards being returned.
    * @param context  - Additional context which describes the operation.
+   * @remarks This is called by {@linkcode Hooks.call}. An explicit return value of `false` prevents the operation.
    */
   returnCards: (
     origin: Cards.Implementation,
@@ -597,7 +829,7 @@ export interface AllHooks extends DynamicHooks {
     context: Cards.ReturnContext,
   ) => boolean | void;
 
-  /** Actor */
+  /* Actor */
 
   /**
    * A hook even that fires when package-provided art is applied to a compendium Document.
@@ -616,7 +848,7 @@ export interface AllHooks extends DynamicHooks {
     art: CompendiumArt.Info,
   ) => void;
 
-  /** ActorSheet */
+  /* ActorSheet */
 
   /**
    * A hook event that fires when some useful data is dropped onto an ActorSheet.
@@ -625,7 +857,7 @@ export interface AllHooks extends DynamicHooks {
    * @param data  - The data that has been dropped onto the sheet
    * @remarks This is called by {@linkcode Hooks.call}.
    * @remarks An explicit return value of `false` prevents the Document being created.
-   * @see {@link ActorSheet._onDrop | `ActorSheet#_onDrop`}
+   * @see {@linkcode ActorSheet._onDrop | ActorSheet#_onDrop}
    */
   dropActorSheetData: (
     actor: Actor.Implementation,
@@ -633,7 +865,7 @@ export interface AllHooks extends DynamicHooks {
     data: foundry.appv1.sheets.ActorSheet.DropData,
   ) => boolean | void;
 
-  /** EnvironmentCanvasGroup */
+  /* EnvironmentCanvasGroup */
 
   /**
    * A hook event that fires at the beginning of {@linkcode EnvironmentCanvasGroup.initialize | EnvironmentCanvasGroup#initialize} which
@@ -653,7 +885,7 @@ export interface AllHooks extends DynamicHooks {
    */
   initializeCanvasEnvironment: () => void;
 
-  /** CanvasVisibility */
+  /* CanvasVisibility */
 
   /**
    * A hook event that fires when the vision mode is initialized.
@@ -665,13 +897,13 @@ export interface AllHooks extends DynamicHooks {
   /**
    * A hook event that fires when the set of vision sources are initialized.
    * @param sources - The collection of current vision sources
-   * @remarks This is called by {@linkcode Hooks.call}.
+   * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   initializeVisionSources: (sources: EffectsCanvasGroup.Implementation["visionSources"]) => void;
 
   /**
    * A hook event that fires when the LightingLayer is refreshed.
-   * @param group - The EffectsCanvasGroup instance
+   * @param group - The {@linkcode EffectsCanvasGroup} instance
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   lightingRefresh: (group: EffectsCanvasGroup.Implementation) => void;
@@ -688,7 +920,7 @@ export interface AllHooks extends DynamicHooks {
    * This hook can be used to add programmatic light sources to the Scene.
    * @param source - The {@linkcode EffectsCanvasGroup} where light sources are initialized
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link EffectsCanvasGroup.Implementation.initializeLightSources | `EffectsCanvasGroup#initializeLightSources`}
+   * @see {@linkcode EffectsCanvasGroup.Implementation.initializeLightSources | EffectsCanvasGroup#initializeLightSources}
    */
   initializeLightSources: (group: EffectsCanvasGroup.Implementation) => void;
 
@@ -704,11 +936,11 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the CanvasVisibility layer has been refreshed.
    * @param visibility - The CanvasVisibility layer
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link CanvasVisibility.restrictVisibility | `CanvasVisibility#restrictVisibility`}
+   * @see {@linkcode CanvasVisibility.restrictVisibility | CanvasVisibility#restrictVisibility}
    */
   sightRefresh: (visibility: CanvasVisibility.Implementation) => void;
 
-  /** Weather */
+  /* Weather */
 
   /**
    * Initialize the weather container from a weather config object.
@@ -721,7 +953,7 @@ export interface AllHooks extends DynamicHooks {
     weatherEffectsConfig?: layers.WeatherEffects.EffectConfiguration | null,
   ) => void;
 
-  /** Adventure */
+  /* Adventure */
 
   /**
    * A hook event that fires when Adventure data is being prepared for import.
@@ -756,7 +988,7 @@ export interface AllHooks extends DynamicHooks {
     updated: Adventure.ImportResult["updated"],
   ) => void;
 
-  /** Socket */
+  /* Socket */
 
   /**
    * A hook event that fires whenever some other User joins or leaves the game session.
@@ -764,9 +996,9 @@ export interface AllHooks extends DynamicHooks {
    * @param connected - Is the user now connected (true) or disconnected (false)
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  userConnected: (user: User.Implementation, connected: boolean) => void;
+  userConnected: (user: User.Stored, connected: boolean) => void;
 
-  /** Combat */
+  /* Combat */
 
   /**
    *  A hook event which fires when the turn order of a Combat encounter is progressed.
@@ -848,6 +1080,12 @@ export interface AllHooks extends DynamicHooks {
   ) => void;
 
   /**
+   * A hook event that fires when combat tracker settings are initialized.
+   * @param config - The CombatConfiguration instance.
+   */
+  initializeCombatConfiguration: (config: foundry.data.CombatConfiguration) => void;
+
+  /**
    * A hook even that fires when a ProseMirrorMenu's drop-downs are initialized.
    * The hook provides the ProseMirrorMenu instance and an object of drop-down configuration data.
    * Hooked functions may append their own drop-downs or append entries to existing drop-downs.
@@ -871,8 +1109,7 @@ export interface AllHooks extends DynamicHooks {
    * @param config - The button configuration objects
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  // TODO: Having trouble finding the appropriate typing for the menu items? Also, where is this even called?
-  getProseMirrorMenuItems: (menu: ProseMirrorMenu, config: unknown[]) => void;
+  getProseMirrorMenuItems: (menu: ProseMirrorMenu, config: ProseMirrorMenu.Item[]) => void;
 
   /**
    * A hook event that fires whenever a ProseMirror editor is created.
@@ -889,8 +1126,6 @@ export interface AllHooks extends DynamicHooks {
    */
   createProseMirrorEditor: (uuid: string, plugins: Record<string, Plugin>, options: { state: EditorState }) => void;
 
-  streamReady: () => void;
-
   /**
    * A hook event that fires when a package that is being watched by the hot reload system has a file changed.
    * The hook provides the hot reload data related to the file change.
@@ -900,6 +1135,10 @@ export interface AllHooks extends DynamicHooks {
    */
   hotReload: (data: Hooks.HotReloadData) => boolean | void;
 
+  // TODO: chatInput
+
+  // TODO: renderChatInput
+
   /**
    * A hook event that fires when a user sends a message through the ChatLog.
    * @param chatLog  - The ChatLog instance
@@ -907,7 +1146,7 @@ export interface AllHooks extends DynamicHooks {
    * @param chatData - The basic chat data
    * @remarks This is called by {@linkcode Hooks.call}.
    * @remarks An explicit return value of `false` prevents the chat message from being created.
-   * @see {@link ChatLog.processMessage | `ChatLog#processMessage`}
+   * @see {@linkcode ChatLog.processMessage | ChatLog#processMessage}
    */
   chatMessage: (
     chatLog: foundry.applications.sidebar.tabs.ChatLog,
@@ -934,7 +1173,7 @@ export interface AllHooks extends DynamicHooks {
     context: ChatMessage.MessageData,
   ) => void;
 
-  /** Audio-Video */
+  /* Audio-Video */
 
   // Individually implemented all three options for globalVolumeChanged
 
@@ -942,7 +1181,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the user modifies a global volume slider.
    * @param volume - The new volume level
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link AudioHelper._onChangeGlobalVolume | `AudioHelper#_onChangeGlobalVolume`}
+   * @see {@linkcode AudioHelper._onChangeGlobalVolume | AudioHelper#_onChangeGlobalVolume}
    */
   globalAmbientVolumeChanged: (volume: number) => void;
 
@@ -950,7 +1189,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the user modifies a global volume slider.
    * @param volume - The new volume level
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link AudioHelper._onChangeGlobalVolume | `AudioHelper#_onChangeGlobalVolume`}
+   * @see {@linkcode AudioHelper._onChangeGlobalVolume | AudioHelper#_onChangeGlobalVolume}
    */
   globalInterfaceVolumeChanged: (volume: number) => void;
 
@@ -958,7 +1197,7 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires when the user modifies a global volume slider.
    * @param volume - The new volume level
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link AudioHelper._onChangeGlobalVolume | `AudioHelper#_onChangeGlobalVolume`}
+   * @see {@linkcode AudioHelper._onChangeGlobalVolume | AudioHelper#_onChangeGlobalVolume}
    */
   globalPlaylistVolumeChanged: (volume: number) => void;
 
@@ -967,11 +1206,13 @@ export interface AllHooks extends DynamicHooks {
    * @param settings - The AVSettings manager
    * @param changed  - The delta of the settings that have been changed
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@link AVSettings._onSettingsChanged | `AVSettings#_onSettingsChanged`}
+   * @see {@linkcode AVSettings._onSettingsChanged | AVSettings#_onSettingsChanged}
    */
   rtcSettingsChanged: (settings: AVSettings, changed: DeepPartial<AVSettings.Settings>) => void;
 
-  /** RollTableConfig */
+  // TODO: `clientSettingChanged`
+
+  /* RollTableConfig */
 
   /**
    * A hook event that fires when some useful data is dropped onto a RollTableConfig.
@@ -980,7 +1221,7 @@ export interface AllHooks extends DynamicHooks {
    * @param data   - The data dropped onto the RollTableConfig
    * @remarks This is called by {@linkcode Hooks.call}.
    * @remarks An explicit return value of `false` prevents the Document being created.
-   * @see {@link RollTableConfig._onDrop | `RollTableConfig#_onDrop`}
+   * @see {@linkcode RollTableConfig._onDrop | RollTableConfig#_onDrop}
    */
   dropRollTableSheetData: (
     table: RollTable.Implementation,
@@ -994,39 +1235,6 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
   initializeDynamicTokenRingConfig: (ringConfig: TokenRingConfig) => void;
-
-  /**
-   * A hook event that fires when the context menu for a Players entry is constructed.
-   * @param app            - The Application instance that the context menu is constructed in
-   * @param contextOptions - The context menu entries
-   * @remarks This is called by {@linkcode Hooks.callAll}.
-   */
-  getUserContextOptions: (
-    app: foundry.applications.ui.Players,
-    contextOptions: ContextMenu.Entry<HTMLElement>[],
-  ) => void;
-
-  /**
-   * A hook event that fires when the context menu for a SceneNavigation entry is constructed.
-   * @param app            - The Application instance that the context menu is constructed in
-   * @param contextOptions - The context menu entries
-   * @remarks This is called by {@linkcode Hooks.callAll}.
-   */
-  getSceneContextOptions: (
-    app: foundry.applications.ui.SceneNavigation,
-    contextOptions: ContextMenu.Entry<HTMLElement>[],
-  ) => void;
-
-  /**
-   * A hook event that fires when the context menu for a Macro Hotbar entry is constructed.
-   * @param app            - The Application instance that the context menu is constructed in
-   * @param contextOptions - The context menu entries
-   * @remarks This is called by {@linkcode Hooks.callAll}.
-   */
-  getMacroContextOptions: (
-    app: foundry.applications.ui.Hotbar,
-    contextOptions: ContextMenu.Entry<HTMLElement>[],
-  ) => void;
 }
 
 declare global {
@@ -1149,7 +1357,7 @@ declare global {
      * @template A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "render" with the type name of the Application.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link Application._render | `Application#_render`}
+     * @see {@linkcode Application._render | Application#_render}
      */
     type RenderApplication<A extends Application.Any = Application.Any> = (
       app: A,
@@ -1165,7 +1373,7 @@ declare global {
      * @remarks The name for this hook is dynamically created by joining "get" with the type name of the Application and
      * "HeaderButtons".
      * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@link Application._getHeaderButtons | `Application#_getHeaderButtons`}
+     * @see {@linkcode Application._getHeaderButtons | Application#_getHeaderButtons}
      */
     type GetApplicationHeaderButtons<A extends Application.Any = Application.Any> = (
       app: A,
@@ -1179,7 +1387,7 @@ declare global {
      * @template A - the type of the Application
      * @remarks The name for this hook is dynamically created by joining "close" with the type name of the Application.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link Application.close | `Application#close`}
+     * @see {@linkcode Application.close | Application#close}
      */
     type CloseApplication<A extends Application.Any = Application.Any> = (app: A, html: JQuery) => void;
 
@@ -1227,7 +1435,7 @@ declare global {
      * @remarks The name for this hook is dynamically created by joining "paste" with the type name of the
      * PlaceableObject.
      * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@link PlaceablesLayer.pasteObjects | `PlaceablesLayer#pasteObjects`}
+     * @see {@linkcode PlaceablesLayer.pasteObjects | PlaceablesLayer#pasteObjects}
      */
     type PastePlaceableObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (
       objects: P[],
@@ -1279,8 +1487,8 @@ declare global {
      * @remarks The name for this hook is dynamically created by joining "control" and the type name of the
      * PlaceableObject.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link PlaceableObject.control | `PlaceableObject#control`}
-     * @see {@link PlaceableObject.release | `PlaceableObject#release`}
+     * @see {@linkcode PlaceableObject.control | PlaceableObject#control}
+     * @see {@linkcode PlaceableObject.release | PlaceableObject#release}
      */
     type ControlObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (object: P, controlled: boolean) => void;
 
@@ -1293,8 +1501,8 @@ declare global {
      * @template P   - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining "hover" and the type name of the PlaceableObject.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link PlaceableObject._onHoverIn | `PlaceableObject#_onHoverIn`}
-     * @see {@link PlaceableObject._onHoverOut | `PlaceableObject#_onHoverOut`}
+     * @see {@linkcode PlaceableObject._onHoverIn |  PlaceableObject#_onHoverIn}
+     * @see {@linkcode PlaceableObject._onHoverOut | PlaceableObject#_onHoverOut}
      */
     type HoverObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (object: P, hover: boolean) => void;
 
@@ -1316,8 +1524,8 @@ declare global {
      * @returns Explicitly return false to prevent creation of this Document
      * @remarks The name for this hook is dynamically created by joining "preCreate" with the name of the Document.
      * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@link ClientDatabaseBackend._preCreateDocumentArray | `ClientDatabaseBackend#_preCreateDocumentArray`}
-     * @see {@link TokenDocument._preUpdateTokenActor | `TokenDocument#_preUpdateTokenActor`}
+     * @see {@linkcode ClientDatabaseBackend._preCreateDocumentArray | ClientDatabaseBackend#_preCreateDocumentArray}
+     * @see {@linkcode TokenDocument._preUpdateTokenActor | TokenDocument#_preUpdateTokenActor}
      */
     type PreCreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
@@ -1337,8 +1545,8 @@ declare global {
      * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "create" and the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link ClientDatabaseBackend._postCreateDocumentCallbacks | `ClientDatabaseBackend#_postCreateDocumentCallbacks`}
-     * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
+     * @see {@linkcode ClientDatabaseBackend._postCreateDocumentCallbacks | ClientDatabaseBackend#_postCreateDocumentCallbacks}
+     * @see {@linkcode TokenDocument._onUpdateTokenActor | TokenDocument#_onUpdateTokenActor}
      */
     type CreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
@@ -1362,8 +1570,8 @@ declare global {
      * @returns Explicitly return false to prevent update of this Document
      * @remarks The name for this hook is dynamically created by joining "preUpdate" with the type name of the Document.
      * @remarks This is called {@linkcode Hooks.call}.
-     * @see {@link ClientDatabaseBackend._preUpdateDocumentArray | `ClientDatabaseBackend#_preUpdateDocumentArray`}
-     * @see {@link TokenDocument._preUpdateTokenActor | `TokenDocument#_preUpdateTokenActor`}
+     * @see {@linkcode ClientDatabaseBackend._preUpdateDocumentArray | ClientDatabaseBackend#_preUpdateDocumentArray}
+     * @see {@linkcode TokenDocument._preUpdateTokenActor | TokenDocument#_preUpdateTokenActor}
      */
     type PreUpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
@@ -1384,8 +1592,8 @@ declare global {
      * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "update" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link ClientDatabaseBackend._postUpdateDocumentCallbacks | `ClientDatabaseBackend#_postUpdateDocumentCallbacks`}
-     * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
+     * @see {@linkcode ClientDatabaseBackend._postUpdateDocumentCallbacks | ClientDatabaseBackend#_postUpdateDocumentCallbacks}
+     * @see {@linkcode TokenDocument._onUpdateTokenActor | TokenDocument#_onUpdateTokenActor}
      */
     type UpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
@@ -1409,8 +1617,8 @@ declare global {
      * @returns Explicitly return false to prevent deletion of this Document
      * @remarks The name for this hook is dynamically created by joining "preDelete" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.call}.
-     * @see {@link ClientDatabaseBackend._preDeleteDocumentArray | `ClientDatabaseBackend#_preDeleteDocumentArray`}.
-     * @see {@link TokenDocument._preUpdateTokenActor | `TokenDocument#_preUpdateTokenActor`}
+     * @see {@linkcode ClientDatabaseBackend._preDeleteDocumentArray | ClientDatabaseBackend#_preDeleteDocumentArray}.
+     * @see {@linkcode TokenDocument._preUpdateTokenActor | TokenDocument#_preUpdateTokenActor}
      */
     type PreDeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,
@@ -1429,8 +1637,8 @@ declare global {
      * @template D    - the type of the Document constructor
      * @remarks The name for this hook is dynamically created by joining "delete" with the type name of the Document.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@link ClientDatabaseBackend._postDeleteDocumentCallbacks | `ClientDatabaseBackend#_postDeleteDocumentCallbacks`}
-     * @see {@link TokenDocument._onUpdateTokenActor | `TokenDocument#_onUpdateTokenActor`}
+     * @see {@linkcode ClientDatabaseBackend._postDeleteDocumentCallbacks | ClientDatabaseBackend#_postDeleteDocumentCallbacks}
+     * @see {@linkcode TokenDocument._onUpdateTokenActor | TokenDocument#_onUpdateTokenActor}
      */
     type DeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,

@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { Wall } from "#client/canvas/placeables/_module.mjs";
-import type { DoorControl } from "#client/canvas/containers/_module.d.mts";
 
+import Wall = foundry.canvas.placeables.Wall;
+import DoorControl = foundry.canvas.containers.DoorControl;
 import Canvas = foundry.canvas.Canvas;
 import Ray = foundry.canvas.geometry.Ray;
 

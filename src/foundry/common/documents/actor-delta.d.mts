@@ -145,6 +145,8 @@ declare abstract class BaseActorDelta<
 
   override parent: BaseActorDelta.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseActorDelta.Parent;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: Array<ActorDelta.Implementation | ActorDelta.CreateData> | undefined,
     operation?: Document.Database.CreateOperation<ActorDelta.Database.Create<Temporary>>,

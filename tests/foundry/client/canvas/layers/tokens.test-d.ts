@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { TokenLayer } from "#client/canvas/layers/_module.mjs";
-import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
+import TokenLayer = foundry.canvas.layers.TokenLayer;
+import Token = foundry.canvas.placeables.Token;
 import Canvas = foundry.canvas.Canvas;
 import TokenHUD = foundry.applications.hud.TokenHUD;
 

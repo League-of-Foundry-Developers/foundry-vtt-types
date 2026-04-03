@@ -18,6 +18,7 @@ declare const Set: typeof LenientSet;
 declare class UserTargets extends Set<Token.Implementation> {
   constructor(user: UserTargets["user"]);
 
+  /** @privateRemarks Temporary users' {@linkcode User.targets | targets} work without error, locally. */
   user: User.Implementation;
 
   /**

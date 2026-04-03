@@ -1,5 +1,12 @@
 import { expectTypeOf } from "vitest";
-import { paragraph, blockquote, hr, heading, pre, br } from "#common/prosemirror/schema/core.mjs";
+import {
+  paragraph,
+  blockquote,
+  hr,
+  heading,
+  pre,
+  br,
+} from "../../../../../src/foundry/common/prosemirror/schema/core.mts";
 import type { NodeSpec } from "prosemirror-model";
 
 expectTypeOf(paragraph).toEqualTypeOf<NodeSpec>();

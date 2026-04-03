@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import SchemaDefinition from "#common/prosemirror/schema/schema-definition.mjs";
+import SchemaDefinition from "../../../../../src/foundry/common/prosemirror/schema/schema-definition.mts";
 import type { AttributeSpec, Node, MarkSpec, NodeSpec } from "prosemirror-model";
 
 expectTypeOf(SchemaDefinition.tag).toEqualTypeOf<string>();

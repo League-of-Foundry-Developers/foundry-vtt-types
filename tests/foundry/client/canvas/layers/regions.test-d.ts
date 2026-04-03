@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { RegionLayer } from "#client/canvas/layers/_module.mjs";
 
+import RegionLayer = foundry.canvas.layers.RegionLayer;
 import Canvas = foundry.canvas.Canvas;
 import Region = foundry.canvas.placeables.Region;
 

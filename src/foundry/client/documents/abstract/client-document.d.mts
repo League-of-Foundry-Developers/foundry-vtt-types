@@ -11,8 +11,10 @@ import type {
 } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { Application, FormApplication } from "#client/appv1/api/_module.d.mts";
-import type ApplicationV2 from "#client/applications/api/application.d.mts";
+import type { ApplicationV2, DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
 import type TextEditor from "#client/applications/ux/text-editor.mjs";
+import type { EmbeddedCollection } from "#common/abstract/_module.mjs";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 declare class InternalClientDocument<DocumentName extends Document.Type> {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
@@ -32,7 +34,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @remarks Created during construction via `defineProperty`, with options `{value: null, writable: true, enumerable: false}`
    * @internal
    */
-  protected readonly _sheet: FixedInstanceType<Document.SheetClassFor<DocumentName>> | null;
+  protected _sheet: Application.Any | DocumentSheetV2.Any | null;
 
   static name: "ClientDocumentMixin";
 
@@ -46,14 +48,12 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   /**
    * Return a reference to the parent Collection instance which contains this Document.
    */
-  get collection(): Collection<Document.StoredForName<DocumentName>> | null;
+  get collection(): ClientDocument.CollectionForName<DocumentName>;
 
   /**
    * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
    */
-  get compendium(): DocumentName extends foundry.documents.collections.CompendiumCollection.DocumentName
-    ? foundry.documents.collections.CompendiumCollection<DocumentName>
-    : null;
+  get compendium(): ClientDocument.CompendiumForName<DocumentName>;
 
   /**
    * Is this document in a compendium? A stricter check than {@link Document.inCompendium | `Document#inCompendium`}.
@@ -96,9 +96,9 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
-   * Lazily obtain a FormApplication instance used to configure this Document, or null if no sheet is available.
+   * Lazily obtain an Application instance used to configure this Document, or null if no sheet is available.
    */
-  get sheet(): FormApplication.Any | ApplicationV2.Any | null;
+  get sheet(): Application.Any | DocumentSheetV2.Any | null;
 
   /**
    * A boolean indicator for whether or not the current game User has at least limited visibility for this Document.
@@ -107,9 +107,12 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   get visible(): boolean;
 
   /**
-   * Obtain the FormApplication class constructor which should be used to configure this Document.
+   * Obtain the Application class constructor which should be used to configure this Document.
+   * @remarks Nothing in this method's body prevents returning whatever is put into `CONFIG[doc]["sheetClasses"][type].cls`,
+   * but {@linkcode InternalClientDocument.sheet | #sheet} will return `null` if the found class does not extent either `Application` (v1)
+   * or `DocumentSheetV2`, so that's the constraint used here
    */
-  protected _getSheetClass(): FormApplication.AnyConstructor | ApplicationV2.AnyConstructor | null;
+  protected _getSheetClass(): Application.AnyConstructor | DocumentSheetV2.AnyConstructor | undefined;
 
   /**
    * Safely prepare data for a Document, catching any errors.
@@ -548,6 +551,25 @@ declare global {
       updateData?: AnyObject;
     }
 
+    /**
+     * Encodes the special casing for which Documents can be in which Collections.
+     *
+     * As of 13.351, {@linkcode TokenDocument.Schema.delta | ActorDeltaField}s containing {@linkcode ActorDelta}s are the only use of
+     * {@linkcode foundry.data.fields.EmbeddedDocumentField | EmbeddedDocumentField},
+     * which is the special case where a document can be its own parent.
+     */
+    type CollectionForName<Name extends Document.Type> =
+      | (Name extends "ActorDelta" ? ActorDelta.Stored : never)
+      | (Name extends Exclude<Document.EmbeddedType, "ActorDelta">
+          ? EmbeddedCollection<Document.StoredForName<Name>, Document.Embedded.ParentForName<Name>>
+          : never)
+      | (Name extends Document.WorldType ? Document.WorldCollectionForName<Name> : never)
+      | null;
+
+    type CompendiumForName<Name extends Document.Type> =
+      | (Name extends CompendiumCollection.DocumentName ? CompendiumCollection<Name> : never)
+      | null;
+
     // TODO: This may be better defined elsewhere
     type LifeCycleEventName = "preCreate" | "onCreate" | "preUpdate" | "onUpdate" | "preDelete" | "onDelete";
 
@@ -674,12 +696,12 @@ declare global {
       : SourceData;
 
     /** @internal */
-    type _OnSheetChangeOptions = NullishProps<{
+    interface _OnSheetChangeOptions {
       /** Whether the sheet was originally open and needs to be re-opened. */
       sheetOpen: boolean;
-    }>;
+    }
 
-    interface OnSheetChangeOptions extends _OnSheetChangeOptions {}
+    interface OnSheetChangeOptions extends InexactPartial<_OnSheetChangeOptions> {}
   }
 }
 

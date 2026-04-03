@@ -265,10 +265,23 @@ for (const placeable of placeables) {
   };
 }
 
+/** Imports that aren't allowed in `/src/**` *or* `/tests/**` */
 const noRestrictedImportsPaths = [
   {
     name: "type-fest",
     message: "You probably meant to import fvtt-types/utils",
+  },
+];
+
+/** Imports that only aren't allowed in `/src/**` */
+const pathsOnlyAllowedInTests = [
+  {
+    name: "#tests",
+    message: "Importing from tests is not supported outside tests/",
+  },
+  {
+    name: "#testUtils",
+    message: "Importing from tests is not supported outside tests/",
   },
 ];
 
@@ -347,7 +360,7 @@ const rules = [
       "@typescript-eslint/no-restricted-imports": [
         "error",
         {
-          paths: noRestrictedImportsPaths,
+          paths: noRestrictedImportsPaths.concat(pathsOnlyAllowedInTests),
         },
       ],
       "@typescript-eslint/prefer-namespace-keyword": "error",
@@ -475,13 +488,6 @@ const rules = [
         "error",
         {
           paths: noRestrictedImportsPaths,
-          patterns: [
-            {
-              group: ["../"],
-              message:
-                "Relative imports are not allowed in tests. This is to prevent importing the main repo. If you have a need to import other test files this can be adjusted.",
-            },
-          ],
         },
       ],
     },
