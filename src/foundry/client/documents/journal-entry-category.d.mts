@@ -1,9 +1,16 @@
 import type { InexactPartial, Merge } from "#utils";
-import type Document from "#common/abstract/document.mjs";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseJournalEntryCategory from "#common/documents/journal-entry-category.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseJournalEntryCategory } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace JournalEntryCategory {
   /**
@@ -145,7 +152,7 @@ declare namespace JournalEntryCategory {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this JournalEntryCategory embedded document.
      * @defaultValue `null`
@@ -387,7 +394,7 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
   ): Promise<JournalEntryCategory.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"JournalEntryCategory">,
   ): Promise<this | false | null | undefined>;
 

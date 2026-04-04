@@ -1,12 +1,23 @@
-import type Document from "#common/abstract/document.d.mts";
-import type { documents } from "#client/client.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type { InexactPartial, InterfaceToObject, Merge } from "#utils";
-import type BaseJournalEntry from "#common/documents/journal-entry.mjs";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type {
+  BaseFolder,
+  BaseJournalEntry,
+  BaseJournalEntryCategory,
+  BaseJournalEntryPage,
+} from "#client/documents/_module.d.mts";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
 import type { NotesLayer } from "#client/canvas/layers/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace JournalEntry {
   /**
@@ -234,7 +245,7 @@ declare namespace JournalEntry {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this JournalEntry document
      * @defaultValue `null`
@@ -250,19 +261,19 @@ declare namespace JournalEntry {
      * The pages contained within this JournalEntry document
      * @defaultValue `[]`
      */
-    pages: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryPage, JournalEntry.Implementation>;
+    pages: fields.EmbeddedCollectionField<typeof BaseJournalEntryPage, JournalEntry.Implementation>;
 
     /**
      * The _id of a Folder which contains this JournalEntry
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The categories contained within this JournalEntry.
      * @defaultValue `[]`
      */
-    categories: fields.EmbeddedCollectionField<typeof documents.BaseJournalEntryCategory, JournalEntry.Implementation>;
+    categories: fields.EmbeddedCollectionField<typeof BaseJournalEntryCategory, JournalEntry.Implementation>;
 
     /**
      * The numeric sort value which orders this JournalEntry relative to its siblings
@@ -675,7 +686,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
   ): Promise<JournalEntry.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"JournalEntry">,
   ): Promise<this | false | null | undefined>;
 

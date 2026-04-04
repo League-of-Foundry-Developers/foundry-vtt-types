@@ -1,12 +1,22 @@
 import type { ConfiguredMacro } from "#configuration";
 import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseMacro from "#common/documents/macro.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseFolder, BaseMacro, BaseUser } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+
+/** @privateRemarks `ExecuteMacroRegionBehaviourType` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ExecuteMacroRegionBehaviorType } from "#client/data/region-behaviors/_module.d.mts";
 
 declare namespace Macro {
   /**
@@ -216,7 +226,7 @@ declare namespace Macro {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Macro document
      * @defaultValue `null`
@@ -239,7 +249,7 @@ declare namespace Macro {
      * The _id of a User document which created this Macro *
      * @defaultValue `game.user?.id`
      */
-    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
+    author: fields.DocumentAuthorField<typeof BaseUser>;
 
     /**
      * An image file path which provides the thumbnail artwork for this Macro
@@ -276,7 +286,7 @@ declare namespace Macro {
      * The _id of a Folder which contains this Macro
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The numeric sort value which orders this Macro relative to its siblings
@@ -603,7 +613,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   ): Promise<Macro.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Macro">,
   ): Promise<this | false | null | undefined>;
 

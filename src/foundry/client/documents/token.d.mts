@@ -1,16 +1,29 @@
 import type { AnyArray, AnyObject, DeepReadonly, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 import type { ActorDeltaField } from "#common/documents/token.d.mts";
-import type BaseToken from "#common/documents/token.d.mts";
-import type { LightData, TextureData } from "#common/data/data.mjs";
+import type { BaseActor, BaseActorDelta, BaseRegion, BaseToken, BaseUser } from "#common/documents/_module.d.mts";
+import type { LightData, TextureData, fields } from "#common/data/_module.d.mts";
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
-import type DataModel from "#common/abstract/data.mjs";
 import type { TerrainData } from "#client/data/terrain-data.mjs";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
-import fields = foundry.data.fields;
-import Token = foundry.canvas.placeables.Token;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+
+/** @privateRemarks `TokenLayer` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { TokenLayer } from "#client/canvas/layers/_module.d.mts";
+
+/** @privateRemarks `AllHooks` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { AllHooks } from "#client/hooks.d.mts";
 
 declare namespace TokenDocument {
   /**
@@ -236,7 +249,7 @@ declare namespace TokenDocument {
    * Foundry technically implements this through deletion, but it's easier for us to do by extension as there are field
    * option overrides (e.g `textSearch` on `name`) that cause type issues otherwise.
    */
-  interface SharedProtoSchema extends DataSchema {
+  interface SharedProtoSchema extends fields.DataSchema {
     // `name` omitted here because, while it is not in the list of omitted fields for `PrototypeToken`, it's `textSearch: true` in the base schema, but overridden to `false` in `PrototypeToken`
 
     /**
@@ -575,7 +588,7 @@ declare namespace TokenDocument {
     flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
   }
 
-  interface DetectionModeSchema extends DataSchema {
+  interface DetectionModeSchema extends fields.DataSchema {
     /**
      * The id of the detection mode, a key from CONFIG.Canvas.detectionModes
      * @defaultValue `""`
@@ -597,7 +610,7 @@ declare namespace TokenDocument {
 
   interface DetectionModeData extends SchemaField.InitializedData<DetectionModeSchema> {}
 
-  interface MeasuredMovementWaypointSchema extends DataSchema {
+  interface MeasuredMovementWaypointSchema extends fields.DataSchema {
     /**
      * The top-left x-coordinate in pixels (integer).
      * @defaultValue `undefined`
@@ -687,10 +700,7 @@ declare namespace TokenDocument {
      * The ID of the user that moved the token to from the previous to this waypoint.
      * @defaultValue `undefined`
      */
-    userId: fields.ForeignDocumentField<
-      typeof documents.BaseUser,
-      { idOnly: true; required: true; initial: undefined }
-    >;
+    userId: fields.ForeignDocumentField<typeof BaseUser, { idOnly: true; required: true; initial: undefined }>;
 
     /**
      * The ID of the movement from the previous to this waypoint.
@@ -745,13 +755,13 @@ declare namespace TokenDocument {
      * The _id of an Actor document which this Token represents
      * @defaultValue `null`
      */
-    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
+    actorId: fields.ForeignDocumentField<typeof BaseActor, { idOnly: true }>;
 
     /**
      * The ActorDelta embedded document which stores the differences between this
      * token and the base actor it represents.
      */
-    delta: ActorDeltaField<typeof documents.BaseActorDelta>;
+    delta: ActorDeltaField<typeof BaseActorDelta>;
 
     /**
      * The shape of the Token
@@ -804,7 +814,7 @@ declare namespace TokenDocument {
     /**
      * @remarks Foundry marked `@internal`
      */
-    _regions: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseRegion, { idOnly: true }>>;
+    _regions: fields.ArrayField<fields.ForeignDocumentField<typeof BaseRegion, { idOnly: true }>>;
   }
 
   namespace Database {
@@ -2122,7 +2132,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   ): Promise<TokenDocument.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Token">,
   ): Promise<this | false | null | undefined>;
 

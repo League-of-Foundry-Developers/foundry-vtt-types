@@ -1,9 +1,16 @@
 import type { InexactPartial, Merge } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseAmbientSound from "#common/documents/ambient-sound.mjs";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseAmbientSound } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace AmbientSoundDocument {
   /**
@@ -151,7 +158,7 @@ declare namespace AmbientSoundDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this AmbientSound document
      * @defaultValue `null`
@@ -262,7 +269,7 @@ declare namespace AmbientSoundDocument {
     flags: fields.DocumentFlagsField<Name>;
   }
 
-  interface EffectsConfigSchema extends DataSchema {
+  interface EffectsConfigSchema extends fields.DataSchema {
     /**
      * @defaultValue `undefined`
      * @remarks This isn't enforced by the model, but in practice should only have values in `keyof CONFIG["soundEffects"]`
@@ -485,7 +492,7 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
   ): Promise<AmbientSoundDocument.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"AmbientSound">,
   ): Promise<this | false | null | undefined>;
 

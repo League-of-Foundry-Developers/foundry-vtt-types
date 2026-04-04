@@ -1,10 +1,16 @@
 import type { InexactPartial, InterfaceToObject, Merge } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { TextureData } from "#common/data/data.mjs";
-import type BaseTile from "#common/documents/tile.mjs";
+import type { fields, TextureData } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseTile } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace TileDocument {
   /**
@@ -152,7 +158,7 @@ declare namespace TileDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Tile embedded document
      * @defaultValue `null`
@@ -504,7 +510,7 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
   ): Promise<TileDocument.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Tile">,
   ): Promise<this | false | null | undefined>;
 

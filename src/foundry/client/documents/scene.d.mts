@@ -1,12 +1,35 @@
 import type { InexactPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { LightData, TextureData } from "#common/data/data.d.mts";
-import type ImageHelper from "#client/helpers/media/image-helper.d.mts";
+import type {
+  BaseAmbientLight,
+  BaseAmbientSound,
+  BaseDrawing,
+  BaseFolder,
+  BaseJournalEntry,
+  BaseJournalEntryPage,
+  BaseMeasuredTemplate,
+  BaseNote,
+  BasePlaylist,
+  BasePlaylistSound,
+  BaseRegion,
+  BaseScene,
+  BaseTile,
+  BaseToken,
+  BaseWall,
+} from "#common/documents/_module.d.mts";
+import type { ImageHelper } from "#client/helpers/media/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace Scene {
   /**
@@ -259,7 +282,7 @@ declare namespace Scene {
     shadows: number;
   }
 
-  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends DataSchema {
+  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends fields.DataSchema {
     /**
      * The normalized hue angle.
      * @defaultValue `0` for `environment.base`, `257/360` for `environment.dark`
@@ -334,7 +357,7 @@ declare namespace Scene {
     shadows: number;
   }
 
-  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends DataSchema {
+  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends fields.DataSchema {
     /**
      * The normalized hue angle.
      * @defaultValue `0` for `environment.base`, `257/360` for `environment.dark`
@@ -411,7 +434,7 @@ declare namespace Scene {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Scene document
      * @defaultValue `null`
@@ -548,61 +571,61 @@ declare namespace Scene {
      * A collection of embedded Drawing objects.
      * @defaultValue `[]`
      */
-    drawings: fields.EmbeddedCollectionField<typeof documents.BaseDrawing, Scene.Implementation>;
+    drawings: fields.EmbeddedCollectionField<typeof BaseDrawing, Scene.Implementation>;
 
     /**
      * A collection of embedded Tile objects.
      * @defaultValue `[]`
      */
-    tokens: fields.EmbeddedCollectionField<typeof documents.BaseToken, Scene.Implementation>;
+    tokens: fields.EmbeddedCollectionField<typeof BaseToken, Scene.Implementation>;
 
     /**
      * A collection of embedded Token objects.
      * @defaultValue `[]`
      */
-    lights: fields.EmbeddedCollectionField<typeof documents.BaseAmbientLight, Scene.Implementation>;
+    lights: fields.EmbeddedCollectionField<typeof BaseAmbientLight, Scene.Implementation>;
 
     /**
      * A collection of embedded AmbientLight objects.
      * @defaultValue `[]`
      */
-    notes: fields.EmbeddedCollectionField<typeof documents.BaseNote, Scene.Implementation>;
+    notes: fields.EmbeddedCollectionField<typeof BaseNote, Scene.Implementation>;
 
     /**
      * A collection of embedded Note objects.
      * @defaultValue `[]`
      */
-    sounds: fields.EmbeddedCollectionField<typeof documents.BaseAmbientSound, Scene.Implementation>;
+    sounds: fields.EmbeddedCollectionField<typeof BaseAmbientSound, Scene.Implementation>;
 
     /**
      * A collection of embedded Region documents.
      * @defaultValue `[]`
      */
-    regions: fields.EmbeddedCollectionField<typeof documents.BaseRegion, Scene.Implementation>;
+    regions: fields.EmbeddedCollectionField<typeof BaseRegion, Scene.Implementation>;
 
     /**
      * A collection of embedded AmbientSound objects.
      * @defaultValue `[]`
      */
-    templates: fields.EmbeddedCollectionField<typeof documents.BaseMeasuredTemplate, Scene.Implementation>;
+    templates: fields.EmbeddedCollectionField<typeof BaseMeasuredTemplate, Scene.Implementation>;
 
     /**
      * A collection of embedded MeasuredTemplate objects.
      * @defaultValue `[]`
      */
-    tiles: fields.EmbeddedCollectionField<typeof documents.BaseTile, Scene.Implementation>;
+    tiles: fields.EmbeddedCollectionField<typeof BaseTile, Scene.Implementation>;
 
     /**
      * A collection of embedded Wall objects
      * @defaultValue `[]`
      */
-    walls: fields.EmbeddedCollectionField<typeof documents.BaseWall, Scene.Implementation>;
+    walls: fields.EmbeddedCollectionField<typeof BaseWall, Scene.Implementation>;
 
     /**
      * A linked Playlist document which should begin automatically playing when this Scene becomes active.
      * @defaultValue `null`
      */
-    playlist: fields.ForeignDocumentField<typeof documents.BasePlaylist>;
+    playlist: fields.ForeignDocumentField<typeof BasePlaylist>;
 
     /**
      * A linked PlaylistSound document from the selected playlist that will
@@ -612,19 +635,19 @@ declare namespace Scene {
      * {@link Scene.prepareBaseData | `Scene#prepareBaseData`} attempts to `get()` this ID from the provided `playlist`, if any, making this
      * `PlaylistSound.Implementation | undefined | null` at runtime
      */
-    playlistSound: fields.ForeignDocumentField<typeof documents.BasePlaylistSound, { idOnly: true }>;
+    playlistSound: fields.ForeignDocumentField<typeof BasePlaylistSound, { idOnly: true }>;
 
     /**
      * A JournalEntry document which provides narrative details about this Scene
      * @defaultValue `null`
      */
-    journal: fields.ForeignDocumentField<typeof documents.BaseJournalEntry>;
+    journal: fields.ForeignDocumentField<typeof BaseJournalEntry>;
 
     /**
      * A document ID for a JournalEntryPage which provides narrative details about this Scene
      * @defaultValue `null`
      */
-    journalEntryPage: fields.ForeignDocumentField<typeof documents.BaseJournalEntryPage, { idOnly: true }>;
+    journalEntryPage: fields.ForeignDocumentField<typeof BaseJournalEntryPage, { idOnly: true }>;
 
     /**
      * A named weather effect which should be rendered in this Scene.
@@ -636,7 +659,7 @@ declare namespace Scene {
      * The _id of a Folder which contains this Actor
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The numeric sort value which orders this Actor relative to its siblings
@@ -663,7 +686,7 @@ declare namespace Scene {
     _stats: fields.DocumentStatsField;
   }
 
-  interface FogSchema extends DataSchema {
+  interface FogSchema extends fields.DataSchema {
     /**
      * Should fog exploration progress be tracked for this Scene?
      * @defaultValue `true`
@@ -690,7 +713,7 @@ declare namespace Scene {
 
   interface FogData extends fields.SchemaField.InitializedData<FogSchema> {}
 
-  interface FogColorSchema extends DataSchema {
+  interface FogColorSchema extends fields.DataSchema {
     /**
      * A color tint applied to explored regions of fog of war
      * @defaultValue `null`
@@ -706,7 +729,7 @@ declare namespace Scene {
 
   interface FogColorData extends fields.SchemaField.InitializedData<FogColorSchema> {}
 
-  interface EnvironmentSchema extends DataSchema {
+  interface EnvironmentSchema extends fields.DataSchema {
     /**
      * The ambient darkness level in this Scene, where 0 represents midday (maximum illumination) and 1 represents midnight (maximum darkness)
      * @defaultValue `0`
@@ -808,7 +831,7 @@ declare namespace Scene {
 
   interface EnvironmentData extends fields.SchemaField.InitializedData<EnvironmentSchema> {}
 
-  interface GridSchema extends DataSchema {
+  interface GridSchema extends fields.DataSchema {
     /**
      * The type of grid, a number from CONST.GRID_TYPES.
      * @defaultValue {@linkcode foundry.packages.BaseSystem.grid | game.system.grid.type}
@@ -1184,7 +1207,7 @@ declare namespace Scene {
  * @see {@linkcode Scenes}            The world-level collection of Scene documents
  * @see {@linkcode SceneConfig}       The Scene configuration application
  */
-declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument {
+declare class Scene extends BaseScene.Internal.ClientDocument {
   /**
    * @param data    - Initial data from which to construct the `Scene`
    * @param context - Construction context options
@@ -1465,7 +1488,7 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
   ): Promise<Scene.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Scene">,
   ): Promise<this | false | null | undefined>;
 

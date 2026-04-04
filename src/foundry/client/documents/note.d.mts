@@ -1,11 +1,16 @@
 import type { InexactPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseNote from "#common/documents/note.d.mts";
-import type { TextureData } from "#common/data/data.mjs";
+import type { fields, TextureData } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseJournalEntryPage, BaseJournalEntry, BaseNote } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace NoteDocument {
   /**
@@ -161,7 +166,7 @@ declare namespace NoteDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this BaseNote embedded document
      * @defaultValue `null`
@@ -172,13 +177,13 @@ declare namespace NoteDocument {
      * The _id of a JournalEntry document which this Note represents
      * @defaultValue `null`
      */
-    entryId: fields.ForeignDocumentField<typeof documents.BaseJournalEntry, { idOnly: true }>;
+    entryId: fields.ForeignDocumentField<typeof BaseJournalEntry, { idOnly: true }>;
 
     /**
      * The _id of a specific JournalEntryPage document which this Note represents
      * @defaultValue `null`
      */
-    pageId: fields.ForeignDocumentField<typeof documents.BaseJournalEntryPage, { idOnly: true }>;
+    pageId: fields.ForeignDocumentField<typeof BaseJournalEntryPage, { idOnly: true }>;
 
     /**
      * The x-coordinate position of the center of the note icon
@@ -473,7 +478,7 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
   ): Promise<NoteDocument.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Note">,
   ): Promise<this | false | null | undefined>;
 

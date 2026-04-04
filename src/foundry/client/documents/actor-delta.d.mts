@@ -1,11 +1,17 @@
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { BaseActorDelta } from "#common/documents/_module.d.mts";
-import type Document from "#common/abstract/document.d.mts";
 import type { ConfiguredActorDelta } from "#configuration";
 import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
-import type DataModel from "#common/abstract/data.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
+import type { BaseActorDelta } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace ActorDelta {
   /**
@@ -296,7 +302,7 @@ declare namespace ActorDelta {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this ActorDelta document.
      */
@@ -784,7 +790,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   ): Promise<ActorDelta.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: ActorDelta.Database.DeleteOperation,
   ): Promise<this | false | null | undefined>;
 

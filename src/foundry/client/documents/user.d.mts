@@ -1,13 +1,20 @@
 import type { ConfiguredDocumentClass } from "../../../types/documentConfiguration.d.mts";
 import type { AnyObject, FixedInstanceType, InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseActor, BaseUser } from "#common/documents/_module.d.mts";
 import type { UserTargets } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { BaseRuler, Ping } from "#client/canvas/interaction/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { AVSettings } from "#client/av/_module.d.mts";
 
-import AVSettings = foundry.av.AVSettings;
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace User {
   /**
@@ -164,7 +171,7 @@ declare namespace User {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this User document.
      * @defaultValue `null`
@@ -754,7 +761,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
   ): Promise<User.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"User">,
   ): Promise<this | false | null | undefined>;
 

@@ -8,12 +8,18 @@ import type {
   Merge,
   RequiredProps,
 } from "#utils";
-import type { DataModel } from "#common/abstract/data.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataField, DataSchema } from "#common/data/fields.d.mts";
-import type BaseActiveEffect from "#common/documents/active-effect.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
+import type { BaseActiveEffect, BaseCombat } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace ActiveEffect {
   /**
@@ -231,7 +237,7 @@ declare namespace ActiveEffect {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies the ActiveEffect within a parent Actor or Item
      * @defaultValue `null`
@@ -316,7 +322,7 @@ declare namespace ActiveEffect {
     _stats: fields.DocumentStatsField;
   }
 
-  interface ChangeSchema extends DataSchema {
+  interface ChangeSchema extends fields.DataSchema {
     /**
      * The attribute path in the Actor or Item data which the change modifies
      * @defaultValue `""`
@@ -353,7 +359,7 @@ declare namespace ActiveEffect {
     priority: fields.NumberField;
   }
 
-  interface DurationSchema extends DataSchema {
+  interface DurationSchema extends fields.DataSchema {
     /**
      * The world time when the active effect first started
      * @defaultValue `null`
@@ -370,7 +376,7 @@ declare namespace ActiveEffect {
      * The _id of the CombatEncounter in which the effect first started
      * @defaultValue `null`
      */
-    combat: fields.ForeignDocumentField<typeof foundry.documents.BaseCombat>;
+    combat: fields.ForeignDocumentField<typeof BaseCombat>;
 
     /**
      * The maximum duration of the effect, in combat rounds
@@ -645,8 +651,8 @@ declare namespace ActiveEffect {
     priority: number | null | undefined;
   }
 
-  type ApplyFieldReturn<Field extends DataField.Any | null | undefined> = Field extends DataField.Any
-    ? DataField.InitializedTypeFor<Field>
+  type ApplyFieldReturn<Field extends fields.DataField.Any | null | undefined> = Field extends fields.DataField.Any
+    ? fields.DataField.InitializedTypeFor<Field>
     : unknown;
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
@@ -798,7 +804,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    *
    * @remarks `field` default provided by `??= model.schema.getField(change.key)`
    */
-  static applyField<Field extends DataField.Any | null | undefined = undefined>(
+  static applyField<Field extends fields.DataField.Any | null | undefined = undefined>(
     model: DataModel.Any,
     change: ActiveEffect.ChangeData,
     field?: Field,
@@ -968,7 +974,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
   ): Promise<ActiveEffect.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: ActiveEffect.Database.DeleteOperation,
   ): Promise<this | false | null | undefined>;
 

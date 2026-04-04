@@ -1,11 +1,16 @@
 import type { InexactPartial, IntentionalPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { ShapeData } from "#common/data/data.mjs";
-import type BaseDrawing from "#common/documents/drawing.mjs";
+import type { fields, ShapeData } from "#common/data/_module.mjs";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseDrawing, BaseUser } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace DrawingDocument {
   /**
@@ -162,7 +167,7 @@ declare namespace DrawingDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this BaseDrawing embedded document
      * @defaultValue `null`
@@ -173,7 +178,7 @@ declare namespace DrawingDocument {
      * The _id of the user who created the drawing
      * @defaultValue `game.user?.id`
      */
-    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
+    author: fields.DocumentAuthorField<typeof BaseUser>;
 
     /**
      * The geometric shape of the drawing
@@ -558,7 +563,7 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
   ): Promise<DrawingDocument.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Drawing">,
   ): Promise<this | false | null | undefined>;
 

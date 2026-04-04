@@ -1,11 +1,17 @@
 import type { InexactPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseRollTable from "#common/documents/roll-table.mjs";
-import type TextEditor from "#client/applications/ux/text-editor.mjs";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseFolder, BaseRollTable, BaseTableResult } from "#client/documents/_module.d.mts";
+import type { TextEditor } from "#client/applications/ux/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace RollTable {
   /**
@@ -223,7 +229,7 @@ declare namespace RollTable {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this RollTable document
      * @defaultValue `null`
@@ -242,7 +248,7 @@ declare namespace RollTable {
      */
     img: fields.FilePathField<{
       categories: ["IMAGE"];
-      initial: () => typeof documents.BaseRollTable.DEFAULT_ICON;
+      initial: () => typeof BaseRollTable.DEFAULT_ICON;
     }>;
 
     /**
@@ -255,7 +261,7 @@ declare namespace RollTable {
      * A Collection of TableResult embedded documents which belong to this RollTable
      * @defaultValue `[]`
      */
-    results: fields.EmbeddedCollectionField<typeof documents.BaseTableResult, RollTable.Implementation>;
+    results: fields.EmbeddedCollectionField<typeof BaseTableResult, RollTable.Implementation>;
 
     /**
      * The Roll formula which determines the results chosen from the table
@@ -279,7 +285,7 @@ declare namespace RollTable {
      * The _id of a Folder which contains this RollTable
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The numeric sort value which orders this RollTable relative to its siblings
@@ -895,7 +901,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
   ): Promise<RollTable.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"RollTable">,
   ): Promise<this | false | null | undefined>;
 

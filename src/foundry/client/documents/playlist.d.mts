@@ -1,9 +1,16 @@
 import type { InexactPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type { Document } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type { fields } from "#common/data/_module.d.mts";
-import type BasePlaylist from "#common/documents/playlist.mjs";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseFolder, BasePlaylist, BasePlaylistSound } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace Playlist {
   /**
@@ -230,7 +237,7 @@ declare namespace Playlist {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Playlist document
      * @defaultValue `null`
@@ -252,7 +259,7 @@ declare namespace Playlist {
      * A Collection of PlaylistSounds embedded documents which belong to this playlist
      * @defaultValue `[]`
      */
-    sounds: fields.EmbeddedCollectionField<typeof documents.BasePlaylistSound, Playlist.Implementation>;
+    sounds: fields.EmbeddedCollectionField<typeof BasePlaylistSound, Playlist.Implementation>;
 
     /**
      * A channel in CONST.AUDIO_CHANNELS where all sounds in this playlist are played
@@ -293,7 +300,7 @@ declare namespace Playlist {
      * The _id of a Folder which contains this playlist
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The sorting mode used for this playlist.
@@ -811,7 +818,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   ): Promise<Playlist.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Playlist">,
   ): Promise<this | false | null | undefined>;
 

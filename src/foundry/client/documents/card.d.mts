@@ -1,11 +1,17 @@
 import type { ConfiguredCard } from "#configuration";
 import type { AnyObject, DeepPartial, Identity, InexactPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseCard from "#common/documents/card.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseCard, BaseCards } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace Card {
   /**
@@ -228,7 +234,7 @@ declare namespace Card {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Card document
      * @defaultValue `null`
@@ -313,7 +319,7 @@ declare namespace Card {
      * The document ID of the origin deck to which this card belongs
      * @defaultValue `null`
      */
-    origin: fields.ForeignDocumentField<typeof documents.BaseCards>;
+    origin: fields.ForeignDocumentField<typeof BaseCards>;
 
     /**
      * The visible width of this card
@@ -348,7 +354,7 @@ declare namespace Card {
     _stats: fields.DocumentStatsField;
   }
 
-  interface FaceSchema extends DataSchema {
+  interface FaceSchema extends fields.DataSchema {
     /**
      * A name for this card face
      * @defaultValue `undefined`
@@ -690,7 +696,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
   ): Promise<Card.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Card">,
   ): Promise<this | false | null | undefined>;
 

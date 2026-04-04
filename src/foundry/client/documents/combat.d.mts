@@ -1,12 +1,22 @@
 import type { ConfiguredCombat } from "#configuration";
 import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseCombat from "#common/documents/combat.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.mjs";
+import type { BaseCombat, BaseCombatant, BaseCombatantGroup, BaseScene } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+
+/** @privateRemarks `hookEvents` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { AllHooks as hookEvents } from "#client/hooks.d.mts";
 
 declare namespace Combat {
   /**
@@ -301,7 +311,7 @@ declare namespace Combat {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Combat document
      * @defaultValue `null`
@@ -316,19 +326,19 @@ declare namespace Combat {
      * The _id of a Scene within which this Combat occurs
      * @defaultValue `null`
      */
-    scene: fields.ForeignDocumentField<typeof documents.BaseScene>;
+    scene: fields.ForeignDocumentField<typeof BaseScene>;
 
     /**
      * A Collection of Documents that represent a grouping of individual Combatants
      * @defaultValue `[]`
      */
-    groups: fields.EmbeddedCollectionField<typeof documents.BaseCombatantGroup, Combat.Implementation>;
+    groups: fields.EmbeddedCollectionField<typeof BaseCombatantGroup, Combat.Implementation>;
 
     /**
      * A Collection of Combatant embedded Documents
      * @defaultValue `[]`
      */
-    combatants: fields.EmbeddedCollectionField<typeof documents.BaseCombatant, Combat.Implementation>;
+    combatants: fields.EmbeddedCollectionField<typeof BaseCombatant, Combat.Implementation>;
 
     /**
      * Is the Combat encounter currently active?
@@ -1066,7 +1076,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   ): Promise<Combat.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Combat">,
   ): Promise<this | false | null | undefined>;
 

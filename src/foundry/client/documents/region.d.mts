@@ -1,11 +1,18 @@
 import type { InexactPartial, Merge, NullishProps } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { BaseShapeData } from "#common/data/data.mjs";
-import type BaseRegion from "#common/documents/region.mjs";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseShapeData } from "#common/data/data.d.mts";
+import type { BaseRegion } from "#common/documents/_module.d.mts";
 import type { Region } from "#client/canvas/placeables/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 /**
  * The client-side Region document which extends the common BaseRegion model.
@@ -270,7 +277,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   ): Promise<RegionDocument.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Region">,
   ): Promise<this | false | null | undefined>;
 
@@ -504,7 +511,7 @@ declare namespace RegionDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The Region _id which uniquely identifies it within its parent Scene
      * @defaultValue `null`

@@ -1,11 +1,17 @@
 import type { Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
-import type { documents } from "#client/client.d.mts";
 import type { DatabaseGetOperation } from "#common/abstract/_types.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseFogExploration from "#common/documents/fog-exploration.mjs";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseFogExploration, BaseScene, BaseUser } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace FogExploration {
   /**
@@ -163,7 +169,7 @@ declare namespace FogExploration {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this FogExploration document
      * @defaultValue `null`
@@ -174,13 +180,13 @@ declare namespace FogExploration {
      * The _id of the Scene document to which this fog applies
      * @defaultValue `canvas?.scene?.id`
      */
-    scene: fields.ForeignDocumentField<typeof documents.BaseScene, { initial: () => string | undefined }>;
+    scene: fields.ForeignDocumentField<typeof BaseScene, { initial: () => string | undefined }>;
 
     /**
      * The _id of the User document to which this fog applies
      * @defaultValue `null`
      */
-    user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
+    user: fields.ForeignDocumentField<typeof BaseUser, { initial: () => string }>;
 
     /**
      * The base64 image/jpeg of the explored fog polygon
@@ -463,7 +469,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   ): Promise<FogExploration.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"FogExploration">,
   ): Promise<this | false | null | undefined>;
 

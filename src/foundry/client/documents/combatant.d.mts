@@ -1,11 +1,17 @@
 import type { ConfiguredCombatant } from "#configuration";
 import type { Identity, InexactPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseCombatant from "#common/documents/combatant.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseActor, BaseCombatant, BaseScene, BaseToken } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace Combatant {
   /**
@@ -231,7 +237,7 @@ declare namespace Combatant {
    * iterable.
    */
 
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Combatant embedded document
      * @defaultValue `null`
@@ -247,18 +253,18 @@ declare namespace Combatant {
      * The _id of an Actor associated with this Combatant
      * @defaultValue `null`
      */
-    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { label: "COMBAT.CombatantActor"; idOnly: true }>;
+    actorId: fields.ForeignDocumentField<typeof BaseActor, { label: "COMBAT.CombatantActor"; idOnly: true }>;
 
     /**
      * The _id of a Token associated with this Combatant
      * @defaultValue `null`
      */
-    tokenId: fields.ForeignDocumentField<typeof documents.BaseToken, { label: "COMBAT.CombatantToken"; idOnly: true }>;
+    tokenId: fields.ForeignDocumentField<typeof BaseToken, { label: "COMBAT.CombatantToken"; idOnly: true }>;
 
     /**
      * @defaultValue `null`
      */
-    sceneId: fields.ForeignDocumentField<typeof documents.BaseScene, { label: "COMBAT.CombatantScene"; idOnly: true }>;
+    sceneId: fields.ForeignDocumentField<typeof BaseScene, { label: "COMBAT.CombatantScene"; idOnly: true }>;
 
     /**
      * A customized name which replaces the name of the Token in the tracker
@@ -612,7 +618,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   ): Promise<Combatant.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Combatant">,
   ): Promise<this | false | null | undefined>;
 

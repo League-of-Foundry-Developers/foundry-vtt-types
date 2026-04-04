@@ -1,11 +1,17 @@
 import type { ConfiguredItem } from "#configuration";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type { AnyObject, Identity, InexactPartial, Merge } from "#utils";
-import type BaseItem from "#common/documents/item.mjs";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseActiveEffect, BaseFolder, BaseItem } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace Item {
   /**
@@ -296,7 +302,7 @@ declare namespace Item {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Item document
      * @defaultValue `null`
@@ -308,7 +314,7 @@ declare namespace Item {
 
     /** An Item subtype which configures the system data model applied */
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof documents.BaseItem, {}>;
+    type: fields.DocumentTypeField<typeof BaseItem, {}>;
 
     /**
      * An image file path which provides the artwork for this Item
@@ -323,19 +329,19 @@ declare namespace Item {
      * Data for an Item subtype, defined by a System or Module
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<typeof documents.BaseItem>;
+    system: fields.TypeDataField<typeof BaseItem>;
 
     /**
      * A collection of ActiveEffect embedded Documents
      * @defaultValue `[]`
      */
-    effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Item.Implementation>;
+    effects: fields.EmbeddedCollectionField<typeof BaseActiveEffect, Item.Implementation>;
 
     /**
      * The _id of a Folder which contains this Item
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The numeric sort value which orders this Item relative to its siblings
@@ -735,7 +741,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
   ): Promise<Item.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Item">,
   ): Promise<this | false | null | undefined>;
 

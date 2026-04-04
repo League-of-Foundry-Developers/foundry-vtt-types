@@ -1,12 +1,18 @@
 import type { ConfiguredChatMessage } from "#configuration";
 import type { AnyObject, Identity, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
-import type BaseChatMessage from "#common/documents/chat-message.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseActor, BaseChatMessage, BaseScene, BaseToken, BaseUser } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace ChatMessage {
   /**
@@ -228,7 +234,7 @@ declare namespace ChatMessage {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this ChatMessage document
      * @defaultValue `null`
@@ -264,7 +270,7 @@ declare namespace ChatMessage {
      * The _id of the User document who generated this message
      * @defaultValue `game.user?.id`
      */
-    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
+    author: fields.DocumentAuthorField<typeof BaseUser>;
 
     /**
      * The timestamp at which point this message was generated
@@ -293,7 +299,7 @@ declare namespace ChatMessage {
      * An array of User _id values to whom this message is privately whispered
      * @defaultValue `[]`
      */
-    whisper: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseUser, { idOnly: true }>>;
+    whisper: fields.ArrayField<fields.ForeignDocumentField<typeof BaseUser, { idOnly: true }>>;
 
     /**
      * Is this message sent blindly where the creating User cannot see it?
@@ -336,24 +342,24 @@ declare namespace ChatMessage {
     _stats: fields.DocumentStatsField;
   }
 
-  interface SpeakerSchema extends DataSchema {
+  interface SpeakerSchema extends fields.DataSchema {
     /**
      * The _id of the Scene where this message was created
      * @defaultValue `null`
      */
-    scene: fields.ForeignDocumentField<typeof documents.BaseScene, { idOnly: true }>;
+    scene: fields.ForeignDocumentField<typeof BaseScene, { idOnly: true }>;
 
     /**
      * The _id of the Actor who generated this message
      * @defaultValue `null`
      */
-    actor: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
+    actor: fields.ForeignDocumentField<typeof BaseActor, { idOnly: true }>;
 
     /**
      * The _id of the Token who generated this message
      * @defaultValue `null`
      */
-    token: fields.ForeignDocumentField<typeof documents.BaseToken, { idOnly: true }>;
+    token: fields.ForeignDocumentField<typeof BaseToken, { idOnly: true }>;
 
     /**
      * An overridden alias name used instead of the Actor or Token name
@@ -561,7 +567,7 @@ declare namespace ChatMessage {
   }
 
   /** @internal */
-  type _SpeakerData = SchemaField.InitializedData<ChatMessage.SpeakerSchema>;
+  type _SpeakerData = fields.SchemaField.InitializedData<ChatMessage.SpeakerSchema>;
 
   interface SpeakerData extends _SpeakerData {}
 
@@ -835,7 +841,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   ): Promise<ChatMessage.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"ChatMessage">,
   ): Promise<this | false | null | undefined>;
 
