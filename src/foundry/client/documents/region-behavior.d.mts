@@ -44,8 +44,8 @@ declare namespace RegionBehavior {
     Readonly<{
       name: "RegionBehavior";
       collection: "behaviors";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.RegionBehavior";
+      labelPlural: "DOCUMENT.RegionBehaviors";
       coreTypes: [
         "adjustDarknessLevel",
         "displayScrollingText",
@@ -60,7 +60,7 @@ declare namespace RegionBehavior {
       hasTypeData: true;
       isEmbedded: true;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

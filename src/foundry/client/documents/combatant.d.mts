@@ -45,11 +45,11 @@ declare namespace Combatant {
     Readonly<{
       name: "Combatant";
       collection: "combatants";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Combatant";
+      labelPlural: "DOCUMENT.Combatants";
       isEmbedded: true;
       hasTypeData: true;
-      schemaVersion: string;
+      schemaVersion: "13.341";
       permissions: Metadata.Permissions;
     }>
   > {}

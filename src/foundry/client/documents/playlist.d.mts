@@ -45,10 +45,10 @@ declare namespace Playlist {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "sort", "folder"];
       embedded: Metadata.Embedded;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Playlist";
+      labelPlural: "DOCUMENT.Playlists";
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

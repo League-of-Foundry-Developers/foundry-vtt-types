@@ -46,10 +46,10 @@ declare namespace User {
     Readonly<{
       name: "User";
       collection: "users";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.User";
+      labelPlural: "DOCUMENT.Users";
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

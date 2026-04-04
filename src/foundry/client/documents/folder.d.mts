@@ -44,10 +44,10 @@ declare namespace Folder {
     Readonly<{
       name: "Folder";
       collection: "folders";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Folder";
+      labelPlural: "DOCUMENT.Folders";
       coreTypes: typeof CONST.FOLDER_DOCUMENT_TYPES;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

@@ -48,10 +48,10 @@ declare namespace JournalEntry {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "sort", "folder"];
       embedded: Metadata.Embedded;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.JournalEntry";
+      labelPlural: "DOCUMENT.JournalEntries";
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

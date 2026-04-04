@@ -46,12 +46,12 @@ declare namespace Combat {
     Readonly<{
       name: "Combat";
       collection: "combats";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Combat";
+      labelPlural: "DOCUMENT.Combats";
       embedded: Metadata.Embedded;
       hasTypeData: true;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

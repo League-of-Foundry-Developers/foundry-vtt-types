@@ -43,9 +43,9 @@ declare namespace TileDocument {
     Readonly<{
       name: "Tile";
       collection: "tiles";
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
+      label: "DOCUMENT.Tile";
+      labelPlural: "DOCUMENT.Tiles";
+      schemaVersion: "13.341";
     }>
   > {}
 

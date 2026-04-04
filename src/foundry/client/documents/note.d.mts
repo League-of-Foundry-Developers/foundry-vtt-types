@@ -44,10 +44,10 @@ declare namespace NoteDocument {
     Readonly<{
       name: "Note";
       collection: "notes";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Note";
+      labelPlural: "DOCUMENT.Notes";
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

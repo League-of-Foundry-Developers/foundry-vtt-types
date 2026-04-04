@@ -326,11 +326,11 @@ declare namespace RegionDocument {
     Readonly<{
       name: "Region";
       collection: "regions";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Region";
+      labelPlural: "DOCUMENT.Regions";
       isEmbedded: true;
       embedded: Metadata.Embedded;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

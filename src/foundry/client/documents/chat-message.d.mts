@@ -46,12 +46,12 @@ declare namespace ChatMessage {
     Readonly<{
       name: "ChatMessage";
       collection: "messages";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.ChatMessage";
+      labelPlural: "DOCUMENT.ChatMessages";
       hasTypeData: true;
       isPrimary: true;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

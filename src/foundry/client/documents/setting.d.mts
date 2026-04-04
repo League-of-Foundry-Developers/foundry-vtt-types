@@ -42,10 +42,10 @@ declare namespace Setting {
     Readonly<{
       name: "Setting";
       collection: "settings";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Setting";
+      labelPlural: "DOCUMENT.Settings";
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

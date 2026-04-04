@@ -43,9 +43,9 @@ declare namespace AmbientLightDocument {
     Readonly<{
       name: "AmbientLight";
       collection: "lights";
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
+      label: "DOCUMENT.AmbientLight";
+      labelPlural: "DOCUMENT.AmbientLights";
+      schemaVersion: "13.341";
     }>
   > {}
 

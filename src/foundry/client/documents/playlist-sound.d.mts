@@ -44,10 +44,10 @@ declare namespace PlaylistSound {
       name: "PlaylistSound";
       collection: "sounds";
       indexed: true;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.PlaylistSound";
+      labelPlural: "DOCUMENT.PlaylistSounds";
       compendiumIndexFields: ["name", "sort"];
-      schemaVersion: string;
+      schemaVersion: "13.341";
       permissions: Metadata.Permissions;
     }>
   > {}

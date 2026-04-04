@@ -44,11 +44,11 @@ declare namespace FogExploration {
     Readonly<{
       name: "FogExploration";
       collection: "fog";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.FogExploration";
+      labelPlural: "DOCUMENT.FogExplorations";
       isPrimary: true;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

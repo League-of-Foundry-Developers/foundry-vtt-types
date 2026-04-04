@@ -49,12 +49,12 @@ declare namespace TokenDocument {
     Readonly<{
       name: "Token";
       collection: "tokens";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Token";
+      labelPlural: "DOCUMENT.Tokens";
       isEmbedded: true;
       embedded: TokenDocument.Metadata.Embedded;
       permissions: TokenDocument.Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

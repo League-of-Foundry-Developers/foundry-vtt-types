@@ -48,12 +48,12 @@ declare namespace JournalEntryPage {
       collection: "pages";
       hasTypeData: true;
       indexed: true;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.JournalEntryPage";
+      labelPlural: "DOCUMENT.JournalEntryPages";
       coreTypes: ["text", "image", "pdf", "video"];
       compendiumIndexFields: ["name", "type", "sort"];
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

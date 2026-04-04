@@ -49,10 +49,10 @@ declare namespace Scene {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "thumb", "sort", "folder"];
       embedded: Metadata.Embedded;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Scene";
+      labelPlural: "Document.Scenes";
       preserveOnImport: ["_id", "sort", "ownership", "active"];
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

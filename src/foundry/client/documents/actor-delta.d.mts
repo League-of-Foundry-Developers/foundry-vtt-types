@@ -45,12 +45,12 @@ declare namespace ActorDelta {
     Readonly<{
       name: "ActorDelta";
       collection: "delta";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.ActorDelta";
+      labelPlural: "DOCUMENT.ActorDeltas";
       isEmbedded: true;
       embedded: Metadata.Embedded;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

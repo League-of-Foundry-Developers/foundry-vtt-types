@@ -47,9 +47,9 @@ declare namespace RollTable {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
       embedded: Metadata.Embedded;
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
+      label: "DOCUMENT.RollTable";
+      labelPlural: "DOCUMENT.RollTables";
+      schemaVersion: "13.341";
     }>
   > {}
 

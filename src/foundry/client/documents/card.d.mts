@@ -47,11 +47,11 @@ declare namespace Card {
       collection: "cards";
       hasTypeData: true;
       indexed: true;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Card";
+      labelPlural: "DOCUMENT.CardPlural";
       permissions: Metadata.Permissions;
       compendiumIndexFields: ["name", "type", "suit", "sort"];
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 

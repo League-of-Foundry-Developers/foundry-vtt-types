@@ -49,11 +49,11 @@ declare namespace Cards {
       compendiumIndexFields: ["_id", "name", "description", "img", "type", "sort", "folder"];
       embedded: Metadata.Embedded;
       hasTypeData: true;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Cards";
+      labelPlural: "DOCUMENT.CardsPlural";
       permissions: Metadata.Permissions;
       coreTypes: ["deck", "hand", "pile"];
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
