@@ -306,7 +306,6 @@ declare namespace BaseFolder {
   export import Parent = Folder.Parent;
   export import Descendant = Folder.Descendant;
   export import DescendantClass = Folder.DescendantClass;
-  export import Pack = Folder.Pack;
   export import Embedded = Folder.Embedded;
   export import ParentCollectionName = Folder.ParentCollectionName;
   export import CollectionClass = Folder.CollectionClass;

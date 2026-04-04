@@ -331,7 +331,6 @@ declare namespace BaseTableResult {
   export import Parent = TableResult.Parent;
   export import Descendant = TableResult.Descendant;
   export import DescendantClass = TableResult.DescendantClass;
-  export import Pack = TableResult.Pack;
   export import Embedded = TableResult.Embedded;
   export import ParentCollectionName = TableResult.ParentCollectionName;
   export import CollectionClass = TableResult.CollectionClass;

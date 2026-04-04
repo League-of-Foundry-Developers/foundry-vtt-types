@@ -304,7 +304,6 @@ declare namespace BaseJournalEntryPage {
   export import Parent = JournalEntryPage.Parent;
   export import Descendant = JournalEntryPage.Descendant;
   export import DescendantClass = JournalEntryPage.DescendantClass;
-  export import Pack = JournalEntryPage.Pack;
   export import Embedded = JournalEntryPage.Embedded;
   export import ParentCollectionName = JournalEntryPage.ParentCollectionName;
   export import CollectionClass = JournalEntryPage.CollectionClass;

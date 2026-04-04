@@ -355,7 +355,6 @@ declare namespace BaseCombat {
   export import Parent = Combat.Parent;
   export import Descendant = Combat.Descendant;
   export import DescendantClass = Combat.DescendantClass;
-  export import Pack = Combat.Pack;
   export import Embedded = Combat.Embedded;
   export import ParentCollectionName = Combat.ParentCollectionName;
   export import CollectionClass = Combat.CollectionClass;

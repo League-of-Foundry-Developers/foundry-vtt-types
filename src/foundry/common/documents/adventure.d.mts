@@ -300,7 +300,6 @@ declare namespace BaseAdventure {
   export import Parent = Adventure.Parent;
   export import Descendant = Adventure.Descendant;
   export import DescendantClass = Adventure.DescendantClass;
-  export import Pack = Adventure.Pack;
   export import Embedded = Adventure.Embedded;
   export import ParentCollectionName = Adventure.ParentCollectionName;
   export import CollectionClass = Adventure.CollectionClass;

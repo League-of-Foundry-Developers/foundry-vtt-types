@@ -337,7 +337,6 @@ declare namespace BaseRollTable {
   export import Parent = RollTable.Parent;
   export import Descendant = RollTable.Descendant;
   export import DescendantClass = RollTable.DescendantClass;
-  export import Pack = RollTable.Pack;
   export import Embedded = RollTable.Embedded;
   export import ParentCollectionName = RollTable.ParentCollectionName;
   export import CollectionClass = RollTable.CollectionClass;

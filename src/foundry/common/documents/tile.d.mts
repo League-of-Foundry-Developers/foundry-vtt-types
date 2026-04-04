@@ -331,7 +331,6 @@ declare namespace BaseTile {
   export import Parent = TileDocument.Parent;
   export import Descendant = TileDocument.Descendant;
   export import DescendantClass = TileDocument.DescendantClass;
-  export import Pack = TileDocument.Pack;
   export import Embedded = TileDocument.Embedded;
   export import ParentCollectionName = TileDocument.ParentCollectionName;
   export import CollectionClass = TileDocument.CollectionClass;
