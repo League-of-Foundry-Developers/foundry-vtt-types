@@ -161,12 +161,12 @@ declare abstract class BaseGrid {
   /**
    * Measure a shortest, direct path through the given waypoints.
    * @param waypoints - The waypoints the path must pass through
-   * @param options   - Additional measurement options
+   * @param options   - Additional measurement options (default: `{}`)
    * @returns The measurements a shortest, direct path through the given waypoints.
    */
   measurePath(
     waypoints: BaseGrid.MeasurePathWaypoint[],
-    options: InexactPartial<{
+    options?: InexactPartial<{
       /**
        * The function that returns the cost for a given move between
        * grid spaces (default is the distance traveled along the direct path)
