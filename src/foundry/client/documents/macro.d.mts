@@ -25,14 +25,15 @@ declare namespace Macro {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Macro` document instance configured through `CONFIG.Macro.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`} in fvtt-types.
+   * The implementation of the `Macro` document instance configured through
+   * {@linkcode CONFIG.Macro.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredMacro | fvtt-types/configuration/ConfiguredMacro} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Macro` document configured through `CONFIG.Macro.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Macro` document configured through
+   * {@linkcode CONFIG.Macro.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

@@ -24,14 +24,14 @@ declare namespace RollTable {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `RollTable` document instance configured through `CONFIG.RollTable.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredRollTable | `fvtt-types/configuration/ConfiguredRollTable`} in fvtt-types.
+   * The implementation of the `RollTable` document instance configured through
+   * {@linkcode CONFIG.RollTable.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `RollTable` document configured through `CONFIG.RollTable.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `RollTable` document configured through
+   * {@linkcode CONFIG.RollTable.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

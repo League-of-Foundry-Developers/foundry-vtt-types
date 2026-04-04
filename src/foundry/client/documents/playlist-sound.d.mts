@@ -23,14 +23,14 @@ declare namespace PlaylistSound {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `PlaylistSound` document instance configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredPlaylistSound | `fvtt-types/configuration/ConfiguredPlaylistSound`} in fvtt-types.
+   * The implementation of the `PlaylistSound` document instance configured through
+   * {@linkcode CONFIG.PlaylistSound.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `PlaylistSound` document configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `PlaylistSound` document configured through
+   * {@linkcode CONFIG.PlaylistSound.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

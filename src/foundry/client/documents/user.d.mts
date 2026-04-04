@@ -26,14 +26,14 @@ declare namespace User {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `User` document instance configured through `CONFIG.User.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredUser | `fvtt-types/configuration/ConfiguredUser`} in fvtt-types.
+   * The implementation of the `User` document instance configured through
+   * {@linkcode CONFIG.User.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `User` document configured through `CONFIG.User.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `User` document configured through
+   * {@linkcode CONFIG.User.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

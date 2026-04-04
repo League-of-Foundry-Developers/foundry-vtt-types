@@ -13,24 +13,24 @@ declare namespace TileDocument {
   type Name = "Tile";
 
   /**
-   * The context used to create a `Tile`.
+   * The context used to create a `TileDocument`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
-   * The documents embedded within `Tile`.
+   * The documents embedded within `TileDocument`.
    */
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `TileDocument` document instance configured through `CONFIG.Tile.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredTileDocument | `fvtt-types/configuration/ConfiguredTileDocument`} in fvtt-types.
+   * The implementation of the `TileDocument` document instance configured through
+   * {@linkcode CONFIG.Tile.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `TileDocument` document configured through `CONFIG.Tile.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `TileDocument` document configured through
+   * {@linkcode CONFIG.Tile.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

@@ -23,14 +23,14 @@ declare namespace MeasuredTemplateDocument {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `MeasuredTemplateDocument` document instance configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredMeasuredTemplateDocument | `fvtt-types/configuration/ConfiguredMeasuredTemplateDocument`} in fvtt-types.
+   * The implementation of the `MeasuredTemplateDocument` document instance configured through
+   * {@linkcode CONFIG.MeasuredTemplate.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `MeasuredTemplateDocument` document configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `MeasuredTemplateDocument` document configured through
+   * {@linkcode CONFIG.MeasuredTemplateDocument.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

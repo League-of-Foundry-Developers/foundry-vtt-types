@@ -26,16 +26,17 @@ declare namespace Actor {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Actor` document instance configured through `CONFIG.Actor.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`} in fvtt-types.
+   * The implementation of the `Actor` document instance configured through
+   * {@linkcode CONFIG.Actor.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredActor | fvtt-types/configuration/ConfiguredActor} in fvtt-types.
    */
-  type Implementation = Document.ImplementationFor<"Actor">;
+  type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Actor` document configured through `CONFIG.Actor.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Actor` document configured through
+   * {@linkcode CONFIG.Actor.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
-  type ImplementationClass = Document.ImplementationClassFor<"Actor">;
+  type ImplementationClass = Document.ImplementationClassFor<Name>;
 
   /**
    * A document's metadata is special information about the document ranging anywhere from its name,

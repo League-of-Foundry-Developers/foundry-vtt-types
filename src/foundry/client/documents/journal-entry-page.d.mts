@@ -25,14 +25,15 @@ declare namespace JournalEntryPage {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `JournalEntryPage` document instance configured through `CONFIG.JournalEntryPage.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`} in fvtt-types.
+   * The implementation of the `JournalEntryPage` document instance configured through
+   * {@linkcode CONFIG.JournalEntryPage.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredJournalEntryPage | fvtt-types/configuration/ConfiguredJournalEntryPage} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `JournalEntryPage` document configured through `CONFIG.JournalEntryPage.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `JournalEntryPage` document configured through
+   * {@linkcode CONFIG.JournalEntryPage.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

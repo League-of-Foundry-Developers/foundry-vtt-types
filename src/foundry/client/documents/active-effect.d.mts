@@ -32,14 +32,15 @@ declare namespace ActiveEffect {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `ActiveEffect` document instance configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`} in fvtt-types.
+   * The implementation of the `ActiveEffect` document instance configured through
+   * {@linkcode CONFIG.ActiveEffect.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredActiveEffect | fvtt-types/configuration/ConfiguredActiveEffect} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `ActiveEffect` document configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `ActiveEffect` document configured through
+   * {@linkcode CONFIG.ActiveEffect.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

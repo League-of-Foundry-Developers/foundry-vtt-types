@@ -24,14 +24,15 @@ declare namespace Cards {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Cards` document instance configured through `CONFIG.Cards.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredCards | `fvtt-types/configuration/ConfiguredCards`} in fvtt-types.
+   * The implementation of the `Cards` document instance configured through
+   * {@linkcode CONFIG.Cards.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredCards | fvtt-types/configuration/ConfiguredCards} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Cards` document configured through `CONFIG.Cards.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Cards` document configured through
+   * {@linkcode CONFIG.Cards.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

@@ -24,16 +24,16 @@ declare namespace DrawingDocument {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `DrawingDocument` document instance configured through `CONFIG.Drawing.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredDrawingDocument | `fvtt-types/configuration/ConfiguredDrawingDocument`} in fvtt-types.
+   * The implementation of the `DrawingDocument` document instance configured through
+   * {@linkcode CONFIG.Drawing.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
-  type Implementation = Document.ImplementationFor<"Drawing">;
+  type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `DrawingDocument` document configured through `CONFIG.DrawingDocument.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `DrawingDocument` document configured through
+   * {@linkcode CONFIG.Drawing.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
-  type ImplementationClass = Document.ImplementationClassFor<"Drawing">;
+  type ImplementationClass = Document.ImplementationClassFor<Name>;
 
   /**
    * A document's metadata is special information about the document ranging anywhere from its name,

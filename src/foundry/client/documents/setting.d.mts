@@ -22,14 +22,14 @@ declare namespace Setting {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Setting` document instance configured through `CONFIG.Setting.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredSetting | `fvtt-types/configuration/ConfiguredSetting`} in fvtt-types.
+   * The implementation of the `Setting` document instance configured through
+   * {@linkcode CONFIG.Setting.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Setting` document configured through `CONFIG.Setting.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Setting` document configured through
+   * {@linkcode CONFIG.Setting.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

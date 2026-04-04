@@ -24,14 +24,15 @@ declare namespace Item {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Item` document instance configured through `CONFIG.Item.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`} in fvtt-types.
+   * The implementation of the `Item` document instance configured through
+   * {@linkcode CONFIG.Item.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredItem | fvtt-types/configuration/ConfiguredItem} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Item` document configured through `CONFIG.Item.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Item` document configured through
+   * {@linkcode CONFIG.Item.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

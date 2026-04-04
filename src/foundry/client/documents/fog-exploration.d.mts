@@ -24,14 +24,14 @@ declare namespace FogExploration {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `FogExploration` document instance configured through `CONFIG.FogExploration.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredFogExploration | `fvtt-types/configuration/ConfiguredFogExploration`} in fvtt-types.
+   * The implementation of the `FogExploration` document instance configured through
+   * {@linkcode CONFIG.FogExploration.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `FogExploration` document configured through `CONFIG.FogExploration.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `FogExploration` document configured through
+   * {@linkcode CONFIG.FogExploration.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

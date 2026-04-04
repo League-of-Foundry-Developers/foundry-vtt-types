@@ -23,14 +23,15 @@ declare namespace RegionBehavior {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `RegionBehavior` document instance configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`} in fvtt-types.
+   * The implementation of the `RegionBehavior` document instance configured through
+   * {@linkcode CONFIG.RegionBehavior.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredRegionBehavior | fvtt-types/configuration/ConfiguredRegionBehavior} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `RegionBehavior` document configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `RegionBehavior` document configured through
+   * {@linkcode CONFIG.RegionBehavior.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

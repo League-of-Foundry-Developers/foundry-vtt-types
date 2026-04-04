@@ -22,14 +22,14 @@ declare namespace AmbientSoundDocument {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `AmbientSoundDocument` document instance configured through `CONFIG.AmbientSound.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `AmbientSoundDocument` document instance configured through
+   * {@linkcode CONFIG.AmbientSound.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `AmbientSoundDocument` document configured through `CONFIG.AmbientSound.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `AmbientSoundDocument` document configured through
+   * {@linkcode CONFIG.AmbientSound.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

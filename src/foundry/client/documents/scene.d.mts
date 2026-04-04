@@ -25,16 +25,17 @@ declare namespace Scene {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Scene` document instance configured through `CONFIG.Scene.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredScene | `fvtt-types/configuration/ConfiguredScene`} in fvtt-types.
+   * The implementation of the `Scene` document instance configured through
+   * {@linkcode CONFIG.Scene.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredScene | fvtt-types/configuration/ConfiguredScene} in fvtt-types.
    */
-  type Implementation = Document.ImplementationFor<"Scene">;
+  type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Scene` document configured through `CONFIG.Scene.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Scene` document configured through
+   * {@linkcode CONFIG.Scene.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
-  type ImplementationClass = Document.ImplementationClassFor<"Scene">;
+  type ImplementationClass = Document.ImplementationClassFor<Name>;
 
   /**
    * A document's metadata is special information about the document ranging anywhere from its name,

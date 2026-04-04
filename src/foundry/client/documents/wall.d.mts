@@ -12,7 +12,7 @@ declare namespace WallDocument {
   type Name = "Wall";
 
   /**
-   * The context used to create a `Wall`.
+   * The context used to create a `WallDocument`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
@@ -22,14 +22,14 @@ declare namespace WallDocument {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `WallDocument` document instance configured through `CONFIG.Wall.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredWallDocument | `fvtt-types/configuration/ConfiguredWallDocument`} in fvtt-types.
+   * The implementation of the `WallDocument` document instance configured through
+   * {@linkcode CONFIG.Wall.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `WallDocument` document configured through `CONFIG.Wall.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `WallDocument` document configured through
+   * {@linkcode CONFIG.Wall.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

@@ -19,7 +19,7 @@ declare namespace TokenDocument {
   type Name = "Token";
 
   /**
-   * The context used to create a `Token`.
+   * The context used to create a `TokenDocument`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
@@ -29,14 +29,14 @@ declare namespace TokenDocument {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `TokenDocument` document instance configured through `CONFIG.Token.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredTokenDocument | `fvtt-types/configuration/ConfiguredTokenDocument`} in fvtt-types.
+   * The implementation of the `TokenDocument` document instance configured through
+   * {@linkcode CONFIG.Token.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `TokenDocument` document configured through `CONFIG.Token.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `TokenDocument` document configured through
+   * {@linkcode CONFIG.Token.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

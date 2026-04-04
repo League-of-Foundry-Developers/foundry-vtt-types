@@ -306,14 +306,14 @@ declare namespace RegionDocument {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `RegionDocument` document instance configured through `CONFIG.Region.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredRegion | `fvtt-types/configuration/ConfiguredRegion`} in fvtt-types.
+   * The implementation of the `RegionDocument` document instance configured through
+   * {@linkcode CONFIG.Region.documentClass} in Foundry and {@linkcode DocumentClassConfig}  in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `RegionDocument` document configured through `CONFIG.Region.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `RegionDocument` document configured through
+   * {@linkcode CONFIG.Region.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

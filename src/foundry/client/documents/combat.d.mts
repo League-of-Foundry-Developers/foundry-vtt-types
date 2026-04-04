@@ -25,14 +25,15 @@ declare namespace Combat {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Combat` document instance configured through `CONFIG.Combat.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`} in fvtt-types.
+   * The implementation of the `Combat` document instance configured through
+   * {@linkcode CONFIG.Combat.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredCombat | fvtt-types/configuration/ConfiguredCombat} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Combat` document configured through `CONFIG.Combat.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Combat` document configured through
+   * {@linkcode CONFIG.Combat.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

@@ -24,14 +24,15 @@ declare namespace ActorDelta {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `ActorDelta` document instance configured through `CONFIG.ActorDelta.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`} in fvtt-types.
+   * The implementation of the `ActorDelta` document instance configured through
+   * {@linkcode CONFIG.ActorDelta.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredActorDelta | fvtt-types/configuration/ConfiguredActorDelta} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `ActorDelta` document configured through `CONFIG.ActorDelta.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `ActorDelta` document configured through
+   * {@linkcode CONFIG.ActorDelta.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

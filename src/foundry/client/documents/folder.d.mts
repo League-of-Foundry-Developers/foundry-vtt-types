@@ -23,14 +23,15 @@ declare namespace Folder {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Folder` document instance configured through `CONFIG.Folder.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredFolder | `fvtt-types/configuration/ConfiguredFolder`} in fvtt-types.
+   * The implementation of the `Folder` document instance configured through
+   * {@linkcode CONFIG.Folder.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredFolder | fvtt-types/configuration/ConfiguredFolder} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Folder` document configured through `CONFIG.Folder.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Folder` document configured through
+   * {@linkcode CONFIG.Folder.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

@@ -23,14 +23,14 @@ declare namespace AmbientLightDocument {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `AmbientLightDocument` document instance configured through `CONFIG.AmbientLight.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `AmbientLightDocument` document instance configured through
+   * {@linkcode CONFIG.AmbientLight.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `AmbientLightDocument` document configured through `CONFIG.AmbientLight.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `AmbientLightDocument` document configured through
+   * {@linkcode CONFIG.AmbientLight.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

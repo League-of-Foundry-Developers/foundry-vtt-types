@@ -22,14 +22,14 @@ declare namespace Adventure {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Adventure` document instance configured through `CONFIG.Adventure.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredAdventure | `fvtt-types/configuration/ConfiguredAdventure`} in fvtt-types.
+   * The implementation of the `Adventure` document instance configured through
+   * {@linkcode CONFIG.Adventure.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Adventure` document configured through `CONFIG.Adventure.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Adventure` document configured through
+   * {@linkcode CONFIG.Adventure.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

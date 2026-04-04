@@ -23,14 +23,15 @@ declare namespace TableResult {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `TableResult` document instance configured through `CONFIG.TableResult.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredTableResult | `fvtt-types/configuration/ConfiguredTableResult`} in fvtt-types.
+   * The implementation of the `TableResult` document instance configured through
+   * {@linkcode CONFIG.TableResult.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredTableResult | fvtt-types/configuration/ConfiguredTableResult} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `TableResult` document configured through `CONFIG.TableResult.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `TableResult` document configured through
+   * {@linkcode CONFIG.TableResult.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

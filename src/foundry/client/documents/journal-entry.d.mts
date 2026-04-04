@@ -25,14 +25,14 @@ declare namespace JournalEntry {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `JournalEntry` document instance configured through `CONFIG.JournalEntry.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredJournalEntry | `fvtt-types/configuration/ConfiguredJournalEntry`} in fvtt-types.
+   * The implementation of the `JournalEntry` document instance configured through
+   * {@linkcode CONFIG.JournalEntry.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `JournalEntry` document configured through `CONFIG.JournalEntry.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `JournalEntry` document configured through
+   * {@linkcode CONFIG.JournalEntry.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

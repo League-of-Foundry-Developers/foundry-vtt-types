@@ -22,16 +22,16 @@ declare namespace Playlist {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Playlist` document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredPlaylist | `fvtt-types/configuration/ConfiguredPlaylist`} in fvtt-types.
+   * The implementation of the `Playlist` document instance configured through
+   * {@linkcode CONFIG.Playlist.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
-  type Implementation = Document.ImplementationFor<"Playlist">;
+  type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Playlist` document configured through `CONFIG.Playlist.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Playlist` document configured through
+   * {@linkcode CONFIG.Playlist.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
-  type ImplementationClass = Document.ImplementationClassFor<"Playlist">;
+  type ImplementationClass = Document.ImplementationClassFor<Name>;
 
   /**
    * A document's metadata is special information about the document ranging anywhere from its name,

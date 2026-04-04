@@ -25,14 +25,15 @@ declare namespace ChatMessage {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `ChatMessage` document instance configured through `CONFIG.ChatMessage.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`} in fvtt-types.
+   * The implementation of the `ChatMessage` document instance configured through
+   * {@linkcode CONFIG.ChatMessage.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredChatMessage | fvtt-types/configuration/ConfiguredChatMessage} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `ChatMessage` document configured through `CONFIG.ChatMessage.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `ChatMessage` document configured through
+   * {@linkcode CONFIG.ChatMessage.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 

@@ -23,14 +23,15 @@ declare namespace CombatantGroup {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `CombatantGroup` document instance configured through `CONFIG.CombatantGroup.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredCombatantGroup | `fvtt-types/configuration/ConfiguredCombatantGroup`} in fvtt-types.
+   * The implementation of the `CombatantGroup` document instance configured through
+   * {@linkcode CONFIG.CombatantGroup.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredCombatantGroup | fvtt-types/configuration/ConfiguredCombatantGroup} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `CombatantGroup` document configured through `CONFIG.Combat.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `CombatantGroup` document configured through
+   * {@linkcode CONFIG.CombatantGroup.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
