@@ -97,7 +97,7 @@ declare namespace TableResult {
   /**
    * `OfType` returns an instance of `TableResult` with the corresponding type. This works with both the
    * builtin `TableResult` class or a custom subclass if that is set up in
-   * {@link ConfiguredTableResult | `fvtt-types/configuration/ConfiguredTableResult`}.
+   * {@linkcode ConfiguredTableResult | fvtt-types/configuration/ConfiguredTableResult}.
    *
    * Note that `TableResult` does not have a `system` property and therefore there is no way for a user
    * to configure custom subtypes. See {@linkcode TableResult.SubType} for more information.

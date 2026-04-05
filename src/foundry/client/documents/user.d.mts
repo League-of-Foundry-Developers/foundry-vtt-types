@@ -14,16 +14,15 @@ import type { BaseActor, BaseUser } from "#common/documents/_module.d.mts";
 import type { UserTargets } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { BaseRuler, Ping } from "#client/canvas/interaction/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { AVSettings } from "#client/av/_module.d.mts";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+/** @privateRemarks `ClientDocumentMixin` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
-
-import AVSettings = foundry.av.AVSettings;
 
 declare namespace User {
   /**
@@ -62,10 +61,10 @@ declare namespace User {
     Readonly<{
       name: "User";
       collection: "users";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.User";
+      labelPlural: "DOCUMENT.Users";
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -248,7 +247,7 @@ declare namespace User {
     /**
      * The user's avatar image.
      * @defaultValue `null`
-     * @remarks Initialized to `this.avatar || this.character?.img || CONST.DEFAULT_TOKEN` in {@link User.prepareDerivedData | `User#prepareDerivedData`}
+     * @remarks Initialized to `this.avatar || this.character?.img || CONST.DEFAULT_TOKEN` in {@linkcode User.prepareDerivedData | User#prepareDerivedData}
      */
     avatar: fields.FilePathField<{ categories: ["IMAGE"] }>;
 
@@ -1024,7 +1023,7 @@ declare namespace User {
       style: Ping.ConfiguredStyles;
     }>;
 
-  /** @privateRemarks Only consumed by {@link ControlsLayer.handlePing | `ControlsLayer#handlePing`} */
+  /** @privateRemarks Only consumed by {@linkcode ControlsLayer.handlePing | ControlsLayer#handlePing} */
   interface PingData extends _PingData {
     /**
      * The ID of the scene that was pinged.
@@ -1033,7 +1032,7 @@ declare namespace User {
   }
 
   /**
-   * No core {@link User.broadcastActivity | `User#broadcastActivity`} call provides all keys, most only provide one,
+   * No core {@linkcode User.broadcastActivity | User#broadcastActivity} call provides all keys, most only provide one,
    * this is essentially bundling a bunch of unrelated update types into one socket handler, but the socket drops
    * explicit `undefined` keys, so `IntentionalPartial` and `| null` as appropriate it is.
    *
@@ -1049,7 +1048,7 @@ declare namespace User {
 
     /**
      * The position of the user's cursor.
-     * @remarks Can't be explicit `undefined` as the socket drops such keys, and {@link ControlsLayer.updateCursor | `ControlsLayer#updateCursor`}
+     * @remarks Can't be explicit `undefined` as the socket drops such keys, and {@linkcode ControlsLayer.updateCursor | ControlsLayer#updateCursor}
      * has an `=== null` check.
      */
     cursor: { x: number; y: number } | null;
@@ -1062,7 +1061,7 @@ declare namespace User {
 
     /**
      * The IDs of the tokens the user has targeted in the currently viewed
-     * @remarks Can't be explicit `undefined` as the socket drops such keys, and can't be `null` as its passed to {@link User.updateTokenTargets | `User#updateTokenTargets`},
+     * @remarks Can't be explicit `undefined` as the socket drops such keys, and can't be `null` as its passed to {@linkcode User.updateTokenTargets | User#updateTokenTargets},
      * where it only has a parameter default.
      */
     targets: string[];
@@ -1070,21 +1069,21 @@ declare namespace User {
     /**
      * Whether the user has an open WS connection to the server or not.
      * @defaultValue `true`
-     * @remarks Can't be nullish as, if provided, gets directly assigned to {@link User.active | `User#active`},
+     * @remarks Can't be nullish as, if provided, gets directly assigned to {@linkcode User.active | User#active},
      * and the default is applied only on a negative `in` check.
      */
     active: boolean;
 
     /**
      * Is the user emitting a ping at the cursor coordinates?
-     * @remarks Can't be explicit `undefined` as the socket drops such keys, and can't be `null` as its passed to {@link ControlsLayer.handlePing | `CanvasLayer#handlePing`}'s third argument,
+     * @remarks Can't be explicit `undefined` as the socket drops such keys, and can't be `null` as its passed to {@linkcode ControlsLayer.handlePing | CanvasLayer#handlePing}'s third argument,
      * where it is destructured and only has a parameter default.
      */
     ping: User.PingData;
 
     /**
      * The state of the user's AV settings.
-     * @remarks Can't be nullish, as it's passed to {@link AVSettings._handleUserActivity | `game.webrtc.settings._handleUserActivity`}'s second argument,
+     * @remarks Can't be nullish, as it's passed to {@linkcode AVSettings._handleUserActivity | game.webrtc.settings._handleUserActivity}'s second argument,
      * which has no default and has `in` checks applied.
      */
     av: AVSettings.Data;
@@ -1126,7 +1125,7 @@ declare namespace User {
 
   interface AssignHotbarMacroOptions extends _AssignHotbarMacroOptions {}
 
-  /** The data {@link User.getHotbarMacros | `User#getHotbarMacros`} returns for each of the 10 entries in its returned array */
+  /** The data {@linkcode User.getHotbarMacros | User#getHotbarMacros} returns for each of the 10 entries in its returned array */
   interface GetHotbarMacrosData {
     slot: number;
     macro: Macro.Implementation | null;
@@ -1237,7 +1236,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
   isDesignated(condition: (user: User.Stored) => boolean): boolean;
 
   /**
-   * @remarks Doesn't exist prior to data prep, set in {@link User.prepareDerivedData | `User#prepareDerivedData`}
+   * @remarks Doesn't exist prior to data prep, set in {@linkcode User.prepareDerivedData | User#prepareDerivedData}
    * @defaultValue `this.color.multiply(2)`
    */
   border?: Color;

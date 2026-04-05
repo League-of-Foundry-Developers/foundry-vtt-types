@@ -112,7 +112,7 @@ declare namespace RegionBehavior {
   /**
    * `OfType` returns an instance of `RegionBehavior` with the corresponding type. This works with both the
    * builtin `RegionBehavior` class or a custom subclass if that is set up in
-   * {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`}.
+   * {@linkcode ConfiguredRegionBehavior | fvtt-types/configuration/ConfiguredRegionBehavior}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 

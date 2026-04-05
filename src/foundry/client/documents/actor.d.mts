@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, NullishProps, Merge, Identity, MaybeArray } from "#utils";
+import type { AnyObject, InexactPartial, NullishProps, MaybeArray, Merge, Identity } from "#utils";
 import type { ConfiguredActor } from "#configuration";
 import type { fields, PrototypeToken } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
@@ -116,7 +116,7 @@ declare namespace Actor {
   /**
    * `OfType` returns an instance of `Actor` with the corresponding type. This works with both the
    * builtin `Actor` class or a custom subclass if that is set up in
-   * {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`}.
+   * {@linkcode ConfiguredActor | fvtt-types/configuration/ConfiguredActor}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -1505,7 +1505,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * Update the active TokenDocument instances which represent this Actor.
    * @param update  - The update delta.
    * @param options - The update context.
-   * @remarks Forwards to {@link Token._onUpdateBaseActor | `Token#_onUpdateBaseActor`}
+   * @remarks Forwards to {@linkcode Token._onUpdateBaseActor | Token#_onUpdateBaseActor}
    */
   // TODO(esheyw): verify operation is correct
   protected _updateDependentTokens(update: Actor.UpdateData, options: Actor.Database.OnUpdateOperation): void;

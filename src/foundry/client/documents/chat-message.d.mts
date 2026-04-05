@@ -102,7 +102,7 @@ declare namespace ChatMessage {
   /**
    * `OfType` returns an instance of `ChatMessage` with the corresponding type. This works with both the
    * builtin `ChatMessage` class or a custom subclass if that is set up in
-   * {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`}.
+   * {@linkcode ConfiguredChatMessage | fvtt-types/configuration/ConfiguredChatMessage}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -1149,7 +1149,7 @@ declare namespace ChatMessage {
 
   /**
    * @remarks Serves two purposes:
-   * - Template context for either calling `renderTemplate` on `CONFIG.ChatMessage.template` or passing to {@link ChatMessage._renderRollContent | `ChatMessage#_renderRollContent`}
+   * - Template context for either calling `renderTemplate` on `CONFIG.ChatMessage.template` or passing to {@linkcode ChatMessage._renderRollContent | ChatMessage#_renderRollContent}
    * - Context passed to the {@linkcode Hooks.StaticCallbacks.renderChatMessage | `renderChatMessage`} hook.
    */
   interface MessageData {
@@ -1162,14 +1162,14 @@ declare namespace ChatMessage {
     /** @remarks The message's {@link ChatMessage.author | `author`} */
     author: User.Stored;
 
-    /** @remarks The message's {@link ChatMessage.alias | `alias`} */
+    /** @remarks The message's {@linkcode ChatMessage.alias | alias} */
     alias: string;
 
     /** @remarks Possibly more than one class name, space-separated */
     cssClass: string;
 
     /**
-     * @remarks The `.length` of the message's {@link ChatMessage.whisper | `whisper`} array,
+     * @remarks The `.length` of the message's {@linkcode ChatMessage.whisper | whisper} array,
      * despite the name implying a `boolean`
      */
     isWhisper: number;
@@ -1182,7 +1182,7 @@ declare namespace ChatMessage {
 
     /**
      * @remarks A `", "`-separated list of the `name`s of the `User`s whose IDs are in the message's
-     * {@link ChatMessage.whisper | `whisper`} array
+     * {@linkcode ChatMessage.whisper | whisper} array
      */
     whisperTo: string;
   }
@@ -1245,7 +1245,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   /**
    * Is this ChatMessage currently displayed in the sidebar ChatLog?
    * @defaultValue `false`
-   * @remarks Set `true` in {@link ChatLog.postOne | `ChatLog#postOne`} and {@link ChatLog._renderBatch | `ChatLog#_renderBatch`}
+   * @remarks Set `true` in {@linkcode ChatLog.postOne | ChatLog#postOne} and {@linkcode ChatLog._renderBatch | ChatLog#_renderBatch}
    */
   logged: boolean;
 

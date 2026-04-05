@@ -968,7 +968,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
 
   /**
    * The Sound which manages playback for this playlist sound
-   * @remarks Only `undefined` prior to first {@link PlaylistSound._createSound | `PlaylistSound#_createSound`} call
+   * @remarks Only `undefined` prior to first {@linkcode PlaylistSound._createSound | PlaylistSound#_createSound} call
    */
   sound: Sound | null | undefined;
 
@@ -1020,7 +1020,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
   toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
-   * @remarks Returns {@link Playlist.stopSound | `this.parent.stopSound()`} or {@link Playlist.playSound | `this.parent.playSound()`}
+   * @remarks Returns {@linkcode Playlist.stopSound | this.parent.stopSound()} or {@linkcode Playlist.playSound | this.parent.playSound()}
    */
   override _onClickDocumentLink(event: MouseEvent): Promise<Playlist.Implementation | undefined>;
 
@@ -1046,7 +1046,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
   /**
    * The effective volume at which this playlist sound is played, incorporating the global playlist volume setting.
    * @deprecated since v12 until v14
-   * @remarks "`PlaylistSound#effectiveVolume` is deprecated in favor of using {@link PlaylistSound.volume | `PlaylistSound#volume`} directly"
+   * @remarks "`PlaylistSound#effectiveVolume` is deprecated in favor of using {@linkcode PlaylistSound.volume | PlaylistSound#volume} directly"
    */
   get effectiveVolume(): number;
 

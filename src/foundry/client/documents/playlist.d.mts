@@ -1235,7 +1235,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   override toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
-   * @remarks Returns {@link Playlist.playAll | `this.playAll()`} or {@link Playlist.stopAll | `this.stopAll()`}
+   * @remarks Returns {@linkcode Playlist.playAll | this.playAll()} or {@linkcode Playlist.stopAll | this.stopAll()}
    */
   override _onClickDocumentLink(event: MouseEvent): Promise<this | undefined>;
 

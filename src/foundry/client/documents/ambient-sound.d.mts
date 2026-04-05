@@ -277,13 +277,13 @@ declare namespace AmbientSoundDocument {
     effects: fields.SchemaField<{
       /**
        * An effect configuration to apply to the sound when not muffled by walls (either clear of, or fully constrained by, walls)
-       * @defaultValue see properties of {@link EffectsConfigSchema | `AmbientSoundDocument.EffectsConfigSchema`}
+       * @defaultValue see properties of {@linkcode EffectsConfigSchema | AmbientSoundDocument.EffectsConfigSchema}
        */
       base: fields.SchemaField<EffectsConfigSchema>;
 
       /**
        * An effect configuration to apply to the sound when muffled by walls
-       * @defaultValue see properties of {@link EffectsConfigSchema | `AmbientSoundDocument.EffectsConfigSchema`}
+       * @defaultValue see properties of {@linkcode EffectsConfigSchema | AmbientSoundDocument.EffectsConfigSchema}
        */
       muffled: fields.SchemaField<EffectsConfigSchema>;
     }>;

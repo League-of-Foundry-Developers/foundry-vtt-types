@@ -102,7 +102,7 @@ declare namespace ActorDelta {
   /**
    * `OfType` returns an instance of `ActorDelta` with the corresponding type. This works with both the
    * builtin `ActorDelta` class or a custom subclass if that is set up in
-   * {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`}.
+   * {@linkcode ConfiguredActorDelta | fvtt-types/configuration/ConfiguredActorDelta}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -1203,7 +1203,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   /**
    * Apply this ActorDelta to the base Actor and return a synthetic Actor.
    * @param context - Context to supply to synthetic Actor instantiation.
-   * @remarks Forwards `context` to {@link BaseActorDelta.applyDelta | `this.constructor.applyDelta(this, this.parent.baseActor, context)`}
+   * @remarks Forwards `context` to {@linkcode BaseActorDelta.applyDelta | this.constructor.applyDelta(this, this.parent.baseActor, context)}
    */
   apply(context?: BaseActorDelta.ApplyDeltaContext): Actor.Implementation | null;
 
@@ -1287,7 +1287,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs): void;
 
-  static override defaultName(context?: ActorDelta.DefaultNameContext): string;
+  static override defaultName(context: ActorDelta.DefaultNameContext): string;
 
   static override createDialog<
     Temporary extends boolean | undefined = undefined,

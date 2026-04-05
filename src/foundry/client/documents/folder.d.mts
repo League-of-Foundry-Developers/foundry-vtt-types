@@ -94,7 +94,7 @@ declare namespace Folder {
   /**
    * `OfType` returns an instance of `Folder` with the corresponding type. This works with both the
    * builtin `Folder` class or a custom subclass if that is set up in
-   * {@link ConfiguredFolder | `fvtt-types/configuration/ConfiguredFolder`}.
+   * {@linkcode ConfiguredFolder | fvtt-types/configuration/ConfiguredFolder}.
    *
    * Note that `Folder` does not have a `system` property and therefore there is no way for a user
    * to configure custom subtypes. See {@linkcode Folder.SubType} for more information.
@@ -1118,10 +1118,10 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
 
   /**
    * An array of nodes representing the children of this one. This differs from the results of
-   * {@link Folder.getSubfolders | `Folder#getSubfolders`}, which reports the subset of child Folders
+   * {@linkcode Folder.getSubfolders | Folder#getSubfolders}, which reports the subset of child Folders
    * displayed to the current User in the UI.
    *
-   * Initialized by {@link DirectoryCollection.initializeTree | `DirectoryCollection#initializeTree`}, so always
+   * Initialized by {@linkcode DirectoryCollection.initializeTree | DirectoryCollection#initializeTree}, so always
    * `undefined` in temporary documents, and prior to first UI render in stored documents
    */
   children: Folder.ChildNode | undefined;
@@ -1220,7 +1220,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * Export all Documents contained in this Folder to a given Compendium pack.
    * Optionally update existing Documents within the Pack by name, otherwise append all new entries.
    * @param pack    - A Compendium pack to which the documents will be exported
-   * @param options - Additional options which customize how content is exported. See {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`} (default: `{}`)
+   * @param options - Additional options which customize how content is exported. See {@linkcode ClientDocument.toCompendium | ClientDocument#toCompendium} (default: `{}`)
    * @returns The updated Compendium Collection instance
    */
   exportToCompendium<Pack extends foundry.documents.collections.CompendiumCollection.Any>(

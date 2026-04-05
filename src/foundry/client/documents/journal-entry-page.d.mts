@@ -102,7 +102,7 @@ declare namespace JournalEntryPage {
   /**
    * `OfType` returns an instance of `JournalEntryPage` with the corresponding type. This works with both the
    * builtin `JournalEntryPage` class or a custom subclass if that is set up in
-   * {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`}.
+   * {@linkcode ConfiguredJournalEntryPage | fvtt-types/configuration/ConfiguredJournalEntryPage}.
    * up.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
@@ -1246,7 +1246,7 @@ declare class JournalEntryPage<
     options?: JournalEntryPage.MakeHeadingNodeOptions,
   ): JournalEntryPage.JournalEntryPageHeading;
 
-  /** @remarks Uses `eventData`, unlike {@link ClientDocument._createDocumentLink | `ClientDocument#_createDocumentLink`} */
+  /** @remarks Uses `eventData`, unlike {@linkcode ClientDocument._createDocumentLink | ClientDocument#_createDocumentLink} */
   override _createDocumentLink(eventData: AnyObject, options?: JournalEntryPage.CreateDocumentLinkOptions): string;
 
   /**

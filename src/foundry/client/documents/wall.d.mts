@@ -248,8 +248,8 @@ declare namespace WallDocument {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode WallDocument}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */

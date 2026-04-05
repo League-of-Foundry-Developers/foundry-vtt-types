@@ -86,7 +86,7 @@ declare namespace CombatantGroup {
   /**
    * `OfType` returns an instance of `CombatantGroup` with the corresponding type. This works with both the
    * builtin `CombatantGroup` class or a custom subclass if that is set up in
-   * {@link ConfiguredCombatantGroup | `fvtt-types/configuration/ConfiguredCombatantGroup`}.
+   * {@linkcode ConfiguredCombatantGroup | fvtt-types/configuration/ConfiguredCombatantGroup}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -144,7 +144,8 @@ declare namespace CombatantGroup {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 

@@ -103,7 +103,7 @@ declare namespace Combatant {
   /**
    * `OfType` returns an instance of `Combatant` with the corresponding type. This works with both the
    * builtin `Combatant` class or a custom subclass if that is set up in
-   * {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`}.
+   * {@linkcode ConfiguredCombatant | fvtt-types/configuration/ConfiguredCombatant}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -1107,7 +1107,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
 
   /**
    * Eschew `ClientDocument`'s redirection to `Combat#permission` in favor of special ownership determination.
-   * @remarks Uses {@link BaseCombatant.getUserLevel | `BaseCombatant#getUserLevel`}, so can't return `null`
+   * @remarks Uses {@linkcode BaseCombatant.getUserLevel | BaseCombatant#getUserLevel}, so can't return `null`
    */
   override get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
@@ -1142,7 +1142,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   rollInitiative(formula?: string): Promise<this | undefined>;
 
   /**
-   * @remarks Initializes `_videoSrc`, applies `img` and `name` fallbacks, and calls {@link Combatant.updateResource | `Combatant#updateResource`}
+   * @remarks Initializes `_videoSrc`, applies `img` and `name` fallbacks, and calls {@linkcode Combatant.updateResource | Combatant#updateResource}
    */
   override prepareDerivedData(): void;
 

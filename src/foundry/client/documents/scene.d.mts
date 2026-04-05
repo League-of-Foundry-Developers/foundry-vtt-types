@@ -1,6 +1,6 @@
 import type { InexactPartial, MaybeArray, Merge } from "#utils";
-import type { fields, LightData, TextureData } from "#common/data/_module.d.mts";
-import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { LightData, TextureData, fields } from "#common/data/_module.d.mts";
+import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type {
   BaseAmbientLight,
   BaseAmbientSound,
@@ -528,7 +528,7 @@ declare namespace Scene {
     /**
      * The elevation of the foreground layer where overhead tiles reside
      * @defaultValue `null`
-     * @remarks If falsey, {@link Scene.prepareBaseData | `Scene#prepareBaseData`} initializes this to `this.grid.distance * 4`, with the comment:
+     * @remarks If falsey, {@linkcode Scene.prepareBaseData | Scene#prepareBaseData} initializes this to `this.grid.distance * 4`, with the comment:
      *
      * "A temporary assumption until a more robust long-term solution when we implement Scene Levels."
      */
@@ -582,7 +582,7 @@ declare namespace Scene {
     /**
      * Grid configuration for the scene
      * @defaultValue see properties
-     * @remarks Initialized in {@link Scene.prepareBaseData | `Scene#prepareBaseData`} to `Scene.#getGrid(this)`, which returns {@linkcode BaseGrid} or a subclass
+     * @remarks Initialized in {@linkcode Scene.prepareBaseData | Scene#prepareBaseData} to `Scene.#getGrid(this)`, which returns {@linkcode BaseGrid} or a subclass
      */
     grid: fields.SchemaField<
       GridSchema,
@@ -673,8 +673,8 @@ declare namespace Scene {
      * A linked PlaylistSound document from the selected playlist that will
      * begin automatically playing when this Scene becomes active
      * @defaultValue `null`
-     * @remarks This is `idOnly` because {@link fields.ForeignDocumentField | `ForeignDocumentField`} doesn't know how to get embedded documents;
-     * {@link Scene.prepareBaseData | `Scene#prepareBaseData`} attempts to `get()` this ID from the provided `playlist`, if any, making this
+     * @remarks This is `idOnly` because {@linkcode fields.ForeignDocumentField | ForeignDocumentField} doesn't know how to get embedded documents;
+     * {@linkcode Scene.prepareBaseData | Scene#prepareBaseData} attempts to `get()` this ID from the provided `playlist`, if any, making this
      * `PlaylistSound.Implementation | undefined | null` at runtime
      */
     playlistSound: fields.ForeignDocumentField<typeof BasePlaylistSound, { idOnly: true }>;
@@ -1841,7 +1841,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
   /**
    * Determine the canvas dimensions this Scene would occupy, if rendered
    * @defaultValue `{}`
-   * @remarks Technically `undefined` prior to the first time {@link Scene.prepareBaseData | `Scene#prepareBaseData`} is called
+   * @remarks Technically `undefined` prior to the first time {@linkcode Scene.prepareBaseData | Scene#prepareBaseData} is called
    */
   dimensions: Scene.Dimensions;
 
@@ -1927,9 +1927,9 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * each Token accordingly.
    *
    * This function doesn't need to be called by the systems/modules unless
-   * {@link TokenDocument.testInsideRegion | `foundry.documents.TokenDocument#testInsideRegion`} is overridden and non-Token properties other than
+   * {@linkcode TokenDocument.testInsideRegion | foundry.documents.TokenDocument#testInsideRegion} is overridden and non-Token properties other than
    * `Scene#grid.type` and `Scene#grid.size` change that are used in the override of
-   * {@link TokenDocument.TestInsideRegion | `foundry.documents.TokenDocument#testInsideRegion`}.
+   * {@linkcode TokenDocument.TestInsideRegion | foundry.documents.TokenDocument#testInsideRegion}.
    * @param tokens - The Tokens whose regions should be updates
    * @returns The array of Tokens whose regions changed
    */

@@ -55,11 +55,11 @@ declare namespace Cards {
       compendiumIndexFields: ["_id", "name", "description", "img", "type", "sort", "folder"];
       embedded: Metadata.Embedded;
       hasTypeData: true;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Cards";
+      labelPlural: "DOCUMENT.CardsPlural";
       permissions: Metadata.Permissions;
       coreTypes: ["deck", "hand", "pile"];
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -108,7 +108,7 @@ declare namespace Cards {
   /**
    * `OfType` returns an instance of `Cards` with the corresponding type. This works with both the
    * builtin `Cards` class or a custom subclass if that is set up in
-   * {@link ConfiguredCards | `fvtt-types/configuration/ConfiguredCards`}.
+   * {@linkcode ConfiguredCards | fvtt-types/configuration/ConfiguredCards}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -1154,14 +1154,14 @@ declare namespace Cards {
 
   /**
    * @remarks Passing anything else errors downstream when a lookup table lacking the provided key causes
-   * {@link Cards._postChatNotification | `Cards#_postChatNotification`} to call {@link Localization.format | `game.i18n.format`}
+   * {@linkcode Cards._postChatNotification | Cards#_postChatNotification} to call {@linkcode Localization.format | game.i18n.format}
    * with an `undefined` first argument
    */
   type DealAction = "deal" | "pass";
 
   /**
    * @remarks Passing anything else errors downstream when a lookup table lacking the provided key causes
-   * {@link Cards._postChatNotification | `Cards#_postChatNotification`} to call {@link Localization.format | `game.i18n.format`}
+   * {@linkcode Cards._postChatNotification | Cards#_postChatNotification} to call {@linkcode Localization.format | game.i18n.format}
    * with an `undefined` first argument
    */
   type PassAction = "pass" | "play" | "draw" | "discard";
@@ -1213,7 +1213,7 @@ declare namespace Cards {
 
   /**
    * Additional context which describes the operation
-   * @remarks This is the context provided to the {@link Hooks.StaticCallbacks.dealCards | `dealCards`} hook
+   * @remarks This is the context provided to the {@linkcode Hooks.StaticCallbacks.dealCards | dealCards} hook
    */
   interface DealContext {
     /**
@@ -1224,7 +1224,7 @@ declare namespace Cards {
 
     /**
      * An array of Card creation operations to be performed in each destination Cards document
-     * @remarks Outer array: one element per `to` provided to this {@link Cards.deal | `Cards#deal`} call
+     * @remarks Outer array: one element per `to` provided to this {@linkcode Cards.deal | Cards#deal} call
      */
     toCreate: Card.CreateData[][];
 
@@ -1255,7 +1255,7 @@ declare namespace Cards {
 
   /**
    * Additional context which describes the operation
-   * @remarks This is the context provided to the {@link Hooks.StaticCallbacks.passCards | `passCards`} hook
+   * @remarks This is the context provided to the {@linkcode Hooks.StaticCallbacks.passCards | passCards} hook
    */
   interface PassContext extends Pick<DealContext, "fromUpdate" | "fromDelete"> {
     /**
@@ -1295,7 +1295,7 @@ declare namespace Cards {
 
   /**
    * Additional context which describes the operation.
-   * @remarks This is the context provided to the {@link Hooks.StaticCallbacks.returnCards | `returnCards`} hook
+   * @remarks This is the context provided to the {@linkcode Hooks.StaticCallbacks.returnCards | returnCards} hook
    */
   interface ReturnContext extends Pick<DealContext, "fromDelete"> {
     /**
@@ -1445,32 +1445,32 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
 
   /**
    * Display a dialog which prompts the user to deal cards to some number of hand-type Cards documents.
-   * @see {@link Cards.deal | `Cards#deal`}
+   * @see {@linkcode Cards.deal | Cards#deal}
    */
   dealDialog(): Promise<this | null>;
 
   /**
    * Display a dialog which prompts the user to draw cards from some other deck-type Cards documents.
-   * @see {@link Cards.draw | `Cards#draw`}
+   * @see {@linkcode Cards.draw | Cards#draw}
    */
   drawDialog(): Promise<Card.Implementation[] | null>;
 
   /**
    * Display a dialog which prompts the user to pass cards from this document to some other other Cards document.
-   * @see {@link Cards.deal | `Cards#deal`}
+   * @see {@linkcode Cards.deal | Cards#deal}
    */
   passDialog(): Promise<this | null>;
 
   /**
    * Display a dialog which prompts the user to play a specific Card to some other Cards document
-   * @see {@link Cards.pass | `Cards#pass`}
+   * @see {@linkcode Cards.pass | Cards#pass}
    * @param card - The specific card being played as part of this dialog
    */
   playDialog(card: Card.Implementation): Promise<Card.Implementation[] | null>;
 
   /**
    * Display a confirmation dialog for whether or not the user wishes to reset a Cards stack
-   * @see {@link Cards.reset | `Cards#reset`}
+   * @see {@linkcode Cards.reset | Cards#reset}
    */
   resetDialog(): Promise<this | false | null>;
 

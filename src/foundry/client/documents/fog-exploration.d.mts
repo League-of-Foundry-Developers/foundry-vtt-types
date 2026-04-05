@@ -950,8 +950,8 @@ declare namespace FogExploration {
   interface LoadQuery extends _LoadQuery {}
 
   /**
-   * @remarks {@link FogExploration.load | `FogExploration#load`} takes the `query` property separately as its first argument, then merges that
-   * with this interface via `{query, ...options}` before passing to {@link ClientDatabaseBackend.get | `this.database.get`}
+   * @remarks {@linkcode FogExploration.load | FogExploration#load} takes the `query` property separately as its first argument, then merges that
+   * with this interface via `{query, ...options}` before passing to {@linkcode ClientDatabaseBackend.get | this.database.get}
    */
   interface LoadOptions extends Omit<FogExploration.Database.GetDocumentsOperation, "query"> {}
 

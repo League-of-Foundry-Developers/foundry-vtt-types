@@ -110,7 +110,7 @@ declare namespace Item {
   /**
    * `OfType` returns an instance of `Item` with the corresponding type. This works with both the
    * builtin `Item` class or a custom subclass if that is set up in
-   * {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`}.
+   * {@linkcode ConfiguredItem | fvtt-types/configuration/ConfiguredItem}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 

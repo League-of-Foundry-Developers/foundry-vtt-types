@@ -56,7 +56,7 @@ declare namespace Combat {
       name: "Combat";
       collection: "combats";
       label: "DOCUMENT.Combat";
-      labelPlural: "DOCUMNET.Combats";
+      labelPlural: "DOCUMENT.Combats";
       embedded: Metadata.Embedded;
       hasTypeData: true;
       permissions: Metadata.Permissions;
@@ -112,7 +112,7 @@ declare namespace Combat {
   /**
    * `OfType` returns an instance of `Combat` with the corresponding type. This works with both the
    * builtin `Combat` class or a custom subclass if that is set up in
-   * {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`}.
+   * {@linkcode ConfiguredCombat | fvtt-types/configuration/ConfiguredCombat}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -1355,8 +1355,8 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   /**
    * Track the previous round, turn, and tokenId to understand changes in the encounter state
-   * @remarks Only `undefined` prior to first {@link Combat._onUpdate | `Combat#_onUpdate`} or {@link Combat.setupTurns | `Combat#setupTurns`} (which is called in
-   * {@link Combat.prepareDerivedData | `Combat#prepareDerivedData`}) call
+   * @remarks Only `undefined` prior to first {@linkcode Combat._onUpdate | Combat#_onUpdate} or {@linkcode Combat.setupTurns | Combat#setupTurns} (which is called in
+   * {@linkcode Combat.prepareDerivedData | Combat#prepareDerivedData}) call
    */
   previous: Combat.HistoryData | undefined;
 
@@ -1364,7 +1364,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * The configuration setting used to record Combat preferences
    * @defaultValue `"combatTrackerConfig"`
    * @privateRemarks Right now it doesn't make sense to make this not a literal, as `type CONFIG_SETTING` is static, so changing this would
-   * just make {@link Combat.settings | `Combat#settings`} and {@linkcode CombatEncounters.settings} incorrect
+   * just make {@linkcode Combat.settings | Combat#settings} and {@linkcode CombatEncounters.settings} incorrect
    */
   // TODO: Make the setting name configurable?
   static CONFIG_SETTING: "combatTrackerConfig";
@@ -1403,7 +1403,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    */
   activate(options?: Combat.Database.UpdateOneDocumentOperation): Promise<Combat.Implementation[]>;
 
-  /** @remarks Calls {@link Combat.setupTurns | `Combat#setupTurns`} if there is at least one Combatant and `this.turns` is empty */
+  /** @remarks Calls {@linkcode Combat.setupTurns | Combat#setupTurns} if there is at least one Combatant and `this.turns` is empty */
   override prepareDerivedData(): void;
 
   /**
@@ -1650,13 +1650,13 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   /**
    * @deprecated Since v12, no stated end
-   * @remarks Foundry provides no deprecation warning; use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
+   * @remarks Foundry provides no deprecation warning; use {@linkcode Combat.getCombatantsByActor | Combat#getCombatantsByActor} instead.
    */
   getCombatantByActor(actor: string | Actor.Implementation): Combatant.Implementation | null;
 
   /**
    * @deprecated Since v12, no stated end
-   * @remarks Foundry provides no deprecation warning; use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
+   * @remarks Foundry provides no deprecation warning; use {@linkcode Combat.getCombatantsByActor | Combat#getCombatantsByActor} instead.
    */
   getCombatantByToken(token: string | Token.Implementation): Combatant.Implementation | null;
 

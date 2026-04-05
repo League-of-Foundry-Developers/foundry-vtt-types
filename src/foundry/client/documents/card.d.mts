@@ -103,7 +103,7 @@ declare namespace Card {
   /**
    * `OfType` returns an instance of `Card` with the corresponding type. This works with both the
    * builtin `Card` class or a custom subclass if that is set up in
-   * {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`}.
+   * {@linkcode ConfiguredCard | fvtt-types/configuration/ConfiguredCard}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -1077,7 +1077,7 @@ declare namespace Card {
   }
 
   /**
-   * @remarks {@link Card.play | `Card#play`} calls {@link Cards.pass | `this.parent.pass`} with `action: "play"` provided by default.
+   * @remarks {@linkcode Card.play | Card#play} calls {@linkcode Cards.pass | this.parent.pass} with `action: "play"` provided by default.
    */
   interface PlayOptions extends Cards.PassOptions {
     /**
@@ -1088,7 +1088,7 @@ declare namespace Card {
   }
 
   /**
-   * @remarks {@link Card.discard | `Card#discard`} calls {@link Cards.pass | `this.parent.pass`} with `action: "discard"` provided by default.
+   * @remarks {@linkcode Card.discard | Card#discard} calls {@linkcode Cards.pass | this.parent.pass} with `action: "discard"` provided by default.
    */
   interface DiscardOptions extends Cards.PassOptions {
     /**
@@ -1184,15 +1184,15 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
 
   /**
    * Play a specific card to some other Cards document.
-   * @see {@link Card.pass | `Card#pass`}
-   * @remarks This method is currently a more semantic alias for {@link Card.pass | `Card#pass`}.
+   * @see {@linkcode Card.pass | Card#pass}
+   * @remarks This method is currently a more semantic alias for {@linkcode Card.pass | Card#pass}.
    */
   play(to: Cards.Implementation, options?: Card.PlayOptions): Promise<Card.Implementation | undefined>;
 
   /**
    * Discard a specific card to some other Cards document.
-   * @see {@link Card.pass | `Card#pass`}
-   * @remarks This method is currently a more semantic alias for {@link Card.pass | `Card#pass`}.
+   * @see {@linkcode Card.pass | Card#pass}
+   * @remarks This method is currently a more semantic alias for {@linkcode Card.pass | Card#pass}.
    */
   discard(to: Cards.Implementation, options?: Card.DiscardOptions): Promise<Card.Implementation | undefined>;
 
