@@ -33,7 +33,7 @@ declare namespace ActiveEffect {
 
   /**
    * The implementation of the `ActiveEffect` document instance configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`} in fvtt-types.
+   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredActiveEffect | fvtt-types/configuration/ConfiguredActiveEffect} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
@@ -98,7 +98,7 @@ declare namespace ActiveEffect {
   /**
    * `OfType` returns an instance of `ActiveEffect` with the corresponding type. This works with both the
    * builtin `ActiveEffect` class or a custom subclass if that is set up in
-   * {@link ConfiguredActiveEffect | `fvtt-types/configuration/ConfiguredActiveEffect`}.
+   * {@linkcode ConfiguredActiveEffect | fvtt-types/configuration/ConfiguredActiveEffect}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -165,7 +165,7 @@ declare namespace ActiveEffect {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -191,19 +191,19 @@ declare namespace ActiveEffect {
   type Stored<SubType extends ActiveEffect.SubType = ActiveEffect.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link ActiveEffect._source | `ActiveEffect#_source`}. This data is what was
+   * The data put in {@linkcode ActiveEffect._source | ActiveEffect#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode ActiveEffect.create}
-   * and {@link ActiveEffect | `new ActiveEffect(...)`}.
+   * and {@linkcode ActiveEffect | new ActiveEffect(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -213,18 +213,18 @@ declare namespace ActiveEffect {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link ActiveEffect.name | `ActiveEffect#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode ActiveEffect.name | ActiveEffect#name}.
    *
    * This is data transformed from {@linkcode ActiveEffect.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link ActiveEffect.update | `ActiveEffect#update`}.
-   * It is a distinct type from {@link ActiveEffect.CreateData | `DeepPartial<ActiveEffect.CreateData>`} because
+   * The data used to update a document, for example {@linkcode ActiveEffect.update | ActiveEffect#update}.
+   * It is a distinct type from {@linkcode ActiveEffect.CreateData | DeepPartial<ActiveEffect.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -234,8 +234,8 @@ declare namespace ActiveEffect {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode ActiveEffect}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -446,7 +446,7 @@ declare namespace ActiveEffect {
       ActiveEffect.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link ActiveEffect.update | `ActiveEffect#update`} */
+    /** Operation for {@linkcode ActiveEffect.update | ActiveEffect#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -454,40 +454,40 @@ declare namespace ActiveEffect {
     /** Options for {@linkcode ActiveEffect.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link ActiveEffect._preCreate | `ActiveEffect#_preCreate`} */
+    /** Options for {@linkcode ActiveEffect._preCreate | ActiveEffect#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link ActiveEffect._onCreate | `ActiveEffect#_onCreate`} */
+    /** Options for {@linkcode ActiveEffect._onCreate | ActiveEffect#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode ActiveEffect._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<ActiveEffect.Database.Create> {}
 
-    /** Operation for {@link ActiveEffect._onCreateOperation | `ActiveEffect#_onCreateOperation`} */
+    /** Operation for {@linkcode ActiveEffect._onCreateOperation | ActiveEffect#_onCreateOperation} */
     interface OnCreateOperation extends ActiveEffect.Database.Create {}
 
-    /** Options for {@link ActiveEffect._preUpdate | `ActiveEffect#_preUpdate`} */
+    /** Options for {@linkcode ActiveEffect._preUpdate | ActiveEffect#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link ActiveEffect._onUpdate | `ActiveEffect#_onUpdate`} */
+    /** Options for {@linkcode ActiveEffect._onUpdate | ActiveEffect#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode ActiveEffect._preUpdateOperation} */
     interface PreUpdateOperation extends ActiveEffect.Database.Update {}
 
-    /** Operation for {@link ActiveEffect._onUpdateOperation | `ActiveEffect._preUpdateOperation`} */
+    /** Operation for {@linkcode ActiveEffect._onUpdateOperation | ActiveEffect._preUpdateOperation} */
     interface OnUpdateOperation extends ActiveEffect.Database.Update {}
 
-    /** Options for {@link ActiveEffect._preDelete | `ActiveEffect#_preDelete`} */
+    /** Options for {@linkcode ActiveEffect._preDelete | ActiveEffect#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link ActiveEffect._onDelete | `ActiveEffect#_onDelete`} */
+    /** Options for {@linkcode ActiveEffect._onDelete | ActiveEffect#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link ActiveEffect._preDeleteOperation | `ActiveEffect#_preDeleteOperation`} */
+    /** Options for {@linkcode ActiveEffect._preDeleteOperation | ActiveEffect#_preDeleteOperation} */
     interface PreDeleteOperation extends ActiveEffect.Database.Delete {}
 
-    /** Options for {@link ActiveEffect._onDeleteOperation | `ActiveEffect#_onDeleteOperation`} */
+    /** Options for {@linkcode ActiveEffect._onDeleteOperation | ActiveEffect#_onDeleteOperation} */
     interface OnDeleteOperation extends ActiveEffect.Database.Delete {}
 
     /** Context for {@linkcode ActiveEffect._onDeleteOperation} */
@@ -500,20 +500,20 @@ declare namespace ActiveEffect {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<ActiveEffect.Parent> {}
 
     /**
-     * Options for {@link ActiveEffect._preCreateDescendantDocuments | `ActiveEffect#_preCreateDescendantDocuments`}
-     * and {@link ActiveEffect._onCreateDescendantDocuments | `ActiveEffect#_onCreateDescendantDocuments`}
+     * Options for {@linkcode ActiveEffect._preCreateDescendantDocuments | ActiveEffect#_preCreateDescendantDocuments}
+     * and {@linkcode ActiveEffect._onCreateDescendantDocuments | ActiveEffect#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<ActiveEffect.Database.Create> {}
 
     /**
-     * Options for {@link ActiveEffect._preUpdateDescendantDocuments | `ActiveEffect#_preUpdateDescendantDocuments`}
-     * and {@link ActiveEffect._onUpdateDescendantDocuments | `ActiveEffect#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode ActiveEffect._preUpdateDescendantDocuments | ActiveEffect#_preUpdateDescendantDocuments}
+     * and {@linkcode ActiveEffect._onUpdateDescendantDocuments | ActiveEffect#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<ActiveEffect.Database.Update> {}
 
     /**
-     * Options for {@link ActiveEffect._preDeleteDescendantDocuments | `ActiveEffect#_preDeleteDescendantDocuments`}
-     * and {@link ActiveEffect._onDeleteDescendantDocuments | `ActiveEffect#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode ActiveEffect._preDeleteDescendantDocuments | ActiveEffect#_preDeleteDescendantDocuments}
+     * and {@linkcode ActiveEffect._onDeleteDescendantDocuments | ActiveEffect#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<ActiveEffect.Database.Delete> {}
 

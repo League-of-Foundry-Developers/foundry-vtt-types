@@ -25,7 +25,7 @@ declare namespace Item {
 
   /**
    * The implementation of the `Item` document instance configured through `CONFIG.Item.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`} in fvtt-types.
+   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredItem | fvtt-types/configuration/ConfiguredItem} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
@@ -103,7 +103,7 @@ declare namespace Item {
   /**
    * `OfType` returns an instance of `Item` with the corresponding type. This works with both the
    * builtin `Item` class or a custom subclass if that is set up in
-   * {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`}.
+   * {@linkcode ConfiguredItem | fvtt-types/configuration/ConfiguredItem}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -231,7 +231,7 @@ declare namespace Item {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -257,19 +257,19 @@ declare namespace Item {
   type Stored<SubType extends Item.SubType = Item.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link Item._source | `Item#_source`}. This data is what was
+   * The data put in {@linkcode Item._source | Item#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Item.create}
-   * and {@link Item | `new Item(...)`}.
+   * and {@linkcode Item | new Item(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -278,18 +278,18 @@ declare namespace Item {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Item.name | `Item#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode Item.name | Item#name}.
    *
    * This is data transformed from {@linkcode Item.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Item.update | `Item#update`}.
-   * It is a distinct type from {@link Item.CreateData | `DeepPartial<Item.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Item.update | Item#update}.
+   * It is a distinct type from {@linkcode Item.CreateData | DeepPartial<Item.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -299,8 +299,8 @@ declare namespace Item {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Item}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -400,7 +400,7 @@ declare namespace Item {
       Item.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Item.update | `Item#update`} */
+    /** Operation for {@linkcode Item.update | Item#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -408,40 +408,40 @@ declare namespace Item {
     /** Options for {@linkcode Item.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Item._preCreate | `Item#_preCreate`} */
+    /** Options for {@linkcode Item._preCreate | Item#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Item._onCreate | `Item#_onCreate`} */
+    /** Options for {@linkcode Item._onCreate | Item#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Item._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Item.Database.Create> {}
 
-    /** Operation for {@link Item._onCreateOperation | `Item#_onCreateOperation`} */
+    /** Operation for {@linkcode Item._onCreateOperation | Item#_onCreateOperation} */
     interface OnCreateOperation extends Item.Database.Create {}
 
-    /** Options for {@link Item._preUpdate | `Item#_preUpdate`} */
+    /** Options for {@linkcode Item._preUpdate | Item#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Item._onUpdate | `Item#_onUpdate`} */
+    /** Options for {@linkcode Item._onUpdate | Item#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Item._preUpdateOperation} */
     interface PreUpdateOperation extends Item.Database.Update {}
 
-    /** Operation for {@link Item._onUpdateOperation | `Item._preUpdateOperation`} */
+    /** Operation for {@linkcode Item._onUpdateOperation | Item._preUpdateOperation} */
     interface OnUpdateOperation extends Item.Database.Update {}
 
-    /** Options for {@link Item._preDelete | `Item#_preDelete`} */
+    /** Options for {@linkcode Item._preDelete | Item#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Item._onDelete | `Item#_onDelete`} */
+    /** Options for {@linkcode Item._onDelete | Item#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Item._preDeleteOperation | `Item#_preDeleteOperation`} */
+    /** Options for {@linkcode Item._preDeleteOperation | Item#_preDeleteOperation} */
     interface PreDeleteOperation extends Item.Database.Delete {}
 
-    /** Options for {@link Item._onDeleteOperation | `Item#_onDeleteOperation`} */
+    /** Options for {@linkcode Item._onDeleteOperation | Item#_onDeleteOperation} */
     interface OnDeleteOperation extends Item.Database.Delete {}
 
     /** Context for {@linkcode Item._onDeleteOperation} */
@@ -454,20 +454,20 @@ declare namespace Item {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Item.Parent> {}
 
     /**
-     * Options for {@link Item._preCreateDescendantDocuments | `Item#_preCreateDescendantDocuments`}
-     * and {@link Item._onCreateDescendantDocuments | `Item#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Item._preCreateDescendantDocuments | Item#_preCreateDescendantDocuments}
+     * and {@linkcode Item._onCreateDescendantDocuments | Item#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Item.Database.Create> {}
 
     /**
-     * Options for {@link Item._preUpdateDescendantDocuments | `Item#_preUpdateDescendantDocuments`}
-     * and {@link Item._onUpdateDescendantDocuments | `Item#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Item._preUpdateDescendantDocuments | Item#_preUpdateDescendantDocuments}
+     * and {@linkcode Item._onUpdateDescendantDocuments | Item#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Item.Database.Update> {}
 
     /**
-     * Options for {@link Item._preDeleteDescendantDocuments | `Item#_preDeleteDescendantDocuments`}
-     * and {@link Item._onDeleteDescendantDocuments | `Item#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Item._preDeleteDescendantDocuments | Item#_preDeleteDescendantDocuments}
+     * and {@linkcode Item._onDeleteDescendantDocuments | Item#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Item.Database.Delete> {}
 

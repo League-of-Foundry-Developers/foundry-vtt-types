@@ -27,7 +27,7 @@ declare namespace User {
 
   /**
    * The implementation of the `User` document instance configured through `CONFIG.User.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredUser | `fvtt-types/configuration/ConfiguredUser`} in fvtt-types.
+   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredUser | fvtt-types/configuration/ConfiguredUser} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
@@ -102,7 +102,7 @@ declare namespace User {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -128,19 +128,19 @@ declare namespace User {
   type Stored = Document.Internal.Stored<User.Implementation>;
 
   /**
-   * The data put in {@link User._source | `User#_source`}. This data is what was
+   * The data put in {@linkcode User._source | User#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode User.create}
-   * and {@link User | `new User(...)`}.
+   * and {@linkcode User | new User(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -148,17 +148,17 @@ declare namespace User {
 
   /**
    * The data after a {@linkcode Document} has been initialized, for example
-   * {@link User.name | `User#name`}.
+   * {@linkcode User.name | User#name}.
    *
    * This is data transformed from {@linkcode User.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link User.update | `User#update`}.
-   * It is a distinct type from {@link User.CreateData | `DeepPartial<User.CreateData>`} because
+   * The data used to update a document, for example {@linkcode User.update | User#update}.
+   * It is a distinct type from {@linkcode User.CreateData | DeepPartial<User.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -168,8 +168,8 @@ declare namespace User {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode User}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -217,7 +217,7 @@ declare namespace User {
     /**
      * The user's avatar image.
      * @defaultValue `null`
-     * @remarks Initialized to `this.avatar || this.character?.img || CONST.DEFAULT_TOKEN` in {@link User.prepareDerivedData | `User#prepareDerivedData`}
+     * @remarks Initialized to `this.avatar || this.character?.img || CONST.DEFAULT_TOKEN` in {@linkcode User.prepareDerivedData | User#prepareDerivedData}
      */
     avatar: fields.FilePathField<{ categories: ["IMAGE"] }>;
 
@@ -312,7 +312,7 @@ declare namespace User {
       User.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link User.update | `User#update`} */
+    /** Operation for {@linkcode User.update | User#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -320,40 +320,40 @@ declare namespace User {
     /** Options for {@linkcode User.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link User._preCreate | `User#_preCreate`} */
+    /** Options for {@linkcode User._preCreate | User#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link User._onCreate | `User#_onCreate`} */
+    /** Options for {@linkcode User._onCreate | User#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode User._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<User.Database.Create> {}
 
-    /** Operation for {@link User._onCreateOperation | `User#_onCreateOperation`} */
+    /** Operation for {@linkcode User._onCreateOperation | User#_onCreateOperation} */
     interface OnCreateOperation extends User.Database.Create {}
 
-    /** Options for {@link User._preUpdate | `User#_preUpdate`} */
+    /** Options for {@linkcode User._preUpdate | User#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link User._onUpdate | `User#_onUpdate`} */
+    /** Options for {@linkcode User._onUpdate | User#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode User._preUpdateOperation} */
     interface PreUpdateOperation extends User.Database.Update {}
 
-    /** Operation for {@link User._onUpdateOperation | `User._preUpdateOperation`} */
+    /** Operation for {@linkcode User._onUpdateOperation | User._preUpdateOperation} */
     interface OnUpdateOperation extends User.Database.Update {}
 
-    /** Options for {@link User._preDelete | `User#_preDelete`} */
+    /** Options for {@linkcode User._preDelete | User#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link User._onDelete | `User#_onDelete`} */
+    /** Options for {@linkcode User._onDelete | User#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link User._preDeleteOperation | `User#_preDeleteOperation`} */
+    /** Options for {@linkcode User._preDeleteOperation | User#_preDeleteOperation} */
     interface PreDeleteOperation extends User.Database.Delete {}
 
-    /** Options for {@link User._onDeleteOperation | `User#_onDeleteOperation`} */
+    /** Options for {@linkcode User._onDeleteOperation | User#_onDeleteOperation} */
     interface OnDeleteOperation extends User.Database.Delete {}
 
     /** Context for {@linkcode User._onDeleteOperation} */
@@ -366,20 +366,20 @@ declare namespace User {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<User.Parent> {}
 
     /**
-     * Options for {@link User._preCreateDescendantDocuments | `User#_preCreateDescendantDocuments`}
-     * and {@link User._onCreateDescendantDocuments | `User#_onCreateDescendantDocuments`}
+     * Options for {@linkcode User._preCreateDescendantDocuments | User#_preCreateDescendantDocuments}
+     * and {@linkcode User._onCreateDescendantDocuments | User#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<User.Database.Create> {}
 
     /**
-     * Options for {@link User._preUpdateDescendantDocuments | `User#_preUpdateDescendantDocuments`}
-     * and {@link User._onUpdateDescendantDocuments | `User#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode User._preUpdateDescendantDocuments | User#_preUpdateDescendantDocuments}
+     * and {@linkcode User._onUpdateDescendantDocuments | User#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<User.Database.Update> {}
 
     /**
-     * Options for {@link User._preDeleteDescendantDocuments | `User#_preDeleteDescendantDocuments`}
-     * and {@link User._onDeleteDescendantDocuments | `User#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode User._preDeleteDescendantDocuments | User#_preDeleteDescendantDocuments}
+     * and {@linkcode User._onDeleteDescendantDocuments | User#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<User.Database.Delete> {}
 
@@ -456,7 +456,7 @@ declare namespace User {
       style: Ping.ConfiguredStyles;
     }>;
 
-  /** @privateRemarks Only consumed by {@link ControlsLayer.handlePing | `ControlsLayer#handlePing`} */
+  /** @privateRemarks Only consumed by {@linkcode ControlsLayer.handlePing | ControlsLayer#handlePing} */
   interface PingData extends _PingData {
     /**
      * The ID of the scene that was pinged.
@@ -465,7 +465,7 @@ declare namespace User {
   }
 
   /**
-   * No core {@link User.broadcastActivity | `User#broadcastActivity`} call provides all keys, most only provide one,
+   * No core {@linkcode User.broadcastActivity | User#broadcastActivity} call provides all keys, most only provide one,
    * this is essentially bundling a bunch of unrelated update types into one socket handler, but the socket drops
    * explicit `undefined` keys, so `IntentionalPartial` and `| null` as appropriate it is.
    *
@@ -481,7 +481,7 @@ declare namespace User {
 
     /**
      * The position of the user's cursor.
-     * @remarks Can't be explicit `undefined` as the socket drops such keys, and {@link ControlsLayer.updateCursor | `ControlsLayer#updateCursor`}
+     * @remarks Can't be explicit `undefined` as the socket drops such keys, and {@linkcode ControlsLayer.updateCursor | ControlsLayer#updateCursor}
      * has an `=== null` check.
      */
     cursor: { x: number; y: number } | null;
@@ -494,7 +494,7 @@ declare namespace User {
 
     /**
      * The IDs of the tokens the user has targeted in the currently viewed
-     * @remarks Can't be explicit `undefined` as the socket drops such keys, and can't be `null` as its passed to {@link User.updateTokenTargets | `User#updateTokenTargets`},
+     * @remarks Can't be explicit `undefined` as the socket drops such keys, and can't be `null` as its passed to {@linkcode User.updateTokenTargets | User#updateTokenTargets},
      * where it only has a parameter default.
      */
     targets: string[];
@@ -502,21 +502,21 @@ declare namespace User {
     /**
      * Whether the user has an open WS connection to the server or not.
      * @defaultValue `true`
-     * @remarks Can't be nullish as, if provided, gets directly assigned to {@link User.active | `User#active`},
+     * @remarks Can't be nullish as, if provided, gets directly assigned to {@linkcode User.active | User#active},
      * and the default is applied only on a negative `in` check.
      */
     active: boolean;
 
     /**
      * Is the user emitting a ping at the cursor coordinates?
-     * @remarks Can't be explicit `undefined` as the socket drops such keys, and can't be `null` as its passed to {@link ControlsLayer.handlePing | `CanvasLayer#handlePing`}'s third argument,
+     * @remarks Can't be explicit `undefined` as the socket drops such keys, and can't be `null` as its passed to {@linkcode ControlsLayer.handlePing | CanvasLayer#handlePing}'s third argument,
      * where it is destructured and only has a parameter default.
      */
     ping: User.PingData;
 
     /**
      * The state of the user's AV settings.
-     * @remarks Can't be nullish, as it's passed to {@link AVSettings._handleUserActivity | `game.webrtc.settings._handleUserActivity`}'s second argument,
+     * @remarks Can't be nullish, as it's passed to {@linkcode AVSettings._handleUserActivity | game.webrtc.settings._handleUserActivity}'s second argument,
      * which has no default and has `in` checks applied.
      */
     av: AVSettings.Data;
@@ -558,7 +558,7 @@ declare namespace User {
 
   interface AssignHotbarMacroOptions extends _AssignHotbarMacroOptions {}
 
-  /** The data {@link User.getHotbarMacros | `User#getHotbarMacros`} returns for each of the 10 entries in its returned array */
+  /** The data {@linkcode User.getHotbarMacros | User#getHotbarMacros} returns for each of the 10 entries in its returned array */
   interface GetHotbarMacrosData {
     slot: number;
     macro: Macro.Implementation | null;
@@ -669,7 +669,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
   isDesignated(condition: (user: User.Implementation) => boolean): boolean;
 
   /**
-   * @remarks Doesn't exist prior to data prep, set in {@link User.prepareDerivedData | `User#prepareDerivedData`}
+   * @remarks Doesn't exist prior to data prep, set in {@linkcode User.prepareDerivedData | User#prepareDerivedData}
    * @defaultValue `this.color.multiply(2)`
    */
   border?: Color;

@@ -27,7 +27,7 @@ declare namespace Actor {
 
   /**
    * The implementation of the `Actor` document instance configured through `CONFIG.Actor.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`} in fvtt-types.
+   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredActor | fvtt-types/configuration/ConfiguredActor} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<"Actor">;
 
@@ -106,7 +106,7 @@ declare namespace Actor {
   /**
    * `OfType` returns an instance of `Actor` with the corresponding type. This works with both the
    * builtin `Actor` class or a custom subclass if that is set up in
-   * {@link ConfiguredActor | `fvtt-types/configuration/ConfiguredActor`}.
+   * {@linkcode ConfiguredActor | fvtt-types/configuration/ConfiguredActor}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -234,7 +234,7 @@ declare namespace Actor {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -260,19 +260,19 @@ declare namespace Actor {
   type Stored<SubType extends Actor.SubType = Actor.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link Actor._source | `Actor#_source`}. This data is what was
+   * The data put in {@linkcode Actor._source | Actor#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Actor.create}
-   * and {@link Actor | `new Actor(...)`}.
+   * and {@linkcode Actor | new Actor(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -281,18 +281,18 @@ declare namespace Actor {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Actor.name | `Actor#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode Actor.name | Actor#name}.
    *
    * This is data transformed from {@linkcode Actor.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Actor.update | `Actor#update`}.
-   * It is a distinct type from {@link Actor.CreateData | `DeepPartial<Actor.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Actor.update | Actor#update}.
+   * It is a distinct type from {@linkcode Actor.CreateData | DeepPartial<Actor.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -302,8 +302,8 @@ declare namespace Actor {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Actor}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -412,7 +412,7 @@ declare namespace Actor {
       Actor.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Actor.update | `Actor#update`} */
+    /** Operation for {@linkcode Actor.update | Actor#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -420,40 +420,40 @@ declare namespace Actor {
     /** Options for {@linkcode Actor.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Actor._preCreate | `Actor#_preCreate`} */
+    /** Options for {@linkcode Actor._preCreate | Actor#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Actor._onCreate | `Actor#_onCreate`} */
+    /** Options for {@linkcode Actor._onCreate | Actor#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Actor._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Actor.Database.Create> {}
 
-    /** Operation for {@link Actor._onCreateOperation | `Actor#_onCreateOperation`} */
+    /** Operation for {@linkcode Actor._onCreateOperation | Actor#_onCreateOperation} */
     interface OnCreateOperation extends Actor.Database.Create {}
 
-    /** Options for {@link Actor._preUpdate | `Actor#_preUpdate`} */
+    /** Options for {@linkcode Actor._preUpdate | Actor#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Actor._onUpdate | `Actor#_onUpdate`} */
+    /** Options for {@linkcode Actor._onUpdate | Actor#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Actor._preUpdateOperation} */
     interface PreUpdateOperation extends Actor.Database.Update {}
 
-    /** Operation for {@link Actor._onUpdateOperation | `Actor._preUpdateOperation`} */
+    /** Operation for {@linkcode Actor._onUpdateOperation | Actor._preUpdateOperation} */
     interface OnUpdateOperation extends Actor.Database.Update {}
 
-    /** Options for {@link Actor._preDelete | `Actor#_preDelete`} */
+    /** Options for {@linkcode Actor._preDelete | Actor#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Actor._onDelete | `Actor#_onDelete`} */
+    /** Options for {@linkcode Actor._onDelete | Actor#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Actor._preDeleteOperation | `Actor#_preDeleteOperation`} */
+    /** Options for {@linkcode Actor._preDeleteOperation | Actor#_preDeleteOperation} */
     interface PreDeleteOperation extends Actor.Database.Delete {}
 
-    /** Options for {@link Actor._onDeleteOperation | `Actor#_onDeleteOperation`} */
+    /** Options for {@linkcode Actor._onDeleteOperation | Actor#_onDeleteOperation} */
     interface OnDeleteOperation extends Actor.Database.Delete {}
 
     /** Context for {@linkcode Actor._onDeleteOperation} */
@@ -466,20 +466,20 @@ declare namespace Actor {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Actor.Parent> {}
 
     /**
-     * Options for {@link Actor._preCreateDescendantDocuments | `Actor#_preCreateDescendantDocuments`}
-     * and {@link Actor._onCreateDescendantDocuments | `Actor#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Actor._preCreateDescendantDocuments | Actor#_preCreateDescendantDocuments}
+     * and {@linkcode Actor._onCreateDescendantDocuments | Actor#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Actor.Database.Create> {}
 
     /**
-     * Options for {@link Actor._preUpdateDescendantDocuments | `Actor#_preUpdateDescendantDocuments`}
-     * and {@link Actor._onUpdateDescendantDocuments | `Actor#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Actor._preUpdateDescendantDocuments | Actor#_preUpdateDescendantDocuments}
+     * and {@linkcode Actor._onUpdateDescendantDocuments | Actor#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Actor.Database.Update> {}
 
     /**
-     * Options for {@link Actor._preDeleteDescendantDocuments | `Actor#_preDeleteDescendantDocuments`}
-     * and {@link Actor._onDeleteDescendantDocuments | `Actor#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Actor._preDeleteDescendantDocuments | Actor#_preDeleteDescendantDocuments}
+     * and {@linkcode Actor._onDeleteDescendantDocuments | Actor#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Actor.Database.Delete> {}
 
@@ -990,7 +990,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * Update the active TokenDocument instances which represent this Actor.
    * @param update  - The update delta.
    * @param options - The update context.
-   * @remarks Forwards to {@link Token._onUpdateBaseActor | `Token#_onUpdateBaseActor`}
+   * @remarks Forwards to {@linkcode Token._onUpdateBaseActor | Token#_onUpdateBaseActor}
    */
   protected _updateDependentTokens(update: Actor.UpdateData, options: Actor.Database.UpdateOperation): void;
 

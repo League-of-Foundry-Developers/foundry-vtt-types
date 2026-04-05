@@ -23,7 +23,7 @@ declare namespace Playlist {
 
   /**
    * The implementation of the `Playlist` document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredPlaylist | `fvtt-types/configuration/ConfiguredPlaylist`} in fvtt-types.
+   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredPlaylist | fvtt-types/configuration/ConfiguredPlaylist} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<"Playlist">;
 
@@ -166,7 +166,7 @@ declare namespace Playlist {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -192,37 +192,37 @@ declare namespace Playlist {
   type Stored = Document.Internal.Stored<Playlist.Implementation>;
 
   /**
-   * The data put in {@link Playlist._source | `Playlist#_source`}.. This data is what was
+   * The data put in {@linkcode Playlist._source | Playlist#_source}.. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Playlist.create}
-   * and {@link Playlist | `new Playlist(...)`}.
+   * and {@linkcode Playlist | new Playlist(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Playlist.name | `Playlist#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode Playlist.name | Playlist#name}.
    *
    * This is data transformed from {@linkcode Playlist.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Playlist.update | `Playlist#update`}.
-   * It is a distinct type from {@link Playlist.CreateData | `DeepPartial<Playlist.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Playlist.update | Playlist#update}.
+   * It is a distinct type from {@linkcode Playlist.CreateData | DeepPartial<Playlist.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -232,8 +232,8 @@ declare namespace Playlist {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Playlist}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -380,7 +380,7 @@ declare namespace Playlist {
       Playlist.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Playlist.update | `Playlist#update`} */
+    /** Operation for {@linkcode Playlist.update | Playlist#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -388,40 +388,40 @@ declare namespace Playlist {
     /** Options for {@linkcode Playlist.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Playlist._preCreate | `Playlist#_preCreate`} */
+    /** Options for {@linkcode Playlist._preCreate | Playlist#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Playlist._onCreate | `Playlist#_onCreate`} */
+    /** Options for {@linkcode Playlist._onCreate | Playlist#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Playlist._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Playlist.Database.Create> {}
 
-    /** Operation for {@link Playlist._onCreateOperation | `Playlist#_onCreateOperation`} */
+    /** Operation for {@linkcode Playlist._onCreateOperation | Playlist#_onCreateOperation} */
     interface OnCreateOperation extends Playlist.Database.Create {}
 
-    /** Options for {@link Playlist._preUpdate | `Playlist#_preUpdate`} */
+    /** Options for {@linkcode Playlist._preUpdate | Playlist#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Playlist._onUpdate | `Playlist#_onUpdate`} */
+    /** Options for {@linkcode Playlist._onUpdate | Playlist#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Playlist._preUpdateOperation} */
     interface PreUpdateOperation extends Playlist.Database.Update {}
 
-    /** Operation for {@link Playlist._onUpdateOperation | `Playlist._preUpdateOperation`} */
+    /** Operation for {@linkcode Playlist._onUpdateOperation | Playlist._preUpdateOperation} */
     interface OnUpdateOperation extends Playlist.Database.Update {}
 
-    /** Options for {@link Playlist._preDelete | `Playlist#_preDelete`} */
+    /** Options for {@linkcode Playlist._preDelete | Playlist#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Playlist._onDelete | `Playlist#_onDelete`} */
+    /** Options for {@linkcode Playlist._onDelete | Playlist#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Playlist._preDeleteOperation | `Playlist#_preDeleteOperation`} */
+    /** Options for {@linkcode Playlist._preDeleteOperation | Playlist#_preDeleteOperation} */
     interface PreDeleteOperation extends Playlist.Database.Delete {}
 
-    /** Options for {@link Playlist._onDeleteOperation | `Playlist#_onDeleteOperation`} */
+    /** Options for {@linkcode Playlist._onDeleteOperation | Playlist#_onDeleteOperation} */
     interface OnDeleteOperation extends Playlist.Database.Delete {}
 
     /** Context for {@linkcode Playlist._onDeleteOperation} */
@@ -434,20 +434,20 @@ declare namespace Playlist {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Playlist.Parent> {}
 
     /**
-     * Options for {@link Playlist._preCreateDescendantDocuments | `Playlist#_preCreateDescendantDocuments`}
-     * and {@link Playlist._onCreateDescendantDocuments | `Playlist#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Playlist._preCreateDescendantDocuments | Playlist#_preCreateDescendantDocuments}
+     * and {@linkcode Playlist._onCreateDescendantDocuments | Playlist#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Playlist.Database.Create> {}
 
     /**
-     * Options for {@link Playlist._preUpdateDescendantDocuments | `Playlist#_preUpdateDescendantDocuments`}
-     * and {@link Playlist._onUpdateDescendantDocuments | `Playlist#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Playlist._preUpdateDescendantDocuments | Playlist#_preUpdateDescendantDocuments}
+     * and {@linkcode Playlist._onUpdateDescendantDocuments | Playlist#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Playlist.Database.Update> {}
 
     /**
-     * Options for {@link Playlist._preDeleteDescendantDocuments | `Playlist#_preDeleteDescendantDocuments`}
-     * and {@link Playlist._onDeleteDescendantDocuments | `Playlist#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Playlist._preDeleteDescendantDocuments | Playlist#_preDeleteDescendantDocuments}
+     * and {@linkcode Playlist._onDeleteDescendantDocuments | Playlist#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Playlist.Database.Delete> {}
 
@@ -652,7 +652,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   override toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
-   * @remarks Returns {@link Playlist.playAll | `this.playAll()`} or {@link Playlist.stopAll | `this.stopAll()`}
+   * @remarks Returns {@linkcode Playlist.playAll | this.playAll()} or {@linkcode Playlist.stopAll | this.stopAll()}
    */
   override _onClickDocumentLink(event: MouseEvent): Promise<this | undefined>;
 

@@ -25,7 +25,7 @@ declare namespace ActorDelta {
 
   /**
    * The implementation of the `ActorDelta` document instance configured through `CONFIG.ActorDelta.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`} in fvtt-types.
+   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredActorDelta | fvtt-types/configuration/ConfiguredActorDelta} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
@@ -95,7 +95,7 @@ declare namespace ActorDelta {
   /**
    * `OfType` returns an instance of `ActorDelta` with the corresponding type. This works with both the
    * builtin `ActorDelta` class or a custom subclass if that is set up in
-   * {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`}.
+   * {@linkcode ConfiguredActorDelta | fvtt-types/configuration/ConfiguredActorDelta}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -227,7 +227,7 @@ declare namespace ActorDelta {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -253,10 +253,10 @@ declare namespace ActorDelta {
   type Stored = Document.Internal.Stored<ActorDelta.Implementation>;
 
   /**
-   * The data put in {@link ActorDelta._source | `ActorDelta#_source`}. This data is what was
+   * The data put in {@linkcode ActorDelta._source | ActorDelta#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source<SubType extends ActorDelta.SubType = ActorDelta.SubType> extends fields.SchemaField
@@ -266,9 +266,9 @@ declare namespace ActorDelta {
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode ActorDelta.create}
-   * and {@link ActorDelta | `new ActorDelta(...)`}.
+   * and {@linkcode ActorDelta | new ActorDelta(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -278,18 +278,18 @@ declare namespace ActorDelta {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link ActorDelta.name | `ActorDelta#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode ActorDelta.name | ActorDelta#name}.
    *
    * This is data transformed from {@linkcode ActorDelta.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link ActorDelta.update | `ActorDelta#update`}.
-   * It is a distinct type from {@link ActorDelta.CreateData | `DeepPartial<ActorDelta.CreateData>`} because
+   * The data used to update a document, for example {@linkcode ActorDelta.update | ActorDelta#update}.
+   * It is a distinct type from {@linkcode ActorDelta.CreateData | DeepPartial<ActorDelta.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -299,8 +299,8 @@ declare namespace ActorDelta {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode ActorDelta}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -385,7 +385,7 @@ declare namespace ActorDelta {
       ActorDelta.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link ActorDelta.update | `ActorDelta#update`} */
+    /** Operation for {@linkcode ActorDelta.update | ActorDelta#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -393,40 +393,40 @@ declare namespace ActorDelta {
     /** Options for {@linkcode ActorDelta.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link ActorDelta._preCreate | `ActorDelta#_preCreate`} */
+    /** Options for {@linkcode ActorDelta._preCreate | ActorDelta#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link ActorDelta._onCreate | `ActorDelta#_onCreate`} */
+    /** Options for {@linkcode ActorDelta._onCreate | ActorDelta#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode ActorDelta._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<ActorDelta.Database.Create> {}
 
-    /** Operation for {@link ActorDelta._onCreateOperation | `ActorDelta#_onCreateOperation`} */
+    /** Operation for {@linkcode ActorDelta._onCreateOperation | ActorDelta#_onCreateOperation} */
     interface OnCreateOperation extends ActorDelta.Database.Create {}
 
-    /** Options for {@link ActorDelta._preUpdate | `ActorDelta#_preUpdate`} */
+    /** Options for {@linkcode ActorDelta._preUpdate | ActorDelta#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link ActorDelta._onUpdate | `ActorDelta#_onUpdate`} */
+    /** Options for {@linkcode ActorDelta._onUpdate | ActorDelta#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode ActorDelta._preUpdateOperation} */
     interface PreUpdateOperation extends ActorDelta.Database.Update {}
 
-    /** Operation for {@link ActorDelta._onUpdateOperation | `ActorDelta._preUpdateOperation`} */
+    /** Operation for {@linkcode ActorDelta._onUpdateOperation | ActorDelta._preUpdateOperation} */
     interface OnUpdateOperation extends ActorDelta.Database.Update {}
 
-    /** Options for {@link ActorDelta._preDelete | `ActorDelta#_preDelete`} */
+    /** Options for {@linkcode ActorDelta._preDelete | ActorDelta#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link ActorDelta._onDelete | `ActorDelta#_onDelete`} */
+    /** Options for {@linkcode ActorDelta._onDelete | ActorDelta#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link ActorDelta._preDeleteOperation | `ActorDelta#_preDeleteOperation`} */
+    /** Options for {@linkcode ActorDelta._preDeleteOperation | ActorDelta#_preDeleteOperation} */
     interface PreDeleteOperation extends ActorDelta.Database.Delete {}
 
-    /** Options for {@link ActorDelta._onDeleteOperation | `ActorDelta#_onDeleteOperation`} */
+    /** Options for {@linkcode ActorDelta._onDeleteOperation | ActorDelta#_onDeleteOperation} */
     interface OnDeleteOperation extends ActorDelta.Database.Delete {}
 
     /** Context for {@linkcode ActorDelta._onDeleteOperation} */
@@ -439,20 +439,20 @@ declare namespace ActorDelta {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<ActorDelta.Parent> {}
 
     /**
-     * Options for {@link ActorDelta._preCreateDescendantDocuments | `ActorDelta#_preCreateDescendantDocuments`}
-     * and {@link ActorDelta._onCreateDescendantDocuments | `ActorDelta#_onCreateDescendantDocuments`}
+     * Options for {@linkcode ActorDelta._preCreateDescendantDocuments | ActorDelta#_preCreateDescendantDocuments}
+     * and {@linkcode ActorDelta._onCreateDescendantDocuments | ActorDelta#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<ActorDelta.Database.Create> {}
 
     /**
-     * Options for {@link ActorDelta._preUpdateDescendantDocuments | `ActorDelta#_preUpdateDescendantDocuments`}
-     * and {@link ActorDelta._onUpdateDescendantDocuments | `ActorDelta#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode ActorDelta._preUpdateDescendantDocuments | ActorDelta#_preUpdateDescendantDocuments}
+     * and {@linkcode ActorDelta._onUpdateDescendantDocuments | ActorDelta#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<ActorDelta.Database.Update> {}
 
     /**
-     * Options for {@link ActorDelta._preDeleteDescendantDocuments | `ActorDelta#_preDeleteDescendantDocuments`}
-     * and {@link ActorDelta._onDeleteDescendantDocuments | `ActorDelta#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode ActorDelta._preDeleteDescendantDocuments | ActorDelta#_preDeleteDescendantDocuments}
+     * and {@linkcode ActorDelta._onDeleteDescendantDocuments | ActorDelta#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<ActorDelta.Database.Delete> {}
 
@@ -545,7 +545,7 @@ declare namespace ActorDelta {
   /** @internal */
   type _InitializeOptions = NullishProps<{
     /**
-     * @remarks Is this initialization part of a {@link Scene.reset | `Scene#reset`} call? (skips further initialization if truthy)
+     * @remarks Is this initialization part of a {@linkcode Scene.reset | Scene#reset} call? (skips further initialization if truthy)
      * @defaultValue `false`
      */
     sceneReset: boolean;
@@ -601,7 +601,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   /**
    * Apply this ActorDelta to the base Actor and return a synthetic Actor.
    * @param context - Context to supply to synthetic Actor instantiation.
-   * @remarks Forwards `context` to {@link BaseActorDelta.applyDelta | `this.constructor.applyDelta(this, this.parent.baseActor, context)`}
+   * @remarks Forwards `context` to {@linkcode BaseActorDelta.applyDelta | this.constructor.applyDelta(this, this.parent.baseActor, context)}
    */
   apply(context?: BaseActorDelta.ApplyDeltaContext): Actor.Implementation | null;
 

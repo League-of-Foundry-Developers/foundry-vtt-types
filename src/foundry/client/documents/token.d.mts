@@ -30,7 +30,7 @@ declare namespace TokenDocument {
 
   /**
    * The implementation of the `TokenDocument` document instance configured through `CONFIG.Token.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredTokenDocument | `fvtt-types/configuration/ConfiguredTokenDocument`} in fvtt-types.
+   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredTokenDocument | fvtt-types/configuration/ConfiguredTokenDocument} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
@@ -178,7 +178,7 @@ declare namespace TokenDocument {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -204,43 +204,43 @@ declare namespace TokenDocument {
   type Stored = Document.Internal.Stored<TokenDocument.Implementation>;
 
   /**
-   * The data put in {@link TokenDocument._source | `TokenDocument#_source`}. This data is what was
+   * The data put in {@linkcode TokenDocument._source | TokenDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode TokenDocument.create}
-   * and {@link TokenDocument | `new TokenDocument(...)`}.
+   * and {@linkcode TokenDocument | new TokenDocument(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link TokenDocument.name | `TokenDocument#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode TokenDocument.name | TokenDocument#name}.
    *
    * This is data transformed from {@linkcode TokenDocument.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link TokenDocument.update | `TokenDocument#update`}.
-   * It is a distinct type from {@link TokenDocument.CreateData | `DeepPartial<TokenDocument.CreateData>`} because
+   * The data used to update a document, for example {@linkcode TokenDocument.update | TokenDocument#update}.
+   * It is a distinct type from {@linkcode TokenDocument.CreateData | DeepPartial<TokenDocument.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
-   * Schema definition shared by {@link foundry.data.PrototypeToken | `PrototypeToken`}.
+   * Schema definition shared by {@linkcode foundry.data.PrototypeToken | PrototypeToken}.
    * Foundry technically implements this through deletion, but it's easier for us to do by extension as there are field
    * option overrides (e.g `textSearch` on `name`) that cause type issues otherwise.
    */
@@ -731,8 +731,8 @@ declare namespace TokenDocument {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode TokenDocument}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -859,7 +859,7 @@ declare namespace TokenDocument {
       TokenDocument.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link TokenDocument.update | `TokenDocument#update`} */
+    /** Operation for {@linkcode TokenDocument.update | TokenDocument#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -867,40 +867,40 @@ declare namespace TokenDocument {
     /** Options for {@linkcode TokenDocument.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link TokenDocument._preCreate | `TokenDocument#_preCreate`} */
+    /** Options for {@linkcode TokenDocument._preCreate | TokenDocument#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link TokenDocument._onCreate | `TokenDocument#_onCreate`} */
+    /** Options for {@linkcode TokenDocument._onCreate | TokenDocument#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode TokenDocument._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TokenDocument.Database.Create> {}
 
-    /** Operation for {@link TokenDocument._onCreateOperation | `TokenDocument#_onCreateOperation`} */
+    /** Operation for {@linkcode TokenDocument._onCreateOperation | TokenDocument#_onCreateOperation} */
     interface OnCreateOperation extends TokenDocument.Database.Create {}
 
-    /** Options for {@link TokenDocument._preUpdate | `TokenDocument#_preUpdate`} */
+    /** Options for {@linkcode TokenDocument._preUpdate | TokenDocument#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link TokenDocument._onUpdate | `TokenDocument#_onUpdate`} */
+    /** Options for {@linkcode TokenDocument._onUpdate | TokenDocument#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode TokenDocument._preUpdateOperation} */
     interface PreUpdateOperation extends TokenDocument.Database.Update {}
 
-    /** Operation for {@link TokenDocument._onUpdateOperation | `TokenDocument._preUpdateOperation`} */
+    /** Operation for {@linkcode TokenDocument._onUpdateOperation | TokenDocument._preUpdateOperation} */
     interface OnUpdateOperation extends TokenDocument.Database.Update {}
 
-    /** Options for {@link TokenDocument._preDelete | `TokenDocument#_preDelete`} */
+    /** Options for {@linkcode TokenDocument._preDelete | TokenDocument#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link TokenDocument._onDelete | `TokenDocument#_onDelete`} */
+    /** Options for {@linkcode TokenDocument._onDelete | TokenDocument#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link TokenDocument._preDeleteOperation | `TokenDocument#_preDeleteOperation`} */
+    /** Options for {@linkcode TokenDocument._preDeleteOperation | TokenDocument#_preDeleteOperation} */
     interface PreDeleteOperation extends TokenDocument.Database.Delete {}
 
-    /** Options for {@link TokenDocument._onDeleteOperation | `TokenDocument#_onDeleteOperation`} */
+    /** Options for {@linkcode TokenDocument._onDeleteOperation | TokenDocument#_onDeleteOperation} */
     interface OnDeleteOperation extends TokenDocument.Database.Delete {}
 
     /** Context for {@linkcode TokenDocument._onDeleteOperation} */
@@ -913,20 +913,20 @@ declare namespace TokenDocument {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
 
     /**
-     * Options for {@link TokenDocument._preCreateDescendantDocuments | `TokenDocument#_preCreateDescendantDocuments`}
-     * and {@link TokenDocument._onCreateDescendantDocuments | `TokenDocument#_onCreateDescendantDocuments`}
+     * Options for {@linkcode TokenDocument._preCreateDescendantDocuments | TokenDocument#_preCreateDescendantDocuments}
+     * and {@linkcode TokenDocument._onCreateDescendantDocuments | TokenDocument#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<TokenDocument.Database.Create> {}
 
     /**
-     * Options for {@link TokenDocument._preUpdateDescendantDocuments | `TokenDocument#_preUpdateDescendantDocuments`}
-     * and {@link TokenDocument._onUpdateDescendantDocuments | `TokenDocument#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode TokenDocument._preUpdateDescendantDocuments | TokenDocument#_preUpdateDescendantDocuments}
+     * and {@linkcode TokenDocument._onUpdateDescendantDocuments | TokenDocument#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<TokenDocument.Database.Update> {}
 
     /**
-     * Options for {@link TokenDocument._preDeleteDescendantDocuments | `TokenDocument#_preDeleteDescendantDocuments`}
-     * and {@link TokenDocument._onDeleteDescendantDocuments | `TokenDocument#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode TokenDocument._preDeleteDescendantDocuments | TokenDocument#_preDeleteDescendantDocuments}
+     * and {@linkcode TokenDocument._onDeleteDescendantDocuments | TokenDocument#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<TokenDocument.Database.Delete> {}
 
@@ -1042,7 +1042,7 @@ declare namespace TokenDocument {
     /**
      * An alternative attribute path to get instead of the default one
      * @defaultValue `this[barName]?.attribute`
-     * @remarks If the above default returns falsey, the {@link TokenDocument.getBarAttribute | `TokenDocument#getBarAttribute`}
+     * @remarks If the above default returns falsey, the {@linkcode TokenDocument.getBarAttribute | TokenDocument#getBarAttribute}
      * call returns `null`
      */
     alternative: string;
@@ -1697,9 +1697,9 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   pauseMovement(key?: string): (() => Promise<boolean>) | Promise<boolean> | null;
 
   /**
-   * Resume the movement given its ID and the key that was passed to {@link foundry.documents.TokenDocument.pauseMovement | `TokenDocument#pauseMovement`}.
+   * Resume the movement given its ID and the key that was passed to {@linkcode foundry.documents.TokenDocument.pauseMovement | TokenDocument#pauseMovement}.
    * @param movementId - The movement ID
-   * @param key        - The key that was passed to {@link foundry.documents.TokenDocument.pauseMovement | `TokenDocument#pauseMovement`}
+   * @param key        - The key that was passed to {@linkcode foundry.documents.TokenDocument.pauseMovement | TokenDocument#pauseMovement}
    */
   resumeMovement(movementId: string, key: string): void;
 
@@ -2029,7 +2029,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   /**
    * When the base Actor for a TokenDocument changes, we may need to update its Actor instance
-   * @remarks After updating the synthetic actor, forwards to {@link TokenDocument._onRelatedUpdate | `TokenDocument#_onRelatedUpdate`}
+   * @remarks After updating the synthetic actor, forwards to {@linkcode TokenDocument._onRelatedUpdate | TokenDocument#_onRelatedUpdate}
    */
   protected _onUpdateBaseActor(update?: Actor.UpdateData, options?: Actor.Database.OnUpdateOperation): void;
 
@@ -2103,7 +2103,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    *                     (default: `{}`)
    * @returns Whether the Active Effect is now on or off
    * @deprecated since v12
-   * @remarks "`TokenDocument#toggleActiveEffect` is deprecated in favor of {@link Actor.toggleStatusEffect | `Actor#toggleStatusEffect`}"
+   * @remarks "`TokenDocument#toggleActiveEffect` is deprecated in favor of {@linkcode Actor.toggleStatusEffect | Actor#toggleStatusEffect}"
    */
   toggleActiveEffect(effectData: CONFIG.StatusEffect, options?: Actor.ToggleStatusEffectOptions): Promise<boolean>;
 
