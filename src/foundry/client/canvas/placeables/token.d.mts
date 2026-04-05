@@ -1202,7 +1202,14 @@ declare namespace Token {
   /** @internal */
   type _AnimateOptions = Pick<CanvasAnimation.AnimateOptions, "duration" | "easing" | "name" | "ontick">;
 
-  interface AnimateOptions extends _AnimateOptions, GetAnimationDurationOptions, PrepareAnimationOptions {}
+  interface AnimateOptions extends _AnimateOptions, GetAnimationDurationOptions, PrepareAnimationOptions {
+    /**
+     * @remarks If `true`, the `duration` of the animation will be overridden by the calculated total movement animation duration in
+     * `Token##onUpdateAnimation` (via {@linkcode Token._onUpdate | Token#_onUpdate}). Unused as of 13.351.
+     */
+    //TODO: update remarks in v14 where it's used in RegionDocument#teleportTokens
+    linkToMovement?: boolean | undefined;
+  }
 
   /** @internal */
   type _StopAnimationOptions = NullishProps<{
@@ -1421,7 +1428,8 @@ declare namespace Token {
     checkpoint: boolean;
   }
 
-  interface ConstrainMovementPathOptions {
+  /** @internal */
+  interface _ConstrainMovementPathOptions {
     /**
      * Constrain a preview path?
      * @defaultValue `false`
@@ -1447,6 +1455,8 @@ declare namespace Token {
      */
     history: boolean | TokenDocument.MeasuredMovementWaypoint[];
   }
+
+  interface ConstrainMovementPathOptions extends InexactPartial<_ConstrainMovementPathOptions> {}
 
   type ConstrainMovementPathReturn = [constrainedPath: TokenDocument.MovementWaypoint[], wasConstrained: boolean];
 
