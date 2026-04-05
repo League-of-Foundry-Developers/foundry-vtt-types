@@ -168,6 +168,13 @@ declare namespace TileDocument {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode TileDocument.update | TileDocument#update} and
+   * {@linkcode TileDocument.updateDocuments} signatures, and {@linkcode TileDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode TileDocument}. This is the source of truth for how an TileDocument document
    * must be structured.
    *

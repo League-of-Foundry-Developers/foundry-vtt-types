@@ -221,6 +221,13 @@ declare namespace Folder {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode Folder.update | Folder#update} and
+   * {@linkcode Folder.updateDocuments} signatures, and {@linkcode Folder.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode Folder}. This is the source of truth for how an Folder document
    * must be structured.
    *

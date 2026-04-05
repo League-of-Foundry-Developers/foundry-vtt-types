@@ -177,6 +177,13 @@ declare namespace DrawingDocument {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode DrawingDocument.update | DrawingDocument#update} and
+   * {@linkcode DrawingDocument.updateDocuments} signatures, and {@linkcode DrawingDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode DrawingDocument}. This is the source of truth for how an DrawingDocument document
    * must be structured.
    *

@@ -255,6 +255,13 @@ declare namespace JournalEntry {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode JournalEntry.update | JournalEntry#update} and
+   * {@linkcode JournalEntry.updateDocuments} signatures, and {@linkcode JournalEntry.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode JournalEntry}. This is the source of truth for how an JournalEntry document
    * must be structured.
    *

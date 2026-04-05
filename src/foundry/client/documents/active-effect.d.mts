@@ -248,6 +248,13 @@ declare namespace ActiveEffect {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode ActiveEffect.update | ActiveEffect#update} and
+   * {@linkcode ActiveEffect.updateDocuments} signatures, and {@linkcode ActiveEffect.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode ActiveEffect}. This is the source of truth for how an ActiveEffect document
    * must be structured.
    *
@@ -393,7 +400,7 @@ declare namespace ActiveEffect {
     seconds: fields.NumberField<{ integer: true; min: 0 }>;
 
     /**
-     * The _id of the CombatEncounter in which the effect first started
+     * The `_id` of the {@linkcode Combat} in which the effect first started
      * @defaultValue `null`
      */
     combat: fields.ForeignDocumentField<typeof BaseCombat>;
@@ -422,6 +429,8 @@ declare namespace ActiveEffect {
      */
     startTurn: fields.NumberField<{ integer: true; min: 0 }>;
   }
+
+  interface DurationData extends fields.SchemaField.InitializedData<DurationSchema> {}
 
   namespace Database {
     /** Options passed along in Get operations for ActiveEffects */
@@ -579,29 +588,6 @@ declare namespace ActiveEffect {
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
-
-  interface DurationData {
-    /** The world time when the active effect first started */
-    startTime?: number | null | undefined;
-
-    /** The maximum duration of the effect, in seconds */
-    seconds?: number | null | undefined;
-
-    /** The _id of the CombatEncounter in which the effect first started */
-    combat?: string | null | undefined;
-
-    /** The maximum duration of the effect, in combat rounds */
-    rounds?: number | null | undefined;
-
-    /** The maximum duration of the effect, in combat turns */
-    turns?: number | null | undefined;
-
-    /** The round of the CombatEncounter in which the effect first started */
-    startRound?: number | null | undefined;
-
-    /** The turn of the CombatEncounter in which the effect first started */
-    startTurn?: number | null | undefined;
-  }
 
   type DurationType = "seconds" | "turns" | "none";
 

@@ -176,6 +176,13 @@ declare namespace WallDocument {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode WallDocument.update | WallDocument#update} and
+   * {@linkcode WallDocument.updateDocuments} signatures, and {@linkcode WallDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
    */
   type Coordinates = [x0: number, y0: number, x1: number, y1: number];

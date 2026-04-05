@@ -247,6 +247,13 @@ declare namespace Playlist {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode Playlist.update | Playlist#update} and
+   * {@linkcode Playlist.updateDocuments} signatures, and {@linkcode Playlist.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode Playlist}. This is the source of truth for how an Playlist document
    * must be structured.
    *

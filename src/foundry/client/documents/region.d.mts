@@ -520,6 +520,13 @@ declare namespace RegionDocument {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode RegionDocument.update | RegionDocument#update} and
+   * {@linkcode RegionDocument.updateDocuments} signatures, and {@linkcode RegionDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode RegionDocument}. This is the source of truth for how an Region document
    * must be structured.
    *

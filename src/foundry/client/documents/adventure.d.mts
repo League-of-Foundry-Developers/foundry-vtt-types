@@ -168,6 +168,13 @@ declare namespace Adventure {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode Adventure.update | Adventure#update} and
+   * {@linkcode Adventure.updateDocuments} signatures, and {@linkcode Adventure.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode Adventure}. This is the source of truth for how an Adventure document
    * must be structured.
    *

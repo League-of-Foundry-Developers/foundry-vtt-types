@@ -272,6 +272,13 @@ declare namespace TokenDocument {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode TokenDocument.update | TokenDocument#update} and
+   * {@linkcode TokenDocument.updateDocuments} signatures, and {@linkcode TokenDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * Schema definition shared by {@linkcode foundry.data.PrototypeToken | PrototypeToken}.
    * Foundry technically implements this through deletion, but it's easier for us to do by extension as there are field
    * option overrides (e.g `textSearch` on `name`) that cause type issues otherwise.

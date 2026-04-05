@@ -177,6 +177,13 @@ declare namespace MeasuredTemplateDocument {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode MeasuredTemplateDocument.update | MeasuredTemplateDocument#update} and
+   * {@linkcode MeasuredTemplateDocument.updateDocuments} signatures, and {@linkcode MeasuredTemplateDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode MeasuredTemplateDocument}. This is the source of truth for how an MeasuredTemplateDocument document
    * must be structured.
    *

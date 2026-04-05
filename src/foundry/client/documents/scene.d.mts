@@ -290,6 +290,13 @@ declare namespace Scene {
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
+  /**
+   * Used in the {@linkcode Scene.update | Scene#update} and
+   * {@linkcode Scene.updateDocuments} signatures, and {@linkcode Scene.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
   interface EnvironmentDataSchemaDefaults {
     hue: number;
     intensity: number;

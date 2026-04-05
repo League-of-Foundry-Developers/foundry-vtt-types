@@ -246,6 +246,13 @@ declare namespace Combatant {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode Combatant.update | Combatant#update} and
+   * {@linkcode Combatant.updateDocuments} signatures, and {@linkcode Combatant.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode Combatant}. This is the source of truth for how an Combatant document
    * must be structured.
    *

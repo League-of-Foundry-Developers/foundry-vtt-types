@@ -234,6 +234,13 @@ declare namespace Macro {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode Macro.update | Macro#update} and
+   * {@linkcode Macro.updateDocuments} signatures, and {@linkcode Macro.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode Macro}. This is the source of truth for how an Macro document
    * must be structured.
    *

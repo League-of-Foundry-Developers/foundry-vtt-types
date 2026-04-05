@@ -168,6 +168,13 @@ declare namespace AmbientSoundDocument {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode AmbientSoundDocument.update | AmbientSoundDocument#update} and
+   * {@linkcode AmbientSoundDocument.updateDocuments} signatures, and {@linkcode AmbientSoundDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode AmbientSoundDocument}. This is the source of truth for how an AmbientSoundDocument document
    * must be structured.
    *

@@ -228,6 +228,13 @@ declare namespace TableResult {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode TableResult.update | TableResult#update} and
+   * {@linkcode TableResult.updateDocuments} signatures, and {@linkcode TableResult.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode TableResult}. This is the source of truth for how an TableResult document
    * must be structured.
    *

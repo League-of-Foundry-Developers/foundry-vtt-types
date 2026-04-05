@@ -176,6 +176,13 @@ declare namespace NoteDocument {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode NoteDocument.update | NoteDocument#update} and
+   * {@linkcode NoteDocument.updateDocuments} signatures, and {@linkcode NoteDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode NoteDocument}. This is the source of truth for how an NoteDocument document
    * must be structured.
    *

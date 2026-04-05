@@ -179,6 +179,13 @@ declare namespace FogExploration {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode FogExploration.update | FogExploration#update} and
+   * {@linkcode FogExploration.updateDocuments} signatures, and {@linkcode FogExploration.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode FogExploration}. This is the source of truth for how an FogExploration document
    * must be structured.
    *

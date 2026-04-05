@@ -256,6 +256,13 @@ declare namespace RegionBehavior {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode RegionBehavior.update | RegionBehavior#update} and
+   * {@linkcode RegionBehavior.updateDocuments} signatures, and {@linkcode RegionBehavior.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode RegionBehavior}. This is the source of truth for how an RegionBehavior document
    * must be structured.
    *

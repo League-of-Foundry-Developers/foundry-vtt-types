@@ -239,6 +239,13 @@ declare namespace RollTable {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode RollTable.update | RollTable#update} and
+   * {@linkcode RollTable.updateDocuments} signatures, and {@linkcode RollTable.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode RollTable}. This is the source of truth for how an RollTable document
    * must be structured.
    *

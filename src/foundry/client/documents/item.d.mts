@@ -310,6 +310,13 @@ declare namespace Item {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode Item.update | Item#update} and
+   * {@linkcode Item.updateDocuments} signatures, and {@linkcode Item.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode Item}. This is the source of truth for how an Item document
    * must be structured.
    *

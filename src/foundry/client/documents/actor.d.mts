@@ -317,6 +317,13 @@ declare namespace Actor {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode Actor.update | Actor#update} and
+   * {@linkcode Actor.updateDocuments} signatures, and {@linkcode Actor.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode Actor}. This is the source of truth for how an Actor document
    * must be structured.
    *

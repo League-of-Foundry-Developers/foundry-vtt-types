@@ -180,6 +180,13 @@ declare namespace PlaylistSound {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode PlaylistSound.update | PlaylistSound#update} and
+   * {@linkcode PlaylistSound.updateDocuments} signatures, and {@linkcode PlaylistSound.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode PlaylistSound}. This is the source of truth for how an PlaylistSound document
    * must be structured.
    *

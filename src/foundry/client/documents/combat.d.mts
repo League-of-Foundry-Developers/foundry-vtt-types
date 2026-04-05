@@ -319,6 +319,13 @@ declare namespace Combat {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode Combat.update | Combat#update} and
+   * {@linkcode Combat.updateDocuments} signatures, and {@linkcode Combat.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode Combat}. This is the source of truth for how an Combat document
    * must be structured.
    *

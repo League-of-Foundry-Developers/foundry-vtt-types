@@ -167,6 +167,13 @@ declare namespace AmbientLightDocument {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode AmbientLightDocument.update | AmbientLightDocument#update} and
+   * {@linkcode AmbientLightDocument.updateDocuments} signatures, and {@linkcode AmbientLightDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode AmbientLightDocument}. This is the source of truth for how an AmbientLightDocument document
    * must be structured.
    *

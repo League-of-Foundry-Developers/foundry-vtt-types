@@ -242,6 +242,13 @@ declare namespace Card {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode Card.update | Card#update} and
+   * {@linkcode Card.updateDocuments} signatures, and {@linkcode Card.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode Card}. This is the source of truth for how an Card document
    * must be structured.
    *

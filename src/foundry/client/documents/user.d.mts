@@ -187,6 +187,13 @@ declare namespace User {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode User.update | User#update} and
+   * {@linkcode User.updateDocuments} signatures, and {@linkcode User.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode User}. This is the source of truth for how an User document
    * must be structured.
    *

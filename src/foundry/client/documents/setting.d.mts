@@ -177,6 +177,13 @@ declare namespace Setting {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode Setting.update | Setting#update} and
+   * {@linkcode Setting.updateDocuments} signatures, and {@linkcode Setting.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode Setting}. This is the source of truth for how an Setting document
    * must be structured.
    *

@@ -311,6 +311,13 @@ declare namespace ActorDelta {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode ActorDelta.update | ActorDelta#update} and
+   * {@linkcode ActorDelta.updateDocuments} signatures, and {@linkcode ActorDelta.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode ActorDelta}. This is the source of truth for how an ActorDelta document
    * must be structured.
    *

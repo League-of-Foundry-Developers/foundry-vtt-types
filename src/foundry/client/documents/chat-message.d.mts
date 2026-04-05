@@ -244,6 +244,13 @@ declare namespace ChatMessage {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode ChatMessage.update | ChatMessage#update} and
+   * {@linkcode ChatMessage.updateDocuments} signatures, and {@linkcode ChatMessage.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode ChatMessage}. This is the source of truth for how an ChatMessage document
    * must be structured.
    *
