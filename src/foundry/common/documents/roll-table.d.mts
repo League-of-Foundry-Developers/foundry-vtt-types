@@ -1,6 +1,5 @@
 import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
@@ -278,15 +277,15 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   /* DataModel overrides */
 
-  protected static _schema: SchemaField<RollTable.Schema>;
+  protected static _schema: SchemaField<BaseRollTable.Schema>;
 
-  static get schema(): SchemaField<RollTable.Schema>;
+  static get schema(): SchemaField<BaseRollTable.Schema>;
 
   /** @remarks Not actually overridden, still a no-op, typed for ease of subclassing */
-  static validateJoint(data: RollTable.Source): void;
+  static validateJoint(data: BaseRollTable.Source): void;
 
   static override fromSource(
-    source: RollTable.CreateData,
+    source: BaseRollTable.CreateData,
     context?: DataModel.FromSourceOptions,
   ): RollTable.Implementation;
 

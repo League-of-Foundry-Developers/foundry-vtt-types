@@ -1,6 +1,5 @@
 import type { AnyMutableObject, MaybeArray } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
 /**
@@ -62,7 +61,6 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    * Shims:
    * - `user` to `author` (since v12, until v14)
    */
-  // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**

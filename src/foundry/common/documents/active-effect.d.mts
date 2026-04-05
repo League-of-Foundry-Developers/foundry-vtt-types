@@ -1,6 +1,5 @@
 import type { AnyMutableObject, MaybeArray } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
 /**
@@ -23,7 +22,7 @@ declare abstract class BaseActiveEffect<
    * You should use {@link ActiveEffect.implementation | `new ActiveEffect.implementation(...)`} instead which will give you
    * a system specific implementation of `ActiveEffect`.
    */
-  constructor(data: ActiveEffect.CreateData, context?: ActiveEffect.ConstructionContext);
+  constructor(data: BaseActiveEffect.CreateData, context?: BaseActiveEffect.ConstructionContext);
 
   /**
    * @defaultValue

@@ -1,6 +1,5 @@
 import type { MaybeArray } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
 /**
@@ -10,7 +9,7 @@ import type { SchemaField } from "../data/fields.d.mts";
 // Note(LukeAbby): You may wonder why documents don't simply pass the `Parent` generic parameter.
 // This pattern evolved from trying to avoid circular loops and even internal tsc errors.
 // See: https://gist.github.com/LukeAbby/0d01b6e20ef19ebc304d7d18cef9cc21
-declare abstract class BaseWall extends Document<WallDocument.Name, BaseWall.Schema, any> {
+declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
   /**
    * @param data    - Initial data from which to construct the `BaseWall`
    * @param context - Construction context options

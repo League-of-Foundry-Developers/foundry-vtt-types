@@ -1,6 +1,5 @@
 import type { MaybeArray } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
 /**
@@ -66,7 +65,7 @@ declare abstract class BaseCombatant<
 
   /* Document overrides */
 
-  override readonly parentCollection: Combatant.ParentCollectionName | null;
+  override readonly parentCollection: BaseCombatant.ParentCollectionName | null;
 
   /** @privateRemarks Neither `Combatant`s nor any of its ancestor document(s) can exist in compendia. */
   override get pack(): null;

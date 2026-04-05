@@ -1,6 +1,5 @@
 import type { AnyMutableObject, MaybeArray } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
 /**
@@ -91,7 +90,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * defined DRY-ly while also being easily overridable.
    */
 
-  override readonly parentCollection: DrawingDocument.ParentCollectionName | null;
+  override readonly parentCollection: BaseDrawing.ParentCollectionName | null;
 
   override get pack(): string | null;
 

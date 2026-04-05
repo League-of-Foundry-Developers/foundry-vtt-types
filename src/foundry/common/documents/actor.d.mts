@@ -1,6 +1,5 @@
 import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 /** @privateRemarks `DocumentStatsField` only used for links. */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { DocumentStatsField, SchemaField } from "../data/fields.d.mts";

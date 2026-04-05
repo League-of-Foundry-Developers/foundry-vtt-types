@@ -1,6 +1,5 @@
 import type { AnyMutableObject, MaybeArray } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.d.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 

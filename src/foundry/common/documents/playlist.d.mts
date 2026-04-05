@@ -1,6 +1,5 @@
 import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
@@ -23,7 +22,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
    * You should use {@link Playlist.implementation | `new Playlist.implementation(...)`} instead which will give you
    * a system specific implementation of `Playlist`.
    */
-  constructor(data: Playlist.CreateData, context?: Playlist.ConstructionContext);
+  constructor(data: BasePlaylist.CreateData, context?: BasePlaylist.ConstructionContext);
 
   /**
    * @defaultValue

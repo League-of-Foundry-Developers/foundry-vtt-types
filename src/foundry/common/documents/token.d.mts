@@ -1,6 +1,5 @@
 import type { AnyMutableObject, DeepReadonly, MaybeArray, OverlapsWith } from "#utils";
-import type { DataModel } from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
 import type { BaseGrid } from "#common/grid/_module.d.mts";
@@ -445,7 +444,6 @@ export class ActorDeltaField<
   DocumentType extends foundry.documents.BaseActorDelta.AnyConstructor,
   Options extends fields.EmbeddedDocumentField.Options<DocumentType> = fields.EmbeddedDocumentField.DefaultOptions,
 > extends fields.EmbeddedDocumentField<DocumentType, Options> {
-  // options: not null (parameter default only)
   override initialize(
     value: fields.EmbeddedDocumentField.PersistedType<DocumentType, Options>,
     model: DataModel.Any,

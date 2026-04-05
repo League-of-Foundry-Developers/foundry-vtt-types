@@ -1,7 +1,6 @@
 import type { AnyMutableObject, Identity, MaybeArray, OverlapsWith } from "#utils";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-import type DataModel from "../abstract/data.d.mts";
 
 /**
  * The ActorDelta Document.
@@ -26,7 +25,7 @@ declare abstract class BaseActorDelta<
    * a system specific implementation of `ActorDelta`.
    */
   // Note(LukeAbby): `data` is not actually required but `context.parent` is.
-  constructor(data: ActorDelta.CreateData | undefined, context: ActorDelta.ConstructionContext);
+  constructor(data: BaseActorDelta.CreateData | undefined, context: BaseActorDelta.ConstructionContext);
 
   /**
    * @defaultValue
@@ -103,7 +102,7 @@ declare abstract class BaseActorDelta<
 
   /** @remarks Strips optional (`required: false`) fields from the object before returning */
   // TODO: Properly type this override
-  override toObject(source?: boolean): SchemaField.SourceData<ActorDelta.Schema>;
+  override toObject(source?: boolean): SchemaField.SourceData<BaseActorDelta.Schema>;
 
   /*
    * After this point these are not really overridden methods.
@@ -354,6 +353,7 @@ declare abstract class BaseActorDelta<
 export default BaseActorDelta;
 
 declare namespace BaseActorDelta {
+  // These types exist only because `ActorDeltaField` needs a constructor type to be a constraint
   interface Any extends AnyBaseActorDelta {}
   interface AnyConstructor extends Identity<typeof AnyBaseActorDelta> {}
 

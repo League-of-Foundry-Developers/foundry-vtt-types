@@ -1,9 +1,8 @@
 import type { MaybeArray } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
-import type { SchemaField } from "../data/fields.d.mts";
-import type { fields } from "../data/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
+import type { SchemaField } from "../data/fields.d.mts";
+import type { fields } from "#client/data/_module.d.mts";
 
 /**
  * The Adventure Document.
@@ -47,7 +46,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   static override LOCALIZATION_PREFIXES: string[];
 
   /**
-   * An array of the fields which provide imported content from the Adventure.
+   * An array of the fields which provide imported content from the BaseAdventure.
    */
   static get contentFields(): BaseAdventure.ContentFields;
 

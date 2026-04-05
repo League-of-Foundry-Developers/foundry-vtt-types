@@ -1,19 +1,18 @@
 import type {
-  Mixin,
-  FixedInstanceType,
-  Coalesce,
   AnyObject,
+  Coalesce,
+  FixedInstanceType,
   Identity,
-  MaybePromise,
-  NullishProps,
-  NullishCoalesce,
   InexactPartial,
+  MaybePromise,
+  Mixin,
+  NullishCoalesce,
+  NullishProps,
 } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { Document, EmbeddedCollection } from "#common/abstract/_module.mjs";
 import type { Application, FormApplication } from "#client/appv1/api/_module.d.mts";
 import type { ApplicationV2, DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
-import type TextEditor from "#client/applications/ux/text-editor.mjs";
-import type { EmbeddedCollection } from "#common/abstract/_module.mjs";
+import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 declare class InternalClientDocument<DocumentName extends Document.Type> {
@@ -567,7 +566,6 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * Create a content link for this Document.
    * @param options - Additional options to configure how the link is constructed.
    */
-  // options: not null (parameter default only)
   toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
@@ -643,6 +641,7 @@ declare namespace ClientDocumentMixin {
   > {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
+  // Note: This used to be `Internal.Constructor` for circularity-dodging reasons, it was changed to provide better Stored typing.
   type BaseClass = Document.AnyConstructor;
 
   type Mix<BaseClass extends Document.Internal.Constructor> = Mixin<
