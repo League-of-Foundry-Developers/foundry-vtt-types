@@ -1,12 +1,11 @@
-import type { FixedInstanceType, LoggingLevels } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
+import type { FixedInstanceType, Identity, LoggingLevels } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { Game } from "#client/_module.d.mts";
 import type {
   DatabaseGetOperation,
   DatabaseUpdateOperation,
   DatabaseDeleteOperation,
 } from "#common/abstract/_types.d.mts";
-
-import Game = foundry.Game;
 
 /**
  * The client-side database backend implementation which handles Document modification operations.
@@ -39,17 +38,24 @@ declare class ClientDatabaseBackend extends foundry.abstract.DatabaseBackend {
   /**
    * Activate the Socket event listeners used to receive responses from events which modify database documents
    * @param socket - The active game socket
+   * @internal
    */
   activateSocketListeners(socket: Game["socket"]): void;
 
-  override getFlagScopes(): string[];
+  override getFlagScopes(): ClientDatabaseBackend.FlagScope[];
 
+  // TODO: consider adding configuration for pack names
   override getCompendiumScopes(): string[];
 
   protected override _log(level: LoggingLevels, message: string): void;
+
+  #ClientDatabaseBackend: true;
 }
 
 declare namespace ClientDatabaseBackend {
+  interface Any extends AnyClientDatabaseBackend {}
+  interface AnyConstructor extends Identity<typeof AnyClientDatabaseBackend> {}
+
   type FlagScope =
     | "core"
     | "world"
@@ -63,3 +69,7 @@ declare namespace ClientDatabaseBackend {
 }
 
 export default ClientDatabaseBackend;
+
+declare abstract class AnyClientDatabaseBackend extends ClientDatabaseBackend {
+  constructor(...args: never);
+}
