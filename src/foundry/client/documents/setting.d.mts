@@ -123,37 +123,37 @@ declare namespace Setting {
   type Stored = Document.Internal.Stored<Setting.Implementation>;
 
   /**
-   * The data put in {@link Setting._source | `Setting#_source`}. This data is what was
+   * The data put in {@linkcode Setting._source | Setting#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Setting.create}
-   * and {@link Setting | `new Setting(...)`}.
+   * and {@linkcode Setting | new Setting(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Setting.name | `Setting#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode Setting.name | Setting#name}.
    *
    * This is data transformed from {@linkcode Setting.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Setting.update | `Setting#update`}.
-   * It is a distinct type from {@link Setting.CreateData | `DeepPartial<Setting.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Setting.update | Setting#update}.
+   * It is a distinct type from {@linkcode Setting.CreateData | DeepPartial<Setting.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -163,8 +163,8 @@ declare namespace Setting {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Setting}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -247,7 +247,7 @@ declare namespace Setting {
       Setting.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Setting.update | `Setting#update`} */
+    /** Operation for {@linkcode Setting.update | Setting#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -255,40 +255,40 @@ declare namespace Setting {
     /** Options for {@linkcode Setting.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Setting._preCreate | `Setting#_preCreate`} */
+    /** Options for {@linkcode Setting._preCreate | Setting#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Setting._onCreate | `Setting#_onCreate`} */
+    /** Options for {@linkcode Setting._onCreate | Setting#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Setting._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Setting.Database.Create> {}
 
-    /** Operation for {@link Setting._onCreateOperation | `Setting#_onCreateOperation`} */
+    /** Operation for {@linkcode Setting._onCreateOperation | Setting#_onCreateOperation} */
     interface OnCreateOperation extends Setting.Database.Create {}
 
-    /** Options for {@link Setting._preUpdate | `Setting#_preUpdate`} */
+    /** Options for {@linkcode Setting._preUpdate | Setting#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Setting._onUpdate | `Setting#_onUpdate`} */
+    /** Options for {@linkcode Setting._onUpdate | Setting#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Setting._preUpdateOperation} */
     interface PreUpdateOperation extends Setting.Database.Update {}
 
-    /** Operation for {@link Setting._onUpdateOperation | `Setting._preUpdateOperation`} */
+    /** Operation for {@linkcode Setting._onUpdateOperation | Setting._preUpdateOperation} */
     interface OnUpdateOperation extends Setting.Database.Update {}
 
-    /** Options for {@link Setting._preDelete | `Setting#_preDelete`} */
+    /** Options for {@linkcode Setting._preDelete | Setting#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Setting._onDelete | `Setting#_onDelete`} */
+    /** Options for {@linkcode Setting._onDelete | Setting#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Setting._preDeleteOperation | `Setting#_preDeleteOperation`} */
+    /** Options for {@linkcode Setting._preDeleteOperation | Setting#_preDeleteOperation} */
     interface PreDeleteOperation extends Setting.Database.Delete {}
 
-    /** Options for {@link Setting._onDeleteOperation | `Setting#_onDeleteOperation`} */
+    /** Options for {@linkcode Setting._onDeleteOperation | Setting#_onDeleteOperation} */
     interface OnDeleteOperation extends Setting.Database.Delete {}
 
     /** Context for {@linkcode Setting._onDeleteOperation} */
@@ -301,20 +301,20 @@ declare namespace Setting {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Setting.Parent> {}
 
     /**
-     * Options for {@link Setting._preCreateDescendantDocuments | `Setting#_preCreateDescendantDocuments`}
-     * and {@link Setting._onCreateDescendantDocuments | `Setting#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Setting._preCreateDescendantDocuments | Setting#_preCreateDescendantDocuments}
+     * and {@linkcode Setting._onCreateDescendantDocuments | Setting#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Setting.Database.Create> {}
 
     /**
-     * Options for {@link Setting._preUpdateDescendantDocuments | `Setting#_preUpdateDescendantDocuments`}
-     * and {@link Setting._onUpdateDescendantDocuments | `Setting#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Setting._preUpdateDescendantDocuments | Setting#_preUpdateDescendantDocuments}
+     * and {@linkcode Setting._onUpdateDescendantDocuments | Setting#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Setting.Database.Update> {}
 
     /**
-     * Options for {@link Setting._preDeleteDescendantDocuments | `Setting#_preDeleteDescendantDocuments`}
-     * and {@link Setting._onDeleteDescendantDocuments | `Setting#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Setting._preDeleteDescendantDocuments | Setting#_preDeleteDescendantDocuments}
+     * and {@linkcode Setting._onDeleteDescendantDocuments | Setting#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Setting.Database.Delete> {}
 

@@ -126,37 +126,37 @@ declare namespace PlaylistSound {
   type Stored = Document.Internal.Stored<PlaylistSound.Implementation>;
 
   /**
-   * The data put in {@link PlaylistSound._source | `PlaylistSound#_source`}. This data is what was
+   * The data put in {@linkcode PlaylistSound._source | PlaylistSound#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode PlaylistSound.create}
-   * and {@link PlaylistSound | `new PlaylistSound(...)`}.
+   * and {@linkcode PlaylistSound | new PlaylistSound(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link PlaylistSound.name | `PlaylistSound#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode PlaylistSound.name | PlaylistSound#name}.
    *
    * This is data transformed from {@linkcode PlaylistSound.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link PlaylistSound.update | `PlaylistSound#update`}.
-   * It is a distinct type from {@link PlaylistSound.CreateData | `DeepPartial<PlaylistSound.CreateData>`} because
+   * The data used to update a document, for example {@linkcode PlaylistSound.update | PlaylistSound#update}.
+   * It is a distinct type from {@linkcode PlaylistSound.CreateData | DeepPartial<PlaylistSound.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -166,8 +166,8 @@ declare namespace PlaylistSound {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode PlaylistSound}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -279,7 +279,7 @@ declare namespace PlaylistSound {
       PlaylistSound.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link PlaylistSound.update | `PlaylistSound#update`} */
+    /** Operation for {@linkcode PlaylistSound.update | PlaylistSound#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -287,40 +287,40 @@ declare namespace PlaylistSound {
     /** Options for {@linkcode PlaylistSound.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link PlaylistSound._preCreate | `PlaylistSound#_preCreate`} */
+    /** Options for {@linkcode PlaylistSound._preCreate | PlaylistSound#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link PlaylistSound._onCreate | `PlaylistSound#_onCreate`} */
+    /** Options for {@linkcode PlaylistSound._onCreate | PlaylistSound#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode PlaylistSound._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<PlaylistSound.Database.Create> {}
 
-    /** Operation for {@link PlaylistSound._onCreateOperation | `PlaylistSound#_onCreateOperation`} */
+    /** Operation for {@linkcode PlaylistSound._onCreateOperation | PlaylistSound#_onCreateOperation} */
     interface OnCreateOperation extends PlaylistSound.Database.Create {}
 
-    /** Options for {@link PlaylistSound._preUpdate | `PlaylistSound#_preUpdate`} */
+    /** Options for {@linkcode PlaylistSound._preUpdate | PlaylistSound#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link PlaylistSound._onUpdate | `PlaylistSound#_onUpdate`} */
+    /** Options for {@linkcode PlaylistSound._onUpdate | PlaylistSound#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode PlaylistSound._preUpdateOperation} */
     interface PreUpdateOperation extends PlaylistSound.Database.Update {}
 
-    /** Operation for {@link PlaylistSound._onUpdateOperation | `PlaylistSound._preUpdateOperation`} */
+    /** Operation for {@linkcode PlaylistSound._onUpdateOperation | PlaylistSound._preUpdateOperation} */
     interface OnUpdateOperation extends PlaylistSound.Database.Update {}
 
-    /** Options for {@link PlaylistSound._preDelete | `PlaylistSound#_preDelete`} */
+    /** Options for {@linkcode PlaylistSound._preDelete | PlaylistSound#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link PlaylistSound._onDelete | `PlaylistSound#_onDelete`} */
+    /** Options for {@linkcode PlaylistSound._onDelete | PlaylistSound#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link PlaylistSound._preDeleteOperation | `PlaylistSound#_preDeleteOperation`} */
+    /** Options for {@linkcode PlaylistSound._preDeleteOperation | PlaylistSound#_preDeleteOperation} */
     interface PreDeleteOperation extends PlaylistSound.Database.Delete {}
 
-    /** Options for {@link PlaylistSound._onDeleteOperation | `PlaylistSound#_onDeleteOperation`} */
+    /** Options for {@linkcode PlaylistSound._onDeleteOperation | PlaylistSound#_onDeleteOperation} */
     interface OnDeleteOperation extends PlaylistSound.Database.Delete {}
 
     /** Context for {@linkcode PlaylistSound._onDeleteOperation} */
@@ -333,20 +333,20 @@ declare namespace PlaylistSound {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<PlaylistSound.Parent> {}
 
     /**
-     * Options for {@link PlaylistSound._preCreateDescendantDocuments | `PlaylistSound#_preCreateDescendantDocuments`}
-     * and {@link PlaylistSound._onCreateDescendantDocuments | `PlaylistSound#_onCreateDescendantDocuments`}
+     * Options for {@linkcode PlaylistSound._preCreateDescendantDocuments | PlaylistSound#_preCreateDescendantDocuments}
+     * and {@linkcode PlaylistSound._onCreateDescendantDocuments | PlaylistSound#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<PlaylistSound.Database.Create> {}
 
     /**
-     * Options for {@link PlaylistSound._preUpdateDescendantDocuments | `PlaylistSound#_preUpdateDescendantDocuments`}
-     * and {@link PlaylistSound._onUpdateDescendantDocuments | `PlaylistSound#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode PlaylistSound._preUpdateDescendantDocuments | PlaylistSound#_preUpdateDescendantDocuments}
+     * and {@linkcode PlaylistSound._onUpdateDescendantDocuments | PlaylistSound#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<PlaylistSound.Database.Update> {}
 
     /**
-     * Options for {@link PlaylistSound._preDeleteDescendantDocuments | `PlaylistSound#_preDeleteDescendantDocuments`}
-     * and {@link PlaylistSound._onDeleteDescendantDocuments | `PlaylistSound#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode PlaylistSound._preDeleteDescendantDocuments | PlaylistSound#_preDeleteDescendantDocuments}
+     * and {@linkcode PlaylistSound._onDeleteDescendantDocuments | PlaylistSound#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<PlaylistSound.Database.Delete> {}
 
@@ -427,7 +427,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
 
   /**
    * The Sound which manages playback for this playlist sound
-   * @remarks Only `undefined` prior to first {@link PlaylistSound._createSound | `PlaylistSound#_createSound`} call
+   * @remarks Only `undefined` prior to first {@linkcode PlaylistSound._createSound | PlaylistSound#_createSound} call
    */
   sound: Sound | null | undefined;
 
@@ -479,7 +479,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
   toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
-   * @remarks Returns {@link Playlist.stopSound | `this.parent.stopSound()`} or {@link Playlist.playSound | `this.parent.playSound()`}
+   * @remarks Returns {@linkcode Playlist.stopSound | this.parent.stopSound()} or {@linkcode Playlist.playSound | this.parent.playSound()}
    */
   override _onClickDocumentLink(event: MouseEvent): Promise<Playlist.Implementation | undefined>;
 
@@ -505,7 +505,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
   /**
    * The effective volume at which this playlist sound is played, incorporating the global playlist volume setting.
    * @deprecated since v12 until v14
-   * @remarks "`PlaylistSound#effectiveVolume` is deprecated in favor of using {@link PlaylistSound.volume | `PlaylistSound#volume`} directly"
+   * @remarks "`PlaylistSound#effectiveVolume` is deprecated in favor of using {@linkcode PlaylistSound.volume | PlaylistSound#volume} directly"
    */
   get effectiveVolume(): number;
 

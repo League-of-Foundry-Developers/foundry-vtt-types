@@ -123,37 +123,37 @@ declare namespace MeasuredTemplateDocument {
   type Stored = Document.Internal.Stored<MeasuredTemplateDocument.Implementation>;
 
   /**
-   * The data put in {@link MeasuredTemplate._source | `MeasuredTemplate#_source`}. This data is what was
+   * The data put in {@linkcode MeasuredTemplate._source | MeasuredTemplate#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode MeasuredTemplateDocument.create}
-   * and {@link MeasuredTemplateDocument | `new MeasuredTemplateDocument(...)`}.
+   * and {@linkcode MeasuredTemplateDocument | new MeasuredTemplateDocument(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link MeasuredTemplateDocument.name | `MeasuredTemplateDocument#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode MeasuredTemplateDocument.name | MeasuredTemplateDocument#name}.
    *
    * This is data transformed from {@linkcode MeasuredTemplateDocument.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link MeasuredTemplateDocument.update | `MeasuredTemplateDocument#update`}.
-   * It is a distinct type from {@link MeasuredTemplateDocument.CreateData | `DeepPartial<MeasuredTemplateDocument.CreateData>`} because
+   * The data used to update a document, for example {@linkcode MeasuredTemplateDocument.update | MeasuredTemplateDocument#update}.
+   * It is a distinct type from {@linkcode MeasuredTemplateDocument.CreateData | DeepPartial<MeasuredTemplateDocument.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -163,8 +163,8 @@ declare namespace MeasuredTemplateDocument {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode MeasuredTemplateDocument}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -317,7 +317,7 @@ declare namespace MeasuredTemplateDocument {
       MeasuredTemplateDocument.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link MeasuredTemplateDocument.update | `MeasuredTemplateDocument#update`} */
+    /** Operation for {@linkcode MeasuredTemplateDocument.update | MeasuredTemplateDocument#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -325,41 +325,41 @@ declare namespace MeasuredTemplateDocument {
     /** Options for {@linkcode MeasuredTemplateDocument.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link MeasuredTemplateDocument._preCreate | `MeasuredTemplateDocument#_preCreate`} */
+    /** Options for {@linkcode MeasuredTemplateDocument._preCreate | MeasuredTemplateDocument#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link MeasuredTemplateDocument._onCreate | `MeasuredTemplateDocument#_onCreate`} */
+    /** Options for {@linkcode MeasuredTemplateDocument._onCreate | MeasuredTemplateDocument#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode MeasuredTemplateDocument._preCreateOperation} */
     interface PreCreateOperation extends Document.Database
       .PreCreateOperationStatic<MeasuredTemplateDocument.Database.Create> {}
 
-    /** Operation for {@link MeasuredTemplateDocument._onCreateOperation | `MeasuredTemplateDocument#_onCreateOperation`} */
+    /** Operation for {@linkcode MeasuredTemplateDocument._onCreateOperation | MeasuredTemplateDocument#_onCreateOperation} */
     interface OnCreateOperation extends MeasuredTemplateDocument.Database.Create {}
 
-    /** Options for {@link MeasuredTemplateDocument._preUpdate | `MeasuredTemplateDocument#_preUpdate`} */
+    /** Options for {@linkcode MeasuredTemplateDocument._preUpdate | MeasuredTemplateDocument#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link MeasuredTemplateDocument._onUpdate | `MeasuredTemplateDocument#_onUpdate`} */
+    /** Options for {@linkcode MeasuredTemplateDocument._onUpdate | MeasuredTemplateDocument#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode MeasuredTemplateDocument._preUpdateOperation} */
     interface PreUpdateOperation extends MeasuredTemplateDocument.Database.Update {}
 
-    /** Operation for {@link MeasuredTemplateDocument._onUpdateOperation | `MeasuredTemplateDocument._preUpdateOperation`} */
+    /** Operation for {@linkcode MeasuredTemplateDocument._onUpdateOperation | MeasuredTemplateDocument._preUpdateOperation} */
     interface OnUpdateOperation extends MeasuredTemplateDocument.Database.Update {}
 
-    /** Options for {@link MeasuredTemplateDocument._preDelete | `MeasuredTemplateDocument#_preDelete`} */
+    /** Options for {@linkcode MeasuredTemplateDocument._preDelete | MeasuredTemplateDocument#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link MeasuredTemplateDocument._onDelete | `MeasuredTemplateDocument#_onDelete`} */
+    /** Options for {@linkcode MeasuredTemplateDocument._onDelete | MeasuredTemplateDocument#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link MeasuredTemplateDocument._preDeleteOperation | `MeasuredTemplateDocument#_preDeleteOperation`} */
+    /** Options for {@linkcode MeasuredTemplateDocument._preDeleteOperation | MeasuredTemplateDocument#_preDeleteOperation} */
     interface PreDeleteOperation extends MeasuredTemplateDocument.Database.Delete {}
 
-    /** Options for {@link MeasuredTemplateDocument._onDeleteOperation | `MeasuredTemplateDocument#_onDeleteOperation`} */
+    /** Options for {@linkcode MeasuredTemplateDocument._onDeleteOperation | MeasuredTemplateDocument#_onDeleteOperation} */
     interface OnDeleteOperation extends MeasuredTemplateDocument.Database.Delete {}
 
     /** Context for {@linkcode MeasuredTemplateDocument._onDeleteOperation} */
@@ -372,20 +372,20 @@ declare namespace MeasuredTemplateDocument {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<MeasuredTemplateDocument.Parent> {}
 
     /**
-     * Options for {@link MeasuredTemplateDocument._preCreateDescendantDocuments | `MeasuredTemplateDocument#_preCreateDescendantDocuments`}
-     * and {@link MeasuredTemplateDocument._onCreateDescendantDocuments | `MeasuredTemplateDocument#_onCreateDescendantDocuments`}
+     * Options for {@linkcode MeasuredTemplateDocument._preCreateDescendantDocuments | MeasuredTemplateDocument#_preCreateDescendantDocuments}
+     * and {@linkcode MeasuredTemplateDocument._onCreateDescendantDocuments | MeasuredTemplateDocument#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<MeasuredTemplateDocument.Database.Create> {}
 
     /**
-     * Options for {@link MeasuredTemplateDocument._preUpdateDescendantDocuments | `MeasuredTemplateDocument#_preUpdateDescendantDocuments`}
-     * and {@link MeasuredTemplateDocument._onUpdateDescendantDocuments | `MeasuredTemplateDocument#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode MeasuredTemplateDocument._preUpdateDescendantDocuments | MeasuredTemplateDocument#_preUpdateDescendantDocuments}
+     * and {@linkcode MeasuredTemplateDocument._onUpdateDescendantDocuments | MeasuredTemplateDocument#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<MeasuredTemplateDocument.Database.Update> {}
 
     /**
-     * Options for {@link MeasuredTemplateDocument._preDeleteDescendantDocuments | `MeasuredTemplateDocument#_preDeleteDescendantDocuments`}
-     * and {@link MeasuredTemplateDocument._onDeleteDescendantDocuments | `MeasuredTemplateDocument#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode MeasuredTemplateDocument._preDeleteDescendantDocuments | MeasuredTemplateDocument#_preDeleteDescendantDocuments}
+     * and {@linkcode MeasuredTemplateDocument._onDeleteDescendantDocuments | MeasuredTemplateDocument#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<MeasuredTemplateDocument.Database.Delete> {}
 

@@ -102,7 +102,7 @@ declare namespace JournalEntryPage {
   /**
    * `OfType` returns an instance of `JournalEntryPage` with the corresponding type. This works with both the
    * builtin `JournalEntryPage` class or a custom subclass if that is set up in
-   * {@link ConfiguredJournalEntryPage | `fvtt-types/configuration/ConfiguredJournalEntryPage`}.
+   * {@linkcode ConfiguredJournalEntryPage | fvtt-types/configuration/ConfiguredJournalEntryPage}.
    * up.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
@@ -190,19 +190,19 @@ declare namespace JournalEntryPage {
   >;
 
   /**
-   * The data put in {@link JournalEntryPage._source | `JournalEntryPage#_source`}. This data is what was
+   * The data put in {@linkcode JournalEntryPage._source | JournalEntryPage#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode JournalEntryPage.create}
-   * and {@link JournalEntryPage | `new JournalEntryPage(...)`}.
+   * and {@linkcode JournalEntryPage | new JournalEntryPage(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -212,18 +212,18 @@ declare namespace JournalEntryPage {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link JournalEntryPage.name | `JournalEntryPage#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode JournalEntryPage.name | JournalEntryPage#name}.
    *
    * This is data transformed from {@linkcode JournalEntryPage.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link JournalEntryPage.update | `JournalEntryPage#update`}.
-   * It is a distinct type from {@link JournalEntryPage.CreateData | `DeepPartial<JournalEntryPage.CreateData>`} because
+   * The data used to update a document, for example {@linkcode JournalEntryPage.update | JournalEntryPage#update}.
+   * It is a distinct type from {@linkcode JournalEntryPage.CreateData | DeepPartial<JournalEntryPage.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -233,8 +233,8 @@ declare namespace JournalEntryPage {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode JournalEntryPage}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -453,7 +453,7 @@ declare namespace JournalEntryPage {
       JournalEntryPage.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link JournalEntryPage.update | `JournalEntryPage#update`} */
+    /** Operation for {@linkcode JournalEntryPage.update | JournalEntryPage#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -461,40 +461,40 @@ declare namespace JournalEntryPage {
     /** Options for {@linkcode JournalEntryPage.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link JournalEntryPage._preCreate | `JournalEntryPage#_preCreate`} */
+    /** Options for {@linkcode JournalEntryPage._preCreate | JournalEntryPage#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link JournalEntryPage._onCreate | `JournalEntryPage#_onCreate`} */
+    /** Options for {@linkcode JournalEntryPage._onCreate | JournalEntryPage#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode JournalEntryPage._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<JournalEntryPage.Database.Create> {}
 
-    /** Operation for {@link JournalEntryPage._onCreateOperation | `JournalEntryPage#_onCreateOperation`} */
+    /** Operation for {@linkcode JournalEntryPage._onCreateOperation | JournalEntryPage#_onCreateOperation} */
     interface OnCreateOperation extends JournalEntryPage.Database.Create {}
 
-    /** Options for {@link JournalEntryPage._preUpdate | `JournalEntryPage#_preUpdate`} */
+    /** Options for {@linkcode JournalEntryPage._preUpdate | JournalEntryPage#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link JournalEntryPage._onUpdate | `JournalEntryPage#_onUpdate`} */
+    /** Options for {@linkcode JournalEntryPage._onUpdate | JournalEntryPage#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode JournalEntryPage._preUpdateOperation} */
     interface PreUpdateOperation extends JournalEntryPage.Database.Update {}
 
-    /** Operation for {@link JournalEntryPage._onUpdateOperation | `JournalEntryPage._preUpdateOperation`} */
+    /** Operation for {@linkcode JournalEntryPage._onUpdateOperation | JournalEntryPage._preUpdateOperation} */
     interface OnUpdateOperation extends JournalEntryPage.Database.Update {}
 
-    /** Options for {@link JournalEntryPage._preDelete | `JournalEntryPage#_preDelete`} */
+    /** Options for {@linkcode JournalEntryPage._preDelete | JournalEntryPage#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link JournalEntryPage._onDelete | `JournalEntryPage#_onDelete`} */
+    /** Options for {@linkcode JournalEntryPage._onDelete | JournalEntryPage#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link JournalEntryPage._preDeleteOperation | `JournalEntryPage#_preDeleteOperation`} */
+    /** Options for {@linkcode JournalEntryPage._preDeleteOperation | JournalEntryPage#_preDeleteOperation} */
     interface PreDeleteOperation extends JournalEntryPage.Database.Delete {}
 
-    /** Options for {@link JournalEntryPage._onDeleteOperation | `JournalEntryPage#_onDeleteOperation`} */
+    /** Options for {@linkcode JournalEntryPage._onDeleteOperation | JournalEntryPage#_onDeleteOperation} */
     interface OnDeleteOperation extends JournalEntryPage.Database.Delete {}
 
     /** Context for {@linkcode JournalEntryPage._onDeleteOperation} */
@@ -507,20 +507,20 @@ declare namespace JournalEntryPage {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<JournalEntryPage.Parent> {}
 
     /**
-     * Options for {@link JournalEntryPage._preCreateDescendantDocuments | `JournalEntryPage#_preCreateDescendantDocuments`}
-     * and {@link JournalEntryPage._onCreateDescendantDocuments | `JournalEntryPage#_onCreateDescendantDocuments`}
+     * Options for {@linkcode JournalEntryPage._preCreateDescendantDocuments | JournalEntryPage#_preCreateDescendantDocuments}
+     * and {@linkcode JournalEntryPage._onCreateDescendantDocuments | JournalEntryPage#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<JournalEntryPage.Database.Create> {}
 
     /**
-     * Options for {@link JournalEntryPage._preUpdateDescendantDocuments | `JournalEntryPage#_preUpdateDescendantDocuments`}
-     * and {@link JournalEntryPage._onUpdateDescendantDocuments | `JournalEntryPage#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode JournalEntryPage._preUpdateDescendantDocuments | JournalEntryPage#_preUpdateDescendantDocuments}
+     * and {@linkcode JournalEntryPage._onUpdateDescendantDocuments | JournalEntryPage#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<JournalEntryPage.Database.Update> {}
 
     /**
-     * Options for {@link JournalEntryPage._preDeleteDescendantDocuments | `JournalEntryPage#_preDeleteDescendantDocuments`}
-     * and {@link JournalEntryPage._onDeleteDescendantDocuments | `JournalEntryPage#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode JournalEntryPage._preDeleteDescendantDocuments | JournalEntryPage#_preDeleteDescendantDocuments}
+     * and {@linkcode JournalEntryPage._onDeleteDescendantDocuments | JournalEntryPage#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<JournalEntryPage.Database.Delete> {}
 
@@ -707,7 +707,7 @@ declare class JournalEntryPage<
     options?: JournalEntryPage.MakeHeadingNodeOptions,
   ): JournalEntryPage.JournalEntryPageHeading;
 
-  /** @remarks Uses `eventData`, unlike {@link ClientDocument._createDocumentLink | `ClientDocument#_createDocumentLink`} */
+  /** @remarks Uses `eventData`, unlike {@linkcode ClientDocument._createDocumentLink | ClientDocument#_createDocumentLink} */
   override _createDocumentLink(eventData: AnyObject, options?: JournalEntryPage.CreateDocumentLinkOptions): string;
 
   /**

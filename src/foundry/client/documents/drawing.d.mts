@@ -123,37 +123,37 @@ declare namespace DrawingDocument {
   type Stored = Document.Internal.Stored<DrawingDocument.Implementation>;
 
   /**
-   * The data put in {@link DrawingDocument._source | `DrawingDocument#_source`}. This data is what was
+   * The data put in {@linkcode DrawingDocument._source | DrawingDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode DrawingDocument.create}
-   * and {@link DrawingDocument | `new DrawingDocument(...)`}.
+   * and {@linkcode DrawingDocument | new DrawingDocument(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link DrawingDocument.name | `DrawingDocument#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode DrawingDocument.name | DrawingDocument#name}.
    *
    * This is data transformed from {@linkcode DrawingDocument.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link DrawingDocument.update | `DrawingDocument#update`}.
-   * It is a distinct type from {@link DrawingDocument.CreateData | `DeepPartial<DrawingDocument.CreateData>`} because
+   * The data used to update a document, for example {@linkcode DrawingDocument.update | DrawingDocument#update}.
+   * It is a distinct type from {@linkcode DrawingDocument.CreateData | DeepPartial<DrawingDocument.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -163,8 +163,8 @@ declare namespace DrawingDocument {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode DrawingDocument}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -381,7 +381,7 @@ declare namespace DrawingDocument {
       DrawingDocument.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link DrawingDocument.update | `DrawingDocument#update`} */
+    /** Operation for {@linkcode DrawingDocument.update | DrawingDocument#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -389,40 +389,40 @@ declare namespace DrawingDocument {
     /** Options for {@linkcode DrawingDocument.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link DrawingDocument._preCreate | `DrawingDocument#_preCreate`} */
+    /** Options for {@linkcode DrawingDocument._preCreate | DrawingDocument#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link DrawingDocument._onCreate | `DrawingDocument#_onCreate`} */
+    /** Options for {@linkcode DrawingDocument._onCreate | DrawingDocument#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode DrawingDocument._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<DrawingDocument.Database.Create> {}
 
-    /** Operation for {@link DrawingDocument._onCreateOperation | `DrawingDocument#_onCreateOperation`} */
+    /** Operation for {@linkcode DrawingDocument._onCreateOperation | DrawingDocument#_onCreateOperation} */
     interface OnCreateOperation extends DrawingDocument.Database.Create {}
 
-    /** Options for {@link DrawingDocument._preUpdate | `DrawingDocument#_preUpdate`} */
+    /** Options for {@linkcode DrawingDocument._preUpdate | DrawingDocument#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link DrawingDocument._onUpdate | `DrawingDocument#_onUpdate`} */
+    /** Options for {@linkcode DrawingDocument._onUpdate | DrawingDocument#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode DrawingDocument._preUpdateOperation} */
     interface PreUpdateOperation extends DrawingDocument.Database.Update {}
 
-    /** Operation for {@link DrawingDocument._onUpdateOperation | `DrawingDocument._preUpdateOperation`} */
+    /** Operation for {@linkcode DrawingDocument._onUpdateOperation | DrawingDocument._preUpdateOperation} */
     interface OnUpdateOperation extends DrawingDocument.Database.Update {}
 
-    /** Options for {@link DrawingDocument._preDelete | `DrawingDocument#_preDelete`} */
+    /** Options for {@linkcode DrawingDocument._preDelete | DrawingDocument#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link DrawingDocument._onDelete | `DrawingDocument#_onDelete`} */
+    /** Options for {@linkcode DrawingDocument._onDelete | DrawingDocument#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link DrawingDocument._preDeleteOperation | `DrawingDocument#_preDeleteOperation`} */
+    /** Options for {@linkcode DrawingDocument._preDeleteOperation | DrawingDocument#_preDeleteOperation} */
     interface PreDeleteOperation extends DrawingDocument.Database.Delete {}
 
-    /** Options for {@link DrawingDocument._onDeleteOperation | `DrawingDocument#_onDeleteOperation`} */
+    /** Options for {@linkcode DrawingDocument._onDeleteOperation | DrawingDocument#_onDeleteOperation} */
     interface OnDeleteOperation extends DrawingDocument.Database.Delete {}
 
     /** Context for {@linkcode DrawingDocument._onDeleteOperation} */
@@ -435,20 +435,20 @@ declare namespace DrawingDocument {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
 
     /**
-     * Options for {@link DrawingDocument._preCreateDescendantDocuments | `DrawingDocument#_preCreateDescendantDocuments`}
-     * and {@link DrawingDocument._onCreateDescendantDocuments | `DrawingDocument#_onCreateDescendantDocuments`}
+     * Options for {@linkcode DrawingDocument._preCreateDescendantDocuments | DrawingDocument#_preCreateDescendantDocuments}
+     * and {@linkcode DrawingDocument._onCreateDescendantDocuments | DrawingDocument#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<DrawingDocument.Database.Create> {}
 
     /**
-     * Options for {@link DrawingDocument._preUpdateDescendantDocuments | `DrawingDocument#_preUpdateDescendantDocuments`}
-     * and {@link DrawingDocument._onUpdateDescendantDocuments | `DrawingDocument#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode DrawingDocument._preUpdateDescendantDocuments | DrawingDocument#_preUpdateDescendantDocuments}
+     * and {@linkcode DrawingDocument._onUpdateDescendantDocuments | DrawingDocument#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<DrawingDocument.Database.Update> {}
 
     /**
-     * Options for {@link DrawingDocument._preDeleteDescendantDocuments | `DrawingDocument#_preDeleteDescendantDocuments`}
-     * and {@link DrawingDocument._onDeleteDescendantDocuments | `DrawingDocument#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode DrawingDocument._preDeleteDescendantDocuments | DrawingDocument#_preDeleteDescendantDocuments}
+     * and {@linkcode DrawingDocument._onDeleteDescendantDocuments | DrawingDocument#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<DrawingDocument.Database.Delete> {}
 

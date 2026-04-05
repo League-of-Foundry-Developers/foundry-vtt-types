@@ -102,7 +102,7 @@ declare namespace ChatMessage {
   /**
    * `OfType` returns an instance of `ChatMessage` with the corresponding type. This works with both the
    * builtin `ChatMessage` class or a custom subclass if that is set up in
-   * {@link ConfiguredChatMessage | `fvtt-types/configuration/ConfiguredChatMessage`}.
+   * {@linkcode ConfiguredChatMessage | fvtt-types/configuration/ConfiguredChatMessage}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -187,19 +187,19 @@ declare namespace ChatMessage {
   type Stored<SubType extends ChatMessage.SubType = ChatMessage.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link ChatMessage._source | `ChatMessage#_source`}. This data is what was
+   * The data put in {@linkcode ChatMessage._source | ChatMessage#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode ChatMessage.create}
-   * and {@link ChatMessage | `new ChatMessage(...)`}.
+   * and {@linkcode ChatMessage | new ChatMessage(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -209,18 +209,18 @@ declare namespace ChatMessage {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link ChatMessage.name | `ChatMessage#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode ChatMessage.name | ChatMessage#name}.
    *
    * This is data transformed from {@linkcode ChatMessage.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link ChatMessage.update | `ChatMessage#update`}.
-   * It is a distinct type from {@link ChatMessage.CreateData | `DeepPartial<ChatMessage.CreateData>`} because
+   * The data used to update a document, for example {@linkcode ChatMessage.update | ChatMessage#update}.
+   * It is a distinct type from {@linkcode ChatMessage.CreateData | DeepPartial<ChatMessage.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -230,8 +230,8 @@ declare namespace ChatMessage {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode ChatMessage}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -409,7 +409,7 @@ declare namespace ChatMessage {
       ChatMessage.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link ChatMessage.update | `ChatMessage#update`} */
+    /** Operation for {@linkcode ChatMessage.update | ChatMessage#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -417,40 +417,40 @@ declare namespace ChatMessage {
     /** Options for {@linkcode ChatMessage.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link ChatMessage._preCreate | `ChatMessage#_preCreate`} */
+    /** Options for {@linkcode ChatMessage._preCreate | ChatMessage#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link ChatMessage._onCreate | `ChatMessage#_onCreate`} */
+    /** Options for {@linkcode ChatMessage._onCreate | ChatMessage#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode ChatMessage._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<ChatMessage.Database.Create> {}
 
-    /** Operation for {@link ChatMessage._onCreateOperation | `ChatMessage#_onCreateOperation`} */
+    /** Operation for {@linkcode ChatMessage._onCreateOperation | ChatMessage#_onCreateOperation} */
     interface OnCreateOperation extends ChatMessage.Database.Create {}
 
-    /** Options for {@link ChatMessage._preUpdate | `ChatMessage#_preUpdate`} */
+    /** Options for {@linkcode ChatMessage._preUpdate | ChatMessage#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link ChatMessage._onUpdate | `ChatMessage#_onUpdate`} */
+    /** Options for {@linkcode ChatMessage._onUpdate | ChatMessage#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode ChatMessage._preUpdateOperation} */
     interface PreUpdateOperation extends ChatMessage.Database.Update {}
 
-    /** Operation for {@link ChatMessage._onUpdateOperation | `ChatMessage._preUpdateOperation`} */
+    /** Operation for {@linkcode ChatMessage._onUpdateOperation | ChatMessage._preUpdateOperation} */
     interface OnUpdateOperation extends ChatMessage.Database.Update {}
 
-    /** Options for {@link ChatMessage._preDelete | `ChatMessage#_preDelete`} */
+    /** Options for {@linkcode ChatMessage._preDelete | ChatMessage#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link ChatMessage._onDelete | `ChatMessage#_onDelete`} */
+    /** Options for {@linkcode ChatMessage._onDelete | ChatMessage#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link ChatMessage._preDeleteOperation | `ChatMessage#_preDeleteOperation`} */
+    /** Options for {@linkcode ChatMessage._preDeleteOperation | ChatMessage#_preDeleteOperation} */
     interface PreDeleteOperation extends ChatMessage.Database.Delete {}
 
-    /** Options for {@link ChatMessage._onDeleteOperation | `ChatMessage#_onDeleteOperation`} */
+    /** Options for {@linkcode ChatMessage._onDeleteOperation | ChatMessage#_onDeleteOperation} */
     interface OnDeleteOperation extends ChatMessage.Database.Delete {}
 
     /** Context for {@linkcode ChatMessage._onDeleteOperation} */
@@ -463,20 +463,20 @@ declare namespace ChatMessage {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<ChatMessage.Parent> {}
 
     /**
-     * Options for {@link ChatMessage._preCreateDescendantDocuments | `ChatMessage#_preCreateDescendantDocuments`}
-     * and {@link ChatMessage._onCreateDescendantDocuments | `ChatMessage#_onCreateDescendantDocuments`}
+     * Options for {@linkcode ChatMessage._preCreateDescendantDocuments | ChatMessage#_preCreateDescendantDocuments}
+     * and {@linkcode ChatMessage._onCreateDescendantDocuments | ChatMessage#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<ChatMessage.Database.Create> {}
 
     /**
-     * Options for {@link ChatMessage._preUpdateDescendantDocuments | `ChatMessage#_preUpdateDescendantDocuments`}
-     * and {@link ChatMessage._onUpdateDescendantDocuments | `ChatMessage#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode ChatMessage._preUpdateDescendantDocuments | ChatMessage#_preUpdateDescendantDocuments}
+     * and {@linkcode ChatMessage._onUpdateDescendantDocuments | ChatMessage#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<ChatMessage.Database.Update> {}
 
     /**
-     * Options for {@link ChatMessage._preDeleteDescendantDocuments | `ChatMessage#_preDeleteDescendantDocuments`}
-     * and {@link ChatMessage._onDeleteDescendantDocuments | `ChatMessage#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode ChatMessage._preDeleteDescendantDocuments | ChatMessage#_preDeleteDescendantDocuments}
+     * and {@linkcode ChatMessage._onDeleteDescendantDocuments | ChatMessage#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<ChatMessage.Database.Delete> {}
 
@@ -586,7 +586,7 @@ declare namespace ChatMessage {
 
   /**
    * @remarks Serves two purposes:
-   * - Template context for either calling `renderTemplate` on `CONFIG.ChatMessage.template` or passing to {@link ChatMessage._renderRollContent | `ChatMessage#_renderRollContent`}
+   * - Template context for either calling `renderTemplate` on `CONFIG.ChatMessage.template` or passing to {@linkcode ChatMessage._renderRollContent | ChatMessage#_renderRollContent}
    * - Context passed to the {@linkcode Hooks.StaticCallbacks.renderChatMessage | `renderChatMessage`} hook.
    */
   interface MessageData {
@@ -596,17 +596,17 @@ declare namespace ChatMessage {
     /** @remarks Always `game.user` */
     user: User.Stored;
 
-    /** @remarks The message's {@link ChatMessage.author | `author`} */
+    /** @remarks The message's {@linkcode ChatMessage.author | author} */
     author: User.Implementation;
 
-    /** @remarks The message's {@link ChatMessage.alias | `alias`} */
+    /** @remarks The message's {@linkcode ChatMessage.alias | alias} */
     alias: string;
 
     /** @remarks Possibly more than one class name, space-separated */
     cssClass: string;
 
     /**
-     * @remarks The `.length` of the message's {@link ChatMessage.whisper | `whisper`} array,
+     * @remarks The `.length` of the message's {@linkcode ChatMessage.whisper | whisper} array,
      * despite the name implying a `boolean`
      */
     isWhisper: number;
@@ -619,7 +619,7 @@ declare namespace ChatMessage {
 
     /**
      * @remarks A `", "`-separated list of the `name`s of the `User`s whose IDs are in the message's
-     * {@link ChatMessage.whisper | `whisper`} array
+     * {@linkcode ChatMessage.whisper | whisper} array
      */
     whisperTo: string;
   }
@@ -687,7 +687,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   /**
    * Is this ChatMessage currently displayed in the sidebar ChatLog?
    * @defaultValue `false`
-   * @remarks Set `true` in {@link ChatLog.postOne | `ChatLog#postOne`} and {@link ChatLog._renderBatch | `ChatLog#_renderBatch`}
+   * @remarks Set `true` in {@linkcode ChatLog.postOne | ChatLog#postOne} and {@linkcode ChatLog._renderBatch | ChatLog#_renderBatch}
    */
   logged: boolean;
 

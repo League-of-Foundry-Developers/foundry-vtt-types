@@ -86,7 +86,7 @@ declare namespace CombatantGroup {
   /**
    * `OfType` returns an instance of `CombatantGroup` with the corresponding type. This works with both the
    * builtin `CombatantGroup` class or a custom subclass if that is set up in
-   * {@link ConfiguredCombatantGroup | `fvtt-types/configuration/ConfiguredCombatantGroup`}.
+   * {@linkcode ConfiguredCombatantGroup | fvtt-types/configuration/ConfiguredCombatantGroup}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -175,19 +175,19 @@ declare namespace CombatantGroup {
   >;
 
   /**
-   * The data put in {@link CombatantGroup._source | `CombatantGroup#_source`}. This data is what was
+   * The data put in {@linkcode CombatantGroup._source | CombatantGroup#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode CombatantGroup.create}
-   * and {@link CombatantGroup | `new CombatantGroup(...)`}.
+   * and {@linkcode CombatantGroup | new CombatantGroup(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -197,18 +197,18 @@ declare namespace CombatantGroup {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link CombatantGroup.name | `CombatantGroup#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode CombatantGroup.name | CombatantGroup#name}.
    *
    * This is data transformed from {@linkcode CombatantGroup.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link CombatantGroup.update | `CombatantGroup#update`}.
-   * It is a distinct type from {@link CombatantGroup.CreateData | `DeepPartial<CombatantGroup.CreateData>`} because
+   * The data used to update a document, for example {@linkcode CombatantGroup.update | CombatantGroup#update}.
+   * It is a distinct type from {@linkcode CombatantGroup.CreateData | DeepPartial<CombatantGroup.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -218,8 +218,8 @@ declare namespace CombatantGroup {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode CombatantGroup}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -309,7 +309,7 @@ declare namespace CombatantGroup {
       CombatantGroup.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link CombatantGroup.update | `CombatantGroup#update`} */
+    /** Operation for {@linkcode CombatantGroup.update | CombatantGroup#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -317,40 +317,40 @@ declare namespace CombatantGroup {
     /** Options for {@linkcode CombatantGroup.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link CombatantGroup._preCreate | `CombatantGroup#_preCreate`} */
+    /** Options for {@linkcode CombatantGroup._preCreate | CombatantGroup#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link CombatantGroup._onCreate | `CombatantGroup#_onCreate`} */
+    /** Options for {@linkcode CombatantGroup._onCreate | CombatantGroup#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode CombatantGroup._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<CombatantGroup.Database.Create> {}
 
-    /** Operation for {@link CombatantGroup._onCreateOperation | `CombatantGroup#_onCreateOperation`} */
+    /** Operation for {@linkcode CombatantGroup._onCreateOperation | CombatantGroup#_onCreateOperation} */
     interface OnCreateOperation extends CombatantGroup.Database.Create {}
 
-    /** Options for {@link CombatantGroup._preUpdate | `CombatantGroup#_preUpdate`} */
+    /** Options for {@linkcode CombatantGroup._preUpdate | CombatantGroup#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link CombatantGroup._onUpdate | `CombatantGroup#_onUpdate`} */
+    /** Options for {@linkcode CombatantGroup._onUpdate | CombatantGroup#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode CombatantGroup._preUpdateOperation} */
     interface PreUpdateOperation extends CombatantGroup.Database.Update {}
 
-    /** Operation for {@link CombatantGroup._onUpdateOperation | `CombatantGroup._preUpdateOperation`} */
+    /** Operation for {@linkcode CombatantGroup._onUpdateOperation | CombatantGroup._preUpdateOperation} */
     interface OnUpdateOperation extends CombatantGroup.Database.Update {}
 
-    /** Options for {@link CombatantGroup._preDelete | `CombatantGroup#_preDelete`} */
+    /** Options for {@linkcode CombatantGroup._preDelete | CombatantGroup#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link CombatantGroup._onDelete | `CombatantGroup#_onDelete`} */
+    /** Options for {@linkcode CombatantGroup._onDelete | CombatantGroup#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link CombatantGroup._preDeleteOperation | `CombatantGroup#_preDeleteOperation`} */
+    /** Options for {@linkcode CombatantGroup._preDeleteOperation | CombatantGroup#_preDeleteOperation} */
     interface PreDeleteOperation extends CombatantGroup.Database.Delete {}
 
-    /** Options for {@link CombatantGroup._onDeleteOperation | `CombatantGroup#_onDeleteOperation`} */
+    /** Options for {@linkcode CombatantGroup._onDeleteOperation | CombatantGroup#_onDeleteOperation} */
     interface OnDeleteOperation extends CombatantGroup.Database.Delete {}
 
     /** Context for {@linkcode CombatantGroup._onDeleteOperation} */
@@ -363,20 +363,20 @@ declare namespace CombatantGroup {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<CombatantGroup.Parent> {}
 
     /**
-     * Options for {@link CombatantGroup._preCreateDescendantDocuments | `CombatantGroup#_preCreateDescendantDocuments`}
-     * and {@link CombatantGroup._onCreateDescendantDocuments | `CombatantGroup#_onCreateDescendantDocuments`}
+     * Options for {@linkcode CombatantGroup._preCreateDescendantDocuments | CombatantGroup#_preCreateDescendantDocuments}
+     * and {@linkcode CombatantGroup._onCreateDescendantDocuments | CombatantGroup#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<CombatantGroup.Database.Create> {}
 
     /**
-     * Options for {@link CombatantGroup._preUpdateDescendantDocuments | `CombatantGroup#_preUpdateDescendantDocuments`}
-     * and {@link CombatantGroup._onUpdateDescendantDocuments | `CombatantGroup#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode CombatantGroup._preUpdateDescendantDocuments | CombatantGroup#_preUpdateDescendantDocuments}
+     * and {@linkcode CombatantGroup._onUpdateDescendantDocuments | CombatantGroup#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<CombatantGroup.Database.Update> {}
 
     /**
-     * Options for {@link CombatantGroup._preDeleteDescendantDocuments | `CombatantGroup#_preDeleteDescendantDocuments`}
-     * and {@link CombatantGroup._onDeleteDescendantDocuments | `CombatantGroup#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode CombatantGroup._preDeleteDescendantDocuments | CombatantGroup#_preDeleteDescendantDocuments}
+     * and {@linkcode CombatantGroup._onDeleteDescendantDocuments | CombatantGroup#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<CombatantGroup.Database.Delete> {}
 

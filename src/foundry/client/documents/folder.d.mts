@@ -93,7 +93,7 @@ declare namespace Folder {
   /**
    * `OfType` returns an instance of `Folder` with the corresponding type. This works with both the
    * builtin `Folder` class or a custom subclass if that is set up in
-   * {@link ConfiguredFolder | `fvtt-types/configuration/ConfiguredFolder`}.
+   * {@linkcode ConfiguredFolder | fvtt-types/configuration/ConfiguredFolder}.
    *
    * Note that `Folder` does not have a `system` property and therefore there is no way for a user
    * to configure custom subtypes. See {@linkcode Folder.SubType} for more information.
@@ -167,19 +167,19 @@ declare namespace Folder {
   type Stored<SubType extends Folder.SubType = Folder.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link Folder._source | `Folder#_source`}. This data is what was
+   * The data put in {@linkcode Folder._source | Folder#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Folder.create}
-   * and {@link Folder | `new Folder(...)`}.
+   * and {@linkcode Folder | new Folder(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -188,18 +188,18 @@ declare namespace Folder {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Folder.name | `Folder#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode Folder.name | Folder#name}.
    *
    * This is data transformed from {@linkcode Folder.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Folder.update | `Folder#update`}.
-   * It is a distinct type from {@link Folder.CreateData | `DeepPartial<Folder.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Folder.update | Folder#update}.
+   * It is a distinct type from {@linkcode Folder.CreateData | DeepPartial<Folder.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -209,8 +209,8 @@ declare namespace Folder {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Folder}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -301,7 +301,7 @@ declare namespace Folder {
       Folder.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Folder.update | `Folder#update`} */
+    /** Operation for {@linkcode Folder.update | Folder#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -309,40 +309,40 @@ declare namespace Folder {
     /** Options for {@linkcode Folder.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Folder._preCreate | `Folder#_preCreate`} */
+    /** Options for {@linkcode Folder._preCreate | Folder#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Folder._onCreate | `Folder#_onCreate`} */
+    /** Options for {@linkcode Folder._onCreate | Folder#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Folder._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Folder.Database.Create> {}
 
-    /** Operation for {@link Folder._onCreateOperation | `Folder#_onCreateOperation`} */
+    /** Operation for {@linkcode Folder._onCreateOperation | Folder#_onCreateOperation} */
     interface OnCreateOperation extends Folder.Database.Create {}
 
-    /** Options for {@link Folder._preUpdate | `Folder#_preUpdate`} */
+    /** Options for {@linkcode Folder._preUpdate | Folder#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Folder._onUpdate | `Folder#_onUpdate`} */
+    /** Options for {@linkcode Folder._onUpdate | Folder#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Folder._preUpdateOperation} */
     interface PreUpdateOperation extends Folder.Database.Update {}
 
-    /** Operation for {@link Folder._onUpdateOperation | `Folder._preUpdateOperation`} */
+    /** Operation for {@linkcode Folder._onUpdateOperation | Folder._preUpdateOperation} */
     interface OnUpdateOperation extends Folder.Database.Update {}
 
-    /** Options for {@link Folder._preDelete | `Folder#_preDelete`} */
+    /** Options for {@linkcode Folder._preDelete | Folder#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Folder._onDelete | `Folder#_onDelete`} */
+    /** Options for {@linkcode Folder._onDelete | Folder#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Folder._preDeleteOperation | `Folder#_preDeleteOperation`} */
+    /** Options for {@linkcode Folder._preDeleteOperation | Folder#_preDeleteOperation} */
     interface PreDeleteOperation extends Folder.Database.Delete {}
 
-    /** Options for {@link Folder._onDeleteOperation | `Folder#_onDeleteOperation`} */
+    /** Options for {@linkcode Folder._onDeleteOperation | Folder#_onDeleteOperation} */
     interface OnDeleteOperation extends Folder.Database.Delete {}
 
     /** Context for {@linkcode Folder._onDeleteOperation} */
@@ -355,20 +355,20 @@ declare namespace Folder {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Folder.Parent> {}
 
     /**
-     * Options for {@link Folder._preCreateDescendantDocuments | `Folder#_preCreateDescendantDocuments`}
-     * and {@link Folder._onCreateDescendantDocuments | `Folder#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Folder._preCreateDescendantDocuments | Folder#_preCreateDescendantDocuments}
+     * and {@linkcode Folder._onCreateDescendantDocuments | Folder#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Folder.Database.Create> {}
 
     /**
-     * Options for {@link Folder._preUpdateDescendantDocuments | `Folder#_preUpdateDescendantDocuments`}
-     * and {@link Folder._onUpdateDescendantDocuments | `Folder#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Folder._preUpdateDescendantDocuments | Folder#_preUpdateDescendantDocuments}
+     * and {@linkcode Folder._onUpdateDescendantDocuments | Folder#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Folder.Database.Update> {}
 
     /**
-     * Options for {@link Folder._preDeleteDescendantDocuments | `Folder#_preDeleteDescendantDocuments`}
-     * and {@link Folder._onDeleteDescendantDocuments | `Folder#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Folder._preDeleteDescendantDocuments | Folder#_preDeleteDescendantDocuments}
+     * and {@linkcode Folder._onDeleteDescendantDocuments | Folder#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Folder.Database.Delete> {}
 
@@ -415,7 +415,7 @@ declare namespace Folder {
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
 
   /**
-   * @remarks Rather than a simple `Dialog`, {@link Folder.createDialog | `Folder.createDialog`} creates a {@link FolderConfig | `FolderConfig`},
+   * @remarks Rather than a simple `Dialog`, {@linkcode Folder.createDialog | Folder.createDialog} creates a {@linkcode FolderConfig | FolderConfig},
    * passing along the returned `Promise`'s `resolve` to the app.
    */
   // TODO: Generally fix this up to be correct, temp fix here for the appv1 removal
@@ -545,10 +545,10 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
 
   /**
    * An array of nodes representing the children of this one. This differs from the results of
-   * {@link Folder.getSubfolders | `Folder#getSubfolders`}, which reports the subset of child Folders
+   * {@linkcode Folder.getSubfolders | Folder#getSubfolders}, which reports the subset of child Folders
    * displayed to the current User in the UI.
    *
-   * Initialized by {@link DirectoryCollection.initializeTree | `DirectoryCollection#initializeTree`}, so always
+   * Initialized by {@linkcode DirectoryCollection.initializeTree | DirectoryCollection#initializeTree}, so always
    * `undefined` in temporary documents, and prior to first UI render in stored documents
    */
   children: Folder.ChildNode | undefined;
@@ -597,7 +597,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
   // _preCreate overridden but with no signature changes.
   // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
-  /** @remarks Creates and renders a {@link FolderConfig | `FolderConfig`} instead of a simple Dialog */
+  /** @remarks Creates and renders a {@linkcode FolderConfig | FolderConfig} instead of a simple Dialog */
   static override createDialog(
     data?: Folder.CreateDialogData,
     createOptions?: Folder.Database.DialogCreateOptions,
@@ -613,7 +613,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
    * Export all Documents contained in this Folder to a given Compendium pack.
    * Optionally update existing Documents within the Pack by name, otherwise append all new entries.
    * @param pack    - A Compendium pack to which the documents will be exported
-   * @param options - Additional options which customize how content is exported. See {@link ClientDocument.toCompendium | `ClientDocument#toCompendium`} (default: `{}`)
+   * @param options - Additional options which customize how content is exported. See {@linkcode ClientDocument.toCompendium | ClientDocument#toCompendium} (default: `{}`)
    * @returns The updated Compendium Collection instance
    */
   exportToCompendium<Pack extends foundry.documents.collections.CompendiumCollection.Any>(

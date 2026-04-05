@@ -113,19 +113,19 @@ declare namespace TileDocument {
   type Stored = Document.Internal.Stored<TileDocument.Implementation>;
 
   /**
-   * The data put in {@link TileDocument._source | `TileDocument#_source`}. This data is what was
+   * The data put in {@linkcode TileDocument._source | TileDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode TileDocument.create}
-   * and {@link TileDocument | `new TileDocument(...)`}.
+   * and {@linkcode TileDocument | new TileDocument(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -133,18 +133,18 @@ declare namespace TileDocument {
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link TileDocument.name | `TileDocument#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode TileDocument.name | TileDocument#name}.
    *
    * This is data transformed from {@linkcode TileDocument.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link TileDocument.update | `TileDocument#update`}.
-   * It is a distinct type from {@link TileDocument.CreateData | `DeepPartial<TileDocument.CreateData>`} because
+   * The data used to update a document, for example {@linkcode TileDocument.update | TileDocument#update}.
+   * It is a distinct type from {@linkcode TileDocument.CreateData | DeepPartial<TileDocument.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -154,8 +154,8 @@ declare namespace TileDocument {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode TileDocument}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -334,7 +334,7 @@ declare namespace TileDocument {
       TileDocument.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link TileDocument.update | `TileDocument#update`} */
+    /** Operation for {@linkcode TileDocument.update | TileDocument#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -342,40 +342,40 @@ declare namespace TileDocument {
     /** Options for {@linkcode TileDocument.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link TileDocument._preCreate | `TileDocument#_preCreate`} */
+    /** Options for {@linkcode TileDocument._preCreate | TileDocument#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link TileDocument._onCreate | `TileDocument#_onCreate`} */
+    /** Options for {@linkcode TileDocument._onCreate | TileDocument#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode TileDocument._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TileDocument.Database.Create> {}
 
-    /** Operation for {@link TileDocument._onCreateOperation | `TileDocument#_onCreateOperation`} */
+    /** Operation for {@linkcode TileDocument._onCreateOperation | TileDocument#_onCreateOperation} */
     interface OnCreateOperation extends TileDocument.Database.Create {}
 
-    /** Options for {@link TileDocument._preUpdate | `TileDocument#_preUpdate`} */
+    /** Options for {@linkcode TileDocument._preUpdate | TileDocument#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link TileDocument._onUpdate | `TileDocument#_onUpdate`} */
+    /** Options for {@linkcode TileDocument._onUpdate | TileDocument#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode TileDocument._preUpdateOperation} */
     interface PreUpdateOperation extends TileDocument.Database.Update {}
 
-    /** Operation for {@link TileDocument._onUpdateOperation | `TileDocument._preUpdateOperation`} */
+    /** Operation for {@linkcode TileDocument._onUpdateOperation | TileDocument._preUpdateOperation} */
     interface OnUpdateOperation extends TileDocument.Database.Update {}
 
-    /** Options for {@link TileDocument._preDelete | `TileDocument#_preDelete`} */
+    /** Options for {@linkcode TileDocument._preDelete | TileDocument#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link TileDocument._onDelete | `TileDocument#_onDelete`} */
+    /** Options for {@linkcode TileDocument._onDelete | TileDocument#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link TileDocument._preDeleteOperation | `TileDocument#_preDeleteOperation`} */
+    /** Options for {@linkcode TileDocument._preDeleteOperation | TileDocument#_preDeleteOperation} */
     interface PreDeleteOperation extends TileDocument.Database.Delete {}
 
-    /** Options for {@link TileDocument._onDeleteOperation | `TileDocument#_onDeleteOperation`} */
+    /** Options for {@linkcode TileDocument._onDeleteOperation | TileDocument#_onDeleteOperation} */
     interface OnDeleteOperation extends TileDocument.Database.Delete {}
 
     /** Context for {@linkcode TileDocument._onDeleteOperation} */
@@ -388,20 +388,20 @@ declare namespace TileDocument {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<TileDocument.Parent> {}
 
     /**
-     * Options for {@link TileDocument._preCreateDescendantDocuments | `TileDocument#_preCreateDescendantDocuments`}
-     * and {@link TileDocument._onCreateDescendantDocuments | `TileDocument#_onCreateDescendantDocuments`}
+     * Options for {@linkcode TileDocument._preCreateDescendantDocuments | TileDocument#_preCreateDescendantDocuments}
+     * and {@linkcode TileDocument._onCreateDescendantDocuments | TileDocument#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<TileDocument.Database.Create> {}
 
     /**
-     * Options for {@link TileDocument._preUpdateDescendantDocuments | `TileDocument#_preUpdateDescendantDocuments`}
-     * and {@link TileDocument._onUpdateDescendantDocuments | `TileDocument#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode TileDocument._preUpdateDescendantDocuments | TileDocument#_preUpdateDescendantDocuments}
+     * and {@linkcode TileDocument._onUpdateDescendantDocuments | TileDocument#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<TileDocument.Database.Update> {}
 
     /**
-     * Options for {@link TileDocument._preDeleteDescendantDocuments | `TileDocument#_preDeleteDescendantDocuments`}
-     * and {@link TileDocument._onDeleteDescendantDocuments | `TileDocument#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode TileDocument._preDeleteDescendantDocuments | TileDocument#_preDeleteDescendantDocuments}
+     * and {@linkcode TileDocument._onDeleteDescendantDocuments | TileDocument#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<TileDocument.Database.Delete> {}
 

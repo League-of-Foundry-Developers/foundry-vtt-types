@@ -106,7 +106,7 @@ declare namespace Macro {
   /**
    * `OfType` returns an instance of `Macro` with the corresponding type. This works with both the
    * builtin `Macro` class or a custom subclass if that is set up in
-   * {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`}.
+   * {@linkcode ConfiguredMacro | fvtt-types/configuration/ConfiguredMacro}.
    *
    * Note that `Macro` does not have a `system` property and therefore there is no way for a user
    * to configure custom subtypes. See {@linkcode Macro.SubType} for more information.
@@ -180,19 +180,19 @@ declare namespace Macro {
   type Stored<SubType extends Macro.SubType = Macro.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link Macro._source | `Macro#_source`}. This data is what was
+   * The data put in {@linkcode Macro._source | Macro#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Macro.create}
-   * and {@link Macro | `new Macro(...)`}.
+   * and {@linkcode Macro | new Macro(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -201,18 +201,18 @@ declare namespace Macro {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Macro.name | `Macro#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode Macro.name | Macro#name}.
    *
    * This is data transformed from {@linkcode Macro.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Macro.update | `Macro#update`}.
-   * It is a distinct type from {@link Macro.CreateData | `DeepPartial<Macro.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Macro.update | Macro#update}.
+   * It is a distinct type from {@linkcode Macro.CreateData | DeepPartial<Macro.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -222,8 +222,8 @@ declare namespace Macro {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Macro}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -344,7 +344,7 @@ declare namespace Macro {
       Macro.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Macro.update | `Macro#update`} */
+    /** Operation for {@linkcode Macro.update | Macro#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -352,40 +352,40 @@ declare namespace Macro {
     /** Options for {@linkcode Macro.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Macro._preCreate | `Macro#_preCreate`} */
+    /** Options for {@linkcode Macro._preCreate | Macro#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Macro._onCreate | `Macro#_onCreate`} */
+    /** Options for {@linkcode Macro._onCreate | Macro#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Macro._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Macro.Database.Create> {}
 
-    /** Operation for {@link Macro._onCreateOperation | `Macro#_onCreateOperation`} */
+    /** Operation for {@linkcode Macro._onCreateOperation | Macro#_onCreateOperation} */
     interface OnCreateOperation extends Macro.Database.Create {}
 
-    /** Options for {@link Macro._preUpdate | `Macro#_preUpdate`} */
+    /** Options for {@linkcode Macro._preUpdate | Macro#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Macro._onUpdate | `Macro#_onUpdate`} */
+    /** Options for {@linkcode Macro._onUpdate | Macro#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Macro._preUpdateOperation} */
     interface PreUpdateOperation extends Macro.Database.Update {}
 
-    /** Operation for {@link Macro._onUpdateOperation | `Macro._preUpdateOperation`} */
+    /** Operation for {@linkcode Macro._onUpdateOperation | Macro._preUpdateOperation} */
     interface OnUpdateOperation extends Macro.Database.Update {}
 
-    /** Options for {@link Macro._preDelete | `Macro#_preDelete`} */
+    /** Options for {@linkcode Macro._preDelete | Macro#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Macro._onDelete | `Macro#_onDelete`} */
+    /** Options for {@linkcode Macro._onDelete | Macro#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Macro._preDeleteOperation | `Macro#_preDeleteOperation`} */
+    /** Options for {@linkcode Macro._preDeleteOperation | Macro#_preDeleteOperation} */
     interface PreDeleteOperation extends Macro.Database.Delete {}
 
-    /** Options for {@link Macro._onDeleteOperation | `Macro#_onDeleteOperation`} */
+    /** Options for {@linkcode Macro._onDeleteOperation | Macro#_onDeleteOperation} */
     interface OnDeleteOperation extends Macro.Database.Delete {}
 
     /** Context for {@linkcode Macro._onDeleteOperation} */
@@ -398,20 +398,20 @@ declare namespace Macro {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Macro.Parent> {}
 
     /**
-     * Options for {@link Macro._preCreateDescendantDocuments | `Macro#_preCreateDescendantDocuments`}
-     * and {@link Macro._onCreateDescendantDocuments | `Macro#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Macro._preCreateDescendantDocuments | Macro#_preCreateDescendantDocuments}
+     * and {@linkcode Macro._onCreateDescendantDocuments | Macro#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Macro.Database.Create> {}
 
     /**
-     * Options for {@link Macro._preUpdateDescendantDocuments | `Macro#_preUpdateDescendantDocuments`}
-     * and {@link Macro._onUpdateDescendantDocuments | `Macro#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Macro._preUpdateDescendantDocuments | Macro#_preUpdateDescendantDocuments}
+     * and {@linkcode Macro._onUpdateDescendantDocuments | Macro#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Macro.Database.Update> {}
 
     /**
-     * Options for {@link Macro._preDeleteDescendantDocuments | `Macro#_preDeleteDescendantDocuments`}
-     * and {@link Macro._onDeleteDescendantDocuments | `Macro#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Macro._preDeleteDescendantDocuments | Macro#_preDeleteDescendantDocuments}
+     * and {@linkcode Macro._onDeleteDescendantDocuments | Macro#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Macro.Database.Delete> {}
 
@@ -471,30 +471,30 @@ declare namespace Macro {
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@link foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | `ExecuteMacroRegionBehaviorType#_handleRegionEvent`},
+     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
      * will be a {@linkcode Scene.Implementation} (possibly `null` if somehow called on a `RegionBehavior` whose `RegionDocument` doesn't have a parent `Scene`)
      */
     scene?: unknown;
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@link foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | `ExecuteMacroRegionBehaviorType#_handleRegionEvent`},
+     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
      * will be a {@linkcode RegionDocument.Implementation} (possibly `null` if somehow called on a `RegionBehavior` without a parent `RegionDocument`)
      */
     region?: unknown;
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@link foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | `ExecuteMacroRegionBehaviorType#_handleRegionEvent`},
+     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
      * will be a {@linkcode RegionBehavior.Implementation} (possibly `null` if somehow called on a `RegionBehaviorType` without a parent `RegionBehavior`)
      */
     behavior?: unknown;
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@link Macro._onClickDocumentLink | `Macro#_onClickDocumentLink`},
+     * - When called in {@linkcode Macro._onClickDocumentLink | Macro#_onClickDocumentLink},
      * will be a {@linkcode MouseEvent}
-     * - When called in {@link foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | `ExecuteMacroRegionBehaviorType#_handleRegionEvent`},
+     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
      * will be a {@linkcode RegionDocument.RegionEvent}
      */
     event?: unknown;

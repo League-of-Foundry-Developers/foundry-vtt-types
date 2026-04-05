@@ -239,37 +239,37 @@ declare namespace Scene {
   type Stored = Document.Internal.Stored<Scene.Implementation>;
 
   /**
-   * The data put in {@link Scene._source | `Scene#_source`}. This data is what was
+   * The data put in {@linkcode Scene._source | Scene#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Scene.create}
-   * and {@link Scene | `new Scene(...)`}.
+   * and {@linkcode Scene | new Scene(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Scene.name | `Scene#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode Scene.name | Scene#name}.
    *
    * This is data transformed from {@linkcode Scene.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Scene.update | `Scene#update`}.
-   * It is a distinct type from {@link Scene.CreateData | `DeepPartial<Scene.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Scene.update | Scene#update}.
+   * It is a distinct type from {@linkcode Scene.CreateData | DeepPartial<Scene.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -429,8 +429,8 @@ declare namespace Scene {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Scene}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -486,7 +486,7 @@ declare namespace Scene {
     /**
      * The elevation of the foreground layer where overhead tiles reside
      * @defaultValue `null`
-     * @remarks If falsey, {@link Scene.prepareBaseData | `Scene#prepareBaseData`} initializes this to `this.grid.distance * 4`, with the comment:
+     * @remarks If falsey, {@linkcode Scene.prepareBaseData | Scene#prepareBaseData} initializes this to `this.grid.distance * 4`, with the comment:
      *
      * "A temporary assumption until a more robust long-term solution when we implement Scene Levels."
      */
@@ -540,7 +540,7 @@ declare namespace Scene {
     /**
      * Grid configuration for the scene
      * @defaultValue see properties
-     * @remarks Initialized in {@link Scene.prepareBaseData | `Scene#prepareBaseData`} to `Scene.#getGrid(this)`, which returns {@linkcode BaseGrid} or a subclass
+     * @remarks Initialized in {@linkcode Scene.prepareBaseData | Scene#prepareBaseData} to `Scene.#getGrid(this)`, which returns {@linkcode BaseGrid} or a subclass
      */
     grid: fields.SchemaField<
       GridSchema,
@@ -631,8 +631,8 @@ declare namespace Scene {
      * A linked PlaylistSound document from the selected playlist that will
      * begin automatically playing when this Scene becomes active
      * @defaultValue `null`
-     * @remarks This is `idOnly` because {@link fields.ForeignDocumentField | `ForeignDocumentField`} doesn't know how to get embedded documents;
-     * {@link Scene.prepareBaseData | `Scene#prepareBaseData`} attempts to `get()` this ID from the provided `playlist`, if any, making this
+     * @remarks This is `idOnly` because {@linkcode fields.ForeignDocumentField | ForeignDocumentField} doesn't know how to get embedded documents;
+     * {@linkcode Scene.prepareBaseData | Scene#prepareBaseData} attempts to `get()` this ID from the provided `playlist`, if any, making this
      * `PlaylistSound.Implementation | undefined | null` at runtime
      */
     playlistSound: fields.ForeignDocumentField<typeof BasePlaylistSound, { idOnly: true }>;
@@ -934,7 +934,7 @@ declare namespace Scene {
       Scene.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Scene.update | `Scene#update`} */
+    /** Operation for {@linkcode Scene.update | Scene#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -942,40 +942,40 @@ declare namespace Scene {
     /** Options for {@linkcode Scene.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Scene._preCreate | `Scene#_preCreate`} */
+    /** Options for {@linkcode Scene._preCreate | Scene#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Scene._onCreate | `Scene#_onCreate`} */
+    /** Options for {@linkcode Scene._onCreate | Scene#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Scene._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Scene.Database.Create> {}
 
-    /** Operation for {@link Scene._onCreateOperation | `Scene#_onCreateOperation`} */
+    /** Operation for {@linkcode Scene._onCreateOperation | Scene#_onCreateOperation} */
     interface OnCreateOperation extends Scene.Database.Create {}
 
-    /** Options for {@link Scene._preUpdate | `Scene#_preUpdate`} */
+    /** Options for {@linkcode Scene._preUpdate | Scene#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Scene._onUpdate | `Scene#_onUpdate`} */
+    /** Options for {@linkcode Scene._onUpdate | Scene#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Scene._preUpdateOperation} */
     interface PreUpdateOperation extends Scene.Database.Update {}
 
-    /** Operation for {@link Scene._onUpdateOperation | `Scene._preUpdateOperation`} */
+    /** Operation for {@linkcode Scene._onUpdateOperation | Scene._preUpdateOperation} */
     interface OnUpdateOperation extends Scene.Database.Update {}
 
-    /** Options for {@link Scene._preDelete | `Scene#_preDelete`} */
+    /** Options for {@linkcode Scene._preDelete | Scene#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Scene._onDelete | `Scene#_onDelete`} */
+    /** Options for {@linkcode Scene._onDelete | Scene#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Scene._preDeleteOperation | `Scene#_preDeleteOperation`} */
+    /** Options for {@linkcode Scene._preDeleteOperation | Scene#_preDeleteOperation} */
     interface PreDeleteOperation extends Scene.Database.Delete {}
 
-    /** Options for {@link Scene._onDeleteOperation | `Scene#_onDeleteOperation`} */
+    /** Options for {@linkcode Scene._onDeleteOperation | Scene#_onDeleteOperation} */
     interface OnDeleteOperation extends Scene.Database.Delete {}
 
     /** Context for {@linkcode Scene._onDeleteOperation} */
@@ -988,20 +988,20 @@ declare namespace Scene {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Scene.Parent> {}
 
     /**
-     * Options for {@link Scene._preCreateDescendantDocuments | `Scene#_preCreateDescendantDocuments`}
-     * and {@link Scene._onCreateDescendantDocuments | `Scene#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Scene._preCreateDescendantDocuments | Scene#_preCreateDescendantDocuments}
+     * and {@linkcode Scene._onCreateDescendantDocuments | Scene#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Scene.Database.Create> {}
 
     /**
-     * Options for {@link Scene._preUpdateDescendantDocuments | `Scene#_preUpdateDescendantDocuments`}
-     * and {@link Scene._onUpdateDescendantDocuments | `Scene#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Scene._preUpdateDescendantDocuments | Scene#_preUpdateDescendantDocuments}
+     * and {@linkcode Scene._onUpdateDescendantDocuments | Scene#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Scene.Database.Update> {}
 
     /**
-     * Options for {@link Scene._preDeleteDescendantDocuments | `Scene#_preDeleteDescendantDocuments`}
-     * and {@link Scene._onDeleteDescendantDocuments | `Scene#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Scene._preDeleteDescendantDocuments | Scene#_preDeleteDescendantDocuments}
+     * and {@linkcode Scene._onDeleteDescendantDocuments | Scene#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Scene.Database.Delete> {}
 
@@ -1239,7 +1239,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
   /**
    * Determine the canvas dimensions this Scene would occupy, if rendered
    * @defaultValue `{}`
-   * @remarks Technically `undefined` prior to the first time {@link Scene.prepareBaseData | `Scene#prepareBaseData`} is called
+   * @remarks Technically `undefined` prior to the first time {@linkcode Scene.prepareBaseData | Scene#prepareBaseData} is called
    */
   dimensions: Scene.Dimensions;
 
@@ -1325,9 +1325,9 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * each Token accordingly.
    *
    * This function doesn't need to be called by the systems/modules unless
-   * {@link TokenDocument.testInsideRegion | `foundry.documents.TokenDocument#testInsideRegion`} is overridden and non-Token properties other than
+   * {@linkcode TokenDocument.testInsideRegion | foundry.documents.TokenDocument#testInsideRegion} is overridden and non-Token properties other than
    * `Scene#grid.type` and `Scene#grid.size` change that are used in the override of
-   * {@link TokenDocument.TestInsideRegion | `foundry.documents.TokenDocument#testInsideRegion`}.
+   * {@linkcode TokenDocument.TestInsideRegion | foundry.documents.TokenDocument#testInsideRegion}.
    * @param tokens - The Tokens whose regions should be updates
    * @returns The array of Tokens whose regions changed
    */

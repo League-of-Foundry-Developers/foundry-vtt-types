@@ -122,37 +122,37 @@ declare namespace NoteDocument {
   type Stored = Document.Internal.Stored<NoteDocument.Implementation>;
 
   /**
-   * The data put in {@link NoteDocument._source | `NoteDocument#_source`}. This data is what was
+   * The data put in {@linkcode NoteDocument._source | NoteDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode NoteDocument.create}
-   * and {@link NoteDocument | `new NoteDocument(...)`}.
+   * and {@linkcode NoteDocument | new NoteDocument(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link NoteDocument.name | `NoteDocument#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode NoteDocument.name | NoteDocument#name}.
    *
    * This is data transformed from {@linkcode NoteDocument.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link NoteDocument.update | `NoteDocument#update`}.
-   * It is a distinct type from {@link NoteDocument.CreateData | `DeepPartial<NoteDocument.CreateData>`} because
+   * The data used to update a document, for example {@linkcode NoteDocument.update | NoteDocument#update}.
+   * It is a distinct type from {@linkcode NoteDocument.CreateData | DeepPartial<NoteDocument.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -162,8 +162,8 @@ declare namespace NoteDocument {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode NoteDocument}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -332,7 +332,7 @@ declare namespace NoteDocument {
       NoteDocument.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link NoteDocument.update | `NoteDocument#update`} */
+    /** Operation for {@linkcode NoteDocument.update | NoteDocument#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -340,40 +340,40 @@ declare namespace NoteDocument {
     /** Options for {@linkcode NoteDocument.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link NoteDocument._preCreate | `NoteDocument#_preCreate`} */
+    /** Options for {@linkcode NoteDocument._preCreate | NoteDocument#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link NoteDocument._onCreate | `NoteDocument#_onCreate`} */
+    /** Options for {@linkcode NoteDocument._onCreate | NoteDocument#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode NoteDocument._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<NoteDocument.Database.Create> {}
 
-    /** Operation for {@link NoteDocument._onCreateOperation | `NoteDocument#_onCreateOperation`} */
+    /** Operation for {@linkcode NoteDocument._onCreateOperation | NoteDocument#_onCreateOperation} */
     interface OnCreateOperation extends NoteDocument.Database.Create {}
 
-    /** Options for {@link NoteDocument._preUpdate | `NoteDocument#_preUpdate`} */
+    /** Options for {@linkcode NoteDocument._preUpdate | NoteDocument#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link NoteDocument._onUpdate | `NoteDocument#_onUpdate`} */
+    /** Options for {@linkcode NoteDocument._onUpdate | NoteDocument#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode NoteDocument._preUpdateOperation} */
     interface PreUpdateOperation extends NoteDocument.Database.Update {}
 
-    /** Operation for {@link NoteDocument._onUpdateOperation | `NoteDocument._preUpdateOperation`} */
+    /** Operation for {@linkcode NoteDocument._onUpdateOperation | NoteDocument._preUpdateOperation} */
     interface OnUpdateOperation extends NoteDocument.Database.Update {}
 
-    /** Options for {@link NoteDocument._preDelete | `NoteDocument#_preDelete`} */
+    /** Options for {@linkcode NoteDocument._preDelete | NoteDocument#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link NoteDocument._onDelete | `NoteDocument#_onDelete`} */
+    /** Options for {@linkcode NoteDocument._onDelete | NoteDocument#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link NoteDocument._preDeleteOperation | `NoteDocument#_preDeleteOperation`} */
+    /** Options for {@linkcode NoteDocument._preDeleteOperation | NoteDocument#_preDeleteOperation} */
     interface PreDeleteOperation extends NoteDocument.Database.Delete {}
 
-    /** Options for {@link NoteDocument._onDeleteOperation | `NoteDocument#_onDeleteOperation`} */
+    /** Options for {@linkcode NoteDocument._onDeleteOperation | NoteDocument#_onDeleteOperation} */
     interface OnDeleteOperation extends NoteDocument.Database.Delete {}
 
     /** Context for {@linkcode NoteDocument._onDeleteOperation} */
@@ -386,20 +386,20 @@ declare namespace NoteDocument {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<NoteDocument.Parent> {}
 
     /**
-     * Options for {@link NoteDocument._preCreateDescendantDocuments | `NoteDocument#_preCreateDescendantDocuments`}
-     * and {@link NoteDocument._onCreateDescendantDocuments | `NoteDocument#_onCreateDescendantDocuments`}
+     * Options for {@linkcode NoteDocument._preCreateDescendantDocuments | NoteDocument#_preCreateDescendantDocuments}
+     * and {@linkcode NoteDocument._onCreateDescendantDocuments | NoteDocument#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<NoteDocument.Database.Create> {}
 
     /**
-     * Options for {@link NoteDocument._preUpdateDescendantDocuments | `NoteDocument#_preUpdateDescendantDocuments`}
-     * and {@link NoteDocument._onUpdateDescendantDocuments | `NoteDocument#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode NoteDocument._preUpdateDescendantDocuments | NoteDocument#_preUpdateDescendantDocuments}
+     * and {@linkcode NoteDocument._onUpdateDescendantDocuments | NoteDocument#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<NoteDocument.Database.Update> {}
 
     /**
-     * Options for {@link NoteDocument._preDeleteDescendantDocuments | `NoteDocument#_preDeleteDescendantDocuments`}
-     * and {@link NoteDocument._onDeleteDescendantDocuments | `NoteDocument#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode NoteDocument._preDeleteDescendantDocuments | NoteDocument#_preDeleteDescendantDocuments}
+     * and {@linkcode NoteDocument._onDeleteDescendantDocuments | NoteDocument#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<NoteDocument.Database.Delete> {}
 

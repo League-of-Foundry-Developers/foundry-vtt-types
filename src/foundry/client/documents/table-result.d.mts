@@ -97,7 +97,7 @@ declare namespace TableResult {
   /**
    * `OfType` returns an instance of `TableResult` with the corresponding type. This works with both the
    * builtin `TableResult` class or a custom subclass if that is set up in
-   * {@link ConfiguredTableResult | `fvtt-types/configuration/ConfiguredTableResult`}.
+   * {@linkcode ConfiguredTableResult | fvtt-types/configuration/ConfiguredTableResult}.
    *
    * Note that `TableResult` does not have a `system` property and therefore there is no way for a user
    * to configure custom subtypes. See {@linkcode TableResult.SubType} for more information.
@@ -171,19 +171,19 @@ declare namespace TableResult {
   type Stored<SubType extends TableResult.SubType = TableResult.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link TableResult._source | `TableResult#_source`}. This data is what was
+   * The data put in {@linkcode TableResult._source | TableResult#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode TableResult.create}
-   * and {@link TableResult | `new TableResult(...)`}.
+   * and {@linkcode TableResult | new TableResult(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -193,18 +193,18 @@ declare namespace TableResult {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link TableResult.name | `TableResult#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode TableResult.name | TableResult#name}.
    *
    * This is data transformed from {@linkcode TableResult.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link TableResult.update | `TableResult#update`}.
-   * It is a distinct type from {@link TableResult.CreateData | `DeepPartial<TableResult.CreateData>`} because
+   * The data used to update a document, for example {@linkcode TableResult.update | TableResult#update}.
+   * It is a distinct type from {@linkcode TableResult.CreateData | DeepPartial<TableResult.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -214,8 +214,8 @@ declare namespace TableResult {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode TableResult}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -340,7 +340,7 @@ declare namespace TableResult {
       TableResult.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link TableResult.update | `TableResult#update`} */
+    /** Operation for {@linkcode TableResult.update | TableResult#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -348,40 +348,40 @@ declare namespace TableResult {
     /** Options for {@linkcode TableResult.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link TableResult._preCreate | `TableResult#_preCreate`} */
+    /** Options for {@linkcode TableResult._preCreate | TableResult#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link TableResult._onCreate | `TableResult#_onCreate`} */
+    /** Options for {@linkcode TableResult._onCreate | TableResult#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode TableResult._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TableResult.Database.Create> {}
 
-    /** Operation for {@link TableResult._onCreateOperation | `TableResult#_onCreateOperation`} */
+    /** Operation for {@linkcode TableResult._onCreateOperation | TableResult#_onCreateOperation} */
     interface OnCreateOperation extends TableResult.Database.Create {}
 
-    /** Options for {@link TableResult._preUpdate | `TableResult#_preUpdate`} */
+    /** Options for {@linkcode TableResult._preUpdate | TableResult#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link TableResult._onUpdate | `TableResult#_onUpdate`} */
+    /** Options for {@linkcode TableResult._onUpdate | TableResult#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode TableResult._preUpdateOperation} */
     interface PreUpdateOperation extends TableResult.Database.Update {}
 
-    /** Operation for {@link TableResult._onUpdateOperation | `TableResult._preUpdateOperation`} */
+    /** Operation for {@linkcode TableResult._onUpdateOperation | TableResult._preUpdateOperation} */
     interface OnUpdateOperation extends TableResult.Database.Update {}
 
-    /** Options for {@link TableResult._preDelete | `TableResult#_preDelete`} */
+    /** Options for {@linkcode TableResult._preDelete | TableResult#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link TableResult._onDelete | `TableResult#_onDelete`} */
+    /** Options for {@linkcode TableResult._onDelete | TableResult#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link TableResult._preDeleteOperation | `TableResult#_preDeleteOperation`} */
+    /** Options for {@linkcode TableResult._preDeleteOperation | TableResult#_preDeleteOperation} */
     interface PreDeleteOperation extends TableResult.Database.Delete {}
 
-    /** Options for {@link TableResult._onDeleteOperation | `TableResult#_onDeleteOperation`} */
+    /** Options for {@linkcode TableResult._onDeleteOperation | TableResult#_onDeleteOperation} */
     interface OnDeleteOperation extends TableResult.Database.Delete {}
 
     /** Context for {@linkcode TableResult._onDeleteOperation} */
@@ -394,20 +394,20 @@ declare namespace TableResult {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<TableResult.Parent> {}
 
     /**
-     * Options for {@link TableResult._preCreateDescendantDocuments | `TableResult#_preCreateDescendantDocuments`}
-     * and {@link TableResult._onCreateDescendantDocuments | `TableResult#_onCreateDescendantDocuments`}
+     * Options for {@linkcode TableResult._preCreateDescendantDocuments | TableResult#_preCreateDescendantDocuments}
+     * and {@linkcode TableResult._onCreateDescendantDocuments | TableResult#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<TableResult.Database.Create> {}
 
     /**
-     * Options for {@link TableResult._preUpdateDescendantDocuments | `TableResult#_preUpdateDescendantDocuments`}
-     * and {@link TableResult._onUpdateDescendantDocuments | `TableResult#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode TableResult._preUpdateDescendantDocuments | TableResult#_preUpdateDescendantDocuments}
+     * and {@linkcode TableResult._onUpdateDescendantDocuments | TableResult#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<TableResult.Database.Update> {}
 
     /**
-     * Options for {@link TableResult._preDeleteDescendantDocuments | `TableResult#_preDeleteDescendantDocuments`}
-     * and {@link TableResult._onDeleteDescendantDocuments | `TableResult#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode TableResult._preDeleteDescendantDocuments | TableResult#_preDeleteDescendantDocuments}
+     * and {@linkcode TableResult._onDeleteDescendantDocuments | TableResult#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<TableResult.Database.Delete> {}
 

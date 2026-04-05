@@ -121,19 +121,19 @@ declare namespace WallDocument {
   type Stored = Document.Internal.Stored<WallDocument.Implementation>;
 
   /**
-   * The data put in {@link foundry.abstract.DataModel._source | `DataModel#_source`}. This data is what was
+   * The data put in {@linkcode foundry.abstract.DataModel._source | DataModel#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode WallDocument.create}
-   * and {@link WallDocument | `new WallDocument(...)`}.
+   * and {@linkcode WallDocument | new WallDocument(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -141,18 +141,18 @@ declare namespace WallDocument {
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link WallDocument.name | `WallDocument#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode WallDocument.name | WallDocument#name}.
    *
    * This is data transformed from {@linkcode WallDocument.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link WallDocument.update | `WallDocument#update`}.
-   * It is a distinct type from {@link WallDocument.CreateData | `DeepPartial<WallDocument.CreateData>`} because
+   * The data used to update a document, for example {@linkcode WallDocument.update | WallDocument#update}.
+   * It is a distinct type from {@linkcode WallDocument.CreateData | DeepPartial<WallDocument.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -217,8 +217,8 @@ declare namespace WallDocument {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode WallDocument}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -435,7 +435,7 @@ declare namespace WallDocument {
       WallDocument.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link WallDocument.update | `WallDocument#update`} */
+    /** Operation for {@linkcode WallDocument.update | WallDocument#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -443,40 +443,40 @@ declare namespace WallDocument {
     /** Options for {@linkcode WallDocument.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link WallDocument._preCreate | `WallDocument#_preCreate`} */
+    /** Options for {@linkcode WallDocument._preCreate | WallDocument#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link WallDocument._onCreate | `WallDocument#_onCreate`} */
+    /** Options for {@linkcode WallDocument._onCreate | WallDocument#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode WallDocument._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<WallDocument.Database.Create> {}
 
-    /** Operation for {@link WallDocument._onCreateOperation | `WallDocument#_onCreateOperation`} */
+    /** Operation for {@linkcode WallDocument._onCreateOperation | WallDocument#_onCreateOperation} */
     interface OnCreateOperation extends WallDocument.Database.Create {}
 
-    /** Options for {@link WallDocument._preUpdate | `WallDocument#_preUpdate`} */
+    /** Options for {@linkcode WallDocument._preUpdate | WallDocument#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link WallDocument._onUpdate | `WallDocument#_onUpdate`} */
+    /** Options for {@linkcode WallDocument._onUpdate | WallDocument#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode WallDocument._preUpdateOperation} */
     interface PreUpdateOperation extends WallDocument.Database.Update {}
 
-    /** Operation for {@link WallDocument._onUpdateOperation | `WallDocument._preUpdateOperation`} */
+    /** Operation for {@linkcode WallDocument._onUpdateOperation | WallDocument._preUpdateOperation} */
     interface OnUpdateOperation extends WallDocument.Database.Update {}
 
-    /** Options for {@link WallDocument._preDelete | `WallDocument#_preDelete`} */
+    /** Options for {@linkcode WallDocument._preDelete | WallDocument#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link WallDocument._onDelete | `WallDocument#_onDelete`} */
+    /** Options for {@linkcode WallDocument._onDelete | WallDocument#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link WallDocument._preDeleteOperation | `WallDocument#_preDeleteOperation`} */
+    /** Options for {@linkcode WallDocument._preDeleteOperation | WallDocument#_preDeleteOperation} */
     interface PreDeleteOperation extends WallDocument.Database.Delete {}
 
-    /** Options for {@link WallDocument._onDeleteOperation | `WallDocument#_onDeleteOperation`} */
+    /** Options for {@linkcode WallDocument._onDeleteOperation | WallDocument#_onDeleteOperation} */
     interface OnDeleteOperation extends WallDocument.Database.Delete {}
 
     /** Context for {@linkcode WallDocument._onDeleteOperation} */
@@ -489,20 +489,20 @@ declare namespace WallDocument {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<WallDocument.Parent> {}
 
     /**
-     * Options for {@link WallDocument._preCreateDescendantDocuments | `WallDocument#_preCreateDescendantDocuments`}
-     * and {@link WallDocument._onCreateDescendantDocuments | `WallDocument#_onCreateDescendantDocuments`}
+     * Options for {@linkcode WallDocument._preCreateDescendantDocuments | WallDocument#_preCreateDescendantDocuments}
+     * and {@linkcode WallDocument._onCreateDescendantDocuments | WallDocument#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<WallDocument.Database.Create> {}
 
     /**
-     * Options for {@link WallDocument._preUpdateDescendantDocuments | `WallDocument#_preUpdateDescendantDocuments`}
-     * and {@link WallDocument._onUpdateDescendantDocuments | `WallDocument#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode WallDocument._preUpdateDescendantDocuments | WallDocument#_preUpdateDescendantDocuments}
+     * and {@linkcode WallDocument._onUpdateDescendantDocuments | WallDocument#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<WallDocument.Database.Update> {}
 
     /**
-     * Options for {@link WallDocument._preDeleteDescendantDocuments | `WallDocument#_preDeleteDescendantDocuments`}
-     * and {@link WallDocument._onDeleteDescendantDocuments | `WallDocument#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode WallDocument._preDeleteDescendantDocuments | WallDocument#_preDeleteDescendantDocuments}
+     * and {@linkcode WallDocument._onDeleteDescendantDocuments | WallDocument#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<WallDocument.Database.Delete> {}
 

@@ -466,37 +466,37 @@ declare namespace RegionDocument {
   type Stored = Document.Internal.Stored<RegionDocument.Implementation>;
 
   /**
-   * The data put in {@link RegionDocument._source | `RegionDocument#_source`}. This data is what was
+   * The data put in {@linkcode RegionDocument._source | RegionDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode RegionDocument.create}
-   * and {@link RegionDocument | `new RegionDocument(...)`}.
+   * and {@linkcode RegionDocument | new RegionDocument(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link RegionDocument.name | `RegionDocument#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode RegionDocument.name | RegionDocument#name}.
    *
    * This is data transformed from {@linkcode RegionDocument.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link RegionDocument.update | `RegionDocument#update`}.
-   * It is a distinct type from {@link RegionDocument.CreateData | `DeepPartial<RegionDocument.CreateData>`} because
+   * The data used to update a document, for example {@linkcode RegionDocument.update | RegionDocument#update}.
+   * It is a distinct type from {@linkcode RegionDocument.CreateData | DeepPartial<RegionDocument.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -506,8 +506,8 @@ declare namespace RegionDocument {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode RegionDocument}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -632,7 +632,7 @@ declare namespace RegionDocument {
       RegionDocument.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link RegionDocument.update | `RegionDocument#update`} */
+    /** Operation for {@linkcode RegionDocument.update | RegionDocument#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -640,40 +640,40 @@ declare namespace RegionDocument {
     /** Options for {@linkcode RegionDocument.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link RegionDocument._preCreate | `RegionDocument#_preCreate`} */
+    /** Options for {@linkcode RegionDocument._preCreate | RegionDocument#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link RegionDocument._onCreate | `RegionDocument#_onCreate`} */
+    /** Options for {@linkcode RegionDocument._onCreate | RegionDocument#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode RegionDocument._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RegionDocument.Database.Create> {}
 
-    /** Operation for {@link RegionDocument._onCreateOperation | `RegionDocument#_onCreateOperation`} */
+    /** Operation for {@linkcode RegionDocument._onCreateOperation | RegionDocument#_onCreateOperation} */
     interface OnCreateOperation extends RegionDocument.Database.Create {}
 
-    /** Options for {@link RegionDocument._preUpdate | `RegionDocument#_preUpdate`} */
+    /** Options for {@linkcode RegionDocument._preUpdate | RegionDocument#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link RegionDocument._onUpdate | `RegionDocument#_onUpdate`} */
+    /** Options for {@linkcode RegionDocument._onUpdate | RegionDocument#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode RegionDocument._preUpdateOperation} */
     interface PreUpdateOperation extends RegionDocument.Database.Update {}
 
-    /** Operation for {@link RegionDocument._onUpdateOperation | `RegionDocument._preUpdateOperation`} */
+    /** Operation for {@linkcode RegionDocument._onUpdateOperation | RegionDocument._preUpdateOperation} */
     interface OnUpdateOperation extends RegionDocument.Database.Update {}
 
-    /** Options for {@link RegionDocument._preDelete | `RegionDocument#_preDelete`} */
+    /** Options for {@linkcode RegionDocument._preDelete | RegionDocument#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link RegionDocument._onDelete | `RegionDocument#_onDelete`} */
+    /** Options for {@linkcode RegionDocument._onDelete | RegionDocument#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link RegionDocument._preDeleteOperation | `RegionDocument#_preDeleteOperation`} */
+    /** Options for {@linkcode RegionDocument._preDeleteOperation | RegionDocument#_preDeleteOperation} */
     interface PreDeleteOperation extends RegionDocument.Database.Delete {}
 
-    /** Options for {@link RegionDocument._onDeleteOperation | `RegionDocument#_onDeleteOperation`} */
+    /** Options for {@linkcode RegionDocument._onDeleteOperation | RegionDocument#_onDeleteOperation} */
     interface OnDeleteOperation extends RegionDocument.Database.Delete {}
 
     /** Context for {@linkcode RegionDocument._onDeleteOperation} */
@@ -686,20 +686,20 @@ declare namespace RegionDocument {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
 
     /**
-     * Options for {@link RegionDocument._preCreateDescendantDocuments | `RegionDocument#_preCreateDescendantDocuments`}
-     * and {@link RegionDocument._onCreateDescendantDocuments | `RegionDocument#_onCreateDescendantDocuments`}
+     * Options for {@linkcode RegionDocument._preCreateDescendantDocuments | RegionDocument#_preCreateDescendantDocuments}
+     * and {@linkcode RegionDocument._onCreateDescendantDocuments | RegionDocument#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<RegionDocument.Database.Create> {}
 
     /**
-     * Options for {@link RegionDocument._preUpdateDescendantDocuments | `RegionDocument#_preUpdateDescendantDocuments`}
-     * and {@link RegionDocument._onUpdateDescendantDocuments | `RegionDocument#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode RegionDocument._preUpdateDescendantDocuments | RegionDocument#_preUpdateDescendantDocuments}
+     * and {@linkcode RegionDocument._onUpdateDescendantDocuments | RegionDocument#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<RegionDocument.Database.Update> {}
 
     /**
-     * Options for {@link RegionDocument._preDeleteDescendantDocuments | `RegionDocument#_preDeleteDescendantDocuments`}
-     * and {@link RegionDocument._onDeleteDescendantDocuments | `RegionDocument#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode RegionDocument._preDeleteDescendantDocuments | RegionDocument#_preDeleteDescendantDocuments}
+     * and {@linkcode RegionDocument._onDeleteDescendantDocuments | RegionDocument#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<RegionDocument.Database.Delete> {}
 

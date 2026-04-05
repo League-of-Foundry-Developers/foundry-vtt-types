@@ -185,37 +185,37 @@ declare namespace RollTable {
   type Stored = Document.Internal.Stored<RollTable.Implementation>;
 
   /**
-   * The data put in {@link RollTable._source | `RollTable#_source`}. This data is what was
+   * The data put in {@linkcode RollTable._source | RollTable#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode RollTable.create}
-   * and {@link RollTable | `new RollTable(...)`}.
+   * and {@linkcode RollTable | new RollTable(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link RollTable.name | `RollTable#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode RollTable.name | RollTable#name}.
    *
    * This is data transformed from {@linkcode RollTable.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link RollTable.update | `RollTable#update`}.
-   * It is a distinct type from {@link RollTable.CreateData | `DeepPartial<RollTable.CreateData>`} because
+   * The data used to update a document, for example {@linkcode RollTable.update | RollTable#update}.
+   * It is a distinct type from {@linkcode RollTable.CreateData | DeepPartial<RollTable.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -225,8 +225,8 @@ declare namespace RollTable {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode RollTable}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -343,7 +343,7 @@ declare namespace RollTable {
       RollTable.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link RollTable.update | `RollTable#update`} */
+    /** Operation for {@linkcode RollTable.update | RollTable#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -351,40 +351,40 @@ declare namespace RollTable {
     /** Options for {@linkcode RollTable.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link RollTable._preCreate | `RollTable#_preCreate`} */
+    /** Options for {@linkcode RollTable._preCreate | RollTable#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link RollTable._onCreate | `RollTable#_onCreate`} */
+    /** Options for {@linkcode RollTable._onCreate | RollTable#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode RollTable._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RollTable.Database.Create> {}
 
-    /** Operation for {@link RollTable._onCreateOperation | `RollTable#_onCreateOperation`} */
+    /** Operation for {@linkcode RollTable._onCreateOperation | RollTable#_onCreateOperation} */
     interface OnCreateOperation extends RollTable.Database.Create {}
 
-    /** Options for {@link RollTable._preUpdate | `RollTable#_preUpdate`} */
+    /** Options for {@linkcode RollTable._preUpdate | RollTable#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link RollTable._onUpdate | `RollTable#_onUpdate`} */
+    /** Options for {@linkcode RollTable._onUpdate | RollTable#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode RollTable._preUpdateOperation} */
     interface PreUpdateOperation extends RollTable.Database.Update {}
 
-    /** Operation for {@link RollTable._onUpdateOperation | `RollTable._preUpdateOperation`} */
+    /** Operation for {@linkcode RollTable._onUpdateOperation | RollTable._preUpdateOperation} */
     interface OnUpdateOperation extends RollTable.Database.Update {}
 
-    /** Options for {@link RollTable._preDelete | `RollTable#_preDelete`} */
+    /** Options for {@linkcode RollTable._preDelete | RollTable#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link RollTable._onDelete | `RollTable#_onDelete`} */
+    /** Options for {@linkcode RollTable._onDelete | RollTable#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link RollTable._preDeleteOperation | `RollTable#_preDeleteOperation`} */
+    /** Options for {@linkcode RollTable._preDeleteOperation | RollTable#_preDeleteOperation} */
     interface PreDeleteOperation extends RollTable.Database.Delete {}
 
-    /** Options for {@link RollTable._onDeleteOperation | `RollTable#_onDeleteOperation`} */
+    /** Options for {@linkcode RollTable._onDeleteOperation | RollTable#_onDeleteOperation} */
     interface OnDeleteOperation extends RollTable.Database.Delete {}
 
     /** Context for {@linkcode RollTable._onDeleteOperation} */
@@ -397,20 +397,20 @@ declare namespace RollTable {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<RollTable.Parent> {}
 
     /**
-     * Options for {@link RollTable._preCreateDescendantDocuments | `RollTable#_preCreateDescendantDocuments`}
-     * and {@link RollTable._onCreateDescendantDocuments | `RollTable#_onCreateDescendantDocuments`}
+     * Options for {@linkcode RollTable._preCreateDescendantDocuments | RollTable#_preCreateDescendantDocuments}
+     * and {@linkcode RollTable._onCreateDescendantDocuments | RollTable#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<RollTable.Database.Create> {}
 
     /**
-     * Options for {@link RollTable._preUpdateDescendantDocuments | `RollTable#_preUpdateDescendantDocuments`}
-     * and {@link RollTable._onUpdateDescendantDocuments | `RollTable#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode RollTable._preUpdateDescendantDocuments | RollTable#_preUpdateDescendantDocuments}
+     * and {@linkcode RollTable._onUpdateDescendantDocuments | RollTable#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<RollTable.Database.Update> {}
 
     /**
-     * Options for {@link RollTable._preDeleteDescendantDocuments | `RollTable#_preDeleteDescendantDocuments`}
-     * and {@link RollTable._onDeleteDescendantDocuments | `RollTable#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode RollTable._preDeleteDescendantDocuments | RollTable#_preDeleteDescendantDocuments}
+     * and {@linkcode RollTable._onDeleteDescendantDocuments | RollTable#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<RollTable.Database.Delete> {}
 
