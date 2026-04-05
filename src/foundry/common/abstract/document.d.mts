@@ -1812,10 +1812,12 @@ declare namespace Document {
     metadata: { name: SystemType };
   };
 
+  // TODO: consider retiring? Unused in our repo
   type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = ImplementationClassFor<
     NameFor<ConcreteDocument>
   >;
 
+  // TODO: consider retiring? Unused in our repo
   type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = ImplementationFor<
     NameFor<ConcreteDocument>
   >;
@@ -3543,42 +3545,15 @@ declare namespace Document {
   }[Name];
 
   /**
-   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged
-   * into `Stored`.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type ToConfiguredStored<D extends Document.AnyConstructor> = Stored<ToConfiguredInstance<D>>;
-
-  /**
-   * @deprecated This type should not be used directly. Use {@linkcode StoredForName} as this type does not account for anything declaration
-   * merged into `Stored`.
-   */
-  type Stored<D extends ClientDocumentMixin.AnyMixed> = Document.Internal.Stored<D>;
-
-  /**
    * @deprecated This type should not be used directly. Use `InvalidForName` as this type does not account for anything declaration merged
    * into `Invalid`.
    */
   type Invalid<D extends Document.Any> = Document.Internal.Invalid<D>;
 
   /**
-   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged
-   * into `Stored`.
+   * @deprecated Replaced with {@linkcode Document.SheetClassFor}
    */
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type ToStored<D extends ClientDocumentMixin.AnyMixedConstructor> = Stored<FixedInstanceType<D>>;
-
-  /**
-   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged
-   * into `Stored`.
-   */
-  type ToStoredIf<D extends Document.AnyConstructor, Temporary extends boolean | undefined> = Temporary extends true
-    ? FixedInstanceType<D>
-    : // eslint-disable-next-line @typescript-eslint/no-deprecated
-      ToConfiguredStored<D>;
-
-  /** @deprecated This type currently does not have a replacement as it was deemed too niche. If you have a use case for it let us know. */
-  type Temporary<D extends Document.Any> = D extends Internal.Stored<infer U> ? U : D;
+  export import ConfiguredSheetClassFor = Document.SheetClassFor;
 
   /**
    * @deprecated Replaced with {@linkcode Document.ObjectClassFor}
@@ -3706,14 +3681,6 @@ declare namespace Document {
     S,
     K
   >;
-
-  type TemporaryIf<
-    D extends ClientDocumentMixin.AnyMixed,
-    Temporary extends boolean | undefined,
-  > = Temporary extends true
-    ? D
-    : // eslint-disable-next-line @typescript-eslint/no-deprecated
-      Stored<D>;
 
   type TemporaryIfForName<Name extends Document.Type, Temporary extends boolean | undefined> =
     | (Name extends "ActiveEffect" ? ActiveEffect.TemporaryIf<Temporary> : never)
