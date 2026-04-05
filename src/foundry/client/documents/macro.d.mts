@@ -1,9 +1,8 @@
 import type { ConfiguredMacro } from "#configuration";
 import type { Identity, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { BaseFolder, BaseUser } from "#client/documents/_module.d.mts";
-import type BaseMacro from "#common/documents/macro.d.mts";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
+import type { BaseFolder, BaseMacro, BaseUser } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 

@@ -9,10 +9,8 @@ import type {
   RequiredProps,
 } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { DataModel } from "#common/abstract/data.d.mts";
-import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { BaseCombat } from "#common/documents/_module.d.mts";
-import type BaseActiveEffect from "#common/documents/active-effect.d.mts";
+import type { DataModel, DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
+import type { BaseActiveEffect, BaseCombat } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */

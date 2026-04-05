@@ -9,9 +9,8 @@ import type {
   NullishProps,
 } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { BaseActor } from "#common/documents/_module.d.mts";
-import type BaseUser from "#common/documents/user.d.mts";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
+import type { BaseActor, BaseUser } from "#common/documents/_module.d.mts";
 import type { UserTargets } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { BaseRuler, Ping } from "#client/canvas/interaction/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";

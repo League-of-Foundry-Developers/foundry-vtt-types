@@ -1,9 +1,7 @@
-import type { DataSchema } from "#common/data/fields.d.mts";
 import type { ConfiguredActorDelta } from "#configuration";
 import type { Identity, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type DataModel from "#common/abstract/data.d.mts";
-import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { DataModel, DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 

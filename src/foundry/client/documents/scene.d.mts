@@ -1,10 +1,24 @@
 import type { InexactPartial, MaybeArray, Merge } from "#utils";
-import type { fields } from "#common/data/_module.d.mts";
+import type { fields, LightData, TextureData } from "#common/data/_module.d.mts";
 import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
-import type { documents } from "#client/client.d.mts";
-import type { LightData, TextureData } from "#common/data/data.d.mts";
-import type BaseScene from "#common/documents/scene.d.mts";
-import type ImageHelper from "#client/helpers/media/image-helper.d.mts";
+import type {
+  BaseAmbientLight,
+  BaseAmbientSound,
+  BaseDrawing,
+  BaseFolder,
+  BaseJournalEntry,
+  BaseJournalEntryPage,
+  BaseMeasuredTemplate,
+  BaseNote,
+  BasePlaylist,
+  BasePlaylistSound,
+  BaseRegion,
+  BaseScene,
+  BaseTile,
+  BaseToken,
+  BaseWall,
+} from "#common/documents/_module.d.mts";
+import type { ImageHelper } from "#client/helpers/media/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -599,61 +613,61 @@ declare namespace Scene {
      * A collection of embedded Drawing objects.
      * @defaultValue `[]`
      */
-    drawings: fields.EmbeddedCollectionField<typeof documents.BaseDrawing, Scene.Implementation>;
+    drawings: fields.EmbeddedCollectionField<typeof BaseDrawing, Scene.Implementation>;
 
     /**
      * A collection of embedded Tile objects.
      * @defaultValue `[]`
      */
-    tokens: fields.EmbeddedCollectionField<typeof documents.BaseToken, Scene.Implementation>;
+    tokens: fields.EmbeddedCollectionField<typeof BaseToken, Scene.Implementation>;
 
     /**
      * A collection of embedded Token objects.
      * @defaultValue `[]`
      */
-    lights: fields.EmbeddedCollectionField<typeof documents.BaseAmbientLight, Scene.Implementation>;
+    lights: fields.EmbeddedCollectionField<typeof BaseAmbientLight, Scene.Implementation>;
 
     /**
      * A collection of embedded AmbientLight objects.
      * @defaultValue `[]`
      */
-    notes: fields.EmbeddedCollectionField<typeof documents.BaseNote, Scene.Implementation>;
+    notes: fields.EmbeddedCollectionField<typeof BaseNote, Scene.Implementation>;
 
     /**
      * A collection of embedded Note objects.
      * @defaultValue `[]`
      */
-    sounds: fields.EmbeddedCollectionField<typeof documents.BaseAmbientSound, Scene.Implementation>;
+    sounds: fields.EmbeddedCollectionField<typeof BaseAmbientSound, Scene.Implementation>;
 
     /**
      * A collection of embedded Region documents.
      * @defaultValue `[]`
      */
-    regions: fields.EmbeddedCollectionField<typeof documents.BaseRegion, Scene.Implementation>;
+    regions: fields.EmbeddedCollectionField<typeof BaseRegion, Scene.Implementation>;
 
     /**
      * A collection of embedded AmbientSound objects.
      * @defaultValue `[]`
      */
-    templates: fields.EmbeddedCollectionField<typeof documents.BaseMeasuredTemplate, Scene.Implementation>;
+    templates: fields.EmbeddedCollectionField<typeof BaseMeasuredTemplate, Scene.Implementation>;
 
     /**
      * A collection of embedded MeasuredTemplate objects.
      * @defaultValue `[]`
      */
-    tiles: fields.EmbeddedCollectionField<typeof documents.BaseTile, Scene.Implementation>;
+    tiles: fields.EmbeddedCollectionField<typeof BaseTile, Scene.Implementation>;
 
     /**
      * A collection of embedded Wall objects
      * @defaultValue `[]`
      */
-    walls: fields.EmbeddedCollectionField<typeof documents.BaseWall, Scene.Implementation>;
+    walls: fields.EmbeddedCollectionField<typeof BaseWall, Scene.Implementation>;
 
     /**
      * A linked Playlist document which should begin automatically playing when this Scene becomes active.
      * @defaultValue `null`
      */
-    playlist: fields.ForeignDocumentField<typeof documents.BasePlaylist>;
+    playlist: fields.ForeignDocumentField<typeof BasePlaylist>;
 
     /**
      * A linked PlaylistSound document from the selected playlist that will
@@ -663,19 +677,19 @@ declare namespace Scene {
      * {@link Scene.prepareBaseData | `Scene#prepareBaseData`} attempts to `get()` this ID from the provided `playlist`, if any, making this
      * `PlaylistSound.Implementation | undefined | null` at runtime
      */
-    playlistSound: fields.ForeignDocumentField<typeof documents.BasePlaylistSound, { idOnly: true }>;
+    playlistSound: fields.ForeignDocumentField<typeof BasePlaylistSound, { idOnly: true }>;
 
     /**
      * A JournalEntry document which provides narrative details about this Scene
      * @defaultValue `null`
      */
-    journal: fields.ForeignDocumentField<typeof documents.BaseJournalEntry>;
+    journal: fields.ForeignDocumentField<typeof BaseJournalEntry>;
 
     /**
      * A document ID for a JournalEntryPage which provides narrative details about this Scene
      * @defaultValue `null`
      */
-    journalEntryPage: fields.ForeignDocumentField<typeof documents.BaseJournalEntryPage, { idOnly: true }>;
+    journalEntryPage: fields.ForeignDocumentField<typeof BaseJournalEntryPage, { idOnly: true }>;
 
     /**
      * A named weather effect which should be rendered in this Scene.
@@ -687,7 +701,7 @@ declare namespace Scene {
      * The _id of a Folder which contains this Actor
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The numeric sort value which orders this Actor relative to its siblings

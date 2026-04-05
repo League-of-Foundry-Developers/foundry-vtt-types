@@ -1,11 +1,8 @@
 import type { AnyObject, InexactPartial, NullishProps, Merge, Identity, MaybeArray } from "#utils";
-import type { documents } from "#client/client.d.mts";
 import type { ConfiguredActor } from "#configuration";
-import type { fields } from "#common/data/_module.d.mts";
-import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
-import type { BaseItem, BaseActiveEffect, BaseFolder } from "#client/documents/_module.d.mts";
-import type { PrototypeToken } from "#common/data/data.mjs";
-import type BaseActor from "#common/documents/actor.d.mts";
+import type { fields, PrototypeToken } from "#common/data/_module.d.mts";
+import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { BaseActiveEffect, BaseActor, BaseFolder, BaseItem } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 

@@ -1,8 +1,7 @@
 import type { MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { BaseScene, BaseUser } from "#client/documents/_module.d.mts";
-import type BaseFogExploration from "#common/documents/fog-exploration.mjs";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
+import type { BaseFogExploration, BaseScene, BaseUser } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */

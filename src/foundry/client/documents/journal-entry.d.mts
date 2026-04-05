@@ -1,8 +1,12 @@
 import type { InterfaceToObject, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
-import type { BaseFolder, BaseJournalEntryCategory, BaseJournalEntryPage } from "#client/documents/_module.d.mts";
-import type BaseJournalEntry from "#common/documents/journal-entry.mjs";
+import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type {
+  BaseFolder,
+  BaseJournalEntry,
+  BaseJournalEntryCategory,
+  BaseJournalEntryPage,
+} from "#client/documents/_module.d.mts";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
 import type { NotesLayer } from "#client/canvas/layers/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";

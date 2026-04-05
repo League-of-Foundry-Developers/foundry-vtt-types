@@ -1,9 +1,8 @@
 import type { ConfiguredItem } from "#configuration";
 import type { AnyObject, Identity, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
-import type { BaseActiveEffect, BaseFolder } from "#client/documents/_module.d.mts";
-import type BaseItem from "#common/documents/item.mjs";
+import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { BaseActiveEffect, BaseFolder, BaseItem } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */

@@ -1,9 +1,9 @@
 import type { ConfiguredJournalEntryPage } from "#configuration";
 import type { AnyObject, Identity, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type BaseJournalEntryPage from "#common/documents/journal-entry-page.d.mts";
-import type TextEditor from "#client/applications/ux/text-editor.mjs";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
+import type { BaseJournalEntryPage } from "#common/documents/_module.d.mts";
+import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 

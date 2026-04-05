@@ -1,8 +1,7 @@
 import type { IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields, ShapeData } from "#common/data/_module.mjs";
-import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type { BaseUser } from "#client/documents/_module.d.mts";
-import type BaseDrawing from "#common/documents/drawing.mjs";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
+import type { BaseDrawing, BaseUser } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */

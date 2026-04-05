@@ -1,8 +1,8 @@
 import type { ConfiguredChatMessage } from "#configuration";
 import type { AnyObject, Identity, InterfaceToObject, MaybeArray, Merge, NullishProps } from "#utils";
-import type { BaseActor, BaseChatMessage, BaseScene, BaseToken, BaseUser } from "#client/documents/_module.d.mts";
-import type { Document, DatabaseBackend } from "#common/abstract/_module.d.mts";
 import type { fields } from "#common/data/_module.d.mts";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
+import type { BaseActor, BaseChatMessage, BaseScene, BaseToken, BaseUser } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 

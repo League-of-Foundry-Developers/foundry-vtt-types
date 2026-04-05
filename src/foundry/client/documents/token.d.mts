@@ -10,14 +10,12 @@ import type {
   Merge,
   NullishProps,
 } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type { DataModel, Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
-import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
 import type { ActorDeltaField } from "#common/documents/token.d.mts";
-import type { BaseToken } from "#common/documents/_module.d.mts";
 import type { LightData, TextureData, fields } from "#common/data/_module.d.mts";
+import type { DataModel, DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { BaseActor, BaseActorDelta, BaseRegion, BaseToken, BaseUser } from "#common/documents/_module.d.mts";
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
-import type { TerrainData } from "#client/data/terrain-data.mjs";
+import type { TerrainData } from "#client/data/terrain-data.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
@@ -307,7 +305,7 @@ declare namespace TokenDocument {
    * Foundry technically implements this through deletion, but it's easier for us to do by extension as there are field
    * option overrides (e.g `textSearch` on `name`) that cause type issues otherwise.
    */
-  interface SharedProtoSchema extends DataSchema {
+  interface SharedProtoSchema extends fields.DataSchema {
     // `name` omitted here because, while it is not in the list of omitted fields for `PrototypeToken`,
     // it's `textSearch: true` in the base schema, but overridden to `false` in `PrototypeToken`.
 
@@ -647,7 +645,7 @@ declare namespace TokenDocument {
     flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
   }
 
-  interface DetectionModeSchema extends DataSchema {
+  interface DetectionModeSchema extends fields.DataSchema {
     /**
      * The id of the detection mode, a key from CONFIG.Canvas.detectionModes
      * @defaultValue `""`
@@ -667,9 +665,9 @@ declare namespace TokenDocument {
     range: fields.NumberField<{ required: true; min: 0; step: 0.01 }>;
   }
 
-  interface DetectionModeData extends SchemaField.InitializedData<DetectionModeSchema> {}
+  interface DetectionModeData extends fields.SchemaField.InitializedData<DetectionModeSchema> {}
 
-  interface MeasuredMovementWaypointSchema extends DataSchema {
+  interface MeasuredMovementWaypointSchema extends fields.DataSchema {
     /**
      * The top-left x-coordinate in pixels (integer).
      * @defaultValue `undefined`
@@ -759,10 +757,7 @@ declare namespace TokenDocument {
      * The ID of the user that moved the token to from the previous to this waypoint.
      * @defaultValue `undefined`
      */
-    userId: fields.ForeignDocumentField<
-      typeof documents.BaseUser,
-      { idOnly: true; required: true; initial: undefined }
-    >;
+    userId: fields.ForeignDocumentField<typeof BaseUser, { idOnly: true; required: true; initial: undefined }>;
 
     /**
      * The ID of the movement from the previous to this waypoint.
@@ -782,7 +777,7 @@ declare namespace TokenDocument {
     cost: fields.NumberField<{ required: true; nullable: false; min: 0; initial: undefined }>;
   }
 
-  interface MeasuredMovementWaypoint extends SchemaField.InitializedData<MeasuredMovementWaypointSchema> {}
+  interface MeasuredMovementWaypoint extends fields.SchemaField.InitializedData<MeasuredMovementWaypointSchema> {}
 
   /**
    * @remarks The interface for passing to {@linkcode TokenDocument.measureMovementPath | TokenDocument#measureMovementPath}, which pulls
@@ -868,13 +863,13 @@ declare namespace TokenDocument {
      * The _id of an Actor document which this Token represents
      * @defaultValue `null`
      */
-    actorId: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
+    actorId: fields.ForeignDocumentField<typeof BaseActor, { idOnly: true }>;
 
     /**
      * The ActorDelta embedded document which stores the differences between this
      * token and the base actor it represents.
      */
-    delta: ActorDeltaField<typeof documents.BaseActorDelta>;
+    delta: ActorDeltaField<typeof BaseActorDelta>;
 
     /**
      * The shape of the Token
@@ -927,7 +922,7 @@ declare namespace TokenDocument {
     _movementHistory: fields.ArrayField<fields.SchemaField<MeasuredMovementWaypointSchema>>;
 
     /** @internal */
-    _regions: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseRegion, { idOnly: true }>>;
+    _regions: fields.ArrayField<fields.ForeignDocumentField<typeof BaseRegion, { idOnly: true }>>;
   }
 
   namespace Database {
@@ -1907,7 +1902,7 @@ declare namespace TokenDocument {
   type TrackedAttributesSubject =
     | DataModel.Any
     | DataModel.AnyConstructor
-    | SchemaField.Any
+    | fields.SchemaField.Any
     | Actor.SubType
     | AnyObject
     | AnyArray;
@@ -2889,7 +2884,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param schema - The schema to explore for attributes.
    */
   protected static _getTrackedAttributesFromSchema(
-    schema: SchemaField.Any,
+    schema: fields.SchemaField.Any,
     _path?: string[],
   ): TokenDocument.TrackedAttributesDescription;
 

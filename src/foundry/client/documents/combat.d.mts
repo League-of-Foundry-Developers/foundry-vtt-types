@@ -1,11 +1,9 @@
 import type { ConfiguredCombat } from "#configuration";
 import type { Identity, InexactPartial, Merge, NullishProps, MaybeArray, IntentionalPartial } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type BaseCombat from "#common/documents/combat.d.mts";
+import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.mjs";
+import type { BaseCombat, BaseCombatant, BaseCombatantGroup, BaseScene } from "#common/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
-import type { DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.mjs";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -370,19 +368,19 @@ declare namespace Combat {
      * The _id of a Scene within which this Combat occurs
      * @defaultValue `null`
      */
-    scene: fields.ForeignDocumentField<typeof documents.BaseScene>;
+    scene: fields.ForeignDocumentField<typeof BaseScene>;
 
     /**
      * A Collection of Documents that represent a grouping of individual Combatants
      * @defaultValue `[]`
      */
-    groups: fields.EmbeddedCollectionField<typeof documents.BaseCombatantGroup, Combat.Implementation>;
+    groups: fields.EmbeddedCollectionField<typeof BaseCombatantGroup, Combat.Implementation>;
 
     /**
      * A Collection of Combatant embedded Documents
      * @defaultValue `[]`
      */
-    combatants: fields.EmbeddedCollectionField<typeof documents.BaseCombatant, Combat.Implementation>;
+    combatants: fields.EmbeddedCollectionField<typeof BaseCombatant, Combat.Implementation>;
 
     /**
      * Is the Combat encounter currently active?

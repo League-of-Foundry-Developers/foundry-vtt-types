@@ -1,9 +1,8 @@
 import type { ConfiguredCards } from "#configuration";
 import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type { Document, DatabaseBackend, EmbeddedCollection } from "#common/abstract/_module.d.mts";
-import type { BaseCard, BaseFolder } from "#client/documents/_module.d.mts";
-import type BaseCards from "#common/documents/cards.d.mts";
+import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { BaseCard, BaseCards, BaseFolder } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */
