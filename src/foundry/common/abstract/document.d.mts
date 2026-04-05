@@ -41,10 +41,12 @@ import type {
 import type { FormSelectOption } from "#client/applications/forms/fields.d.mts";
 import type { LogCompatibilityWarningOptions } from "../utils/logging.mts";
 import type { DocumentSocketRequest } from "./_types.d.mts";
-import type { DatabaseBackend } from "#common/abstract/_module.d.mts";
-import type DataModel from "./data.mts";
-import type DocumentSocketResponse from "./socket.d.mts";
-import type EmbeddedCollection from "./embedded-collection.d.mts";
+import type {
+  DataModel,
+  DatabaseBackend,
+  DocumentSocketResponse,
+  EmbeddedCollection,
+} from "#common/abstract/_module.d.mts";
 import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 import type WorldCollection from "#client/documents/abstract/world-collection.d.mts";
