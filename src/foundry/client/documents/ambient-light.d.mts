@@ -1,6 +1,5 @@
 import type { InexactPartial, InterfaceToObject, Merge } from "#utils";
-import type { fields } from "#common/data/_module.d.mts";
-import type { LightData } from "#common/data/data.mjs";
+import type { fields, LightData } from "#common/data/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseAmbientLight } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";

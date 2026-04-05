@@ -1,11 +1,10 @@
 import type { AnyArray, AnyObject, DeepReadonly, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
 import type { ActorDeltaField } from "#common/documents/token.d.mts";
 import type { BaseActor, BaseActorDelta, BaseRegion, BaseToken, BaseUser } from "#common/documents/_module.d.mts";
 import type { LightData, TextureData, fields } from "#common/data/_module.d.mts";
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
-import type { TerrainData } from "#client/data/terrain-data.mjs";
+import type { TerrainData } from "#client/data/terrain-data.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
@@ -608,7 +607,7 @@ declare namespace TokenDocument {
     range: fields.NumberField<{ required: true; min: 0; step: 0.01 }>;
   }
 
-  interface DetectionModeData extends SchemaField.InitializedData<DetectionModeSchema> {}
+  interface DetectionModeData extends fields.SchemaField.InitializedData<DetectionModeSchema> {}
 
   interface MeasuredMovementWaypointSchema extends fields.DataSchema {
     /**
@@ -720,7 +719,7 @@ declare namespace TokenDocument {
     cost: fields.NumberField<{ required: true; nullable: false; min: 0; initial: undefined }>;
   }
 
-  interface MeasuredMovementWaypoint extends SchemaField.InitializedData<MeasuredMovementWaypointSchema> {}
+  interface MeasuredMovementWaypoint extends fields.SchemaField.InitializedData<MeasuredMovementWaypointSchema> {}
 
   interface GetCompleteMovementPathWaypoint extends InexactPartial<
     Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost">
@@ -1087,7 +1086,7 @@ declare namespace TokenDocument {
   type TrackedAttributesSubject =
     | DataModel.Any
     | DataModel.AnyConstructor
-    | SchemaField.Any
+    | fields.SchemaField.Any
     | Actor.SubType
     | AnyObject
     | AnyArray;
@@ -2075,7 +2074,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param schema - The schema to explore for attributes.
    */
   protected static _getTrackedAttributesFromSchema(
-    schema: SchemaField.Any,
+    schema: fields.SchemaField.Any,
     _path?: string[],
   ): TokenDocument.TrackedAttributesDescription;
 

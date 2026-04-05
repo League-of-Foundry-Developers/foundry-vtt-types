@@ -1,7 +1,6 @@
 import type { InexactPartial, Merge } from "#utils";
-import type { fields } from "#common/data/_module.d.mts";
+import type { LightData, TextureData, fields } from "#common/data/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
-import type { LightData, TextureData } from "#common/data/data.d.mts";
 import type {
   BaseAmbientLight,
   BaseAmbientSound,
