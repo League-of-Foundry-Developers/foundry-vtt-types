@@ -23,7 +23,7 @@ declare namespace JournalEntryCategory {
 
   /**
    * The implementation of the `JournalEntryCategory` document instance configured through `CONFIG.JournalEntryCategory.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredJournalEntryCategory | `fvtt-types/configuration/ConfiguredJournalEntryCategory`} in fvtt-types.
+   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredJournalEntryCategory | fvtt-types/configuration/ConfiguredJournalEntryCategory} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
@@ -83,7 +83,7 @@ declare namespace JournalEntryCategory {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -109,37 +109,37 @@ declare namespace JournalEntryCategory {
   type Stored = Document.Internal.Stored<JournalEntryCategory.Implementation>;
 
   /**
-   * The data put in {@link JournalEntryCategory._source | `JournalEntryCategory#_source`}. This data is what was
+   * The data put in {@linkcode JournalEntryCategory._source | JournalEntryCategory#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode JournalEntryCategory.create}
-   * and {@link JournalEntryCategory | `new JournalEntryCategory(...)`}.
+   * and {@linkcode JournalEntryCategory | new JournalEntryCategory(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link JournalEntryCategory.name | `JournalEntryCategory#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode JournalEntryCategory.name | JournalEntryCategory#name}.
    *
    * This is data transformed from {@linkcode JournalEntryCategory.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link JournalEntryCategory.update | `JournalEntryCategory#update`}.
-   * It is a distinct type from {@link JournalEntryCategory.CreateData | `DeepPartial<JournalEntryCategory.CreateData>`} because
+   * The data used to update a document, for example {@linkcode JournalEntryCategory.update | JournalEntryCategory#update}.
+   * It is a distinct type from {@linkcode JournalEntryCategory.CreateData | DeepPartial<JournalEntryCategory.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -149,8 +149,8 @@ declare namespace JournalEntryCategory {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode JournalEntryCategory}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -217,7 +217,7 @@ declare namespace JournalEntryCategory {
       JournalEntryCategory.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link JournalEntryCategory.update | `JournalEntryCategory#update`} */
+    /** Operation for {@linkcode JournalEntryCategory.update | JournalEntryCategory#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -225,41 +225,41 @@ declare namespace JournalEntryCategory {
     /** Options for {@linkcode JournalEntryCategory.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link JournalEntryCategory._preCreate | `JournalEntryCategory#_preCreate`} */
+    /** Options for {@linkcode JournalEntryCategory._preCreate | JournalEntryCategory#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link JournalEntryCategory._onCreate | `JournalEntryCategory#_onCreate`} */
+    /** Options for {@linkcode JournalEntryCategory._onCreate | JournalEntryCategory#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode JournalEntryCategory._preCreateOperation} */
     interface PreCreateOperation extends Document.Database
       .PreCreateOperationStatic<JournalEntryCategory.Database.Create> {}
 
-    /** Operation for {@link JournalEntryCategory._onCreateOperation | `JournalEntryCategory#_onCreateOperation`} */
+    /** Operation for {@linkcode JournalEntryCategory._onCreateOperation | JournalEntryCategory#_onCreateOperation} */
     interface OnCreateOperation extends JournalEntryCategory.Database.Create {}
 
-    /** Options for {@link JournalEntryCategory._preUpdate | `JournalEntryCategory#_preUpdate`} */
+    /** Options for {@linkcode JournalEntryCategory._preUpdate | JournalEntryCategory#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link JournalEntryCategory._onUpdate | `JournalEntryCategory#_onUpdate`} */
+    /** Options for {@linkcode JournalEntryCategory._onUpdate | JournalEntryCategory#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode JournalEntryCategory._preUpdateOperation} */
     interface PreUpdateOperation extends JournalEntryCategory.Database.Update {}
 
-    /** Operation for {@link JournalEntryCategory._onUpdateOperation | `JournalEntryCategory._preUpdateOperation`} */
+    /** Operation for {@linkcode JournalEntryCategory._onUpdateOperation | JournalEntryCategory._preUpdateOperation} */
     interface OnUpdateOperation extends JournalEntryCategory.Database.Update {}
 
-    /** Options for {@link JournalEntryCategory._preDelete | `JournalEntryCategory#_preDelete`} */
+    /** Options for {@linkcode JournalEntryCategory._preDelete | JournalEntryCategory#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link JournalEntryCategory._onDelete | `JournalEntryCategory#_onDelete`} */
+    /** Options for {@linkcode JournalEntryCategory._onDelete | JournalEntryCategory#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link JournalEntryCategory._preDeleteOperation | `JournalEntryCategory#_preDeleteOperation`} */
+    /** Options for {@linkcode JournalEntryCategory._preDeleteOperation | JournalEntryCategory#_preDeleteOperation} */
     interface PreDeleteOperation extends JournalEntryCategory.Database.Delete {}
 
-    /** Options for {@link JournalEntryCategory._onDeleteOperation | `JournalEntryCategory#_onDeleteOperation`} */
+    /** Options for {@linkcode JournalEntryCategory._onDeleteOperation | JournalEntryCategory#_onDeleteOperation} */
     interface OnDeleteOperation extends JournalEntryCategory.Database.Delete {}
 
     /** Context for {@linkcode JournalEntryCategory._onDeleteOperation} */
@@ -272,20 +272,20 @@ declare namespace JournalEntryCategory {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<JournalEntryCategory.Parent> {}
 
     /**
-     * Options for {@link JournalEntryCategory._preCreateDescendantDocuments | `JournalEntryCategory#_preCreateDescendantDocuments`}
-     * and {@link JournalEntryCategory._onCreateDescendantDocuments | `JournalEntryCategory#_onCreateDescendantDocuments`}
+     * Options for {@linkcode JournalEntryCategory._preCreateDescendantDocuments | JournalEntryCategory#_preCreateDescendantDocuments}
+     * and {@linkcode JournalEntryCategory._onCreateDescendantDocuments | JournalEntryCategory#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<JournalEntryCategory.Database.Create> {}
 
     /**
-     * Options for {@link JournalEntryCategory._preUpdateDescendantDocuments | `JournalEntryCategory#_preUpdateDescendantDocuments`}
-     * and {@link JournalEntryCategory._onUpdateDescendantDocuments | `JournalEntryCategory#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode JournalEntryCategory._preUpdateDescendantDocuments | JournalEntryCategory#_preUpdateDescendantDocuments}
+     * and {@linkcode JournalEntryCategory._onUpdateDescendantDocuments | JournalEntryCategory#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<JournalEntryCategory.Database.Update> {}
 
     /**
-     * Options for {@link JournalEntryCategory._preDeleteDescendantDocuments | `JournalEntryCategory#_preDeleteDescendantDocuments`}
-     * and {@link JournalEntryCategory._onDeleteDescendantDocuments | `JournalEntryCategory#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode JournalEntryCategory._preDeleteDescendantDocuments | JournalEntryCategory#_preDeleteDescendantDocuments}
+     * and {@linkcode JournalEntryCategory._onDeleteDescendantDocuments | JournalEntryCategory#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<JournalEntryCategory.Database.Delete> {}
 

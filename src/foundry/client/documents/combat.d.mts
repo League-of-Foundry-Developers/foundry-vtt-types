@@ -26,7 +26,7 @@ declare namespace Combat {
 
   /**
    * The implementation of the `Combat` document instance configured through `CONFIG.Combat.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`} in fvtt-types.
+   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredCombat | fvtt-types/configuration/ConfiguredCombat} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
@@ -102,7 +102,7 @@ declare namespace Combat {
   /**
    * `OfType` returns an instance of `Combat` with the corresponding type. This works with both the
    * builtin `Combat` class or a custom subclass if that is set up in
-   * {@link ConfiguredCombat | `fvtt-types/configuration/ConfiguredCombat`}.
+   * {@linkcode ConfiguredCombat | fvtt-types/configuration/ConfiguredCombat}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -236,7 +236,7 @@ declare namespace Combat {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -262,19 +262,19 @@ declare namespace Combat {
   type Stored<SubType extends Combat.SubType = Combat.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link Combat._source | `Combat#_source`}. This data is what was
+   * The data put in {@linkcode Combat._source | Combat#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Combat.create}
-   * and {@link Combat | `new Combat(...)`}.
+   * and {@linkcode Combat | new Combat(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -283,18 +283,18 @@ declare namespace Combat {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Combat.name | `Combat#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode Combat.name | Combat#name}.
    *
    * This is data transformed from {@linkcode Combat.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Combat.update | `Combat#update`}.
-   * It is a distinct type from {@link Combat.CreateData | `DeepPartial<Combat.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Combat.update | Combat#update}.
+   * It is a distinct type from {@linkcode Combat.CreateData | DeepPartial<Combat.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -304,8 +304,8 @@ declare namespace Combat {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Combat}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -415,7 +415,7 @@ declare namespace Combat {
       Combat.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Combat.update | `Combat#update`} */
+    /** Operation for {@linkcode Combat.update | Combat#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -423,40 +423,40 @@ declare namespace Combat {
     /** Options for {@linkcode Combat.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Combat._preCreate | `Combat#_preCreate`} */
+    /** Options for {@linkcode Combat._preCreate | Combat#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Combat._onCreate | `Combat#_onCreate`} */
+    /** Options for {@linkcode Combat._onCreate | Combat#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Combat._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Combat.Database.Create> {}
 
-    /** Operation for {@link Combat._onCreateOperation | `Combat#_onCreateOperation`} */
+    /** Operation for {@linkcode Combat._onCreateOperation | Combat#_onCreateOperation} */
     interface OnCreateOperation extends Combat.Database.Create {}
 
-    /** Options for {@link Combat._preUpdate | `Combat#_preUpdate`} */
+    /** Options for {@linkcode Combat._preUpdate | Combat#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Combat._onUpdate | `Combat#_onUpdate`} */
+    /** Options for {@linkcode Combat._onUpdate | Combat#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Combat._preUpdateOperation} */
     interface PreUpdateOperation extends Combat.Database.Update {}
 
-    /** Operation for {@link Combat._onUpdateOperation | `Combat._preUpdateOperation`} */
+    /** Operation for {@linkcode Combat._onUpdateOperation | Combat._preUpdateOperation} */
     interface OnUpdateOperation extends Combat.Database.Update {}
 
-    /** Options for {@link Combat._preDelete | `Combat#_preDelete`} */
+    /** Options for {@linkcode Combat._preDelete | Combat#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Combat._onDelete | `Combat#_onDelete`} */
+    /** Options for {@linkcode Combat._onDelete | Combat#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Combat._preDeleteOperation | `Combat#_preDeleteOperation`} */
+    /** Options for {@linkcode Combat._preDeleteOperation | Combat#_preDeleteOperation} */
     interface PreDeleteOperation extends Combat.Database.Delete {}
 
-    /** Options for {@link Combat._onDeleteOperation | `Combat#_onDeleteOperation`} */
+    /** Options for {@linkcode Combat._onDeleteOperation | Combat#_onDeleteOperation} */
     interface OnDeleteOperation extends Combat.Database.Delete {}
 
     /** Context for {@linkcode Combat._onDeleteOperation} */
@@ -469,20 +469,20 @@ declare namespace Combat {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Combat.Parent> {}
 
     /**
-     * Options for {@link Combat._preCreateDescendantDocuments | `Combat#_preCreateDescendantDocuments`}
-     * and {@link Combat._onCreateDescendantDocuments | `Combat#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Combat._preCreateDescendantDocuments | Combat#_preCreateDescendantDocuments}
+     * and {@linkcode Combat._onCreateDescendantDocuments | Combat#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Combat.Database.Create> {}
 
     /**
-     * Options for {@link Combat._preUpdateDescendantDocuments | `Combat#_preUpdateDescendantDocuments`}
-     * and {@link Combat._onUpdateDescendantDocuments | `Combat#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Combat._preUpdateDescendantDocuments | Combat#_preUpdateDescendantDocuments}
+     * and {@linkcode Combat._onUpdateDescendantDocuments | Combat#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Combat.Database.Update> {}
 
     /**
-     * Options for {@link Combat._preDeleteDescendantDocuments | `Combat#_preDeleteDescendantDocuments`}
-     * and {@link Combat._onDeleteDescendantDocuments | `Combat#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Combat._preDeleteDescendantDocuments | Combat#_preDeleteDescendantDocuments}
+     * and {@linkcode Combat._onDeleteDescendantDocuments | Combat#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Combat.Database.Delete> {}
 
@@ -646,8 +646,8 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   /**
    * Track the previous round, turn, and tokenId to understand changes in the encounter state
-   * @remarks Only `undefined` prior to first {@link Combat._onUpdate | `Combat#_onUpdate`} or {@link Combat.setupTurns | `Combat#setupTurns`} (which is called in
-   * {@link Combat.prepareDerivedData | `Combat#prepareDerivedData`}) call
+   * @remarks Only `undefined` prior to first {@linkcode Combat._onUpdate | Combat#_onUpdate} or {@linkcode Combat.setupTurns | Combat#setupTurns} (which is called in
+   * {@linkcode Combat.prepareDerivedData | Combat#prepareDerivedData}) call
    */
   previous: Combat.HistoryData | undefined;
 
@@ -655,7 +655,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * The configuration setting used to record Combat preferences
    * @defaultValue `"combatTrackerConfig"`
    * @privateRemarks Right now it doesn't make sense to make this not a literal, as `type CONFIG_SETTING` is static, so changing this would
-   * just make {@link Combat.settings | `Combat#settings`} and {@linkcode CombatEncounters.settings} incorrect
+   * just make {@linkcode Combat.settings | Combat#settings} and {@linkcode CombatEncounters.settings} incorrect
    */
   // TODO: Make the setting name configurable?
   static CONFIG_SETTING: "combatTrackerConfig";
@@ -694,7 +694,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    */
   activate(options?: Combat.Database.UpdateOperation): Promise<Combat.Implementation[]>;
 
-  /** @remarks Calls {@link Combat.setupTurns | `Combat#setupTurns`} if there is at least one Combatant and `this.turns` is empty */
+  /** @remarks Calls {@linkcode Combat.setupTurns | Combat#setupTurns} if there is at least one Combatant and `this.turns` is empty */
   override prepareDerivedData(): void;
 
   /**
@@ -989,13 +989,13 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   /**
    * @deprecated Since v12, no stated end
-   * @remarks Foundry provides no deprecation warning; use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
+   * @remarks Foundry provides no deprecation warning; use {@linkcode Combat.getCombatantsByActor | Combat#getCombatantsByActor} instead.
    */
   getCombatantByActor(actor: string | Actor.Implementation): Combatant.Implementation | null;
 
   /**
    * @deprecated Since v12, no stated end
-   * @remarks Foundry provides no deprecation warning; use {@link Combat.getCombatantsByActor | `Combat#getCombatantsByActor`} instead.
+   * @remarks Foundry provides no deprecation warning; use {@linkcode Combat.getCombatantsByActor | Combat#getCombatantsByActor} instead.
    */
   getCombatantByToken(token: string | Token.Implementation): Combatant.Implementation | null;
 

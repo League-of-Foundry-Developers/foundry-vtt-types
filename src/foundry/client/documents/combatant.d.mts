@@ -25,7 +25,7 @@ declare namespace Combatant {
 
   /**
    * The implementation of the `Combatant` document instance configured through `CONFIG.Combatant.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`} in fvtt-types.
+   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredCombatant | fvtt-types/configuration/ConfiguredCombatant} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
@@ -95,7 +95,7 @@ declare namespace Combatant {
   /**
    * `OfType` returns an instance of `Combatant` with the corresponding type. This works with both the
    * builtin `Combatant` class or a custom subclass if that is set up in
-   * {@link ConfiguredCombatant | `fvtt-types/configuration/ConfiguredCombatant`}.
+   * {@linkcode ConfiguredCombatant | fvtt-types/configuration/ConfiguredCombatant}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -164,7 +164,7 @@ declare namespace Combatant {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -190,19 +190,19 @@ declare namespace Combatant {
   type Stored<SubType extends Combatant.SubType = Combatant.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link Combatant._source | `Combatant#_source`}. This data is what was
+   * The data put in {@linkcode Combatant._source | Combatant#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Combatant.create}
-   * and {@link Combatant | `new Combatant(...)`}.
+   * and {@linkcode Combatant | new Combatant(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -212,18 +212,18 @@ declare namespace Combatant {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Combatant.name | `Combatant#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode Combatant.name | Combatant#name}.
    *
    * This is data transformed from {@linkcode Combatant.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Combatant.update | `Combatant#update`}.
-   * It is a distinct type from {@link Combatant.CreateData | `DeepPartial<Combatant.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Combatant.update | Combatant#update}.
+   * It is a distinct type from {@linkcode Combatant.CreateData | DeepPartial<Combatant.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -233,8 +233,8 @@ declare namespace Combatant {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Combatant}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -351,7 +351,7 @@ declare namespace Combatant {
       Combatant.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Combatant.update | `Combatant#update`} */
+    /** Operation for {@linkcode Combatant.update | Combatant#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -359,40 +359,40 @@ declare namespace Combatant {
     /** Options for {@linkcode Combatant.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Combatant._preCreate | `Combatant#_preCreate`} */
+    /** Options for {@linkcode Combatant._preCreate | Combatant#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Combatant._onCreate | `Combatant#_onCreate`} */
+    /** Options for {@linkcode Combatant._onCreate | Combatant#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Combatant._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Combatant.Database.Create> {}
 
-    /** Operation for {@link Combatant._onCreateOperation | `Combatant#_onCreateOperation`} */
+    /** Operation for {@linkcode Combatant._onCreateOperation | Combatant#_onCreateOperation} */
     interface OnCreateOperation extends Combatant.Database.Create {}
 
-    /** Options for {@link Combatant._preUpdate | `Combatant#_preUpdate`} */
+    /** Options for {@linkcode Combatant._preUpdate | Combatant#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Combatant._onUpdate | `Combatant#_onUpdate`} */
+    /** Options for {@linkcode Combatant._onUpdate | Combatant#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Combatant._preUpdateOperation} */
     interface PreUpdateOperation extends Combatant.Database.Update {}
 
-    /** Operation for {@link Combatant._onUpdateOperation | `Combatant._preUpdateOperation`} */
+    /** Operation for {@linkcode Combatant._onUpdateOperation | Combatant._preUpdateOperation} */
     interface OnUpdateOperation extends Combatant.Database.Update {}
 
-    /** Options for {@link Combatant._preDelete | `Combatant#_preDelete`} */
+    /** Options for {@linkcode Combatant._preDelete | Combatant#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Combatant._onDelete | `Combatant#_onDelete`} */
+    /** Options for {@linkcode Combatant._onDelete | Combatant#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Combatant._preDeleteOperation | `Combatant#_preDeleteOperation`} */
+    /** Options for {@linkcode Combatant._preDeleteOperation | Combatant#_preDeleteOperation} */
     interface PreDeleteOperation extends Combatant.Database.Delete {}
 
-    /** Options for {@link Combatant._onDeleteOperation | `Combatant#_onDeleteOperation`} */
+    /** Options for {@linkcode Combatant._onDeleteOperation | Combatant#_onDeleteOperation} */
     interface OnDeleteOperation extends Combatant.Database.Delete {}
 
     /** Context for {@linkcode Combatant._onDeleteOperation} */
@@ -405,20 +405,20 @@ declare namespace Combatant {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Combatant.Parent> {}
 
     /**
-     * Options for {@link Combatant._preCreateDescendantDocuments | `Combatant#_preCreateDescendantDocuments`}
-     * and {@link Combatant._onCreateDescendantDocuments | `Combatant#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Combatant._preCreateDescendantDocuments | Combatant#_preCreateDescendantDocuments}
+     * and {@linkcode Combatant._onCreateDescendantDocuments | Combatant#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Combatant.Database.Create> {}
 
     /**
-     * Options for {@link Combatant._preUpdateDescendantDocuments | `Combatant#_preUpdateDescendantDocuments`}
-     * and {@link Combatant._onUpdateDescendantDocuments | `Combatant#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Combatant._preUpdateDescendantDocuments | Combatant#_preUpdateDescendantDocuments}
+     * and {@linkcode Combatant._onUpdateDescendantDocuments | Combatant#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Combatant.Database.Update> {}
 
     /**
-     * Options for {@link Combatant._preDeleteDescendantDocuments | `Combatant#_preDeleteDescendantDocuments`}
-     * and {@link Combatant._onDeleteDescendantDocuments | `Combatant#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Combatant._preDeleteDescendantDocuments | Combatant#_preDeleteDescendantDocuments}
+     * and {@linkcode Combatant._onDeleteDescendantDocuments | Combatant#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Combatant.Database.Delete> {}
 
@@ -531,7 +531,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
 
   /**
    * Eschew `ClientDocument`'s redirection to `Combat#permission` in favor of special ownership determination.
-   * @remarks Uses {@link BaseCombatant.getUserLevel | `BaseCombatant#getUserLevel`}, so can't return `null`
+   * @remarks Uses {@linkcode BaseCombatant.getUserLevel | BaseCombatant#getUserLevel}, so can't return `null`
    */
   override get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
@@ -566,7 +566,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   rollInitiative(formula?: string): Promise<this | undefined>;
 
   /**
-   * @remarks Initializes `_videoSrc`, applies `img` and `name` fallbacks, and calls {@link Combatant.updateResource | `Combatant#updateResource`}
+   * @remarks Initializes `_videoSrc`, applies `img` and `name` fallbacks, and calls {@linkcode Combatant.updateResource | Combatant#updateResource}
    */
   override prepareDerivedData(): void;
 

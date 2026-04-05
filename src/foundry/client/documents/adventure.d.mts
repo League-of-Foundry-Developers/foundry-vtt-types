@@ -23,7 +23,7 @@ declare namespace Adventure {
 
   /**
    * The implementation of the `Adventure` document instance configured through `CONFIG.Adventure.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredAdventure | `fvtt-types/configuration/ConfiguredAdventure`} in fvtt-types.
+   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredAdventure | fvtt-types/configuration/ConfiguredAdventure} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
@@ -89,7 +89,7 @@ declare namespace Adventure {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -115,37 +115,37 @@ declare namespace Adventure {
   type Stored = Document.Internal.Stored<Adventure.Implementation>;
 
   /**
-   * The data put in {@link Adventure._source | `Adventure#_source`}. This data is what was
+   * The data put in {@linkcode Adventure._source | Adventure#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Adventure.create}
-   * and {@link Adventure | `new Adventure(...)`}.
+   * and {@linkcode Adventure | new Adventure(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Adventure.name | `Adventure#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode Adventure.name | Adventure#name}.
    *
    * This is data transformed from {@linkcode Adventure.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Adventure.update | `Adventure#update`}.
-   * It is a distinct type from {@link Adventure.CreateData | `DeepPartial<Adventure.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Adventure.update | Adventure#update}.
+   * It is a distinct type from {@linkcode Adventure.CreateData | DeepPartial<Adventure.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -155,8 +155,8 @@ declare namespace Adventure {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Adventure}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -307,7 +307,7 @@ declare namespace Adventure {
       Adventure.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Adventure.update | `Adventure#update`} */
+    /** Operation for {@linkcode Adventure.update | Adventure#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -315,40 +315,40 @@ declare namespace Adventure {
     /** Options for {@linkcode Adventure.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Adventure._preCreate | `Adventure#_preCreate`} */
+    /** Options for {@linkcode Adventure._preCreate | Adventure#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Adventure._onCreate | `Adventure#_onCreate`} */
+    /** Options for {@linkcode Adventure._onCreate | Adventure#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Adventure._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Adventure.Database.Create> {}
 
-    /** Operation for {@link Adventure._onCreateOperation | `Adventure#_onCreateOperation`} */
+    /** Operation for {@linkcode Adventure._onCreateOperation | Adventure#_onCreateOperation} */
     interface OnCreateOperation extends Adventure.Database.Create {}
 
-    /** Options for {@link Adventure._preUpdate | `Adventure#_preUpdate`} */
+    /** Options for {@linkcode Adventure._preUpdate | Adventure#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Adventure._onUpdate | `Adventure#_onUpdate`} */
+    /** Options for {@linkcode Adventure._onUpdate | Adventure#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Adventure._preUpdateOperation} */
     interface PreUpdateOperation extends Adventure.Database.Update {}
 
-    /** Operation for {@link Adventure._onUpdateOperation | `Adventure._preUpdateOperation`} */
+    /** Operation for {@linkcode Adventure._onUpdateOperation | Adventure._preUpdateOperation} */
     interface OnUpdateOperation extends Adventure.Database.Update {}
 
-    /** Options for {@link Adventure._preDelete | `Adventure#_preDelete`} */
+    /** Options for {@linkcode Adventure._preDelete | Adventure#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Adventure._onDelete | `Adventure#_onDelete`} */
+    /** Options for {@linkcode Adventure._onDelete | Adventure#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Adventure._preDeleteOperation | `Adventure#_preDeleteOperation`} */
+    /** Options for {@linkcode Adventure._preDeleteOperation | Adventure#_preDeleteOperation} */
     interface PreDeleteOperation extends Adventure.Database.Delete {}
 
-    /** Options for {@link Adventure._onDeleteOperation | `Adventure#_onDeleteOperation`} */
+    /** Options for {@linkcode Adventure._onDeleteOperation | Adventure#_onDeleteOperation} */
     interface OnDeleteOperation extends Adventure.Database.Delete {}
 
     /** Context for {@linkcode Adventure._onDeleteOperation} */
@@ -361,20 +361,20 @@ declare namespace Adventure {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Adventure.Parent> {}
 
     /**
-     * Options for {@link Adventure._preCreateDescendantDocuments | `Adventure#_preCreateDescendantDocuments`}
-     * and {@link Adventure._onCreateDescendantDocuments | `Adventure#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Adventure._preCreateDescendantDocuments | Adventure#_preCreateDescendantDocuments}
+     * and {@linkcode Adventure._onCreateDescendantDocuments | Adventure#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Adventure.Database.Create> {}
 
     /**
-     * Options for {@link Adventure._preUpdateDescendantDocuments | `Adventure#_preUpdateDescendantDocuments`}
-     * and {@link Adventure._onUpdateDescendantDocuments | `Adventure#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Adventure._preUpdateDescendantDocuments | Adventure#_preUpdateDescendantDocuments}
+     * and {@linkcode Adventure._onUpdateDescendantDocuments | Adventure#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Adventure.Database.Update> {}
 
     /**
-     * Options for {@link Adventure._preDeleteDescendantDocuments | `Adventure#_preDeleteDescendantDocuments`}
-     * and {@link Adventure._onDeleteDescendantDocuments | `Adventure#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Adventure._preDeleteDescendantDocuments | Adventure#_preDeleteDescendantDocuments}
+     * and {@linkcode Adventure._onDeleteDescendantDocuments | Adventure#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Adventure.Database.Delete> {}
 
