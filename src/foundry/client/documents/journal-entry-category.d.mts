@@ -1,4 +1,4 @@
-import type { InexactPartial, Merge } from "#utils";
+import type { InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseJournalEntryCategory } from "#common/documents/_module.d.mts";
@@ -125,6 +125,24 @@ declare namespace JournalEntryCategory {
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode JournalEntryCategory.create} and {@linkcode JournalEntryCategory.createDocuments} signatures, and
+   * {@linkcode JournalEntryCategory.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode JournalEntryCategory.create}, returning (a single | an array of) (temporary | stored)
+   * `ActiveEffect`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<JournalEntryCategory.TemporaryIf<Temporary>>
+      : JournalEntryCategory.TemporaryIf<Temporary> | undefined;
 
   /**
    * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example

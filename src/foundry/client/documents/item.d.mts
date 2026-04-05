@@ -1,5 +1,5 @@
 import type { ConfiguredItem } from "#configuration";
-import type { AnyObject, Identity, InexactPartial, Merge } from "#utils";
+import type { AnyObject, Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseActiveEffect, BaseFolder, BaseItem } from "#client/documents/_module.d.mts";
@@ -275,6 +275,22 @@ declare namespace Item {
   interface CreateData<SubType extends Item.SubType = Item.SubType> extends fields.SchemaField.CreateData<Schema> {
     type: SubType;
   }
+
+  /**
+   * Used in the {@linkcode Item.create} and {@linkcode Item.createDocuments} signatures, and
+   * {@linkcode Item.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Item.create}, returning (a single | an array of) (temporary | stored)
+   * `ActiveEffect`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput> ? Array<Item.TemporaryIf<Temporary>> : Item.TemporaryIf<Temporary> | undefined;
 
   /**
    * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example

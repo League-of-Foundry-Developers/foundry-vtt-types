@@ -1,4 +1,4 @@
-import type { AnyObject, InexactPartial, NullishProps, Merge, Identity } from "#utils";
+import type { AnyObject, InexactPartial, NullishProps, MaybeArray, Merge, Identity } from "#utils";
 import type { ConfiguredActor } from "#configuration";
 import type { fields } from "#common/data/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
@@ -282,6 +282,22 @@ declare namespace Actor {
   interface CreateData<SubType extends Actor.SubType = Actor.SubType> extends fields.SchemaField.CreateData<Schema> {
     type: SubType;
   }
+
+  /**
+   * Used in the {@linkcode Actor.create} and {@linkcode Actor.createDocuments} signatures, and
+   * {@linkcode Actor.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Actor.create}, returning (a single | an array of) (temporary | stored)
+   * `ActiveEffect`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput> ? Array<Actor.TemporaryIf<Temporary>> : Actor.TemporaryIf<Temporary> | undefined;
 
   /**
    * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example

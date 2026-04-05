@@ -1,5 +1,13 @@
 import type { ConfiguredDocumentClass } from "../../../types/documentConfiguration.d.mts";
-import type { AnyObject, FixedInstanceType, InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
+import type {
+  AnyObject,
+  FixedInstanceType,
+  InexactPartial,
+  IntentionalPartial,
+  MaybeArray,
+  Merge,
+  NullishProps,
+} from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseActor, BaseUser } from "#common/documents/_module.d.mts";
@@ -144,6 +152,22 @@ declare namespace User {
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode User.create} and {@linkcode User.createDocuments} signatures, and
+   * {@linkcode User.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode User.create}, returning (a single | an array of) (temporary | stored)
+   * `ActiveEffect`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput> ? Array<User.TemporaryIf<Temporary>> : User.TemporaryIf<Temporary> | undefined;
 
   /**
    * The data after a {@linkcode Document} has been initialized, for example

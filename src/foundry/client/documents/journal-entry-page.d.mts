@@ -1,5 +1,5 @@
 import type { ConfiguredJournalEntryPage } from "#configuration";
-import type { AnyObject, Identity, InexactPartial, Merge, NullishProps } from "#utils";
+import type { AnyObject, Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseJournalEntryPage } from "#common/documents/_module.d.mts";
@@ -210,6 +210,24 @@ declare namespace JournalEntryPage {
     .CreateData<Schema> {
     type?: SubType | null | undefined;
   }
+
+  /**
+   * Used in the {@linkcode JournalEntryPage.create} and {@linkcode JournalEntryPage.createDocuments} signatures, and
+   * {@linkcode JournalEntryPage.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode JournalEntryPage.create}, returning (a single | an array of) (temporary | stored)
+   * `ActiveEffect`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<JournalEntryPage.TemporaryIf<Temporary>>
+      : JournalEntryPage.TemporaryIf<Temporary> | undefined;
 
   /**
    * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example

@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "#configuration";
-import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseFolder, BaseMacro, BaseUser } from "#client/documents/_module.d.mts";
@@ -199,6 +199,22 @@ declare namespace Macro {
   interface CreateData<SubType extends Macro.SubType = Macro.SubType> extends fields.SchemaField.CreateData<Schema> {
     type?: SubType | null | undefined;
   }
+
+  /**
+   * Used in the {@linkcode Macro.create} and {@linkcode Macro.createDocuments} signatures, and
+   * {@linkcode Macro.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Macro.create}, returning (a single | an array of) (temporary | stored)
+   * `ActiveEffect`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput> ? Array<Macro.TemporaryIf<Temporary>> : Macro.TemporaryIf<Temporary> | undefined;
 
   /**
    * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
