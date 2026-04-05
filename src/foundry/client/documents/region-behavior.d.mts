@@ -239,7 +239,7 @@ declare namespace RegionBehavior {
       : RegionBehavior.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode RegionBehavior.name | RegionBehavior#name}.
    *
    * This is data transformed from {@linkcode RegionBehavior.Source} and turned into more

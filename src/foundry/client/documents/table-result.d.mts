@@ -211,7 +211,7 @@ declare namespace TableResult {
       : TableResult.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode TableResult.name | TableResult#name}.
    *
    * This is data transformed from {@linkcode TableResult.Source} and turned into more

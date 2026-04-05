@@ -160,7 +160,7 @@ declare namespace MeasuredTemplateDocument {
       : MeasuredTemplateDocument.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode MeasuredTemplateDocument.name | MeasuredTemplateDocument#name}.
    *
    * This is data transformed from {@linkcode MeasuredTemplateDocument.Source} and turned into more

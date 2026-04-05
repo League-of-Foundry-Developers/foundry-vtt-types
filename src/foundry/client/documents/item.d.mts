@@ -293,7 +293,7 @@ declare namespace Item {
     Data extends Array<CreateInput> ? Array<Item.TemporaryIf<Temporary>> : Item.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode Item.name | Item#name}.
    *
    * This is data transformed from {@linkcode Item.Source} and turned into more

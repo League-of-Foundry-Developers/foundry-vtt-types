@@ -274,7 +274,7 @@ declare namespace Scene {
     Data extends Array<CreateInput> ? Array<Scene.TemporaryIf<Temporary>> : Scene.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode Scene.name | Scene#name}.
    *
    * This is data transformed from {@linkcode Scene.Source} and turned into more

@@ -217,7 +217,7 @@ declare namespace Macro {
     Data extends Array<CreateInput> ? Array<Macro.TemporaryIf<Temporary>> : Macro.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode Macro.name | Macro#name}.
    *
    * This is data transformed from {@linkcode Macro.Source} and turned into more

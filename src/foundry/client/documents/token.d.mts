@@ -255,7 +255,7 @@ declare namespace TokenDocument {
       : TokenDocument.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode TokenDocument.name | TokenDocument#name}.
    *
    * This is data transformed from {@linkcode TokenDocument.Source} and turned into more

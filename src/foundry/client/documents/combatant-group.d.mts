@@ -215,7 +215,7 @@ declare namespace CombatantGroup {
       : CombatantGroup.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode CombatantGroup.name | CombatantGroup#name}.
    *
    * This is data transformed from {@linkcode CombatantGroup.Source} and turned into more

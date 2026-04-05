@@ -227,7 +227,7 @@ declare namespace ChatMessage {
       : ChatMessage.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode ChatMessage.name | ChatMessage#name}.
    *
    * This is data transformed from {@linkcode ChatMessage.Source} and turned into more

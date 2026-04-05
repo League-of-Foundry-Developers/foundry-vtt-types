@@ -225,7 +225,7 @@ declare namespace Card {
     Data extends Array<CreateInput> ? Array<Card.TemporaryIf<Temporary>> : Card.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode Card.name | Card#name}.
    *
    * This is data transformed from {@linkcode Card.Source} and turned into more

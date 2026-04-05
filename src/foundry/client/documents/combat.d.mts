@@ -302,7 +302,7 @@ declare namespace Combat {
     Data extends Array<CreateInput> ? Array<Combat.TemporaryIf<Temporary>> : Combat.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode Combat.name | Combat#name}.
    *
    * This is data transformed from {@linkcode Combat.Source} and turned into more

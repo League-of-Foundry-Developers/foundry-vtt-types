@@ -294,7 +294,7 @@ declare namespace ActorDelta {
       : ActorDelta.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode ActorDelta.name | ActorDelta#name}.
    *
    * This is data transformed from {@linkcode ActorDelta.Source} and turned into more

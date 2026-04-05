@@ -145,7 +145,7 @@ declare namespace JournalEntryCategory {
       : JournalEntryCategory.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode JournalEntryCategory.name | JournalEntryCategory#name}.
    *
    * This is data transformed from {@linkcode JournalEntryCategory.Source} and turned into more

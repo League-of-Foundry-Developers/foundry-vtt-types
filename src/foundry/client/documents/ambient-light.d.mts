@@ -150,7 +150,7 @@ declare namespace AmbientLightDocument {
       : AmbientLightDocument.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode AmbientLightDocument.name | AmbientLightDocument#name}.
    *
    * This is data transformed from {@linkcode AmbientLightDocument.Source} and turned into more

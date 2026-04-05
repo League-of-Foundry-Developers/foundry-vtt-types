@@ -230,7 +230,7 @@ declare namespace JournalEntryPage {
       : JournalEntryPage.TemporaryIf<Temporary> | undefined;
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode JournalEntryPage.name | JournalEntryPage#name}.
    *
    * This is data transformed from {@linkcode JournalEntryPage.Source} and turned into more
