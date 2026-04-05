@@ -115,7 +115,7 @@ declare abstract class DocumentCollection<
    * @param type         - A document subtype
    * @returns A record of searchable DataField definitions
    *
-   * @remarks Currently functional but bugged on 13.350: {@link https://github.com/foundryvtt/foundryvtt/issues/13568}
+   * @remarks Currently functional but bugged on 13.351: {@link https://github.com/foundryvtt/foundryvtt/issues/13568}
    */
   // TODO: infer from schema all `StringField`s and subclasses that are `textSearch: true`
   static getSearchableFields<DocumentName extends Document.Type>(

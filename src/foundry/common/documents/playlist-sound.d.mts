@@ -1,8 +1,5 @@
-import type { AnyMutableObject } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The PlaylistSound Document.
@@ -23,7 +20,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    * You should use {@link PlaylistSound.implementation | `new PlaylistSound.implementation(...)`} instead which will give you
    * a system specific implementation of `PlaylistSound`.
    */
-  constructor(data: PlaylistSound.CreateData, context?: PlaylistSound.ConstructionContext);
+  constructor(data: BasePlaylistSound.CreateData, context?: BasePlaylistSound.ConstructionContext);
 
   /**
    * @defaultValue
@@ -67,7 +64,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
-  override readonly parentCollection: PlaylistSound.ParentCollectionName | null;
+  override readonly parentCollection: BasePlaylistSound.ParentCollectionName | null;
 
   override readonly pack: string | null;
 
@@ -75,50 +72,50 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   static override get baseDocument(): typeof BasePlaylistSound;
 
-  static override get collectionName(): PlaylistSound.ParentCollectionName;
+  static override get collectionName(): BasePlaylistSound.ParentCollectionName;
 
-  static override get documentName(): PlaylistSound.Name;
+  static override get documentName(): BasePlaylistSound.Name;
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
   static override get hasTypeData(): undefined;
 
-  static override get hierarchy(): PlaylistSound.Hierarchy;
+  static override get hierarchy(): BasePlaylistSound.Hierarchy;
 
-  override parent: PlaylistSound.Parent;
+  override parent: BasePlaylistSound.Parent;
 
   override " fvtt_types_internal_document_parent": BasePlaylistSound.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<PlaylistSound.Implementation | PlaylistSound.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<PlaylistSound.Database.Create<Temporary>>,
-  ): Promise<Array<PlaylistSound.TemporaryIf<Temporary>>>;
+    data: Array<PlaylistSound.Implementation | BasePlaylistSound.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<BasePlaylistSound.Database.Create<Temporary>>,
+  ): Promise<Array<BasePlaylistSound.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: PlaylistSound.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<PlaylistSound.Database.Update>,
+    updates: BasePlaylistSound.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<BasePlaylistSound.Database.Update>,
   ): Promise<PlaylistSound.Implementation[]>;
 
   static override deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<PlaylistSound.Database.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<BasePlaylistSound.Database.Delete>,
   ): Promise<PlaylistSound.Implementation[]>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
-    data: PlaylistSound.CreateData | PlaylistSound.CreateData[],
-    operation?: PlaylistSound.Database.CreateOperation<Temporary>,
-  ): Promise<PlaylistSound.TemporaryIf<Temporary> | undefined>;
+    data: BasePlaylistSound.CreateData | BasePlaylistSound.CreateData[],
+    operation?: BasePlaylistSound.Database.CreateOperation<Temporary>,
+  ): Promise<BasePlaylistSound.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: PlaylistSound.UpdateData | undefined,
-    operation?: PlaylistSound.Database.UpdateOperation,
+    data: BasePlaylistSound.UpdateData | undefined,
+    operation?: BasePlaylistSound.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: PlaylistSound.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BasePlaylistSound.Database.DeleteOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    options?: PlaylistSound.Database.GetOptions,
+    options?: BasePlaylistSound.Database.GetOptions,
   ): PlaylistSound.Implementation | null;
 
   static override getCollectionName(name: string): null;
@@ -128,118 +125,86 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
     _parentPath?: string,
   ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
-  override getFlag<Scope extends PlaylistSound.Flags.Scope, Key extends PlaylistSound.Flags.Key<Scope>>(
+  override getFlag<Scope extends BasePlaylistSound.Flags.Scope, Key extends BasePlaylistSound.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): PlaylistSound.Flags.Get<Scope, Key>;
+  ): BasePlaylistSound.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends PlaylistSound.Flags.Scope,
-    Key extends PlaylistSound.Flags.Key<Scope>,
-    Value extends PlaylistSound.Flags.Get<Scope, Key>,
+    Scope extends BasePlaylistSound.Flags.Scope,
+    Key extends BasePlaylistSound.Flags.Key<Scope>,
+    Value extends BasePlaylistSound.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
-  override unsetFlag<Scope extends PlaylistSound.Flags.Scope, Key extends PlaylistSound.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BasePlaylistSound.Flags.Scope, Key extends BasePlaylistSound.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): Promise<this>;
 
   protected override _preCreate(
-    data: PlaylistSound.CreateData,
-    options: PlaylistSound.Database.PreCreateOptions,
+    data: BasePlaylistSound.CreateData,
+    options: BasePlaylistSound.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: PlaylistSound.CreateData,
-    options: PlaylistSound.Database.OnCreateOperation,
+    data: BasePlaylistSound.CreateData,
+    options: BasePlaylistSound.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: PlaylistSound.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<PlaylistSound.Database.Create>,
+    operation: Document.Database.PreCreateOperationStatic<BasePlaylistSound.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: PlaylistSound.Implementation[],
-    operation: PlaylistSound.Database.Create,
+    operation: BasePlaylistSound.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: PlaylistSound.UpdateData,
-    options: PlaylistSound.Database.PreUpdateOptions,
+    changed: BasePlaylistSound.UpdateData,
+    options: BasePlaylistSound.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: PlaylistSound.UpdateData,
-    options: PlaylistSound.Database.OnUpdateOperation,
+    changed: BasePlaylistSound.UpdateData,
+    options: BasePlaylistSound.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: PlaylistSound.Implementation[],
-    operation: PlaylistSound.Database.Update,
+    operation: BasePlaylistSound.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: PlaylistSound.Implementation[],
-    operation: PlaylistSound.Database.Update,
+    operation: BasePlaylistSound.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: PlaylistSound.Database.PreDeleteOptions,
+    options: BasePlaylistSound.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: PlaylistSound.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BasePlaylistSound.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: PlaylistSound.Implementation[],
-    operation: PlaylistSound.Database.Delete,
+    operation: BasePlaylistSound.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
-
   protected static override _onDeleteOperation(
     documents: PlaylistSound.Implementation[],
-    operation: PlaylistSound.Database.Delete,
+    operation: BasePlaylistSound.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
@@ -249,7 +214,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    */
   protected static override _onCreateDocuments(
     documents: PlaylistSound.Implementation[],
-    context: Document.ModificationContext<PlaylistSound.Parent>,
+    context: Document.ModificationContext<BasePlaylistSound.Parent>,
   ): Promise<void>;
 
   /**
@@ -258,7 +223,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    */
   protected static override _onUpdateDocuments(
     documents: PlaylistSound.Implementation[],
-    context: Document.ModificationContext<PlaylistSound.Parent>,
+    context: Document.ModificationContext<BasePlaylistSound.Parent>,
   ): Promise<void>;
 
   /**
@@ -267,20 +232,19 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    */
   protected static override _onDeleteDocuments(
     documents: PlaylistSound.Implementation[],
-    context: Document.ModificationContext<PlaylistSound.Parent>,
+    context: Document.ModificationContext<BasePlaylistSound.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<PlaylistSound.Schema>;
+  protected static override _schema: SchemaField<BasePlaylistSound.Schema>;
 
-  static override get schema(): SchemaField<PlaylistSound.Schema>;
+  static override get schema(): SchemaField<BasePlaylistSound.Schema>;
 
-  static override validateJoint(data: PlaylistSound.Source): void;
+  static override validateJoint(data: BasePlaylistSound.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: PlaylistSound.CreateData,
+    source: BasePlaylistSound.CreateData,
     context?: DataModel.FromSourceOptions,
   ): PlaylistSound.Implementation;
 
@@ -290,6 +254,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 export default BasePlaylistSound;
 
 declare namespace BasePlaylistSound {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = PlaylistSound.Name;
   export import ConstructionContext = PlaylistSound.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -307,8 +272,11 @@ declare namespace BasePlaylistSound {
   export import Stored = PlaylistSound.Stored;
   export import Source = PlaylistSound.Source;
   export import CreateData = PlaylistSound.CreateData;
+  export import CreateInput = PlaylistSound.CreateInput;
+  export import CreateReturn = PlaylistSound.CreateReturn;
   export import InitializedData = PlaylistSound.InitializedData;
   export import UpdateData = PlaylistSound.UpdateData;
+  export import UpdateInput = PlaylistSound.UpdateInput;
   export import Schema = PlaylistSound.Schema;
   export import Database = PlaylistSound.Database;
   export import TemporaryIf = PlaylistSound.TemporaryIf;

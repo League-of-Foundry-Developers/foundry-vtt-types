@@ -1,8 +1,6 @@
 import type { AnyMutableObject } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The JournalEntry Document.
@@ -23,7 +21,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    * You should use {@link JournalEntry.implementation | `new JournalEntry.implementation(...)`} instead which will give you
    * a system specific implementation of `JournalEntry`.
    */
-  constructor(data: JournalEntry.CreateData, context?: JournalEntry.ConstructionContext);
+  constructor(data: BaseJournalEntry.CreateData, context?: BaseJournalEntry.ConstructionContext);
 
   /**
    * @defaultValue
@@ -78,7 +76,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
-  override readonly parentCollection: JournalEntry.ParentCollectionName | null;
+  override readonly parentCollection: BaseJournalEntry.ParentCollectionName | null;
 
   override readonly pack: string | null;
 
@@ -86,79 +84,79 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override get baseDocument(): typeof BaseJournalEntry;
 
-  static override get collectionName(): JournalEntry.ParentCollectionName;
+  static override get collectionName(): BaseJournalEntry.ParentCollectionName;
 
-  static override get documentName(): JournalEntry.Name;
+  static override get documentName(): BaseJournalEntry.Name;
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
   static override get hasTypeData(): undefined;
 
-  static override get hierarchy(): JournalEntry.Hierarchy;
+  static override get hierarchy(): BaseJournalEntry.Hierarchy;
 
-  override parent: JournalEntry.Parent;
+  override parent: BaseJournalEntry.Parent;
 
   override " fvtt_types_internal_document_parent": BaseJournalEntry.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<JournalEntry.Implementation | JournalEntry.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<JournalEntry.Database.Create<Temporary>>,
-  ): Promise<Array<JournalEntry.TemporaryIf<Temporary>>>;
+    data: Array<JournalEntry.Implementation | BaseJournalEntry.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<BaseJournalEntry.Database.Create<Temporary>>,
+  ): Promise<Array<BaseJournalEntry.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: JournalEntry.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<JournalEntry.Database.Update>,
+    updates: BaseJournalEntry.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<BaseJournalEntry.Database.Update>,
   ): Promise<JournalEntry.Implementation[]>;
 
   static override deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<JournalEntry.Database.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<BaseJournalEntry.Database.Delete>,
   ): Promise<JournalEntry.Implementation[]>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
-    data: JournalEntry.CreateData | JournalEntry.CreateData[],
-    operation?: JournalEntry.Database.CreateOperation<Temporary>,
-  ): Promise<JournalEntry.TemporaryIf<Temporary> | undefined>;
+    data: BaseJournalEntry.CreateData | BaseJournalEntry.CreateData[],
+    operation?: BaseJournalEntry.Database.CreateOperation<Temporary>,
+  ): Promise<BaseJournalEntry.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: JournalEntry.UpdateData | undefined,
-    operation?: JournalEntry.Database.UpdateOperation,
+    data: BaseJournalEntry.UpdateData | undefined,
+    operation?: BaseJournalEntry.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: JournalEntry.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseJournalEntry.Database.DeleteOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    options?: JournalEntry.Database.GetOptions,
+    options?: BaseJournalEntry.Database.GetOptions,
   ): JournalEntry.Implementation | null;
 
-  static override getCollectionName<CollectionName extends JournalEntry.Embedded.Name>(
+  static override getCollectionName<CollectionName extends BaseJournalEntry.Embedded.Name>(
     name: CollectionName,
-  ): JournalEntry.Embedded.CollectionNameOf<CollectionName> | null;
+  ): BaseJournalEntry.Embedded.CollectionNameOf<CollectionName> | null;
 
-  override getEmbeddedCollection<EmbeddedName extends JournalEntry.Embedded.CollectionName>(
+  override getEmbeddedCollection<EmbeddedName extends BaseJournalEntry.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
-  ): JournalEntry.Embedded.CollectionFor<EmbeddedName>;
+  ): BaseJournalEntry.Embedded.CollectionFor<EmbeddedName>;
 
-  override getEmbeddedDocument<EmbeddedName extends JournalEntry.Embedded.CollectionName>(
+  override getEmbeddedDocument<EmbeddedName extends BaseJournalEntry.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
     id: string,
     options: Document.GetEmbeddedDocumentOptions,
-  ): JournalEntry.Embedded.DocumentFor<EmbeddedName> | undefined;
+  ): BaseJournalEntry.Embedded.DocumentFor<EmbeddedName> | undefined;
 
-  override createEmbeddedDocuments<EmbeddedName extends JournalEntry.Embedded.Name>(
+  override createEmbeddedDocuments<EmbeddedName extends BaseJournalEntry.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.CreateOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  override updateEmbeddedDocuments<EmbeddedName extends JournalEntry.Embedded.Name>(
+  override updateEmbeddedDocuments<EmbeddedName extends BaseJournalEntry.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  override deleteEmbeddedDocuments<EmbeddedName extends JournalEntry.Embedded.Name>(
+  override deleteEmbeddedDocuments<EmbeddedName extends BaseJournalEntry.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
     operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
@@ -169,120 +167,88 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     _parentPath?: string,
   ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
-  override getFlag<Scope extends JournalEntry.Flags.Scope, Key extends JournalEntry.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseJournalEntry.Flags.Scope, Key extends BaseJournalEntry.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): JournalEntry.Flags.Get<Scope, Key>;
+  ): BaseJournalEntry.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends JournalEntry.Flags.Scope,
-    Key extends JournalEntry.Flags.Key<Scope>,
-    Value extends JournalEntry.Flags.Get<Scope, Key>,
+    Scope extends BaseJournalEntry.Flags.Scope,
+    Key extends BaseJournalEntry.Flags.Key<Scope>,
+    Value extends BaseJournalEntry.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
-  override unsetFlag<Scope extends JournalEntry.Flags.Scope, Key extends JournalEntry.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseJournalEntry.Flags.Scope, Key extends BaseJournalEntry.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): Promise<this>;
 
   protected override _preCreate(
-    data: JournalEntry.CreateData,
-    options: JournalEntry.Database.PreCreateOptions,
+    data: BaseJournalEntry.CreateData,
+    options: BaseJournalEntry.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: JournalEntry.CreateData,
-    options: JournalEntry.Database.OnCreateOperation,
+    data: BaseJournalEntry.CreateData,
+    options: BaseJournalEntry.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: JournalEntry.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<JournalEntry.Database.Create>,
+    operation: Document.Database.PreCreateOperationStatic<BaseJournalEntry.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: JournalEntry.Implementation[],
-    operation: JournalEntry.Database.Create,
+    operation: BaseJournalEntry.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: JournalEntry.UpdateData,
-    options: JournalEntry.Database.PreUpdateOptions,
+    changed: BaseJournalEntry.UpdateData,
+    options: BaseJournalEntry.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: JournalEntry.UpdateData,
-    options: JournalEntry.Database.OnUpdateOperation,
+    changed: BaseJournalEntry.UpdateData,
+    options: BaseJournalEntry.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: JournalEntry.Implementation[],
-    operation: JournalEntry.Database.Update,
+    operation: BaseJournalEntry.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: JournalEntry.Implementation[],
-    operation: JournalEntry.Database.Update,
+    operation: BaseJournalEntry.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: JournalEntry.Database.PreDeleteOptions,
+    options: BaseJournalEntry.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: JournalEntry.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseJournalEntry.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: JournalEntry.Implementation[],
-    operation: JournalEntry.Database.Delete,
+    operation: BaseJournalEntry.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: JournalEntry.Implementation[],
-    operation: JournalEntry.Database.Delete,
+    operation: BaseJournalEntry.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -290,7 +256,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    */
   protected static override _onCreateDocuments(
     documents: JournalEntry.Implementation[],
-    context: Document.ModificationContext<JournalEntry.Parent>,
+    context: Document.ModificationContext<BaseJournalEntry.Parent>,
   ): Promise<void>;
 
   /**
@@ -299,7 +265,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    */
   protected static override _onUpdateDocuments(
     documents: JournalEntry.Implementation[],
-    context: Document.ModificationContext<JournalEntry.Parent>,
+    context: Document.ModificationContext<BaseJournalEntry.Parent>,
   ): Promise<void>;
 
   /**
@@ -308,20 +274,19 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    */
   protected static override _onDeleteDocuments(
     documents: JournalEntry.Implementation[],
-    context: Document.ModificationContext<JournalEntry.Parent>,
+    context: Document.ModificationContext<BaseJournalEntry.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<JournalEntry.Schema>;
+  protected static override _schema: SchemaField<BaseJournalEntry.Schema>;
 
-  static override get schema(): SchemaField<JournalEntry.Schema>;
+  static override get schema(): SchemaField<BaseJournalEntry.Schema>;
 
-  static override validateJoint(data: JournalEntry.Source): void;
+  static override validateJoint(data: BaseJournalEntry.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: JournalEntry.CreateData,
+    source: BaseJournalEntry.CreateData,
     context?: DataModel.FromSourceOptions,
   ): JournalEntry.Implementation;
 
@@ -331,6 +296,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 export default BaseJournalEntry;
 
 declare namespace BaseJournalEntry {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = JournalEntry.Name;
   export import ConstructionContext = JournalEntry.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -348,8 +314,11 @@ declare namespace BaseJournalEntry {
   export import Stored = JournalEntry.Stored;
   export import Source = JournalEntry.Source;
   export import CreateData = JournalEntry.CreateData;
+  export import CreateInput = JournalEntry.CreateInput;
+  export import CreateReturn = JournalEntry.CreateReturn;
   export import InitializedData = JournalEntry.InitializedData;
   export import UpdateData = JournalEntry.UpdateData;
+  export import UpdateInput = JournalEntry.UpdateInput;
   export import Schema = JournalEntry.Schema;
   export import Database = JournalEntry.Database;
   export import TemporaryIf = JournalEntry.TemporaryIf;

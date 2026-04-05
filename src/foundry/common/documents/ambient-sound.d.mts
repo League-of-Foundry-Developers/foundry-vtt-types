@@ -1,8 +1,5 @@
-import type { AnyMutableObject } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Document definition for an AmbientSound.
@@ -24,7 +21,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    * a system specific implementation of `AmbientSoundDocument`.
    */
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
-  constructor(data?: AmbientSoundDocument.CreateData, context?: AmbientSoundDocument.ConstructionContext);
+  constructor(data?: BaseAmbientSound.CreateData, context?: BaseAmbientSound.ConstructionContext);
 
   /**
    * @defaultValue
@@ -39,7 +36,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    * })
    * ```
    */
-  static override metadata: AmbientSoundDocument.Metadata;
+  static override metadata: BaseAmbientSound.Metadata;
 
   static override defineSchema(): BaseAmbientSound.Schema;
 
@@ -55,7 +52,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
-  override readonly parentCollection: AmbientSoundDocument.ParentCollectionName | null;
+  override readonly parentCollection: BaseAmbientSound.ParentCollectionName | null;
 
   override readonly pack: string | null;
 
@@ -63,50 +60,50 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   static override get baseDocument(): typeof BaseAmbientSound;
 
-  static override get collectionName(): AmbientSoundDocument.ParentCollectionName;
+  static override get collectionName(): BaseAmbientSound.ParentCollectionName;
 
-  static override get documentName(): AmbientSoundDocument.Name;
+  static override get documentName(): BaseAmbientSound.Name;
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
   static override get hasTypeData(): undefined;
 
-  static override get hierarchy(): AmbientSoundDocument.Hierarchy;
+  static override get hierarchy(): BaseAmbientSound.Hierarchy;
 
   override parent: BaseAmbientSound.Parent;
 
   override " fvtt_types_internal_document_parent": BaseAmbientSound.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<AmbientSoundDocument.Implementation | AmbientSoundDocument.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<AmbientSoundDocument.Database.Create<Temporary>>,
-  ): Promise<Array<AmbientSoundDocument.TemporaryIf<Temporary>>>;
+    data: Array<AmbientSoundDocument.Implementation | BaseAmbientSound.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<BaseAmbientSound.Database.Create<Temporary>>,
+  ): Promise<Array<BaseAmbientSound.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: AmbientSoundDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<AmbientSoundDocument.Database.Update>,
+    updates: BaseAmbientSound.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<BaseAmbientSound.Database.Update>,
   ): Promise<AmbientSoundDocument.Implementation[]>;
 
   static override deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<AmbientSoundDocument.Database.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<BaseAmbientSound.Database.Delete>,
   ): Promise<AmbientSoundDocument.Implementation[]>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
-    data: AmbientSoundDocument.CreateData | AmbientSoundDocument.CreateData[],
-    operation?: AmbientSoundDocument.Database.CreateOperation<Temporary>,
-  ): Promise<AmbientSoundDocument.TemporaryIf<Temporary> | undefined>;
+    data: BaseAmbientSound.CreateData | BaseAmbientSound.CreateData[],
+    operation?: BaseAmbientSound.Database.CreateOperation<Temporary>,
+  ): Promise<BaseAmbientSound.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: AmbientSoundDocument.UpdateData | undefined,
-    operation?: AmbientSoundDocument.Database.UpdateOperation,
+    data: BaseAmbientSound.UpdateData | undefined,
+    operation?: BaseAmbientSound.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: AmbientSoundDocument.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseAmbientSound.Database.DeleteOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    options?: AmbientSoundDocument.Database.GetOptions,
+    options?: BaseAmbientSound.Database.GetOptions,
   ): AmbientSoundDocument.Implementation | null;
 
   static override getCollectionName(name: string): null;
@@ -116,120 +113,88 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     _parentPath?: string,
   ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
-  override getFlag<Scope extends AmbientSoundDocument.Flags.Scope, Key extends AmbientSoundDocument.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseAmbientSound.Flags.Scope, Key extends BaseAmbientSound.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): AmbientSoundDocument.Flags.Get<Scope, Key>;
+  ): BaseAmbientSound.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends AmbientSoundDocument.Flags.Scope,
-    Key extends AmbientSoundDocument.Flags.Key<Scope>,
-    Value extends AmbientSoundDocument.Flags.Get<Scope, Key>,
+    Scope extends BaseAmbientSound.Flags.Scope,
+    Key extends BaseAmbientSound.Flags.Key<Scope>,
+    Value extends BaseAmbientSound.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
-  override unsetFlag<Scope extends AmbientSoundDocument.Flags.Scope, Key extends AmbientSoundDocument.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseAmbientSound.Flags.Scope, Key extends BaseAmbientSound.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): Promise<this>;
 
   override _preCreate(
-    data: AmbientSoundDocument.CreateData,
-    options: AmbientSoundDocument.Database.PreCreateOptions,
+    data: BaseAmbientSound.CreateData,
+    options: BaseAmbientSound.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: AmbientSoundDocument.CreateData,
-    options: AmbientSoundDocument.Database.OnCreateOperation,
+    data: BaseAmbientSound.CreateData,
+    options: BaseAmbientSound.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: AmbientSoundDocument.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<AmbientSoundDocument.Database.Create>,
+    operation: Document.Database.PreCreateOperationStatic<BaseAmbientSound.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: AmbientSoundDocument.Implementation[],
-    operation: AmbientSoundDocument.Database.Create,
+    operation: BaseAmbientSound.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: AmbientSoundDocument.UpdateData,
-    options: AmbientSoundDocument.Database.PreUpdateOptions,
+    changed: BaseAmbientSound.UpdateData,
+    options: BaseAmbientSound.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: AmbientSoundDocument.UpdateData,
-    options: AmbientSoundDocument.Database.OnUpdateOperation,
+    changed: BaseAmbientSound.UpdateData,
+    options: BaseAmbientSound.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: AmbientSoundDocument.Implementation[],
-    operation: AmbientSoundDocument.Database.Update,
+    operation: BaseAmbientSound.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: AmbientSoundDocument.Implementation[],
-    operation: AmbientSoundDocument.Database.Update,
+    operation: BaseAmbientSound.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: AmbientSoundDocument.Database.PreDeleteOptions,
+    options: BaseAmbientSound.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: AmbientSoundDocument.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseAmbientSound.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: AmbientSoundDocument.Implementation[],
-    operation: AmbientSoundDocument.Database.Delete,
+    operation: BaseAmbientSound.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: AmbientSoundDocument.Implementation[],
-    operation: AmbientSoundDocument.Database.Delete,
+    operation: BaseAmbientSound.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
-
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
 
   /**
    * @deprecated since v12, will be removed in v14
@@ -237,7 +202,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    */
   protected static override _onCreateDocuments(
     documents: AmbientSoundDocument.Implementation[],
-    context: Document.ModificationContext<AmbientSoundDocument.Parent>,
+    context: Document.ModificationContext<BaseAmbientSound.Parent>,
   ): Promise<void>;
 
   /**
@@ -246,7 +211,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    */
   protected static override _onUpdateDocuments(
     documents: AmbientSoundDocument.Implementation[],
-    context: Document.ModificationContext<AmbientSoundDocument.Parent>,
+    context: Document.ModificationContext<BaseAmbientSound.Parent>,
   ): Promise<void>;
 
   /**
@@ -255,20 +220,19 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    */
   protected static override _onDeleteDocuments(
     documents: AmbientSoundDocument.Implementation[],
-    context: Document.ModificationContext<AmbientSoundDocument.Parent>,
+    context: Document.ModificationContext<BaseAmbientSound.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<AmbientSoundDocument.Schema>;
+  protected static override _schema: SchemaField<BaseAmbientSound.Schema>;
 
-  static override get schema(): SchemaField<AmbientSoundDocument.Schema>;
+  static override get schema(): SchemaField<BaseAmbientSound.Schema>;
 
-  static override validateJoint(data: AmbientSoundDocument.Source): void;
+  static override validateJoint(data: BaseAmbientSound.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: AmbientSoundDocument.CreateData,
+    source: BaseAmbientSound.CreateData,
     context?: DataModel.FromSourceOptions,
   ): AmbientSoundDocument.Implementation;
 
@@ -278,6 +242,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 export default BaseAmbientSound;
 
 declare namespace BaseAmbientSound {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = AmbientSoundDocument.Name;
   export import ConstructionContext = AmbientSoundDocument.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -295,8 +260,11 @@ declare namespace BaseAmbientSound {
   export import Stored = AmbientSoundDocument.Stored;
   export import Source = AmbientSoundDocument.Source;
   export import CreateData = AmbientSoundDocument.CreateData;
+  export import CreateInput = AmbientSoundDocument.CreateInput;
+  export import CreateReturn = AmbientSoundDocument.CreateReturn;
   export import InitializedData = AmbientSoundDocument.InitializedData;
   export import UpdateData = AmbientSoundDocument.UpdateData;
+  export import UpdateInput = AmbientSoundDocument.UpdateInput;
   export import Schema = AmbientSoundDocument.Schema;
   export import Database = AmbientSoundDocument.Database;
   export import TemporaryIf = AmbientSoundDocument.TemporaryIf;
