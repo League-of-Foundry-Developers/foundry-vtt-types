@@ -55,7 +55,7 @@ ActiveEffect.defaultName();
 
 expectTypeOf(ActiveEffect.defaultName({ pack: "some.pack", parent: someItem, type: "base" })).toBeString();
 expectTypeOf(ActiveEffect.defaultName({ pack: undefined, parent: undefined, type: undefined })).toBeString();
-expectTypeOf(ActiveEffect.defaultName({ pack: null, parent: null, type: null })).toBeString();
+expectTypeOf(ActiveEffect.defaultName({ pack: null, parent: null, type: undefined })).toBeString();
 
 // Note: this call will fail at runtime but a validator function to require `pack` or `parent` has not yet been written.
 expectTypeOf(ActiveEffect.defaultName({})).toBeString();
@@ -150,7 +150,7 @@ expectTypeOf(
     pack: null,
     parent: null,
     parentCollection: null,
-    strict: null,
+    strict: false,
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();
 
