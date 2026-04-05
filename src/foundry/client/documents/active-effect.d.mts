@@ -28,7 +28,7 @@ declare namespace ActiveEffect {
   type Name = "ActiveEffect";
 
   /**
-   * The context used to create a `ActiveEffect`.
+   * The context used to create an `ActiveEffect`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 

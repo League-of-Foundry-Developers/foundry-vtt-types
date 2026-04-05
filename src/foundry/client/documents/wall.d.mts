@@ -182,17 +182,6 @@ declare namespace WallDocument {
    */
   type UpdateInput = UpdateData | Implementation;
 
-  /**
-   * The schema for {@linkcode WallDocument}. This is the source of truth for how an WallDocument document
-   * must be structured.
-   *
-   * Foundry uses this schema to validate the structure of the {@linkcode WallDocument}. For example
-   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
-   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
-   * starting as an array in the database, initialized as a set, and allows updates with any
-   * iterable.
-   */
-
   interface ThresholdSchema extends fields.DataSchema {
     /**
      * Minimum distance from a light source for which this wall blocks light
