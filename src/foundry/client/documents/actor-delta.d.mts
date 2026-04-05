@@ -137,7 +137,7 @@ declare namespace ActorDelta {
    * A document's parent is something that can contain it.
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    *
-   * `ActorDelta` requires a parent, even for `new ActorDelta`, so `null` is not an option here.
+   * @remarks `ActorDelta` requires a parent, even for `new ActorDelta`, so `null` is not an option here.
    */
   type Parent = TokenDocument.Implementation;
 
@@ -1164,7 +1164,7 @@ declare namespace ActorDelta {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    * @privateRemarks This is off-template, as ActorDelta throws if not provided a valid TokenDocument
    * parent in the construction context for any construction, not just `.create`ion
    */

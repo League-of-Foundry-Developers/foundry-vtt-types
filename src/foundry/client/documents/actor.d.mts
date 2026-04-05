@@ -151,7 +151,7 @@ declare namespace Actor {
    *
    * @remarks Foundry doesn't store `Actor`s with {@linkcode TokenDocument} parents in the database, it constructs them from the underlying
    * {@linkcode ActorDelta} on the client; they are, however, treated the same as regular embedded documents in most circumstances, and the
-   * following is a valid:
+   * following is valid:
    * ```js
    * // works as expected:
    * await tokenDoc.updateEmbeddedDocuments("Actor", [{_id: tokenDoc.actorId, name: "new name" }]);

@@ -1130,7 +1130,7 @@ declare namespace Playlist {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -1289,6 +1289,8 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    */
 
   // ClientDocument overrides
+
+  // Other Descendant Document operations are actually overridden above
 
   protected override _preCreateDescendantDocuments(...args: Playlist.PreCreateDescendantDocumentsArgs): void;
 

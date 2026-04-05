@@ -1316,7 +1316,7 @@ declare namespace Combat {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -1671,6 +1671,8 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    */
 
   // ClientDocument overrides
+
+  // Other Descendant Document operations are actually overridden above
 
   protected override _preCreateDescendantDocuments(...args: Combat.PreCreateDescendantDocumentsArgs): void;
 
