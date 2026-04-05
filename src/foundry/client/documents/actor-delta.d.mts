@@ -30,8 +30,9 @@ declare namespace ActorDelta {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `ActorDelta` document instance configured through `CONFIG.ActorDelta.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`} in fvtt-types.
+   * The implementation of the `ActorDelta` document instance configured through
+   * {@linkcode CONFIG.ActorDelta.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredActorDelta | fvtt-types/configuration/ConfiguredActorDelta} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
@@ -136,7 +137,7 @@ declare namespace ActorDelta {
    * A document's parent is something that can contain it.
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    *
-   * `ActorDelta` requires a parent so `null` is not an option here.
+   * @remarks `ActorDelta` requires a parent, even for `new ActorDelta`, so `null` is not an option here.
    */
   type Parent = TokenDocument.Implementation;
 
@@ -283,7 +284,7 @@ declare namespace ActorDelta {
 
   /**
    * The helper type for the return of {@linkcode ActorDelta.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `ActorDelta`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -486,11 +487,10 @@ declare namespace ActorDelta {
   }
 
   /**
-   * If `Temporary` is true then `ActorDelta.Implementation`, otherwise `ActorDelta.Stored`.
+   * If `Temporary` is true then {@linkcode ActorDelta.Implementation}, otherwise {@linkcode ActorDelta.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? ActorDelta.Implementation
-    : ActorDelta.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? ActorDelta.Implementation : ActorDelta.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -513,6 +513,10 @@ declare namespace ActorDelta {
      */
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
+
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
   type PreCreateDescendantDocumentsArgs =
     | Document.Internal.PreCreateDescendantDocumentsArgs<
@@ -565,6 +569,15 @@ declare namespace ActorDelta {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *           ACTOR-DELTA-SPECIFIC TYPES          *
+   *************************************************/
+
   /** @internal */
   type _InitializeOptions = NullishProps<{
     /**
@@ -576,16 +589,11 @@ declare namespace ActorDelta {
 
   interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
-
   /**
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    * @privateRemarks This is off-template, as ActorDelta throws if not provided a valid TokenDocument
    * parent in the construction context for any construction, not just `.create`ion
    */
@@ -696,112 +704,16 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   // ClientDocument overrides
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class SwadeActorDelta extends ActorDelta {
-   *   protected override _preCreateDescendantDocuments(...args: ActorDelta.PreCreateDescendantDocumentsArgs) {
-   *     super._preCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, data, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preCreateDescendantDocuments(...args: ActorDelta.PreCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class GurpsActorDelta extends ActorDelta {
-   *   protected override _onCreateDescendantDocuments(...args: ActorDelta.OnCreateDescendantDocumentsArgs) {
-   *     super._onCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, data, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onCreateDescendantDocuments(...args: ActorDelta.OnCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class LancerActorDelta extends ActorDelta {
-   *   protected override _preUpdateDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocuments) {
-   *     super._preUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, changes, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preUpdateDescendantDocuments(...args: ActorDelta.PreUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class Ptr2eActorDelta extends ActorDelta {
-   *   protected override _onUpdateDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocumentsArgs) {
-   *     super._onUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, changes, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onUpdateDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class KultActorDelta extends ActorDelta {
-   *   protected override _preDeleteDescendantDocuments(...args: ActorDelta.PreDeleteDescendantDocumentsArgs) {
-   *     super._preDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, ids, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preDeleteDescendantDocuments(...args: ActorDelta.PreDeleteDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class BladesActorDelta extends ActorDelta {
-   *   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs) {
-   *     super._onDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, ids, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs): void;
 
   /** @remarks `context` must contain a `pack` or `parent`. */

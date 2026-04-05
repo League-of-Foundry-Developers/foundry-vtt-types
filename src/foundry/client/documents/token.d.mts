@@ -244,7 +244,7 @@ declare namespace TokenDocument {
 
   /**
    * The helper type for the return of {@linkcode TokenDocument.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `TokenDocument`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -284,11 +284,12 @@ declare namespace TokenDocument {
    * option overrides (e.g `textSearch` on `name`) that cause type issues otherwise.
    */
   interface SharedProtoSchema extends fields.DataSchema {
-    // `name` omitted here because, while it is not in the list of omitted fields for `PrototypeToken`, it's `textSearch: true` in the base schema, but overridden to `false` in `PrototypeToken`
+    // `name` omitted here because, while it is not in the list of omitted fields for `PrototypeToken`,
+    // it's `textSearch: true` in the base schema, but overridden to `false` in `PrototypeToken`.
 
     /**
-     * The display mode of the Token nameplate, from CONST.TOKEN_DISPLAY_MODES
-     * @defaultValue `CONST.TOKEN_DISPLAY_MODES.NONE`
+     * The display mode of the Token nameplate, from {@linkcode CONST.TOKEN_DISPLAY_MODES}
+     * @defaultValue {@linkcode CONST.TOKEN_DISPLAY_MODES.NONE}
      */
     displayName: fields.NumberField<
       {
@@ -973,11 +974,10 @@ declare namespace TokenDocument {
   }
 
   /**
-   * If `Temporary` is true then `Token.Implementation`, otherwise `Token.Stored`.
+   * If `Temporary` is true then {@linkcode TokenDocument.Implementation}, otherwise {@linkcode TokenDocument.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? TokenDocument.Implementation
-    : TokenDocument.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? TokenDocument.Implementation : TokenDocument.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -1010,6 +1010,10 @@ declare namespace TokenDocument {
       randomizeVideo?: boolean;
     };
   }
+
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
@@ -1066,6 +1070,10 @@ declare namespace TokenDocument {
         TokenDocument.Metadata.Embedded
       >
     | ActorDelta.OnDeleteDescendantDocumentsArgs;
+
+  /* ***********************************************
+   *            TOKEN-SPECIFIC TYPES               *
+   *************************************************/
 
   // The getBarAttribute monkeypatch is simply inside the data model definition at `src/foundry/common/data/data.d.mts`
 
@@ -1508,7 +1516,7 @@ declare namespace TokenDocument {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -1955,112 +1963,16 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
     waypoints: TokenDocument.SegmentizeMovementWaypoint[],
   ): RegionDocument.MovementSegment[];
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class SwadeActorDelta extends ActorDelta {
-   *   protected override _preCreateDescendantDocuments(...args: ActorDelta.PreCreateDescendantDocumentsArgs) {
-   *     super._preCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, data, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preCreateDescendantDocuments(...args: ActorDelta.PreCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class GurpsActorDelta extends ActorDelta {
-   *   protected override _onCreateDescendantDocuments(...args: ActorDelta.OnCreateDescendantDocumentsArgs) {
-   *     super._onCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, data, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onCreateDescendantDocuments(...args: ActorDelta.OnCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class LancerActorDelta extends ActorDelta {
-   *   protected override _preUpdateDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocuments) {
-   *     super._preUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, changes, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preUpdateDescendantDocuments(...args: ActorDelta.PreUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class Ptr2eTokenDocument extends TokenDocument {
-   *   protected override _onUpdateDescendantDocuments(...args: TokenDocument.OnUpdateDescendantDocumentsArgs) {
-   *     super._onUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, changes, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onUpdateDescendantDocuments(...args: TokenDocument.OnUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class KultTokenDocument extends TokenDocument {
-   *   protected override _preDeleteDescendantDocuments(...args: TokenDocument.PreDeleteDescendantDocumentsArgs) {
-   *     super._preDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, ids, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preDeleteDescendantDocuments(...args: TokenDocument.PreDeleteDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class BladesTokenDocument extends TokenDocument {
-   *   protected override _onDeleteDescendantDocuments(...args: TokenDocument.OnUpdateDescendantDocuments) {
-   *     super._onDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, ids, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onDeleteDescendantDocuments(...args: TokenDocument.OnDeleteDescendantDocumentsArgs): void;
 
   /**
@@ -2154,6 +2066,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    */
 
   // ClientDocument overrides
+
+  // Descendant Document operations are actually overridden above
 
   /** @remarks `context` must contain a `pack` or `parent`. */
   static override defaultName(context: TokenDocument.DefaultNameContext): string;

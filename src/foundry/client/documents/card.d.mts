@@ -216,7 +216,7 @@ declare namespace Card {
 
   /**
    * The helper type for the return of {@linkcode Card.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `Card`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -511,9 +511,10 @@ declare namespace Card {
   }
 
   /**
-   * If `Temporary` is true then `Card.Implementation`, otherwise `Card.Stored`.
+   * If `Temporary` is true then {@linkcode Card.Implementation}, otherwise {@linkcode Card.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary ? Card.Implementation : Card.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Card.Implementation : Card.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -537,6 +538,10 @@ declare namespace Card {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -544,6 +549,10 @@ declare namespace Card {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *              CARD-SPECIFIC TYPES              *
+   *************************************************/
 
   /**
    * @remarks {@linkcode Card.pass | Card#pass} calls {@linkcode Cards.pass | this.parent.pass} with `action: "pass"` provided by default.
@@ -582,7 +591,7 @@ declare namespace Card {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

@@ -145,58 +145,10 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    */
   protected _handleEvent(event: RegionDocument.RegionEvent): Promise<void>;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class GurpsRegionDocument extends RegionDocument {
-   *   protected override _onCreateDescendantDocuments(...args: RegionDocument.OnCreateDescendantDocumentsArgs) {
-   *     super._onCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, data, options, userId] = args;
-   *     if (collection === "behaviors") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onCreateDescendantDocuments(...args: RegionDocument.OnCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class Ptr2eRegionDocument extends RegionDocument {
-   *   protected override _onUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocumentsArgs) {
-   *     super._onUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, changes, options, userId] = args;
-   *     if (collection === "behaviors") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class BladesRegionDocument extends RegionDocument {
-   *   protected override _onDeleteDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocuments) {
-   *     super._onDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, ids, options, userId] = args;
-   *     if (collection === "behaviors") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onDeleteDescendantDocuments(...args: RegionDocument.OnDeleteDescendantDocumentsArgs): void;
 
   /*
@@ -211,58 +163,12 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
 
   // ClientDocument overrides
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class SwadeRegionDocument extends RegionDocument {
-   *   protected override _preCreateDescendantDocuments(...args: RegionDocument.PreCreateDescendantDocumentsArgs) {
-   *     super._preCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, data, options, userId] = args;
-   *     if (collection === "behaviors") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
+  // Other Descendant Document operations are actually overridden above
+
   protected override _preCreateDescendantDocuments(...args: RegionDocument.PreCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class LancerRegionDocument extends RegionDocument {
-   *   protected override _preUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocuments) {
-   *     super._preUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, changes, options, userId] = args;
-   *     if (collection === "behaviors") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preUpdateDescendantDocuments(...args: RegionDocument.PreUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class KultRegionDocument extends RegionDocument {
-   *   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs) {
-   *     super._preDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, ids, options, userId] = args;
-   *     if (collection === "behaviors") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs): void;
 
   /** @remarks `context` must contain a `pack` or `parent`. */
@@ -302,7 +208,7 @@ declare namespace RegionDocument {
   type Name = "Region";
 
   /**
-   * The context used to create a `Region`.
+   * The context used to create a `RegionDocument`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
@@ -492,7 +398,7 @@ declare namespace RegionDocument {
 
   /**
    * The helper type for the return of {@linkcode RegionDocument.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `RegionDocument`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -735,11 +641,10 @@ declare namespace RegionDocument {
   }
 
   /**
-   * If `Temporary` is true then `RegionDocument.Implementation`, otherwise `RegionDocument.Stored`.
+   * If `Temporary` is true then {@linkcode RegionDocument.Implementation}, otherwise {@linkcode RegionDocument.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? RegionDocument.Implementation
-    : RegionDocument.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? RegionDocument.Implementation : RegionDocument.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -762,6 +667,10 @@ declare namespace RegionDocument {
      */
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
+
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
@@ -806,6 +715,10 @@ declare namespace RegionDocument {
     RegionDocument.DirectDescendantName,
     RegionDocument.Metadata.Embedded
   >;
+
+  /* ***********************************************
+   *            REGION-SPECIFIC TYPES              *
+   *************************************************/
 
   // TODO: <Data extends object>
   interface RegionEvent {
@@ -881,7 +794,7 @@ declare namespace RegionDocument {
 
   /** @internal */
   interface _EventData {
-    readonly [K: string]: Document.Any | _EventData | _EventData[];
+    readonly [K: string]: Document.Any | MaybeArray<_EventData>;
   }
 
   interface SegmentizeMovementPathWaypoint {
@@ -919,7 +832,7 @@ declare namespace RegionDocument {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

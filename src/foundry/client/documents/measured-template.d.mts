@@ -71,7 +71,7 @@ declare namespace MeasuredTemplateDocument {
    * A document's parent is something that can contain it.
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    */
-  type Parent = null;
+  type Parent = Scene.Implementation | null;
 
   /**
    * A document's descendants are any child documents, grandchild documents, etc.
@@ -123,7 +123,7 @@ declare namespace MeasuredTemplateDocument {
   type Stored = Document.Internal.Stored<MeasuredTemplateDocument.Implementation>;
 
   /**
-   * The data put in {@linkcode MeasuredTemplate._source | MeasuredTemplate#_source}. This data is what was
+   * The data put in {@linkcode MeasuredTemplateDocument._source | MeasuredTemplateDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
    * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
@@ -149,7 +149,7 @@ declare namespace MeasuredTemplateDocument {
 
   /**
    * The helper type for the return of {@linkcode MeasuredTemplateDocument.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `MeasuredTemplateDocument`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -421,11 +421,10 @@ declare namespace MeasuredTemplateDocument {
   }
 
   /**
-   * If `Temporary` is true then `MeasuredTemplate.Implementation`, otherwise `MeasuredTemplate.Stored`.
+   * If `Temporary` is true then {@linkcode MeasuredTemplateDocument.Implementation}, otherwise {@linkcode MeasuredTemplateDocument.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? MeasuredTemplateDocument.Implementation
-    : MeasuredTemplateDocument.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? MeasuredTemplateDocument.Implementation : MeasuredTemplateDocument.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -449,6 +448,10 @@ declare namespace MeasuredTemplateDocument {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -461,7 +464,7 @@ declare namespace MeasuredTemplateDocument {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

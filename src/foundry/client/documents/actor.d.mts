@@ -1,9 +1,8 @@
 import type { AnyObject, InexactPartial, NullishProps, MaybeArray, Merge, Identity } from "#utils";
 import type { ConfiguredActor } from "#configuration";
-import type { fields } from "#common/data/_module.d.mts";
+import type { fields, PrototypeToken } from "#common/data/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { BaseActiveEffect, BaseActor, BaseFolder, BaseItem } from "#client/documents/_module.d.mts";
-import type { PrototypeToken } from "#common/data/data.mjs";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
@@ -149,6 +148,18 @@ declare namespace Actor {
   /**
    * A document's parent is something that can contain it.
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
+   *
+   * @remarks Foundry doesn't store `Actor`s with {@linkcode TokenDocument} parents in the database, it constructs them from the underlying
+   * {@linkcode ActorDelta} on the client; they are, however, treated the same as regular embedded documents in most circumstances, and the
+   * following is valid:
+   * ```js
+   * // works as expected:
+   * await tokenDoc.updateEmbeddedDocuments("Actor", [{_id: tokenDoc.actorId, name: "new name" }]);
+   * // true:
+   * tokenDoc.actor.parent === tokenDoc
+   * ```
+   * Under the hood, though, this operation is converted to target the `ActorDelta` via `ClientDatabaseBackend##buildRequest` calling
+   * `##adjustActorDeltaRequest`.
    */
   type Parent = TokenDocument.Implementation | null;
 
@@ -291,7 +302,7 @@ declare namespace Actor {
 
   /**
    * The helper type for the return of {@linkcode Actor.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `Actor`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -344,8 +355,7 @@ declare namespace Actor {
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Actor subtype which configures the system data model applied */
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof BaseActor, {}>;
+    type: fields.DocumentTypeField<typeof BaseActor>;
 
     /**
      * An image file path which provides the artwork for this Actor
@@ -516,11 +526,10 @@ declare namespace Actor {
   }
 
   /**
-   * If `Temporary` is true then `Actor.Implementation`, otherwise `Actor.Stored`.
+   * If `Temporary` is true then {@linkcode Actor.Implementation}, otherwise {@linkcode Actor.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Actor.Implementation
-    : Actor.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Actor.Implementation : Actor.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -543,6 +552,10 @@ declare namespace Actor {
      */
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
+
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
   type PreCreateDescendantDocumentsArgs =
     | Document.Internal.PreCreateDescendantDocumentsArgs<
@@ -599,6 +612,10 @@ declare namespace Actor {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *             ACTOR-SPECIFIC TYPES              *
+   *************************************************/
 
   interface GetDefaultArtworkReturn {
     img: string;
@@ -709,7 +726,7 @@ declare namespace Actor {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

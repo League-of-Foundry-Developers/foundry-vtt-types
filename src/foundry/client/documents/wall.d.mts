@@ -121,7 +121,7 @@ declare namespace WallDocument {
   type Stored = Document.Internal.Stored<WallDocument.Implementation>;
 
   /**
-   * The data put in {@linkcode foundry.abstract.DataModel._source | DataModel#_source}. This data is what was
+   * The data put in {@linkcode WallDocument._source | WallDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
    * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
@@ -137,7 +137,7 @@ declare namespace WallDocument {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  // TODO: ensure `c` is required for creation
+  // TODO: ensure `c` is required for construction/creation
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
@@ -148,7 +148,7 @@ declare namespace WallDocument {
 
   /**
    * The helper type for the return of {@linkcode WallDocument.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `WallDocument`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -181,11 +181,6 @@ declare namespace WallDocument {
    * and its derivative interfaces.
    */
   type UpdateInput = UpdateData | Implementation;
-
-  /**
-   * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
-   */
-  type Coordinates = [x0: number, y0: number, x1: number, y1: number];
 
   interface ThresholdSchema extends fields.DataSchema {
     /**
@@ -538,11 +533,10 @@ declare namespace WallDocument {
   }
 
   /**
-   * If `Temporary` is true then `WallDocument.Implementation`, otherwise `WallDocument.Stored`.
+   * If `Temporary` is true then {@linkcode WallDocument.Implementation}, otherwise {@linkcode WallDocument.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? WallDocument.Implementation
-    : WallDocument.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? WallDocument.Implementation : WallDocument.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -566,6 +560,10 @@ declare namespace WallDocument {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -574,11 +572,20 @@ declare namespace WallDocument {
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
+  /* ***********************************************
+   *              WALL-SPECIFIC TYPES              *
+   *************************************************/
+
+  /**
+   * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
+   */
+  type Coordinates = [x0: number, y0: number, x1: number, y1: number];
+
   /**
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

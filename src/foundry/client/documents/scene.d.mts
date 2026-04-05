@@ -121,15 +121,15 @@ declare namespace Scene {
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
   type DirectDescendant =
-    | AmbientLightDocument.Implementation
-    | AmbientSoundDocument.Implementation
-    | DrawingDocument.Implementation
-    | MeasuredTemplateDocument.Implementation
-    | NoteDocument.Implementation
-    | RegionDocument.Implementation
-    | TileDocument.Implementation
-    | TokenDocument.Implementation
-    | WallDocument.Implementation;
+    | AmbientLightDocument.Stored
+    | AmbientSoundDocument.Stored
+    | DrawingDocument.Stored
+    | MeasuredTemplateDocument.Stored
+    | NoteDocument.Stored
+    | RegionDocument.Stored
+    | TileDocument.Stored
+    | TokenDocument.Stored
+    | WallDocument.Stored;
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -265,7 +265,7 @@ declare namespace Scene {
 
   /**
    * The helper type for the return of {@linkcode Scene.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `Scene`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -1035,11 +1035,10 @@ declare namespace Scene {
   }
 
   /**
-   * If `Temporary` is true then `Scene.Implementation`, otherwise `Scene.Stored`.
+   * If `Temporary` is true then {@linkcode Scene.Implementation}, otherwise {@linkcode Scene.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Scene.Implementation
-    : Scene.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Scene.Implementation : Scene.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -1062,6 +1061,10 @@ declare namespace Scene {
      */
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
+
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
@@ -1124,6 +1127,10 @@ declare namespace Scene {
       >
     | TokenDocument.OnDeleteDescendantDocumentsArgs
     | RegionDocument.OnDeleteDescendantDocumentsArgs;
+
+  /* ***********************************************
+   *             SCENE-SPECIFIC TYPES              *
+   *************************************************/
 
   interface Dimensions {
     /** The width of the canvas. */
@@ -1218,7 +1225,7 @@ declare namespace Scene {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -1368,76 +1375,12 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    */
   protected _onActivate(active: boolean): Promise<this | Canvas>;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class SwadeScene extends Scene {
-   *   protected override _preCreateDescendantDocuments(...args: Scene.PreCreateDescendantDocumentsArgs) {
-   *     super._preCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, data, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preCreateDescendantDocuments(...args: Scene.PreCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class LancerScene extends Scene {
-   *   protected override _preUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocuments) {
-   *     super._preUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, changes, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preUpdateDescendantDocuments(...args: Scene.PreUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class Ptr2eScene extends Scene {
-   *   protected override _onUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocumentsArgs) {
-   *     super._onUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, changes, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class KultScene extends Scene {
-   *   protected override _preDeleteDescendantDocuments(...args: Scene.PreDeleteDescendantDocumentsArgs) {
-   *     super._preDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, ids, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preDeleteDescendantDocuments(...args: Scene.PreDeleteDescendantDocumentsArgs): void;
 
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
@@ -1466,40 +1409,8 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
 
   // Other Descendant Document operations are actually overridden above
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class GurpsScene extends Scene {
-   *   protected override _onCreateDescendantDocuments(...args: Scene.OnCreateDescendantDocumentsArgs) {
-   *     super._onCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, data, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onCreateDescendantDocuments(...args: Scene.OnCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class BladesScene extends Scene {
-   *   protected override _onDeleteDescendantDocuments(...args: Scene.OnUpdateDescendantDocuments) {
-   *     super._onDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, ids, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onDeleteDescendantDocuments(...args: Scene.OnDeleteDescendantDocumentsArgs): void;
 
   static override defaultName(context?: Scene.DefaultNameContext): string;

@@ -228,7 +228,7 @@ declare namespace RegionBehavior {
 
   /**
    * The helper type for the return of {@linkcode RegionBehavior.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `RegionBehavior`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -288,8 +288,7 @@ declare namespace RegionBehavior {
     /**
      * An RegionBehavior subtype which configures the system data model applied
      */
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof BaseRegionBehavior, {}>;
+    type: fields.DocumentTypeField<typeof BaseRegionBehavior>;
 
     /**
      * Data for a RegionBehavior subtype, defined by a System or Module
@@ -427,11 +426,10 @@ declare namespace RegionBehavior {
   }
 
   /**
-   * If `Temporary` is true then `RegionBehavior.Implementation`, otherwise `RegionBehavior.Stored`.
+   * If `Temporary` is true then {@linkcode RegionBehavior.Implementation}, otherwise {@linkcode RegionBehavior.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? RegionBehavior.Implementation
-    : RegionBehavior.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? RegionBehavior.Implementation : RegionBehavior.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -455,6 +453,10 @@ declare namespace RegionBehavior {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -467,7 +469,7 @@ declare namespace RegionBehavior {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

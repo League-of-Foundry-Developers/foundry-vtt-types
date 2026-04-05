@@ -140,7 +140,7 @@ declare namespace AmbientSoundDocument {
 
   /**
    * The helper type for the return of {@linkcode AmbientSoundDocument.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `AmbientSoundDocument`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -420,11 +420,10 @@ declare namespace AmbientSoundDocument {
   }
 
   /**
-   * If `Temporary` is true then `AmbientSoundDocument.Implementation`, otherwise `AmbientSoundDocument.Stored`.
+   * If `Temporary` is true then {@linkcode AmbientSoundDocument.Implementation}, otherwise {@linkcode AmbientSoundDocument.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? AmbientSoundDocument.Implementation
-    : AmbientSoundDocument.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? AmbientSoundDocument.Implementation : AmbientSoundDocument.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -448,6 +447,10 @@ declare namespace AmbientSoundDocument {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -455,6 +458,10 @@ declare namespace AmbientSoundDocument {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *        AMBIENT-SOUND-SPECIFIC TYPES           *
+   *************************************************/
 
   interface Effect {
     type: keyof CONFIG["soundEffects"];
@@ -470,7 +477,7 @@ declare namespace AmbientSoundDocument {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

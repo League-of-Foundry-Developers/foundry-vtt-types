@@ -208,7 +208,7 @@ declare namespace Macro {
 
   /**
    * The helper type for the return of {@linkcode Macro.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `Macro`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -445,11 +445,10 @@ declare namespace Macro {
   }
 
   /**
-   * If `Temporary` is true then `Macro.Implementation`, otherwise `Macro.Stored`.
+   * If `Temporary` is true then {@linkcode Macro.Implementation}, otherwise {@linkcode Macro.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Macro.Implementation
-    : Macro.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Macro.Implementation : Macro.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -473,6 +472,10 @@ declare namespace Macro {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -480,6 +483,10 @@ declare namespace Macro {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *              MACRO-SPECIFIC TYPES             *
+   *************************************************/
 
   /** @internal */
   type _ScriptScope = NullishProps<{
@@ -549,7 +556,7 @@ declare namespace Macro {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

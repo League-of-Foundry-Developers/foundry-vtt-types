@@ -284,7 +284,7 @@ declare namespace Item {
 
   /**
    * The helper type for the return of {@linkcode Item.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `Item`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -337,8 +337,7 @@ declare namespace Item {
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Item subtype which configures the system data model applied */
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof BaseItem, {}>;
+    type: fields.DocumentTypeField<typeof BaseItem>;
 
     /**
      * An image file path which provides the artwork for this Item
@@ -500,9 +499,10 @@ declare namespace Item {
   }
 
   /**
-   * If `Temporary` is true then `Item.Implementation`, otherwise `Item.Stored`.
+   * If `Temporary` is true then {@linkcode Item.Implementation}, otherwise {@linkcode Item.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary ? Item.Implementation : Item.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Item.Implementation : Item.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -525,6 +525,10 @@ declare namespace Item {
      */
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
+
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
@@ -570,6 +574,10 @@ declare namespace Item {
     Item.Metadata.Embedded
   >;
 
+  /* ***********************************************
+   *              ITEM-SPECIFIC TYPES              *
+   *************************************************/
+
   interface GetDefaultArtworkReturn {
     /** @defaultValue `Item.DEFAULT_ICON` */
     img: string;
@@ -579,7 +587,7 @@ declare namespace Item {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -648,112 +656,16 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
 
   // ClientDocument overrides
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class SwadeItem extends Item {
-   *   protected override _preCreateDescendantDocuments(...args: Item.PreCreateDescendantDocumentsArgs) {
-   *     super._preCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, data, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preCreateDescendantDocuments(...args: Item.PreCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class GurpsItem extends Item {
-   *   protected override _onCreateDescendantDocuments(...args: Item.OnCreateDescendantDocumentsArgs) {
-   *     super._onCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, data, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onCreateDescendantDocuments(...args: Item.OnCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class LancerItem extends Item {
-   *   protected override _preUpdateDescendantDocuments(...args: Item.OnUpdateDescendantDocuments) {
-   *     super._preUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, changes, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preUpdateDescendantDocuments(...args: Item.PreUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class Ptr2eItem extends Item {
-   *   protected override _onUpdateDescendantDocuments(...args: Item.OnUpdateDescendantDocumentsArgs) {
-   *     super._onUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, changes, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onUpdateDescendantDocuments(...args: Item.OnUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class KultItem extends Item {
-   *   protected override _preDeleteDescendantDocuments(...args: Item.PreDeleteDescendantDocumentsArgs) {
-   *     super._preDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, ids, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preDeleteDescendantDocuments(...args: Item.PreDeleteDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class BladesItem extends Item {
-   *   protected override _onDeleteDescendantDocuments(...args: Item.OnUpdateDescendantDocuments) {
-   *     super._onDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, ids, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onDeleteDescendantDocuments(...args: Item.OnDeleteDescendantDocumentsArgs): void;
 
   static override defaultName(context?: Item.DefaultNameContext): string;

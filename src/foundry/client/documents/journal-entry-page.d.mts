@@ -219,7 +219,7 @@ declare namespace JournalEntryPage {
 
   /**
    * The helper type for the return of {@linkcode JournalEntryPage.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `JournalEntryPage`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -556,11 +556,10 @@ declare namespace JournalEntryPage {
   }
 
   /**
-   * If `Temporary` is true then `JournalEntryPage.Implementation`, otherwise `JournalEntryPage.Stored`.
+   * If `Temporary` is true then {@linkcode JournalEntryPage.Implementation}, otherwise {@linkcode JournalEntryPage.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? JournalEntryPage.Implementation
-    : JournalEntryPage.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? JournalEntryPage.Implementation : JournalEntryPage.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -584,6 +583,10 @@ declare namespace JournalEntryPage {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -591,6 +594,10 @@ declare namespace JournalEntryPage {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *      JOURNAL-ENTRY-PAGE-SPECIFIC TYPES        *
+   *************************************************/
 
   interface JournalEntryPageHeading {
     /** The heading level, 1-6. */
@@ -655,7 +662,7 @@ declare namespace JournalEntryPage {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

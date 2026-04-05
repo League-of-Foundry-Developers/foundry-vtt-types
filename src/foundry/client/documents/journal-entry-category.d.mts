@@ -134,7 +134,7 @@ declare namespace JournalEntryCategory {
 
   /**
    * The helper type for the return of {@linkcode JournalEntryCategory.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `JournalEntryCategory`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -320,11 +320,10 @@ declare namespace JournalEntryCategory {
   }
 
   /**
-   * If `Temporary` is true then `JournalEntryCategory.Implementation`, otherwise `JournalEntryCategory.Stored`.
+   * If `Temporary` is true then {@linkcode JournalEntryCategory.Implementation}, otherwise {@linkcode JournalEntryCategory.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? JournalEntryCategory.Implementation
-    : JournalEntryCategory.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? JournalEntryCategory.Implementation : JournalEntryCategory.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -348,6 +347,10 @@ declare namespace JournalEntryCategory {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -357,27 +360,10 @@ declare namespace JournalEntryCategory {
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
-   * @remarks
-   * This is typed based on what is reasonable to expect, rather than accurately, as accurately would mean `unknown` (Foundry's type is `object|null`).
-   *
-   * Technically this is the value of an arbitrary property path in the Combatant's Actor's `system` (using `getProperty`), and while that path can usually be
-   * assumed to have been set to something in the return of {@linkcode TokenDocument.getTrackedAttributes}, since that's what the {@linkcode CombatTrackerConfig}
-   * provides as options, the path is stored in the {@linkcode Combat.CONFIG_SETTING} which could be updated to be anything. Also, `TokenDocument.getTrackedAttributes`
-   * doesn't actually check what the type of `value` and `max` are for bar type attributes, so even sticking to those choices isn't guaranteed safe.
-   *
-   * There's clear intent that the value *should* be numeric or null, but nothing seems to do math on it in core, and it's simply output in the {@linkcode CombatEncounters}
-   * template as `{{resource}}`, so `string` has been allowed.
-   *
-   * @privateRemarks Adding `boolean` is something that was discussed and decided against for now, but its plausible a system may request such in the future, and wouldn't
-   * make us any more wrong than currently.
-   */
-  type Resource = string | number | null;
-
-  /**
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

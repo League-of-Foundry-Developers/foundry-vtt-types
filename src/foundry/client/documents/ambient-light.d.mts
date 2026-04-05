@@ -24,7 +24,7 @@ declare namespace AmbientLightDocument {
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
-   * The documents embedded within `AmbientLight`.
+   * The documents embedded within `AmbientLightDocument`.
    */
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
@@ -139,7 +139,7 @@ declare namespace AmbientLightDocument {
 
   /**
    * The helper type for the return of {@linkcode AmbientLightDocument.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `AmbientLightDocument`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -361,11 +361,10 @@ declare namespace AmbientLightDocument {
   }
 
   /**
-   * If `Temporary` is true then `AmbientLightDocument.Implementation`, otherwise `AmbientLightDocument.Stored`.
+   * If `Temporary` is true then {@linkcode AmbientLightDocument.Implementation}, otherwise {@linkcode AmbientLightDocument.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? AmbientLightDocument.Implementation
-    : AmbientLightDocument.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? AmbientLightDocument.Implementation : AmbientLightDocument.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -396,6 +395,10 @@ declare namespace AmbientLightDocument {
     };
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -408,7 +411,7 @@ declare namespace AmbientLightDocument {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

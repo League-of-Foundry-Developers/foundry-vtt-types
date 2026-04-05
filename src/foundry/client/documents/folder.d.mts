@@ -195,7 +195,7 @@ declare namespace Folder {
 
   /**
    * The helper type for the return of {@linkcode Folder.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `Folder`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -402,11 +402,10 @@ declare namespace Folder {
   }
 
   /**
-   * If `Temporary` is true then `Folder.Implementation`, otherwise `Folder.Stored`.
+   * If `Temporary` is true then {@linkcode Folder.Implementation}, otherwise {@linkcode Folder.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Folder.Implementation
-    : Folder.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Folder.Implementation : Folder.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -430,6 +429,10 @@ declare namespace Folder {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -449,6 +452,10 @@ declare namespace Folder {
     /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
     resolve?: never;
   }
+
+  /* ***********************************************
+   *             FOLDER-SPECIFIC TYPES             *
+   *************************************************/
 
   /**
    * Actual document types that go in folders
@@ -533,7 +540,7 @@ declare namespace Folder {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

@@ -140,7 +140,7 @@ declare namespace TileDocument {
 
   /**
    * The helper type for the return of {@linkcode TileDocument.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `TileDocument`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -257,13 +257,7 @@ declare namespace TileDocument {
     locked: fields.BooleanField;
 
     /** @defaultValue see properties */
-    restrictions: fields.SchemaField<{
-      /** @defaultValue `false` */
-      light: fields.BooleanField;
-
-      /** @defaultValue `false` */
-      weather: fields.BooleanField;
-    }>;
+    restrictions: fields.SchemaField<RestrictionsSchema>;
 
     /**
      * The tile's occlusion settings
@@ -323,6 +317,16 @@ declare namespace TileDocument {
      */
     flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
   }
+
+  interface RestrictionsSchema extends fields.DataSchema {
+    /** @defaultValue `false` */
+    light: fields.BooleanField;
+
+    /** @defaultValue `false` */
+    weather: fields.BooleanField;
+  }
+
+  interface RestrictionsData extends fields.SchemaField.InitializedData<RestrictionsSchema> {}
 
   namespace Database {
     /** Options passed along in Get operations for TileDocuments */
@@ -437,11 +441,10 @@ declare namespace TileDocument {
   }
 
   /**
-   * If `Temporary` is true then `TileDocument.Implementation`, otherwise `TileDocument.Stored`.
+   * If `Temporary` is true then {@linkcode TileDocument.Implementation}, otherwise {@linkcode TileDocument.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? TileDocument.Implementation
-    : TileDocument.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? TileDocument.Implementation : TileDocument.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -478,6 +481,10 @@ declare namespace TileDocument {
     };
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -490,7 +497,7 @@ declare namespace TileDocument {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

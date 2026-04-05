@@ -293,7 +293,7 @@ declare namespace Combat {
 
   /**
    * The helper type for the return of {@linkcode Combat.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `Combat`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -519,11 +519,10 @@ declare namespace Combat {
   }
 
   /**
-   * If `Temporary` is true then `Combat.Implementation`, otherwise `Combat.Stored`.
+   * If `Temporary` is true then {@linkcode Combat.Implementation}, otherwise {@linkcode Combat.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Combat.Implementation
-    : Combat.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Combat.Implementation : Combat.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -546,6 +545,10 @@ declare namespace Combat {
      */
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
+
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
@@ -590,6 +593,10 @@ declare namespace Combat {
     Combat.DirectDescendantName,
     Combat.Metadata.Embedded
   >;
+
+  /* ***********************************************
+   *             COMBAT-SPECIFIC TYPES             *
+   *************************************************/
 
   /** @internal */
   type _InitiativeOptions = NullishProps<{
@@ -637,7 +644,7 @@ declare namespace Combat {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -843,58 +850,10 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   // _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class GurpsCombat extends Combat {
-   *   protected override _onCreateDescendantDocuments(...args: Combat.OnCreateDescendantDocumentsArgs) {
-   *     super._onCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, data, options, userId] = args;
-   *     if (collection === "combatants") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onCreateDescendantDocuments(...args: Combat.OnCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class Ptr2eCombat extends Combat {
-   *   protected override _onUpdateDescendantDocuments(...args: Combat.OnUpdateDescendantDocumentsArgs) {
-   *     super._onUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, changes, options, userId] = args;
-   *     if (collection === "combatants") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onUpdateDescendantDocuments(...args: Combat.OnUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class BladesCombat extends Combat {
-   *   protected override _onDeleteDescendantDocuments(...args: Combat.OnUpdateDescendantDocuments) {
-   *     super._onDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, ids, options, userId] = args;
-   *     if (collection === "combatants") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onDeleteDescendantDocuments(...args: Combat.OnDeleteDescendantDocumentsArgs): void;
 
   /**
@@ -1037,58 +996,12 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   // ClientDocument overrides
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class SwadeCombat extends Combat {
-   *   protected override _preCreateDescendantDocuments(...args: Combat.PreCreateDescendantDocumentsArgs) {
-   *     super._preCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, data, options, userId] = args;
-   *     if (collection === "combatants") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
+  // Other Descendant Document operations are actually overridden above
+
   protected override _preCreateDescendantDocuments(...args: Combat.PreCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class LancerCombat extends Combat {
-   *   protected override _preUpdateDescendantDocuments(...args: Combat.OnUpdateDescendantDocuments) {
-   *     super._preUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, changes, options, userId] = args;
-   *     if (collection === "combatants") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preUpdateDescendantDocuments(...args: Combat.PreUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class KultCombat extends Combat {
-   *   protected override _preDeleteDescendantDocuments(...args: Combat.PreDeleteDescendantDocumentsArgs) {
-   *     super._preDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, ids, options, userId] = args;
-   *     if (collection === "combatants") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preDeleteDescendantDocuments(...args: Combat.PreDeleteDescendantDocumentsArgs): void;
 
   static override defaultName(context?: Combat.DefaultNameContext): string;

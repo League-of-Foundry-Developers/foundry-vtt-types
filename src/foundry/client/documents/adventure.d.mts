@@ -140,7 +140,7 @@ declare namespace Adventure {
 
   /**
    * The helper type for the return of {@linkcode Adventure.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `Adventure`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -409,11 +409,10 @@ declare namespace Adventure {
   }
 
   /**
-   * If `Temporary` is true then `Adventure.Implementation`, otherwise `Adventure.Stored`.
+   * If `Temporary` is true then {@linkcode Adventure.Implementation}, otherwise {@linkcode Adventure.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Adventure.Implementation
-    : Adventure.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Adventure.Implementation : Adventure.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -437,6 +436,10 @@ declare namespace Adventure {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -444,6 +447,10 @@ declare namespace Adventure {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *           ADVENTURE-SPECIFIC TYPES            *
+   *************************************************/
 
   type DocumentDataRecord = {
     [K in ContainedDocumentType]?: Document.CreateDataForName<K>[];
@@ -503,7 +510,7 @@ declare namespace Adventure {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

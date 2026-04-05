@@ -551,11 +551,10 @@ declare namespace ActiveEffect {
   }
 
   /**
-   * If `Temporary` is true then `ActiveEffect.Implementation`, otherwise `ActiveEffect.Stored`.
+   * If `Temporary` is true then {@linkcode ActiveEffect.Implementation}, otherwise {@linkcode ActiveEffect.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? ActiveEffect.Implementation
-    : ActiveEffect.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? ActiveEffect.Implementation : ActiveEffect.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -586,8 +585,21 @@ declare namespace ActiveEffect {
     core?: { overlay?: boolean };
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
+
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *         ACTIVE-EFFECT-SPECIFIC TYPES          *
+   *************************************************/
 
   type DurationType = "seconds" | "turns" | "none";
 
@@ -670,7 +682,7 @@ declare namespace ActiveEffect {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

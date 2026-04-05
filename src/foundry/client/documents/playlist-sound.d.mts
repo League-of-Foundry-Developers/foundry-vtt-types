@@ -152,7 +152,7 @@ declare namespace PlaylistSound {
 
   /**
    * The helper type for the return of {@linkcode PlaylistSound.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `PlaylistSound`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -382,11 +382,10 @@ declare namespace PlaylistSound {
   }
 
   /**
-   * If `Temporary` is true then `PlaylistSound.Implementation`, otherwise `PlaylistSound.Stored`.
+   * If `Temporary` is true then {@linkcode PlaylistSound.Implementation}, otherwise {@linkcode PlaylistSound.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? PlaylistSound.Implementation
-    : PlaylistSound.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? PlaylistSound.Implementation : PlaylistSound.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -410,6 +409,10 @@ declare namespace PlaylistSound {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -422,7 +425,7 @@ declare namespace PlaylistSound {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

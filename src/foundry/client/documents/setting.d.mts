@@ -149,7 +149,7 @@ declare namespace Setting {
 
   /**
    * The helper type for the return of {@linkcode Setting.create}, returning (a single | an array of) (temporary | stored)
-   * `ActiveEffect`s.
+   * `Setting`s.
    *
    * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
    * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
@@ -350,11 +350,10 @@ declare namespace Setting {
   }
 
   /**
-   * If `Temporary` is true then `Setting.Implementation`, otherwise `Setting.Stored`.
+   * If `Temporary` is true then {@linkcode Setting.Implementation}, otherwise {@linkcode Setting.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Setting.Implementation
-    : Setting.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Setting.Implementation : Setting.Stored;
 
   /**
    * @deprecated `Settings` does not have any flags.
@@ -386,6 +385,10 @@ declare namespace Setting {
     type Get<_Scope, _Key> = never;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -398,7 +401,7 @@ declare namespace Setting {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
