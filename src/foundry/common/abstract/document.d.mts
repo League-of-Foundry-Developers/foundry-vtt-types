@@ -46,10 +46,8 @@ import type {
   DatabaseUpdateOperation,
   DocumentSocketRequest,
 } from "./_types.d.mts";
-import type DataModel from "./data.mts";
-import type DocumentSocketResponse from "./socket.d.mts";
-import type EmbeddedCollection from "./embedded-collection.d.mts";
-import type WorldCollection from "#client/documents/abstract/world-collection.d.mts";
+import type { DataModel, DocumentSocketResponse, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { ClientDocumentMixin, WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { SystemConfig } from "#configuration";
 
 export default Document;
@@ -939,7 +937,7 @@ declare abstract class AnyDocument extends Document<Document.Type, {}, Document.
 
 declare namespace Document {
   interface Any extends AnyDocument {}
-  interface AnyStored extends Document.Internal.Stored<Any> {}
+  interface AnyStored extends Document.Internal.Stored<ClientDocumentMixin.AnyMixed> {}
   interface AnyValid extends AnyDocument {
     get invalid(): false;
   }
@@ -964,6 +962,15 @@ declare namespace Document {
   type EmbeddedType = CONST.EMBEDDED_DOCUMENT_TYPES;
   type WorldType = CONST.WORLD_DOCUMENT_TYPES;
   type CompendiumType = CONST.COMPENDIUM_DOCUMENT_TYPES;
+
+  /**
+   * Documents that require a parent for persisted creation. Most of them do not require
+   * one for temporary construction; only `ActorDelta` does, as of 13.351.
+   */
+  type AlwaysEmbeddedType = Exclude<EmbeddedType, PrimaryType>;
+
+  /** Documents which can only be persisted inside compendia. As of 13.351 this is only `Adventure`. */
+  type AlwaysCompendiumType = "Adventure";
 
   type WithSubTypes = WithSystem | "Folder" | "Macro" | "TableResult";
 
@@ -1097,6 +1104,18 @@ declare namespace Document {
   type SocketRequest<Action extends DatabaseAction> = DocumentSocketRequest<Action>;
   type SocketResponse<Action extends DatabaseAction> = DocumentSocketResponse<Action>;
 
+  /**
+   * Documents that can't be either directly in compendia, or embedded in documents that can be in compendia, should always return `false`
+   * for {@linkcode Document.inCompendium | Document#inCompendium}. We can't force `true` for documents that can only be persisted in
+   * compendia (e.g `Adventure`) here, because they could be temporary.
+   */
+  type InCompendium<Name extends Document.Type> = Name extends
+    | CONST.COMPENDIUM_DOCUMENT_TYPES
+    | CONST.EMBEDDED_DOCUMENT_TYPES
+    | "Folder"
+    ? boolean
+    : false;
+
   // Documented at https://gist.github.com/LukeAbby/c7420b053d881db4a4d4496b95995c98
   namespace Internal {
     type Constructor = (abstract new (...args: never) => Instance.Any) & {
@@ -1228,15 +1247,71 @@ declare namespace Document {
           }
       : never;
 
+    /** Persisted, non-primary, embedded documents always have a non-`null` `parent` */
+    type StoredParent<D extends Document.Any> = D["documentName"] extends Document.AlwaysEmbeddedType
+      ? NonNullable<D["parent"]>
+      : D["parent"];
+
+    /** Persisted, non-primary, embedded documents always have a non-`null` `parent` */
+    type StoredParentCollection<D extends Document.Any> = D["documentName"] extends Document.AlwaysEmbeddedType
+      ? NonNullable<D["parentCollection"]>
+      : D["parentCollection"];
+
+    /** Persisted documents will always have a `collection`, whether it's a pack, a world collection, or another document. */
+    type StoredCollection<D extends ClientDocumentMixin.AnyMixed> = Exclude<D["collection"], null>;
+
+    /** Some documents can only be persisted in compendia. */
+    type StoredInCompendium<D extends ClientDocumentMixin.AnyMixed> =
+      D["documentName"] extends Document.AlwaysCompendiumType ? Exclude<D["inCompendium"], false> : D["inCompendium"];
+
+    /** Some documents can only be persisted in compendia. */
+    type StoredCompendium<D extends ClientDocumentMixin.AnyMixed> =
+      D["documentName"] extends Document.AlwaysCompendiumType ? Exclude<D["compendium"], null> : D["compendium"];
+
     // TODO(LukeAbby): Improve the type display with a helper here.
     // TODO(LukeAbby): Add `StoredSource` for a better type display there.
-    type Stored<D extends Document.Any> = Override<
+    type Stored<D extends ClientDocumentMixin.AnyMixed> = Override<
       D,
       {
-        id: string;
+        /**
+         * The canonical identifier for this Document
+         * @remarks As this is a persisted Document, it is guaranteed to have an ID.
+         */
+        get id(): string;
+
+        /** @remarks As this is a persisted Document, it is guaranteed to have an ID. */
         _id: string;
+
+        /**
+         * A Universally Unique Identifier (uuid) for this Document instance.
+         * @remarks Always `null` for temporary documents, always `string` for persisted,  though embedded
+         * documents in non-persisted parents may have incorrect values at runtime.
+         */
+        get uuid(): string;
+
+        /** @remarks As this is a persisted Document, its source is guaranteed to have an ID. */
         _source: Override<D["_source"], { _id: string }>;
+
+        /**
+         * Extract the source data for the DataModel into a simple object format that can be serialized.
+         * @returns The document source data expressed as a plain object
+         */
         toJSON(): Override<D["_source"], { _id: string }>;
+
+        /** @remarks As this is a persisted Document, it is guaranteed to have a non-`null` `parent`. */
+        parent: Document.Internal.StoredParent<D>;
+
+        /** @remarks As this is a persisted Document, it is guaranteed to have a non-`null` `parentCollection`. */
+        parentCollection: Document.Internal.StoredParentCollection<D>;
+
+        /** @remarks As this is a persisted Document, it is guaranteed to have a non-`null` `collection`. */
+        collection: Document.Internal.StoredCollection<D>;
+
+        /** Is this document in a compendium? */
+        get inCompendium(): StoredInCompendium<D>;
+
+        /** A reference to the Compendium Collection containing this Document, if any, and otherwise null. */
+        get compendium(): StoredCompendium<D>;
       }
     >;
 
@@ -2630,29 +2705,34 @@ declare namespace Document {
   }[Name];
 
   /**
-   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
+   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged
+   * into `Stored`.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ToConfiguredStored<D extends Document.AnyConstructor> = Stored<ToConfiguredInstance<D>>;
 
   /**
-   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
+   * @deprecated This type should not be used directly. Use {@linkcode StoredForName} as this type does not account for anything declaration
+   * merged into `Stored`.
    */
-  type Stored<D extends Document.Any> = Document.Internal.Stored<D>;
+  type Stored<D extends ClientDocumentMixin.AnyMixed> = Document.Internal.Stored<D>;
 
   /**
-   * @deprecated This type should not be used directly. Use `InvalidForName` as this type does not account for anything declaration merged into `Invalid`.
+   * @deprecated This type should not be used directly. Use `InvalidForName` as this type does not account for anything declaration merged
+   * into `Invalid`.
    */
   type Invalid<D extends Document.Any> = Document.Internal.Invalid<D>;
 
   /**
-   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
+   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged
+   * into `Stored`.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  type ToStored<D extends Document.AnyConstructor> = Stored<FixedInstanceType<D>>;
+  type ToStored<D extends ClientDocumentMixin.AnyMixedConstructor> = Stored<FixedInstanceType<D>>;
 
   /**
-   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged into `Stored`.
+   * @deprecated This type should not be used directly. Use `StoredForName` as this type does not account for anything declaration merged
+   * into `Stored`.
    */
   type ToStoredIf<D extends Document.AnyConstructor, Temporary extends boolean | undefined> = Temporary extends true
     ? FixedInstanceType<D>
@@ -2792,13 +2872,49 @@ declare namespace Document {
     K
   >;
 
-  /**
-   * @deprecated Use the `TemporaryIf` available on each sub-document.
-   */
-  type TemporaryIf<D extends Document.Any, Temporary extends boolean | undefined> = Temporary extends true
+  type TemporaryIf<
+    D extends ClientDocumentMixin.AnyMixed,
+    Temporary extends boolean | undefined,
+  > = Temporary extends true
     ? D
     : // eslint-disable-next-line @typescript-eslint/no-deprecated
       Stored<D>;
+
+  type TemporaryIfForName<Name extends Document.Type, Temporary extends boolean | undefined> =
+    | (Name extends "ActiveEffect" ? ActiveEffect.TemporaryIf<Temporary> : never)
+    | (Name extends "ActorDelta" ? ActorDelta.TemporaryIf<Temporary> : never)
+    | (Name extends "Actor" ? Actor.TemporaryIf<Temporary> : never)
+    | (Name extends "Adventure" ? Adventure.TemporaryIf<Temporary> : never)
+    | (Name extends "AmbientLight" ? AmbientLightDocument.TemporaryIf<Temporary> : never)
+    | (Name extends "AmbientSound" ? AmbientSoundDocument.TemporaryIf<Temporary> : never)
+    | (Name extends "Card" ? Card.TemporaryIf<Temporary> : never)
+    | (Name extends "Cards" ? Cards.TemporaryIf<Temporary> : never)
+    | (Name extends "ChatMessage" ? ChatMessage.TemporaryIf<Temporary> : never)
+    | (Name extends "Combat" ? Combat.TemporaryIf<Temporary> : never)
+    | (Name extends "Combatant" ? Combatant.TemporaryIf<Temporary> : never)
+    | (Name extends "CombatantGroup" ? CombatantGroup.TemporaryIf<Temporary> : never)
+    | (Name extends "Drawing" ? DrawingDocument.TemporaryIf<Temporary> : never)
+    | (Name extends "FogExploration" ? FogExploration.TemporaryIf<Temporary> : never)
+    | (Name extends "Folder" ? Folder.TemporaryIf<Temporary> : never)
+    | (Name extends "Item" ? Item.TemporaryIf<Temporary> : never)
+    | (Name extends "JournalEntryCategory" ? JournalEntryCategory.TemporaryIf<Temporary> : never)
+    | (Name extends "JournalEntryPage" ? JournalEntryPage.TemporaryIf<Temporary> : never)
+    | (Name extends "JournalEntry" ? JournalEntry.TemporaryIf<Temporary> : never)
+    | (Name extends "Macro" ? Macro.TemporaryIf<Temporary> : never)
+    | (Name extends "MeasuredTemplate" ? MeasuredTemplateDocument.TemporaryIf<Temporary> : never)
+    | (Name extends "Note" ? NoteDocument.TemporaryIf<Temporary> : never)
+    | (Name extends "PlaylistSound" ? PlaylistSound.TemporaryIf<Temporary> : never)
+    | (Name extends "Playlist" ? Playlist.TemporaryIf<Temporary> : never)
+    | (Name extends "RegionBehavior" ? RegionBehavior.TemporaryIf<Temporary> : never)
+    | (Name extends "Region" ? RegionDocument.TemporaryIf<Temporary> : never)
+    | (Name extends "RollTable" ? RollTable.TemporaryIf<Temporary> : never)
+    | (Name extends "Scene" ? Scene.TemporaryIf<Temporary> : never)
+    | (Name extends "Setting" ? Setting.TemporaryIf<Temporary> : never)
+    | (Name extends "TableResult" ? TableResult.TemporaryIf<Temporary> : never)
+    | (Name extends "Tile" ? TileDocument.TemporaryIf<Temporary> : never)
+    | (Name extends "Token" ? TokenDocument.TemporaryIf<Temporary> : never)
+    | (Name extends "User" ? User.TemporaryIf<Temporary> : never)
+    | (Name extends "Wall" ? WallDocument.TemporaryIf<Temporary> : never);
 
   /**
    * @deprecated This has been removed without replacement. If you have a need for it please let us know.
