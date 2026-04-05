@@ -89,7 +89,7 @@ declare namespace AmbientSoundDocument {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -115,37 +115,37 @@ declare namespace AmbientSoundDocument {
   type Stored = Document.Internal.Stored<AmbientSoundDocument.Implementation>;
 
   /**
-   * The data put in {@link AmbientSoundDocument._source | `AmbientSoundDocument#_source`}. This data is what was
+   * The data put in {@linkcode AmbientSoundDocument._source | AmbientSoundDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode AmbientSoundDocument.create}
-   * and {@link AmbientSoundDocument | `new AmbientSoundDocument(...)`}.
+   * and {@linkcode AmbientSoundDocument | new AmbientSoundDocument(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link AmbientSoundDocument.name | `AmbientSoundDocument#name`}.
+   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * {@linkcode AmbientSoundDocument.name | AmbientSoundDocument#name}.
    *
    * This is data transformed from {@linkcode AmbientSoundDocument.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link AmbientSoundDocument.update | `AmbientSoundDocument#update`}.
-   * It is a distinct type from {@link AmbientSoundDocument.CreateData | `DeepPartial<AmbientSoundDocument.CreateData>`} because
+   * The data used to update a document, for example {@linkcode AmbientSoundDocument.update | AmbientSoundDocument#update}.
+   * It is a distinct type from {@linkcode AmbientSoundDocument.CreateData | DeepPartial<AmbientSoundDocument.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
@@ -155,8 +155,8 @@ declare namespace AmbientSoundDocument {
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode AmbientSoundDocument}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
@@ -253,13 +253,13 @@ declare namespace AmbientSoundDocument {
     effects: fields.SchemaField<{
       /**
        * An effect configuration to apply to the sound when not muffled by walls (either clear of, or fully constrained by, walls)
-       * @defaultValue see properties of {@link EffectsConfigSchema | `AmbientSoundDocument.EffectsConfigSchema`}
+       * @defaultValue see properties of {@linkcode EffectsConfigSchema | AmbientSoundDocument.EffectsConfigSchema}
        */
       base: fields.SchemaField<EffectsConfigSchema>;
 
       /**
        * An effect configuration to apply to the sound when muffled by walls
-       * @defaultValue see properties of {@link EffectsConfigSchema | `AmbientSoundDocument.EffectsConfigSchema`}
+       * @defaultValue see properties of {@linkcode EffectsConfigSchema | AmbientSoundDocument.EffectsConfigSchema}
        */
       muffled: fields.SchemaField<EffectsConfigSchema>;
     }>;
@@ -317,7 +317,7 @@ declare namespace AmbientSoundDocument {
       AmbientSoundDocument.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link AmbientSoundDocument.update | `AmbientSoundDocument#update`} */
+    /** Operation for {@linkcode AmbientSoundDocument.update | AmbientSoundDocument#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -325,41 +325,41 @@ declare namespace AmbientSoundDocument {
     /** Options for {@linkcode AmbientSoundDocument.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link AmbientSoundDocument._preCreate | `AmbientSoundDocument#_preCreate`} */
+    /** Options for {@linkcode AmbientSoundDocument._preCreate | AmbientSoundDocument#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link AmbientSoundDocument._onCreate | `AmbientSoundDocument#_onCreate`} */
+    /** Options for {@linkcode AmbientSoundDocument._onCreate | AmbientSoundDocument#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode AmbientSoundDocument._preCreateOperation} */
     interface PreCreateOperation extends Document.Database
       .PreCreateOperationStatic<AmbientSoundDocument.Database.Create> {}
 
-    /** Operation for {@link AmbientSoundDocument._onCreateOperation | `AmbientSoundDocument#_onCreateOperation`} */
+    /** Operation for {@linkcode AmbientSoundDocument._onCreateOperation | AmbientSoundDocument#_onCreateOperation} */
     interface OnCreateOperation extends AmbientSoundDocument.Database.Create {}
 
-    /** Options for {@link AmbientSoundDocument._preUpdate | `AmbientSoundDocument#_preUpdate`} */
+    /** Options for {@linkcode AmbientSoundDocument._preUpdate | AmbientSoundDocument#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link AmbientSoundDocument._onUpdate | `AmbientSoundDocument#_onUpdate`} */
+    /** Options for {@linkcode AmbientSoundDocument._onUpdate | AmbientSoundDocument#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode AmbientSoundDocument._preUpdateOperation} */
     interface PreUpdateOperation extends AmbientSoundDocument.Database.Update {}
 
-    /** Operation for {@link AmbientSoundDocument._onUpdateOperation | `AmbientSoundDocument._preUpdateOperation`} */
+    /** Operation for {@linkcode AmbientSoundDocument._onUpdateOperation | AmbientSoundDocument._preUpdateOperation} */
     interface OnUpdateOperation extends AmbientSoundDocument.Database.Update {}
 
-    /** Options for {@link AmbientSoundDocument._preDelete | `AmbientSoundDocument#_preDelete`} */
+    /** Options for {@linkcode AmbientSoundDocument._preDelete | AmbientSoundDocument#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link AmbientSoundDocument._onDelete | `AmbientSoundDocument#_onDelete`} */
+    /** Options for {@linkcode AmbientSoundDocument._onDelete | AmbientSoundDocument#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link AmbientSoundDocument._preDeleteOperation | `AmbientSoundDocument#_preDeleteOperation`} */
+    /** Options for {@linkcode AmbientSoundDocument._preDeleteOperation | AmbientSoundDocument#_preDeleteOperation} */
     interface PreDeleteOperation extends AmbientSoundDocument.Database.Delete {}
 
-    /** Options for {@link AmbientSoundDocument._onDeleteOperation | `AmbientSoundDocument#_onDeleteOperation`} */
+    /** Options for {@linkcode AmbientSoundDocument._onDeleteOperation | AmbientSoundDocument#_onDeleteOperation} */
     interface OnDeleteOperation extends AmbientSoundDocument.Database.Delete {}
 
     /** Context for {@linkcode AmbientSoundDocument._onDeleteOperation} */
@@ -372,20 +372,20 @@ declare namespace AmbientSoundDocument {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<AmbientSoundDocument.Parent> {}
 
     /**
-     * Options for {@link AmbientSoundDocument._preCreateDescendantDocuments | `AmbientSoundDocument#_preCreateDescendantDocuments`}
-     * and {@link AmbientSoundDocument._onCreateDescendantDocuments | `AmbientSoundDocument#_onCreateDescendantDocuments`}
+     * Options for {@linkcode AmbientSoundDocument._preCreateDescendantDocuments | AmbientSoundDocument#_preCreateDescendantDocuments}
+     * and {@linkcode AmbientSoundDocument._onCreateDescendantDocuments | AmbientSoundDocument#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<AmbientSoundDocument.Database.Create> {}
 
     /**
-     * Options for {@link AmbientSoundDocument._preUpdateDescendantDocuments | `AmbientSoundDocument#_preUpdateDescendantDocuments`}
-     * and {@link AmbientSoundDocument._onUpdateDescendantDocuments | `AmbientSoundDocument#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode AmbientSoundDocument._preUpdateDescendantDocuments | AmbientSoundDocument#_preUpdateDescendantDocuments}
+     * and {@linkcode AmbientSoundDocument._onUpdateDescendantDocuments | AmbientSoundDocument#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<AmbientSoundDocument.Database.Update> {}
 
     /**
-     * Options for {@link AmbientSoundDocument._preDeleteDescendantDocuments | `AmbientSoundDocument#_preDeleteDescendantDocuments`}
-     * and {@link AmbientSoundDocument._onDeleteDescendantDocuments | `AmbientSoundDocument#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode AmbientSoundDocument._preDeleteDescendantDocuments | AmbientSoundDocument#_preDeleteDescendantDocuments}
+     * and {@linkcode AmbientSoundDocument._onDeleteDescendantDocuments | AmbientSoundDocument#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<AmbientSoundDocument.Database.Delete> {}
 
