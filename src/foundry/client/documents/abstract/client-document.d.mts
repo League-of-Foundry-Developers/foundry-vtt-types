@@ -51,15 +51,15 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   get collection(): ClientDocument.CollectionForName<DocumentName>;
 
   /**
-   * A reference to the Compendium Collection which contains this Document, if any, otherwise undefined.
+   * A reference to the Compendium Collection which contains this Document, if any, otherwise `null`.
+   * @remarks Actually overrides {@linkcode Document.compendium | Document#compendium}.
    */
-  get compendium(): ClientDocument.CompendiumForName<DocumentName>;
+  get compendium(): CompendiumCollection.ForDocument<DocumentName> | null;
 
   /**
    * Is this document in a compendium? A stricter check than {@link Document.inCompendium | `Document#inCompendium`}.
    */
-  // Note(LukeAbby): See https://github.com/microsoft/TypeScript/issues/61967
-  // get inCompendium(): boolean;
+  get inCompendium(): Document.InCompendium<DocumentName>;
 
   /**
    * A boolean indicator for whether the current game User has ownership rights for this Document.
@@ -528,7 +528,7 @@ declare namespace ClientDocumentMixin {
   interface AnyMixedConstructor extends ReturnType<typeof foundry.documents.abstract.ClientDocumentMixin<BaseClass>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
-  type BaseClass = Document.Internal.Constructor;
+  type BaseClass = Document.AnyConstructor;
 
   type Mix<BaseClass extends Document.Internal.Constructor> = Mixin<
     typeof InternalClientDocument<Document.NameFor<BaseClass>>,

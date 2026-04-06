@@ -537,7 +537,7 @@ declare namespace RollTable {
     /**
      * An array of drawn TableResult documents
      */
-    results: Document.ToConfiguredInstance<typeof foundry.documents.BaseTableResult>[];
+    results: TableResult.Implementation[];
   }
 
   /**

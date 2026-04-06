@@ -1,12 +1,5 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 import BaseActiveEffect = foundry.documents.BaseActiveEffect;
-
-declare const configuredActiveEffect: Document.ToConfiguredInstance<typeof foundry.documents.BaseActiveEffect>;
-expectTypeOf(configuredActiveEffect).toEqualTypeOf<ActiveEffect.Implementation>();
-
-declare const helperConfigAE: Document.ToConfiguredInstance<typeof foundry.documents.BaseActiveEffect>;
-expectTypeOf(helperConfigAE).toEqualTypeOf<ActiveEffect.Implementation>();
 
 declare const baseActiveEffect: foundry.documents.BaseActiveEffect;
 
