@@ -96,7 +96,7 @@ new TestAD(
   { parent: someToken },
 );
 
-expectTypeOf(myDelta).toEqualTypeOf<TestAD>();
+expectTypeOf(myDelta).toEqualTypeOf<ActorDelta.Implementation>();
 
 expectTypeOf(myDelta._id).toEqualTypeOf<string | null>();
 expectTypeOf(myDelta.name).toEqualTypeOf<string | null>();

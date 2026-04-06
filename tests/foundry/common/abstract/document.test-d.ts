@@ -36,10 +36,10 @@ describe("Document Type Tests", () => {
   });
 });
 
-declare const configuredActiveEffect: Document.ToConfiguredInstance<typeof foundry.documents.BaseActiveEffect>;
+declare const configuredActiveEffect: ActiveEffect.Implementation;
 expectTypeOf(configuredActiveEffect).toEqualTypeOf<ActiveEffect.Implementation>();
 
-declare const helperConfigAE: Document.ToConfiguredInstance<typeof foundry.documents.BaseActiveEffect>;
+declare const helperConfigAE: ActiveEffect.Implementation;
 expectTypeOf(helperConfigAE).toEqualTypeOf<ActiveEffect.Implementation>();
 
 declare const baseActiveEffect: foundry.documents.BaseActiveEffect;

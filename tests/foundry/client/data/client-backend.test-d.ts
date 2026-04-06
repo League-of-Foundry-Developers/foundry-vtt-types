@@ -32,7 +32,7 @@ describe("ClientDatabaseBackend Tests", () => {
   test("Miscellaneous", () => {
     expectTypeOf(cdb.activateSocketListeners(game.socket!)).toBeVoid();
 
-    expectTypeOf(cdb.getFlagScopes()).toEqualTypeOf<ClientDatabaseBackend.FlagScopes[]>();
+    expectTypeOf(cdb.getFlagScopes()).toEqualTypeOf<ClientDatabaseBackend.FlagScope[]>();
     expectTypeOf(cdb.getCompendiumScopes()).toEqualTypeOf<string[]>();
   });
 
