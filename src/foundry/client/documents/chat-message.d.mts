@@ -1,12 +1,18 @@
 import type { ConfiguredChatMessage } from "#configuration";
-import type { AnyObject, Identity, InexactPartial, InterfaceToObject, Merge, NullishProps } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema, SchemaField } from "#common/data/fields.d.mts";
-import type BaseChatMessage from "#common/documents/chat-message.d.mts";
+import type { AnyObject, Identity, InexactPartial, InterfaceToObject, MaybeArray, Merge, NullishProps } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseActor, BaseChatMessage, BaseScene, BaseToken, BaseUser } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace ChatMessage {
   /**
@@ -25,14 +31,15 @@ declare namespace ChatMessage {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `ChatMessage` document instance configured through `CONFIG.ChatMessage.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredChatMessage | fvtt-types/configuration/ConfiguredChatMessage} in fvtt-types.
+   * The implementation of the `ChatMessage` document instance configured through
+   * {@linkcode CONFIG.ChatMessage.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredChatMessage | fvtt-types/configuration/ConfiguredChatMessage} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `ChatMessage` document configured through `CONFIG.ChatMessage.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `ChatMessage` document configured through
+   * {@linkcode CONFIG.ChatMessage.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -45,12 +52,12 @@ declare namespace ChatMessage {
     Readonly<{
       name: "ChatMessage";
       collection: "messages";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.ChatMessage";
+      labelPlural: "DOCUMENT.ChatMessages";
       hasTypeData: true;
       isPrimary: true;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -143,15 +150,6 @@ declare namespace ChatMessage {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = never;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -162,7 +160,8 @@ declare namespace ChatMessage {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -210,7 +209,25 @@ declare namespace ChatMessage {
   }
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * Used in the {@linkcode ChatMessage.create} and {@linkcode ChatMessage.createDocuments} signatures, and
+   * {@linkcode ChatMessage.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode ChatMessage.create}, returning (a single | an array of) (temporary | stored)
+   * `ChatMessage`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<ChatMessage.TemporaryIf<Temporary>>
+      : ChatMessage.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode ChatMessage.name | ChatMessage#name}.
    *
    * This is data transformed from {@linkcode ChatMessage.Source} and turned into more
@@ -227,6 +244,13 @@ declare namespace ChatMessage {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode ChatMessage.update | ChatMessage#update} and
+   * {@linkcode ChatMessage.updateDocuments} signatures, and {@linkcode ChatMessage.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode ChatMessage}. This is the source of truth for how an ChatMessage document
    * must be structured.
    *
@@ -236,7 +260,7 @@ declare namespace ChatMessage {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this ChatMessage document
      * @defaultValue `null`
@@ -272,7 +296,7 @@ declare namespace ChatMessage {
      * The _id of the User document who generated this message
      * @defaultValue `game.user?.id`
      */
-    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
+    author: fields.DocumentAuthorField<typeof BaseUser>;
 
     /**
      * The timestamp at which point this message was generated
@@ -301,7 +325,7 @@ declare namespace ChatMessage {
      * An array of User _id values to whom this message is privately whispered
      * @defaultValue `[]`
      */
-    whisper: fields.ArrayField<fields.ForeignDocumentField<typeof documents.BaseUser, { idOnly: true }>>;
+    whisper: fields.ArrayField<fields.ForeignDocumentField<typeof BaseUser, { idOnly: true }>>;
 
     /**
      * Is this message sent blindly where the creating User cannot see it?
@@ -344,24 +368,24 @@ declare namespace ChatMessage {
     _stats: fields.DocumentStatsField;
   }
 
-  interface SpeakerSchema extends DataSchema {
+  interface SpeakerSchema extends fields.DataSchema {
     /**
      * The _id of the Scene where this message was created
      * @defaultValue `null`
      */
-    scene: fields.ForeignDocumentField<typeof documents.BaseScene, { idOnly: true }>;
+    scene: fields.ForeignDocumentField<typeof BaseScene, { idOnly: true }>;
 
     /**
      * The _id of the Actor who generated this message
      * @defaultValue `null`
      */
-    actor: fields.ForeignDocumentField<typeof documents.BaseActor, { idOnly: true }>;
+    actor: fields.ForeignDocumentField<typeof BaseActor, { idOnly: true }>;
 
     /**
      * The _id of the Token who generated this message
      * @defaultValue `null`
      */
-    token: fields.ForeignDocumentField<typeof documents.BaseToken, { idOnly: true }>;
+    token: fields.ForeignDocumentField<typeof BaseToken, { idOnly: true }>;
 
     /**
      * An overridden alias name used instead of the Actor or Token name
@@ -488,11 +512,10 @@ declare namespace ChatMessage {
   }
 
   /**
-   * If `Temporary` is true then `ChatMessage.Implementation`, otherwise `ChatMessage.Stored`.
+   * If `Temporary` is true then {@linkcode ChatMessage.Implementation}, otherwise {@linkcode ChatMessage.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? ChatMessage.Implementation
-    : ChatMessage.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? ChatMessage.Implementation : ChatMessage.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -525,6 +548,10 @@ declare namespace ChatMessage {
     };
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -532,6 +559,10 @@ declare namespace ChatMessage {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *         CHAT-MESSAGE-SPECIFIC TYPES           *
+   *************************************************/
 
   /** @internal */
   interface _BaseSpeakerOptions {
@@ -569,7 +600,7 @@ declare namespace ChatMessage {
   }
 
   /** @internal */
-  type _SpeakerData = SchemaField.InitializedData<ChatMessage.SpeakerSchema>;
+  type _SpeakerData = fields.SchemaField.InitializedData<ChatMessage.SpeakerSchema>;
 
   interface SpeakerData extends _SpeakerData {}
 
@@ -658,7 +689,7 @@ declare namespace ChatMessage {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -843,7 +874,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   ): Promise<ChatMessage.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"ChatMessage">,
   ): Promise<this | false | null | undefined>;
 

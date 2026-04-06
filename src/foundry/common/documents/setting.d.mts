@@ -1,8 +1,5 @@
-import type { AnyMutableObject } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Setting Document.
@@ -20,10 +17,10 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Setting.implementation | `new Setting.implementation(...)`} instead which will give you
+   * You should use {@linkcode Setting.implementation | new Setting.implementation(...)} instead which will give you
    * a system specific implementation of `Setting`.
    */
-  constructor(data: Setting.CreateData, context?: Setting.ConstructionContext);
+  constructor(data: BaseSetting.CreateData, context?: BaseSetting.ConstructionContext);
 
   /**
    * @defaultValue
@@ -64,7 +61,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
-  override readonly parentCollection: Setting.ParentCollectionName | null;
+  override readonly parentCollection: BaseSetting.ParentCollectionName | null;
 
   override readonly pack: string | null;
 
@@ -72,48 +69,48 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override get implementation(): Setting.ImplementationClass;
 
-  static override get collectionName(): Setting.ParentCollectionName;
+  static override get collectionName(): BaseSetting.ParentCollectionName;
 
-  static override get documentName(): Setting.Name;
+  static override get documentName(): BaseSetting.Name;
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
   static override get hasTypeData(): undefined;
 
-  static override get hierarchy(): Setting.Hierarchy;
+  static override get hierarchy(): BaseSetting.Hierarchy;
 
-  override parent: Setting.Parent;
+  override parent: BaseSetting.Parent;
 
   override " fvtt_types_internal_document_parent": BaseSetting.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Setting.Implementation | Setting.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<Setting.Database.Create<Temporary>>,
-  ): Promise<Array<Setting.TemporaryIf<Temporary>>>;
+    data: Array<Setting.Implementation | BaseSetting.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<BaseSetting.Database.Create<Temporary>>,
+  ): Promise<Array<BaseSetting.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: Setting.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<Setting.Database.Update>,
+    updates: BaseSetting.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<BaseSetting.Database.Update>,
   ): Promise<Setting.Implementation[]>;
 
   static override deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<Setting.Database.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<BaseSetting.Database.Delete>,
   ): Promise<Setting.Implementation[]>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
-    data: Setting.CreateData | Setting.CreateData[],
-    operation?: Setting.Database.CreateOperation<Temporary>,
-  ): Promise<Setting.TemporaryIf<Temporary> | undefined>;
+    data: BaseSetting.CreateData | BaseSetting.CreateData[],
+    operation?: BaseSetting.Database.CreateOperation<Temporary>,
+  ): Promise<BaseSetting.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: Setting.UpdateData | undefined,
-    operation?: Setting.Database.UpdateOperation,
+    data: BaseSetting.UpdateData | undefined,
+    operation?: BaseSetting.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: Setting.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseSetting.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: Setting.Database.GetOptions): Setting.Implementation | null;
+  static override get(documentId: string, options?: BaseSetting.Database.GetOptions): Setting.Implementation | null;
 
   static override getCollectionName(name: string): null;
 
@@ -123,141 +120,111 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   protected override _preCreate(
-    data: Setting.CreateData,
-    options: Setting.Database.PreCreateOptions,
+    data: BaseSetting.CreateData,
+    options: BaseSetting.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: Setting.CreateData,
-    options: Setting.Database.OnCreateOperation,
+    data: BaseSetting.CreateData,
+    options: BaseSetting.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Setting.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<Setting.Database.Create>,
+    operation: Document.Database.PreCreateOperationStatic<BaseSetting.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Setting.Implementation[],
-    operation: Setting.Database.Create,
+    operation: BaseSetting.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: Setting.UpdateData,
-    options: Setting.Database.PreUpdateOptions,
+    changed: BaseSetting.UpdateData,
+    options: BaseSetting.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: Setting.UpdateData,
-    options: Setting.Database.OnUpdateOperation,
+    changed: BaseSetting.UpdateData,
+    options: BaseSetting.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Setting.Implementation[],
-    operation: Setting.Database.Update,
+    operation: BaseSetting.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Setting.Implementation[],
-    operation: Setting.Database.Update,
+    operation: BaseSetting.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: Setting.Database.PreDeleteOptions,
+    options: BaseSetting.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: Setting.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseSetting.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Setting.Implementation[],
-    operation: Setting.Database.Delete,
+    operation: BaseSetting.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Setting.Implementation[],
-    operation: Setting.Database.Delete,
+    operation: BaseSetting.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
-
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
    */
   protected static override _onCreateDocuments(
     documents: Setting.Implementation[],
-    context: Document.ModificationContext<Setting.Parent>,
+    context: Document.ModificationContext<BaseSetting.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
    */
   protected static override _onUpdateDocuments(
     documents: Setting.Implementation[],
-    context: Document.ModificationContext<Setting.Parent>,
+    context: Document.ModificationContext<BaseSetting.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
    */
   protected static override _onDeleteDocuments(
     documents: Setting.Implementation[],
-    context: Document.ModificationContext<Setting.Parent>,
+    context: Document.ModificationContext<BaseSetting.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<Setting.Schema>;
+  protected static override _schema: SchemaField<BaseSetting.Schema>;
 
-  static override get schema(): SchemaField<Setting.Schema>;
+  static override get schema(): SchemaField<BaseSetting.Schema>;
 
-  static override validateJoint(data: Setting.Source): void;
+  static override validateJoint(data: BaseSetting.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
-  static override fromSource(source: Setting.CreateData, context?: DataModel.FromSourceOptions): Setting.Implementation;
+  static override fromSource(
+    source: BaseSetting.CreateData,
+    context?: DataModel.FromSourceOptions,
+  ): Setting.Implementation;
 
   static override fromJSON(json: string): Setting.Implementation;
 
@@ -267,6 +234,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 export default BaseSetting;
 
 declare namespace BaseSetting {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = Setting.Name;
   export import ConstructionContext = Setting.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -276,7 +244,6 @@ declare namespace BaseSetting {
   export import Parent = Setting.Parent;
   export import Descendant = Setting.Descendant;
   export import DescendantClass = Setting.DescendantClass;
-  export import Pack = Setting.Pack;
   export import Embedded = Setting.Embedded;
   export import ParentCollectionName = Setting.ParentCollectionName;
   export import CollectionClass = Setting.CollectionClass;
@@ -285,11 +252,16 @@ declare namespace BaseSetting {
   export import Stored = Setting.Stored;
   export import Source = Setting.Source;
   export import CreateData = Setting.CreateData;
+  export import CreateInput = Setting.CreateInput;
+  export import CreateReturn = Setting.CreateReturn;
   export import InitializedData = Setting.InitializedData;
   export import UpdateData = Setting.UpdateData;
+  export import UpdateInput = Setting.UpdateInput;
   export import Schema = Setting.Schema;
   export import Database = Setting.Database;
   export import TemporaryIf = Setting.TemporaryIf;
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  export import Flags = Setting.Flags;
 
   namespace Internal {
     // Note(LukeAbby): The point of this is to give the base class of `Setting` a name.

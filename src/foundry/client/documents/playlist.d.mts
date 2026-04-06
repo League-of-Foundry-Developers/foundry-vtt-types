@@ -1,9 +1,16 @@
-import type { InexactPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type { Document } from "#common/abstract/_module.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type BasePlaylist from "#common/documents/playlist.mjs";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseFolder, BasePlaylist, BasePlaylistSound } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace Playlist {
   /**
@@ -22,16 +29,16 @@ declare namespace Playlist {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Playlist` document instance configured through `CONFIG.Playlist.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredPlaylist | fvtt-types/configuration/ConfiguredPlaylist} in fvtt-types.
+   * The implementation of the `Playlist` document instance configured through
+   * {@linkcode CONFIG.Playlist.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
-  type Implementation = Document.ImplementationFor<"Playlist">;
+  type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Playlist` document configured through `CONFIG.Playlist.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Playlist` document configured through
+   * {@linkcode CONFIG.Playlist.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
-  type ImplementationClass = Document.ImplementationClassFor<"Playlist">;
+  type ImplementationClass = Document.ImplementationClassFor<Name>;
 
   /**
    * A document's metadata is special information about the document ranging anywhere from its name,
@@ -45,10 +52,10 @@ declare namespace Playlist {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "sort", "folder"];
       embedded: Metadata.Embedded;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Playlist";
+      labelPlural: "DOCUMENT.Playlists";
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -107,13 +114,6 @@ declare namespace Playlist {
   type DescendantClass = DirectDescendantClass;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Playlist">;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -166,7 +166,8 @@ declare namespace Playlist {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -192,7 +193,7 @@ declare namespace Playlist {
   type Stored = Document.Internal.Stored<Playlist.Implementation>;
 
   /**
-   * The data put in {@linkcode Playlist._source | Playlist#_source}.. This data is what was
+   * The data put in {@linkcode Playlist._source | Playlist#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
    * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
@@ -211,7 +212,25 @@ declare namespace Playlist {
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * Used in the {@linkcode Playlist.create} and {@linkcode Playlist.createDocuments} signatures, and
+   * {@linkcode Playlist.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Playlist.create}, returning (a single | an array of) (temporary | stored)
+   * `Playlist`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<Playlist.TemporaryIf<Temporary>>
+      : Playlist.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode Playlist.name | Playlist#name}.
    *
    * This is data transformed from {@linkcode Playlist.Source} and turned into more
@@ -228,6 +247,13 @@ declare namespace Playlist {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode Playlist.update | Playlist#update} and
+   * {@linkcode Playlist.updateDocuments} signatures, and {@linkcode Playlist.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode Playlist}. This is the source of truth for how an Playlist document
    * must be structured.
    *
@@ -237,7 +263,7 @@ declare namespace Playlist {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Playlist document
      * @defaultValue `null`
@@ -259,7 +285,7 @@ declare namespace Playlist {
      * A Collection of PlaylistSounds embedded documents which belong to this playlist
      * @defaultValue `[]`
      */
-    sounds: fields.EmbeddedCollectionField<typeof documents.BasePlaylistSound, Playlist.Implementation>;
+    sounds: fields.EmbeddedCollectionField<typeof BasePlaylistSound, Playlist.Implementation>;
 
     /**
      * A channel in CONST.AUDIO_CHANNELS where all sounds in this playlist are played
@@ -300,7 +326,7 @@ declare namespace Playlist {
      * The _id of a Folder which contains this playlist
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The sorting mode used for this playlist.
@@ -458,11 +484,10 @@ declare namespace Playlist {
   }
 
   /**
-   * If `Temporary` is true then `Playlist.Implementation`, otherwise `Playlist.Stored`.
+   * If `Temporary` is true then {@linkcode Playlist.Implementation}, otherwise {@linkcode Playlist.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Playlist.Implementation
-    : Playlist.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Playlist.Implementation : Playlist.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -485,6 +510,10 @@ declare namespace Playlist {
      */
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
+
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
@@ -530,6 +559,10 @@ declare namespace Playlist {
     Playlist.Metadata.Embedded
   >;
 
+  /* ***********************************************
+   *           PLAYLIST-SPECIFIC TYPES             *
+   *************************************************/
+
   /** @internal */
   type _PlayNextOptions = InexactPartial<{
     /**
@@ -547,7 +580,7 @@ declare namespace Playlist {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -658,58 +691,10 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
 
   // _preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes from the BasePlaylist class.
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class GurpsPlaylist extends Playlist {
-   *   protected override _onCreateDescendantDocuments(...args: Playlist.OnCreateDescendantDocumentsArgs) {
-   *     super._onCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, data, options, userId] = args;
-   *     if (collection === "sounds") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onCreateDescendantDocuments(...args: Playlist.OnCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class Ptr2ePlaylist extends Playlist {
-   *   protected override _onUpdateDescendantDocuments(...args: Playlist.OnUpdateDescendantDocumentsArgs) {
-   *     super._onUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, changes, options, userId] = args;
-   *     if (collection === "sounds") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onUpdateDescendantDocuments(...args: Playlist.OnUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class BladesPlaylist extends Playlist {
-   *   protected override _onDeleteDescendantDocuments(...args: Playlist.OnUpdateDescendantDocuments) {
-   *     super._onDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, ids, options, userId] = args;
-   *     if (collection === "sounds") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onDeleteDescendantDocuments(...args: Playlist.OnDeleteDescendantDocumentsArgs): void;
 
   /**
@@ -755,58 +740,12 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
 
   // ClientDocument overrides
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class SwadePlaylist extends Playlist {
-   *   protected override _preCreateDescendantDocuments(...args: Playlist.PreCreateDescendantDocumentsArgs) {
-   *     super._preCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, data, options, userId] = args;
-   *     if (collection === "sounds") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
+  // Other Descendant Document operations are actually overridden above
+
   protected override _preCreateDescendantDocuments(...args: Playlist.PreCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class LancerPlaylist extends Playlist {
-   *   protected override _preUpdateDescendantDocuments(...args: Playlist.OnUpdateDescendantDocuments) {
-   *     super._preUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, changes, options, userId] = args;
-   *     if (collection === "sounds") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preUpdateDescendantDocuments(...args: Playlist.PreUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class KultPlaylist extends Playlist {
-   *   protected override _preDeleteDescendantDocuments(...args: Playlist.PreDeleteDescendantDocumentsArgs) {
-   *     super._preDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, ids, options, userId] = args;
-   *     if (collection === "sounds") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preDeleteDescendantDocuments(...args: Playlist.PreDeleteDescendantDocumentsArgs): void;
 
   static override defaultName(context?: Playlist.DefaultNameContext): string;
@@ -818,7 +757,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   ): Promise<Playlist.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Playlist">,
   ): Promise<this | false | null | undefined>;
 

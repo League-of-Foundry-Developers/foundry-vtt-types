@@ -1,12 +1,34 @@
-import type { InexactPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { LightData, TextureData } from "#common/data/data.d.mts";
-import type ImageHelper from "#client/helpers/media/image-helper.d.mts";
+import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { LightData, TextureData, fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type {
+  BaseAmbientLight,
+  BaseAmbientSound,
+  BaseDrawing,
+  BaseFolder,
+  BaseJournalEntry,
+  BaseJournalEntryPage,
+  BaseMeasuredTemplate,
+  BaseNote,
+  BasePlaylist,
+  BasePlaylistSound,
+  BaseRegion,
+  BaseScene,
+  BaseTile,
+  BaseToken,
+  BaseWall,
+} from "#common/documents/_module.d.mts";
+import type { ImageHelper } from "#client/helpers/media/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace Scene {
   /**
@@ -25,16 +47,17 @@ declare namespace Scene {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Scene` document instance configured through `CONFIG.Scene.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredScene | fvtt-types/configuration/ConfiguredScene} in fvtt-types.
+   * The implementation of the `Scene` document instance configured through
+   * {@linkcode CONFIG.Scene.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredScene | fvtt-types/configuration/ConfiguredScene} in fvtt-types.
    */
-  type Implementation = Document.ImplementationFor<"Scene">;
+  type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Scene` document configured through `CONFIG.Scene.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Scene` document configured through
+   * {@linkcode CONFIG.Scene.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
-  type ImplementationClass = Document.ImplementationClassFor<"Scene">;
+  type ImplementationClass = Document.ImplementationClassFor<Name>;
 
   /**
    * A document's metadata is special information about the document ranging anywhere from its name,
@@ -48,10 +71,10 @@ declare namespace Scene {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "thumb", "sort", "folder"];
       embedded: Metadata.Embedded;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Scene";
+      labelPlural: "Document.Scenes";
       preserveOnImport: ["_id", "sort", "ownership", "active"];
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -98,15 +121,15 @@ declare namespace Scene {
    * This is a union of all such instances, or never if the document doesn't have any descendants.
    */
   type DirectDescendant =
-    | AmbientLightDocument.Implementation
-    | AmbientSoundDocument.Implementation
-    | DrawingDocument.Implementation
-    | MeasuredTemplateDocument.Implementation
-    | NoteDocument.Implementation
-    | RegionDocument.Implementation
-    | TileDocument.Implementation
-    | TokenDocument.Implementation
-    | WallDocument.Implementation;
+    | AmbientLightDocument.Stored
+    | AmbientSoundDocument.Stored
+    | DrawingDocument.Stored
+    | MeasuredTemplateDocument.Stored
+    | NoteDocument.Stored
+    | RegionDocument.Stored
+    | TileDocument.Stored
+    | TokenDocument.Stored
+    | WallDocument.Stored;
 
   /**
    * A document's direct descendants are documents that are contained directly within its schema.
@@ -135,12 +158,6 @@ declare namespace Scene {
    * This is a union of all classes, or never if the document doesn't have any descendants.
    */
   type DescendantClass = DirectDescendantClass | RegionDocument.DescendantClass | TokenDocument.DescendantClass;
-
-  /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   */
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Scene">;
 
   /**
    * An embedded document is a document contained in another.
@@ -195,7 +212,8 @@ declare namespace Scene {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -240,7 +258,23 @@ declare namespace Scene {
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * Used in the {@linkcode Scene.create} and {@linkcode Scene.createDocuments} signatures, and
+   * {@linkcode Scene.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Scene.create}, returning (a single | an array of) (temporary | stored)
+   * `Scene`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput> ? Array<Scene.TemporaryIf<Temporary>> : Scene.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode Scene.name | Scene#name}.
    *
    * This is data transformed from {@linkcode Scene.Source} and turned into more
@@ -256,6 +290,13 @@ declare namespace Scene {
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
+  /**
+   * Used in the {@linkcode Scene.update | Scene#update} and
+   * {@linkcode Scene.updateDocuments} signatures, and {@linkcode Scene.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
   interface EnvironmentDataSchemaDefaults {
     hue: number;
     intensity: number;
@@ -264,7 +305,7 @@ declare namespace Scene {
     shadows: number;
   }
 
-  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends DataSchema {
+  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends fields.DataSchema {
     /**
      * The normalized hue angle.
      * @defaultValue `0` for `environment.base`, `257/360` for `environment.dark`
@@ -339,7 +380,7 @@ declare namespace Scene {
     shadows: number;
   }
 
-  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends DataSchema {
+  interface EnvironmentDataSchema<Defaults extends EnvironmentDataSchemaDefaults> extends fields.DataSchema {
     /**
      * The normalized hue angle.
      * @defaultValue `0` for `environment.base`, `257/360` for `environment.dark`
@@ -416,7 +457,7 @@ declare namespace Scene {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Scene document
      * @defaultValue `null`
@@ -553,61 +594,61 @@ declare namespace Scene {
      * A collection of embedded Drawing objects.
      * @defaultValue `[]`
      */
-    drawings: fields.EmbeddedCollectionField<typeof documents.BaseDrawing, Scene.Implementation>;
+    drawings: fields.EmbeddedCollectionField<typeof BaseDrawing, Scene.Implementation>;
 
     /**
      * A collection of embedded Tile objects.
      * @defaultValue `[]`
      */
-    tokens: fields.EmbeddedCollectionField<typeof documents.BaseToken, Scene.Implementation>;
+    tokens: fields.EmbeddedCollectionField<typeof BaseToken, Scene.Implementation>;
 
     /**
      * A collection of embedded Token objects.
      * @defaultValue `[]`
      */
-    lights: fields.EmbeddedCollectionField<typeof documents.BaseAmbientLight, Scene.Implementation>;
+    lights: fields.EmbeddedCollectionField<typeof BaseAmbientLight, Scene.Implementation>;
 
     /**
      * A collection of embedded AmbientLight objects.
      * @defaultValue `[]`
      */
-    notes: fields.EmbeddedCollectionField<typeof documents.BaseNote, Scene.Implementation>;
+    notes: fields.EmbeddedCollectionField<typeof BaseNote, Scene.Implementation>;
 
     /**
      * A collection of embedded Note objects.
      * @defaultValue `[]`
      */
-    sounds: fields.EmbeddedCollectionField<typeof documents.BaseAmbientSound, Scene.Implementation>;
+    sounds: fields.EmbeddedCollectionField<typeof BaseAmbientSound, Scene.Implementation>;
 
     /**
      * A collection of embedded Region documents.
      * @defaultValue `[]`
      */
-    regions: fields.EmbeddedCollectionField<typeof documents.BaseRegion, Scene.Implementation>;
+    regions: fields.EmbeddedCollectionField<typeof BaseRegion, Scene.Implementation>;
 
     /**
      * A collection of embedded AmbientSound objects.
      * @defaultValue `[]`
      */
-    templates: fields.EmbeddedCollectionField<typeof documents.BaseMeasuredTemplate, Scene.Implementation>;
+    templates: fields.EmbeddedCollectionField<typeof BaseMeasuredTemplate, Scene.Implementation>;
 
     /**
      * A collection of embedded MeasuredTemplate objects.
      * @defaultValue `[]`
      */
-    tiles: fields.EmbeddedCollectionField<typeof documents.BaseTile, Scene.Implementation>;
+    tiles: fields.EmbeddedCollectionField<typeof BaseTile, Scene.Implementation>;
 
     /**
      * A collection of embedded Wall objects
      * @defaultValue `[]`
      */
-    walls: fields.EmbeddedCollectionField<typeof documents.BaseWall, Scene.Implementation>;
+    walls: fields.EmbeddedCollectionField<typeof BaseWall, Scene.Implementation>;
 
     /**
      * A linked Playlist document which should begin automatically playing when this Scene becomes active.
      * @defaultValue `null`
      */
-    playlist: fields.ForeignDocumentField<typeof documents.BasePlaylist>;
+    playlist: fields.ForeignDocumentField<typeof BasePlaylist>;
 
     /**
      * A linked PlaylistSound document from the selected playlist that will
@@ -617,19 +658,19 @@ declare namespace Scene {
      * {@linkcode Scene.prepareBaseData | Scene#prepareBaseData} attempts to `get()` this ID from the provided `playlist`, if any, making this
      * `PlaylistSound.Implementation | undefined | null` at runtime
      */
-    playlistSound: fields.ForeignDocumentField<typeof documents.BasePlaylistSound, { idOnly: true }>;
+    playlistSound: fields.ForeignDocumentField<typeof BasePlaylistSound, { idOnly: true }>;
 
     /**
      * A JournalEntry document which provides narrative details about this Scene
      * @defaultValue `null`
      */
-    journal: fields.ForeignDocumentField<typeof documents.BaseJournalEntry>;
+    journal: fields.ForeignDocumentField<typeof BaseJournalEntry>;
 
     /**
      * A document ID for a JournalEntryPage which provides narrative details about this Scene
      * @defaultValue `null`
      */
-    journalEntryPage: fields.ForeignDocumentField<typeof documents.BaseJournalEntryPage, { idOnly: true }>;
+    journalEntryPage: fields.ForeignDocumentField<typeof BaseJournalEntryPage, { idOnly: true }>;
 
     /**
      * A named weather effect which should be rendered in this Scene.
@@ -641,7 +682,7 @@ declare namespace Scene {
      * The _id of a Folder which contains this Actor
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The numeric sort value which orders this Actor relative to its siblings
@@ -668,7 +709,7 @@ declare namespace Scene {
     _stats: fields.DocumentStatsField;
   }
 
-  interface FogSchema extends DataSchema {
+  interface FogSchema extends fields.DataSchema {
     /**
      * Should fog exploration progress be tracked for this Scene?
      * @defaultValue `true`
@@ -695,7 +736,7 @@ declare namespace Scene {
 
   interface FogData extends fields.SchemaField.InitializedData<FogSchema> {}
 
-  interface FogColorSchema extends DataSchema {
+  interface FogColorSchema extends fields.DataSchema {
     /**
      * A color tint applied to explored regions of fog of war
      * @defaultValue `null`
@@ -711,7 +752,7 @@ declare namespace Scene {
 
   interface FogColorData extends fields.SchemaField.InitializedData<FogColorSchema> {}
 
-  interface EnvironmentSchema extends DataSchema {
+  interface EnvironmentSchema extends fields.DataSchema {
     /**
      * The ambient darkness level in this Scene, where 0 represents midday (maximum illumination) and 1 represents midnight (maximum darkness)
      * @defaultValue `0`
@@ -813,7 +854,7 @@ declare namespace Scene {
 
   interface EnvironmentData extends fields.SchemaField.InitializedData<EnvironmentSchema> {}
 
-  interface GridSchema extends DataSchema {
+  interface GridSchema extends fields.DataSchema {
     /**
      * The type of grid, a number from CONST.GRID_TYPES.
      * @defaultValue {@linkcode foundry.packages.BaseSystem.grid | game.system.grid.type}
@@ -994,11 +1035,10 @@ declare namespace Scene {
   }
 
   /**
-   * If `Temporary` is true then `Scene.Implementation`, otherwise `Scene.Stored`.
+   * If `Temporary` is true then {@linkcode Scene.Implementation}, otherwise {@linkcode Scene.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Scene.Implementation
-    : Scene.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Scene.Implementation : Scene.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -1021,6 +1061,10 @@ declare namespace Scene {
      */
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
+
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
@@ -1083,6 +1127,10 @@ declare namespace Scene {
       >
     | TokenDocument.OnDeleteDescendantDocumentsArgs
     | RegionDocument.OnDeleteDescendantDocumentsArgs;
+
+  /* ***********************************************
+   *             SCENE-SPECIFIC TYPES              *
+   *************************************************/
 
   interface Dimensions {
     /** The width of the canvas. */
@@ -1177,7 +1225,7 @@ declare namespace Scene {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -1189,7 +1237,7 @@ declare namespace Scene {
  * @see {@linkcode Scenes}            The world-level collection of Scene documents
  * @see {@linkcode SceneConfig}       The Scene configuration application
  */
-declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument {
+declare class Scene extends BaseScene.Internal.ClientDocument {
   /**
    * @param data    - Initial data from which to construct the `Scene`
    * @param context - Construction context options
@@ -1327,76 +1375,12 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
    */
   protected _onActivate(active: boolean): Promise<this | Canvas>;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class SwadeScene extends Scene {
-   *   protected override _preCreateDescendantDocuments(...args: Scene.PreCreateDescendantDocumentsArgs) {
-   *     super._preCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, data, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preCreateDescendantDocuments(...args: Scene.PreCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class LancerScene extends Scene {
-   *   protected override _preUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocuments) {
-   *     super._preUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, changes, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preUpdateDescendantDocuments(...args: Scene.PreUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class Ptr2eScene extends Scene {
-   *   protected override _onUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocumentsArgs) {
-   *     super._onUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, changes, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class KultScene extends Scene {
-   *   protected override _preDeleteDescendantDocuments(...args: Scene.PreDeleteDescendantDocumentsArgs) {
-   *     super._preDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, ids, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preDeleteDescendantDocuments(...args: Scene.PreDeleteDescendantDocumentsArgs): void;
 
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
@@ -1425,40 +1409,8 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
 
   // Other Descendant Document operations are actually overridden above
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class GurpsScene extends Scene {
-   *   protected override _onCreateDescendantDocuments(...args: Scene.OnCreateDescendantDocumentsArgs) {
-   *     super._onCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, data, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onCreateDescendantDocuments(...args: Scene.OnCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class BladesScene extends Scene {
-   *   protected override _onDeleteDescendantDocuments(...args: Scene.OnUpdateDescendantDocuments) {
-   *     super._onDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, ids, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onDeleteDescendantDocuments(...args: Scene.OnDeleteDescendantDocumentsArgs): void;
 
   static override defaultName(context?: Scene.DefaultNameContext): string;
@@ -1470,7 +1422,7 @@ declare class Scene extends foundry.documents.BaseScene.Internal.ClientDocument 
   ): Promise<Scene.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Scene">,
   ): Promise<this | false | null | undefined>;
 

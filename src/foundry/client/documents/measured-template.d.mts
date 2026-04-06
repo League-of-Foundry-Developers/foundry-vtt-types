@@ -1,10 +1,16 @@
-import type { InexactPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseMeasuredTemplate from "#common/documents/measured-template.mjs";
+import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseMeasuredTemplate, BaseUser } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace MeasuredTemplateDocument {
   /**
@@ -23,14 +29,14 @@ declare namespace MeasuredTemplateDocument {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `MeasuredTemplateDocument` document instance configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredMeasuredTemplateDocument | fvtt-types/configuration/ConfiguredMeasuredTemplateDocument} in fvtt-types.
+   * The implementation of the `MeasuredTemplateDocument` document instance configured through
+   * {@linkcode CONFIG.MeasuredTemplate.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `MeasuredTemplateDocument` document configured through `CONFIG.MeasuredTemplateDocument.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `MeasuredTemplateDocument` document configured through
+   * {@linkcode CONFIG.MeasuredTemplateDocument.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -43,11 +49,11 @@ declare namespace MeasuredTemplateDocument {
     Readonly<{
       name: "MeasuredTemplate";
       collection: "templates";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.MeasuredTemplate";
+      labelPlural: "DOCUMENT.MeasuredTemplates";
       isEmbedded: true;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -65,7 +71,7 @@ declare namespace MeasuredTemplateDocument {
    * A document's parent is something that can contain it.
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    */
-  type Parent = null;
+  type Parent = Scene.Implementation | null;
 
   /**
    * A document's descendants are any child documents, grandchild documents, etc.
@@ -80,15 +86,6 @@ declare namespace MeasuredTemplateDocument {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Scene">;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -99,7 +96,8 @@ declare namespace MeasuredTemplateDocument {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -125,7 +123,7 @@ declare namespace MeasuredTemplateDocument {
   type Stored = Document.Internal.Stored<MeasuredTemplateDocument.Implementation>;
 
   /**
-   * The data put in {@linkcode MeasuredTemplate._source | MeasuredTemplate#_source}. This data is what was
+   * The data put in {@linkcode MeasuredTemplateDocument._source | MeasuredTemplateDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
    * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
@@ -144,7 +142,25 @@ declare namespace MeasuredTemplateDocument {
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * Used in the {@linkcode MeasuredTemplateDocument.create} and {@linkcode MeasuredTemplateDocument.createDocuments} signatures, and
+   * {@linkcode MeasuredTemplateDocument.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode MeasuredTemplateDocument.create}, returning (a single | an array of) (temporary | stored)
+   * `MeasuredTemplateDocument`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<MeasuredTemplateDocument.TemporaryIf<Temporary>>
+      : MeasuredTemplateDocument.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode MeasuredTemplateDocument.name | MeasuredTemplateDocument#name}.
    *
    * This is data transformed from {@linkcode MeasuredTemplateDocument.Source} and turned into more
@@ -161,6 +177,13 @@ declare namespace MeasuredTemplateDocument {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode MeasuredTemplateDocument.update | MeasuredTemplateDocument#update} and
+   * {@linkcode MeasuredTemplateDocument.updateDocuments} signatures, and {@linkcode MeasuredTemplateDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode MeasuredTemplateDocument}. This is the source of truth for how an MeasuredTemplateDocument document
    * must be structured.
    *
@@ -170,7 +193,7 @@ declare namespace MeasuredTemplateDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this BaseMeasuredTemplate embedded document
      * @defaultValue `null`
@@ -181,7 +204,7 @@ declare namespace MeasuredTemplateDocument {
      * The _id of the user who created this measured template
      * @defaultValue `game?.user?.id`
      */
-    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
+    author: fields.DocumentAuthorField<typeof BaseUser>;
 
     /**
      * The value in CONST.MEASURED_TEMPLATE_TYPES which defines the geometry type of this template
@@ -398,11 +421,10 @@ declare namespace MeasuredTemplateDocument {
   }
 
   /**
-   * If `Temporary` is true then `MeasuredTemplate.Implementation`, otherwise `MeasuredTemplate.Stored`.
+   * If `Temporary` is true then {@linkcode MeasuredTemplateDocument.Implementation}, otherwise {@linkcode MeasuredTemplateDocument.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? MeasuredTemplateDocument.Implementation
-    : MeasuredTemplateDocument.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? MeasuredTemplateDocument.Implementation : MeasuredTemplateDocument.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -426,6 +448,10 @@ declare namespace MeasuredTemplateDocument {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -438,7 +464,7 @@ declare namespace MeasuredTemplateDocument {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -492,7 +518,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
   ): Promise<MeasuredTemplateDocument.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"MeasuredTemplate">,
   ): Promise<this | false | null | undefined>;
 

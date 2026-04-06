@@ -3094,8 +3094,10 @@ declare namespace EmbeddedCollectionField {
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
    * @template ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
    */
-  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> =
-    Document.ToConfiguredInstance<ElementFieldType>;
+  // TODO: Investigate if this should be StoredForName
+  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> = Document.ImplementationFor<
+    ElementFieldType["documentName"]
+  >;
 
   /**
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
@@ -3261,8 +3263,10 @@ declare namespace EmbeddedCollectionDeltaField {
    * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
    * @template ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
    */
-  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> =
-    Document.ToConfiguredInstance<ElementFieldType>;
+  // TODO: Investigate if this should be StoredForName
+  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> = Document.ImplementationFor<
+    ElementFieldType["documentName"]
+  >;
 
   /**
    * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
@@ -3427,10 +3431,14 @@ declare namespace EmbeddedDocumentField {
    * @template DocumentType - the type of the embedded Document
    * @template Opts         - the options that override the default options
    */
+  // TODO: Investigate if this should return StoredForName
   type InitializedType<
     DocumentType extends Document.AnyConstructor,
     Opts extends Options<DocumentType>,
-  > = DataField.DerivedInitializedType<Document.ToConfiguredInstance<DocumentType>, MergedOptions<DocumentType, Opts>>;
+  > = DataField.DerivedInitializedType<
+    Document.ImplementationFor<DocumentType["documentName"]>,
+    MergedOptions<DocumentType, Opts>
+  >;
 
   /**
    * A shorthand for the persisted type of an EmbeddedDocumentField class.

@@ -5,15 +5,22 @@ import type {
   InexactPartial,
   IntentionalPartial,
   InterfaceToObject,
+  MaybeArray,
   Merge,
   RequiredProps,
 } from "#utils";
-import type { DataModel } from "#common/abstract/data.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataField, DataSchema } from "#common/data/fields.d.mts";
-import type BaseActiveEffect from "#common/documents/active-effect.d.mts";
+import type { fields } from "#common/data/_module.d.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
+import type { BaseActiveEffect, BaseCombat } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace ActiveEffect {
   /**
@@ -32,14 +39,15 @@ declare namespace ActiveEffect {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `ActiveEffect` document instance configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredActiveEffect | fvtt-types/configuration/ConfiguredActiveEffect} in fvtt-types.
+   * The implementation of the `ActiveEffect` document instance configured through
+   * {@linkcode CONFIG.ActiveEffect.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredActiveEffect | fvtt-types/configuration/ConfiguredActiveEffect} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `ActiveEffect` document configured through `CONFIG.ActiveEffect.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `ActiveEffect` document configured through
+   * {@linkcode CONFIG.ActiveEffect.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -53,9 +61,9 @@ declare namespace ActiveEffect {
       name: "ActiveEffect";
       collection: "effects";
       hasTypeData: true;
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
+      label: "DOCUMENT.ActiveEffect";
+      labelPlural: "DOCUMENT.ActiveEffects";
+      schemaVersion: "13.341";
       permissions: Metadata.Permissions;
     }>
   > {}
@@ -146,15 +154,6 @@ declare namespace ActiveEffect {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Actor" | "Item">;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -165,7 +164,8 @@ declare namespace ActiveEffect {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -213,7 +213,25 @@ declare namespace ActiveEffect {
   }
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * Used in the {@linkcode ActiveEffect.create} and {@linkcode ActiveEffect.createDocuments} signatures, and
+   * {@linkcode ActiveEffect.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode ActiveEffect.create}, returning (a single | an array of) (temporary | stored)
+   * `ActiveEffect`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<ActiveEffect.TemporaryIf<Temporary>>
+      : ActiveEffect.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode ActiveEffect.name | ActiveEffect#name}.
    *
    * This is data transformed from {@linkcode ActiveEffect.Source} and turned into more
@@ -230,6 +248,13 @@ declare namespace ActiveEffect {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode ActiveEffect.update | ActiveEffect#update} and
+   * {@linkcode ActiveEffect.updateDocuments} signatures, and {@linkcode ActiveEffect.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode ActiveEffect}. This is the source of truth for how an ActiveEffect document
    * must be structured.
    *
@@ -239,7 +264,7 @@ declare namespace ActiveEffect {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies the ActiveEffect within a parent Actor or Item
      * @defaultValue `null`
@@ -324,7 +349,7 @@ declare namespace ActiveEffect {
     _stats: fields.DocumentStatsField;
   }
 
-  interface ChangeSchema extends DataSchema {
+  interface ChangeSchema extends fields.DataSchema {
     /**
      * The attribute path in the Actor or Item data which the change modifies
      * @defaultValue `""`
@@ -361,7 +386,7 @@ declare namespace ActiveEffect {
     priority: fields.NumberField;
   }
 
-  interface DurationSchema extends DataSchema {
+  interface DurationSchema extends fields.DataSchema {
     /**
      * The world time when the active effect first started
      * @defaultValue `null`
@@ -375,10 +400,10 @@ declare namespace ActiveEffect {
     seconds: fields.NumberField<{ integer: true; min: 0 }>;
 
     /**
-     * The _id of the CombatEncounter in which the effect first started
+     * The `_id` of the {@linkcode Combat} in which the effect first started
      * @defaultValue `null`
      */
-    combat: fields.ForeignDocumentField<typeof foundry.documents.BaseCombat>;
+    combat: fields.ForeignDocumentField<typeof BaseCombat>;
 
     /**
      * The maximum duration of the effect, in combat rounds
@@ -404,6 +429,8 @@ declare namespace ActiveEffect {
      */
     startTurn: fields.NumberField<{ integer: true; min: 0 }>;
   }
+
+  interface DurationData extends fields.SchemaField.InitializedData<DurationSchema> {}
 
   namespace Database {
     /** Options passed along in Get operations for ActiveEffects */
@@ -524,11 +551,10 @@ declare namespace ActiveEffect {
   }
 
   /**
-   * If `Temporary` is true then `ActiveEffect.Implementation`, otherwise `ActiveEffect.Stored`.
+   * If `Temporary` is true then {@linkcode ActiveEffect.Implementation}, otherwise {@linkcode ActiveEffect.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? ActiveEffect.Implementation
-    : ActiveEffect.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? ActiveEffect.Implementation : ActiveEffect.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -559,31 +585,21 @@ declare namespace ActiveEffect {
     core?: { overlay?: boolean };
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DurationData {
-    /** The world time when the active effect first started */
-    startTime?: number | null | undefined;
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
-    /** The maximum duration of the effect, in seconds */
-    seconds?: number | null | undefined;
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
-    /** The _id of the CombatEncounter in which the effect first started */
-    combat?: string | null | undefined;
-
-    /** The maximum duration of the effect, in combat rounds */
-    rounds?: number | null | undefined;
-
-    /** The maximum duration of the effect, in combat turns */
-    turns?: number | null | undefined;
-
-    /** The round of the CombatEncounter in which the effect first started */
-    startRound?: number | null | undefined;
-
-    /** The turn of the CombatEncounter in which the effect first started */
-    startTurn?: number | null | undefined;
-  }
+  /* ***********************************************
+   *         ACTIVE-EFFECT-SPECIFIC TYPES          *
+   *************************************************/
 
   type DurationType = "seconds" | "turns" | "none";
 
@@ -653,8 +669,8 @@ declare namespace ActiveEffect {
     priority: number | null | undefined;
   }
 
-  type ApplyFieldReturn<Field extends DataField.Any | null | undefined> = Field extends DataField.Any
-    ? DataField.InitializedTypeFor<Field>
+  type ApplyFieldReturn<Field extends fields.DataField.Any | null | undefined> = Field extends fields.DataField.Any
+    ? fields.DataField.InitializedTypeFor<Field>
     : unknown;
 
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
@@ -666,7 +682,7 @@ declare namespace ActiveEffect {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -806,7 +822,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    *
    * @remarks `field` default provided by `??= model.schema.getField(change.key)`
    */
-  static applyField<Field extends DataField.Any | null | undefined = undefined>(
+  static applyField<Field extends fields.DataField.Any | null | undefined = undefined>(
     model: DataModel.Any,
     change: ActiveEffect.ChangeData,
     field?: Field,
@@ -976,7 +992,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
   ): Promise<ActiveEffect.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: ActiveEffect.Database.DeleteOperation,
   ): Promise<this | false | null | undefined>;
 

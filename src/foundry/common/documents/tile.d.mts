@@ -1,8 +1,6 @@
 import type { AnyMutableObject } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Document definition for a Tile.
@@ -20,10 +18,10 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link TileDocument.implementation | `new TileDocument.implementation(...)`} instead which will give you
+   * You should use {@linkcode TileDocument.implementation | new TileDocument.implementation(...)} instead which will give you
    * a system specific implementation of `TileDocument`.
    */
-  constructor(data: TileDocument.CreateData, context?: TileDocument.ConstructionContext);
+  constructor(data: BaseTile.CreateData, context?: BaseTile.ConstructionContext);
 
   /**
    * @defaultValue
@@ -57,7 +55,6 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    * Shims:
    * - `z` to `sort` (since v12, until v14)
    */
-  // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
@@ -99,7 +96,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
-  override readonly parentCollection: TileDocument.ParentCollectionName | null;
+  override readonly parentCollection: BaseTile.ParentCollectionName | null;
 
   override readonly pack: string | null;
 
@@ -107,51 +104,48 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   static override get baseDocument(): typeof BaseTile;
 
-  static override get collectionName(): TileDocument.ParentCollectionName;
+  static override get collectionName(): BaseTile.ParentCollectionName;
 
-  static override get documentName(): TileDocument.Name;
+  static override get documentName(): BaseTile.Name;
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
   static override get hasTypeData(): undefined;
 
-  static override get hierarchy(): TileDocument.Hierarchy;
+  static override get hierarchy(): BaseTile.Hierarchy;
 
-  override parent: TileDocument.Parent;
+  override parent: BaseTile.Parent;
 
   override " fvtt_types_internal_document_parent": BaseTile.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<TileDocument.Implementation | TileDocument.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<TileDocument.Database.Create<Temporary>>,
-  ): Promise<Array<TileDocument.TemporaryIf<Temporary>>>;
+    data: Array<TileDocument.Implementation | BaseTile.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<BaseTile.Database.Create<Temporary>>,
+  ): Promise<Array<BaseTile.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: TileDocument.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<TileDocument.Database.Update>,
+    updates: BaseTile.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<BaseTile.Database.Update>,
   ): Promise<TileDocument.Implementation[]>;
 
   static override deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<TileDocument.Database.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<BaseTile.Database.Delete>,
   ): Promise<TileDocument.Implementation[]>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
-    data: TileDocument.CreateData | TileDocument.CreateData[],
-    operation?: TileDocument.Database.CreateOperation<Temporary>,
-  ): Promise<TileDocument.TemporaryIf<Temporary> | undefined>;
+    data: BaseTile.CreateData | BaseTile.CreateData[],
+    operation?: BaseTile.Database.CreateOperation<Temporary>,
+  ): Promise<BaseTile.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: TileDocument.UpdateData | undefined,
-    operation?: TileDocument.Database.UpdateOperation,
+    data: BaseTile.UpdateData | undefined,
+    operation?: BaseTile.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: TileDocument.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseTile.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: TileDocument.Database.GetOptions,
-  ): TileDocument.Implementation | null;
+  static override get(documentId: string, options?: BaseTile.Database.GetOptions): TileDocument.Implementation | null;
 
   static override getCollectionName(name: string): null;
 
@@ -160,159 +154,126 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     _parentPath?: string,
   ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
-  override getFlag<Scope extends TileDocument.Flags.Scope, Key extends TileDocument.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseTile.Flags.Scope, Key extends BaseTile.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): TileDocument.Flags.Get<Scope, Key>;
+  ): BaseTile.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends TileDocument.Flags.Scope,
-    Key extends TileDocument.Flags.Key<Scope>,
-    Value extends TileDocument.Flags.Get<Scope, Key>,
+    Scope extends BaseTile.Flags.Scope,
+    Key extends BaseTile.Flags.Key<Scope>,
+    Value extends BaseTile.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
-  override unsetFlag<Scope extends TileDocument.Flags.Scope, Key extends TileDocument.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseTile.Flags.Scope, Key extends BaseTile.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): Promise<this>;
 
   protected override _preCreate(
-    data: TileDocument.CreateData,
-    options: TileDocument.Database.PreCreateOptions,
+    data: BaseTile.CreateData,
+    options: BaseTile.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: TileDocument.CreateData,
-    options: TileDocument.Database.OnCreateOperation,
+    data: BaseTile.CreateData,
+    options: BaseTile.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: TileDocument.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<TileDocument.Database.Create>,
+    operation: Document.Database.PreCreateOperationStatic<BaseTile.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: TileDocument.Implementation[],
-    operation: TileDocument.Database.Create,
+    operation: BaseTile.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: TileDocument.UpdateData,
-    options: TileDocument.Database.PreUpdateOptions,
+    changed: BaseTile.UpdateData,
+    options: BaseTile.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: TileDocument.UpdateData,
-    options: TileDocument.Database.OnUpdateOperation,
+    changed: BaseTile.UpdateData,
+    options: BaseTile.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: TileDocument.Implementation[],
-    operation: TileDocument.Database.Update,
+    operation: BaseTile.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: TileDocument.Implementation[],
-    operation: TileDocument.Database.Update,
+    operation: BaseTile.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: TileDocument.Database.PreDeleteOptions,
+    options: BaseTile.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: TileDocument.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseTile.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: TileDocument.Implementation[],
-    operation: TileDocument.Database.Delete,
+    operation: BaseTile.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
-
   protected static override _onDeleteOperation(
     documents: TileDocument.Implementation[],
-    operation: TileDocument.Database.Delete,
+    operation: BaseTile.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
    */
   protected static override _onCreateDocuments(
     documents: TileDocument.Implementation[],
-    context: Document.ModificationContext<TileDocument.Parent>,
+    context: Document.ModificationContext<BaseTile.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
    */
   protected static override _onUpdateDocuments(
     documents: TileDocument.Implementation[],
-    context: Document.ModificationContext<TileDocument.Parent>,
+    context: Document.ModificationContext<BaseTile.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
    */
   protected static override _onDeleteDocuments(
     documents: TileDocument.Implementation[],
-    context: Document.ModificationContext<TileDocument.Parent>,
+    context: Document.ModificationContext<BaseTile.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<TileDocument.Schema>;
+  protected static override _schema: SchemaField<BaseTile.Schema>;
 
-  static override get schema(): SchemaField<TileDocument.Schema>;
+  static override get schema(): SchemaField<BaseTile.Schema>;
 
-  static override validateJoint(data: TileDocument.Source): void;
+  static override validateJoint(data: BaseTile.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: TileDocument.CreateData,
+    source: BaseTile.CreateData,
     context?: DataModel.FromSourceOptions,
   ): TileDocument.Implementation;
 
@@ -322,6 +283,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 export default BaseTile;
 
 declare namespace BaseTile {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = TileDocument.Name;
   export import ConstructionContext = TileDocument.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -331,7 +293,6 @@ declare namespace BaseTile {
   export import Parent = TileDocument.Parent;
   export import Descendant = TileDocument.Descendant;
   export import DescendantClass = TileDocument.DescendantClass;
-  export import Pack = TileDocument.Pack;
   export import Embedded = TileDocument.Embedded;
   export import ParentCollectionName = TileDocument.ParentCollectionName;
   export import CollectionClass = TileDocument.CollectionClass;
@@ -340,8 +301,11 @@ declare namespace BaseTile {
   export import Stored = TileDocument.Stored;
   export import Source = TileDocument.Source;
   export import CreateData = TileDocument.CreateData;
+  export import CreateInput = TileDocument.CreateInput;
+  export import CreateReturn = TileDocument.CreateReturn;
   export import InitializedData = TileDocument.InitializedData;
   export import UpdateData = TileDocument.UpdateData;
+  export import UpdateInput = TileDocument.UpdateInput;
   export import Schema = TileDocument.Schema;
   export import Database = TileDocument.Database;
   export import TemporaryIf = TileDocument.TemporaryIf;

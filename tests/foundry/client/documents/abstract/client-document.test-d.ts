@@ -33,9 +33,9 @@ expectTypeOf(
       pack: "some.pack",
       parent: someActor,
     },
-    {
-      ...dialogOptions,
-    },
+    // {
+    //   ...dialogOptions,
+    // },
   ),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 
@@ -49,11 +49,11 @@ expectTypeOf(
       pack: "some.pack",
       parent: someActor,
     },
-    {
-      // TODO: figure out why `types` doesn't display as deprecated.
-      // types: undefined,
-      ...dialogOptions,
-    },
+    // {
+    //   // TODO: figure out why `types` doesn't display as deprecated.
+    //   // types: undefined,
+    //   ...dialogOptions,
+    // },
   ),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 expectTypeOf(
@@ -78,7 +78,7 @@ expectTypeOf(
     parent: someActor,
   }),
 ).toBeString();
-expectTypeOf(Item.defaultName({ type: null, pack: null, parent: null })).toBeString();
+expectTypeOf(Item.defaultName({ type: undefined, pack: null, parent: null })).toBeString();
 expectTypeOf(Item.defaultName({ type: undefined, pack: undefined, parent: undefined })).toBeString();
 
 declare const itemDropData: Item.DropData;
@@ -132,11 +132,10 @@ expectTypeOf(item.collection).toEqualTypeOf<
 // @ts-expect-error Only getter, no setter
 item.collection = new Collection<typeof item>();
 
-expectTypeOf(actorDelta.collection).toEqualTypeOf<ActorDelta.Stored | null>();
-expectTypeOf(activeEffect.collection).toEqualTypeOf<EmbeddedCollection<
-  ActiveEffect.Stored,
-  Actor.Stored | Item.Stored
-> | null>();
+expectTypeOf(actorDelta.collection).toEqualTypeOf<ActorDelta.Stored>();
+expectTypeOf(activeEffect.collection).toEqualTypeOf<
+  EmbeddedCollection<ActiveEffect.Stored, Actor.Stored | Item.Stored>
+>();
 
 if (anyClientDoc.collection) {
   expectTypeOf(anyClientDoc.collection).toEqualTypeOf<

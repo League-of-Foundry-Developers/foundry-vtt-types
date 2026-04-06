@@ -1,8 +1,6 @@
 import type { AnyMutableObject } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The ChatMessage Document.
@@ -22,11 +20,11 @@ declare abstract class BaseChatMessage<
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link ChatMessage.implementation | `new ChatMessage.implementation(...)`} instead which will give you
+   * You should use {@linkcode ChatMessage.implementation | new ChatMessage.implementation(...)} instead which will give you
    * a system specific implementation of `ChatMessage`.
    */
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
-  constructor(data?: ChatMessage.CreateData, context?: ChatMessage.ConstructionContext);
+  constructor(data?: BaseChatMessage.CreateData, context?: BaseChatMessage.ConstructionContext);
 
   /**
    * @defaultValue
@@ -65,7 +63,6 @@ declare abstract class BaseChatMessage<
    * Shims:
    * - `user` to `author` (since v12, until v14)
    */
-  // options: not null (destructured)
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
@@ -88,7 +85,7 @@ declare abstract class BaseChatMessage<
 
   /* Document overrides */
 
-  override readonly parentCollection: ChatMessage.ParentCollectionName | null;
+  override readonly parentCollection: BaseChatMessage.ParentCollectionName | null;
 
   override readonly pack: string | null;
 
@@ -96,50 +93,53 @@ declare abstract class BaseChatMessage<
 
   static override get baseDocument(): typeof BaseChatMessage;
 
-  static override get collectionName(): ChatMessage.ParentCollectionName;
+  static override get collectionName(): BaseChatMessage.ParentCollectionName;
 
-  static override get documentName(): ChatMessage.Name;
+  static override get documentName(): BaseChatMessage.Name;
 
   static override get TYPES(): BaseChatMessage.SubType[];
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): ChatMessage.Hierarchy;
+  static override get hierarchy(): BaseChatMessage.Hierarchy;
 
-  override system: ChatMessage.SystemOfType<SubType>;
+  override system: BaseChatMessage.SystemOfType<SubType>;
 
   override parent: BaseChatMessage.Parent;
 
   override " fvtt_types_internal_document_parent": BaseChatMessage.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<ChatMessage.Implementation | ChatMessage.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<ChatMessage.Database.Create<Temporary>>,
-  ): Promise<Array<ChatMessage.TemporaryIf<Temporary>>>;
+    data: Array<ChatMessage.Implementation | BaseChatMessage.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<BaseChatMessage.Database.Create<Temporary>>,
+  ): Promise<Array<BaseChatMessage.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: ChatMessage.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<ChatMessage.Database.Update>,
+    updates: BaseChatMessage.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<BaseChatMessage.Database.Update>,
   ): Promise<ChatMessage.Implementation[]>;
 
   static override deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<ChatMessage.Database.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<BaseChatMessage.Database.Delete>,
   ): Promise<ChatMessage.Implementation[]>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
-    data: ChatMessage.CreateData | ChatMessage.CreateData[],
-    operation?: ChatMessage.Database.CreateOperation<Temporary>,
-  ): Promise<ChatMessage.TemporaryIf<Temporary> | undefined>;
+    data: BaseChatMessage.CreateData | BaseChatMessage.CreateData[],
+    operation?: BaseChatMessage.Database.CreateOperation<Temporary>,
+  ): Promise<BaseChatMessage.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: ChatMessage.UpdateData | undefined,
-    operation?: ChatMessage.Database.UpdateOperation,
+    data: BaseChatMessage.UpdateData | undefined,
+    operation?: BaseChatMessage.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: ChatMessage.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseChatMessage.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: ChatMessage.Database.GetOptions): ChatMessage.Implementation | null;
+  static override get(
+    documentId: string,
+    options?: BaseChatMessage.Database.GetOptions,
+  ): ChatMessage.Implementation | null;
 
   static override getCollectionName(name: string): null;
 
@@ -148,159 +148,126 @@ declare abstract class BaseChatMessage<
     _parentPath?: string,
   ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
-  override getFlag<Scope extends ChatMessage.Flags.Scope, Key extends ChatMessage.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseChatMessage.Flags.Scope, Key extends BaseChatMessage.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): ChatMessage.Flags.Get<Scope, Key>;
+  ): BaseChatMessage.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends ChatMessage.Flags.Scope,
-    Key extends ChatMessage.Flags.Key<Scope>,
-    Value extends ChatMessage.Flags.Get<Scope, Key>,
+    Scope extends BaseChatMessage.Flags.Scope,
+    Key extends BaseChatMessage.Flags.Key<Scope>,
+    Value extends BaseChatMessage.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
-  override unsetFlag<Scope extends ChatMessage.Flags.Scope, Key extends ChatMessage.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseChatMessage.Flags.Scope, Key extends BaseChatMessage.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): Promise<this>;
 
   protected override _preCreate(
-    data: ChatMessage.CreateData,
-    options: ChatMessage.Database.PreCreateOptions,
+    data: BaseChatMessage.CreateData,
+    options: BaseChatMessage.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: ChatMessage.CreateData,
-    options: ChatMessage.Database.OnCreateOperation,
+    data: BaseChatMessage.CreateData,
+    options: BaseChatMessage.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: ChatMessage.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<ChatMessage.Database.Create>,
+    operation: Document.Database.PreCreateOperationStatic<BaseChatMessage.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: ChatMessage.Implementation[],
-    operation: ChatMessage.Database.Create,
+    operation: BaseChatMessage.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: ChatMessage.UpdateData,
-    options: ChatMessage.Database.PreUpdateOptions,
+    changed: BaseChatMessage.UpdateData,
+    options: BaseChatMessage.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: ChatMessage.UpdateData,
-    options: ChatMessage.Database.OnUpdateOperation,
+    changed: BaseChatMessage.UpdateData,
+    options: BaseChatMessage.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: ChatMessage.Implementation[],
-    operation: ChatMessage.Database.Update,
+    operation: BaseChatMessage.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: ChatMessage.Implementation[],
-    operation: ChatMessage.Database.Update,
+    operation: BaseChatMessage.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: ChatMessage.Database.PreDeleteOptions,
+    options: BaseChatMessage.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: ChatMessage.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseChatMessage.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: ChatMessage.Implementation[],
-    operation: ChatMessage.Database.Delete,
+    operation: BaseChatMessage.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: ChatMessage.Implementation[],
-    operation: ChatMessage.Database.Delete,
+    operation: BaseChatMessage.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
-
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
    */
   protected static override _onCreateDocuments(
     documents: ChatMessage.Implementation[],
-    context: Document.ModificationContext<ChatMessage.Parent>,
+    context: Document.ModificationContext<BaseChatMessage.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
    */
   protected static override _onUpdateDocuments(
     documents: ChatMessage.Implementation[],
-    context: Document.ModificationContext<ChatMessage.Parent>,
+    context: Document.ModificationContext<BaseChatMessage.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
    */
   protected static override _onDeleteDocuments(
     documents: ChatMessage.Implementation[],
-    context: Document.ModificationContext<ChatMessage.Parent>,
+    context: Document.ModificationContext<BaseChatMessage.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<ChatMessage.Schema>;
+  protected static override _schema: SchemaField<BaseChatMessage.Schema>;
 
-  static override get schema(): SchemaField<ChatMessage.Schema>;
+  static override get schema(): SchemaField<BaseChatMessage.Schema>;
 
-  static override validateJoint(data: ChatMessage.Source): void;
+  static override validateJoint(data: BaseChatMessage.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: ChatMessage.CreateData,
+    source: BaseChatMessage.CreateData,
     context?: DataModel.FromSourceOptions,
   ): ChatMessage.Implementation;
 
@@ -312,6 +279,7 @@ declare abstract class BaseChatMessage<
 export default BaseChatMessage;
 
 declare namespace BaseChatMessage {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = ChatMessage.Name;
   export import ConstructionContext = ChatMessage.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -326,7 +294,6 @@ declare namespace BaseChatMessage {
   export import Parent = ChatMessage.Parent;
   export import Descendant = ChatMessage.Descendant;
   export import DescendantClass = ChatMessage.DescendantClass;
-  export import Pack = ChatMessage.Pack;
   export import Embedded = ChatMessage.Embedded;
   export import ParentCollectionName = ChatMessage.ParentCollectionName;
   export import CollectionClass = ChatMessage.CollectionClass;
@@ -335,8 +302,11 @@ declare namespace BaseChatMessage {
   export import Stored = ChatMessage.Stored;
   export import Source = ChatMessage.Source;
   export import CreateData = ChatMessage.CreateData;
+  export import CreateInput = ChatMessage.CreateInput;
+  export import CreateReturn = ChatMessage.CreateReturn;
   export import InitializedData = ChatMessage.InitializedData;
   export import UpdateData = ChatMessage.UpdateData;
+  export import UpdateInput = ChatMessage.UpdateInput;
   export import Schema = ChatMessage.Schema;
   export import Database = ChatMessage.Database;
   export import TemporaryIf = ChatMessage.TemporaryIf;

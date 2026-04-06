@@ -500,7 +500,11 @@ declare namespace CompendiumCollection {
         ? Document.StoredForName<Doc["documentName"]>
         : never;
 
-  type ForDocument<Name extends DocumentName> = Name extends unknown ? CompendiumCollection<Name> : never;
+  type ForDocument<Name extends Document.Type> = Name extends Document.CompendiumType
+    ? CompendiumCollection<Name>
+    : Name extends Document.EmbeddedType
+      ? ForDocument<Exclude<Document.ParentForName<Name>, null>["documentName"]>
+      : never;
 
   type ManageCompendiumAction = "create" | "delete" | "migrate";
 

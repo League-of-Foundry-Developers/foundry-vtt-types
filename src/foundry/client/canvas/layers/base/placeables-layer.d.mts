@@ -285,7 +285,7 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
    * @param data - The object data
    * @throws An error if any of the objects in the `data` array lack an `_id` key
    */
-  storeHistory<Operation extends Document.Database.Operation>(
+  storeHistory<Operation extends Document.Database.OperationAction>(
     type: Operation,
     data: PlaceablesLayer.HistoryDataFor<Operation, DocumentName>,
   ): void;
@@ -552,10 +552,10 @@ declare namespace PlaceablesLayer {
   interface MoveManyOptions extends _MoveManyOptions {}
 
   /** @privateRemarks Handled like this rather than an interface mapping to avoid extraneous type calculation */
-  type HistoryDataFor<Operation extends Document.Database.Operation, DocumentName extends DocumentNames> =
-    | (Operation extends "create" ? { _id: string } : never)
-    | (Operation extends "update" ? Document.UpdateDataForName<DocumentName> & { _id: string } : never)
-    | (Operation extends "delete" ? Document.CreateDataForName<DocumentName> & { _id: string } : never);
+  type HistoryDataFor<Action extends Document.Database.OperationAction, DocumentName extends DocumentNames> =
+    | (Action extends "create" ? { _id: string } : never)
+    | (Action extends "update" ? Document.UpdateDataForName<DocumentName> & { _id: string } : never)
+    | (Action extends "delete" ? Document.CreateDataForName<DocumentName> & { _id: string } : never);
 
   type HistoryEntry<DocumentName extends DocumentNames> =
     | { type: "create"; data: HistoryDataFor<"create", DocumentName>[] }

@@ -1,8 +1,6 @@
 import type { AnyMutableObject } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The Document definition for a Scene.
@@ -20,10 +18,10 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Scene.implementation | `new Scene.implementation(...)`} instead which will give you
+   * You should use {@linkcode Scene.implementation | new BaseScene.implementation(...)} instead which will give you
    * a system specific implementation of `Scene`.
    */
-  constructor(data: Scene.CreateData, context?: Scene.ConstructionContext);
+  constructor(data: BaseScene.CreateData, context?: BaseScene.ConstructionContext);
 
   /**
    * @defaultValue
@@ -65,7 +63,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  override updateSource(changes?: Scene.UpdateData, options?: DataModel.UpdateOptions): Scene.UpdateData;
+  override updateSource(changes?: BaseScene.UpdateData, options?: DataModel.UpdateOptions): BaseScene.UpdateData;
 
   /**
    * @remarks
@@ -94,7 +92,6 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * - `globalLightThreshold` to `environment.globalLight.darkness.max` (since v12, until 14)
    * - `darkness` to `environment.darknessLevel` (since v12, until 14)
    */
-  // options: not null (destructured)
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
@@ -184,7 +181,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
-  readonly parentCollection: Scene.ParentCollectionName | null;
+  readonly parentCollection: BaseScene.ParentCollectionName | null;
 
   readonly pack: string | null;
 
@@ -192,76 +189,76 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   static get baseDocument(): typeof BaseScene;
 
-  static get collectionName(): Scene.ParentCollectionName;
+  static get collectionName(): BaseScene.ParentCollectionName;
 
-  static get documentName(): Scene.Name;
+  static get documentName(): BaseScene.Name;
 
   static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
   static get hasTypeData(): undefined;
 
-  static get hierarchy(): Scene.Hierarchy;
+  static get hierarchy(): BaseScene.Hierarchy;
 
-  override parent: Scene.Parent;
+  override parent: BaseScene.Parent;
 
   override " fvtt_types_internal_document_parent": BaseScene.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Scene.Implementation | Scene.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<Scene.Database.Create<Temporary>>,
-  ): Promise<Array<Scene.TemporaryIf<Temporary>>>;
+    data: Array<Scene.Implementation | BaseScene.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<BaseScene.Database.Create<Temporary>>,
+  ): Promise<Array<BaseScene.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: Scene.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<Scene.Database.Update>,
+    updates: BaseScene.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<BaseScene.Database.Update>,
   ): Promise<Scene.Implementation[]>;
 
   static override deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<Scene.Database.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<BaseScene.Database.Delete>,
   ): Promise<Scene.Implementation[]>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
-    data: Scene.CreateData | Scene.CreateData[],
-    operation?: Scene.Database.CreateOperation<Temporary>,
-  ): Promise<Scene.TemporaryIf<Temporary> | undefined>;
+    data: BaseScene.CreateData | BaseScene.CreateData[],
+    operation?: BaseScene.Database.CreateOperation<Temporary>,
+  ): Promise<BaseScene.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: Scene.UpdateData | undefined,
-    operation?: Scene.Database.UpdateOperation,
+    data: BaseScene.UpdateData | undefined,
+    operation?: BaseScene.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: Scene.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseScene.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: Scene.Database.GetOptions): Scene.Implementation | null;
+  static override get(documentId: string, options?: BaseScene.Database.GetOptions): Scene.Implementation | null;
 
-  static override getCollectionName<CollectionName extends Scene.Embedded.Name>(
+  static override getCollectionName<CollectionName extends BaseScene.Embedded.Name>(
     name: CollectionName,
-  ): Scene.Embedded.CollectionNameOf<CollectionName> | null;
+  ): BaseScene.Embedded.CollectionNameOf<CollectionName> | null;
 
-  override getEmbeddedCollection<EmbeddedName extends Scene.Embedded.CollectionName>(
+  override getEmbeddedCollection<EmbeddedName extends BaseScene.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
-  ): Scene.Embedded.CollectionFor<EmbeddedName>;
+  ): BaseScene.Embedded.CollectionFor<EmbeddedName>;
 
-  override getEmbeddedDocument<EmbeddedName extends Scene.Embedded.CollectionName>(
+  override getEmbeddedDocument<EmbeddedName extends BaseScene.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
     id: string,
     options: Document.GetEmbeddedDocumentOptions,
-  ): Scene.Embedded.DocumentFor<EmbeddedName> | undefined;
+  ): BaseScene.Embedded.DocumentFor<EmbeddedName> | undefined;
 
-  override createEmbeddedDocuments<EmbeddedName extends Scene.Embedded.Name>(
+  override createEmbeddedDocuments<EmbeddedName extends BaseScene.Embedded.Name>(
     embeddedName: EmbeddedName,
     data: Document.CreateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.CreateOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  override updateEmbeddedDocuments<EmbeddedName extends Scene.Embedded.Name>(
+  override updateEmbeddedDocuments<EmbeddedName extends BaseScene.Embedded.Name>(
     embeddedName: EmbeddedName,
     updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
     operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  override deleteEmbeddedDocuments<EmbeddedName extends Scene.Embedded.Name>(
+  override deleteEmbeddedDocuments<EmbeddedName extends BaseScene.Embedded.Name>(
     embeddedName: EmbeddedName,
     ids: Array<string>,
     operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
@@ -272,154 +269,125 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     _parentPath?: string,
   ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
-  override getFlag<Scope extends Scene.Flags.Scope, Key extends Scene.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseScene.Flags.Scope, Key extends BaseScene.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Scene.Flags.Get<Scope, Key>;
+  ): BaseScene.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends Scene.Flags.Scope,
-    Key extends Scene.Flags.Key<Scope>,
-    Value extends Scene.Flags.Get<Scope, Key>,
+    Scope extends BaseScene.Flags.Scope,
+    Key extends BaseScene.Flags.Key<Scope>,
+    Value extends BaseScene.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
-  override unsetFlag<Scope extends Scene.Flags.Scope, Key extends Scene.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseScene.Flags.Scope, Key extends BaseScene.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): Promise<this>;
 
   protected override _preCreate(
-    data: Scene.CreateData,
-    options: Scene.Database.PreCreateOptions,
+    data: BaseScene.CreateData,
+    options: BaseScene.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onCreate(data: Scene.CreateData, options: Scene.Database.OnCreateOperation, userId: string): void;
+  protected override _onCreate(
+    data: BaseScene.CreateData,
+    options: BaseScene.Database.OnCreateOperation,
+    userId: string,
+  ): void;
 
   protected static override _preCreateOperation(
     documents: Scene.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<Scene.Database.Create>,
+    operation: Document.Database.PreCreateOperationStatic<BaseScene.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Scene.Implementation[],
-    operation: Scene.Database.Create,
+    operation: BaseScene.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: Scene.UpdateData,
-    options: Scene.Database.PreUpdateOptions,
+    changed: BaseScene.UpdateData,
+    options: BaseScene.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: Scene.UpdateData,
-    options: Scene.Database.OnUpdateOperation,
+    changed: BaseScene.UpdateData,
+    options: BaseScene.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Scene.Implementation[],
-    operation: Scene.Database.Update,
+    operation: BaseScene.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Scene.Implementation[],
-    operation: Scene.Database.Update,
+    operation: BaseScene.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: Scene.Database.PreDeleteOptions,
+    options: BaseScene.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: Scene.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseScene.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Scene.Implementation[],
-    operation: Scene.Database.Delete,
+    operation: BaseScene.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Scene.Implementation[],
-    operation: Scene.Database.Delete,
+    operation: BaseScene.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
-
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
    */
   protected static override _onCreateDocuments(
     documents: Scene.Implementation[],
-    context: Document.ModificationContext<Scene.Parent>,
+    context: Document.ModificationContext<BaseScene.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
    */
   protected static override _onUpdateDocuments(
     documents: Scene.Implementation[],
-    context: Document.ModificationContext<Scene.Parent>,
+    context: Document.ModificationContext<BaseScene.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
    */
   protected static override _onDeleteDocuments(
     documents: Scene.Implementation[],
-    context: Document.ModificationContext<Scene.Parent>,
+    context: Document.ModificationContext<BaseScene.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<Scene.Schema>;
+  protected static override _schema: SchemaField<BaseScene.Schema>;
 
-  static override get schema(): SchemaField<Scene.Schema>;
+  static override get schema(): SchemaField<BaseScene.Schema>;
 
-  static override validateJoint(data: Scene.Source): void;
+  static override validateJoint(data: BaseScene.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
-  static override fromSource(source: Scene.CreateData, context?: DataModel.FromSourceOptions): Scene.Implementation;
+  static override fromSource(source: BaseScene.CreateData, context?: DataModel.FromSourceOptions): Scene.Implementation;
 
   static override fromJSON(json: string): Scene.Implementation;
 
@@ -429,6 +397,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 export default BaseScene;
 
 declare namespace BaseScene {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = Scene.Name;
   export import ConstructionContext = Scene.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -438,7 +407,6 @@ declare namespace BaseScene {
   export import Parent = Scene.Parent;
   export import Descendant = Scene.Descendant;
   export import DescendantClass = Scene.DescendantClass;
-  export import Pack = Scene.Pack;
   export import Embedded = Scene.Embedded;
   export import ParentCollectionName = Scene.ParentCollectionName;
   export import CollectionClass = Scene.CollectionClass;
@@ -447,8 +415,11 @@ declare namespace BaseScene {
   export import Stored = Scene.Stored;
   export import Source = Scene.Source;
   export import CreateData = Scene.CreateData;
+  export import CreateInput = Scene.CreateInput;
+  export import CreateReturn = Scene.CreateReturn;
   export import InitializedData = Scene.InitializedData;
   export import UpdateData = Scene.UpdateData;
+  export import UpdateInput = Scene.UpdateInput;
   export import Schema = Scene.Schema;
   export import Database = Scene.Database;
   export import TemporaryIf = Scene.TemporaryIf;
