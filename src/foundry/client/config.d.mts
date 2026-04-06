@@ -2145,7 +2145,7 @@ declare global {
       /** @defaultValue `"TOKEN.Adjectives"` */
       adjectivesPrefix: string;
 
-      /** @defaultValue `new`{@linkcode foundry.canvas.placeables.tokens.TokenRingConfig}`()` */
+      /** @defaultValue `new `{@linkcode foundry.canvas.placeables.tokens.TokenRingConfig}`()` */
       ring: foundry.canvas.placeables.tokens.TokenRingConfig;
     };
 

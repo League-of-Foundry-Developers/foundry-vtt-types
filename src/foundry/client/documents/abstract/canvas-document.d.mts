@@ -68,7 +68,7 @@ declare namespace CanvasDocumentMixin {
     BaseClass
   >;
 
-  // TODO(LukeAbby): The constraint here should ideally be something like `Document<Document.PlaceableType, any, Scene.Implementation | null>` but this causes circularities.
+  // TODO(LukeAbby): The value here should ideally be something like `Document<Document.PlaceableType, any, Scene.Implementation | null>` but this causes circularities.
   type BaseClass = Document.Internal.Constructor;
 }
 
