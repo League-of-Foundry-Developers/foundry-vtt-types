@@ -18,7 +18,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link TileDocument.implementation | `new TileDocument.implementation(...)`} instead which will give you
+   * You should use {@linkcode TileDocument.implementation | new TileDocument.implementation(...)} instead which will give you
    * a system specific implementation of `TileDocument`.
    */
   constructor(data: BaseTile.CreateData, context?: BaseTile.ConstructionContext);
@@ -239,7 +239,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
    */
   protected static override _onCreateDocuments(
     documents: TileDocument.Implementation[],
@@ -248,7 +248,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
    */
   protected static override _onUpdateDocuments(
     documents: TileDocument.Implementation[],
@@ -257,7 +257,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
    */
   protected static override _onDeleteDocuments(
     documents: TileDocument.Implementation[],

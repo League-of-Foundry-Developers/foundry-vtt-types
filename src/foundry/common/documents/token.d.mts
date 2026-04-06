@@ -18,7 +18,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link TokenDocument.implementation | `new TokenDocument.implementation(...)`} instead which will give you
+   * You should use {@linkcode TokenDocument.implementation | new TokenDocument.implementation(...)} instead which will give you
    * a system specific implementation of `TokenDocument`.
    */
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
@@ -266,7 +266,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   /**
    * @remarks Calling `BaseToken#getEmbeddedCollection` would result in entirely typical results at
    * runtime, namely returning a `EmbeddedCollection` corresponding to a field in `BaseToken`'s
-   * schema. However {@link TokenDocument.getEmbeddedCollection | `TokenDocument#getEmbeddedCollection`}
+   * schema. However {@linkcode TokenDocument.getEmbeddedCollection | TokenDocument#getEmbeddedCollection}
    * is overridden to add new cases and since `BaseToken` is a superclass it had to be widened to
    * accommodate that.
    */
@@ -386,7 +386,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
    */
   protected static override _onCreateDocuments(
     documents: TokenDocument.Implementation[],
@@ -395,7 +395,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
    */
   protected static override _onUpdateDocuments(
     documents: TokenDocument.Implementation[],
@@ -404,7 +404,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
    */
   protected static override _onDeleteDocuments(
     documents: TokenDocument.Implementation[],

@@ -20,7 +20,7 @@ declare abstract class BaseCombatant<
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Combatant.implementation | `new Combatant.implementation(...)`} instead which will give you
+   * You should use {@linkcode Combatant.implementation | new Combatant.implementation(...)} instead which will give you
    * a system specific implementation of `Combatant`.
    */
   // Note(LukeAbby): `data` is not actually required but `context.parent` is.
@@ -52,8 +52,8 @@ declare abstract class BaseCombatant<
   /**
    * @remarks Uses `game.user` if `user` is falsey.
    *
-   * Returns {@link DOCUMENT_OWNERSHIP_LEVELS.OWNER | `OWNER`} if `user.isGM`, otherwise forwards to `this.actor?.getUserLevel(user)`.
-   * If thats nullish, returns {@link DOCUMENT_OWNERSHIP_LEVELS.NONE | `NONE`}
+   * Returns {@linkcode DOCUMENT_OWNERSHIP_LEVELS.OWNER | OWNER} if `user.isGM`, otherwise forwards to `this.actor?.getUserLevel(user)`.
+   * If thats nullish, returns {@linkcode DOCUMENT_OWNERSHIP_LEVELS.NONE | NONE}
    */
   override getUserLevel(user?: User.Implementation): DOCUMENT_OWNERSHIP_LEVELS;
 
@@ -219,7 +219,7 @@ declare abstract class BaseCombatant<
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
    */
   protected static override _onCreateDocuments(
     documents: Combatant.Implementation[],
@@ -228,7 +228,7 @@ declare abstract class BaseCombatant<
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
    */
   protected static override _onUpdateDocuments(
     documents: Combatant.Implementation[],
@@ -237,7 +237,7 @@ declare abstract class BaseCombatant<
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
    */
   protected static override _onDeleteDocuments(
     documents: Combatant.Implementation[],
