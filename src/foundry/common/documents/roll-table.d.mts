@@ -80,15 +80,15 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   static override get implementation(): RollTable.ImplementationClass;
 
-  static get baseDocument(): typeof BaseRollTable;
+  static override get baseDocument(): typeof BaseRollTable;
 
-  static get collectionName(): BaseRollTable.ParentCollectionName;
+  static override get collectionName(): BaseRollTable.ParentCollectionName;
 
-  static get documentName(): BaseRollTable.Name;
+  static override get documentName(): BaseRollTable.Name;
 
-  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+  static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): false;
+  static override get hasTypeData(): false;
 
   static override readonly hierarchy: BaseRollTable.Hierarchy;
 

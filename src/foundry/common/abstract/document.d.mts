@@ -49,16 +49,16 @@ import type {
 } from "#common/abstract/_module.d.mts";
 import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
-import type WorldCollection from "#client/documents/abstract/world-collection.d.mts";
+import type { ClientDocumentMixin, WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { SystemConfig } from "#configuration";
 
 /** @privateRemarks `ClientDatabaseBackend` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+/** @privateRemarks  `DocumentCollection` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin, DocumentCollection } from "#client/documents/abstract/_module.d.mts";
+import type DocumentCollection from "#client/documents/abstract/document-collection.d.mts";
 
 export default Document;
 
@@ -227,7 +227,7 @@ declare abstract class Document<
 
   /**
    * Does this Document support additional subtypes?
-   * @remarks This is `false` in `Document.metadata`, and is only true in subclasses that override
+   * @remarks This is `false` in `Document.metadata`, and is only true in subclasses that override it so, as of 13.351
    */
   static get hasTypeData(): boolean;
 
