@@ -3551,21 +3551,6 @@ declare namespace Document {
   type Invalid<D extends Document.Any> = Document.Internal.Invalid<D>;
 
   /**
-   * @deprecated Replaced with {@linkcode Document.SheetClassFor}
-   */
-  export import ConfiguredSheetClassFor = Document.SheetClassFor;
-
-  /**
-   * @deprecated Replaced with {@linkcode Document.ObjectClassFor}
-   */
-  export import ConfiguredObjectClassFor = Document.ObjectClassFor;
-
-  /**
-   * @deprecated Replaced with {@linkcode Document.LayerClassFor}
-   */
-  export import ConfiguredLayerClassFor = Document.LayerClassFor;
-
-  /**
    * Returns the type of the constructor data for the given {@linkcode foundry.abstract.Document}.
    * @deprecated Replaced with {@linkcode CreateDataForName}
    */
