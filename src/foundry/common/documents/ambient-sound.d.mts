@@ -18,7 +18,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link AmbientSoundDocument.implementation | `new AmbientSoundDocument.implementation(...)`} instead which will give you
+   * You should use {@linkcode AmbientSoundDocument.implementation | new AmbientSoundDocument.implementation(...)} instead which will give you
    * a system specific implementation of `AmbientSoundDocument`.
    */
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.

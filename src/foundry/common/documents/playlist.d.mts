@@ -19,7 +19,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Playlist.implementation | `new Playlist.implementation(...)`} instead which will give you
+   * You should use {@linkcode Playlist.implementation | new Playlist.implementation(...)} instead which will give you
    * a system specific implementation of `Playlist`.
    */
   constructor(data: BasePlaylist.CreateData, context?: BasePlaylist.ConstructionContext);

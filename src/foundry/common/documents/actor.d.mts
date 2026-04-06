@@ -25,7 +25,7 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Actor.implementation | `new Actor.implementation(...)`} instead which will give you
+   * You should use {@linkcode Actor.implementation | new Actor.implementation(...)} instead which will give you
    * a system specific implementation of `Actor`.
    */
   constructor(data: BaseActor.CreateData, context?: BaseActor.ConstructionContext);

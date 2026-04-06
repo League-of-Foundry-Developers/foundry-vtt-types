@@ -17,7 +17,7 @@ declare abstract class BaseRegionBehavior<
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link RegionBehavior.implementation | `new RegionBehavior.implementation(...)`} instead which will give you
+   * You should use {@linkcode RegionBehavior.implementation | new RegionBehavior.implementation(...)} instead which will give you
    * a system specific implementation of `RegionBehavior`.
    */
   constructor(data: BaseRegionBehavior.CreateData, context?: BaseRegionBehavior.ConstructionContext);

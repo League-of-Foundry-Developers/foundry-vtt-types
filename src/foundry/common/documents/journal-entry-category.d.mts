@@ -23,7 +23,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link JournalEntryCategory.implementation | `new JournalEntryCategory.implementation(...)`} instead which will give you
+   * You should use {@linkcode JournalEntryCategory.implementation | new JournalEntryCategory.implementation(...)} instead which will give you
    * a system specific implementation of `JournalEntryCategory`.
    */
   constructor(data: BaseJournalEntryCategory.CreateData, context?: BaseJournalEntryCategory.ConstructionContext);

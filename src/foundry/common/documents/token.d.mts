@@ -20,7 +20,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link TokenDocument.implementation | `new TokenDocument.implementation(...)`} instead which will give you
+   * You should use {@linkcode TokenDocument.implementation | new TokenDocument.implementation(...)} instead which will give you
    * a system specific implementation of `TokenDocument`.
    */
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
@@ -273,7 +273,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   /**
    * @remarks Calling `BaseToken#getEmbeddedCollection` would result in entirely typical results at
    * runtime, namely returning a `EmbeddedCollection` corresponding to a field in `BaseToken`'s
-   * schema. However {@link TokenDocument.getEmbeddedCollection | `TokenDocument#getEmbeddedCollection`}
+   * schema. However {@linkcode TokenDocument.getEmbeddedCollection | TokenDocument#getEmbeddedCollection}
    * is overridden to add new cases and since `BaseToken` is a superclass it had to be widened to
    * accommodate that.
    */

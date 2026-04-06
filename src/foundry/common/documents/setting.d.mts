@@ -18,7 +18,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Setting.implementation | `new Setting.implementation(...)`} instead which will give you
+   * You should use {@linkcode Setting.implementation | new Setting.implementation(...)} instead which will give you
    * a system specific implementation of `Setting`.
    */
   constructor(data: BaseSetting.CreateData, context?: BaseSetting.ConstructionContext);

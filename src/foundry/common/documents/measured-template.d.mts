@@ -18,7 +18,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link MeasuredTemplateDocument.implementation | `new MeasuredTemplateDocument.implementation(...)`} instead which will give you
+   * You should use {@linkcode MeasuredTemplateDocument.implementation | new MeasuredTemplateDocument.implementation(...)} instead which will give you
    * a system specific implementation of `MeasuredTemplateDocument`.
    */
   constructor(data?: BaseMeasuredTemplate.CreateData, context?: BaseMeasuredTemplate.ConstructionContext);

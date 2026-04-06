@@ -17,7 +17,7 @@ declare abstract class BaseJournalEntryPage<
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link JournalEntryPage.implementation | `new JournalEntryPage.implementation(...)`} instead which will give you
+   * You should use {@linkcode JournalEntryPage.implementation | new JournalEntryPage.implementation(...)} instead which will give you
    * a system specific implementation of `JournalEntryPage`.
    */
   constructor(data: BaseJournalEntryPage.CreateData, context?: BaseJournalEntryPage.ConstructionContext);

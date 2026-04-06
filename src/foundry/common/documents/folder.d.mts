@@ -22,7 +22,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Folder.implementation | `new Folder.implementation(...)`} instead which will give you
+   * You should use {@linkcode Folder.implementation | new Folder.implementation(...)} instead which will give you
    * a system specific implementation of `Folder`.
    */
   constructor(data: BaseFolder.CreateData, context?: BaseFolder.ConstructionContext);

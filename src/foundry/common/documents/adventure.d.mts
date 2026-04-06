@@ -20,7 +20,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Adventure.implementation | `new Adventure.implementation(...)`} instead which will give you
+   * You should use {@linkcode Adventure.implementation | new Adventure.implementation(...)} instead which will give you
    * a system specific implementation of `Adventure`.
    */
   constructor(data: BaseAdventure.CreateData, context?: BaseAdventure.ConstructionContext);

@@ -18,7 +18,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link WallDocument.implementation | `new WallDocument.implementation(...)`} instead which will give you
+   * You should use {@linkcode WallDocument.implementation | new WallDocument.implementation(...)} instead which will give you
    * a system specific implementation of `WallDocument`.
    */
   constructor(data: BaseWall.CreateData, context?: BaseWall.ConstructionContext);

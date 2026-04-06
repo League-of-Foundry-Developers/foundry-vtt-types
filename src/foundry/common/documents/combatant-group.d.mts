@@ -20,7 +20,7 @@ declare abstract class BaseCombatantGroup<
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link CombatantGroup.implementation | `new CombatantGroup.implementation(...)`} instead which will give you
+   * You should use {@linkcode CombatantGroup.implementation | new CombatantGroup.implementation(...)} instead which will give you
    * a system specific implementation of `CombatantGroup`.
    */
   constructor(data: BaseCombatantGroup.CreateData, context?: BaseCombatantGroup.ConstructionContext);

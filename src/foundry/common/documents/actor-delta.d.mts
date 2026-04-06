@@ -21,7 +21,7 @@ declare abstract class BaseActorDelta<
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link ActorDelta.implementation | `new ActorDelta.implementation(...)`} instead which will give you
+   * You should use {@linkcode ActorDelta.implementation | new ActorDelta.implementation(...)} instead which will give you
    * a system specific implementation of `ActorDelta`.
    */
   // Note(LukeAbby): `data` is not actually required but `context.parent` is.
@@ -57,7 +57,7 @@ declare abstract class BaseActorDelta<
   /**
    * Retrieve the base actor's collection, if it exists.
    * @param collectionName - The collection name.
-   * @remarks Passes `collectionName` to the token's `baseActor`'s {@link Actor.getEmbeddedCollection | `#getEmbeddedCollection`}
+   * @remarks Passes `collectionName` to the token's `baseActor`'s {@linkcode Actor.getEmbeddedCollection | #getEmbeddedCollection}
    */
   getBaseCollection<CollectionName extends Actor.Embedded.CollectionName>(
     collectionName: CollectionName,
@@ -81,7 +81,7 @@ declare abstract class BaseActorDelta<
   /**
    * @remarks
    * Migrations:
-   * - {@link foundry.documents.BaseActor.migrateData | `BaseActor`}'s
+   * - {@linkcode foundry.documents.BaseActor.migrateData | BaseActor}'s
    *
    * Simply forwards to `BaseActor`
    */
@@ -303,8 +303,13 @@ declare abstract class BaseActorDelta<
   ): Promise<void>;
 
   /**
+<<<<<<< HEAD
    * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
    * (since v12, until v14)
+=======
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+>>>>>>> db-prep
    */
   protected static override _onCreateDocuments(
     documents: ActorDelta.Implementation[],
@@ -313,8 +318,13 @@ declare abstract class BaseActorDelta<
   ): Promise<void>;
 
   /**
+<<<<<<< HEAD
    * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
    * (since v12, until v14)
+=======
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+>>>>>>> db-prep
    */
   protected static override _onUpdateDocuments(
     documents: ActorDelta.Stored[],
@@ -323,8 +333,13 @@ declare abstract class BaseActorDelta<
   ): Promise<void>;
 
   /**
+<<<<<<< HEAD
    * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
    * (since v12, until v14)
+=======
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+>>>>>>> db-prep
    */
   protected static override _onDeleteDocuments(
     documents: ActorDelta.Stored[],

@@ -18,7 +18,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link DrawingDocument.implementation | `new DrawingDocument.implementation(...)`} instead which will give you
+   * You should use {@linkcode DrawingDocument.implementation | new DrawingDocument.implementation(...)} instead which will give you
    * a system specific implementation of `DrawingDocument`.
    */
   // Note(LukeAbby): Required because while `DrawingDocument` has no directly required schema

@@ -18,7 +18,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link User.implementation | `new User.implementation(...)`} instead which will give you
+   * You should use {@linkcode User.implementation | new User.implementation(...)} instead which will give you
    * a system specific implementation of `User`.
    */
   constructor(data: BaseUser.CreateData, context?: BaseUser.ConstructionContext);

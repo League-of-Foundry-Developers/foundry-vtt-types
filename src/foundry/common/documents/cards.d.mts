@@ -23,7 +23,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Cards.implementation | `new Cards.implementation(...)`} instead which will give you
+   * You should use {@linkcode Cards.implementation | new Cards.implementation(...)} instead which will give you
    * a system specific implementation of `Cards`.
    */
   constructor(data: BaseCards.CreateData, context?: BaseCards.ConstructionContext);

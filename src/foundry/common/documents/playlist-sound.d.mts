@@ -18,7 +18,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link PlaylistSound.implementation | `new PlaylistSound.implementation(...)`} instead which will give you
+   * You should use {@linkcode PlaylistSound.implementation | new PlaylistSound.implementation(...)} instead which will give you
    * a system specific implementation of `PlaylistSound`.
    */
   constructor(data: BasePlaylistSound.CreateData, context?: BasePlaylistSound.ConstructionContext);

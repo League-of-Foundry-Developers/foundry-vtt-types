@@ -20,7 +20,7 @@ declare abstract class BaseCombatant<
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Combatant.implementation | `new Combatant.implementation(...)`} instead which will give you
+   * You should use {@linkcode Combatant.implementation | new Combatant.implementation(...)} instead which will give you
    * a system specific implementation of `Combatant`.
    */
   // Note(LukeAbby): `data` is not actually required but `context.parent` is.

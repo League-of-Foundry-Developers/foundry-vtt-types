@@ -18,7 +18,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link AmbientLightDocument.implementation | `new AmbientLightDocument.implementation(...)`} instead which will give you
+   * You should use {@linkcode AmbientLightDocument.implementation | new AmbientLightDocument.implementation(...)} instead which will give you
    * a system specific implementation of `AmbientLightDocument`.
    */
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.

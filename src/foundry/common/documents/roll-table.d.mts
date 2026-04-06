@@ -19,7 +19,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link RollTable.implementation | `new RollTable.implementation(...)`} instead which will give you
+   * You should use {@linkcode RollTable.implementation | new RollTable.implementation(...)} instead which will give you
    * a system specific implementation of the `RollTable` document.
    */
   constructor(data: BaseRollTable.CreateData, context?: BaseRollTable.ConstructionContext);

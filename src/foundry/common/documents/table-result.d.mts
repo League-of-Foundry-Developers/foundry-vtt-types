@@ -20,7 +20,7 @@ declare abstract class BaseTableResult<
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link TableResult.implementation | `new TableResult.implementation(...)`} instead which will give you
+   * You should use {@linkcode TableResult.implementation | new TableResult.implementation(...)} instead which will give you
    * a system specific implementation of `TableResult`.
    */
   constructor(data: BaseTableResult.CreateData, context?: BaseTableResult.ConstructionContext);

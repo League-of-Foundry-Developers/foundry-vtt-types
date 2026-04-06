@@ -19,7 +19,7 @@ declare abstract class BaseActiveEffect<
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link ActiveEffect.implementation | `new ActiveEffect.implementation(...)`} instead which will give you
+   * You should use {@linkcode ActiveEffect.implementation | new ActiveEffect.implementation(...)} instead which will give you
    * a system specific implementation of `ActiveEffect`.
    */
   constructor(data: BaseActiveEffect.CreateData, context?: BaseActiveEffect.ConstructionContext);
@@ -232,8 +232,13 @@ declare abstract class BaseActiveEffect<
   ): Promise<void>;
 
   /**
+<<<<<<< HEAD
    * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
    * (since v12, until v14)
+=======
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+>>>>>>> db-prep
    */
   protected static override _onCreateDocuments(
     documents: ActiveEffect.Implementation[],
@@ -242,8 +247,13 @@ declare abstract class BaseActiveEffect<
   ): Promise<void>;
 
   /**
+<<<<<<< HEAD
    * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
    * (since v12, until v14)
+=======
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+>>>>>>> db-prep
    */
   protected static override _onUpdateDocuments(
     documents: ActiveEffect.Stored[],
@@ -252,8 +262,13 @@ declare abstract class BaseActiveEffect<
   ): Promise<void>;
 
   /**
+<<<<<<< HEAD
    * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
    * (since v12, until v14)
+=======
+   * @deprecated since v12, will be removed in v14
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+>>>>>>> db-prep
    */
   protected static override _onDeleteDocuments(
     documents: ActiveEffect.Stored[],

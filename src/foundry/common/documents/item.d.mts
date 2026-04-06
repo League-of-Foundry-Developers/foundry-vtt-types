@@ -23,7 +23,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Item.implementation | `new Item.implementation(...)`} instead which will give you
+   * You should use {@linkcode Item.implementation | new Item.implementation(...)} instead which will give you
    * a system specific implementation of `Item`.
    */
   constructor(data: BaseItem.CreateData, context?: BaseItem.ConstructionContext);

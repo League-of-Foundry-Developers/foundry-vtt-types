@@ -19,7 +19,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link JournalEntry.implementation | `new JournalEntry.implementation(...)`} instead which will give you
+   * You should use {@linkcode JournalEntry.implementation | new JournalEntry.implementation(...)} instead which will give you
    * a system specific implementation of `JournalEntry`.
    */
   constructor(data: BaseJournalEntry.CreateData, context?: BaseJournalEntry.ConstructionContext);

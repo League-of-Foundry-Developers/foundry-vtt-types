@@ -19,7 +19,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Scene.implementation | `new BaseScene.implementation(...)`} instead which will give you
+   * You should use {@linkcode Scene.implementation | new BaseScene.implementation(...)} instead which will give you
    * a system specific implementation of `Scene`.
    */
   constructor(data: BaseScene.CreateData, context?: BaseScene.ConstructionContext);

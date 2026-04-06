@@ -18,7 +18,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link TileDocument.implementation | `new TileDocument.implementation(...)`} instead which will give you
+   * You should use {@linkcode TileDocument.implementation | new TileDocument.implementation(...)} instead which will give you
    * a system specific implementation of `TileDocument`.
    */
   constructor(data: BaseTile.CreateData, context?: BaseTile.ConstructionContext);

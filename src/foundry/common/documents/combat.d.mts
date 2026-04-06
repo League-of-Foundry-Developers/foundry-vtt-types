@@ -22,7 +22,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Combat.implementation | `new Combat.implementation(...)`} instead which will give you
+   * You should use {@linkcode Combat.implementation | new Combat.implementation(...)} instead which will give you
    * a system specific implementation of `Combat`.
    */
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
