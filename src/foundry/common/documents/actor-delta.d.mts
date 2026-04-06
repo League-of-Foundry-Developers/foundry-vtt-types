@@ -126,7 +126,7 @@ declare abstract class BaseActorDelta<
 
   override readonly parentCollection: BaseActorDelta.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): ActorDelta.ImplementationClass;
 

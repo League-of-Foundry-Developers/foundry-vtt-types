@@ -67,7 +67,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   override readonly parentCollection: BaseFogExploration.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): FogExploration.ImplementationClass;
 

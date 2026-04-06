@@ -87,7 +87,7 @@ declare abstract class BaseChatMessage<
 
   override readonly parentCollection: BaseChatMessage.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): ChatMessage.ImplementationClass;
 

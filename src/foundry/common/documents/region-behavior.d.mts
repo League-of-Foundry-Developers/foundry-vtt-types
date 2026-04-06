@@ -79,7 +79,7 @@ declare abstract class BaseRegionBehavior<
 
   override readonly parentCollection: BaseRegionBehavior.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): RegionBehavior.ImplementationClass;
 

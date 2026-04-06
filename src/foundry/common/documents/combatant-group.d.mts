@@ -61,7 +61,7 @@ declare abstract class BaseCombatantGroup<
 
   override readonly parentCollection: BaseCombatantGroup.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): CombatantGroup.ImplementationClass;
 

@@ -56,7 +56,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   override readonly parentCollection: BaseRegion.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): RegionDocument.ImplementationClass;
 

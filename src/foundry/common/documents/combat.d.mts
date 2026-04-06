@@ -95,7 +95,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   override readonly parentCollection: BaseCombat.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): Combat.ImplementationClass;
 

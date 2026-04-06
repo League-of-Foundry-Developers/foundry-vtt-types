@@ -99,7 +99,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override readonly parentCollection: BaseUser.ParentCollectionName | null;
 
-  override readonly pack: null;
+  override get pack(): null;
 
   static override get implementation(): User.ImplementationClass;
 

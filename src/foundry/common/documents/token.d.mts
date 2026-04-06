@@ -210,7 +210,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   override readonly parentCollection: BaseToken.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): TokenDocument.ImplementationClass;
 

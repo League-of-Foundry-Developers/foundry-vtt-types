@@ -58,7 +58,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   override readonly parentCollection: BaseWall.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): WallDocument.ImplementationClass;
 

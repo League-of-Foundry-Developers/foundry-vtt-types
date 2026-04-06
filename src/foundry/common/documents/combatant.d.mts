@@ -76,7 +76,7 @@ declare abstract class BaseCombatant<
 
   override readonly parentCollection: BaseCombatant.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): Combatant.ImplementationClass;
 

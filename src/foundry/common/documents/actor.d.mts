@@ -116,7 +116,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
 
   override readonly parentCollection: BaseActor.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): Actor.ImplementationClass;
 

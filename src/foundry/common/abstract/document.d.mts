@@ -4,34 +4,33 @@ import type {
   ConfiguredMetadata,
 } from "../../../types/documentConfiguration.d.mts";
 import type {
+  AllKeysOf,
+  AnyMutableObject,
+  AnyObject,
+  Brand,
+  Coalesce,
+  ConcreteKeys,
+  EmptyObject,
+  FixedInstanceType,
   GetKey,
+  Identity,
+  InexactPartial,
+  IntentionalPartial,
   InterfaceToObject,
   MakeConform,
-  MustConform,
-  ToMethod,
-  AnyObject,
-  EmptyObject,
-  InexactPartial,
-  RemoveIndexSignatures,
-  FixedInstanceType,
-  NullishProps,
-  PickValue,
-  Identity,
-  Brand,
-  AnyMutableObject,
   MaybePromise,
-  SimpleMerge,
-  PrettifyType,
-  AllKeysOf,
+  MustConform,
+  NullishProps,
   Override,
-  ConcreteKeys,
-  Coalesce,
-  IntentionalPartial,
+  PickValue,
+  PrettifyType,
+  RemoveIndexSignatures,
+  SimpleMerge,
+  ToMethod,
 } from "#utils";
-import type * as CONST from "../constants.mts";
 import type {
-  DataSchema,
   DataField,
+  DataSchema,
   DocumentStatsField,
   EmbeddedCollectionField,
   EmbeddedDocumentField,
@@ -52,6 +51,10 @@ import type { DataModel, DocumentSocketResponse, EmbeddedCollection } from "#com
 import type { ClientDocumentMixin, WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { SystemConfig } from "#configuration";
 import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
+
+/** @privateRemarks  `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type DocumentCollection from "#client/documents/abstract/document-collection.d.mts";
 
 export default Document;
 
@@ -117,13 +120,23 @@ declare abstract class Document<
 
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
+   * @defaultValue {@linkcode Document._getParentCollection | this._getParentCollection(parentCollection)}
+   *
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`.
+   *
+   * Always `null` in temporary documents, except {@linkcode foundry.documents.BaseActorDelta.parentCollection | ActorDelta}s.
+   *
+   * @privateRemarks This could realistically be any string passed as
+   * {@linkcode Document.ConstructionContext.parentCollection | parentCollection} in the construction context of a `new Document()`. It's
+   * typed as-is because everywhere it is specified by core, it happens to match the `metadata.collection` of the given document type, and
+   * users are not realistically going to pass it, since they can't define new `EmbeddedCollectionField`s or `EmbeddedDocumentField`s.
    */
   readonly parentCollection: Document.MetadataFor<DocumentName>["collection"] | null;
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
    */
-  readonly pack: string | null;
+  get pack(): string | null;
 
   /**
    * A mapping of embedded Document collections which exist in this model.

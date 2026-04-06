@@ -70,7 +70,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   override readonly parentCollection: BaseAdventure.ParentCollectionName | null;
 
-  override readonly pack: string | null;
+  override get pack(): string | null;
 
   static override get implementation(): Adventure.ImplementationClass;
 
