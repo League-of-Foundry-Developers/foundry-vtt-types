@@ -25,6 +25,8 @@ import type {
   AllKeysOf,
   Override,
   ConcreteKeys,
+  Coalesce,
+  IntentionalPartial,
 } from "#utils";
 import type * as CONST from "../constants.mts";
 import type {
@@ -49,6 +51,7 @@ import type {
 import type { DataModel, DocumentSocketResponse, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { ClientDocumentMixin, WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { SystemConfig } from "#configuration";
+import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
 
 export default Document;
 
@@ -110,7 +113,6 @@ declare abstract class Document<
 
   override parent: Parent;
 
-  // options: not null (destructured)
   protected override _configure(options?: Document.ConfigureOptions): void;
 
   /**
@@ -284,7 +286,6 @@ declare abstract class Document<
    *
    * @privateRemarks Making this just `User.Implementation` causes circularities
    */
-  // options: not null (destructured)
   testUserPermission(
     user: User.Internal.Implementation,
     permission: Document.ActionPermission,
@@ -300,7 +301,6 @@ declare abstract class Document<
    *
    * @privateRemarks Making this just `User.Implementation` causes circularities
    */
-  // data: not null (parameter default only)
   canUserModify<Action extends "create" | "update" | "delete">(
     user: User.Internal.Implementation,
     action: Action,
@@ -314,7 +314,6 @@ declare abstract class Document<
    * @param context - Additional context options passed to the create method
    * @returns The cloned Document instance
    */
-  // data: not null (property access), context: not null (destructured)
   override clone<Save extends boolean | null | undefined = undefined>(
     data?: SchemaField.UpdateData<Schema>,
     context?: Document.CloneContext<Save>,
@@ -849,7 +848,6 @@ declare abstract class Document<
   /**
    * A reusable helper for adding migration shims.
    */
-  // options: not null (parameter default only in _addDataFieldShim)
   protected static _addDataFieldShims(
     data: AnyMutableObject,
     shims: Record<string, string>,
@@ -859,7 +857,6 @@ declare abstract class Document<
   /**
    * A reusable helper for adding a migration shim
    */
-  // options: not null (parameter default only)
   protected static _addDataFieldShim(
     data: AnyMutableObject,
     oldKey: string,
@@ -883,7 +880,6 @@ declare abstract class Document<
     apply?: (data: AnyMutableObject) => unknown,
   ): unknown;
 
-  // options: not null (destructured where forwarded)
   protected static _logDataFieldMigration(
     oldKey: string,
     newKey: string,
@@ -2023,6 +2019,9 @@ declare namespace Document {
   namespace Database {
     type Operation = "create" | "update" | "delete";
 
+    // temporary shim while merging db-ops
+    type OperationAction = Operation;
+
     /**
      * @privateRemarks Foundry types {@link Document.get | `Document.get`} as taking a {@link DatabaseGetOperation | `DatabaseGetOperation`}
      * but it only ever looks for `pack`
@@ -2486,9 +2485,13 @@ declare namespace Document {
     value?: unknown;
   }
 
+  /* ***********************************************
+   *             CLIENT DOCUMENT TYPES             *
+   *************************************************/
+
   /**
-   * If a `parent` is required for a given Document's creation, its template must pass `NonNullable<X.Parent>` to `CreateDialogContext`
-   *
+   * If a `parent` is required for a given Document's creation, its template must pass `NonNullable<X.Parent>` to `CreateDialogOptions`,
+   * e.g {@linkcode JournalEntryPage.CreateDialogOptions}
    * @internal
    */
   type ParentContext<Parent extends Document.Any | null> = Parent extends null
@@ -2501,10 +2504,14 @@ declare namespace Document {
         parent: Parent;
       };
 
-  /** @internal */
+  /**
+   * Only allow passing a `type` to {@linkcode ClientDocumentMixin.AnyMixed.defaultName | ClientDocument#defaultName} if the Document in
+   * question has type data.
+   * @internal
+   */
   type _PossibleSubtypeContext<DocumentName extends Document.Type> =
     GetKey<Document.MetadataFor<DocumentName>, "hasTypeData"> extends true
-      ? NullishProps<{
+      ? InexactPartial<{
           /**
            * The sub-type of the document
            * @remarks Pulls from `CONFIG[documentName].typeLabels?.[type]` if provided. Ignored if falsey.
@@ -2516,6 +2523,10 @@ declare namespace Document {
           type?: never;
         };
 
+  /**
+   * A helper type for defining the interface passed to a specific Document's
+   * {@linkcode ClientDocumentMixin.AnyMixed.defaultName | ClientDocument#defaultName}.
+   */
   type DefaultNameContext<DocumentName extends Document.Type, Parent extends Document.Any | null> = InexactPartial<{
     /**
      * A compendium pack within which the Document should be created
@@ -2533,6 +2544,9 @@ declare namespace Document {
   }> &
     _PossibleSubtypeContext<DocumentName>;
 
+  /**
+   * The {@linkcode ClientDocumentMixin.AnyMixed.createDialog | ClientDocument.createDialog} method's default template
+   */
   // TODO(LukeAbby): Inline into each document.
   type CreateDialogData<CreateData extends object> = InexactPartial<{
     [K in keyof CreateData as Extract<K, "name" | "type" | "folder">]: CreateData[K];
@@ -2542,21 +2556,21 @@ declare namespace Document {
   /** @internal */
   type _PossibleSubtypesContext<DocumentName extends Document.Type> =
     GetKey<Document.MetadataFor<DocumentName>, "hasTypeData"> extends true
-      ? {
-          /** @deprecated This Document type does not support subtypes */
-          types?: never;
-        }
-      : NullishProps<{
+      ? InexactPartial<{
           /**
            * A restriction the selectable sub-types of the Dialog.
            * @remarks Only checked if the document has `static TYPES` of length \> 1 (i.e it both `hasTypeData` and has
-           * at least one non-`"base"` type registered). The computed list will always exclude {@link CONST.BASE_DOCUMENT_TYPE | `CONST.BASE_DOCUMENT_TYPE`},
+           * at least one non-`"base"` type registered). The computed list will always exclude {@linkcode CONST.BASE_DOCUMENT_TYPE},
            * so it is disallowed in this whitelist.
            */
           types: Exclude<Document.SubTypesOf<DocumentName>, "base">[];
-        }>;
+        }>
+      : {
+          /** @deprecated This Document type does not support subtypes */
+          types?: never;
+        };
 
-  /** @deprecated in favor of {@linkcode CreateDialogOptions} */
+  /** @deprecated in favor of {@linkcode CreateDialogOptions}. Will be removed in v14. */
   type CreateDialogContext<
     DocumentName extends Document.Type,
     Parent extends Document.Any | null,
@@ -2571,36 +2585,145 @@ declare namespace Document {
     _PossibleSubtypesContext<DocumentName> &
     ParentContext<Parent>;
 
+  /**
+   * Prior to v13, {@linkcode ClientDocumentMixin.AnyMixed.createDialog | ClientDocument.createDialog} took Dialog (V1) options in the same
+   * parameter as the {@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation}. In v13+, it still checks for a
+   * subset of those options that are relevant to DialogV2 (and also `jQuery`, for some reason) and, if they exist, reorganizes them to
+   * match V2 option format and adds them to the new `dialogOptions` object, which is a rest property on the new 3rd parameter.
+   *
+   * This is `IntentionalPartial` because `.createDialog` checks for keys with `in`.
+   * @internal
+   */
+  type _PartialDialogV1OptionsForCreateDialog = IntentionalPartial<
+    Pick<DialogV2.PromptConfig, "id" | "classes"> & {
+      /** @deprecated As of v13 these options are being passed to a {@linkcode DialogV2} so this property has no effect */
+      jQuery: boolean;
+
+      title: string;
+    } & ApplicationV2.Position
+  >;
+
   /** The interface for {@linkcode CreateDialogOptions.folders}, see remarks there */
   interface DialogFoldersChoices extends Omit<FormSelectOption, "value" | "label"> {
     id: string;
     name: string;
   }
 
-  type CreateDialogOptions<DocumentName extends Document.Type> =
-    InexactPartial<foundry.applications.api.DialogV2.PromptConfig> &
-      NullishProps<{
-        /**
-         * A template to use for the dialog contents instead of the default.
-         */
-        template: string;
+  /**
+   * A helper type for defining the interface to pass to a specific document's {@linkcode ClientDocument.createDialog | .createDialog}'s
+   * second parameter.
+   */
+  type CreateDialogOptions<DocumentName extends Document.Type> = DialogV2.PromptConfig &
+    InexactPartial<{
+      /**
+       * Available folders in which the new Document can be placed
+       * @remarks This gets passed to a {@linkcode foundry.applications.handlebars.selectOptions | selectOptions} as the choices, with the
+       * default template having `valueAttr="id" labelAttr="name"`
+       */
+      folders: Array<DialogFoldersChoices>;
 
-        /**
-         * Additional render context to provide to the template.
-         */
-        context: AnyObject;
-      }> &
-      _PossibleSubtypesContext<DocumentName>;
+      /**
+       * A template to use for the dialog contents instead of the default.
+       * @remarks If nothing is passed for this, the default at `templates/sidebar/document-create.html` will be used
+       */
+      template: string;
 
-  interface FromImportContext<Parent extends Document.Any | null> extends Omit<ConstructionContext<Parent>, "strict"> {
+      /**
+       * Additional render context to provide to the template.
+       * @remarks Only relevant if passing a non-default {@linkcode template}
+       */
+      context: AnyObject;
+    }> &
+    _PossibleSubtypesContext<DocumentName>;
+
+  /**
+   * A helper type for generating the return for {@linkcode ClientDocumentMixin.AnyMixed.createDialog | ClientDocument.createDialog}.
+   *
+   * @remarks The passed config is {@linkcode foundry.utils.mergeObject | mergeObject}ed over an existing base config, which has an `ok`
+   * callback forwarding the return of {@linkcode Document.create} (but a call where we are sure that it's only being passed a  single
+   * data object).
+   */
+  type CreateDialogReturn<
+    Doc extends Document.Any,
+    PassedConfig extends DialogV2.PromptConfig | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  > = _CreateDialogReturn<Doc, Coalesce<PassedConfig, {}>>;
+
+  /**
+   * Nested `SimpleMerge`s is to avoid using the more complicated `Merge` type. Merging the `ok` object separately allows calls like
+   * ```js
+   * Actor.createDialog({}, {}, { ok: { label: "Something" }})
+   * ```
+   * to not knock out the `callback` from a types perspective, and more finesse isn't required because other properties that affect
+   * the return type are either top level or not included in the default config.
+   * @internal
+   */
+  type _CreateDialogReturn<
+    Doc extends Document.Any,
+    PassedConfig extends DialogV2.PromptConfig,
+  > = DialogV2.PromptReturn<
+    SimpleMerge<
+      PassedConfig,
+      // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      { ok: SimpleMerge<{ callback: () => Promise<Doc | undefined> }, GetKey<PassedConfig, "ok", {}>> }
+    >
+  >;
+
+  /**
+   * A helper type for generating the return for {@linkcode ClientDocumentMixin.AnyMixed.deleteDialog | ClientDocument#deleteDialog}.
+   *
+   * @remarks The passed config is {@linkcode foundry.utils.mergeObject | mergeObject}ed over an existing base config, which has a `yes`
+   * callback forwarding the return of {@linkcode Document.delete | Document#delete}.
+   */
+  type DeleteDialogReturn<
+    Doc extends Document.Any,
+    PassedConfig extends DialogV2.ConfirmConfig | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  > = _DeleteDialogReturn<Doc, Coalesce<PassedConfig, {}>>;
+
+  /**
+   * Nested `SimpleMerge`s is to avoid using the more complicated `Merge` type. Merging the `yes` object separately allows calls like
+   * ```js
+   * someActor.deleteDialog({}, { yes: { label: "KILL" }})
+   * ```
+   * to not knock out the `callback` from a types perspective, and more finesse isn't required because other properties that affect
+   * the return type are either top level or not included in the default config.
+   * @internal
+   */
+  type _DeleteDialogReturn<
+    Doc extends Document.Any,
+    PassedConfig extends DialogV2.ConfirmConfig,
+  > = DialogV2.ConfirmReturn<
+    SimpleMerge<
+      PassedConfig,
+      {
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+        yes: SimpleMerge<{ callback: () => Promise<Doc | undefined> }, GetKey<PassedConfig, "yes", {}>>;
+      }
+    >
+  >;
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   *
+   * {@linkcode ClientDocumentMixin.AnyMixed.deleteDialog}'s first parameter is a {@linkcode DialogV2.ConfirmConfig}, but
+   * it will accept top level position-related keys with a deprecation warning and move them into the `position` object, where they
+   * should be in AppV2 configs.
+   */
+  interface DeleteDialogDeprecatedConfig extends DialogV2.ConfirmConfig, IntentionalPartial<ApplicationV2.Position> {}
+
+  /** This interface is necessitated by the change in default `strict` behaviour and nothing else */
+  interface FromImportContext<Parent extends Document.Any | null> extends Omit<
+    Document.ConstructionContext<Parent>,
+    "strict"
+  > {
     /**
      * Strict validation is enabled by default.
      * @defaultValue `true`
      * @remarks Not allowed to be `undefined` as that would produce `false`, not the expected default of `true`, due to being spread
-     * into an object with `strict: true`, then passed to {@link Document.fromSource | `Document.fromSource`}, where the parameter
-     * default is `false`
+     * into an object with `strict: true`, then passed to {@linkcode Document.fromSource}, where the parameter default is `false`
      */
-    strict?: boolean | null;
+    strict?: boolean;
   }
 
   type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;

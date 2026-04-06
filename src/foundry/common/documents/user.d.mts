@@ -1,9 +1,5 @@
-import type { AnyMutableObject } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
-import type * as CONST from "../constants.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The User Document.
@@ -21,10 +17,10 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link User.implementation | `new User.implementation(...)`} instead which will give you
+   * You should use {@linkcode User.implementation | new User.implementation(...)} instead which will give you
    * a system specific implementation of `User`.
    */
-  constructor(data: User.CreateData, context?: User.ConstructionContext);
+  constructor(data: BaseUser.CreateData, context?: BaseUser.ConstructionContext);
 
   /**
    * @defaultValue
@@ -43,7 +39,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * });
    * ```
    */
-  static override metadata: User.Metadata;
+  static override metadata: BaseUser.Metadata;
 
   /** @defaultValue `["DOCUMENT", "USER"]` */
   static override LOCALIZATION_PREFIXES: string[];
@@ -84,7 +80,6 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    * @param role - The role name from USER_ROLES to test
    * @returns Does the user have at this role level (or greater)?
    */
-  // options: not null (destructured)
   hasRole(role: CONST.USER_ROLE_NAMES | CONST.USER_ROLES, options?: BaseUser.HasRoleOptions): boolean;
 
   /*
@@ -102,7 +97,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
-  override readonly parentCollection: User.ParentCollectionName | null;
+  override readonly parentCollection: BaseUser.ParentCollectionName | null;
 
   override readonly pack: null;
 
@@ -110,48 +105,48 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static override get baseDocument(): typeof BaseUser;
 
-  static override get collectionName(): User.ParentCollectionName;
+  static override get collectionName(): BaseUser.ParentCollectionName;
 
-  static override get documentName(): User.Name;
+  static override get documentName(): BaseUser.Name;
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
   static override get hasTypeData(): undefined;
 
-  static override get hierarchy(): User.Hierarchy;
+  static override get hierarchy(): BaseUser.Hierarchy;
 
-  override parent: User.Parent;
+  override parent: BaseUser.Parent;
 
   override " fvtt_types_internal_document_parent": BaseUser.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<User.Implementation | User.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<User.Database.Create<Temporary>>,
-  ): Promise<Array<User.TemporaryIf<Temporary>>>;
+    data: Array<User.Implementation | BaseUser.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<BaseUser.Database.Create<Temporary>>,
+  ): Promise<Array<BaseUser.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: User.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<User.Database.Update>,
+    updates: BaseUser.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<BaseUser.Database.Update>,
   ): Promise<User.Implementation[]>;
 
   static override deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<User.Database.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<BaseUser.Database.Delete>,
   ): Promise<User.Implementation[]>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
-    data: User.CreateData | User.CreateData[],
-    operation?: User.Database.CreateOperation<Temporary>,
-  ): Promise<User.TemporaryIf<Temporary> | undefined>;
+    data: BaseUser.CreateData | BaseUser.CreateData[],
+    operation?: BaseUser.Database.CreateOperation<Temporary>,
+  ): Promise<BaseUser.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: User.UpdateData | undefined,
-    operation?: User.Database.UpdateOperation,
+    data: BaseUser.UpdateData | undefined,
+    operation?: BaseUser.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: User.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseUser.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: User.Database.GetOptions): User.Implementation | null;
+  static override get(documentId: string, options?: BaseUser.Database.GetOptions): User.Implementation | null;
 
   static override getCollectionName(name: string): null;
 
@@ -160,153 +155,125 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
     _parentPath?: string,
   ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
-  override getFlag<Scope extends User.Flags.Scope, Key extends User.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseUser.Flags.Scope, Key extends BaseUser.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): User.Flags.Get<Scope, Key>;
+  ): BaseUser.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends User.Flags.Scope,
-    Key extends User.Flags.Key<Scope>,
-    Value extends User.Flags.Get<Scope, Key>,
+    Scope extends BaseUser.Flags.Scope,
+    Key extends BaseUser.Flags.Key<Scope>,
+    Value extends BaseUser.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
-  override unsetFlag<Scope extends User.Flags.Scope, Key extends User.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseUser.Flags.Scope, Key extends BaseUser.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): Promise<this>;
 
   protected override _preCreate(
-    data: User.CreateData,
-    options: User.Database.PreCreateOptions,
+    data: BaseUser.CreateData,
+    options: BaseUser.Database.PreCreateOptions,
     user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onCreate(data: User.CreateData, options: User.Database.OnCreateOperation, userId: string): void;
+  protected override _onCreate(
+    data: BaseUser.CreateData,
+    options: BaseUser.Database.OnCreateOperation,
+    userId: string,
+  ): void;
 
   protected static override _preCreateOperation(
     documents: User.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<User.Database.Create>,
+    operation: Document.Database.PreCreateOperationStatic<BaseUser.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: User.Implementation[],
-    operation: User.Database.Create,
+    operation: BaseUser.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: User.UpdateData,
-    options: User.Database.PreUpdateOptions,
+    changed: BaseUser.UpdateData,
+    options: BaseUser.Database.PreUpdateOptions,
     user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: User.UpdateData,
-    options: User.Database.OnUpdateOperation,
+    changed: BaseUser.UpdateData,
+    options: BaseUser.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: User.Implementation[],
-    operation: User.Database.Update,
+    operation: BaseUser.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: User.Implementation[],
-    operation: User.Database.Update,
+    operation: BaseUser.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: User.Database.PreDeleteOptions,
+    options: BaseUser.Database.PreDeleteOptions,
     user: User.Internal.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: User.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseUser.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: User.Implementation[],
-    operation: User.Database.Delete,
+    operation: BaseUser.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: User.Implementation[],
-    operation: User.Database.Delete,
+    operation: BaseUser.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
-
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
    */
   protected static override _onCreateDocuments(
     documents: User.Implementation[],
-    context: Document.ModificationContext<User.Parent>,
+    context: Document.ModificationContext<BaseUser.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
    */
   protected static override _onUpdateDocuments(
     documents: User.Implementation[],
-    context: Document.ModificationContext<User.Parent>,
+    context: Document.ModificationContext<BaseUser.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
    */
   protected static override _onDeleteDocuments(
     documents: User.Implementation[],
-    context: Document.ModificationContext<User.Parent>,
+    context: Document.ModificationContext<BaseUser.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<User.Schema>;
+  protected static override _schema: SchemaField<BaseUser.Schema>;
 
-  static override get schema(): SchemaField<User.Schema>;
+  static override get schema(): SchemaField<BaseUser.Schema>;
 
-  static override validateJoint(data: User.Source): void;
+  static override validateJoint(data: BaseUser.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
-  static override fromSource(source: User.CreateData, context?: DataModel.FromSourceOptions): User.Implementation;
+  static override fromSource(source: BaseUser.CreateData, context?: DataModel.FromSourceOptions): User.Implementation;
 
   static override fromJSON(json: string): User.Implementation;
 
@@ -316,6 +283,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 export default BaseUser;
 
 declare namespace BaseUser {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = User.Name;
   export import ConstructionContext = User.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -333,8 +301,11 @@ declare namespace BaseUser {
   export import Stored = User.Stored;
   export import Source = User.Source;
   export import CreateData = User.CreateData;
+  export import CreateInput = User.CreateInput;
+  export import CreateReturn = User.CreateReturn;
   export import InitializedData = User.InitializedData;
   export import UpdateData = User.UpdateData;
+  export import UpdateInput = User.UpdateInput;
   export import Schema = User.Schema;
   export import Database = User.Database;
   export import TemporaryIf = User.TemporaryIf;

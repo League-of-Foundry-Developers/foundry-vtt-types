@@ -1,8 +1,5 @@
-import type { AnyMutableObject } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * The FogExploration Document.
@@ -20,10 +17,10 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link FogExploration.implementation | `new FogExploration.implementation(...)`} instead which will give you
+   * You should use {@linkcode FogExploration.implementation | new FogExploration.implementation(...)} instead which will give you
    * a system specific implementation of `FogExploration`.
    */
-  constructor(data?: FogExploration.CreateData, context?: FogExploration.ConstructionContext);
+  constructor(data?: BaseFogExploration.CreateData, context?: BaseFogExploration.ConstructionContext);
 
   /**
    * @defaultValue
@@ -48,8 +45,8 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   static override defineSchema(): BaseFogExploration.Schema;
 
   protected override _preUpdate(
-    changed: FogExploration.UpdateData,
-    options: FogExploration.Database.PreUpdateOptions,
+    changed: BaseFogExploration.UpdateData,
+    options: BaseFogExploration.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
@@ -68,7 +65,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
-  override readonly parentCollection: FogExploration.ParentCollectionName | null;
+  override readonly parentCollection: BaseFogExploration.ParentCollectionName | null;
 
   override readonly pack: string | null;
 
@@ -76,50 +73,50 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   static override get baseDocument(): typeof BaseFogExploration;
 
-  static override get collectionName(): FogExploration.ParentCollectionName;
+  static override get collectionName(): BaseFogExploration.ParentCollectionName;
 
-  static override get documentName(): FogExploration.Name;
+  static override get documentName(): BaseFogExploration.Name;
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
   static override get hasTypeData(): undefined;
 
-  static override get hierarchy(): FogExploration.Hierarchy;
+  static override get hierarchy(): BaseFogExploration.Hierarchy;
 
-  override parent: FogExploration.Parent;
+  override parent: BaseFogExploration.Parent;
 
   override " fvtt_types_internal_document_parent": BaseFogExploration.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<FogExploration.Implementation | FogExploration.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<FogExploration.Database.Create<Temporary>>,
-  ): Promise<Array<FogExploration.TemporaryIf<Temporary>>>;
+    data: Array<FogExploration.Implementation | BaseFogExploration.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<BaseFogExploration.Database.Create<Temporary>>,
+  ): Promise<Array<BaseFogExploration.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: FogExploration.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<FogExploration.Database.Update>,
+    updates: BaseFogExploration.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<BaseFogExploration.Database.Update>,
   ): Promise<FogExploration.Implementation[]>;
 
   static override deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<FogExploration.Database.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<BaseFogExploration.Database.Delete>,
   ): Promise<FogExploration.Implementation[]>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
-    data: FogExploration.CreateData | FogExploration.CreateData[],
-    operation?: FogExploration.Database.CreateOperation<Temporary>,
-  ): Promise<FogExploration.TemporaryIf<Temporary> | undefined>;
+    data: BaseFogExploration.CreateData | BaseFogExploration.CreateData[],
+    operation?: BaseFogExploration.Database.CreateOperation<Temporary>,
+  ): Promise<BaseFogExploration.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: FogExploration.UpdateData | undefined,
-    operation?: FogExploration.Database.UpdateOperation,
+    data: BaseFogExploration.UpdateData | undefined,
+    operation?: BaseFogExploration.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: FogExploration.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseFogExploration.Database.DeleteOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    options?: FogExploration.Database.GetOptions,
+    options?: BaseFogExploration.Database.GetOptions,
   ): Promise<FogExploration.Implementation | null> | FogExploration.Implementation | null;
 
   static override getCollectionName(name: string): null;
@@ -129,153 +126,120 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     _parentPath?: string,
   ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
-  override getFlag<Scope extends FogExploration.Flags.Scope, Key extends FogExploration.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseFogExploration.Flags.Scope, Key extends BaseFogExploration.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): FogExploration.Flags.Get<Scope, Key>;
+  ): BaseFogExploration.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends FogExploration.Flags.Scope,
-    Key extends FogExploration.Flags.Key<Scope>,
-    Value extends FogExploration.Flags.Get<Scope, Key>,
+    Scope extends BaseFogExploration.Flags.Scope,
+    Key extends BaseFogExploration.Flags.Key<Scope>,
+    Value extends BaseFogExploration.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
-  override unsetFlag<Scope extends FogExploration.Flags.Scope, Key extends FogExploration.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseFogExploration.Flags.Scope, Key extends BaseFogExploration.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): Promise<this>;
 
   protected override _preCreate(
-    data: FogExploration.CreateData,
-    options: FogExploration.Database.PreCreateOptions,
+    data: BaseFogExploration.CreateData,
+    options: BaseFogExploration.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: FogExploration.CreateData,
-    options: FogExploration.Database.OnCreateOperation,
+    data: BaseFogExploration.CreateData,
+    options: BaseFogExploration.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: FogExploration.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<FogExploration.Database.Create>,
+    operation: Document.Database.PreCreateOperationStatic<BaseFogExploration.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: FogExploration.Implementation[],
-    operation: FogExploration.Database.Create,
+    operation: BaseFogExploration.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _onUpdate(
-    changed: FogExploration.UpdateData,
-    options: FogExploration.Database.OnUpdateOperation,
+    changed: BaseFogExploration.UpdateData,
+    options: BaseFogExploration.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: FogExploration.Implementation[],
-    operation: FogExploration.Database.Update,
+    operation: BaseFogExploration.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: FogExploration.Implementation[],
-    operation: FogExploration.Database.Update,
+    operation: BaseFogExploration.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: FogExploration.Database.PreDeleteOptions,
+    options: BaseFogExploration.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: FogExploration.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseFogExploration.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: FogExploration.Implementation[],
-    operation: FogExploration.Database.Delete,
+    operation: BaseFogExploration.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: FogExploration.Implementation[],
-    operation: FogExploration.Database.Delete,
+    operation: BaseFogExploration.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
-
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
    */
   protected static override _onCreateDocuments(
     documents: FogExploration.Implementation[],
-    context: Document.ModificationContext<FogExploration.Parent>,
+    context: Document.ModificationContext<BaseFogExploration.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
    */
   protected static override _onUpdateDocuments(
     documents: FogExploration.Implementation[],
-    context: Document.ModificationContext<FogExploration.Parent>,
+    context: Document.ModificationContext<BaseFogExploration.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
    */
   protected static override _onDeleteDocuments(
     documents: FogExploration.Implementation[],
-    context: Document.ModificationContext<FogExploration.Parent>,
+    context: Document.ModificationContext<BaseFogExploration.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<FogExploration.Schema>;
+  protected static override _schema: SchemaField<BaseFogExploration.Schema>;
 
-  static override get schema(): SchemaField<FogExploration.Schema>;
+  static override get schema(): SchemaField<BaseFogExploration.Schema>;
 
-  static override validateJoint(data: FogExploration.Source): void;
+  static override validateJoint(data: BaseFogExploration.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: FogExploration.CreateData,
+    source: BaseFogExploration.CreateData,
     context?: DataModel.FromSourceOptions,
   ): FogExploration.Implementation;
 
@@ -287,6 +251,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 export default BaseFogExploration;
 
 declare namespace BaseFogExploration {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = FogExploration.Name;
   export import ConstructionContext = FogExploration.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -304,8 +269,11 @@ declare namespace BaseFogExploration {
   export import Stored = FogExploration.Stored;
   export import Source = FogExploration.Source;
   export import CreateData = FogExploration.CreateData;
+  export import CreateInput = FogExploration.CreateInput;
+  export import CreateReturn = FogExploration.CreateReturn;
   export import InitializedData = FogExploration.InitializedData;
   export import UpdateData = FogExploration.UpdateData;
+  export import UpdateInput = FogExploration.UpdateInput;
   export import Schema = FogExploration.Schema;
   export import Database = FogExploration.Database;
   export import TemporaryIf = FogExploration.TemporaryIf;

@@ -1,8 +1,5 @@
-import type { AnyMutableObject } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
 
 /**
  * A Document that represents a grouping of individual Combatants in a Combat.
@@ -22,10 +19,10 @@ declare abstract class BaseCombatantGroup<
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link CombatantGroup.implementation | `new CombatantGroup.implementation(...)`} instead which will give you
+   * You should use {@linkcode CombatantGroup.implementation | new CombatantGroup.implementation(...)} instead which will give you
    * a system specific implementation of `CombatantGroup`.
    */
-  constructor(data: CombatantGroup.CreateData, context?: CombatantGroup.ConstructionContext);
+  constructor(data: BaseCombatantGroup.CreateData, context?: BaseCombatantGroup.ConstructionContext);
 
   /**
    * @defaultValue
@@ -62,7 +59,7 @@ declare abstract class BaseCombatantGroup<
   // Same as Document for now
   protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
-  override readonly parentCollection: CombatantGroup.ParentCollectionName | null;
+  override readonly parentCollection: BaseCombatantGroup.ParentCollectionName | null;
 
   override readonly pack: string | null;
 
@@ -70,52 +67,52 @@ declare abstract class BaseCombatantGroup<
 
   static override get baseDocument(): typeof BaseCombatantGroup;
 
-  static override get collectionName(): CombatantGroup.ParentCollectionName;
+  static override get collectionName(): BaseCombatantGroup.ParentCollectionName;
 
-  static override get documentName(): CombatantGroup.Name;
+  static override get documentName(): BaseCombatantGroup.Name;
 
   static override get TYPES(): BaseCombatantGroup.SubType[];
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): CombatantGroup.Hierarchy;
+  static override get hierarchy(): BaseCombatantGroup.Hierarchy;
 
-  override system: CombatantGroup.SystemOfType<SubType>;
+  override system: BaseCombatantGroup.SystemOfType<SubType>;
 
   override parent: BaseCombatantGroup.Parent;
 
   override " fvtt_types_internal_document_parent": BaseCombatantGroup.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<CombatantGroup.Implementation | CombatantGroup.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<CombatantGroup.Database.Create<Temporary>>,
-  ): Promise<Array<CombatantGroup.TemporaryIf<Temporary>>>;
+    data: Array<CombatantGroup.Implementation | BaseCombatantGroup.CreateData> | undefined,
+    operation?: Document.Database.CreateOperation<BaseCombatantGroup.Database.Create<Temporary>>,
+  ): Promise<Array<BaseCombatantGroup.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: CombatantGroup.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<CombatantGroup.Database.Update>,
+    updates: BaseCombatantGroup.UpdateData[] | undefined,
+    operation?: Document.Database.UpdateDocumentsOperation<BaseCombatantGroup.Database.Update>,
   ): Promise<CombatantGroup.Implementation[]>;
 
   static override deleteDocuments(
     ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<CombatantGroup.Database.Delete>,
+    operation?: Document.Database.DeleteDocumentsOperation<BaseCombatantGroup.Database.Delete>,
   ): Promise<CombatantGroup.Implementation[]>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
-    data: CombatantGroup.CreateData | CombatantGroup.CreateData[],
-    operation?: CombatantGroup.Database.CreateOperation<Temporary>,
-  ): Promise<CombatantGroup.TemporaryIf<Temporary> | undefined>;
+    data: BaseCombatantGroup.CreateData | BaseCombatantGroup.CreateData[],
+    operation?: BaseCombatantGroup.Database.CreateOperation<Temporary>,
+  ): Promise<BaseCombatantGroup.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: CombatantGroup.UpdateData | undefined,
-    operation?: CombatantGroup.Database.UpdateOperation,
+    data: BaseCombatantGroup.UpdateData | undefined,
+    operation?: BaseCombatantGroup.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: CombatantGroup.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseCombatantGroup.Database.DeleteOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    options?: CombatantGroup.Database.GetOptions,
+    options?: BaseCombatantGroup.Database.GetOptions,
   ): CombatantGroup.Implementation | null;
 
   static override getCollectionName(name: string): null;
@@ -123,159 +120,126 @@ declare abstract class BaseCombatantGroup<
   // Same as Document for now
   override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
 
-  override getFlag<Scope extends CombatantGroup.Flags.Scope, Key extends CombatantGroup.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseCombatantGroup.Flags.Scope, Key extends BaseCombatantGroup.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): CombatantGroup.Flags.Get<Scope, Key>;
+  ): BaseCombatantGroup.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends CombatantGroup.Flags.Scope,
-    Key extends CombatantGroup.Flags.Key<Scope>,
-    Value extends CombatantGroup.Flags.Get<Scope, Key>,
+    Scope extends BaseCombatantGroup.Flags.Scope,
+    Key extends BaseCombatantGroup.Flags.Key<Scope>,
+    Value extends BaseCombatantGroup.Flags.Get<Scope, Key>,
   >(scope: Scope, key: Key, value: Value): Promise<this>;
 
-  override unsetFlag<Scope extends CombatantGroup.Flags.Scope, Key extends CombatantGroup.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseCombatantGroup.Flags.Scope, Key extends BaseCombatantGroup.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
   ): Promise<this>;
 
   protected override _preCreate(
-    data: CombatantGroup.CreateData,
-    options: CombatantGroup.Database.PreCreateOptions,
+    data: BaseCombatantGroup.CreateData,
+    options: BaseCombatantGroup.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
-    data: CombatantGroup.CreateData,
-    options: CombatantGroup.Database.OnCreateOperation,
+    data: BaseCombatantGroup.CreateData,
+    options: BaseCombatantGroup.Database.OnCreateOperation,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: CombatantGroup.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<CombatantGroup.Database.Create>,
+    operation: Document.Database.PreCreateOperationStatic<BaseCombatantGroup.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: CombatantGroup.Implementation[],
-    operation: CombatantGroup.Database.Create,
+    operation: BaseCombatantGroup.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: CombatantGroup.UpdateData,
-    options: CombatantGroup.Database.PreUpdateOptions,
+    changed: BaseCombatantGroup.UpdateData,
+    options: BaseCombatantGroup.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: CombatantGroup.UpdateData,
-    options: CombatantGroup.Database.OnUpdateOperation,
+    changed: BaseCombatantGroup.UpdateData,
+    options: BaseCombatantGroup.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: CombatantGroup.Implementation[],
-    operation: CombatantGroup.Database.Update,
+    operation: BaseCombatantGroup.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: CombatantGroup.Implementation[],
-    operation: CombatantGroup.Database.Update,
+    operation: BaseCombatantGroup.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: CombatantGroup.Database.PreDeleteOptions,
+    options: BaseCombatantGroup.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: CombatantGroup.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseCombatantGroup.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: CombatantGroup.Implementation[],
-    operation: CombatantGroup.Database.Delete,
+    operation: BaseCombatantGroup.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: CombatantGroup.Implementation[],
-    operation: CombatantGroup.Database.Delete,
+    operation: BaseCombatantGroup.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
 
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
-
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
    */
   protected static override _onCreateDocuments(
     documents: CombatantGroup.Implementation[],
-    context: Document.ModificationContext<CombatantGroup.Parent>,
+    context: Document.ModificationContext<BaseCombatantGroup.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
    */
   protected static override _onUpdateDocuments(
     documents: CombatantGroup.Implementation[],
-    context: Document.ModificationContext<CombatantGroup.Parent>,
+    context: Document.ModificationContext<BaseCombatantGroup.Parent>,
   ): Promise<void>;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
    */
   protected static override _onDeleteDocuments(
     documents: CombatantGroup.Implementation[],
-    context: Document.ModificationContext<CombatantGroup.Parent>,
+    context: Document.ModificationContext<BaseCombatantGroup.Parent>,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<CombatantGroup.Schema>;
+  protected static override _schema: SchemaField<BaseCombatantGroup.Schema>;
 
-  static override get schema(): SchemaField<CombatantGroup.Schema>;
+  static override get schema(): SchemaField<BaseCombatantGroup.Schema>;
 
-  static override validateJoint(data: CombatantGroup.Source): void;
+  static override validateJoint(data: BaseCombatantGroup.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
-    source: CombatantGroup.CreateData,
+    source: BaseCombatantGroup.CreateData,
     context?: DataModel.FromSourceOptions,
   ): CombatantGroup.Implementation;
 
@@ -283,8 +247,9 @@ declare abstract class BaseCombatantGroup<
 }
 
 declare namespace BaseCombatantGroup {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = CombatantGroup.Name;
-  export import ConstructionContext = Item.ConstructionContext;
+  export import ConstructionContext = CombatantGroup.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   export import ConstructorArgs = CombatantGroup.ConstructorArgs;
   export import Hierarchy = CombatantGroup.Hierarchy;
@@ -305,8 +270,11 @@ declare namespace BaseCombatantGroup {
   export import Stored = CombatantGroup.Stored;
   export import Source = CombatantGroup.Source;
   export import CreateData = CombatantGroup.CreateData;
+  export import CreateInput = CombatantGroup.CreateInput;
+  export import CreateReturn = CombatantGroup.CreateReturn;
   export import InitializedData = CombatantGroup.InitializedData;
   export import UpdateData = CombatantGroup.UpdateData;
+  export import UpdateInput = CombatantGroup.UpdateInput;
   export import Schema = CombatantGroup.Schema;
   export import Database = CombatantGroup.Database;
   export import TemporaryIf = CombatantGroup.TemporaryIf;

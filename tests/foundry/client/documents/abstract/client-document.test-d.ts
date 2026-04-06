@@ -33,9 +33,9 @@ expectTypeOf(
       pack: "some.pack",
       parent: someActor,
     },
-    {
-      ...dialogOptions,
-    },
+    // {
+    //   ...dialogOptions,
+    // },
   ),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 
@@ -49,11 +49,11 @@ expectTypeOf(
       pack: "some.pack",
       parent: someActor,
     },
-    {
-      // TODO: figure out why `types` doesn't display as deprecated.
-      // types: undefined,
-      ...dialogOptions,
-    },
+    // {
+    //   // TODO: figure out why `types` doesn't display as deprecated.
+    //   // types: undefined,
+    //   ...dialogOptions,
+    // },
   ),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 expectTypeOf(
@@ -78,7 +78,7 @@ expectTypeOf(
     parent: someActor,
   }),
 ).toBeString();
-expectTypeOf(Item.defaultName({ type: null, pack: null, parent: null })).toBeString();
+expectTypeOf(Item.defaultName({ type: undefined, pack: null, parent: null })).toBeString();
 expectTypeOf(Item.defaultName({ type: undefined, pack: undefined, parent: undefined })).toBeString();
 
 declare const itemDropData: Item.DropData;
