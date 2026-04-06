@@ -1207,7 +1207,7 @@ declare namespace Token {
      * @remarks If `true`, the `duration` of the animation will be overridden by the calculated total movement animation duration in
      * `Token##onUpdateAnimation` (via {@linkcode Token._onUpdate | Token#_onUpdate}). Unused as of 13.351.
      */
-    //TODO: update remarks in v14 where it's used in RegionDocument#teleportTokens
+    // TODO: update remarks in v14 where it's used in RegionDocument#teleportTokens
     linkToMovement?: boolean | undefined;
   }
 
