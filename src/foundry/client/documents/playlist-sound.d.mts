@@ -1,10 +1,17 @@
-import type { InexactPartial, Merge } from "#utils";
-import type Sound from "#client/audio/sound.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BasePlaylistSound from "#common/documents/playlist-sound.mjs";
+import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { Sound } from "#client/audio/_module.d.mts";
+import type { BasePlaylistSound } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace PlaylistSound {
   /**
@@ -23,14 +30,14 @@ declare namespace PlaylistSound {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `PlaylistSound` document instance configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredPlaylistSound | fvtt-types/configuration/ConfiguredPlaylistSound} in fvtt-types.
+   * The implementation of the `PlaylistSound` document instance configured through
+   * {@linkcode CONFIG.PlaylistSound.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `PlaylistSound` document configured through `CONFIG.PlaylistSound.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `PlaylistSound` document configured through
+   * {@linkcode CONFIG.PlaylistSound.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -44,10 +51,10 @@ declare namespace PlaylistSound {
       name: "PlaylistSound";
       collection: "sounds";
       indexed: true;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.PlaylistSound";
+      labelPlural: "DOCUMENT.PlaylistSounds";
       compendiumIndexFields: ["name", "sort"];
-      schemaVersion: string;
+      schemaVersion: "13.341";
       permissions: Metadata.Permissions;
     }>
   > {}
@@ -82,15 +89,6 @@ declare namespace PlaylistSound {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Playlist">;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -101,7 +99,8 @@ declare namespace PlaylistSound {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -146,7 +145,25 @@ declare namespace PlaylistSound {
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * Used in the {@linkcode PlaylistSound.create} and {@linkcode PlaylistSound.createDocuments} signatures, and
+   * {@linkcode PlaylistSound.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode PlaylistSound.create}, returning (a single | an array of) (temporary | stored)
+   * `PlaylistSound`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<PlaylistSound.TemporaryIf<Temporary>>
+      : PlaylistSound.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode PlaylistSound.name | PlaylistSound#name}.
    *
    * This is data transformed from {@linkcode PlaylistSound.Source} and turned into more
@@ -163,6 +180,13 @@ declare namespace PlaylistSound {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode PlaylistSound.update | PlaylistSound#update} and
+   * {@linkcode PlaylistSound.updateDocuments} signatures, and {@linkcode PlaylistSound.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode PlaylistSound}. This is the source of truth for how an PlaylistSound document
    * must be structured.
    *
@@ -172,7 +196,7 @@ declare namespace PlaylistSound {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this PlaylistSound document
      * @defaultValue `null`
@@ -358,11 +382,10 @@ declare namespace PlaylistSound {
   }
 
   /**
-   * If `Temporary` is true then `PlaylistSound.Implementation`, otherwise `PlaylistSound.Stored`.
+   * If `Temporary` is true then {@linkcode PlaylistSound.Implementation}, otherwise {@linkcode PlaylistSound.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? PlaylistSound.Implementation
-    : PlaylistSound.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? PlaylistSound.Implementation : PlaylistSound.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -386,6 +409,10 @@ declare namespace PlaylistSound {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -398,7 +425,7 @@ declare namespace PlaylistSound {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -536,7 +563,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
   ): Promise<PlaylistSound.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"PlaylistSound">,
   ): Promise<this | false | null | undefined>;
 

@@ -330,7 +330,6 @@ declare namespace BaseDrawing {
   export import Parent = DrawingDocument.Parent;
   export import Descendant = DrawingDocument.Descendant;
   export import DescendantClass = DrawingDocument.DescendantClass;
-  export import Pack = DrawingDocument.Pack;
   export import Embedded = DrawingDocument.Embedded;
   export import ParentCollectionName = DrawingDocument.ParentCollectionName;
   export import CollectionClass = DrawingDocument.CollectionClass;

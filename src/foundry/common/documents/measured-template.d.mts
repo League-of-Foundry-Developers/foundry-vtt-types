@@ -319,7 +319,6 @@ declare namespace BaseMeasuredTemplate {
   export import Parent = MeasuredTemplateDocument.Parent;
   export import Descendant = MeasuredTemplateDocument.Descendant;
   export import DescendantClass = MeasuredTemplateDocument.DescendantClass;
-  export import Pack = MeasuredTemplateDocument.Pack;
   export import Embedded = MeasuredTemplateDocument.Embedded;
   export import ParentCollectionName = MeasuredTemplateDocument.ParentCollectionName;
   export import CollectionClass = MeasuredTemplateDocument.CollectionClass;

@@ -321,7 +321,6 @@ declare namespace BaseRegionBehavior {
   export import Parent = RegionBehavior.Parent;
   export import Descendant = RegionBehavior.Descendant;
   export import DescendantClass = RegionBehavior.DescendantClass;
-  export import Pack = RegionBehavior.Pack;
   export import Embedded = RegionBehavior.Embedded;
   export import ParentCollectionName = RegionBehavior.ParentCollectionName;
   export import CollectionClass = RegionBehavior.CollectionClass;

@@ -1,10 +1,17 @@
 import type { ConfiguredFolder } from "#configuration";
-import type { Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseFolder from "#common/documents/folder.d.mts";
+import type { Identity, InexactPartial, IntentionalPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseFolder } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace Folder {
   /**
@@ -23,14 +30,15 @@ declare namespace Folder {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Folder` document instance configured through `CONFIG.Folder.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredFolder | fvtt-types/configuration/ConfiguredFolder} in fvtt-types.
+   * The implementation of the `Folder` document instance configured through
+   * {@linkcode CONFIG.Folder.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredFolder | fvtt-types/configuration/ConfiguredFolder} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Folder` document configured through `CONFIG.Folder.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Folder` document configured through
+   * {@linkcode CONFIG.Folder.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -43,10 +51,10 @@ declare namespace Folder {
     Readonly<{
       name: "Folder";
       collection: "folders";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Folder";
+      labelPlural: "DOCUMENT.Folders";
       coreTypes: typeof CONST.FOLDER_DOCUMENT_TYPES;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -122,15 +130,6 @@ declare namespace Folder {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<CONST.COMPENDIUM_DOCUMENT_TYPES>;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -141,7 +140,8 @@ declare namespace Folder {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -188,7 +188,23 @@ declare namespace Folder {
   }
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * Used in the {@linkcode Folder.create} and {@linkcode Folder.createDocuments} signatures, and
+   * {@linkcode Folder.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Folder.create}, returning (a single | an array of) (temporary | stored)
+   * `Folder`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput> ? Array<Folder.TemporaryIf<Temporary>> : Folder.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode Folder.name | Folder#name}.
    *
    * This is data transformed from {@linkcode Folder.Source} and turned into more
@@ -205,6 +221,13 @@ declare namespace Folder {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode Folder.update | Folder#update} and
+   * {@linkcode Folder.updateDocuments} signatures, and {@linkcode Folder.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode Folder}. This is the source of truth for how an Folder document
    * must be structured.
    *
@@ -214,7 +237,7 @@ declare namespace Folder {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Folder document
      * @defaultValue `null`
@@ -379,11 +402,10 @@ declare namespace Folder {
   }
 
   /**
-   * If `Temporary` is true then `Folder.Implementation`, otherwise `Folder.Stored`.
+   * If `Temporary` is true then {@linkcode Folder.Implementation}, otherwise {@linkcode Folder.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Folder.Implementation
-    : Folder.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Folder.Implementation : Folder.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -407,6 +429,10 @@ declare namespace Folder {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -426,6 +452,10 @@ declare namespace Folder {
     /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
     resolve?: never;
   }
+
+  /* ***********************************************
+   *             FOLDER-SPECIFIC TYPES             *
+   *************************************************/
 
   /**
    * Actual document types that go in folders
@@ -510,7 +540,7 @@ declare namespace Folder {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -605,7 +635,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
   ): Promise<Folder.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Folder">,
   ): Promise<this | false | null | undefined>;
 

@@ -293,7 +293,6 @@ declare namespace BaseWall {
   export import Parent = WallDocument.Parent;
   export import Descendant = WallDocument.Descendant;
   export import DescendantClass = WallDocument.DescendantClass;
-  export import Pack = WallDocument.Pack;
   export import Embedded = WallDocument.Embedded;
   export import ParentCollectionName = WallDocument.ParentCollectionName;
   export import CollectionClass = WallDocument.CollectionClass;

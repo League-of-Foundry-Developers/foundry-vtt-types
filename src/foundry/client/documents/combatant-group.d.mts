@@ -1,10 +1,17 @@
 import type { ConfiguredCombatantGroup } from "#configuration";
-import type { Identity, InexactPartial, Merge } from "#utils";
-import type Document from "#common/abstract/document.mjs";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseCombatantGroup from "#common/documents/combatant-group.d.mts";
+import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseCombatantGroup } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace CombatantGroup {
   /**
@@ -23,14 +30,15 @@ declare namespace CombatantGroup {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `CombatantGroup` document instance configured through `CONFIG.CombatantGroup.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredCombatantGroup | fvtt-types/configuration/ConfiguredCombatantGroup} in fvtt-types.
+   * The implementation of the `CombatantGroup` document instance configured through
+   * {@linkcode CONFIG.CombatantGroup.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredCombatantGroup | fvtt-types/configuration/ConfiguredCombatantGroup} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `CombatantGroup` document configured through `CONFIG.Combat.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `CombatantGroup` document configured through
+   * {@linkcode CONFIG.CombatantGroup.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -39,11 +47,11 @@ declare namespace CombatantGroup {
     Readonly<{
       name: "CombatantGroup";
       collection: "groups";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.CombatantGroup";
+      labelPlural: "DOCUMENT.CombatantGroups";
       isEmbedded: true;
       hasTypeData: true;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -126,15 +134,6 @@ declare namespace CombatantGroup {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = never;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -145,7 +144,8 @@ declare namespace CombatantGroup {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -197,7 +197,25 @@ declare namespace CombatantGroup {
   }
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * Used in the {@linkcode CombatantGroup.create} and {@linkcode CombatantGroup.createDocuments} signatures, and
+   * {@linkcode CombatantGroup.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode CombatantGroup.create}, returning (a single | an array of) (temporary | stored)
+   * `CombatantGroup`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<CombatantGroup.TemporaryIf<Temporary>>
+      : CombatantGroup.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode CombatantGroup.name | CombatantGroup#name}.
    *
    * This is data transformed from {@linkcode CombatantGroup.Source} and turned into more
@@ -214,6 +232,13 @@ declare namespace CombatantGroup {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
+   * Used in the {@linkcode CombatantGroup.update | CombatantGroup#update} and
+   * {@linkcode CombatantGroup.updateDocuments} signatures, and {@linkcode CombatantGroup.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
+
+  /**
    * The schema for {@linkcode CombatantGroup}. This is the source of truth for how an CombatantGroup document
    * must be structured.
    *
@@ -223,7 +248,7 @@ declare namespace CombatantGroup {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this CombatantGroup embedded document.
      * @defaultValue `null`
@@ -387,11 +412,10 @@ declare namespace CombatantGroup {
   }
 
   /**
-   * If `Temporary` is true then `CombatantGroup.Implementation`, otherwise `CombatantGroup.Stored`.
+   * If `Temporary` is true then {@linkcode CombatantGroup.Implementation}, otherwise {@linkcode CombatantGroup.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? CombatantGroup.Implementation
-    : CombatantGroup.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? CombatantGroup.Implementation : CombatantGroup.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -415,6 +439,10 @@ declare namespace CombatantGroup {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -424,27 +452,10 @@ declare namespace CombatantGroup {
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
-   * @remarks
-   * This is typed based on what is reasonable to expect, rather than accurately, as accurately would mean `unknown` (Foundry's type is `object|null`).
-   *
-   * Technically this is the value of an arbitrary property path in the Combatant's Actor's `system` (using `getProperty`), and while that path can usually be
-   * assumed to have been set to something in the return of {@linkcode TokenDocument.getTrackedAttributes}, since that's what the {@linkcode CombatTrackerConfig}
-   * provides as options, the path is stored in the {@linkcode Combat.CONFIG_SETTING} which could be updated to be anything. Also, `TokenDocument.getTrackedAttributes`
-   * doesn't actually check what the type of `value` and `max` are for bar type attributes, so even sticking to those choices isn't guaranteed safe.
-   *
-   * There's clear intent that the value *should* be numeric or null, but nothing seems to do math on it in core, and it's simply output in the {@linkcode CombatEncounters}
-   * template as `{{resource}}`, so `string` has been allowed.
-   *
-   * @privateRemarks Adding `boolean` is something that was discussed and decided against for now, but its plausible a system may request such in the future, and wouldn't
-   * make us any more wrong than currently.
-   */
-  type Resource = string | number | null;
-
-  /**
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -516,7 +527,7 @@ declare class CombatantGroup<
   ): Promise<CombatantGroup.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"CombatantGroup">,
   ): Promise<this | false | null | undefined>;
 

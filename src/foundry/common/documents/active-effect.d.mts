@@ -329,7 +329,6 @@ declare namespace BaseActiveEffect {
   export import Parent = ActiveEffect.Parent;
   export import Descendant = ActiveEffect.Descendant;
   export import DescendantClass = ActiveEffect.DescendantClass;
-  export import Pack = ActiveEffect.Pack;
   export import Embedded = ActiveEffect.Embedded;
   export import ParentCollectionName = ActiveEffect.ParentCollectionName;
   export import CollectionClass = ActiveEffect.CollectionClass;

@@ -361,7 +361,6 @@ declare namespace BaseItem {
   export import Parent = Item.Parent;
   export import Descendant = Item.Descendant;
   export import DescendantClass = Item.DescendantClass;
-  export import Pack = Item.Pack;
   export import Embedded = Item.Embedded;
   export import ParentCollectionName = Item.ParentCollectionName;
   export import CollectionClass = Item.CollectionClass;

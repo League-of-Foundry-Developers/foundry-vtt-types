@@ -296,7 +296,6 @@ declare namespace BaseFogExploration {
   export import Parent = FogExploration.Parent;
   export import Descendant = FogExploration.Descendant;
   export import DescendantClass = FogExploration.DescendantClass;
-  export import Pack = FogExploration.Pack;
   export import Embedded = FogExploration.Embedded;
   export import ParentCollectionName = FogExploration.ParentCollectionName;
   export import CollectionClass = FogExploration.CollectionClass;

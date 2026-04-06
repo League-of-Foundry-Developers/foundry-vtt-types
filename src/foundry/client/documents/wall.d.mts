@@ -1,9 +1,16 @@
-import type { InexactPartial, InterfaceToObject, Merge } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseWall from "#common/documents/wall.mjs";
+import type { InexactPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseWall } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace WallDocument {
   /**
@@ -12,7 +19,7 @@ declare namespace WallDocument {
   type Name = "Wall";
 
   /**
-   * The context used to create a `Wall`.
+   * The context used to create a `WallDocument`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
@@ -22,14 +29,14 @@ declare namespace WallDocument {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `WallDocument` document instance configured through `CONFIG.Wall.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@linkcode ConfiguredWallDocument | fvtt-types/configuration/ConfiguredWallDocument} in fvtt-types.
+   * The implementation of the `WallDocument` document instance configured through
+   * {@linkcode CONFIG.Wall.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `WallDocument` document configured through `CONFIG.Wall.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `WallDocument` document configured through
+   * {@linkcode CONFIG.Wall.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -42,10 +49,10 @@ declare namespace WallDocument {
     Readonly<{
       name: "Wall";
       collection: "walls";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Wall";
+      labelPlural: "DOCUMENT.Walls";
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -77,15 +84,6 @@ declare namespace WallDocument {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Scene">;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -96,7 +94,8 @@ declare namespace WallDocument {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@linkcode ClientDocumentMixin | Descendant Document Events}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -122,7 +121,7 @@ declare namespace WallDocument {
   type Stored = Document.Internal.Stored<WallDocument.Implementation>;
 
   /**
-   * The data put in {@linkcode foundry.abstract.DataModel._source | DataModel#_source}. This data is what was
+   * The data put in {@linkcode WallDocument._source | WallDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
    * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
@@ -138,11 +137,29 @@ declare namespace WallDocument {
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
-  // TODO: ensure `c` is required for creation
+  // TODO: ensure `c` is required for construction/creation
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@linkcode foundry.abstract.Document | Document} has been initialized, for example
+   * Used in the {@linkcode WallDocument.create} and {@linkcode WallDocument.createDocuments} signatures, and
+   * {@linkcode WallDocument.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode WallDocument.create}, returning (a single | an array of) (temporary | stored)
+   * `WallDocument`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<WallDocument.TemporaryIf<Temporary>>
+      : WallDocument.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
    * {@linkcode WallDocument.name | WallDocument#name}.
    *
    * This is data transformed from {@linkcode WallDocument.Source} and turned into more
@@ -159,11 +176,13 @@ declare namespace WallDocument {
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
 
   /**
-   * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
+   * Used in the {@linkcode WallDocument.update | WallDocument#update} and
+   * {@linkcode WallDocument.updateDocuments} signatures, and {@linkcode WallDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
    */
-  type Coordinates = [x0: number, y0: number, x1: number, y1: number];
+  type UpdateInput = UpdateData | Implementation;
 
-  interface ThresholdSchema extends DataSchema {
+  interface ThresholdSchema extends fields.DataSchema {
     /**
      * Minimum distance from a light source for which this wall blocks light
      */
@@ -187,7 +206,7 @@ declare namespace WallDocument {
 
   interface ThresholdData extends fields.SchemaField.InitializedData<ThresholdSchema> {}
 
-  interface AnimationSchema extends DataSchema {
+  interface AnimationSchema extends fields.DataSchema {
     /** @defaultValue `1` */
     direction: fields.NumberField<{ choices: [-1, 1]; initial: 1 }>;
 
@@ -223,7 +242,7 @@ declare namespace WallDocument {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this BaseWall embedded document
      * @defaultValue `null`
@@ -514,11 +533,10 @@ declare namespace WallDocument {
   }
 
   /**
-   * If `Temporary` is true then `WallDocument.Implementation`, otherwise `WallDocument.Stored`.
+   * If `Temporary` is true then {@linkcode WallDocument.Implementation}, otherwise {@linkcode WallDocument.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? WallDocument.Implementation
-    : WallDocument.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? WallDocument.Implementation : WallDocument.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -542,6 +560,10 @@ declare namespace WallDocument {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -550,11 +572,20 @@ declare namespace WallDocument {
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
+  /* ***********************************************
+   *              WALL-SPECIFIC TYPES              *
+   *************************************************/
+
+  /**
+   * The wall coordinates, a length-4 array of finite numbers [x0,y0,x1,y1]
+   */
+  type Coordinates = [x0: number, y0: number, x1: number, y1: number];
+
   /**
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -598,7 +629,7 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
   ): Promise<WallDocument.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Wall">,
   ): Promise<this | false | null | undefined>;
 
