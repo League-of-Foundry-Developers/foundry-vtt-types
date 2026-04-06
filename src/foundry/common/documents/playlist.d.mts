@@ -90,7 +90,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): BasePlaylist.Hierarchy;
 

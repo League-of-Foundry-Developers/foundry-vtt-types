@@ -79,7 +79,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): BaseFogExploration.Hierarchy;
 

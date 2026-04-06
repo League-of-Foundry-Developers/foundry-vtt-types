@@ -106,7 +106,7 @@ declare abstract class BaseTableResult<
 
   static override get TYPES(): BaseTableResult.SubType[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): BaseTableResult.Hierarchy;
 

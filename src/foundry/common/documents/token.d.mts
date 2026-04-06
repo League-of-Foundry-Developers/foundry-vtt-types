@@ -222,7 +222,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): BaseToken.Hierarchy;
 

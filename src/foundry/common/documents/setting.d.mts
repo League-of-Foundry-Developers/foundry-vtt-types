@@ -75,7 +75,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): BaseSetting.Hierarchy;
 

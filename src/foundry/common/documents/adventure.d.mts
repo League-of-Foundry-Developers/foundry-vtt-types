@@ -82,7 +82,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): BaseAdventure.Hierarchy;
 

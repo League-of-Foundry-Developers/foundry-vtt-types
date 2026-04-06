@@ -66,7 +66,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
   static override get hierarchy(): BaseAmbientSound.Hierarchy;
 

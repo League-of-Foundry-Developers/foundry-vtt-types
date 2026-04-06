@@ -187,17 +187,17 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   static override get implementation(): Scene.ImplementationClass;
 
-  static get baseDocument(): typeof BaseScene;
+  static override get baseDocument(): typeof BaseScene;
 
-  static get collectionName(): BaseScene.ParentCollectionName;
+  static override get collectionName(): BaseScene.ParentCollectionName;
 
-  static get documentName(): BaseScene.Name;
+  static override get documentName(): BaseScene.Name;
 
-  static get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
+  static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static get hierarchy(): BaseScene.Hierarchy;
+  static override get hierarchy(): BaseScene.Hierarchy;
 
   override parent: BaseScene.Parent;
 

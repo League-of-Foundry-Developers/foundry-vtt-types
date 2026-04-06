@@ -146,7 +146,7 @@ declare abstract class Document<
   /**
    * Ensure that all Document classes share the same schema of their base declaration.
    */
-  static get schema(): SchemaField.Any;
+  static override get schema(): SchemaField.Any;
 
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
@@ -223,8 +223,9 @@ declare abstract class Document<
 
   /**
    * Does this Document support additional subtypes?
+   * @remarks This is `false` in `Document.metadata`, and is only true in subclasses that override it so, as of 13.351
    */
-  static get hasTypeData(): undefined | true;
+  static get hasTypeData(): boolean;
 
   /**
    * The Embedded Document hierarchy for this Document.
