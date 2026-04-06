@@ -1812,16 +1812,6 @@ declare namespace Document {
     metadata: { name: SystemType };
   };
 
-  // TODO: consider retiring? Unused in our repo
-  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = ImplementationClassFor<
-    NameFor<ConcreteDocument>
-  >;
-
-  // TODO: consider retiring? Unused in our repo
-  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = ImplementationFor<
-    NameFor<ConcreteDocument>
-  >;
-
   type StoredForName<DocumentType extends Document.Type> =
     | (DocumentType extends "ActiveEffect" ? ActiveEffect.Stored : never)
     | (DocumentType extends "ActorDelta" ? ActorDelta.Stored : never)
@@ -3702,6 +3692,22 @@ declare namespace Document {
     | (Name extends "Token" ? TokenDocument.TemporaryIf<Temporary> : never)
     | (Name extends "User" ? User.TemporaryIf<Temporary> : never)
     | (Name extends "Wall" ? WallDocument.TemporaryIf<Temporary> : never);
+
+  /**
+   * @deprecated This type is being retired, if you have a document class reference, use
+   * {@linkcode ImplementationClassFor | Document.ImplementationClassFor<Cls["documentName"]>} instead. This type will be removed in v15.
+   */
+  type ToConfiguredClass<ConcreteDocument extends Document.Internal.Constructor> = ImplementationClassFor<
+    NameFor<ConcreteDocument>
+  >;
+
+  /**
+   * @deprecated This type is being retired, if you have a document class reference, use
+   * {@linkcode ImplementationFor | Document.ImplementationFor<Cls["documentName"]>} instead. This type will be removed in v15.
+   */
+  type ToConfiguredInstance<ConcreteDocument extends Document.Internal.Constructor> = ImplementationFor<
+    NameFor<ConcreteDocument>
+  >;
 
   /**
    * @deprecated This has been removed without replacement. If you have a need for it please let us know.
