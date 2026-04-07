@@ -5,31 +5,39 @@ import BaseActorDelta = foundry.documents.BaseActorDelta;
 import Document = foundry.abstract.Document;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
-class TestAD extends BaseActorDelta {}
+class TestBaseActorDelta extends BaseActorDelta {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"ActorDelta">)
+      : null;
+  }
+}
 
 declare const someToken: TokenDocument.Implementation;
 // @ts-expect-error ActorDeltas require a valid `parent` to be passed in its `context`
-new TestAD();
+new TestBaseActorDelta();
 
 // @ts-expect-error ActorDeltas require a valid `parent` to be passed in its `context`
-new TestAD(undefined, { strict: false });
+new TestBaseActorDelta(undefined, { strict: false });
 
-const myDelta = new TestAD({}, { parent: someToken });
+const myDelta = new TestBaseActorDelta({}, { parent: someToken });
 
 declare const someActor: Actor.Implementation;
-expectTypeOf(TestAD.applyDelta(myDelta, someActor)).toEqualTypeOf<Actor.Implementation | null>();
-expectTypeOf(TestAD.applyDelta(myDelta, someActor, {})).toEqualTypeOf<Actor.Implementation | null>();
+expectTypeOf(TestBaseActorDelta.applyDelta(myDelta, someActor)).toEqualTypeOf<Actor.Implementation | null>();
+expectTypeOf(TestBaseActorDelta.applyDelta(myDelta, someActor, {})).toEqualTypeOf<Actor.Implementation | null>();
+
 // @ts-expect-error parent is not allowed to be passed, as that context is used for the synthetic actor creation, its parent must be the same as the delta's parent
-expectTypeOf(TestAD.applyDelta(myDelta, someActor, { parent: someToken })).toEqualTypeOf<Actor.Implementation | null>();
+TestBaseActorDelta.applyDelta(myDelta, someActor, { parent: someToken });
+
 expectTypeOf(
-  TestAD.applyDelta(myDelta, someActor, {
+  TestBaseActorDelta.applyDelta(myDelta, someActor, {
     pack: "someModule.somePack",
     parentCollection: "foo",
     strict: false,
   }),
 ).toEqualTypeOf<Actor.Implementation | null>();
 
-new TestAD(
+new TestBaseActorDelta(
   {
     _id: "XXXXXSomeIDXXXXX",
     name: "Foo the Specific Bandit",
@@ -61,7 +69,7 @@ new TestAD(
   },
   { parent: someToken },
 );
-new TestAD(
+new TestBaseActorDelta(
   {
     _id: null,
     name: null,
@@ -75,7 +83,7 @@ new TestAD(
   },
   { parent: someToken },
 );
-new TestAD(
+new TestBaseActorDelta(
   {
     _id: undefined,
     name: undefined,
@@ -90,7 +98,7 @@ new TestAD(
   { parent: someToken },
 );
 
-expectTypeOf(myDelta).toEqualTypeOf<BaseActorDelta>();
+expectTypeOf(myDelta).toEqualTypeOf<TestBaseActorDelta>();
 
 expectTypeOf(myDelta._id).toEqualTypeOf<string | null>();
 expectTypeOf(myDelta.name).toEqualTypeOf<string | null>();

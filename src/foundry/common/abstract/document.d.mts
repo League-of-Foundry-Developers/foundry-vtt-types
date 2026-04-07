@@ -254,6 +254,13 @@ declare abstract class Document<
   get id(): string | null;
 
   /**
+   * A reference to the Compendium Collection containing this Document, if any, and otherwise null.
+   * @remarks The body in `Document` simply throws; All documents just use the override defined at
+   * {@linkcode ClientDocumentMixin.AnyMixed.compendium | ClientDocument#compendium} out of the box.
+   */
+  abstract get compendium(): unknown;
+
+  /**
    * Test whether this Document is embedded within a parent Document
    */
   get isEmbedded(): boolean;

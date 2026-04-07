@@ -1,8 +1,13 @@
 import { expectTypeOf } from "vitest";
 
 // This exists to make the class non-abstract.
-class TestBaseAdventure extends foundry.documents.BaseAdventure {}
-
+class TestBaseAdventure extends foundry.documents.BaseAdventure {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Adventure">)
+      : null;
+  }
+}
 // @ts-expect-error name is a required field
 new TestBaseAdventure();
 
