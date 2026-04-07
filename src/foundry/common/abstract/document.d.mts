@@ -304,7 +304,7 @@ declare abstract class Document<
    * @param user - The User being tested (default: `game.user`)
    * @returns A numeric permission level from `CONST.DOCUMENT_OWNERSHIP_LEVELS` or `null`
    *
-   * @privateRemarks Making this just `User.Implementation` causes circularities
+   * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} methods work without error, so `Implementation` over `Stored`.
    */
   getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
