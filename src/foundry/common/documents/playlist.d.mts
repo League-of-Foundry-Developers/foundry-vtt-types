@@ -92,7 +92,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BasePlaylist.Hierarchy;
+  static override readonly hierarchy: BasePlaylist.Hierarchy;
 
   override parent: BasePlaylist.Parent;
 

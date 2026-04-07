@@ -75,7 +75,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseJournalEntryCategory.Hierarchy;
+  static override readonly hierarchy: BaseJournalEntryCategory.Hierarchy;
 
   override parent: BaseJournalEntryCategory.Parent;
 

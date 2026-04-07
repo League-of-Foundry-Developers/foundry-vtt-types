@@ -72,7 +72,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseWall.Hierarchy;
+  static override readonly hierarchy: BaseWall.Hierarchy;
 
   override parent: BaseWall.Parent;
 

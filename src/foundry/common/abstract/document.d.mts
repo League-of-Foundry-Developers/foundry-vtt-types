@@ -135,11 +135,14 @@ declare abstract class Document<
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`
    */
   get pack(): string | null;
 
   /**
    * A mapping of embedded Document collections which exist in this model.
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`, and the value is
+   * {@linkcode Object.seal}ed.
    */
   readonly collections: Document.CollectionRecord<Schema>;
 
@@ -229,8 +232,10 @@ declare abstract class Document<
 
   /**
    * The Embedded Document hierarchy for this Document.
+   * @remarks This is a getter until first access, at which point it calculates the value, and replaces itself via
+   * `Object.defineProperty(this, "hierarchy", { value: Object.freeze(hierarchy), writable: false });`
    */
-  static get hierarchy(): Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>;
+  static readonly hierarchy: Readonly<Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>>;
 
   /**
    * Identify the collection in a parent Document that this Document exists belongs to, if any.

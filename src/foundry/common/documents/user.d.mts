@@ -113,7 +113,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseUser.Hierarchy;
+  static override readonly hierarchy: BaseUser.Hierarchy;
 
   override parent: BaseUser.Parent;
 

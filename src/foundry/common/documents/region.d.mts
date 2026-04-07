@@ -70,7 +70,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseRegion.Hierarchy;
+  static override readonly hierarchy: BaseRegion.Hierarchy;
 
   override parent: BaseRegion.Parent;
 
