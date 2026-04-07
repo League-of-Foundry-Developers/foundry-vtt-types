@@ -79,7 +79,7 @@ expectTypeOf(
       expectTypeOf(html).toEqualTypeOf<JQuery>();
     },
   }),
-).toEqualTypeOf<Promise<string | number | null>>();
+).toEqualTypeOf<Promise<"foo" | 0 | null>>();
 
 expectTypeOf(
   Dialog.confirm({
@@ -97,7 +97,7 @@ expectTypeOf(
       expectTypeOf(html).toEqualTypeOf<JQuery>();
     },
   }),
-).toEqualTypeOf<Promise<string | number | null>>();
+).toEqualTypeOf<Promise<"foo" | 0 | null>>();
 
 expectTypeOf(
   Dialog.confirm({
@@ -115,7 +115,7 @@ expectTypeOf(
       expectTypeOf(html).toEqualTypeOf<JQuery>();
     },
   }),
-).toEqualTypeOf<Promise<string | null>>();
+).toEqualTypeOf<Promise<"foo" | "bar" | null>>();
 
 expectTypeOf(
   Dialog.confirm({
@@ -185,7 +185,7 @@ expectTypeOf(
     },
     options: {},
   }),
-).toEqualTypeOf<Promise<string | number | null>>();
+).toEqualTypeOf<Promise<"foo" | 0 | null>>();
 
 expectTypeOf(
   Dialog.confirm({
@@ -204,7 +204,7 @@ expectTypeOf(
     },
     options: {},
   }),
-).toEqualTypeOf<Promise<string | number | null>>();
+).toEqualTypeOf<Promise<"foo" | 0 | null>>();
 
 expectTypeOf(
   Dialog.confirm({
@@ -223,7 +223,7 @@ expectTypeOf(
     },
     options: {},
   }),
-).toEqualTypeOf<Promise<string | null>>();
+).toEqualTypeOf<Promise<"foo" | "bar" | null>>();
 
 expectTypeOf(
   Dialog.confirm({
@@ -300,7 +300,7 @@ expectTypeOf(
     },
     options: optionsWithJQueryUnknown,
   }),
-).toEqualTypeOf<Promise<string | number | null>>();
+).toEqualTypeOf<Promise<"foo" | 0 | null>>();
 
 expectTypeOf(
   Dialog.confirm({
@@ -319,7 +319,7 @@ expectTypeOf(
     },
     options: optionsWithJQueryUnknown,
   }),
-).toEqualTypeOf<Promise<string | number | null>>();
+).toEqualTypeOf<Promise<"foo" | 0 | null>>();
 
 expectTypeOf(
   Dialog.confirm({
@@ -338,7 +338,7 @@ expectTypeOf(
     },
     options: optionsWithJQueryUnknown,
   }),
-).toEqualTypeOf<Promise<string | null>>();
+).toEqualTypeOf<Promise<"foo" | "bar" | null>>();
 
 expectTypeOf(
   Dialog.confirm({
@@ -389,7 +389,7 @@ expectTypeOf(
     },
     options: { jQuery: true },
   }),
-).toEqualTypeOf<Promise<number>>();
+).toEqualTypeOf<Promise<0>>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -405,7 +405,7 @@ expectTypeOf(
     },
     options: { jQuery: false },
   }),
-).toEqualTypeOf<Promise<number>>();
+).toEqualTypeOf<Promise<0>>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -421,7 +421,7 @@ expectTypeOf(
     },
     options: {},
   }),
-).toEqualTypeOf<Promise<number>>();
+).toEqualTypeOf<Promise<0>>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -437,7 +437,7 @@ expectTypeOf(
     },
     options: {},
   }),
-).toEqualTypeOf<Promise<string>>();
+).toEqualTypeOf<Promise<"string">>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -453,7 +453,7 @@ expectTypeOf(
     },
     options: optionsWithJQueryUnknown,
   }),
-).toEqualTypeOf<Promise<number>>();
+).toEqualTypeOf<Promise<0>>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -469,7 +469,7 @@ expectTypeOf(
     },
     options: optionsWithJQueryUnknown,
   }),
-).toEqualTypeOf<Promise<string>>();
+).toEqualTypeOf<Promise<"string">>();
 
 // everything without "rejectClose" is tested above
 // now we need to test an explicitly given "rejectClose"
@@ -485,7 +485,7 @@ expectTypeOf(
     },
     rejectClose: false,
   }),
-).toEqualTypeOf<Promise<string | null>>();
+).toEqualTypeOf<Promise<"string" | null>>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -499,7 +499,7 @@ expectTypeOf(
     options: { jQuery: true },
     rejectClose: false,
   }),
-).toEqualTypeOf<Promise<string | null>>();
+).toEqualTypeOf<Promise<"string" | null>>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -513,7 +513,7 @@ expectTypeOf(
     options: { jQuery: false },
     rejectClose: false,
   }),
-).toEqualTypeOf<Promise<string | null>>();
+).toEqualTypeOf<Promise<"string" | null>>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -527,7 +527,7 @@ expectTypeOf(
     options: optionsWithJQueryUnknown,
     rejectClose: false,
   }),
-).toEqualTypeOf<Promise<string | null>>();
+).toEqualTypeOf<Promise<"string" | null>>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -540,7 +540,7 @@ expectTypeOf(
     },
     rejectClose: true,
   }),
-).toEqualTypeOf<Promise<string>>();
+).toEqualTypeOf<Promise<"string">>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -554,7 +554,7 @@ expectTypeOf(
     options: { jQuery: true },
     rejectClose: true,
   }),
-).toEqualTypeOf<Promise<string>>();
+).toEqualTypeOf<Promise<"string">>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -568,7 +568,7 @@ expectTypeOf(
     options: { jQuery: false },
     rejectClose: true,
   }),
-).toEqualTypeOf<Promise<string>>();
+).toEqualTypeOf<Promise<"string">>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -582,7 +582,7 @@ expectTypeOf(
     options: optionsWithJQueryUnknown,
     rejectClose: true,
   }),
-).toEqualTypeOf<Promise<string>>();
+).toEqualTypeOf<Promise<"string">>();
 
 expectTypeOf(
   Dialog.prompt({
@@ -594,7 +594,7 @@ expectTypeOf(
     },
     rejectClose: true,
   }),
-).toEqualTypeOf<Promise<string>>();
+).toEqualTypeOf<Promise<"string">>();
 expectTypeOf(
   Dialog.prompt({
     title: title,
@@ -605,7 +605,7 @@ expectTypeOf(
     },
     rejectClose: false,
   }),
-).toEqualTypeOf<Promise<string | null>>();
+).toEqualTypeOf<Promise<"string" | null>>();
 expectTypeOf(
   Dialog.prompt({
     title: title,
@@ -616,7 +616,7 @@ expectTypeOf(
     },
     rejectClose: true,
   }),
-).toEqualTypeOf<Promise<string>>();
+).toEqualTypeOf<Promise<"string">>();
 expectTypeOf(
   Dialog.prompt({
     title: title,
@@ -627,7 +627,7 @@ expectTypeOf(
     },
     rejectClose: false,
   }),
-).toEqualTypeOf<Promise<string | null>>();
+).toEqualTypeOf<Promise<"string" | null>>();
 expectTypeOf(
   Dialog.prompt({
     title: title,
@@ -638,7 +638,7 @@ expectTypeOf(
     },
     rejectClose: true,
   }),
-).toEqualTypeOf<Promise<string>>();
+).toEqualTypeOf<Promise<"string">>();
 
 expectTypeOf(
   Dialog.wait({
