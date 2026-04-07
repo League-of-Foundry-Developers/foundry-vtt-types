@@ -1,6 +1,6 @@
 import type { AnyMutableObject, DeepReadonly, InexactPartial } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
 
 /**
@@ -204,9 +204,6 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    */
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: BaseToken.ParentCollectionName | null;
 

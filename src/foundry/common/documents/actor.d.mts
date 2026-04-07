@@ -1,6 +1,6 @@
 import type { AnyMutableObject } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Actor Document.
@@ -110,9 +110,6 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   type: SubType;
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: BaseActor.ParentCollectionName | null;
 

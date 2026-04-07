@@ -1,6 +1,6 @@
 import type { AnyMutableObject } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The RollTable Document.
@@ -75,9 +75,6 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
    */
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   readonly parentCollection: BaseRollTable.ParentCollectionName | null;
 

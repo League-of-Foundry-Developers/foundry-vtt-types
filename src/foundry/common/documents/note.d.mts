@@ -1,5 +1,5 @@
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Document definition for a Note.
@@ -67,9 +67,6 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    */
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: BaseNote.ParentCollectionName | null;
 

@@ -1,5 +1,5 @@
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * A Document that represents a grouping of individual Combatants in a Combat.
@@ -55,9 +55,6 @@ declare abstract class BaseCombatantGroup<
   type: SubType;
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any]>;
 
   override readonly parentCollection: BaseCombatantGroup.ParentCollectionName | null;
 

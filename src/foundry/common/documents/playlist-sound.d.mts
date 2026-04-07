@@ -1,5 +1,5 @@
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The PlaylistSound Document.
@@ -60,9 +60,6 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    */
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: BasePlaylistSound.ParentCollectionName | null;
 

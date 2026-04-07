@@ -1,5 +1,5 @@
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Card Document.
@@ -72,9 +72,6 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   type: SubType;
 
   /* Document overrides */
-
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
   override readonly parentCollection: BaseCard.ParentCollectionName | null;
 
