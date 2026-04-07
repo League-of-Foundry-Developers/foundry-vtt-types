@@ -226,7 +226,7 @@ declare abstract class Document<
 
   /**
    * Does this Document support additional subtypes?
-   * @remarks This is `false` in `Document.metadata`, and is only true in subclasses that override it so, as of 13.351
+   * @remarks This is `false` in {@linkcode Document.metadata}, and is only `true` in subclasses that override it so, as of 13.351
    */
   static get hasTypeData(): boolean;
 
