@@ -210,17 +210,22 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
   // These lifecycle hook methods have the same `never`-using signatures as `Document` because it is similarly unsound to call
   // `ClientDocument._(pre|on)(Create|Update|Delete)`; They are provided here for mostly for linking to.
 
-  protected _preCreate(data: never, options: never, user: User.Stored): Promise<boolean | void>;
+  // Note(LukeAbby): These methods are currently commented out due to causing a circularity in Lancer.
+  // Specifically: `Type 'DocumentInstanceConfig' recursively references itself as a base type.`.
+  // These methods have now been responsible for their _second_ circularity. Therefore they should
+  // not be uncommented until impact tests are created and run. They also may be a suspicious area
+  // for circularities.
+  // protected _preCreate(data: never, options: never, user: User.Stored): Promise<boolean | void>;
 
-  protected _onCreate(data: never, options: never, userId: string): MaybePromise<void>;
+  // protected _onCreate(data: never, options: never, userId: string): MaybePromise<void>;
 
-  protected _preUpdate(changed: never, options: never, user: User.Stored): Promise<boolean | void>;
+  // protected _preUpdate(changed: never, options: never, user: User.Stored): Promise<boolean | void>;
 
-  protected _onUpdate(changed: never, options: never, userId: string): MaybePromise<void>;
+  // protected _onUpdate(changed: never, options: never, userId: string): MaybePromise<void>;
 
-  protected _preDelete(options: never, user: User.Stored): Promise<boolean | void>;
+  // protected _preDelete(options: never, user: User.Stored): Promise<boolean | void>;
 
-  protected _onDelete(options: never, userId: string): MaybePromise<void>;
+  // protected _onDelete(options: never, userId: string): MaybePromise<void>;
 
   /**
    * Orchestrate dispatching descendant document events to parent documents when embedded children are modified.
