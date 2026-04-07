@@ -310,7 +310,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@linkcode Hooks.onError}
    */
-  error: (...args: ValueOf<Hooks.ErrorCallbackParameters>) => void;
+  error: (...[location, err, data]: ValueOf<Hooks.ErrorCallbackParameters>) => void;
 
   /* Game */
 
@@ -321,7 +321,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks
    * @see {@linkcode Game.togglePause | Game#togglePause}
    */
-  pauseGame: (paused: boolean, pauseOptions: foundry.Game.TogglePauseOptions) => void;
+  pauseGame: (paused: boolean, options: foundry.Game.TogglePauseOptions) => void;
 
   /**
    * A hook event that fires when the World time has been updated.
@@ -952,7 +952,7 @@ export interface AllHooks extends DynamicHooks {
   /**
    * A hook event that fires during light source initialization.
    * This hook can be used to add programmatic light sources to the Scene.
-   * @param source - The {@linkcode EffectsCanvasGroup} where light sources are initialized
+   * @param group - The {@linkcode EffectsCanvasGroup} where light sources are initialized
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@linkcode EffectsCanvasGroup.Implementation.initializeLightSources | EffectsCanvasGroup#initializeLightSources}
    */
@@ -1010,8 +1010,8 @@ export interface AllHooks extends DynamicHooks {
    * A hook event that fires after an Adventure has been imported into the World.
    * @param adventure - The Adventure document from which content is being imported
    * @param formData  - Processed data from the importer form
-   * @param toCreate  - Adventure data which needs to be created in the World
-   * @param toUpdate  - Adventure data which needs to be updated in the World
+   * @param created   - Adventure data which needs to be created in the World
+   * @param updated   - Adventure data which needs to be updated in the World
    * @returns False to prevent the core software from handling the import
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */

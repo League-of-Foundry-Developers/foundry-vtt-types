@@ -179,7 +179,7 @@ async function _setupBrowser(vitest: Vitest): Promise<BrowserData> {
       count.call(this, ...args);
     };
 
-    console.debug = function (...args) {
+    console.debug = function (...args: unknown[]) {
       const stack = { stack: "" };
       Error.captureStackTrace(stack);
       sendLog("debug", args, stack.stack);
@@ -207,21 +207,21 @@ async function _setupBrowser(vitest: Vitest): Promise<BrowserData> {
       groupEnd.call(this, ...args);
     };
 
-    console.error = function (...args) {
+    console.error = function (...args: unknown[]) {
       const stack = { stack: "" };
       Error.captureStackTrace(stack);
       sendLog("error", args, stack.stack);
       error.call(this, ...args);
     };
 
-    console.info = function (...args) {
+    console.info = function (...args: unknown[]) {
       const stack = { stack: "" };
       Error.captureStackTrace(stack);
       sendLog("info", args, stack.stack);
       info.call(this, ...args);
     };
 
-    console.log = function (...args) {
+    console.log = function (...args: unknown[]) {
       const stack = { stack: "" };
       Error.captureStackTrace(stack);
       sendLog("log", args, stack.stack);
@@ -270,14 +270,14 @@ async function _setupBrowser(vitest: Vitest): Promise<BrowserData> {
       timeEnd.call(this, ...args);
     };
 
-    console.trace = function (...args) {
+    console.trace = function (...args: unknown[]) {
       const stack = { stack: "" };
       Error.captureStackTrace(stack);
       sendLog("trace", args, stack.stack);
       trace.call(this, ...args);
     };
 
-    console.warn = function (...args) {
+    console.warn = function (...args: unknown[]) {
       const stack = { stack: "" };
       Error.captureStackTrace(stack);
       sendLog("warn", args, stack.stack);

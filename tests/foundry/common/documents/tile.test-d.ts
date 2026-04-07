@@ -17,7 +17,7 @@ new TestBaseTile();
 // @ts-expect-error Tiles require a provided width and height
 new TestBaseTile({});
 
-let myTile = new TestBaseTile({
+const myTile = new TestBaseTile({
   _id: "XXXXXSomeIDXXXXX",
   texture: {
     src: "path/to/some/image.png",
@@ -62,7 +62,7 @@ let myTile = new TestBaseTile({
   },
 });
 
-myTile = new TestBaseTile({
+new TestBaseTile({
   _id: null,
   texture: {
     src: null,
@@ -102,7 +102,7 @@ myTile = new TestBaseTile({
   },
   flags: null,
 });
-myTile = new TestBaseTile({
+new TestBaseTile({
   width: 200, // actually required for construction
   height: 200, // actually required for construction
   texture: null,
@@ -111,7 +111,7 @@ myTile = new TestBaseTile({
   video: null,
 });
 
-myTile = new TestBaseTile({
+new TestBaseTile({
   _id: undefined,
   texture: {
     src: undefined,
@@ -151,7 +151,7 @@ myTile = new TestBaseTile({
   },
   flags: undefined,
 });
-myTile = new TestBaseTile({
+new TestBaseTile({
   width: 200, // actually required for construction
   height: 200, // actually required for construction
   texture: undefined,
