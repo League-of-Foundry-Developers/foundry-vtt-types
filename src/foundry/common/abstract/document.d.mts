@@ -3014,7 +3014,8 @@ declare namespace Document {
   }
 
   /**
-   * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use {@linkcode Document.ModuleSubType} instead.
+   * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use
+   * {@linkcode Document.ModuleSubType} instead.
    */
   type ModuleSubtype = ModuleSubType;
 
@@ -3046,8 +3047,9 @@ declare namespace Document {
     readonly flags?: DataField<Options, any>;
   }
 
-  // These types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
-  // This is much more complex than proving the constraint for `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
+  // These types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint
+  // `this extends Document.Any` has to be proved. This is much more complex than proving the constraint for
+  // `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
 
   /**
    * @deprecated This type is being made internal.
