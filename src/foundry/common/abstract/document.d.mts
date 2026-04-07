@@ -303,7 +303,7 @@ declare abstract class Document<
    *
    * To test whether a user has a certain capability over the document, testUserPermission should be used.
    * @param user - The User being tested (default: `game.user`)
-   * @returns A numeric permission level from `CONST.DOCUMENT_OWNERSHIP_LEVELS` or null
+   * @returns A numeric permission level from `CONST.DOCUMENT_OWNERSHIP_LEVELS` or `null`
    *
    * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} methods work without error, so `Implementation` over `Stored`.
    */
@@ -568,8 +568,8 @@ declare abstract class Document<
    * @param operation  - Additional options which customize the request
    * @returns The retrieved Document, or null
    *
-   * @remarks Contrary to the above, this *can* be used to 'get' compendium documents by passing `operation.pack`, this will return the
-   * index entry (or `null`), instead of the Document.
+   * @remarks Contrary to the above, this *can* be used to 'get' compendium documents by passing `operation.pack`, but this will return the
+   * index entry (or `null`) instead of the Document.
    *
    * {@linkcode FogExploration.get} can possibly forward args and return to/from {@linkcode FogExploration.load},
    * which accounts for the `Promise<>` part of the return; All other documents return `SomeDoc.Implementation | IndexEntry<DocName> | null`
@@ -662,7 +662,7 @@ declare abstract class Document<
    * @remarks Unlike {@linkcode Document.getEmbeddedDocument | Document#getEmbeddedDocument}, `embeddedName` must be a document type;
    * collection names are not valid.
    *
-   * @privateRemarks `updates` has a parameter default but passing no updates is nonsensical, so it's not marked optional here
+   * @privateRemarks `updates` has a parameter default but passing no updates is nonsensical, so it's not marked optional here.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#updateEmbeddedDocuments` directly.
   // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
@@ -1959,7 +1959,7 @@ declare namespace Document {
          * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
          * @privateRemarks Omitted from the typedef, inferred from usage in {@linkcode Document._configure | Document#_configure}
          * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
-         * {@linkcode foundry.abstract.EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}). See
+         * {@linkcode EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}). See
          * {@linkcode Document.parentCollection | Document#parentCollection}.
          */
         parentCollection: string;
