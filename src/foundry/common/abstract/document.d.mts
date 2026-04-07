@@ -306,7 +306,7 @@ declare abstract class Document<
    *
    * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} methods work without error, so `Implementation` over `Stored`.
    */
-  getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -361,7 +361,7 @@ declare abstract class Document<
   migrateSystemData(): object;
 
   /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
-  override toObject(source?: boolean | null): SchemaField.SourceData<Schema>;
+  override toObject(source?: boolean): SchemaField.SourceData<Schema>;
 
   /**
    * Create multiple Documents using provided input data.
@@ -955,12 +955,12 @@ declare abstract class Document<
    * used as a helper on any data object, making it one of the few static methods on `Document` it's valid to call on the base
    * class.
    */
-  protected static _addDataFieldMigration(
-    data: AnyMutableObject,
+  protected static _addDataFieldMigration<Data extends AnyMutableObject>(
+    data: Data,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyMutableObject) => unknown,
-  ): unknown;
+    apply?: (data: Data) => unknown,
+  ): boolean;
 
   /**
    * Log a compatibility warning for the data field migration.
