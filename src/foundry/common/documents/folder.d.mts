@@ -131,11 +131,6 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   static override getCollectionName(name: string): null;
 
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
-
   override getFlag<Scope extends BaseFolder.Flags.Scope, Key extends BaseFolder.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,

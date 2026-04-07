@@ -685,7 +685,9 @@ declare abstract class Document<
    * @param _parentPath - A parent field path already traversed
    * @remarks Not called within Foundry's client-side code, likely exists for server documents
    */
-  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>], void, undefined>;
+  // TODO: Put this into the document template with types that recurse Doc.Hierarchy for embedded documents
+  // TODO: https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3546
+  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.Any], void, undefined>;
 
   /**
    * Get the value of a "flag" for this document

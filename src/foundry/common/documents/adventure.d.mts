@@ -121,11 +121,6 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static override getCollectionName(name: string): null;
 
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
-
   override getFlag<Scope extends BaseAdventure.Flags.Scope, Key extends BaseAdventure.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,

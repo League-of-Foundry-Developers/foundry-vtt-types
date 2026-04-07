@@ -107,11 +107,6 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   static override getCollectionName(name: string): null;
 
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
-
   override getFlag<Scope extends BaseAmbientLight.Flags.Scope, Key extends BaseAmbientLight.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,

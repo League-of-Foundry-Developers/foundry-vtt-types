@@ -115,9 +115,6 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   static override getCollectionName(name: string): null;
 
-  // Same as Document for now
-  override traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>]>;
-
   override getFlag<
     Scope extends BaseJournalEntryCategory.Flags.Scope,
     Key extends BaseJournalEntryCategory.Flags.Key<Scope>,

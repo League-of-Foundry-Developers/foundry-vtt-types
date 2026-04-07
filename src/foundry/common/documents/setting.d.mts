@@ -114,11 +114,6 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override getCollectionName(name: string): null;
 
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
-
   protected override _preCreate(
     data: BaseSetting.CreateData,
     options: BaseSetting.Database.PreCreateOptions,
