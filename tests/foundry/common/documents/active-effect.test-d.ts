@@ -8,10 +8,10 @@ import BaseActiveEffect = foundry.documents.BaseActiveEffect;
 class TestActiveEffect<
   out SubType extends BaseActiveEffect.SubType = BaseActiveEffect.SubType,
 > extends BaseActiveEffect<SubType> {
-  get compendium(): foundry.documents.collections.CompendiumCollection.ForDocument<"ActiveEffect"> | null {
-    const pack = this.inCompendium ? (game.packs!.get(this.pack ?? "") ?? null) : null;
-    if (!pack) return null;
-    return pack as foundry.documents.collections.CompendiumCollection.ForDocument<"ActiveEffect">;
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"ActiveEffect">)
+      : null;
   }
 }
 

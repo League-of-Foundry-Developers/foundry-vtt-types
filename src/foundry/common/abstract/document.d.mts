@@ -227,7 +227,7 @@ declare abstract class Document<
 
   /**
    * Does this Document support additional subtypes?
-   * @remarks This is `false` in `Document.metadata`, and is only true in subclasses that override it so, as of 13.351
+   * @remarks This is `false` in {@linkcode Document.metadata}, and is only `true` in subclasses that override it so, as of 13.351
    */
   static get hasTypeData(): boolean;
 
@@ -256,8 +256,8 @@ declare abstract class Document<
 
   /**
    * A reference to the Compendium Collection containing this Document, if any, and otherwise null.
-   * @remarks The body in `Document` simply throws; {@linkcode ClientDocumentMixin.AnyMixed.compendium | ClientDocument#compendium} defines
-   * the standard override.
+   * @remarks The body in `Document` simply throws; All documents just use the override defined at
+   * {@linkcode ClientDocumentMixin.AnyMixed.compendium | ClientDocument#compendium} out of the box.
    */
   abstract get compendium(): unknown;
 
