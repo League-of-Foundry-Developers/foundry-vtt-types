@@ -974,6 +974,19 @@ declare abstract class Document<
   ): void;
 
   /**
+   * Clear the fields from the given Document data recursively.
+   * @param data       - The (partial) Document data
+   * @param fieldNames - The fields that are cleared
+   * @param options    - (default: `{}`)
+   * @internal
+   */
+  protected static _clearFieldsRecursively(
+    data: AnyMutableObject,
+    fieldNames: string[],
+    options?: Document.ClearFieldsRecursivelyOptions,
+  ): void;
+
+  /**
    * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
    * (since v12, until v14)
    */
@@ -2585,6 +2598,13 @@ declare namespace Document {
      * @remarks Foundry uses `if ("value" in options)` to determine whether to override the default value.
      */
     value?: unknown;
+  }
+
+  type RecursiveFieldClearCallback = (data: AnyMutableObject, fieldName: string) => void;
+
+  interface ClearFieldsRecursivelyOptions {
+    /** A callback that is invoked on each field in order to clear it. */
+    callback?: RecursiveFieldClearCallback | undefined;
   }
 
   /* ***********************************************
