@@ -157,6 +157,7 @@
     "@playwright/test": "^1.59.1",
     "@types/debug": "^4.1.12",
     "@types/fvtt-types": "file:.",
+    "@types/node": "^25.5.2",
     "@typescript-eslint/eslint-plugin": "^8.31.0",
     "@typescript-eslint/parser": "^8.31.0",
     "@typescript-eslint/scope-manager": "^8.31.0",
@@ -191,7 +192,8 @@
     "vitest": "^4.0.15"
   },
   "overrides": {
-    "expect-type": "^1.2.2"
+    "expect-type": "^1.2.2",
+    "@package-json/types": "^0.0.13"
   },
   "peerDependencies": {
     "@typescript/native-preview": "*",
