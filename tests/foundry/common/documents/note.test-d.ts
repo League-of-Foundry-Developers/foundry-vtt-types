@@ -5,11 +5,10 @@ import Document = foundry.abstract.Document;
 
 class TestBaseNote extends BaseNote {}
 
-let myNote;
 // Note has no hard required fields for creation
-myNote = new TestBaseNote();
-myNote = new TestBaseNote({});
-myNote = new TestBaseNote({
+const myNote = new TestBaseNote();
+new TestBaseNote({});
+new TestBaseNote({
   _id: "XXXXXSomeIDXXXXX",
   entryId: "YYYYYSomeIDYYYYY",
   pageId: "ZZZZZSomeIDZZZZZ",
@@ -43,7 +42,7 @@ myNote = new TestBaseNote({
     },
   },
 });
-myNote = new TestBaseNote({
+new TestBaseNote({
   _id: null,
   entryId: null,
   pageId: null,
@@ -73,9 +72,9 @@ myNote = new TestBaseNote({
   global: null,
   flags: null,
 });
-myNote = new TestBaseNote({ texture: null });
+new TestBaseNote({ texture: null });
 
-myNote = new TestBaseNote({
+new TestBaseNote({
   _id: undefined,
   entryId: undefined,
   pageId: undefined,
@@ -105,7 +104,7 @@ myNote = new TestBaseNote({
   global: undefined,
   flags: undefined,
 });
-myNote = new TestBaseNote({ texture: undefined });
+new TestBaseNote({ texture: undefined });
 
 expectTypeOf(myNote).toEqualTypeOf<BaseNote>();
 
