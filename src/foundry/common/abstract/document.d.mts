@@ -240,12 +240,12 @@ declare abstract class Document<
   /**
    * Identify the collection in a parent Document that this Document exists belongs to, if any.
    * @param parentCollection - An explicitly provided parent collection name.
-   * @remarks If passed a value for `parentCollection`, simply returns that value
-   *
-   * Foundry marked `@internal`
+   * @remarks If passed a value for `parentCollection`, simply returns that value.
+   * @internal
    */
-  _getParentCollection(parentCollection?: string): string | null;
+  _getParentCollection(parentCollection?: string | null): string | null;
 
+  // TODO: is this fake property necessary?
   _id: string | null;
 
   /**
