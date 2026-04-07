@@ -272,8 +272,10 @@ declare abstract class Document<
 
   /**
    * A Universally Unique Identifier (uuid) for this Document instance.
+   * @remarks Always `null` for temporary documents, always `string` for persisted,  though embedded
+   * documents in non-persisted parents may have incorrect values at runtime.
    */
-  get uuid(): string;
+  get uuid(): string | null;
 
   /**
    * Test whether a given User has sufficient permissions to create Documents of this type in general. This does not
