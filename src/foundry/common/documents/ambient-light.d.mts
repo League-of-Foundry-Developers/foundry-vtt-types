@@ -1,6 +1,6 @@
 import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Document definition for an AmbientLight.
@@ -49,7 +49,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    * defined DRY-ly while also being easily overridable.
    */
 
-  override readonly parentCollection: AmbientLightDocument.ParentCollectionName | null;
+  override readonly parentCollection: BaseAmbientLight.ParentCollectionName | null;
 
   override get pack(): string | null;
 

@@ -1,7 +1,6 @@
 import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "../data/fields.d.mts";
-import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The RollTable Document.

@@ -1,6 +1,6 @@
 import type { AnyMutableObject, DeepReadonly, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
 import type { BaseGrid } from "#common/grid/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
