@@ -63,7 +63,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  override updateSource(changes: BaseScene.UpdateData, options: DataModel.UpdateOptions): BaseScene.UpdateData;
+  override updateSource(changes?: BaseScene.UpdateData, options?: DataModel.UpdateOptions): BaseScene.UpdateData;
 
   /**
    * @remarks
