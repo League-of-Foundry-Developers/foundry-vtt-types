@@ -131,9 +131,6 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   static override getCollectionName<Name extends string>(
     name: OverlapsWith<Name, BasePlaylist.Embedded.CollectionName>,
   ): BasePlaylist.Embedded.GetCollectionNameReturn<Name>;
-  static override getCollectionName<Name extends string>(
-    name: OverlapsWith<Name, BasePlaylist.Embedded.CollectionName>,
-  ): BasePlaylist.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends BasePlaylist.Embedded.CollectionName>(
     embeddedName: EmbeddedName,

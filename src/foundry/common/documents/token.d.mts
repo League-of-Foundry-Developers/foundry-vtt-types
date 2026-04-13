@@ -275,10 +275,6 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    */
   override getEmbeddedCollection(embeddedName: BaseToken.Embedded.CollectionName): Collection.Any;
 
-  // override getEmbeddedCollection<EmbeddedName extends BaseToken.Embedded.CollectionName>(
-  //   embeddedName: EmbeddedName,
-  // ): BaseToken.Embedded.CollectionFor<EmbeddedName>;
-
   override getEmbeddedDocument<
     EmbeddedName extends BaseToken.Embedded.CollectionName,
     Options extends Document.GetEmbeddedDocumentOptions | undefined = undefined,
