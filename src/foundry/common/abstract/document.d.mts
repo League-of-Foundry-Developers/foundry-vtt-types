@@ -47,6 +47,7 @@ import type {
   DocumentSocketRequest,
 } from "./_types.d.mts";
 import type { DataModel, DocumentSocketResponse, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 import type { ClientDocumentMixin, WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { SystemConfig } from "#configuration";
 import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
@@ -493,7 +494,7 @@ declare abstract class Document<
    * property exists, but using it requires passing *something* to the first parameter.
    */
   // Note: This uses `never` because it's unsound to try to call `Document.deleteDocument` rather than a specific document's method.
-  static deleteDocuments(ids?: readonly string[], operation?: never): Promise<Document.Any[]>;
+  static deleteDocuments(ids: never, operation?: never): Promise<Document.Any[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
@@ -570,8 +571,11 @@ declare abstract class Document<
    * {@linkcode FogExploration.get} can possibly forward args and return to/from {@linkcode FogExploration.load},
    * which accounts for the `Promise<>` part of the return; All other documents return `SomeDoc.Implementation | IndexEntry<DocName> | null`
    */
-  // TODO: Type for possible index entry return
-  static get(documentId: string, operation?: Document.Database.GetOptions): MaybePromise<Document.Any | null>;
+  // TODO: improve with a conditional return possibly: https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3545
+  static get(
+    documentId: string,
+    operation?: never,
+  ): MaybePromise<Document.Any | CompendiumCollection.IndexEntry | null>;
 
   /**
    * A compatibility method that returns the appropriate name of an embedded collection within this Document.
@@ -620,7 +624,7 @@ declare abstract class Document<
   getEmbeddedDocument(
     embeddedName: never,
     id: string,
-    options: Document.GetEmbeddedDocumentOptions,
+    options?: Document.GetEmbeddedDocumentOptions,
   ): Document.Any | undefined;
 
   /**
@@ -2047,7 +2051,7 @@ declare namespace Document {
 
   // TODO: properly test passing save: true and not
   /** @internal */
-  type _CloneContext<Save extends boolean | null | undefined = boolean | null | undefined> = NullishProps<{
+  type _CloneContext<Save extends boolean | undefined = boolean | undefined> = NullishProps<{
     /**
      * Save the clone to the World database?
      * @defaultValue `false`
@@ -2071,7 +2075,7 @@ declare namespace Document {
    * @privateRemarks Since we've lost the ExtraConstructorOptions type param, we have to extend
    * the (parentless) construction context
    */
-  interface CloneContext<Save extends boolean | null | undefined = boolean | null | undefined>
+  interface CloneContext<Save extends boolean | undefined = boolean | undefined>
     extends _CloneContext<Save>, Omit<Document.ConstructionContext, "parent"> {}
 
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
