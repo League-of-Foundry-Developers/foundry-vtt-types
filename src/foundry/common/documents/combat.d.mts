@@ -253,30 +253,30 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `Combat._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Combat._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Combat.Implementation[],
-    context: Document.ModificationContext<BaseCombat.Parent>,
+    context: BaseCombat.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `Combat._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Combat._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Combat.Implementation[],
-    context: Document.ModificationContext<BaseCombat.Parent>,
+    documents: Combat.Stored[],
+    context: BaseCombat.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `Combat._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Combat._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Combat.Implementation[],
-    context: Document.ModificationContext<BaseCombat.Parent>,
+    documents: Combat.Stored[],
+    context: BaseCombat.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

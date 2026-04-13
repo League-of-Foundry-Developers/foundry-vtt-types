@@ -196,30 +196,30 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `FogExploration._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode FogExploration._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: FogExploration.Implementation[],
-    context: Document.ModificationContext<BaseFogExploration.Parent>,
+    context: BaseFogExploration.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `FogExploration._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode FogExploration._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: FogExploration.Implementation[],
-    context: Document.ModificationContext<BaseFogExploration.Parent>,
+    documents: FogExploration.Stored[],
+    context: BaseFogExploration.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `FogExploration._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode FogExploration._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: FogExploration.Implementation[],
-    context: Document.ModificationContext<BaseFogExploration.Parent>,
+    documents: FogExploration.Stored[],
+    context: BaseFogExploration.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

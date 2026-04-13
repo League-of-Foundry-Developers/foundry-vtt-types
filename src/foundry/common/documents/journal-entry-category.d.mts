@@ -196,30 +196,30 @@ declare abstract class BaseJournalEntryCategory extends Document<
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `JournalEntryCategory._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntryCategory._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: JournalEntryCategory.Implementation[],
-    context: Document.ModificationContext<BaseJournalEntryCategory.Parent>,
+    context: BaseJournalEntryCategory.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `JournalEntryCategory._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntryCategory._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: JournalEntryCategory.Implementation[],
-    context: Document.ModificationContext<BaseJournalEntryCategory.Parent>,
+    documents: JournalEntryCategory.Stored[],
+    context: BaseJournalEntryCategory.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `JournalEntryCategory._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntryCategory._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: JournalEntryCategory.Implementation[],
-    context: Document.ModificationContext<BaseJournalEntryCategory.Parent>,
+    documents: JournalEntryCategory.Stored[],
+    context: BaseJournalEntryCategory.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

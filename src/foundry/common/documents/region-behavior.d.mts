@@ -216,30 +216,30 @@ declare abstract class BaseRegionBehavior<
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `RegionBehavior._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode RegionBehavior._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: RegionBehavior.Implementation[],
-    context: Document.ModificationContext<BaseRegionBehavior.Parent>,
+    context: BaseRegionBehavior.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `RegionBehavior._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode RegionBehavior._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: RegionBehavior.Implementation[],
-    context: Document.ModificationContext<BaseRegionBehavior.Parent>,
+    documents: RegionBehavior.Stored[],
+    context: BaseRegionBehavior.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `RegionBehavior._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode RegionBehavior._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: RegionBehavior.Implementation[],
-    context: Document.ModificationContext<BaseRegionBehavior.Parent>,
+    documents: RegionBehavior.Stored[],
+    context: BaseRegionBehavior.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

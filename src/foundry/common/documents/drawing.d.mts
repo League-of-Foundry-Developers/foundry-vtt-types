@@ -231,30 +231,30 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `DrawingDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode DrawingDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: DrawingDocument.Implementation[],
-    context: Document.ModificationContext<BaseDrawing.Parent>,
+    context: BaseDrawing.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `DrawingDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode DrawingDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: DrawingDocument.Implementation[],
-    context: Document.ModificationContext<BaseDrawing.Parent>,
+    documents: DrawingDocument.Stored[],
+    context: BaseDrawing.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `DrawingDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode DrawingDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: DrawingDocument.Implementation[],
-    context: Document.ModificationContext<BaseDrawing.Parent>,
+    documents: DrawingDocument.Stored[],
+    context: BaseDrawing.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

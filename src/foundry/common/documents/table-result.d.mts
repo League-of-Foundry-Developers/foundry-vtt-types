@@ -229,30 +229,30 @@ declare abstract class BaseTableResult<
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `TableResult._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode TableResult._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: TableResult.Implementation[],
-    context: Document.ModificationContext<BaseTableResult.Parent>,
+    context: BaseTableResult.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `TableResult._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode TableResult._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: TableResult.Implementation[],
-    context: Document.ModificationContext<BaseTableResult.Parent>,
+    documents: TableResult.Stored[],
+    context: BaseTableResult.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `TableResult._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode TableResult._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: TableResult.Implementation[],
-    context: Document.ModificationContext<BaseTableResult.Parent>,
+    documents: TableResult.Stored[],
+    context: BaseTableResult.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

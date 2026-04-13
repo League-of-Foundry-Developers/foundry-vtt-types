@@ -221,30 +221,30 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `MeasuredTemplateDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode MeasuredTemplateDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: MeasuredTemplateDocument.Implementation[],
-    context: Document.ModificationContext<BaseMeasuredTemplate.Parent>,
+    context: BaseMeasuredTemplate.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `MeasuredTemplateDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode MeasuredTemplateDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: MeasuredTemplateDocument.Implementation[],
-    context: Document.ModificationContext<BaseMeasuredTemplate.Parent>,
+    documents: MeasuredTemplateDocument.Stored[],
+    context: BaseMeasuredTemplate.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `MeasuredTemplateDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode MeasuredTemplateDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: MeasuredTemplateDocument.Implementation[],
-    context: Document.ModificationContext<BaseMeasuredTemplate.Parent>,
+    documents: MeasuredTemplateDocument.Stored[],
+    context: BaseMeasuredTemplate.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   protected static override _schema: SchemaField<BaseMeasuredTemplate.Schema>;

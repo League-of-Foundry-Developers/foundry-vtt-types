@@ -189,30 +189,30 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `AmbientSoundDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode AmbientSoundDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: AmbientSoundDocument.Implementation[],
-    context: Document.ModificationContext<BaseAmbientSound.Parent>,
+    context: BaseAmbientSound.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `AmbientSoundDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode AmbientSoundDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: AmbientSoundDocument.Implementation[],
-    context: Document.ModificationContext<BaseAmbientSound.Parent>,
+    documents: AmbientSoundDocument.Stored[],
+    context: BaseAmbientSound.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `AmbientSoundDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode AmbientSoundDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: AmbientSoundDocument.Implementation[],
-    context: Document.ModificationContext<BaseAmbientSound.Parent>,
+    documents: AmbientSoundDocument.Stored[],
+    context: BaseAmbientSound.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

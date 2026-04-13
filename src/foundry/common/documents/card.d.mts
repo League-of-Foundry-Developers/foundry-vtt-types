@@ -212,30 +212,30 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `Card._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Card._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Card.Implementation[],
-    context: Document.ModificationContext<BaseCard.Parent>,
+    context: BaseCard.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `Card._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Card._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Card.Implementation[],
-    context: Document.ModificationContext<BaseCard.Parent>,
+    documents: Card.Stored[],
+    context: BaseCard.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `Card._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Card._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Card.Implementation[],
-    context: Document.ModificationContext<BaseCard.Parent>,
+    documents: Card.Stored[],
+    context: BaseCard.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

@@ -377,30 +377,30 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `TokenDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode TokenDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: TokenDocument.Implementation[],
-    context: Document.ModificationContext<BaseToken.Parent>,
+    context: BaseToken.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `TokenDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode TokenDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: TokenDocument.Implementation[],
-    context: Document.ModificationContext<BaseToken.Parent>,
+    documents: TokenDocument.Stored[],
+    context: BaseToken.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `TokenDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode TokenDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: TokenDocument.Implementation[],
-    context: Document.ModificationContext<BaseToken.Parent>,
+    documents: TokenDocument.Stored[],
+    context: BaseToken.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

@@ -201,30 +201,30 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `PlaylistSound._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode PlaylistSound._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: PlaylistSound.Implementation[],
-    context: Document.ModificationContext<BasePlaylistSound.Parent>,
+    context: BasePlaylistSound.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `PlaylistSound._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode PlaylistSound._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: PlaylistSound.Implementation[],
-    context: Document.ModificationContext<BasePlaylistSound.Parent>,
+    documents: PlaylistSound.Stored[],
+    context: BasePlaylistSound.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `PlaylistSound._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode PlaylistSound._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: PlaylistSound.Implementation[],
-    context: Document.ModificationContext<BasePlaylistSound.Parent>,
+    documents: PlaylistSound.Stored[],
+    context: BasePlaylistSound.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

@@ -243,30 +243,30 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `JournalEntry._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntry._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: JournalEntry.Implementation[],
-    context: Document.ModificationContext<BaseJournalEntry.Parent>,
+    context: BaseJournalEntry.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `JournalEntry._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntry._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: JournalEntry.Implementation[],
-    context: Document.ModificationContext<BaseJournalEntry.Parent>,
+    documents: JournalEntry.Stored[],
+    context: BaseJournalEntry.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `JournalEntry._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntry._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: JournalEntry.Implementation[],
-    context: Document.ModificationContext<BaseJournalEntry.Parent>,
+    documents: JournalEntry.Stored[],
+    context: BaseJournalEntry.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

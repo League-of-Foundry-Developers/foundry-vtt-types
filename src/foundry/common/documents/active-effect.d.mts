@@ -226,30 +226,30 @@ declare abstract class BaseActiveEffect<
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `ActiveEffect._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode ActiveEffect._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: ActiveEffect.Implementation[],
-    context: Document.ModificationContext<BaseActiveEffect.Parent>,
+    context: BaseActiveEffect.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `ActiveEffect._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode ActiveEffect._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: ActiveEffect.Implementation[],
-    context: Document.ModificationContext<BaseActiveEffect.Parent>,
+    documents: ActiveEffect.Stored[],
+    context: BaseActiveEffect.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `ActiveEffect._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode ActiveEffect._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: ActiveEffect.Implementation[],
-    context: Document.ModificationContext<BaseActiveEffect.Parent>,
+    documents: ActiveEffect.Stored[],
+    context: BaseActiveEffect.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

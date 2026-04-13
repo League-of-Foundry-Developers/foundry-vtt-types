@@ -198,30 +198,30 @@ declare abstract class BaseCombatantGroup<
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `CombatantGroup._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode CombatantGroup._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: CombatantGroup.Implementation[],
-    context: Document.ModificationContext<BaseCombatantGroup.Parent>,
+    context: BaseCombatantGroup.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `CombatantGroup._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode CombatantGroup._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: CombatantGroup.Implementation[],
-    context: Document.ModificationContext<BaseCombatantGroup.Parent>,
+    documents: CombatantGroup.Stored[],
+    context: BaseCombatantGroup.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `CombatantGroup._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode CombatantGroup._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: CombatantGroup.Implementation[],
-    context: Document.ModificationContext<BaseCombatantGroup.Parent>,
+    documents: CombatantGroup.Stored[],
+    context: BaseCombatantGroup.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

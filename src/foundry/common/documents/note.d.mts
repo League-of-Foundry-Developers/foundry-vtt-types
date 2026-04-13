@@ -205,30 +205,30 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `NoteDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode NoteDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: NoteDocument.Implementation[],
-    context: Document.ModificationContext<BaseNote.Parent>,
+    context: BaseNote.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `NoteDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode NoteDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: NoteDocument.Implementation[],
-    context: Document.ModificationContext<BaseNote.Parent>,
+    documents: NoteDocument.Stored[],
+    context: BaseNote.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `NoteDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode NoteDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: NoteDocument.Implementation[],
-    context: Document.ModificationContext<BaseNote.Parent>,
+    documents: NoteDocument.Stored[],
+    context: BaseNote.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

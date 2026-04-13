@@ -257,30 +257,30 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `Cards._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Cards._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Cards.Implementation[],
-    context: Document.ModificationContext<BaseCards.Parent>,
+    context: BaseCards.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `Cards._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Cards._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Cards.Implementation[],
-    context: Document.ModificationContext<BaseCards.Parent>,
+    documents: Cards.Stored[],
+    context: BaseCards.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `Cards._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Cards._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Cards.Implementation[],
-    context: Document.ModificationContext<BaseCards.Parent>,
+    documents: Cards.Stored[],
+    context: BaseCards.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

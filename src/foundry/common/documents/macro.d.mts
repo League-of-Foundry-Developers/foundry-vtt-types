@@ -233,34 +233,31 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
     user: User.Implementation,
   ): Promise<void>;
 
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `Macro._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Macro._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Macro.Implementation[],
-    context: Document.ModificationContext<BaseMacro.Parent>,
+    context: BaseMacro.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `Macro._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Macro._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Macro.Implementation[],
-    context: Document.ModificationContext<BaseMacro.Parent>,
+    documents: Macro.Stored[],
+    context: BaseMacro.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `Macro._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Macro._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Macro.Implementation[],
-    context: Document.ModificationContext<BaseMacro.Parent>,
+    documents: Macro.Stored[],
+    context: BaseMacro.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

@@ -293,30 +293,30 @@ declare abstract class BaseActorDelta<
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `ActorDelta._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode ActorDelta._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: ActorDelta.Implementation[],
-    context: Document.ModificationContext<BaseActorDelta.Parent>,
+    context: BaseActorDelta.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `ActorDelta._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode ActorDelta._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: ActorDelta.Implementation[],
-    context: Document.ModificationContext<BaseActorDelta.Parent>,
+    documents: ActorDelta.Stored[],
+    context: BaseActorDelta.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `ActorDelta._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode ActorDelta._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: ActorDelta.Implementation[],
-    context: Document.ModificationContext<BaseActorDelta.Parent>,
+    documents: ActorDelta.Stored[],
+    context: BaseActorDelta.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

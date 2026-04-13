@@ -210,30 +210,30 @@ declare abstract class BaseCombatant<
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `Combatant._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Combatant._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Combatant.Implementation[],
-    context: Document.ModificationContext<BaseCombatant.Parent>,
+    context: BaseCombatant.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `Combatant._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Combatant._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Combatant.Implementation[],
-    context: Document.ModificationContext<BaseCombatant.Parent>,
+    documents: Combatant.Stored[],
+    context: BaseCombatant.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `Combatant._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Combatant._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Combatant.Implementation[],
-    context: Document.ModificationContext<BaseCombatant.Parent>,
+    documents: Combatant.Stored[],
+    context: BaseCombatant.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

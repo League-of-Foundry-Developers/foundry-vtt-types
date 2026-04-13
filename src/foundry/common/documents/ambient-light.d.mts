@@ -188,30 +188,30 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `AmbientLightDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode AmbientLightDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: AmbientLightDocument.Implementation[],
-    context: Document.ModificationContext<BaseAmbientLight.Parent>,
+    context: BaseAmbientLight.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `AmbientLightDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode AmbientLightDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: AmbientLightDocument.Implementation[],
-    context: Document.ModificationContext<BaseAmbientLight.Parent>,
+    documents: AmbientLightDocument.Stored[],
+    context: BaseAmbientLight.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `AmbientLightDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode AmbientLightDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: AmbientLightDocument.Implementation[],
-    context: Document.ModificationContext<BaseAmbientLight.Parent>,
+    documents: AmbientLightDocument.Stored[],
+    context: BaseAmbientLight.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

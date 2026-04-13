@@ -190,8 +190,8 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `WallDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode WallDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: WallDocument.Implementation[],
@@ -199,20 +199,20 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `WallDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode WallDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: WallDocument.Implementation[],
+    documents: WallDocument.Stored[],
     context: BaseWall.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `WallDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode WallDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: WallDocument.Implementation[],
+    documents: WallDocument.Stored[],
     context: BaseWall.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 

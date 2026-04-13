@@ -179,30 +179,30 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `Setting._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Setting._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Setting.Implementation[],
-    context: Document.ModificationContext<BaseSetting.Parent>,
+    context: BaseSetting.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `Setting._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Setting._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Setting.Implementation[],
-    context: Document.ModificationContext<BaseSetting.Parent>,
+    documents: Setting.Stored[],
+    context: BaseSetting.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `Setting._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Setting._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Setting.Implementation[],
-    context: Document.ModificationContext<BaseSetting.Parent>,
+    documents: Setting.Stored[],
+    context: BaseSetting.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */

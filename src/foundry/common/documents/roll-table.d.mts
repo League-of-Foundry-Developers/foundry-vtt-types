@@ -243,30 +243,30 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `RollTable._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode RollTable._onCreateOperation}" (since v12, until v14)
    */
-  protected static _onCreateDocuments(
+  protected static override _onCreateDocuments(
     documents: RollTable.Implementation[],
-    context: Document.ModificationContext<BaseRollTable.Parent>,
+    context: BaseRollTable.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `RollTable._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode RollTable._onUpdateOperation}" (since v12, until v14)
    */
-  protected static _onUpdateDocuments(
-    documents: RollTable.Implementation[],
-    context: Document.ModificationContext<BaseRollTable.Parent>,
+  protected static override _onUpdateDocuments(
+    documents: RollTable.Stored[],
+    context: BaseRollTable.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `RollTable._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode RollTable._onDeleteOperation}" (since v12, until v14)
    */
-  protected static _onDeleteDocuments(
-    documents: RollTable.Implementation[],
-    context: Document.ModificationContext<BaseRollTable.Parent>,
+  protected static override _onDeleteDocuments(
+    documents: RollTable.Stored[],
+    context: BaseRollTable.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */
