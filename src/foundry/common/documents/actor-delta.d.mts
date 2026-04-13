@@ -166,7 +166,7 @@ declare abstract class BaseActorDelta<
   ): Promise<BaseActorDelta.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseActorDelta.UpdateData | undefined,
+    data: BaseActorDelta.UpdateInput,
     operation?: BaseActorDelta.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

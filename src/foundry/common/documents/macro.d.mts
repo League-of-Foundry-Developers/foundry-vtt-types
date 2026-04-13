@@ -146,7 +146,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   ): Promise<BaseMacro.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseMacro.UpdateData | undefined,
+    data: BaseMacro.UpdateInput,
     operation?: BaseMacro.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

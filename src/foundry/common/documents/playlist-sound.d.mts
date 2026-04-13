@@ -104,7 +104,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   ): Promise<BasePlaylistSound.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BasePlaylistSound.UpdateData | undefined,
+    data: BasePlaylistSound.UpdateInput,
     operation?: BasePlaylistSound.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

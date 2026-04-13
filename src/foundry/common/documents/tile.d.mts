@@ -135,10 +135,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     operation?: BaseTile.Database.CreateOperation<Temporary>,
   ): Promise<BaseTile.TemporaryIf<Temporary> | undefined>;
 
-  override update(
-    data: BaseTile.UpdateData | undefined,
-    operation?: BaseTile.Database.UpdateOperation,
-  ): Promise<this | undefined>;
+  override update(data: BaseTile.UpdateInput, operation?: BaseTile.Database.UpdateOperation): Promise<this | undefined>;
 
   override delete(operation?: BaseTile.Database.DeleteOperation): Promise<this | undefined>;
 

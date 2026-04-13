@@ -91,7 +91,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   ): Promise<BaseAmbientLight.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseAmbientLight.UpdateData | undefined,
+    data: BaseAmbientLight.UpdateInput,
     operation?: BaseAmbientLight.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

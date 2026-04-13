@@ -141,10 +141,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     operation?: BaseItem.Database.CreateOperation<Temporary>,
   ): Promise<BaseItem.TemporaryIf<Temporary> | undefined>;
 
-  override update(
-    data: BaseItem.UpdateData | undefined,
-    operation?: BaseItem.Database.UpdateOperation,
-  ): Promise<this | undefined>;
+  override update(data: BaseItem.UpdateInput, operation?: BaseItem.Database.UpdateOperation): Promise<this | undefined>;
 
   override delete(operation?: BaseItem.Database.DeleteOperation): Promise<this | undefined>;
 

@@ -95,10 +95,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
     operation?: BaseWall.Database.CreateOperation<Temporary>,
   ): Promise<BaseWall.TemporaryIf<Temporary> | undefined>;
 
-  override update(
-    data: BaseWall.UpdateData | undefined,
-    operation?: BaseWall.Database.UpdateOperation,
-  ): Promise<this | undefined>;
+  override update(data: BaseWall.UpdateInput, operation?: BaseWall.Database.UpdateOperation): Promise<this | undefined>;
 
   override delete(operation?: BaseWall.Database.DeleteOperation): Promise<this | undefined>;
 

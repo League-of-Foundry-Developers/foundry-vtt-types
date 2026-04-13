@@ -133,7 +133,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   ): Promise<BaseCards.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseCards.UpdateData | undefined,
+    data: BaseCards.UpdateInput,
     operation?: BaseCards.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

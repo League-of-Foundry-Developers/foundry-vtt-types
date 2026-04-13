@@ -104,7 +104,7 @@ declare abstract class BaseJournalEntryPage<
   ): Promise<BaseJournalEntryPage.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseJournalEntryPage.UpdateData | undefined,
+    data: BaseJournalEntryPage.UpdateInput,
     operation?: BaseJournalEntryPage.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

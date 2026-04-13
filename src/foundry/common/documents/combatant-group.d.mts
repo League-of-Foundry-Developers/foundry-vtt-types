@@ -101,7 +101,7 @@ declare abstract class BaseCombatantGroup<
   ): Promise<BaseCombatantGroup.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseCombatantGroup.UpdateData | undefined,
+    data: BaseCombatantGroup.UpdateInput,
     operation?: BaseCombatantGroup.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

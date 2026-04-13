@@ -110,10 +110,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     operation?: BaseNote.Database.CreateOperation<Temporary>,
   ): Promise<BaseNote.TemporaryIf<Temporary> | undefined>;
 
-  override update(
-    data: BaseNote.UpdateData | undefined,
-    operation?: BaseNote.Database.UpdateOperation,
-  ): Promise<this | undefined>;
+  override update(data: BaseNote.UpdateInput, operation?: BaseNote.Database.UpdateOperation): Promise<this | undefined>;
 
   override delete(operation?: BaseNote.Database.DeleteOperation): Promise<this | undefined>;
 

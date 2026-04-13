@@ -116,7 +116,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   ): Promise<BasePlaylist.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BasePlaylist.UpdateData | undefined,
+    data: BasePlaylist.UpdateInput,
     operation?: BasePlaylist.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

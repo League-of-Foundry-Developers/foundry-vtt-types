@@ -136,10 +136,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
     operation?: BaseUser.Database.CreateOperation<Temporary>,
   ): Promise<BaseUser.TemporaryIf<Temporary> | undefined>;
 
-  override update(
-    data: BaseUser.UpdateData | undefined,
-    operation?: BaseUser.Database.UpdateOperation,
-  ): Promise<this | undefined>;
+  override update(data: BaseUser.UpdateInput, operation?: BaseUser.Database.UpdateOperation): Promise<this | undefined>;
 
   override delete(operation?: BaseUser.Database.DeleteOperation): Promise<this | undefined>;
 

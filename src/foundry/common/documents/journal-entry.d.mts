@@ -116,7 +116,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   ): Promise<BaseJournalEntry.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseJournalEntry.UpdateData | undefined,
+    data: BaseJournalEntry.UpdateInput,
     operation?: BaseJournalEntry.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

@@ -101,7 +101,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   ): Promise<BaseSetting.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseSetting.UpdateData | undefined,
+    data: BaseSetting.UpdateInput,
     operation?: BaseSetting.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

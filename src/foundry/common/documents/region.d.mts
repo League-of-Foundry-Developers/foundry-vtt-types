@@ -94,7 +94,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   ): Promise<BaseRegion.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseRegion.UpdateData | undefined,
+    data: BaseRegion.UpdateInput,
     operation?: BaseRegion.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

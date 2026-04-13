@@ -119,7 +119,7 @@ declare abstract class BaseRegionBehavior<
   ): Promise<BaseRegionBehavior.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseRegionBehavior.UpdateData | undefined,
+    data: BaseRegionBehavior.UpdateInput,
     operation?: BaseRegionBehavior.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

@@ -221,7 +221,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   ): Promise<BaseScene.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseScene.UpdateData | undefined,
+    data: BaseScene.UpdateInput,
     operation?: BaseScene.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

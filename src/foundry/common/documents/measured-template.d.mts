@@ -124,7 +124,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   ): Promise<BaseMeasuredTemplate.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseMeasuredTemplate.UpdateData | undefined,
+    data: BaseMeasuredTemplate.UpdateInput,
     operation?: BaseMeasuredTemplate.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

@@ -130,7 +130,7 @@ declare abstract class BaseChatMessage<
   ): Promise<BaseChatMessage.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseChatMessage.UpdateData | undefined,
+    data: BaseChatMessage.UpdateInput,
     operation?: BaseChatMessage.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

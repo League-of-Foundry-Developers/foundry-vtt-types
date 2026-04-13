@@ -119,7 +119,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   ): Promise<BaseRollTable.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseRollTable.UpdateData | undefined,
+    data: BaseRollTable.UpdateInput,
     operation?: BaseRollTable.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

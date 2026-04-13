@@ -248,7 +248,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): Promise<BaseToken.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseToken.UpdateData | undefined,
+    data: BaseToken.UpdateInput,
     operation?: BaseToken.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

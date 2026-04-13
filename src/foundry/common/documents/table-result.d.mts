@@ -132,7 +132,7 @@ declare abstract class BaseTableResult<
   ): Promise<BaseTableResult.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseTableResult.UpdateData | undefined,
+    data: BaseTableResult.UpdateInput,
     operation?: BaseTableResult.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

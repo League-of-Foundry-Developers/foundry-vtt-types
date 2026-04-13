@@ -108,7 +108,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   ): Promise<BaseAdventure.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseAdventure.UpdateData | undefined,
+    data: BaseAdventure.UpdateInput,
     operation?: BaseAdventure.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

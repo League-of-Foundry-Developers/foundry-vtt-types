@@ -92,7 +92,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   ): Promise<BaseAmbientSound.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseAmbientSound.UpdateData | undefined,
+    data: BaseAmbientSound.UpdateInput,
     operation?: BaseAmbientSound.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

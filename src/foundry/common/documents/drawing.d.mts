@@ -134,7 +134,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   ): Promise<BaseDrawing.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseDrawing.UpdateData | undefined,
+    data: BaseDrawing.UpdateInput,
     operation?: BaseDrawing.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

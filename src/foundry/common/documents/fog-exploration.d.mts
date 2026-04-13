@@ -105,7 +105,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   ): Promise<BaseFogExploration.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseFogExploration.UpdateData | undefined,
+    data: BaseFogExploration.UpdateInput,
     operation?: BaseFogExploration.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

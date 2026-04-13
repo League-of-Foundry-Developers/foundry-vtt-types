@@ -135,7 +135,7 @@ declare abstract class BaseActiveEffect<
   ): Promise<BaseActiveEffect.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseActiveEffect.UpdateData | undefined,
+    data: BaseActiveEffect.UpdateInput,
     operation?: BaseActiveEffect.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

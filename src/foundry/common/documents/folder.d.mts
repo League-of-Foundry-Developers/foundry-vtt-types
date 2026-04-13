@@ -120,7 +120,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   ): Promise<BaseFolder.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseFolder.UpdateData | undefined,
+    data: BaseFolder.UpdateInput,
     operation?: BaseFolder.Database.UpdateOperation,
   ): Promise<this | undefined>;
 

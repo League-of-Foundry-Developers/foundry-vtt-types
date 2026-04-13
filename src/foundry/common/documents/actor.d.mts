@@ -156,7 +156,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   ): Promise<BaseActor.TemporaryIf<Temporary> | undefined>;
 
   override update(
-    data: BaseActor.UpdateData | undefined,
+    data: BaseActor.UpdateInput,
     operation?: BaseActor.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
