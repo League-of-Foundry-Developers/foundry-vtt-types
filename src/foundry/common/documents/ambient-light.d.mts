@@ -118,7 +118,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   override unsetFlag<Scope extends BaseAmbientLight.Flags.Scope, Key extends BaseAmbientLight.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseAmbientLight.CreateData,

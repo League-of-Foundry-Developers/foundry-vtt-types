@@ -275,7 +275,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   override unsetFlag<Scope extends BaseScene.Flags.Scope, Key extends BaseScene.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseScene.CreateData,

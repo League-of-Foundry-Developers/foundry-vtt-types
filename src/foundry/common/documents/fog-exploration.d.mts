@@ -132,7 +132,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   override unsetFlag<Scope extends BaseFogExploration.Flags.Scope, Key extends BaseFogExploration.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseFogExploration.CreateData,

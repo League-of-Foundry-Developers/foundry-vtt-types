@@ -644,7 +644,7 @@ expectTypeOf(
 // TODO: mock up configured flags to test
 expectTypeOf(fullTestAE.getFlag("core", "overlay")).toEqualTypeOf<boolean | undefined>();
 expectTypeOf(fullTestAE.setFlag("core", "overlay", true)).toEqualTypeOf<Promise<TestActiveEffect<"base">>>();
-expectTypeOf(fullTestAE.unsetFlag("core", "overlay")).toEqualTypeOf<Promise<TestActiveEffect<"base">>>();
+expectTypeOf(fullTestAE.unsetFlag("core", "overlay")).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 
 expectTypeOf(
   fullTestAE["_preCreate"](

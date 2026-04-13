@@ -189,7 +189,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   override unsetFlag<Scope extends BaseCombat.Flags.Scope, Key extends BaseCombat.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseCombat.CreateData,

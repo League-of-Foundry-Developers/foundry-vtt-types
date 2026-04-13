@@ -170,7 +170,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   override unsetFlag<Scope extends BasePlaylist.Flags.Scope, Key extends BasePlaylist.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BasePlaylist.CreateData,

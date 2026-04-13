@@ -307,7 +307,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   override unsetFlag<Scope extends BaseToken.Flags.Scope, Key extends BaseToken.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseToken.CreateData,

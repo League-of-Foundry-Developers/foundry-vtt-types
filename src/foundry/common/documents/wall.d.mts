@@ -120,7 +120,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
   override unsetFlag<Scope extends BaseWall.Flags.Scope, Key extends BaseWall.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseWall.CreateData,

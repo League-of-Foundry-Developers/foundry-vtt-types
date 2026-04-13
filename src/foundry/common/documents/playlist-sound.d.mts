@@ -131,7 +131,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   override unsetFlag<Scope extends BasePlaylistSound.Flags.Scope, Key extends BasePlaylistSound.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BasePlaylistSound.CreateData,

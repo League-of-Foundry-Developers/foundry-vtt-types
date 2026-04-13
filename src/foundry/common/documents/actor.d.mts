@@ -210,7 +210,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   override unsetFlag<Scope extends BaseActor.Flags.Scope, Key extends BaseActor.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _onCreate(
     data: BaseActor.CreateData,

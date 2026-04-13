@@ -170,7 +170,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   override unsetFlag<Scope extends BaseMacro.Flags.Scope, Key extends BaseMacro.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _onCreate(
     data: BaseMacro.CreateData,

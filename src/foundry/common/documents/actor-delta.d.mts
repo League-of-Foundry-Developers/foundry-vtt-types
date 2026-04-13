@@ -223,7 +223,7 @@ declare abstract class BaseActorDelta<
   override unsetFlag<Scope extends BaseActorDelta.Flags.Scope, Key extends BaseActorDelta.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseActorDelta.CreateData,

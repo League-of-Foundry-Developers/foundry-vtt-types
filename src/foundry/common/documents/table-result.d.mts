@@ -159,7 +159,7 @@ declare abstract class BaseTableResult<
   override unsetFlag<Scope extends BaseTableResult.Flags.Scope, Key extends BaseTableResult.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseTableResult.CreateData,

@@ -161,7 +161,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   override unsetFlag<Scope extends BaseDrawing.Flags.Scope, Key extends BaseDrawing.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseDrawing.CreateData,

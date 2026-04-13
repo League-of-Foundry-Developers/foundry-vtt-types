@@ -128,7 +128,7 @@ declare abstract class BaseCombatantGroup<
   override unsetFlag<Scope extends BaseCombatantGroup.Flags.Scope, Key extends BaseCombatantGroup.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseCombatantGroup.CreateData,

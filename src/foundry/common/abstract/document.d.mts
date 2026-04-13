@@ -731,7 +731,7 @@ declare abstract class Document<
    * @remarks This method is a wrapper on {@linkcode Document.delete | #delete}, so it can return `undefined` if the update
    * is cancelled by {@linkcode Document._preDelete | #_preDelete} or the associated hook.
    */
-  unsetFlag(scope: never, key: never): Promise<this>;
+  unsetFlag(scope: never, key: never): Promise<this | undefined>;
 
   /**
    * Pre-process a creation operation for a single Document instance.

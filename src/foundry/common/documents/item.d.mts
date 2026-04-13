@@ -196,7 +196,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   override unsetFlag<Scope extends BaseItem.Flags.Scope, Key extends BaseItem.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseItem.CreateData,

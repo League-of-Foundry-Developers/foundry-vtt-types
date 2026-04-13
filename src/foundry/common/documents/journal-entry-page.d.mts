@@ -131,7 +131,7 @@ declare abstract class BaseJournalEntryPage<
   override unsetFlag<Scope extends BaseJournalEntryPage.Flags.Scope, Key extends BaseJournalEntryPage.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseJournalEntryPage.CreateData,

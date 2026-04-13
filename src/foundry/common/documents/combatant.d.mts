@@ -140,7 +140,7 @@ declare abstract class BaseCombatant<
   override unsetFlag<Scope extends BaseCombatant.Flags.Scope, Key extends BaseCombatant.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseCombatant.CreateData,

@@ -119,7 +119,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   override unsetFlag<Scope extends BaseAmbientSound.Flags.Scope, Key extends BaseAmbientSound.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   override _preCreate(
     data: BaseAmbientSound.CreateData,

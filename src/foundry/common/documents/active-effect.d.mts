@@ -162,7 +162,7 @@ declare abstract class BaseActiveEffect<
   override unsetFlag<Scope extends BaseActiveEffect.Flags.Scope, Key extends BaseActiveEffect.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _onCreate(
     data: BaseActiveEffect.CreateData,

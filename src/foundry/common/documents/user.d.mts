@@ -161,7 +161,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   override unsetFlag<Scope extends BaseUser.Flags.Scope, Key extends BaseUser.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseUser.CreateData,

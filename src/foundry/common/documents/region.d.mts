@@ -151,7 +151,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   override unsetFlag<Scope extends BaseRegion.Flags.Scope, Key extends BaseRegion.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseRegion.CreateData,

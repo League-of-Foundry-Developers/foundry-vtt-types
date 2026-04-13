@@ -151,7 +151,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   override unsetFlag<Scope extends BaseMeasuredTemplate.Flags.Scope, Key extends BaseMeasuredTemplate.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseMeasuredTemplate.CreateData,

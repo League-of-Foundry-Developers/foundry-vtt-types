@@ -146,7 +146,7 @@ declare abstract class BaseRegionBehavior<
   override unsetFlag<Scope extends BaseRegionBehavior.Flags.Scope, Key extends BaseRegionBehavior.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseRegionBehavior.CreateData,

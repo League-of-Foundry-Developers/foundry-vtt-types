@@ -142,7 +142,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   override unsetFlag<Scope extends BaseCard.Flags.Scope, Key extends BaseCard.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseCard.CreateData,

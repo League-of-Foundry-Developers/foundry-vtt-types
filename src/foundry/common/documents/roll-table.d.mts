@@ -173,7 +173,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   override unsetFlag<Scope extends BaseRollTable.Flags.Scope, Key extends BaseRollTable.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected _preCreate(
     data: BaseRollTable.CreateData,

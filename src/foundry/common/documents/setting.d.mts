@@ -111,6 +111,8 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override getCollectionName(name: string): null;
 
+  // TODO: Settings have no `flags` in their schema, but the methods still work and just return `undefined`; they should be added to the template.
+
   protected override _preCreate(
     data: BaseSetting.CreateData,
     options: BaseSetting.Database.PreCreateOptions,

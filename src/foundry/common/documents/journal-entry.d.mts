@@ -173,7 +173,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   override unsetFlag<Scope extends BaseJournalEntry.Flags.Scope, Key extends BaseJournalEntry.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseJournalEntry.CreateData,

@@ -126,7 +126,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
   override unsetFlag<
     Scope extends BaseJournalEntryCategory.Flags.Scope,
     Key extends BaseJournalEntryCategory.Flags.Key<Scope>,
-  >(scope: Scope, key: Key): Promise<this>;
+  >(scope: Scope, key: Key): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseJournalEntryCategory.CreateData,

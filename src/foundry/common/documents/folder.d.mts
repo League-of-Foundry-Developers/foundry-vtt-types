@@ -142,7 +142,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   override unsetFlag<Scope extends BaseFolder.Flags.Scope, Key extends BaseFolder.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseFolder.CreateData,
