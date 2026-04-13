@@ -1,3 +1,4 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -95,10 +96,13 @@ declare abstract class BaseCombatantGroup<
     operation?: Document.Database.DeleteDocumentsOperation<BaseCombatantGroup.Database.Delete>,
   ): Promise<Array<CombatantGroup.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseCombatantGroup.CreateData | BaseCombatantGroup.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseCombatantGroup.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseCombatantGroup.Database.CreateOperation<Temporary>,
-  ): Promise<BaseCombatantGroup.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseCombatantGroup.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseCombatantGroup.UpdateInput,

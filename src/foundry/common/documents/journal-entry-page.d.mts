@@ -1,3 +1,4 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -98,10 +99,13 @@ declare abstract class BaseJournalEntryPage<
     operation?: Document.Database.DeleteDocumentsOperation<BaseJournalEntryPage.Database.Delete>,
   ): Promise<Array<JournalEntryPage.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseJournalEntryPage.CreateData | BaseJournalEntryPage.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseJournalEntryPage.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseJournalEntryPage.Database.CreateOperation<Temporary>,
-  ): Promise<BaseJournalEntryPage.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseJournalEntryPage.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseJournalEntryPage.UpdateInput,

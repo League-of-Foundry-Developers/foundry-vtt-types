@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -110,10 +110,13 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     operation?: Document.Database.DeleteDocumentsOperation<BasePlaylist.Database.Delete>,
   ): Promise<Array<Playlist.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BasePlaylist.CreateData | BasePlaylist.CreateData[],
+  static override create<
+    Data extends MaybeArray<BasePlaylist.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BasePlaylist.Database.CreateOperation<Temporary>,
-  ): Promise<BasePlaylist.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BasePlaylist.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BasePlaylist.UpdateInput,

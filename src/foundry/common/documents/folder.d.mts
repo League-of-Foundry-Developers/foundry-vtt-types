@@ -1,3 +1,4 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -114,10 +115,13 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
     operation?: Document.Database.DeleteDocumentsOperation<BaseFolder.Database.Delete>,
   ): Promise<Array<Folder.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseFolder.CreateData | BaseFolder.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseFolder.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseFolder.Database.CreateOperation<Temporary>,
-  ): Promise<BaseFolder.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseFolder.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseFolder.UpdateInput,

@@ -1,3 +1,4 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -99,10 +100,13 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     operation?: Document.Database.DeleteDocumentsOperation<BaseFogExploration.Database.Delete>,
   ): Promise<Array<FogExploration.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseFogExploration.CreateData | BaseFogExploration.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseFogExploration.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseFogExploration.Database.CreateOperation<Temporary>,
-  ): Promise<BaseFogExploration.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseFogExploration.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseFogExploration.UpdateInput,

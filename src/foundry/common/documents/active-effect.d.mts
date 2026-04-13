@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -129,10 +129,13 @@ declare abstract class BaseActiveEffect<
     operation?: Document.Database.DeleteDocumentsOperation<BaseActiveEffect.Database.Delete>,
   ): Promise<Array<ActiveEffect.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = false>(
-    data: BaseActiveEffect.CreateData | BaseActiveEffect.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseActiveEffect.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseActiveEffect.Database.CreateOperation<Temporary>,
-  ): Promise<BaseActiveEffect.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseActiveEffect.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseActiveEffect.UpdateInput,

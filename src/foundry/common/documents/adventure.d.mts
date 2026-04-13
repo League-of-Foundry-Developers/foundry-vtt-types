@@ -1,5 +1,6 @@
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
+import type { MaybeArray } from "#utils";
 import type { fields } from "../data/_module.d.mts";
 
 /**
@@ -102,10 +103,13 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     operation?: Document.Database.DeleteDocumentsOperation<BaseAdventure.Database.Delete>,
   ): Promise<Array<Adventure.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseAdventure.CreateData | BaseAdventure.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseAdventure.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseAdventure.Database.CreateOperation<Temporary>,
-  ): Promise<BaseAdventure.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseAdventure.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseAdventure.UpdateInput,

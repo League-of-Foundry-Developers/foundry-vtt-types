@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -128,10 +128,13 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     operation?: Document.Database.DeleteDocumentsOperation<BaseDrawing.Database.Delete>,
   ): Promise<Array<DrawingDocument.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseDrawing.CreateData | BaseDrawing.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseDrawing.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseDrawing.Database.CreateOperation<Temporary>,
-  ): Promise<BaseDrawing.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseDrawing.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseDrawing.UpdateInput,

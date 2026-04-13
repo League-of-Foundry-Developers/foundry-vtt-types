@@ -1,5 +1,6 @@
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
+import type { MaybeArray } from "#utils";
 
 /**
  * The Document definition for an AmbientLight.
@@ -85,10 +86,13 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
     operation?: Document.Database.DeleteDocumentsOperation<BaseAmbientLight.Database.Delete>,
   ): Promise<Array<AmbientLightDocument.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseAmbientLight.CreateData | BaseAmbientLight.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseAmbientLight.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseAmbientLight.Database.CreateOperation<Temporary>,
-  ): Promise<BaseAmbientLight.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseAmbientLight.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseAmbientLight.UpdateInput,

@@ -1,3 +1,4 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -86,10 +87,13 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     operation?: Document.Database.DeleteDocumentsOperation<BaseAmbientSound.Database.Delete>,
   ): Promise<Array<AmbientSoundDocument.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseAmbientSound.CreateData | BaseAmbientSound.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseAmbientSound.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseAmbientSound.Database.CreateOperation<Temporary>,
-  ): Promise<BaseAmbientSound.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseAmbientSound.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseAmbientSound.UpdateInput,

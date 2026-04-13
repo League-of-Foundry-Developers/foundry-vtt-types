@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
@@ -124,10 +124,13 @@ declare abstract class BaseChatMessage<
     operation?: Document.Database.DeleteDocumentsOperation<BaseChatMessage.Database.Delete>,
   ): Promise<Array<ChatMessage.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseChatMessage.CreateData | BaseChatMessage.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseChatMessage.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseChatMessage.Database.CreateOperation<Temporary>,
-  ): Promise<BaseChatMessage.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseChatMessage.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseChatMessage.UpdateInput,

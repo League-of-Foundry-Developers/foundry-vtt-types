@@ -1,4 +1,4 @@
-import type { AnyMutableObject, Identity } from "#utils";
+import type { AnyMutableObject, Identity, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 import type EmbeddedCollection from "../abstract/embedded-collection.d.mts";
@@ -160,11 +160,13 @@ declare abstract class BaseActorDelta<
     operation?: Document.Database.DeleteDocumentsOperation<BaseActorDelta.Database.Delete>,
   ): Promise<Array<ActorDelta.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseActorDelta.CreateData | BaseActorDelta.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseActorDelta.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseActorDelta.Database.CreateOperation<Temporary>,
-  ): Promise<BaseActorDelta.TemporaryIf<Temporary> | undefined>;
-
+  ): Promise<BaseActorDelta.CreateReturn<Data, Temporary>>;
   override update(
     data: BaseActorDelta.UpdateInput,
     operation?: BaseActorDelta.Database.UpdateOperation,

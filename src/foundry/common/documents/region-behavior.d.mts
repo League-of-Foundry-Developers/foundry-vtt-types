@@ -1,3 +1,4 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.mjs";
 
@@ -113,10 +114,13 @@ declare abstract class BaseRegionBehavior<
     operation?: Document.Database.DeleteDocumentsOperation<BaseRegionBehavior.Database.Delete>,
   ): Promise<Array<RegionBehavior.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseRegionBehavior.CreateData | BaseRegionBehavior.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseRegionBehavior.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseRegionBehavior.Database.CreateOperation<Temporary>,
-  ): Promise<BaseRegionBehavior.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseRegionBehavior.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseRegionBehavior.UpdateInput,

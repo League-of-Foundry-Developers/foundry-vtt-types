@@ -1,3 +1,4 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -105,10 +106,13 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     operation?: Document.Database.DeleteDocumentsOperation<BaseNote.Database.Delete>,
   ): Promise<Array<NoteDocument.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseNote.CreateData | BaseNote.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseNote.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseNote.Database.CreateOperation<Temporary>,
-  ): Promise<BaseNote.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseNote.CreateReturn<Data, Temporary>>;
 
   override update(data: BaseNote.UpdateInput, operation?: BaseNote.Database.UpdateOperation): Promise<this | undefined>;
 

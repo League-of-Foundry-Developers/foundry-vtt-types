@@ -1,4 +1,4 @@
-import type { AnyMutableObject, DeepReadonly, InexactPartial } from "#utils";
+import type { AnyMutableObject, DeepReadonly, InexactPartial, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
@@ -242,10 +242,13 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     operation?: Document.Database.DeleteDocumentsOperation<BaseToken.Database.Delete>,
   ): Promise<Array<TokenDocument.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseToken.CreateData | BaseToken.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseToken.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseToken.Database.CreateOperation<Temporary>,
-  ): Promise<BaseToken.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseToken.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseToken.UpdateInput,

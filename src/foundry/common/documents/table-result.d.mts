@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 
@@ -126,10 +126,13 @@ declare abstract class BaseTableResult<
     operation?: Document.Database.DeleteDocumentsOperation<BaseTableResult.Database.Delete>,
   ): Promise<Array<TableResult.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseTableResult.CreateData | BaseTableResult.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseTableResult.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseTableResult.Database.CreateOperation<Temporary>,
-  ): Promise<BaseTableResult.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseTableResult.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseTableResult.UpdateInput,
