@@ -117,10 +117,11 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   override delete(operation?: BaseFogExploration.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   // `FogExploration`s cannot exist in compendia, so this never returns an index entry.
+  // Also, until v14, this can redirect to `FogExploration.load`, which accounts for the `Promise` part of the return.
   static override get(
     documentId: string,
     operation?: BaseFogExploration.Database.GetDocumentsOperation,
-  ): FogExploration.Stored | null;
+  ): Promise<FogExploration.Stored | null> | FogExploration.Stored | null;
 
   // `FogExploration`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;

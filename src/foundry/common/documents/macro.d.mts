@@ -116,7 +116,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   static override get TYPES(): BaseMacro.SubType[];
 
-  static override get hasTypeData(): Macro.Metadata["hasTypeData"];
+  static override get hasTypeData(): false;
 
   static override readonly hierarchy: BaseMacro.Hierarchy;
 

@@ -61,7 +61,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   // Never returns an index entry, only a persisted `Folder` or `null`, as the `folders` collection of
   // a compendium is always loaded and available synchronously.
-  static override get(documentId: string, options?: Folder.Database.GetDocumentsOperation): Folder.Stored | null;
+  static override get(documentId: string, operation?: BaseFolder.Database.GetDocumentsOperation): Folder.Stored | null;
 
   /*
    * After this point these are not really overridden methods.

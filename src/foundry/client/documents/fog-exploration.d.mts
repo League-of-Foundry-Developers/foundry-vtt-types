@@ -995,8 +995,8 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
 
   static override get(
     documentId: string,
-    options?: FogExploration.Database.GetDocumentsOperation,
-  ): FogExploration.Stored | null;
+    operation?: FogExploration.Database.GetDocumentsOperation,
+  ): Promise<FogExploration.Stored | null> | FogExploration.Stored | null;
 
   /**
    * @deprecated "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War
