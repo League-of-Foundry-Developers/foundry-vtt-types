@@ -112,7 +112,8 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   override delete(operation?: BaseSetting.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseSetting.Database.GetOptions): Setting.Implementation | null;
+  // `Setting`s cannot exist in compendia, so this never returns an index entry.
+  static override get(documentId: string, operation?: BaseSetting.Database.GetOptions): Setting.Stored | null;
 
   // `Setting`s have no embedded collections, so this always returns `null`
   static override getCollectionName(name: string): null;
@@ -138,7 +139,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Setting.Implementation[],
+    documents: Setting.Stored[],
     operation: BaseSetting.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -156,13 +157,13 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Setting.Implementation[],
+    documents: Setting.Stored[],
     operation: BaseSetting.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Setting.Implementation[],
+    documents: Setting.Stored[],
     operation: BaseSetting.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -175,13 +176,13 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   protected override _onDelete(options: BaseSetting.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Setting.Implementation[],
+    documents: Setting.Stored[],
     operation: BaseSetting.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Setting.Implementation[],
+    documents: Setting.Stored[],
     operation: BaseSetting.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

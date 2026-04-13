@@ -1,6 +1,7 @@
 import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The Document definition for a Scene.
@@ -230,7 +231,10 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   override delete(operation?: BaseScene.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseScene.Database.GetOptions): Scene.Implementation | null;
+  static override get(
+    documentId: string,
+    operation?: BaseScene.Database.GetOptions,
+  ): Scene.Stored | CompendiumCollection.IndexEntry<"Scene"> | null;
 
   static override getCollectionName<CollectionName extends BaseScene.Embedded.Name>(
     name: CollectionName,
@@ -299,7 +303,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Scene.Implementation[],
+    documents: Scene.Stored[],
     operation: BaseScene.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -317,13 +321,13 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Scene.Implementation[],
+    documents: Scene.Stored[],
     operation: BaseScene.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Scene.Implementation[],
+    documents: Scene.Stored[],
     operation: BaseScene.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -336,13 +340,13 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   protected override _onDelete(options: BaseScene.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Scene.Implementation[],
+    documents: Scene.Stored[],
     operation: BaseScene.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Scene.Implementation[],
+    documents: Scene.Stored[],
     operation: BaseScene.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

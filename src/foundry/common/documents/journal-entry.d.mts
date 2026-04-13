@@ -1,6 +1,7 @@
 import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The JournalEntry Document.
@@ -127,8 +128,8 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override get(
     documentId: string,
-    options?: BaseJournalEntry.Database.GetOptions,
-  ): JournalEntry.Implementation | null;
+    operation?: BaseJournalEntry.Database.GetOptions,
+  ): JournalEntry.Stored | CompendiumCollection.IndexEntry<"JournalEntry"> | null;
 
   static override getCollectionName<CollectionName extends BaseJournalEntry.Embedded.Name>(
     name: CollectionName,
@@ -197,7 +198,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: JournalEntry.Implementation[],
+    documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -215,13 +216,13 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: JournalEntry.Implementation[],
+    documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: JournalEntry.Implementation[],
+    documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -234,13 +235,13 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   protected override _onDelete(options: BaseJournalEntry.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: JournalEntry.Implementation[],
+    documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: JournalEntry.Implementation[],
+    documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

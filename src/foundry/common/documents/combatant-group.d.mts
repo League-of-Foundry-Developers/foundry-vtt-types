@@ -112,10 +112,8 @@ declare abstract class BaseCombatantGroup<
 
   override delete(operation?: BaseCombatantGroup.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseCombatantGroup.Database.GetOptions,
-  ): CombatantGroup.Implementation | null;
+  // `CombatantGroup`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseCombatantGroup.Database.GetOptions): null;
 
   // `CombatantGroup`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -155,7 +153,7 @@ declare abstract class BaseCombatantGroup<
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: CombatantGroup.Implementation[],
+    documents: CombatantGroup.Stored[],
     operation: BaseCombatantGroup.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -173,13 +171,13 @@ declare abstract class BaseCombatantGroup<
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: CombatantGroup.Implementation[],
+    documents: CombatantGroup.Stored[],
     operation: BaseCombatantGroup.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: CombatantGroup.Implementation[],
+    documents: CombatantGroup.Stored[],
     operation: BaseCombatantGroup.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -192,13 +190,13 @@ declare abstract class BaseCombatantGroup<
   protected override _onDelete(options: BaseCombatantGroup.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: CombatantGroup.Implementation[],
+    documents: CombatantGroup.Stored[],
     operation: BaseCombatantGroup.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: CombatantGroup.Implementation[],
+    documents: CombatantGroup.Stored[],
     operation: BaseCombatantGroup.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

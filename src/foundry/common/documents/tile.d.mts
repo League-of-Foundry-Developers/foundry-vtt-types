@@ -142,7 +142,8 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   override delete(operation?: BaseTile.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseTile.Database.GetOptions): TileDocument.Implementation | null;
+  // `TileDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseTile.Database.GetOptions): null;
 
   // `TileDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -182,7 +183,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: TileDocument.Implementation[],
+    documents: TileDocument.Stored[],
     operation: BaseTile.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -200,13 +201,13 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: TileDocument.Implementation[],
+    documents: TileDocument.Stored[],
     operation: BaseTile.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: TileDocument.Implementation[],
+    documents: TileDocument.Stored[],
     operation: BaseTile.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -219,13 +220,13 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   protected override _onDelete(options: BaseTile.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: TileDocument.Implementation[],
+    documents: TileDocument.Stored[],
     operation: BaseTile.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: TileDocument.Implementation[],
+    documents: TileDocument.Stored[],
     operation: BaseTile.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

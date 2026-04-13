@@ -32,7 +32,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    *   embedded: {
    *     RegionBehavior: "behaviors"
    *   },
-   *   schemaVersion: "12.324"
+   *   schemaVersion: "13.341"
    * })
    * ```
    */
@@ -104,10 +104,8 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   override delete(operation?: BaseRegion.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseRegion.Database.GetOptions,
-  ): RegionDocument.Implementation | null;
+  // `RegionDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseRegion.Database.GetOptions): null;
 
   static override getCollectionName<CollectionName extends BaseRegion.Embedded.Name>(
     name: CollectionName,
@@ -176,7 +174,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: RegionDocument.Implementation[],
+    documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -194,13 +192,13 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: RegionDocument.Implementation[],
+    documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: RegionDocument.Implementation[],
+    documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -213,13 +211,13 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   protected override _onDelete(options: BaseRegion.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: RegionDocument.Implementation[],
+    documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: RegionDocument.Implementation[],
+    documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

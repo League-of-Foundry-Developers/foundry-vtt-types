@@ -141,10 +141,8 @@ declare abstract class BaseTableResult<
 
   override delete(operation?: BaseTableResult.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseTableResult.Database.GetOptions,
-  ): TableResult.Implementation | null;
+  // `TableResult`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseTableResult.Database.GetOptions): null;
 
   // `TableResult`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -184,7 +182,7 @@ declare abstract class BaseTableResult<
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: TableResult.Implementation[],
+    documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -202,13 +200,13 @@ declare abstract class BaseTableResult<
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: TableResult.Implementation[],
+    documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: TableResult.Implementation[],
+    documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -221,13 +219,13 @@ declare abstract class BaseTableResult<
   protected override _onDelete(options: BaseTableResult.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: TableResult.Implementation[],
+    documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: TableResult.Implementation[],
+    documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

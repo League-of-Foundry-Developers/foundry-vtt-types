@@ -243,17 +243,11 @@ expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<
 expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
 expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
 
-expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX")).toEqualTypeOf<ActiveEffect.Implementation | null>();
-expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", {})).toEqualTypeOf<ActiveEffect.Implementation | null>();
-expectTypeOf(
-  TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: "some.pack" }),
-).toEqualTypeOf<ActiveEffect.Implementation | null>();
-expectTypeOf(
-  TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: null }),
-).toEqualTypeOf<ActiveEffect.Implementation | null>();
-expectTypeOf(
-  TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: undefined }),
-).toEqualTypeOf<ActiveEffect.Implementation | null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX")).toEqualTypeOf<null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", {})).toEqualTypeOf<null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: "some.pack" })).toEqualTypeOf<null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: null })).toEqualTypeOf<null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: undefined })).toEqualTypeOf<null>();
 
 // no hierarchy, no collections
 expectTypeOf(TestActiveEffect.getCollectionName("literally anything")).toBeNull();
@@ -276,7 +270,7 @@ expectTypeOf(
 
 expectTypeOf(
   TestActiveEffect["_onCreateOperation"](
-    [effect, nonBaseAE],
+    [effect],
     { data: createDataArray, modifiedTime: 0, render: false, renderSheet: false },
     user,
   ),
@@ -285,7 +279,7 @@ expectTypeOf(
 declare const updateDataArray: ActiveEffect.UpdateData[];
 expectTypeOf(
   TestActiveEffect["_preUpdateOperation"](
-    [effect, nonBaseAE],
+    [effect],
     { modifiedTime: 0, render: false, diff: true, recursive: true, pack: null, updates: updateDataArray },
     user,
   ),
@@ -293,7 +287,7 @@ expectTypeOf(
 
 expectTypeOf(
   TestActiveEffect["_onUpdateOperation"](
-    [effect, nonBaseAE],
+    [effect],
     { modifiedTime: 0, render: false, diff: true, recursive: true, pack: null, updates: updateDataArray },
     user,
   ),
@@ -301,7 +295,7 @@ expectTypeOf(
 
 expectTypeOf(
   TestActiveEffect["_preDeleteOperation"](
-    [effect, nonBaseAE],
+    [effect],
     { modifiedTime: 0, render: false, deleteAll: false, ids: ["YYYYYSomeIDYYYYY"] },
     user,
   ),
@@ -309,7 +303,7 @@ expectTypeOf(
 
 expectTypeOf(
   TestActiveEffect["_onDeleteOperation"](
-    [effect, nonBaseAE],
+    [effect],
     { modifiedTime: 0, render: false, deleteAll: false, ids: ["YYYYYSomeIDYYYYY"] },
     user,
   ),

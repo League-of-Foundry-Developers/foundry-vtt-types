@@ -465,8 +465,8 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
 
   static override get(
     documentId: string,
-    options?: FogExploration.Database.GetOptions,
-  ): FogExploration.Implementation | null;
+    operation?: FogExploration.Database.GetOptions,
+  ): Promise<FogExploration.Stored | null> | FogExploration.Stored | null;
 
   /**
    * @deprecated since v12, will be removed in v14

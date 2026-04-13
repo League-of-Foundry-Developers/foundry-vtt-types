@@ -125,7 +125,8 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   override delete(operation?: BaseCard.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseCard.Database.GetOptions): Card.Implementation | null;
+  // `Card`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseCard.Database.GetOptions): null;
 
   // `Card`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -165,7 +166,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Card.Implementation[],
+    documents: Card.Stored[],
     operation: BaseCard.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -183,13 +184,13 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Card.Implementation[],
+    documents: Card.Stored[],
     operation: BaseCard.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Card.Implementation[],
+    documents: Card.Stored[],
     operation: BaseCard.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -202,13 +203,13 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   protected override _onDelete(options: BaseCard.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Card.Implementation[],
+    documents: Card.Stored[],
     operation: BaseCard.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Card.Implementation[],
+    documents: Card.Stored[],
     operation: BaseCard.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

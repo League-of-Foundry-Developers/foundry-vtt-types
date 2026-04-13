@@ -1,6 +1,7 @@
 import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The Playlist Document.
@@ -125,7 +126,10 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   override delete(operation?: BasePlaylist.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BasePlaylist.Database.GetOptions): Playlist.Implementation | null;
+  static override get(
+    documentId: string,
+    operation?: BasePlaylist.Database.GetOptions,
+  ): Playlist.Stored | CompendiumCollection.IndexEntry<"Playlist"> | null;
 
   static override getCollectionName<CollectionName extends BasePlaylist.Embedded.Name>(
     name: CollectionName,
@@ -194,7 +198,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Playlist.Implementation[],
+    documents: Playlist.Stored[],
     operation: BasePlaylist.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -212,13 +216,13 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Playlist.Implementation[],
+    documents: Playlist.Stored[],
     operation: BasePlaylist.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Playlist.Implementation[],
+    documents: Playlist.Stored[],
     operation: BasePlaylist.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -231,13 +235,13 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   protected override _onDelete(options: BasePlaylist.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Playlist.Implementation[],
+    documents: Playlist.Stored[],
     operation: BasePlaylist.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Playlist.Implementation[],
+    documents: Playlist.Stored[],
     operation: BasePlaylist.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

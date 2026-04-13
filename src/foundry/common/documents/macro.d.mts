@@ -117,7 +117,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   static override get TYPES(): BaseMacro.SubType[];
 
-  static override get hasTypeData(): true;
+  static override get hasTypeData(): false;
 
   static override readonly hierarchy: BaseMacro.Hierarchy;
 
@@ -155,7 +155,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   override delete(operation?: BaseMacro.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseMacro.Database.GetOptions): Macro.Implementation | null;
+  static override get(documentId: string, operation?: BaseMacro.Database.GetOptions): Macro.Implementation | null;
 
   // `Macro`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -189,7 +189,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Macro.Implementation[],
+    documents: Macro.Stored[],
     operation: BaseMacro.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -207,13 +207,13 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Macro.Implementation[],
+    documents: Macro.Stored[],
     operation: BaseMacro.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Macro.Implementation[],
+    documents: Macro.Stored[],
     operation: BaseMacro.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -226,13 +226,13 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   protected override _onDelete(options: BaseMacro.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Macro.Implementation[],
+    documents: Macro.Stored[],
     operation: BaseMacro.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Macro.Implementation[],
+    documents: Macro.Stored[],
     operation: BaseMacro.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

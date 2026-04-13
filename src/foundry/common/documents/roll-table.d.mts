@@ -1,6 +1,7 @@
 import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The RollTable Document.
@@ -128,7 +129,10 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   override delete(operation?: BaseRollTable.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseRollTable.Database.GetOptions): RollTable.Implementation | null;
+  static override get(
+    documentId: string,
+    operation?: BaseRollTable.Database.GetOptions,
+  ): RollTable.Stored | CompendiumCollection.IndexEntry<"RollTable"> | null;
 
   static override getCollectionName<CollectionName extends BaseRollTable.Embedded.Name>(
     name: CollectionName,
@@ -197,7 +201,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   ): Promise<boolean | void>;
 
   protected static _onCreateOperation(
-    documents: RollTable.Implementation[],
+    documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -215,13 +219,13 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   ): void;
 
   protected static _preUpdateOperation(
-    documents: RollTable.Implementation[],
+    documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onUpdateOperation(
-    documents: RollTable.Implementation[],
+    documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -234,13 +238,13 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   protected _onDelete(options: BaseRollTable.Database.OnDeleteOperation, userId: string): void;
 
   protected static _preDeleteOperation(
-    documents: RollTable.Implementation[],
+    documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static _onDeleteOperation(
-    documents: RollTable.Implementation[],
+    documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

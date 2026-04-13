@@ -145,7 +145,8 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override delete(operation?: BaseUser.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseUser.Database.GetOptions): User.Implementation | null;
+  // `User`s cannot exist in compendia, so this never returns an index entry.
+  static override get(documentId: string, operation?: BaseUser.Database.GetOptions): User.Stored | null;
 
   // `User`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -185,7 +186,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: User.Implementation[],
+    documents: User.Stored[],
     operation: BaseUser.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -203,13 +204,13 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: User.Implementation[],
+    documents: User.Stored[],
     operation: BaseUser.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: User.Implementation[],
+    documents: User.Stored[],
     operation: BaseUser.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -222,13 +223,13 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   protected override _onDelete(options: BaseUser.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: User.Implementation[],
+    documents: User.Stored[],
     operation: BaseUser.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: User.Implementation[],
+    documents: User.Stored[],
     operation: BaseUser.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

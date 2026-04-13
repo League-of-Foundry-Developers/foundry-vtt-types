@@ -103,7 +103,8 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   override delete(operation?: BaseWall.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseWall.Database.GetOptions): WallDocument.Implementation | null;
+  // `WallDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseWall.Database.GetOptions): null;
 
   // `WallDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;

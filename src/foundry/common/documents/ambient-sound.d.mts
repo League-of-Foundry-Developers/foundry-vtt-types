@@ -102,10 +102,8 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   override delete(operation?: BaseAmbientSound.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseAmbientSound.Database.GetOptions,
-  ): AmbientSoundDocument.Implementation | null;
+  // `AmbientSoundDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseAmbientSound.Database.GetOptions): null;
 
   // `AmbientSoundDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -126,7 +124,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     key: Key,
   ): Promise<this | undefined>;
 
-  override _preCreate(
+  protected override _preCreate(
     data: BaseAmbientSound.CreateData,
     options: BaseAmbientSound.Database.PreCreateOptions,
     user: User.Implementation,
@@ -145,7 +143,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: AmbientSoundDocument.Implementation[],
+    documents: AmbientSoundDocument.Stored[],
     operation: BaseAmbientSound.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -163,13 +161,13 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: AmbientSoundDocument.Implementation[],
+    documents: AmbientSoundDocument.Stored[],
     operation: BaseAmbientSound.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: AmbientSoundDocument.Implementation[],
+    documents: AmbientSoundDocument.Stored[],
     operation: BaseAmbientSound.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -182,13 +180,13 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   protected override _onDelete(options: BaseAmbientSound.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: AmbientSoundDocument.Implementation[],
+    documents: AmbientSoundDocument.Stored[],
     operation: BaseAmbientSound.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: AmbientSoundDocument.Implementation[],
+    documents: AmbientSoundDocument.Stored[],
     operation: BaseAmbientSound.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

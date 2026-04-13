@@ -1,7 +1,7 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
-import type { MaybeArray } from "#utils";
-import type { fields } from "../data/_module.d.mts";
+import type { fields } from "#client/data/_module.d.mts";
 
 /**
  * The Adventure Document.
@@ -120,7 +120,11 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   override delete(operation?: BaseAdventure.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseAdventure.Database.GetOptions): Adventure.Implementation | null;
+  // Since persisted `Adventure`s only exist in compendia, this only returns an index entry (if a `pack` is passed in `operation`) or `null`.
+  static override get(
+    documentId: string,
+    operation?: BaseAdventure.Database.GetOptions,
+  ): Adventure.Implementation | null;
 
   // `Adventure`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -160,7 +164,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Adventure.Implementation[],
+    documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -178,13 +182,13 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Adventure.Implementation[],
+    documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Adventure.Implementation[],
+    documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -197,13 +201,13 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   protected override _onDelete(options: BaseAdventure.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Adventure.Implementation[],
+    documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Adventure.Implementation[],
+    documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

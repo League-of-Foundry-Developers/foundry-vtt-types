@@ -129,10 +129,8 @@ declare abstract class BaseRegionBehavior<
 
   override delete(operation?: BaseRegionBehavior.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseRegionBehavior.Database.GetOptions,
-  ): RegionBehavior.Implementation | null;
+  // `RegionBehavior`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseRegionBehavior.Database.GetOptions): null;
 
   // `RegionBehavior`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -172,7 +170,7 @@ declare abstract class BaseRegionBehavior<
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: RegionBehavior.Implementation[],
+    documents: RegionBehavior.Stored[],
     operation: BaseRegionBehavior.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -190,13 +188,13 @@ declare abstract class BaseRegionBehavior<
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: RegionBehavior.Implementation[],
+    documents: RegionBehavior.Stored[],
     operation: BaseRegionBehavior.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: RegionBehavior.Implementation[],
+    documents: RegionBehavior.Stored[],
     operation: BaseRegionBehavior.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -209,13 +207,13 @@ declare abstract class BaseRegionBehavior<
   protected override _onDelete(options: BaseRegionBehavior.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: RegionBehavior.Implementation[],
+    documents: RegionBehavior.Stored[],
     operation: BaseRegionBehavior.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: RegionBehavior.Implementation[],
+    documents: RegionBehavior.Stored[],
     operation: BaseRegionBehavior.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

@@ -143,10 +143,8 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   override delete(operation?: BaseDrawing.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseDrawing.Database.GetOptions,
-  ): DrawingDocument.Implementation | null;
+  // `DrawingDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseDrawing.Database.GetOptions): null;
 
   // `DrawingDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -186,7 +184,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: DrawingDocument.Implementation[],
+    documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -204,13 +202,13 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: DrawingDocument.Implementation[],
+    documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: DrawingDocument.Implementation[],
+    documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -223,13 +221,13 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   protected override _onDelete(options: BaseDrawing.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: DrawingDocument.Implementation[],
+    documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: DrawingDocument.Implementation[],
+    documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

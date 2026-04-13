@@ -1,6 +1,7 @@
 import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The Cards Document.
@@ -142,7 +143,10 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   override delete(operation?: BaseCards.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseCards.Database.GetOptions): Cards.Implementation | null;
+  static override get(
+    documentId: string,
+    options?: BaseCards.Database.GetOptions,
+  ): Cards.Implementation | CompendiumCollection.IndexEntry<"Cards"> | null;
 
   static override getCollectionName<CollectionName extends BaseCards.Embedded.Name>(
     name: CollectionName,
@@ -211,7 +215,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Cards.Implementation[],
+    documents: Cards.Stored[],
     operation: BaseCards.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -229,13 +233,13 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Cards.Implementation[],
+    documents: Cards.Stored[],
     operation: BaseCards.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Cards.Implementation[],
+    documents: Cards.Stored[],
     operation: BaseCards.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -248,13 +252,13 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   protected override _onDelete(options: BaseCards.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Cards.Implementation[],
+    documents: Cards.Stored[],
     operation: BaseCards.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Cards.Implementation[],
+    documents: Cards.Stored[],
     operation: BaseCards.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

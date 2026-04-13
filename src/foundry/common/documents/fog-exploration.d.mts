@@ -116,10 +116,12 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   override delete(operation?: BaseFogExploration.Database.DeleteOperation): Promise<this | undefined>;
 
+  // `FogExploration`s cannot exist in compendia, so this never returns an index entry.
+  // Also, until v14, this can redirect to `FogExploration.load`, which accounts for the `Promise` part of the return.
   static override get(
     documentId: string,
-    options?: BaseFogExploration.Database.GetOptions,
-  ): Promise<FogExploration.Implementation | null> | FogExploration.Implementation | null;
+    operation?: BaseFogExploration.Database.GetOptions,
+  ): Promise<FogExploration.Stored | null> | FogExploration.Stored | null;
 
   // `FogExploration`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -159,7 +161,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: FogExploration.Implementation[],
+    documents: FogExploration.Stored[],
     operation: BaseFogExploration.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -171,13 +173,13 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: FogExploration.Implementation[],
+    documents: FogExploration.Stored[],
     operation: BaseFogExploration.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: FogExploration.Implementation[],
+    documents: FogExploration.Stored[],
     operation: BaseFogExploration.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -190,13 +192,13 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   protected override _onDelete(options: BaseFogExploration.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: FogExploration.Implementation[],
+    documents: FogExploration.Stored[],
     operation: BaseFogExploration.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: FogExploration.Implementation[],
+    documents: FogExploration.Stored[],
     operation: BaseFogExploration.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

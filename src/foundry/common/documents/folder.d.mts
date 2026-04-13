@@ -58,11 +58,9 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
    */
   static SORTING_MODES: ("a" | "m")[];
 
-  /**
-   * @remarks Never returns an index entry, only ever {@linkcode Folder.Implementation} or `null`, as the `folders` collection of a
-   * compendium is always loaded and available synchronously
-   */
-  static override get(documentId: string, options?: BaseFolder.Database.GetOptions): Folder.Implementation | null;
+  // Never returns an index entry, only a persisted `Folder` or `null`, as the `folders` collection of
+  // a compendium is always loaded and available synchronously.
+  static override get(documentId: string, operation?: BaseFolder.Database.GetOptions): Folder.Implementation | null;
 
   /*
    * After this point these are not really overridden methods.
@@ -168,7 +166,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Folder.Implementation[],
+    documents: Folder.Stored[],
     operation: BaseFolder.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -186,13 +184,13 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Folder.Implementation[],
+    documents: Folder.Stored[],
     operation: BaseFolder.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Folder.Implementation[],
+    documents: Folder.Stored[],
     operation: BaseFolder.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -205,13 +203,13 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   protected override _onDelete(options: BaseFolder.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Folder.Implementation[],
+    documents: Folder.Stored[],
     operation: BaseFolder.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Folder.Implementation[],
+    documents: Folder.Stored[],
     operation: BaseFolder.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

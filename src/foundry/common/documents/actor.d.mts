@@ -1,6 +1,7 @@
 import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The Actor Document.
@@ -165,7 +166,10 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
 
   override delete(operation?: BaseActor.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseActor.Database.GetOptions): Actor.Implementation | null;
+  static override get(
+    documentId: string,
+    operation?: BaseActor.Database.GetOptions,
+  ): Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | null;
 
   static override getCollectionName<CollectionName extends BaseActor.Embedded.Name>(
     name: CollectionName,
@@ -228,7 +232,7 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Actor.Implementation[],
+    documents: Actor.Stored[],
     operation: BaseActor.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -240,13 +244,13 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Actor.Implementation[],
+    documents: Actor.Stored[],
     operation: BaseActor.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Actor.Implementation[],
+    documents: Actor.Stored[],
     operation: BaseActor.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -259,13 +263,13 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   protected override _onDelete(options: BaseActor.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Actor.Implementation[],
+    documents: Actor.Stored[],
     operation: BaseActor.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Actor.Implementation[],
+    documents: Actor.Stored[],
     operation: BaseActor.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

@@ -146,7 +146,8 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   override delete(operation?: BaseCombat.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseCombat.Database.GetOptions): Combat.Implementation | null;
+  // `Combat`s cannot exist in compendia, so this never returns an index entry.
+  static override get(documentId: string, operation?: BaseCombat.Database.GetOptions): Combat.Implementation | null;
 
   static override getCollectionName<CollectionName extends BaseCombat.Embedded.Name>(
     name: CollectionName,
@@ -215,7 +216,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Combat.Implementation[],
+    documents: Combat.Stored[],
     operation: BaseCombat.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -227,13 +228,13 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Combat.Implementation[],
+    documents: Combat.Stored[],
     operation: BaseCombat.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Combat.Implementation[],
+    documents: Combat.Stored[],
     operation: BaseCombat.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -246,13 +247,13 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   protected override _onDelete(options: BaseCombat.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Combat.Implementation[],
+    documents: Combat.Stored[],
     operation: BaseCombat.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Combat.Implementation[],
+    documents: Combat.Stored[],
     operation: BaseCombat.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

@@ -133,10 +133,8 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   override delete(operation?: BaseMeasuredTemplate.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseMeasuredTemplate.Database.GetOptions,
-  ): MeasuredTemplateDocument.Implementation | null;
+  // `MeasuredTemplateDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseMeasuredTemplate.Database.GetOptions): null;
 
   // `MeasuredTemplateDocument`s have no embedded collections, so this always returns `null`
   static override getCollectionName(name: string): null;
@@ -176,7 +174,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: MeasuredTemplateDocument.Implementation[],
+    documents: MeasuredTemplateDocument.Stored[],
     operation: BaseMeasuredTemplate.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -194,13 +192,13 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: MeasuredTemplateDocument.Implementation[],
+    documents: MeasuredTemplateDocument.Stored[],
     operation: BaseMeasuredTemplate.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: MeasuredTemplateDocument.Implementation[],
+    documents: MeasuredTemplateDocument.Stored[],
     operation: BaseMeasuredTemplate.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -213,13 +211,13 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   protected override _onDelete(options: BaseMeasuredTemplate.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: MeasuredTemplateDocument.Implementation[],
+    documents: MeasuredTemplateDocument.Stored[],
     operation: BaseMeasuredTemplate.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: MeasuredTemplateDocument.Implementation[],
+    documents: MeasuredTemplateDocument.Stored[],
     operation: BaseMeasuredTemplate.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

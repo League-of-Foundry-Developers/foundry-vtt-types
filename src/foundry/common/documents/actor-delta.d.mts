@@ -53,7 +53,7 @@ declare abstract class BaseActorDelta<
 
   static override defineSchema(): BaseActorDelta.Schema;
 
-  override getUserLevel(user: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Retrieve the base actor's collection, if it exists.
@@ -175,6 +175,7 @@ declare abstract class BaseActorDelta<
 
   override delete(operation?: BaseActorDelta.Database.DeleteOperation): Promise<this | undefined>;
 
+  // `ActorDelta`s are neither world documents nor compendium documents, so this always returns `null`.
   static override get(
     documentId: string,
     options?: BaseActorDelta.Database.GetOptions,
@@ -247,7 +248,7 @@ declare abstract class BaseActorDelta<
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: ActorDelta.Implementation[],
+    documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -265,13 +266,13 @@ declare abstract class BaseActorDelta<
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: ActorDelta.Implementation[],
+    documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: ActorDelta.Implementation[],
+    documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -284,13 +285,13 @@ declare abstract class BaseActorDelta<
   protected override _onDelete(options: BaseActorDelta.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: ActorDelta.Implementation[],
+    documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: ActorDelta.Implementation[],
+    documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

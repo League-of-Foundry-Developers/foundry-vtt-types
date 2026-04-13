@@ -127,7 +127,8 @@ declare abstract class BaseCombatant<
 
   override delete(operation?: BaseCombatant.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseCombatant.Database.GetOptions): Combatant.Implementation | null;
+  // `CombatantGroup`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseCombatant.Database.GetOptions): null;
 
   // `Combatant`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -167,7 +168,7 @@ declare abstract class BaseCombatant<
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Combatant.Implementation[],
+    documents: Combatant.Stored[],
     operation: BaseCombatant.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -185,13 +186,13 @@ declare abstract class BaseCombatant<
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Combatant.Implementation[],
+    documents: Combatant.Stored[],
     operation: BaseCombatant.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Combatant.Implementation[],
+    documents: Combatant.Stored[],
     operation: BaseCombatant.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -204,13 +205,13 @@ declare abstract class BaseCombatant<
   protected override _onDelete(options: BaseCombatant.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Combatant.Implementation[],
+    documents: Combatant.Stored[],
     operation: BaseCombatant.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Combatant.Implementation[],
+    documents: Combatant.Stored[],
     operation: BaseCombatant.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

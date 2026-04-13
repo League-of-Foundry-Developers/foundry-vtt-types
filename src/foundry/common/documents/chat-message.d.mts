@@ -140,10 +140,8 @@ declare abstract class BaseChatMessage<
 
   override delete(operation?: BaseChatMessage.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseChatMessage.Database.GetOptions,
-  ): ChatMessage.Implementation | null;
+  // `ChatMessage`s cannot exist in compendia, so this never returns an index entry.
+  static override get(documentId: string, operation?: BaseChatMessage.Database.GetOptions): ChatMessage.Stored | null;
 
   // `ChatMessage`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -183,7 +181,7 @@ declare abstract class BaseChatMessage<
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: ChatMessage.Implementation[],
+    documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -201,13 +199,13 @@ declare abstract class BaseChatMessage<
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: ChatMessage.Implementation[],
+    documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: ChatMessage.Implementation[],
+    documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -220,13 +218,13 @@ declare abstract class BaseChatMessage<
   protected override _onDelete(options: BaseChatMessage.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: ChatMessage.Implementation[],
+    documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: ChatMessage.Implementation[],
+    documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

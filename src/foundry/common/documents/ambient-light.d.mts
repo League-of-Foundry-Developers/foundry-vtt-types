@@ -1,6 +1,6 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
-import type { MaybeArray } from "#utils";
 
 /**
  * The Document definition for an AmbientLight.
@@ -101,10 +101,8 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   override delete(operation?: BaseAmbientLight.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseAmbientLight.Database.GetOptions,
-  ): AmbientLightDocument.Implementation | null;
+  // `AmbientLightDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseAmbientLight.Database.GetOptions): null;
 
   // `AmbientLightDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -144,7 +142,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: AmbientLightDocument.Implementation[],
+    documents: AmbientLightDocument.Stored[],
     operation: BaseAmbientLight.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -162,13 +160,13 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: AmbientLightDocument.Implementation[],
+    documents: AmbientLightDocument.Stored[],
     operation: BaseAmbientLight.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: AmbientLightDocument.Implementation[],
+    documents: AmbientLightDocument.Stored[],
     operation: BaseAmbientLight.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -181,13 +179,13 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   protected override _onDelete(options: BaseAmbientLight.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: AmbientLightDocument.Implementation[],
+    documents: AmbientLightDocument.Stored[],
     operation: BaseAmbientLight.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: AmbientLightDocument.Implementation[],
+    documents: AmbientLightDocument.Stored[],
     operation: BaseAmbientLight.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

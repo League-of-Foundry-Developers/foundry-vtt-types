@@ -118,7 +118,8 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   override delete(operation?: BaseNote.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseNote.Database.GetOptions): NoteDocument.Implementation | null;
+  // `NoteDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseNote.Database.GetOptions): null;
 
   // `NoteDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -158,7 +159,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: NoteDocument.Implementation[],
+    documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -176,13 +177,13 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: NoteDocument.Implementation[],
+    documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: NoteDocument.Implementation[],
+    documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -195,13 +196,13 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   protected override _onDelete(options: BaseNote.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: NoteDocument.Implementation[],
+    documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: NoteDocument.Implementation[],
+    documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;

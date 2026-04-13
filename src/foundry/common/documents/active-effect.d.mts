@@ -144,10 +144,8 @@ declare abstract class BaseActiveEffect<
 
   override delete(operation?: BaseActiveEffect.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseActiveEffect.Database.GetOptions,
-  ): ActiveEffect.Implementation | null;
+  // `ActiveEffect`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseActiveEffect.Database.GetOptions): null;
 
   // `ActiveEffect`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -181,7 +179,7 @@ declare abstract class BaseActiveEffect<
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: ActiveEffect.Implementation[],
+    documents: ActiveEffect.Stored[],
     operation: BaseActiveEffect.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
@@ -199,13 +197,13 @@ declare abstract class BaseActiveEffect<
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: ActiveEffect.Implementation[],
+    documents: ActiveEffect.Stored[],
     operation: BaseActiveEffect.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: ActiveEffect.Implementation[],
+    documents: ActiveEffect.Stored[],
     operation: BaseActiveEffect.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
@@ -218,13 +216,13 @@ declare abstract class BaseActiveEffect<
   protected override _onDelete(options: BaseActiveEffect.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: ActiveEffect.Implementation[],
+    documents: ActiveEffect.Stored[],
     operation: BaseActiveEffect.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: ActiveEffect.Implementation[],
+    documents: ActiveEffect.Stored[],
     operation: BaseActiveEffect.Database.Delete,
     user: User.Implementation,
   ): Promise<void>;
