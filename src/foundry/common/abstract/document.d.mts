@@ -600,7 +600,8 @@ declare abstract class Document<
    * // returns "items"
    * ```
    */
-  static getCollectionName(name: string): string | null;
+  // Calling `Document.getCollectionName` always throws as the relevant `baseDocument` cannot be found.
+  static getCollectionName(name: never): string | null;
 
   /**
    * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
