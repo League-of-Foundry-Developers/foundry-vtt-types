@@ -2052,7 +2052,7 @@ declare namespace Document {
 
   // TODO: properly test passing save: true and not
   /** @internal */
-  type _CloneContext<Save extends boolean | undefined = boolean | undefined> = InexactPartial<{
+  type _CloneContext<Save extends boolean | undefined> = InexactPartial<{
     /**
      * Save the clone to the World database?
      * @defaultValue `false`
@@ -2947,21 +2947,6 @@ declare namespace Document {
    * into `Invalid`.
    */
   type Invalid<D extends Document.Any> = Document.Internal.Invalid<D>;
-
-  /**
-   * @deprecated Replaced with {@linkcode Document.SheetClassFor}
-   */
-  export import ConfiguredSheetClassFor = Document.SheetClassFor;
-
-  /**
-   * @deprecated Replaced with {@linkcode Document.ObjectClassFor}
-   */
-  export import ConfiguredObjectClassFor = Document.ObjectClassFor;
-
-  /**
-   * @deprecated Replaced with {@linkcode Document.LayerClassFor}
-   */
-  export import ConfiguredLayerClassFor = Document.LayerClassFor;
 
   /**
    * Returns the type of the constructor data for the given {@linkcode foundry.abstract.Document}.

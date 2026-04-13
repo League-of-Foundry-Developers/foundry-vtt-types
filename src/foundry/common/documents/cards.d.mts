@@ -26,7 +26,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
    * You should use {@linkcode Cards.implementation | new Cards.implementation(...)} instead which will give you
    * a system specific implementation of `Cards`.
    */
-  constructor(data: Cards.CreateData, context?: BaseCards.ConstructionContext);
+  constructor(data: BaseCards.CreateData, context?: BaseCards.ConstructionContext);
 
   /**
    * @defaultValue
@@ -145,8 +145,8 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   static override get(
     documentId: string,
-    options?: BaseCards.Database.GetOptions,
-  ): Cards.Implementation | CompendiumCollection.IndexEntry<"Cards"> | null;
+    operation?: BaseCards.Database.GetOptions,
+  ): Cards.Stored | CompendiumCollection.IndexEntry<"Cards"> | null;
 
   static override getCollectionName<CollectionName extends BaseCards.Embedded.Name>(
     name: CollectionName,

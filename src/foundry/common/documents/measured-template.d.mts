@@ -249,6 +249,8 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     context: BaseMeasuredTemplate.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
+  /* DataModel overrides */
+
   protected static override _schema: SchemaField<BaseMeasuredTemplate.Schema>;
 
   static override get schema(): SchemaField<BaseMeasuredTemplate.Schema>;

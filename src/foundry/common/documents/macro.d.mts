@@ -1,6 +1,7 @@
 import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The Macro Document.
@@ -155,7 +156,10 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   override delete(operation?: BaseMacro.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, operation?: BaseMacro.Database.GetOptions): Macro.Implementation | null;
+  static override get(
+    documentId: string,
+    operation?: BaseMacro.Database.GetOptions,
+  ): Macro.Stored | CompendiumCollection.IndexEntry<"Macro"> | null;
 
   // `Macro`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -276,6 +280,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   static #BaseMacro: true;
 }
+
 export default BaseMacro;
 
 declare namespace BaseMacro {

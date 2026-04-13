@@ -2,6 +2,7 @@ import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 import type { fields } from "#client/data/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The Adventure Document.
@@ -124,7 +125,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   static override get(
     documentId: string,
     operation?: BaseAdventure.Database.GetOptions,
-  ): Adventure.Implementation | null;
+  ): CompendiumCollection.IndexEntry<"Adventure"> | null;
 
   // `Adventure`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;

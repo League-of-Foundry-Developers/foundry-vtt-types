@@ -99,17 +99,17 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   override " fvtt_types_internal_document_parent": BaseRollTable.Parent;
 
-  static createDocuments<Temporary extends boolean | undefined = undefined>(
+  static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseRollTable.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseRollTable.Database.Create<Temporary>>,
   ): Promise<Array<BaseRollTable.TemporaryIf<Temporary>>>;
 
-  static updateDocuments(
+  static override updateDocuments(
     updates: BaseRollTable.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseRollTable.Database.Update>,
   ): Promise<Array<RollTable.Stored>>;
 
-  static deleteDocuments(
+  static override deleteDocuments(
     ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseRollTable.Database.Delete>,
   ): Promise<Array<RollTable.Stored>>;
@@ -182,68 +182,68 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
     key: Key,
   ): Promise<this | undefined>;
 
-  protected _preCreate(
+  protected override _preCreate(
     data: BaseRollTable.CreateData,
     options: BaseRollTable.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onCreate(
+  protected override _onCreate(
     data: BaseRollTable.CreateData,
     options: BaseRollTable.Database.OnCreateOperation,
     userId: string,
   ): void;
 
-  protected static _preCreateOperation(
+  protected static override _preCreateOperation(
     documents: RollTable.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseRollTable.Database.Create>,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onCreateOperation(
+  protected static override _onCreateOperation(
     documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Create,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preUpdate(
+  protected override _preUpdate(
     changed: BaseRollTable.UpdateData,
     options: BaseRollTable.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onUpdate(
+  protected override _onUpdate(
     changed: BaseRollTable.UpdateData,
     options: BaseRollTable.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
-  protected static _preUpdateOperation(
+  protected static override _preUpdateOperation(
     documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Update,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onUpdateOperation(
+  protected static override _onUpdateOperation(
     documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Update,
     user: User.Implementation,
   ): Promise<void>;
 
-  protected _preDelete(
+  protected override _preDelete(
     options: BaseRollTable.Database.PreDeleteOptions,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected _onDelete(options: BaseRollTable.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseRollTable.Database.OnDeleteOperation, userId: string): void;
 
-  protected static _preDeleteOperation(
+  protected static override _preDeleteOperation(
     documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Delete,
     user: User.Implementation,
   ): Promise<boolean | void>;
 
-  protected static _onDeleteOperation(
+  protected static override _onDeleteOperation(
     documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Delete,
     user: User.Implementation,

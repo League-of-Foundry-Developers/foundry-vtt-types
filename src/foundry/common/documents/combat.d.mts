@@ -147,7 +147,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   override delete(operation?: BaseCombat.Database.DeleteOperation): Promise<this | undefined>;
 
   // `Combat`s cannot exist in compendia, so this never returns an index entry.
-  static override get(documentId: string, operation?: BaseCombat.Database.GetOptions): Combat.Implementation | null;
+  static override get(documentId: string, operation?: BaseCombat.Database.GetOptions): Combat.Stored | null;
 
   static override getCollectionName<CollectionName extends BaseCombat.Embedded.Name>(
     name: CollectionName,
