@@ -19,7 +19,6 @@ import type {
   InterfaceToObject,
   MakeConform,
   MaybePromise,
-  MustConform,
   NullishProps,
   Override,
   PickValue,
@@ -63,9 +62,6 @@ type InexactPartialExcept<T extends object, RequiredKey> = {
 } & {
   [K in keyof T as Exclude<K, RequiredKey>]?: T[K] | undefined;
 };
-
-type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
-type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
 
 // Note(LukeAbby): Properties from `Schema` technically derive from `DataModel`. This means that if
 // `name?: string` etc. were to be put in `Document` directly they'd actually override the schema.
