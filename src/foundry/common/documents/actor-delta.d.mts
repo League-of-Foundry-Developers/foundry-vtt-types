@@ -121,7 +121,8 @@ declare abstract class BaseActorDelta<
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseActorDelta.ParentCollectionName | null;
+  // Even temporary `ActorDelta`s require parents, so this is never `null`.
+  override readonly parentCollection: BaseActorDelta.ParentCollectionName;
 
   override get pack(): string | null;
 
@@ -135,7 +136,7 @@ declare abstract class BaseActorDelta<
 
   static override get TYPES(): BaseActorDelta.SubType[];
 
-  static override get hasTypeData(): true;
+  static override get hasTypeData(): false;
 
   static override readonly hierarchy: BaseActorDelta.Hierarchy;
 

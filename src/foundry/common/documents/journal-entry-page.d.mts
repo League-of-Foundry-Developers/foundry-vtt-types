@@ -119,6 +119,7 @@ declare abstract class BaseJournalEntryPage<
     options?: BaseJournalEntryPage.Database.GetOptions,
   ): JournalEntryPage.Implementation | null;
 
+  // `JournalEntryPage`s have no embedded collections, so this always returns `null`
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseJournalEntryPage.Flags.Scope, Key extends BaseJournalEntryPage.Flags.Key<Scope>>(

@@ -107,6 +107,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     options?: BaseAmbientSound.Database.GetOptions,
   ): AmbientSoundDocument.Implementation | null;
 
+  // `AmbientSoundDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseAmbientSound.Flags.Scope, Key extends BaseAmbientSound.Flags.Key<Scope>>(

@@ -2052,7 +2052,7 @@ declare namespace Document {
 
   // TODO: properly test passing save: true and not
   /** @internal */
-  type _CloneContext<Save extends boolean | undefined = boolean | undefined> = NullishProps<{
+  type _CloneContext<Save extends boolean | undefined = boolean | undefined> = InexactPartial<{
     /**
      * Save the clone to the World database?
      * @defaultValue `false`

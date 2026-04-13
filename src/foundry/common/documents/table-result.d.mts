@@ -146,6 +146,7 @@ declare abstract class BaseTableResult<
     options?: BaseTableResult.Database.GetOptions,
   ): TableResult.Implementation | null;
 
+  // `TableResult`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseTableResult.Flags.Scope, Key extends BaseTableResult.Flags.Key<Scope>>(

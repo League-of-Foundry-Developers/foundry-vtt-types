@@ -66,8 +66,10 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   /* Document overrides */
 
-  override readonly parentCollection: BaseAdventure.ParentCollectionName | null;
+  // `Adventure`s are never embedded.
+  override readonly parentCollection: null;
 
+  // `Adventure`s are only persisted in compendia, but temporary docs can still have a `null` pack.
   override get pack(): string | null;
 
   static override get implementation(): Adventure.ImplementationClass;
@@ -120,6 +122,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static override get(documentId: string, options?: BaseAdventure.Database.GetOptions): Adventure.Implementation | null;
 
+  // `Adventure`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseAdventure.Flags.Scope, Key extends BaseAdventure.Flags.Key<Scope>>(

@@ -134,6 +134,7 @@ declare abstract class BaseRegionBehavior<
     options?: BaseRegionBehavior.Database.GetOptions,
   ): RegionBehavior.Implementation | null;
 
+  // `RegionBehavior`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseRegionBehavior.Flags.Scope, Key extends BaseRegionBehavior.Flags.Key<Scope>>(

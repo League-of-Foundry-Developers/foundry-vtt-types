@@ -127,6 +127,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   static override get(documentId: string, options?: BaseCard.Database.GetOptions): Card.Implementation | null;
 
+  // `Card`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseCard.Flags.Scope, Key extends BaseCard.Flags.Key<Scope>>(

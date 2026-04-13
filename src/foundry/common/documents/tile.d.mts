@@ -144,6 +144,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   static override get(documentId: string, options?: BaseTile.Database.GetOptions): TileDocument.Implementation | null;
 
+  // `TileDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseTile.Flags.Scope, Key extends BaseTile.Flags.Key<Scope>>(

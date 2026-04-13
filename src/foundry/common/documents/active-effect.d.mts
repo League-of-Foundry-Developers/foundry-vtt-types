@@ -149,6 +149,7 @@ declare abstract class BaseActiveEffect<
     options?: BaseActiveEffect.Database.GetOptions,
   ): ActiveEffect.Implementation | null;
 
+  // `ActiveEffect`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseActiveEffect.Flags.Scope, Key extends BaseActiveEffect.Flags.Key<Scope>>(

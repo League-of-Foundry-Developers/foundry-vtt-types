@@ -5,7 +5,7 @@ import Roll = foundry.dice.Roll;
 const combatant = new Combatant.implementation({}, { parent: new Combat.implementation() });
 
 // properties
-expectTypeOf(combatant.pack).toEqualTypeOf<string | null>();
+expectTypeOf(combatant.pack).toEqualTypeOf<null>();
 expectTypeOf(combatant.parent).toEqualTypeOf<Combat.Implementation>();
 expectTypeOf(combatant.combat).toEqualTypeOf<Combat.Implementation | null>();
 expectTypeOf(combatant.actor).toEqualTypeOf<Actor.Implementation | null>();

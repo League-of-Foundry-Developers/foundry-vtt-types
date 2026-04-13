@@ -87,7 +87,8 @@ declare abstract class BaseChatMessage<
 
   override readonly parentCollection: BaseChatMessage.ParentCollectionName | null;
 
-  override get pack(): string | null;
+  // `ChatMessage`s can never be in compendia.
+  override get pack(): null;
 
   static override get implementation(): ChatMessage.ImplementationClass;
 
@@ -144,6 +145,7 @@ declare abstract class BaseChatMessage<
     options?: BaseChatMessage.Database.GetOptions,
   ): ChatMessage.Implementation | null;
 
+  // `ChatMessage`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseChatMessage.Flags.Scope, Key extends BaseChatMessage.Flags.Key<Scope>>(

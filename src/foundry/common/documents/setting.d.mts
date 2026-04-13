@@ -61,7 +61,8 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   override readonly parentCollection: BaseSetting.ParentCollectionName | null;
 
-  override get pack(): string | null;
+  // `Setting`s can never be in compendia.
+  override get pack(): null;
 
   static override get baseDocument(): typeof BaseSetting;
 
@@ -113,6 +114,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override get(documentId: string, options?: BaseSetting.Database.GetOptions): Setting.Implementation | null;
 
+  // `Setting`s have no embedded collections, so this always returns `null`
   static override getCollectionName(name: string): null;
 
   // TODO: Settings have no `flags` in their schema, but the methods still work and just return `undefined`; they should be added to the template.

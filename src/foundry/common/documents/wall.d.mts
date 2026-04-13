@@ -105,6 +105,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   static override get(documentId: string, options?: BaseWall.Database.GetOptions): WallDocument.Implementation | null;
 
+  // `WallDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseWall.Flags.Scope, Key extends BaseWall.Flags.Key<Scope>>(
