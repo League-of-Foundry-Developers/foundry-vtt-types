@@ -88,7 +88,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   override " fvtt_types_internal_document_parent": BaseAdventure.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Adventure.Implementation | BaseAdventure.CreateData> | undefined,
+    data: BaseAdventure.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseAdventure.Database.Create<Temporary>>,
   ): Promise<Array<BaseAdventure.TemporaryIf<Temporary>>>;
 

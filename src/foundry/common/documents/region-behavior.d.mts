@@ -99,7 +99,7 @@ declare abstract class BaseRegionBehavior<
   override " fvtt_types_internal_document_parent": BaseRegionBehavior.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<RegionBehavior.Implementation | BaseRegionBehavior.CreateData> | undefined,
+    data: BaseRegionBehavior.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseRegionBehavior.Database.Create<Temporary>>,
   ): Promise<Array<BaseRegionBehavior.TemporaryIf<Temporary>>>;
 

@@ -96,7 +96,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   override " fvtt_types_internal_document_parent": BasePlaylist.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Playlist.Implementation | BasePlaylist.CreateData> | undefined,
+    data: BasePlaylist.CreateInput[],
     operation?: Document.Database.CreateOperation<BasePlaylist.Database.Create<Temporary>>,
   ): Promise<Array<BasePlaylist.TemporaryIf<Temporary>>>;
 

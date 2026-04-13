@@ -126,7 +126,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   override " fvtt_types_internal_document_parent": BaseMacro.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Macro.Implementation | BaseMacro.CreateData> | undefined,
+    data: BaseMacro.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseMacro.Database.Create<Temporary>>,
   ): Promise<Array<BaseMacro.TemporaryIf<Temporary>>>;
 

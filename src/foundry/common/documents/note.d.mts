@@ -91,7 +91,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   override " fvtt_types_internal_document_parent": BaseNote.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<NoteDocument.Implementation | BaseNote.CreateData> | undefined,
+    data: BaseNote.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseNote.Database.Create<Temporary>>,
   ): Promise<Array<BaseNote.TemporaryIf<Temporary>>>;
 

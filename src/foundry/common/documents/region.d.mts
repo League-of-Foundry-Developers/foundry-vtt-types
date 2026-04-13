@@ -74,7 +74,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   override " fvtt_types_internal_document_parent": BaseRegion.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<RegionDocument.Implementation | BaseRegion.CreateData> | undefined,
+    data: BaseRegion.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseRegion.Database.Create<Temporary>>,
   ): Promise<Array<BaseRegion.TemporaryIf<Temporary>>>;
 

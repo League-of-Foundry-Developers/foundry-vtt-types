@@ -115,7 +115,7 @@ declare abstract class BaseActiveEffect<
   override " fvtt_types_internal_document_parent": BaseActiveEffect.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<ActiveEffect.Implementation | BaseActiveEffect.CreateData> | undefined,
+    data: BaseActiveEffect.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseActiveEffect.Database.Create<Temporary>>,
   ): Promise<Array<BaseActiveEffect.TemporaryIf<Temporary>>>;
 

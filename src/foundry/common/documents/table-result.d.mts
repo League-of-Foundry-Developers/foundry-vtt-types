@@ -112,7 +112,7 @@ declare abstract class BaseTableResult<
   override " fvtt_types_internal_document_parent": BaseTableResult.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<TableResult.Implementation | BaseTableResult.CreateData> | undefined,
+    data: BaseTableResult.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseTableResult.Database.Create<Temporary>>,
   ): Promise<Array<BaseTableResult.TemporaryIf<Temporary>>>;
 

@@ -81,7 +81,7 @@ declare abstract class BaseCombatantGroup<
   override " fvtt_types_internal_document_parent": BaseCombatantGroup.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<CombatantGroup.Implementation | BaseCombatantGroup.CreateData> | undefined,
+    data: BaseCombatantGroup.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseCombatantGroup.Database.Create<Temporary>>,
   ): Promise<Array<BaseCombatantGroup.TemporaryIf<Temporary>>>;
 

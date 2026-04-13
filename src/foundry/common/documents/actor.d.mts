@@ -136,7 +136,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   override " fvtt_types_internal_document_parent": BaseActor.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Actor.Implementation | BaseActor.CreateData> | undefined,
+    data: BaseActor.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseActor.Database.Create<Temporary>>,
   ): Promise<Array<BaseActor.TemporaryIf<Temporary>>>;
 

@@ -228,7 +228,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   override " fvtt_types_internal_document_parent": BaseToken.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<TokenDocument.Implementation | BaseToken.CreateData> | undefined,
+    data: BaseToken.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseToken.Database.Create<Temporary>>,
   ): Promise<Array<BaseToken.TemporaryIf<Temporary>>>;
 

@@ -201,7 +201,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   override " fvtt_types_internal_document_parent": BaseScene.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Scene.Implementation | BaseScene.CreateData> | undefined,
+    data: BaseScene.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseScene.Database.Create<Temporary>>,
   ): Promise<Array<BaseScene.TemporaryIf<Temporary>>>;
 

@@ -72,7 +72,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   override " fvtt_types_internal_document_parent": BaseAmbientSound.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<AmbientSoundDocument.Implementation | BaseAmbientSound.CreateData> | undefined,
+    data: BaseAmbientSound.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseAmbientSound.Database.Create<Temporary>>,
   ): Promise<Array<BaseAmbientSound.TemporaryIf<Temporary>>>;
 

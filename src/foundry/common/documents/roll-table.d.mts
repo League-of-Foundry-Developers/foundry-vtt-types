@@ -99,7 +99,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   override " fvtt_types_internal_document_parent": BaseRollTable.Parent;
 
   static createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<RollTable.Implementation | BaseRollTable.CreateData> | undefined,
+    data: BaseRollTable.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseRollTable.Database.Create<Temporary>>,
   ): Promise<Array<BaseRollTable.TemporaryIf<Temporary>>>;
 

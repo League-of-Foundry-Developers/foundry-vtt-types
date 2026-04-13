@@ -113,7 +113,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   override " fvtt_types_internal_document_parent": BaseCards.Parent;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Cards.Implementation | BaseCards.CreateData> | undefined,
+    data: BaseCards.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseCards.Database.Create<Temporary>>,
   ): Promise<Array<BaseCards.TemporaryIf<Temporary>>>;
 
