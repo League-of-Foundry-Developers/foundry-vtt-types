@@ -346,7 +346,7 @@ declare abstract class Document<
    * @param context - Additional context options passed to the create method
    * @returns The cloned Document instance
    */
-  override clone<Save extends boolean | null | undefined = undefined>(
+  override clone<Save extends boolean | undefined = undefined>(
     data?: SchemaField.UpdateData<Schema>,
     context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;
@@ -2896,9 +2896,7 @@ declare namespace Document {
     EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
   >;
 
-  type Clone<This extends Document.Any, Save extends boolean | null | undefined> = Save extends true
-    ? Promise<This>
-    : This;
+  type Clone<This extends Document.Any, Save extends boolean | undefined> = Save extends true ? Promise<This> : This;
 
   /**
    * The options for `fromDropData`. Foundry never uses these so the interface is currently empty.

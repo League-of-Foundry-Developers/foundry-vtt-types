@@ -271,6 +271,7 @@ declare abstract class BaseActiveEffect<
 export default BaseActiveEffect;
 
 declare namespace BaseActiveEffect {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = ActiveEffect.Name;
   export import ConstructionContext = ActiveEffect.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated

@@ -75,7 +75,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   override updateSource(changes?: BaseToken.UpdateData, options?: DataModel.UpdateOptions): BaseToken.UpdateData;
 
-  override clone<Save extends boolean | null | undefined = false>(
+  override clone<Save extends boolean | undefined = false>(
     data?: BaseToken.CreateData,
     context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;

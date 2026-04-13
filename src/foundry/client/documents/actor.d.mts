@@ -839,7 +839,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    */
   get inCombat(): boolean;
 
-  override clone<Save extends boolean | null | undefined = false>(
+  override clone<Save extends boolean | undefined = false>(
     data?: Actor.CreateData,
     context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;

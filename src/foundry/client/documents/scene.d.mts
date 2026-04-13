@@ -1310,7 +1310,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * @param createData - (default: `{}`)
    * @param options    - (default: `{}`)
    */
-  override clone<Save extends boolean | null | undefined = false>(
+  override clone<Save extends boolean | undefined = false>(
     data?: Scene.CreateData,
     context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;
