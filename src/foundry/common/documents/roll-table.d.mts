@@ -168,7 +168,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
     Scope extends BaseRollTable.Flags.Scope,
     Key extends BaseRollTable.Flags.Key<Scope>,
     Value extends BaseRollTable.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseRollTable.Flags.Scope, Key extends BaseRollTable.Flags.Key<Scope>>(
     scope: Scope,

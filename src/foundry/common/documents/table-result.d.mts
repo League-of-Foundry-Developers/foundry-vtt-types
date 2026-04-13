@@ -154,7 +154,7 @@ declare abstract class BaseTableResult<
     Scope extends BaseTableResult.Flags.Scope,
     Key extends BaseTableResult.Flags.Key<Scope>,
     Value extends BaseTableResult.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseTableResult.Flags.Scope, Key extends BaseTableResult.Flags.Key<Scope>>(
     scope: Scope,

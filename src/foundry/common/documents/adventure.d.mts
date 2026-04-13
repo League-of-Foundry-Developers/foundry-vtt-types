@@ -127,7 +127,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     Scope extends BaseAdventure.Flags.Scope,
     Key extends BaseAdventure.Flags.Key<Scope>,
     Value extends BaseAdventure.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseAdventure.Flags.Scope, Key extends BaseAdventure.Flags.Key<Scope>>(
     scope: Scope,

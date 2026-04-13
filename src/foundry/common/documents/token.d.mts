@@ -302,7 +302,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     Scope extends BaseToken.Flags.Scope,
     Key extends BaseToken.Flags.Key<Scope>,
     Value extends BaseToken.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseToken.Flags.Scope, Key extends BaseToken.Flags.Key<Scope>>(
     scope: Scope,

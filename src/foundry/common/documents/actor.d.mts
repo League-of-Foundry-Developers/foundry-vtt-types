@@ -205,7 +205,7 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
     Scope extends BaseActor.Flags.Scope,
     Key extends BaseActor.Flags.Key<Scope>,
     Value extends BaseActor.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseActor.Flags.Scope, Key extends BaseActor.Flags.Key<Scope>>(
     scope: Scope,

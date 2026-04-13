@@ -184,7 +184,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
     Scope extends BaseCombat.Flags.Scope,
     Key extends BaseCombat.Flags.Key<Scope>,
     Value extends BaseCombat.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseCombat.Flags.Scope, Key extends BaseCombat.Flags.Key<Scope>>(
     scope: Scope,

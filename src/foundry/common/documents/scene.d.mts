@@ -270,7 +270,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     Scope extends BaseScene.Flags.Scope,
     Key extends BaseScene.Flags.Key<Scope>,
     Value extends BaseScene.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseScene.Flags.Scope, Key extends BaseScene.Flags.Key<Scope>>(
     scope: Scope,

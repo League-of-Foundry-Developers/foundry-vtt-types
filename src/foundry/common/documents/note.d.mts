@@ -130,7 +130,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     Scope extends BaseNote.Flags.Scope,
     Key extends BaseNote.Flags.Key<Scope>,
     Value extends BaseNote.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseNote.Flags.Scope, Key extends BaseNote.Flags.Key<Scope>>(
     scope: Scope,

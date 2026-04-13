@@ -218,7 +218,7 @@ declare abstract class BaseActorDelta<
     Scope extends BaseActorDelta.Flags.Scope,
     Key extends BaseActorDelta.Flags.Key<Scope>,
     Value extends BaseActorDelta.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseActorDelta.Flags.Scope, Key extends BaseActorDelta.Flags.Key<Scope>>(
     scope: Scope,

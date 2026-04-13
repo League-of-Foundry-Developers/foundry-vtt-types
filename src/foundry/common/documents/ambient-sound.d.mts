@@ -114,7 +114,7 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     Scope extends BaseAmbientSound.Flags.Scope,
     Key extends BaseAmbientSound.Flags.Key<Scope>,
     Value extends BaseAmbientSound.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseAmbientSound.Flags.Scope, Key extends BaseAmbientSound.Flags.Key<Scope>>(
     scope: Scope,

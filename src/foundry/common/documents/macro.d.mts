@@ -165,7 +165,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
     Scope extends BaseMacro.Flags.Scope,
     Key extends BaseMacro.Flags.Key<Scope>,
     Value extends BaseMacro.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseMacro.Flags.Scope, Key extends BaseMacro.Flags.Key<Scope>>(
     scope: Scope,

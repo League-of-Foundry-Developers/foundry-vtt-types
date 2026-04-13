@@ -146,7 +146,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     Scope extends BaseMeasuredTemplate.Flags.Scope,
     Key extends BaseMeasuredTemplate.Flags.Key<Scope>,
     Value extends BaseMeasuredTemplate.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseMeasuredTemplate.Flags.Scope, Key extends BaseMeasuredTemplate.Flags.Key<Scope>>(
     scope: Scope,

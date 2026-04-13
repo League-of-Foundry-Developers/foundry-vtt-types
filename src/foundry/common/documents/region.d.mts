@@ -146,7 +146,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     Scope extends BaseRegion.Flags.Scope,
     Key extends BaseRegion.Flags.Key<Scope>,
     Value extends BaseRegion.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseRegion.Flags.Scope, Key extends BaseRegion.Flags.Key<Scope>>(
     scope: Scope,

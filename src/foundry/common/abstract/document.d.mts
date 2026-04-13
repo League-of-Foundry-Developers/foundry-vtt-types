@@ -720,7 +720,7 @@ declare abstract class Document<
    * @remarks This method is a wrapper on {@linkcode Document.update | #update}, so it can return `undefined` if the update
    * is cancelled by {@linkcode Document._preUpdate | #_preUpdate} or the associated hook.
    */
-  setFlag(scope: never, key: never, value: never): Promise<this>;
+  setFlag(scope: never, key: never, value: never): Promise<this | undefined>;
 
   /**
    * Remove a flag assigned to the document

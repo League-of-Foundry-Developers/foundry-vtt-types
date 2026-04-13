@@ -191,7 +191,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
     Scope extends BaseItem.Flags.Scope,
     Key extends BaseItem.Flags.Key<Scope>,
     Value extends BaseItem.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseItem.Flags.Scope, Key extends BaseItem.Flags.Key<Scope>>(
     scope: Scope,

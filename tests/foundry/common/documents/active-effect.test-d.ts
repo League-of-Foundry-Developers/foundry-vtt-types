@@ -643,7 +643,9 @@ expectTypeOf(
 // TODO: wire up core flags to get/set/unsetFlag types
 // TODO: mock up configured flags to test
 expectTypeOf(fullTestAE.getFlag("core", "overlay")).toEqualTypeOf<boolean | undefined>();
-expectTypeOf(fullTestAE.setFlag("core", "overlay", true)).toEqualTypeOf<Promise<TestActiveEffect<"base">>>();
+expectTypeOf(fullTestAE.setFlag("core", "overlay", true)).toEqualTypeOf<
+  Promise<TestActiveEffect<"base"> | undefined>
+>();
 expectTypeOf(fullTestAE.unsetFlag("core", "overlay")).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 
 expectTypeOf(

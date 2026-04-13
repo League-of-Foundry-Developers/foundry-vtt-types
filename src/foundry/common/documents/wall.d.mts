@@ -115,7 +115,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
     Scope extends BaseWall.Flags.Scope,
     Key extends BaseWall.Flags.Key<Scope>,
     Value extends BaseWall.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseWall.Flags.Scope, Key extends BaseWall.Flags.Key<Scope>>(
     scope: Scope,

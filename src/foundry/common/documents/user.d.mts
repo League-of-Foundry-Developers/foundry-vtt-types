@@ -156,7 +156,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
     Scope extends BaseUser.Flags.Scope,
     Key extends BaseUser.Flags.Key<Scope>,
     Value extends BaseUser.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseUser.Flags.Scope, Key extends BaseUser.Flags.Key<Scope>>(
     scope: Scope,

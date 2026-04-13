@@ -182,7 +182,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
     Scope extends BaseCards.Flags.Scope,
     Key extends BaseCards.Flags.Key<Scope>,
     Value extends BaseCards.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseCards.Flags.Scope, Key extends BaseCards.Flags.Key<Scope>>(
     scope: Scope,

@@ -137,7 +137,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
     Scope extends BaseFolder.Flags.Scope,
     Key extends BaseFolder.Flags.Key<Scope>,
     Value extends BaseFolder.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseFolder.Flags.Scope, Key extends BaseFolder.Flags.Key<Scope>>(
     scope: Scope,

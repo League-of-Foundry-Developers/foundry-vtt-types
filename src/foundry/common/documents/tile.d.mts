@@ -155,7 +155,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
     Scope extends BaseTile.Flags.Scope,
     Key extends BaseTile.Flags.Key<Scope>,
     Value extends BaseTile.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseTile.Flags.Scope, Key extends BaseTile.Flags.Key<Scope>>(
     scope: Scope,

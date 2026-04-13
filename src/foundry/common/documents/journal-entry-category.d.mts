@@ -121,7 +121,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
     Scope extends BaseJournalEntryCategory.Flags.Scope,
     Key extends BaseJournalEntryCategory.Flags.Key<Scope>,
     Value extends BaseJournalEntryCategory.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<
     Scope extends BaseJournalEntryCategory.Flags.Scope,

@@ -156,7 +156,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     Scope extends BaseDrawing.Flags.Scope,
     Key extends BaseDrawing.Flags.Key<Scope>,
     Value extends BaseDrawing.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseDrawing.Flags.Scope, Key extends BaseDrawing.Flags.Key<Scope>>(
     scope: Scope,

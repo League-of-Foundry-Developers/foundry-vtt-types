@@ -126,7 +126,7 @@ declare abstract class BaseJournalEntryPage<
     Scope extends BaseJournalEntryPage.Flags.Scope,
     Key extends BaseJournalEntryPage.Flags.Key<Scope>,
     Value extends BaseJournalEntryPage.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseJournalEntryPage.Flags.Scope, Key extends BaseJournalEntryPage.Flags.Key<Scope>>(
     scope: Scope,

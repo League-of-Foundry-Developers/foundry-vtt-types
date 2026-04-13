@@ -123,7 +123,7 @@ declare abstract class BaseCombatantGroup<
     Scope extends BaseCombatantGroup.Flags.Scope,
     Key extends BaseCombatantGroup.Flags.Key<Scope>,
     Value extends BaseCombatantGroup.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseCombatantGroup.Flags.Scope, Key extends BaseCombatantGroup.Flags.Key<Scope>>(
     scope: Scope,

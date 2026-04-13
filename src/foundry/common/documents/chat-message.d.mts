@@ -152,7 +152,7 @@ declare abstract class BaseChatMessage<
     Scope extends BaseChatMessage.Flags.Scope,
     Key extends BaseChatMessage.Flags.Key<Scope>,
     Value extends BaseChatMessage.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseChatMessage.Flags.Scope, Key extends BaseChatMessage.Flags.Key<Scope>>(
     scope: Scope,
