@@ -1,8 +1,8 @@
 import type { MaybeArray } from "#utils";
-import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 import type { fields } from "#client/data/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The Adventure Document.
