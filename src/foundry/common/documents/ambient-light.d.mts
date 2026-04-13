@@ -108,7 +108,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
    */
   static override get(documentId: string, operation?: BaseAmbientLight.Database.GetDocumentsOperation): null;
 
-  /** @privateRemarks `AmbientLightDocument`s have no embedded collections, so this always returns `null` */
+  // `AmbientLightDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseAmbientLight.Flags.Scope, Key extends BaseAmbientLight.Flags.Key<Scope>>(

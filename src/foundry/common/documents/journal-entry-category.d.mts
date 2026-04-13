@@ -116,7 +116,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
    */
   static override get(documentId: string, operation?: BaseJournalEntryCategory.Database.GetDocumentsOperation): null;
 
-  /** @privateRemarks `JournalEntryCategory`s have no embedded collections, so this always returns `null` */
+  // `JournalEntryCategory`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<

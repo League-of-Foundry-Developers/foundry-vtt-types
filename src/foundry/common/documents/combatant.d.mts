@@ -67,7 +67,7 @@ declare abstract class BaseCombatant<
 
   override readonly parentCollection: BaseCombatant.ParentCollectionName | null;
 
-  /** @privateRemarks Neither `Combatant`s nor any of its ancestor document(s) can exist in compendia. */
+  // Neither `Combatant`s nor any of its ancestor document(s) can exist in compendia.
   override get pack(): null;
 
   static override get implementation(): Combatant.ImplementationClass;
@@ -127,7 +127,7 @@ declare abstract class BaseCombatant<
    */
   static override get(documentId: string, operation?: BaseCombatant.Database.GetDocumentsOperation): null;
 
-  /** @privateRemarks `Combatant`s have no embedded collections, so this always returns `null` */
+  // `Combatant`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseCombatant.Flags.Scope, Key extends BaseCombatant.Flags.Key<Scope>>(

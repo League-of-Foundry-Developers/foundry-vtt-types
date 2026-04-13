@@ -159,7 +159,7 @@ declare abstract class BaseTableResult<
    */
   static override get(documentId: string, operation?: BaseTableResult.Database.GetDocumentsOperation): null;
 
-  /** @privateRemarks `TableResult`s have no embedded collections, so this always returns `null` */
+  // `TableResult`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseTableResult.Flags.Scope, Key extends BaseTableResult.Flags.Key<Scope>>(

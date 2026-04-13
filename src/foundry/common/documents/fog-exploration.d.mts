@@ -65,7 +65,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   override readonly parentCollection: BaseFogExploration.ParentCollectionName | null;
 
-  /** @privateRemarks `FogExploration`s can never be in compendia. */
+  // `FogExploration`s can never be in compendia.
   override get pack(): null;
 
   static override get implementation(): FogExploration.ImplementationClass;
@@ -121,7 +121,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     operation?: BaseFogExploration.Database.GetDocumentsOperation,
   ): FogExploration.Stored | null;
 
-  /** @privateRemarks `FogExploration`s have no embedded collections, so this always returns `null` */
+  // `FogExploration`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseFogExploration.Flags.Scope, Key extends BaseFogExploration.Flags.Key<Scope>>(

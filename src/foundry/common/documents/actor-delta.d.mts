@@ -122,7 +122,7 @@ declare abstract class BaseActorDelta<
 
   /* Document overrides */
 
-  /** @privateRemarks Even temporary `ActorDelta`s require parents, so this is never `null` */
+  // Even temporary `ActorDelta`s require parents, so this is never `null`.
   override readonly parentCollection: BaseActorDelta.ParentCollectionName;
 
   override get pack(): string | null;

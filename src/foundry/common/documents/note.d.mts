@@ -128,7 +128,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    */
   static override get(documentId: string, operation?: BaseNote.Database.GetDocumentsOperation): null;
 
-  /** @privateRemarks `NoteDocument`s have no embedded collections, so this always returns `null` */
+  // `NoteDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseNote.Flags.Scope, Key extends BaseNote.Flags.Key<Scope>>(

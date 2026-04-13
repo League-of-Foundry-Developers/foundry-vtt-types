@@ -135,7 +135,7 @@ declare abstract class BaseRegionBehavior<
    */
   static override get(documentId: string, operation?: BaseRegionBehavior.Database.GetDocumentsOperation): null;
 
-  /** @privateRemarks `RegionBehavior`s have no embedded collections, so this always returns `null` */
+  // `RegionBehavior`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseRegionBehavior.Flags.Scope, Key extends BaseRegionBehavior.Flags.Key<Scope>>(

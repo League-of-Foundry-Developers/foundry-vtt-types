@@ -131,7 +131,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   override delete(operation?: BaseFolder.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  /** @privateRemarks `Folder`s have no embedded collections, so this always returns `null` */
+  // `Folder`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseFolder.Flags.Scope, Key extends BaseFolder.Flags.Key<Scope>>(

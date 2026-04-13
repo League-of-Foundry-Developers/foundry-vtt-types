@@ -159,7 +159,7 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
     operation?: BaseMacro.Database.GetDocumentsOperation,
   ): Macro.Stored | CompendiumCollection.IndexEntry<"Macro"> | null;
 
-  /** @privateRemarks `Macro`s have no embedded collections, so this always returns `null` */
+  // `Macro`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseMacro.Flags.Scope, Key extends BaseMacro.Flags.Key<Scope>>(

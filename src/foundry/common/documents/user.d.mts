@@ -97,7 +97,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override readonly parentCollection: BaseUser.ParentCollectionName | null;
 
-  /** @privateRemarks `User`s can never be in compendia. */
+  // `User`s can never be in compendia.
   override get pack(): null;
 
   static override get implementation(): User.ImplementationClass;
@@ -150,7 +150,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   static override get(documentId: string, operation?: BaseUser.Database.GetDocumentsOperation): User.Stored | null;
 
-  /** @privateRemarks `User`s have no embedded collections, so this always returns `null` */
+  // `User`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseUser.Flags.Scope, Key extends BaseUser.Flags.Key<Scope>>(

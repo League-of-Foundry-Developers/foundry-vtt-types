@@ -121,7 +121,7 @@ declare abstract class BaseJournalEntryPage<
    */
   static override get(documentId: string, operation?: BaseJournalEntryPage.Database.GetDocumentsOperation): null;
 
-  /** @privateRemarks `JournalEntryPage`s have no embedded collections, so this always returns `null` */
+  // `JournalEntryPage`s have no embedded collections, so this always returns `null`
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseJournalEntryPage.Flags.Scope, Key extends BaseJournalEntryPage.Flags.Key<Scope>>(

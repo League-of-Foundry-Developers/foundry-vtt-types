@@ -149,7 +149,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    */
   static override get(documentId: string, operation?: BaseDrawing.Database.GetDocumentsOperation): null;
 
-  /** @privateRemarks `DrawingDocument`s have no embedded collections, so this always returns `null` */
+  // `DrawingDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BaseDrawing.Flags.Scope, Key extends BaseDrawing.Flags.Key<Scope>>(

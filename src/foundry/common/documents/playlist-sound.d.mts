@@ -121,7 +121,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
    */
   static override get(documentId: string, operation?: BasePlaylistSound.Database.GetDocumentsOperation): null;
 
-  /** @privateRemarks `PlaylistSound`s have no embedded collections, so this always returns `null` */
+  // `PlaylistSound`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
   override getFlag<Scope extends BasePlaylistSound.Flags.Scope, Key extends BasePlaylistSound.Flags.Key<Scope>>(
