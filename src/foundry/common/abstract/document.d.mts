@@ -597,6 +597,7 @@ declare abstract class Document<
    * // returns "items"
    * ```
    */
+  // Calling `Document.getCollectionName` always throws as the relevant `baseDocument` cannot be found.
   static getCollectionName(name: never): string | null;
 
   /**
