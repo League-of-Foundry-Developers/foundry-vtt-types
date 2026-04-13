@@ -111,6 +111,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   override delete(operation?: BaseSetting.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
+  // `Setting`s cannot exist in compendia, so this never returns an index entry.
   static override get(
     documentId: string,
     operation?: BaseSetting.Database.GetDocumentsOperation,

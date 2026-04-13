@@ -142,11 +142,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   override delete(operation?: BaseDrawing.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  /**
-   * @privateRemarks `DrawingDocument`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
-   * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
-   * chance of index entry return), so this always returns `null`
-   */
+  // `DrawingDocument`s are neither world documents nor compendium documents, so this always returns `null`.
   static override get(documentId: string, operation?: BaseDrawing.Database.GetDocumentsOperation): null;
 
   // `DrawingDocument`s have no embedded collections, so this always returns `null`.

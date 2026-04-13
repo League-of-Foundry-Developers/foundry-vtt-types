@@ -104,11 +104,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   override delete(operation?: BaseRegion.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  /**
-   * @privateRemarks `RegionDocument`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
-   * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
-   * chance of index entry return), so this always returns `null`
-   */
+  // `RegionDocument`s are neither world documents nor compendium documents, so this always returns `null`.
   static override get(documentId: string, operation?: BaseRegion.Database.GetDocumentsOperation): null;
 
   static override getCollectionName<Name extends string>(

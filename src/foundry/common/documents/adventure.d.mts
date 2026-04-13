@@ -121,10 +121,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   override delete(operation?: BaseAdventure.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  /**
-   * @privateRemarks Since `Adventure`s only exist in compendia, this can only return an index entry (if a `pack` is passed in `operation`)
-   * or `null`
-   */
+  // Since `Adventure`s only exist in compendia, this can only return an index entry (if a `pack` is passed in `operation`) or `null`
   static override get(
     documentId: string,
     operation?: BaseAdventure.Database.GetDocumentsOperation,

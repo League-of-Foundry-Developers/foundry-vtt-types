@@ -128,11 +128,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   override delete(operation?: BaseCard.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  /**
-   * @privateRemarks `Card`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
-   * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
-   * chance of index entry return), so this always returns `null`
-   */
+  // `Card`s are neither world documents nor compendium documents, so this always returns `null`.
   static override get(documentId: string, operation?: BaseCard.Database.GetDocumentsOperation): null;
 
   // `Card`s have no embedded collections, so this always returns `null`.

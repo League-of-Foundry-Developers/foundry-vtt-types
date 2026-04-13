@@ -140,6 +140,7 @@ declare abstract class BaseChatMessage<
 
   override delete(operation?: BaseChatMessage.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
+  // `ChatMessage`s cannot exist in packs, so this never returns an index entry
   static override get(
     documentId: string,
     operation?: BaseChatMessage.Database.GetDocumentsOperation,

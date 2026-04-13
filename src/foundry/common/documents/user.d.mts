@@ -148,6 +148,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override delete(operation?: BaseUser.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
+  // `User`s cannot exist in compendia, so this never returns an index entry.
   static override get(documentId: string, operation?: BaseUser.Database.GetDocumentsOperation): User.Stored | null;
 
   // `User`s have no embedded collections, so this always returns `null`.

@@ -144,11 +144,7 @@ declare abstract class BaseActiveEffect<
 
   override delete(operation?: BaseActiveEffect.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  /**
-   * @privateRemarks `ActiveEffect`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
-   * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
-   * chance of index entry return), so this always returns `null`
-   */
+  // `ActiveEffect`s are neither world documents nor compendium documents, so this always returns `null`.
   static override get(documentId: string, operation?: BaseActiveEffect.Database.GetDocumentsOperation): null;
 
   // `ActiveEffect`s have no embedded collections, so this always returns `null`.

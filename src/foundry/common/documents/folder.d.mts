@@ -59,10 +59,8 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
    */
   static SORTING_MODES: ("a" | "m")[];
 
-  /**
-   * @remarks Never returns an index entry, only ever {@linkcode Folder.Implementation} or `null`, as the `folders` collection of a
-   * compendium is always loaded and available synchronously.
-   */
+  // Never returns an index entry, only a persisted `Folder` or `null`, as the `folders` collection of
+  // a compendium is always loaded and available synchronously.
   static override get(documentId: string, options?: Folder.Database.GetDocumentsOperation): Folder.Stored | null;
 
   /*

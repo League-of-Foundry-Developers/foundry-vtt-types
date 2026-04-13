@@ -142,11 +142,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   override delete(operation?: BaseTile.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  /**
-   * @privateRemarks `TileDocument`s are neither {@link CONST.WORLD_DOCUMENT_TYPES | world documents} (and so have no
-   * {@link foundry.Game.collections | world collection}) nor {@link CONST.COMPENDIUM_DOCUMENT_TYPES | compendium documents} (so there's no
-   * chance of index entry return), so this always returns `null`
-   */
+  // `TileDocument`s are neither world documents nor compendium documents, so this always returns `null`.
   static override get(documentId: string, operation?: BaseTile.Database.GetDocumentsOperation): null;
 
   // `TileDocument`s have no embedded collections, so this always returns `null`.
