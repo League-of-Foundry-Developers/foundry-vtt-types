@@ -93,14 +93,14 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   ): Promise<Array<BaseAdventure.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseAdventure.UpdateData[] | undefined,
+    updates: BaseAdventure.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseAdventure.Database.Update>,
-  ): Promise<Adventure.Implementation[]>;
+  ): Promise<Array<Adventure.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseAdventure.Database.Delete>,
-  ): Promise<Adventure.Implementation[]>;
+  ): Promise<Array<Adventure.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseAdventure.CreateData | BaseAdventure.CreateData[],

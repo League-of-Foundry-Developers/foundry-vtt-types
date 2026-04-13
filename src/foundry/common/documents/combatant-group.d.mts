@@ -86,14 +86,14 @@ declare abstract class BaseCombatantGroup<
   ): Promise<Array<BaseCombatantGroup.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseCombatantGroup.UpdateData[] | undefined,
+    updates: BaseCombatantGroup.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseCombatantGroup.Database.Update>,
-  ): Promise<CombatantGroup.Implementation[]>;
+  ): Promise<Array<CombatantGroup.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseCombatantGroup.Database.Delete>,
-  ): Promise<CombatantGroup.Implementation[]>;
+  ): Promise<Array<CombatantGroup.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseCombatantGroup.CreateData | BaseCombatantGroup.CreateData[],

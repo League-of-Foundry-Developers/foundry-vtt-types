@@ -90,14 +90,14 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   ): Promise<Array<BaseFogExploration.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseFogExploration.UpdateData[] | undefined,
+    updates: BaseFogExploration.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseFogExploration.Database.Update>,
-  ): Promise<FogExploration.Implementation[]>;
+  ): Promise<Array<FogExploration.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseFogExploration.Database.Delete>,
-  ): Promise<FogExploration.Implementation[]>;
+  ): Promise<Array<FogExploration.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseFogExploration.CreateData | BaseFogExploration.CreateData[],

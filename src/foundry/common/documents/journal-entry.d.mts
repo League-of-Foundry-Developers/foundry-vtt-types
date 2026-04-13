@@ -101,14 +101,14 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   ): Promise<Array<BaseJournalEntry.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseJournalEntry.UpdateData[] | undefined,
+    updates: BaseJournalEntry.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseJournalEntry.Database.Update>,
-  ): Promise<JournalEntry.Implementation[]>;
+  ): Promise<Array<JournalEntry.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseJournalEntry.Database.Delete>,
-  ): Promise<JournalEntry.Implementation[]>;
+  ): Promise<Array<JournalEntry.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseJournalEntry.CreateData | BaseJournalEntry.CreateData[],

@@ -104,14 +104,14 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   ): Promise<Array<BaseRollTable.TemporaryIf<Temporary>>>;
 
   static updateDocuments(
-    updates: BaseRollTable.UpdateData[] | undefined,
+    updates: BaseRollTable.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseRollTable.Database.Update>,
-  ): Promise<RollTable.Implementation[]>;
+  ): Promise<Array<RollTable.Stored>>;
 
   static deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseRollTable.Database.Delete>,
-  ): Promise<RollTable.Implementation[]>;
+  ): Promise<Array<RollTable.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseRollTable.CreateData | BaseRollTable.CreateData[],

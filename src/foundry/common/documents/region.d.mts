@@ -79,14 +79,14 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   ): Promise<Array<BaseRegion.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseRegion.UpdateData[] | undefined,
+    updates: BaseRegion.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseRegion.Database.Update>,
-  ): Promise<RegionDocument.Implementation[]>;
+  ): Promise<Array<RegionDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseRegion.Database.Delete>,
-  ): Promise<RegionDocument.Implementation[]>;
+  ): Promise<Array<RegionDocument.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseRegion.CreateData | BaseRegion.CreateData[],

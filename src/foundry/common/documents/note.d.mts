@@ -96,14 +96,14 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   ): Promise<Array<BaseNote.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseNote.UpdateData[] | undefined,
+    updates: BaseNote.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseNote.Database.Update>,
-  ): Promise<NoteDocument.Implementation[]>;
+  ): Promise<Array<NoteDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseNote.Database.Delete>,
-  ): Promise<NoteDocument.Implementation[]>;
+  ): Promise<Array<NoteDocument.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseNote.CreateData | BaseNote.CreateData[],

@@ -77,14 +77,14 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
   ): Promise<Array<BaseAmbientSound.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseAmbientSound.UpdateData[] | undefined,
+    updates: BaseAmbientSound.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseAmbientSound.Database.Update>,
-  ): Promise<AmbientSoundDocument.Implementation[]>;
+  ): Promise<Array<AmbientSoundDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseAmbientSound.Database.Delete>,
-  ): Promise<AmbientSoundDocument.Implementation[]>;
+  ): Promise<Array<AmbientSoundDocument.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseAmbientSound.CreateData | BaseAmbientSound.CreateData[],

@@ -117,14 +117,14 @@ declare abstract class BaseTableResult<
   ): Promise<Array<BaseTableResult.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseTableResult.UpdateData[] | undefined,
+    updates: BaseTableResult.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseTableResult.Database.Update>,
-  ): Promise<TableResult.Implementation[]>;
+  ): Promise<Array<TableResult.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseTableResult.Database.Delete>,
-  ): Promise<TableResult.Implementation[]>;
+  ): Promise<Array<TableResult.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseTableResult.CreateData | BaseTableResult.CreateData[],

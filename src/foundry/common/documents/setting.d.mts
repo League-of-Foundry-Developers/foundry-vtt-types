@@ -86,14 +86,14 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   ): Promise<Array<BaseSetting.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseSetting.UpdateData[] | undefined,
+    updates: BaseSetting.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseSetting.Database.Update>,
-  ): Promise<Setting.Implementation[]>;
+  ): Promise<Array<Setting.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseSetting.Database.Delete>,
-  ): Promise<Setting.Implementation[]>;
+  ): Promise<Array<Setting.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseSetting.CreateData | BaseSetting.CreateData[],

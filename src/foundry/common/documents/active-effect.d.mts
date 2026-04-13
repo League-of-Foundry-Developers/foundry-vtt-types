@@ -120,14 +120,14 @@ declare abstract class BaseActiveEffect<
   ): Promise<Array<BaseActiveEffect.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseActiveEffect.UpdateData[] | undefined,
+    updates: BaseActiveEffect.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseActiveEffect.Database.Update>,
-  ): Promise<ActiveEffect.Implementation[]>;
+  ): Promise<Array<ActiveEffect.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseActiveEffect.Database.Delete>,
-  ): Promise<ActiveEffect.Implementation[]>;
+  ): Promise<Array<ActiveEffect.Stored>>;
 
   static override create<Temporary extends boolean | undefined = false>(
     data: BaseActiveEffect.CreateData | BaseActiveEffect.CreateData[],

@@ -127,14 +127,14 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   ): Promise<Array<BaseItem.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseItem.UpdateData[] | undefined,
+    updates: BaseItem.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseItem.Database.Update>,
-  ): Promise<Item.Implementation[]>;
+  ): Promise<Array<Item.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseItem.Database.Delete>,
-  ): Promise<Item.Implementation[]>;
+  ): Promise<Array<Item.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseItem.CreateData | BaseItem.CreateData[],

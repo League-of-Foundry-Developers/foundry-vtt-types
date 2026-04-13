@@ -131,14 +131,14 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   ): Promise<Array<BaseMacro.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseMacro.UpdateData[] | undefined,
+    updates: BaseMacro.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseMacro.Database.Update>,
-  ): Promise<Macro.Implementation[]>;
+  ): Promise<Array<Macro.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseMacro.Database.Delete>,
-  ): Promise<Macro.Implementation[]>;
+  ): Promise<Array<Macro.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseMacro.CreateData | BaseMacro.CreateData[],

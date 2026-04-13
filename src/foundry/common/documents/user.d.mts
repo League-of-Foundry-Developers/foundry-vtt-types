@@ -122,14 +122,14 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   ): Promise<Array<BaseUser.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseUser.UpdateData[] | undefined,
+    updates: BaseUser.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseUser.Database.Update>,
-  ): Promise<User.Implementation[]>;
+  ): Promise<Array<User.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseUser.Database.Delete>,
-  ): Promise<User.Implementation[]>;
+  ): Promise<Array<User.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseUser.CreateData | BaseUser.CreateData[],

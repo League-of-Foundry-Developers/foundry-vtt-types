@@ -206,14 +206,14 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   ): Promise<Array<BaseScene.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseScene.UpdateData[] | undefined,
+    updates: BaseScene.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseScene.Database.Update>,
-  ): Promise<Scene.Implementation[]>;
+  ): Promise<Array<Scene.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseScene.Database.Delete>,
-  ): Promise<Scene.Implementation[]>;
+  ): Promise<Array<Scene.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseScene.CreateData | BaseScene.CreateData[],

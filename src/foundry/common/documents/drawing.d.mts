@@ -119,14 +119,14 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   ): Promise<Array<BaseDrawing.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseDrawing.UpdateData[] | undefined,
+    updates: BaseDrawing.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseDrawing.Database.Update>,
-  ): Promise<DrawingDocument.Implementation[]>;
+  ): Promise<Array<DrawingDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseDrawing.Database.Delete>,
-  ): Promise<DrawingDocument.Implementation[]>;
+  ): Promise<Array<DrawingDocument.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseDrawing.CreateData | BaseDrawing.CreateData[],

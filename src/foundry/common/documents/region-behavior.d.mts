@@ -104,14 +104,14 @@ declare abstract class BaseRegionBehavior<
   ): Promise<Array<BaseRegionBehavior.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseRegionBehavior.UpdateData[] | undefined,
+    updates: BaseRegionBehavior.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseRegionBehavior.Database.Update>,
-  ): Promise<RegionBehavior.Implementation[]>;
+  ): Promise<Array<RegionBehavior.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseRegionBehavior.Database.Delete>,
-  ): Promise<RegionBehavior.Implementation[]>;
+  ): Promise<Array<RegionBehavior.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseRegionBehavior.CreateData | BaseRegionBehavior.CreateData[],

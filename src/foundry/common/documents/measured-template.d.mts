@@ -109,14 +109,14 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   ): Promise<Array<BaseMeasuredTemplate.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseMeasuredTemplate.UpdateData[] | undefined,
+    updates: BaseMeasuredTemplate.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseMeasuredTemplate.Database.Update>,
-  ): Promise<MeasuredTemplateDocument.Implementation[]>;
+  ): Promise<Array<MeasuredTemplateDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseMeasuredTemplate.Database.Delete>,
-  ): Promise<MeasuredTemplateDocument.Implementation[]>;
+  ): Promise<Array<MeasuredTemplateDocument.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseMeasuredTemplate.CreateData | BaseMeasuredTemplate.CreateData[],

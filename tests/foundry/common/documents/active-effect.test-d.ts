@@ -235,8 +235,8 @@ expectTypeOf(TestActiveEffect.hasTypeData).toEqualTypeOf<true>();
 expectTypeOf(TestActiveEffect.hierarchy).toExtend<EmptyObject>();
 
 expectTypeOf(TestActiveEffect.createDocuments([])).branded.toEqualTypeOf<Promise<ActiveEffect.Stored[]>>();
-expectTypeOf(TestActiveEffect.updateDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Implementation[]>>();
-expectTypeOf(TestActiveEffect.deleteDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Implementation[]>>();
+expectTypeOf(TestActiveEffect.updateDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Stored[]>>();
+expectTypeOf(TestActiveEffect.deleteDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Stored[]>>();
 
 // TODO: should error, AE creation requires a parent
 expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();

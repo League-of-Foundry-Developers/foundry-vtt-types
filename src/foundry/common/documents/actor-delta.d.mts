@@ -151,14 +151,14 @@ declare abstract class BaseActorDelta<
   ): Promise<Array<BaseActorDelta.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseActorDelta.UpdateData[] | undefined,
+    updates: BaseActorDelta.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseActorDelta.Database.Update>,
-  ): Promise<ActorDelta.Implementation[]>;
+  ): Promise<Array<ActorDelta.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseActorDelta.Database.Delete>,
-  ): Promise<ActorDelta.Implementation[]>;
+  ): Promise<Array<ActorDelta.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseActorDelta.CreateData | BaseActorDelta.CreateData[],

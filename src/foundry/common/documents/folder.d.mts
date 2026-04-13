@@ -105,14 +105,14 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   ): Promise<Array<BaseFolder.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseFolder.UpdateData[] | undefined,
+    updates: BaseFolder.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseFolder.Database.Update>,
-  ): Promise<Folder.Implementation[]>;
+  ): Promise<Array<Folder.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseFolder.Database.Delete>,
-  ): Promise<Folder.Implementation[]>;
+  ): Promise<Array<Folder.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseFolder.CreateData | BaseFolder.CreateData[],

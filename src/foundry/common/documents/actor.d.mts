@@ -141,14 +141,14 @@ declare abstract class BaseActor<out SubType extends Actor.SubType = Actor.SubTy
   ): Promise<Array<BaseActor.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseActor.UpdateData[] | undefined,
+    updates: BaseActor.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseActor.Database.Update>,
-  ): Promise<Actor.Implementation[]>;
+  ): Promise<Array<Actor.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseActor.Database.Delete>,
-  ): Promise<Actor.Implementation[]>;
+  ): Promise<Array<Actor.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseActor.CreateData | BaseActor.CreateData[],

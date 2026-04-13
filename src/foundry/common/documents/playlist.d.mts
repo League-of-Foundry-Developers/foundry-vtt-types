@@ -101,14 +101,14 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   ): Promise<Array<BasePlaylist.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BasePlaylist.UpdateData[] | undefined,
+    updates: BasePlaylist.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BasePlaylist.Database.Update>,
-  ): Promise<Playlist.Implementation[]>;
+  ): Promise<Array<Playlist.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BasePlaylist.Database.Delete>,
-  ): Promise<Playlist.Implementation[]>;
+  ): Promise<Array<Playlist.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BasePlaylist.CreateData | BasePlaylist.CreateData[],

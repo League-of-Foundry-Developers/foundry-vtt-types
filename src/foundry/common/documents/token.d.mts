@@ -233,14 +233,14 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): Promise<Array<BaseToken.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseToken.UpdateData[] | undefined,
+    updates: BaseToken.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseToken.Database.Update>,
-  ): Promise<TokenDocument.Implementation[]>;
+  ): Promise<Array<TokenDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseToken.Database.Delete>,
-  ): Promise<TokenDocument.Implementation[]>;
+  ): Promise<Array<TokenDocument.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseToken.CreateData | BaseToken.CreateData[],

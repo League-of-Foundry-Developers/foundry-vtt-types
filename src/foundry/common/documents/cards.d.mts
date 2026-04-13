@@ -118,14 +118,14 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   ): Promise<Array<BaseCards.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseCards.UpdateData[] | undefined,
+    updates: BaseCards.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseCards.Database.Update>,
-  ): Promise<Cards.Implementation[]>;
+  ): Promise<Array<Cards.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseCards.Database.Delete>,
-  ): Promise<Cards.Implementation[]>;
+  ): Promise<Array<Cards.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseCards.CreateData | BaseCards.CreateData[],

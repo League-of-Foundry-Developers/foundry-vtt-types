@@ -121,14 +121,14 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   ): Promise<Array<BaseTile.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseTile.UpdateData[] | undefined,
+    updates: BaseTile.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseTile.Database.Update>,
-  ): Promise<TileDocument.Implementation[]>;
+  ): Promise<Array<TileDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseTile.Database.Delete>,
-  ): Promise<TileDocument.Implementation[]>;
+  ): Promise<Array<TileDocument.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseTile.CreateData | BaseTile.CreateData[],

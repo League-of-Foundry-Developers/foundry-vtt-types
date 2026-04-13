@@ -15,12 +15,8 @@ expectTypeOf(new TestBaseFogExploration()).toEqualTypeOf<TestBaseFogExploration>
 expectTypeOf(new TestBaseFogExploration({})).toEqualTypeOf<TestBaseFogExploration>();
 expectTypeOf(TestBaseFogExploration.create({})).toEqualTypeOf<Promise<FogExploration.Stored | undefined>>();
 expectTypeOf(TestBaseFogExploration.createDocuments([{}])).toEqualTypeOf<Promise<FogExploration.Stored[]>>();
-expectTypeOf(TestBaseFogExploration.updateDocuments(undefined)).toEqualTypeOf<
-  Promise<FogExploration.Implementation[]>
->();
-expectTypeOf(TestBaseFogExploration.deleteDocuments(undefined)).toEqualTypeOf<
-  Promise<FogExploration.Implementation[]>
->();
+expectTypeOf(TestBaseFogExploration.updateDocuments([])).toEqualTypeOf<Promise<FogExploration.Stored[]>>();
+expectTypeOf(TestBaseFogExploration.deleteDocuments([])).toEqualTypeOf<Promise<FogExploration.Stored[]>>();
 
 const fog = new TestBaseFogExploration();
 expectTypeOf(fog.explored).toEqualTypeOf<string | null>();

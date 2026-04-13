@@ -76,14 +76,14 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   ): Promise<Array<BaseAmbientLight.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseAmbientLight.UpdateData[] | undefined,
+    updates: BaseAmbientLight.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseAmbientLight.Database.Update>,
-  ): Promise<AmbientLightDocument.Implementation[]>;
+  ): Promise<Array<AmbientLightDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseAmbientLight.Database.Delete>,
-  ): Promise<AmbientLightDocument.Implementation[]>;
+  ): Promise<Array<AmbientLightDocument.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseAmbientLight.CreateData | BaseAmbientLight.CreateData[],

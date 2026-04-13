@@ -81,14 +81,14 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
   ): Promise<Array<BaseWall.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseWall.UpdateData[] | undefined,
+    updates: BaseWall.UpdateInput[],
     operation?: BaseWall.Database.UpdateDocumentsOperation,
-  ): Promise<WallDocument.Implementation[]>;
+  ): Promise<Array<WallDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: BaseWall.Database.DeleteDocumentsOperation,
-  ): Promise<WallDocument.Implementation[]>;
+  ): Promise<Array<WallDocument.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseWall.CreateData | BaseWall.CreateData[],

@@ -120,14 +120,14 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   ): Promise<Array<BaseCombat.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseCombat.UpdateData[] | undefined,
+    updates: BaseCombat.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseCombat.Database.Update>,
-  ): Promise<Combat.Implementation[]>;
+  ): Promise<Array<Combat.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseCombat.Database.Delete>,
-  ): Promise<Combat.Implementation[]>;
+  ): Promise<Array<Combat.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseCombat.CreateData | BaseCombat.CreateData[],

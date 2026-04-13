@@ -89,14 +89,14 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   ): Promise<Array<BasePlaylistSound.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BasePlaylistSound.UpdateData[] | undefined,
+    updates: BasePlaylistSound.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BasePlaylistSound.Database.Update>,
-  ): Promise<PlaylistSound.Implementation[]>;
+  ): Promise<Array<PlaylistSound.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BasePlaylistSound.Database.Delete>,
-  ): Promise<PlaylistSound.Implementation[]>;
+  ): Promise<Array<PlaylistSound.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BasePlaylistSound.CreateData | BasePlaylistSound.CreateData[],

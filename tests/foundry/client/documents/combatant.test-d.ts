@@ -26,8 +26,8 @@ expectTypeOf(combatant.prepareDerivedData()).toEqualTypeOf<void>();
 // static properties
 expectTypeOf(Combatant.create({ name: "Some Combatant" })).toEqualTypeOf<Promise<Combatant.Stored | undefined>>();
 expectTypeOf(Combatant.createDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[]>>();
-expectTypeOf(Combatant.updateDocuments([])).toEqualTypeOf<Promise<Combatant.Implementation[]>>();
-expectTypeOf(Combatant.deleteDocuments([])).toEqualTypeOf<Promise<Combatant.Implementation[]>>();
+expectTypeOf(Combatant.updateDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[]>>();
+expectTypeOf(Combatant.deleteDocuments([])).toEqualTypeOf<Promise<Combatant.Stored[]>>();
 
 // Test for @peril_maelstrom on Discord, see https://discord.com/channels/732325252788387980/803646399014109205/1393199876032041050
 test("createCombatant parent required", () => {

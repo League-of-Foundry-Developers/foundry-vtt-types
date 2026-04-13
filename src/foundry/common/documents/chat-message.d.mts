@@ -115,14 +115,14 @@ declare abstract class BaseChatMessage<
   ): Promise<Array<BaseChatMessage.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseChatMessage.UpdateData[] | undefined,
+    updates: BaseChatMessage.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseChatMessage.Database.Update>,
-  ): Promise<ChatMessage.Implementation[]>;
+  ): Promise<Array<ChatMessage.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseChatMessage.Database.Delete>,
-  ): Promise<ChatMessage.Implementation[]>;
+  ): Promise<Array<ChatMessage.Stored>>;
 
   static override create<Temporary extends boolean | undefined = undefined>(
     data: BaseChatMessage.CreateData | BaseChatMessage.CreateData[],
