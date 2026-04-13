@@ -246,8 +246,8 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Playlist._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Playlist._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Playlist.Implementation[],
@@ -256,8 +256,8 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Playlist._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Playlist._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: Playlist.Stored[],
@@ -266,8 +266,8 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Playlist._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Playlist._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: Playlist.Stored[],

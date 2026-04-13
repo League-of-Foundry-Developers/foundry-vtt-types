@@ -218,8 +218,8 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Folder._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Folder._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Folder.Implementation[],
@@ -228,8 +228,8 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Folder._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Folder._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: Folder.Stored[],
@@ -238,8 +238,8 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Folder._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Folder._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: Folder.Stored[],

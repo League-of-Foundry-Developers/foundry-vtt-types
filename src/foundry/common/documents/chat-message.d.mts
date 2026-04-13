@@ -232,8 +232,8 @@ declare abstract class BaseChatMessage<
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `ChatMessage._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode ChatMessage._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: ChatMessage.Implementation[],
@@ -242,8 +242,8 @@ declare abstract class BaseChatMessage<
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `ChatMessage._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode ChatMessage._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: ChatMessage.Stored[],
@@ -252,8 +252,8 @@ declare abstract class BaseChatMessage<
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `ChatMessage._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode ChatMessage._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: ChatMessage.Stored[],

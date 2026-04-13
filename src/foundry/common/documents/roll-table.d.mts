@@ -246,8 +246,8 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `RollTable._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode RollTable._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: RollTable.Implementation[],
@@ -256,8 +256,8 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `RollTable._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode RollTable._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: RollTable.Stored[],
@@ -266,8 +266,8 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `RollTable._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode RollTable._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: RollTable.Stored[],

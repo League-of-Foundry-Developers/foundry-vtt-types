@@ -217,8 +217,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Adventure._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Adventure._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Adventure.Implementation[],
@@ -227,8 +227,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Adventure._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Adventure._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: Adventure.Stored[],
@@ -237,8 +237,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Adventure._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Adventure._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: Adventure.Stored[],

@@ -237,8 +237,8 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `User._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode User._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: User.Implementation[],
@@ -247,8 +247,8 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `User._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode User._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: User.Stored[],
@@ -257,8 +257,8 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `User._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode User._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: User.Stored[],

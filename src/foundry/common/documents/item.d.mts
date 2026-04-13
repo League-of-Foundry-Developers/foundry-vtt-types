@@ -267,8 +267,8 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Item._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Item._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Item.Implementation[],
@@ -277,8 +277,8 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Item._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Item._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: Item.Stored[],
@@ -287,8 +287,8 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Item._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Item._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: Item.Stored[],

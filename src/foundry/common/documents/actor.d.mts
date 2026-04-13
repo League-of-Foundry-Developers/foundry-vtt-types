@@ -272,8 +272,8 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Actor._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Actor._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Actor.Implementation[],
@@ -282,8 +282,8 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Actor._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Actor._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: Actor.Stored[],
@@ -292,8 +292,8 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Actor._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Actor._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: Actor.Stored[],

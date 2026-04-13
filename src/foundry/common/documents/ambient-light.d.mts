@@ -195,8 +195,8 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `AmbientLightDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode AmbientLightDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: AmbientLightDocument.Implementation[],
@@ -205,8 +205,8 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `AmbientLightDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode AmbientLightDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: AmbientLightDocument.Stored[],
@@ -215,8 +215,8 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `AmbientLightDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode AmbientLightDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: AmbientLightDocument.Stored[],

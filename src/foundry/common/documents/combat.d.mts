@@ -259,8 +259,8 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Combat._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Combat._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Combat.Implementation[],
@@ -269,8 +269,8 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Combat._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Combat._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: Combat.Stored[],
@@ -279,8 +279,8 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Combat._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Combat._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: Combat.Stored[],

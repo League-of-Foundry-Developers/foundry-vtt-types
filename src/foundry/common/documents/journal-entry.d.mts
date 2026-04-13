@@ -247,8 +247,8 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `JournalEntry._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntry._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: JournalEntry.Implementation[],
@@ -257,8 +257,8 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `JournalEntry._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntry._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: JournalEntry.Stored[],
@@ -267,8 +267,8 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `JournalEntry._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntry._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: JournalEntry.Stored[],

@@ -222,8 +222,8 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Card._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Card._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Card.Implementation[],
@@ -232,8 +232,8 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Card._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Card._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: Card.Stored[],
@@ -242,8 +242,8 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `Card._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Card._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: Card.Stored[],

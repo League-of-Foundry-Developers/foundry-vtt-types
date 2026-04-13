@@ -215,8 +215,8 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `NoteDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode NoteDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: NoteDocument.Implementation[],
@@ -225,8 +225,8 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `NoteDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode NoteDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: NoteDocument.Stored[],
@@ -235,8 +235,8 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `NoteDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode NoteDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: NoteDocument.Stored[],

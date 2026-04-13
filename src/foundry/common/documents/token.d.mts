@@ -390,8 +390,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `TokenDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode TokenDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: TokenDocument.Implementation[],
@@ -400,8 +400,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `TokenDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode TokenDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: TokenDocument.Stored[],
@@ -410,8 +410,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `TokenDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode TokenDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: TokenDocument.Stored[],

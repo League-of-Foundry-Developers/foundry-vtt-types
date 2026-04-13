@@ -303,8 +303,8 @@ declare abstract class BaseActorDelta<
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `ActorDelta._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode ActorDelta._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: ActorDelta.Implementation[],
@@ -313,8 +313,8 @@ declare abstract class BaseActorDelta<
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `ActorDelta._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode ActorDelta._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: ActorDelta.Stored[],
@@ -323,8 +323,8 @@ declare abstract class BaseActorDelta<
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `ActorDelta._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode ActorDelta._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: ActorDelta.Stored[],

@@ -203,8 +203,8 @@ declare abstract class BaseJournalEntryCategory extends Document<
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `JournalEntryCategory._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntryCategory._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: JournalEntryCategory.Implementation[],
@@ -213,8 +213,8 @@ declare abstract class BaseJournalEntryCategory extends Document<
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `JournalEntryCategory._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntryCategory._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: JournalEntryCategory.Stored[],
@@ -223,8 +223,8 @@ declare abstract class BaseJournalEntryCategory extends Document<
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `JournalEntryCategory._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntryCategory._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: JournalEntryCategory.Stored[],

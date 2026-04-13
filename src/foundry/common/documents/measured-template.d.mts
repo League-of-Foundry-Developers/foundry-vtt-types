@@ -226,8 +226,8 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `MeasuredTemplateDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode MeasuredTemplateDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: MeasuredTemplateDocument.Implementation[],
@@ -236,8 +236,8 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `MeasuredTemplateDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode MeasuredTemplateDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: MeasuredTemplateDocument.Stored[],
@@ -246,8 +246,8 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `MeasuredTemplateDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode MeasuredTemplateDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: MeasuredTemplateDocument.Stored[],

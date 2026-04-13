@@ -232,8 +232,8 @@ declare abstract class BaseActiveEffect<
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `ActiveEffect._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode ActiveEffect._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: ActiveEffect.Implementation[],
@@ -242,8 +242,8 @@ declare abstract class BaseActiveEffect<
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `ActiveEffect._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode ActiveEffect._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
     documents: ActiveEffect.Stored[],
@@ -252,8 +252,8 @@ declare abstract class BaseActiveEffect<
   ): Promise<void>;
 
   /**
-   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
-   * (since v12, until v14)
+   * @deprecated "The `ActiveEffect._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode ActiveEffect._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
     documents: ActiveEffect.Stored[],
