@@ -715,7 +715,7 @@ export interface AllHooks extends DynamicHooks {
   preMoveToken: (
     document: TokenDocument.Implementation,
     movement: TokenDocument.PreUpdateMovement,
-    options: TokenDocument.Database.PreUpdateOptions,
+    operation: TokenDocument.Database.PreUpdateOptions,
   ) => boolean | void;
 
   /**
