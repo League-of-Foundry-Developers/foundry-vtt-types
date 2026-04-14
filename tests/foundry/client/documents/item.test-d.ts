@@ -187,9 +187,9 @@ Item.deleteDocuments([foundry.utils.randomID()], { foobar: false });
 
 class BoilerplateItem extends Item {
   protected static override async _onUpdateOperation(
-    documents: Item.Implementation[],
+    documents: Item.Stored[],
     operation: Item.Database.OnUpdateOperation,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void> {
     if (operation.bar) {
       console.log(documents[0]!.id, operation.diff, user.id);

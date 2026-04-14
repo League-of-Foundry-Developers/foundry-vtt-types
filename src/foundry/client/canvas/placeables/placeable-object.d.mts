@@ -266,7 +266,6 @@ declare abstract class PlaceableObject<
   /**
    * Register pending canvas operations which should occur after a new PlaceableObject of this type is created
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _onCreate(
     data: Document.CreateDataForName<CanvasDocument["documentName"]>,
     options: Document.Database.OnCreateOptionsForName<CanvasDocument["documentName"]>,

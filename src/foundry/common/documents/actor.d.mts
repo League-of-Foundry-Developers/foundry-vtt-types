@@ -167,7 +167,7 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   static override get(
     documentId: string,
     operation?: BaseActor.Database.GetDocumentsOperation,
-  ): Actor.Implementation | CompendiumCollection.IndexEntry<"Actor"> | null;
+  ): Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | null;
 
   static override getCollectionName<Name extends string>(
     name: OverlapsWith<Name, BaseActor.Embedded.CollectionName>,

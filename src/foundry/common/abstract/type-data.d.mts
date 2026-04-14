@@ -384,7 +384,6 @@ declare abstract class TypeDataModel<
    * @param options - Additional options which modify the creation request
    * @param userId  - The id of the User requesting the document update
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _onCreate(
     data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
     options: Document.Database.OnCreateOptionsForName<Parent["documentName"]>,
@@ -412,7 +411,6 @@ declare abstract class TypeDataModel<
    * @param options - Additional options which modify the update request
    * @param userId  - The id of the User requesting the document update
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _onUpdate(
     changed: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
     options: Document.Database.OnUpdateOptionsForName<Parent["documentName"]>,
@@ -437,7 +435,6 @@ declare abstract class TypeDataModel<
    * @param options - Additional options which modify the deletion request
    * @param userId  - The id of the User requesting the document update
    */
-  // TODO: should be `MaybePromise<void>` to allow async subclassing?
   protected _onDelete(options: Document.Database.OnDeleteOptionsForName<Parent["documentName"]>, userId: string): void;
 }
 

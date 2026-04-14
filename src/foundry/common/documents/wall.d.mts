@@ -151,13 +151,11 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
     operation: BaseWall.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
-
   protected override _preUpdate(
     changed: BaseWall.UpdateData,
     options: BaseWall.Database.PreUpdateOptions,
     user: User.Stored,
   ): Promise<boolean | void>;
-
   protected override _onUpdate(
     changed: BaseWall.UpdateData,
     options: BaseWall.Database.OnUpdateOptions,
@@ -175,12 +173,10 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
     operation: BaseWall.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
-
   protected override _preDelete(
     options: BaseWall.Database.PreDeleteOptions,
     user: User.Stored,
   ): Promise<boolean | void>;
-
   protected override _onDelete(options: BaseWall.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(

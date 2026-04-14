@@ -1,9 +1,10 @@
 import type { Identity, InexactPartial } from "#utils";
 import type Collection from "../utils/collection.d.mts";
-/** @privateRemarks `EmbeddedCollectionDelta` used only for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { Document, EmbeddedCollectionDelta } from "#common/abstract/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type EmbeddedCollectionDelta from "#common/abstract/embedded-collection-delta.d.mts";
 
 /**
  * An extension of the Collection.

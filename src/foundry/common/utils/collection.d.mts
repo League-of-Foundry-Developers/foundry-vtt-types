@@ -1,13 +1,11 @@
 import type { Coalesce, GetKey, Identity, InexactPartial, Override } from "#utils";
 import type { Document } from "#common/abstract/_module.d.mts";
 
-/** @privateRemarks `EmbeddedCollection` used only for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
 
-/** @privateRemarks `DocumentCollection` used only for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type DocumentCollection from "#client/documents/abstract/document-collection.d.mts";
 
 // This class exists make it as sound as possible to override these parts of the class and make them
 // completely unrelated. It's done this way specifically to avoid situations with broken inheritance.

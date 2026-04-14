@@ -1,21 +1,18 @@
-import type { InexactPartial, Identity, DeepPartial } from "#utils";
+import type { DeepPartial, InexactPartial, Identity } from "#utils";
 import type { Collection } from "#common/utils/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
 import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { ApplicationV2 } from "#client/applications/api/_module.d.mts";
 import type { SearchFilter } from "#client/applications/ux/_module.d.mts";
 
-/** @privateRemarks `DatabaseBackend` is only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type DatabaseBackend from "#common/abstract/backend.d.mts";
 
-/** @privateRemarks `CompendiumCollection` and `CompendiumFolderCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type CompendiumCollection from "#client/documents/collections/compendium-collection.d.mts";
 
-/** @privateRemarks `WorldCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type WorldCollection from "#client/documents/abstract/world-collection.d.mts";
 
 /**
  * An abstract subclass of the Collection container which defines a collection of Document instances.
@@ -144,10 +141,9 @@ declare abstract class DocumentCollection<
    * @param options        - Additional options passed to Document.updateDocuments (default: `{}`)
    * @returns An array of updated data once the operation is complete
    */
-  // TODO: This is updated in the db-ops branch
   updateAll(
     transformation: DocumentCollection.Transformation<DocumentName>,
-    condition?: ((obj: Document.StoredForName<DocumentName>) => boolean) | null,
+    condition?: ((doc: Document.StoredForName<DocumentName>) => boolean) | null,
     options?: DocumentCollection.UpdateAllOperation<DocumentName>,
   ): Promise<Document.StoredForName<DocumentName>[]>;
 

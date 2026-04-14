@@ -14,7 +14,6 @@ import type {
   EffectsCanvasGroup,
   EnvironmentCanvasGroup,
 } from "#client/canvas/groups/_module.d.mts";
-
 import type { Note, PlaceableObject, Token } from "#client/canvas/placeables/_module.d.mts";
 import type { TokenRingConfig } from "#client/canvas/placeables/tokens/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";

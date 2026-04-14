@@ -1,21 +1,20 @@
-import type { InexactPartial, FixedInstanceType, LoggingLevels, Identity, IntentionalPartial, AnyObject } from "#utils";
-import type Document from "./document.d.mts";
+import type { AnyObject, FixedInstanceType, Identity, InexactPartial, IntentionalPartial, LoggingLevels } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `CompendiumCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type CompendiumCollection from "#client/documents/collections/compendium-collection.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin, DocumentCollection } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
-/** @privateRemarks `EmbeddedCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { EmbeddedCollection } from "#common/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type DocumentCollection from "#client/documents/abstract/document-collection.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
 
 /**
  * An abstract base class extended on both the client and server which defines how Documents are retrieved, created,

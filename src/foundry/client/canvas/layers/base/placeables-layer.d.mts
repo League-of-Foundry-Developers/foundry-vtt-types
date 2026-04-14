@@ -328,10 +328,8 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
    * Update all objects in this layer with a provided transformation.
    * Conditionally filter to only apply to objects which match a certain condition.
    * @param transformation - An object of data or function to apply to all matched objects
-   * @param condition      - A function which tests whether to target each object
-   *                         (default: `null`)
-   * @param options        - Additional options passed to Document.update
-   *                         (default: `{}`)
+   * @param condition      - A function which tests whether to target each object (default: `null`)
+   * @param options        - Additional options passed to Document.update (default: `{}`)
    * @returns An array of updated data once the operation is complete
    * @throws An error if the `transformation` parameter is neither a function nor a plain object
    */

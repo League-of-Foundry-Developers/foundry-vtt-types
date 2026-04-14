@@ -4,13 +4,11 @@ import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseFogExploration, BaseScene, BaseUser } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
 declare namespace FogExploration {
   /**
@@ -826,6 +824,10 @@ declare namespace FogExploration {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
 
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
+
     /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
     type DeleteOptions = OnDeleteOptions;
 
@@ -996,15 +998,15 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   static override get(
     documentId: string,
     operation?: FogExploration.Database.GetDocumentsOperation,
-  ): Promise<FogExploration.Stored | null> | FogExploration.Stored | null;
+  ): FogExploration.Stored | null;
 
   /**
    * @deprecated "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War
-   * exploration data, an operation which has been renamed to {@link FogExploration.load | `FogExploration.load`}" (since v12, will be removed in v14)
+   * exploration data, an operation which has been renamed to {@linkcode FogExploration.load}" (since v12, until v14)
    */
   static override get(
     query: FogExploration.LoadQuery,
-    options: FogExploration.LoadOptions,
+    options?: FogExploration.LoadOptions,
   ): Promise<FogExploration.Stored | null>;
 
   /*
