@@ -299,7 +299,6 @@ declare namespace BaseTableResult {
   export import CollectionClass = TableResult.CollectionClass;
   export import Collection = TableResult.Collection;
   export import Invalid = TableResult.Invalid;
-  export import Stored = TableResult.Stored;
   export import Source = TableResult.Source;
   export import CreateData = TableResult.CreateData;
   export import CreateInput = TableResult.CreateInput;

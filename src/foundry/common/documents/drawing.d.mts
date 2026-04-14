@@ -293,7 +293,6 @@ declare namespace BaseDrawing {
   export import CollectionClass = DrawingDocument.CollectionClass;
   export import Collection = DrawingDocument.Collection;
   export import Invalid = DrawingDocument.Invalid;
-  export import Stored = DrawingDocument.Stored;
   export import Source = DrawingDocument.Source;
   export import CreateData = DrawingDocument.CreateData;
   export import CreateInput = DrawingDocument.CreateInput;

@@ -307,7 +307,6 @@ declare namespace BaseJournalEntry {
   export import CollectionClass = JournalEntry.CollectionClass;
   export import Collection = JournalEntry.Collection;
   export import Invalid = JournalEntry.Invalid;
-  export import Stored = JournalEntry.Stored;
   export import Source = JournalEntry.Source;
   export import CreateData = JournalEntry.CreateData;
   export import CreateInput = JournalEntry.CreateInput;

@@ -307,7 +307,6 @@ declare namespace BasePlaylist {
   export import CollectionClass = Playlist.CollectionClass;
   export import Collection = Playlist.Collection;
   export import Invalid = Playlist.Invalid;
-  export import Stored = Playlist.Stored;
   export import Source = Playlist.Source;
   export import CreateData = Playlist.CreateData;
   export import CreateInput = Playlist.CreateInput;

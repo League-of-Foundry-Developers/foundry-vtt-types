@@ -269,7 +269,6 @@ declare namespace BaseJournalEntryPage {
   export import CollectionClass = JournalEntryPage.CollectionClass;
   export import Collection = JournalEntryPage.Collection;
   export import Invalid = JournalEntryPage.Invalid;
-  export import Stored = JournalEntryPage.Stored;
   export import Source = JournalEntryPage.Source;
   export import CreateData = JournalEntryPage.CreateData;
   export import CreateInput = JournalEntryPage.CreateInput;

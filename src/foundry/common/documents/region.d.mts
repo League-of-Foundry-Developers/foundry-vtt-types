@@ -283,7 +283,6 @@ declare namespace BaseRegion {
   export import CollectionClass = RegionDocument.CollectionClass;
   export import Collection = RegionDocument.Collection;
   export import Invalid = RegionDocument.Invalid;
-  export import Stored = RegionDocument.Stored;
   export import Source = RegionDocument.Source;
   export import CreateData = RegionDocument.CreateData;
   export import CreateInput = RegionDocument.CreateInput;

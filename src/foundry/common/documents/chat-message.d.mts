@@ -297,7 +297,6 @@ declare namespace BaseChatMessage {
   export import CollectionClass = ChatMessage.CollectionClass;
   export import Collection = ChatMessage.Collection;
   export import Invalid = ChatMessage.Invalid;
-  export import Stored = ChatMessage.Stored;
   export import Source = ChatMessage.Source;
   export import CreateData = ChatMessage.CreateData;
   export import CreateInput = ChatMessage.CreateInput;

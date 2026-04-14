@@ -265,7 +265,6 @@ declare namespace BaseCombatantGroup {
   export import CollectionClass = CombatantGroup.CollectionClass;
   export import Collection = CombatantGroup.Collection;
   export import Invalid = CombatantGroup.Invalid;
-  export import Stored = CombatantGroup.Stored;
   export import Source = CombatantGroup.Source;
   export import CreateData = CombatantGroup.CreateData;
   export import CreateInput = CombatantGroup.CreateInput;

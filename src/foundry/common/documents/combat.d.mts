@@ -326,7 +326,6 @@ declare namespace BaseCombat {
   export import CollectionClass = Combat.CollectionClass;
   export import Collection = Combat.Collection;
   export import Invalid = Combat.Invalid;
-  export import Stored = Combat.Stored;
   export import Source = Combat.Source;
   export import CreateData = Combat.CreateData;
   export import CreateInput = Combat.CreateInput;

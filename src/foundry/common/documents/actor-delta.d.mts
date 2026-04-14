@@ -368,7 +368,6 @@ declare namespace BaseActorDelta {
   export import CollectionClass = ActorDelta.CollectionClass;
   export import Collection = ActorDelta.Collection;
   export import Invalid = ActorDelta.Invalid;
-  export import Stored = ActorDelta.Stored;
   export import Source = ActorDelta.Source;
   export import CreateData = ActorDelta.CreateData;
   export import CreateInput = ActorDelta.CreateInput;

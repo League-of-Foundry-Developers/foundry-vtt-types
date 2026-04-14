@@ -264,7 +264,6 @@ declare namespace BasePlaylistSound {
   export import CollectionClass = PlaylistSound.CollectionClass;
   export import Collection = PlaylistSound.Collection;
   export import Invalid = PlaylistSound.Invalid;
-  export import Stored = PlaylistSound.Stored;
   export import Source = PlaylistSound.Source;
   export import CreateData = PlaylistSound.CreateData;
   export import CreateInput = PlaylistSound.CreateInput;

@@ -311,7 +311,6 @@ declare namespace BaseRollTable {
   export import CollectionClass = RollTable.CollectionClass;
   export import Collection = RollTable.Collection;
   export import Invalid = RollTable.Invalid;
-  export import Stored = RollTable.Stored;
   export import Source = RollTable.Source;
   export import CreateData = RollTable.CreateData;
   export import CreateInput = RollTable.CreateInput;

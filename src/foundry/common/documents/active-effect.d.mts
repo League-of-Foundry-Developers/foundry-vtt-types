@@ -293,7 +293,6 @@ declare namespace BaseActiveEffect {
   export import CollectionClass = ActiveEffect.CollectionClass;
   export import Collection = ActiveEffect.Collection;
   export import Invalid = ActiveEffect.Invalid;
-  export import Stored = ActiveEffect.Stored;
   export import Source = ActiveEffect.Source;
   export import CreateData = ActiveEffect.CreateData;
   export import CreateInput = ActiveEffect.CreateInput;

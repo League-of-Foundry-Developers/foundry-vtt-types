@@ -268,7 +268,6 @@ declare namespace BaseNote {
   export import CollectionClass = NoteDocument.CollectionClass;
   export import Collection = NoteDocument.Collection;
   export import Invalid = NoteDocument.Invalid;
-  export import Stored = NoteDocument.Stored;
   export import Source = NoteDocument.Source;
   export import CreateData = NoteDocument.CreateData;
   export import CreateInput = NoteDocument.CreateInput;

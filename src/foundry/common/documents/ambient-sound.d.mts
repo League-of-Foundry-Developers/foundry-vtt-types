@@ -252,7 +252,6 @@ declare namespace BaseAmbientSound {
   export import CollectionClass = AmbientSoundDocument.CollectionClass;
   export import Collection = AmbientSoundDocument.Collection;
   export import Invalid = AmbientSoundDocument.Invalid;
-  export import Stored = AmbientSoundDocument.Stored;
   export import Source = AmbientSoundDocument.Source;
   export import CreateData = AmbientSoundDocument.CreateData;
   export import CreateInput = AmbientSoundDocument.CreateInput;

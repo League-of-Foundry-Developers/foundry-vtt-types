@@ -286,7 +286,6 @@ declare namespace BaseRegionBehavior {
   export import CollectionClass = RegionBehavior.CollectionClass;
   export import Collection = RegionBehavior.Collection;
   export import Invalid = RegionBehavior.Invalid;
-  export import Stored = RegionBehavior.Stored;
   export import Source = RegionBehavior.Source;
   export import CreateData = RegionBehavior.CreateData;
   export import CreateInput = RegionBehavior.CreateInput;

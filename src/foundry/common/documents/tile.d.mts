@@ -292,7 +292,6 @@ declare namespace BaseTile {
   export import CollectionClass = TileDocument.CollectionClass;
   export import Collection = TileDocument.Collection;
   export import Invalid = TileDocument.Invalid;
-  export import Stored = TileDocument.Stored;
   export import Source = TileDocument.Source;
   export import CreateData = TileDocument.CreateData;
   export import CreateInput = TileDocument.CreateInput;

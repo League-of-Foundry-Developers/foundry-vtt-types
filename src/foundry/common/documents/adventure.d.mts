@@ -274,7 +274,6 @@ declare namespace BaseAdventure {
   export import CollectionClass = Adventure.CollectionClass;
   export import Collection = Adventure.Collection;
   export import Invalid = Adventure.Invalid;
-  export import Stored = Adventure.Stored;
   export import Source = Adventure.Source;
   export import CreateData = Adventure.CreateData;
   export import CreateInput = Adventure.CreateInput;

@@ -337,7 +337,6 @@ declare namespace BaseActor {
   export import CollectionClass = Actor.CollectionClass;
   export import Collection = Actor.Collection;
   export import Invalid = Actor.Invalid;
-  export import Stored = Actor.Stored;
   export import Source = Actor.Source;
   export import CreateData = Actor.CreateData;
   export import CreateInput = Actor.CreateInput;

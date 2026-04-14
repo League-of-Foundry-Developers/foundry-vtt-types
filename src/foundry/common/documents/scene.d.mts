@@ -411,7 +411,6 @@ declare namespace BaseScene {
   export import CollectionClass = Scene.CollectionClass;
   export import Collection = Scene.Collection;
   export import Invalid = Scene.Invalid;
-  export import Stored = Scene.Stored;
   export import Source = Scene.Source;
   export import CreateData = Scene.CreateData;
   export import CreateInput = Scene.CreateInput;
