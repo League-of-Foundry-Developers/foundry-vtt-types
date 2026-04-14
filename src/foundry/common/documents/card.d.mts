@@ -150,7 +150,7 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   protected override _preCreate(
     data: BaseCard.CreateData,
     options: BaseCard.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -162,19 +162,19 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   protected static override _preCreateOperation(
     documents: Card.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseCard.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Card.Stored[],
     operation: BaseCard.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseCard.UpdateData,
     options: BaseCard.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -186,18 +186,18 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   protected static override _preUpdateOperation(
     documents: Card.Stored[],
     operation: BaseCard.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Card.Stored[],
     operation: BaseCard.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseCard.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseCard.Database.OnDeleteOperation, userId: string): void;
@@ -205,13 +205,13 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
   protected static override _preDeleteOperation(
     documents: Card.Stored[],
     operation: BaseCard.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Card.Stored[],
     operation: BaseCard.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

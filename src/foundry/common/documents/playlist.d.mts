@@ -182,7 +182,7 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   protected override _preCreate(
     data: BasePlaylist.CreateData,
     options: BasePlaylist.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -194,19 +194,19 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   protected static override _preCreateOperation(
     documents: Playlist.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BasePlaylist.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Playlist.Stored[],
     operation: BasePlaylist.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BasePlaylist.UpdateData,
     options: BasePlaylist.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -218,18 +218,18 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   protected static override _preUpdateOperation(
     documents: Playlist.Stored[],
     operation: BasePlaylist.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Playlist.Stored[],
     operation: BasePlaylist.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BasePlaylist.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BasePlaylist.Database.OnDeleteOperation, userId: string): void;
@@ -237,13 +237,13 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
   protected static override _preDeleteOperation(
     documents: Playlist.Stored[],
     operation: BasePlaylist.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Playlist.Stored[],
     operation: BasePlaylist.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

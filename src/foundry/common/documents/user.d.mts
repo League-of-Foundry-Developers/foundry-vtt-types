@@ -182,13 +182,13 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   protected static override _preCreateOperation(
     documents: User.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseUser.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: User.Stored[],
     operation: BaseUser.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
@@ -206,13 +206,13 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   protected static override _preUpdateOperation(
     documents: User.Stored[],
     operation: BaseUser.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: User.Stored[],
     operation: BaseUser.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
@@ -225,13 +225,13 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   protected static override _preDeleteOperation(
     documents: User.Stored[],
     operation: BaseUser.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: User.Stored[],
     operation: BaseUser.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

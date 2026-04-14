@@ -150,7 +150,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   protected override _preCreate(
     data: BaseFolder.CreateData,
     options: BaseFolder.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -162,19 +162,19 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   protected static override _preCreateOperation(
     documents: Folder.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseFolder.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Folder.Stored[],
     operation: BaseFolder.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseFolder.UpdateData,
     options: BaseFolder.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -186,18 +186,18 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   protected static override _preUpdateOperation(
     documents: Folder.Stored[],
     operation: BaseFolder.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Folder.Stored[],
     operation: BaseFolder.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseFolder.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseFolder.Database.OnDeleteOperation, userId: string): void;
@@ -205,13 +205,13 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   protected static override _preDeleteOperation(
     documents: Folder.Stored[],
     operation: BaseFolder.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Folder.Stored[],
     operation: BaseFolder.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

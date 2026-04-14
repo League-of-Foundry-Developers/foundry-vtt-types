@@ -316,7 +316,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   protected override _preCreate(
     data: BaseToken.CreateData,
     options: BaseToken.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -328,19 +328,19 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   protected static override _preCreateOperation(
     documents: TokenDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseToken.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseToken.UpdateData,
     options: BaseToken.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -352,18 +352,18 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   protected static override _preUpdateOperation(
     documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseToken.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseToken.Database.OnDeleteOperation, userId: string): void;
@@ -371,13 +371,13 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   protected static override _preDeleteOperation(
     documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

@@ -158,7 +158,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   protected override _preCreate(
     data: BaseRegion.CreateData,
     options: BaseRegion.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -170,19 +170,19 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   protected static override _preCreateOperation(
     documents: RegionDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseRegion.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseRegion.UpdateData,
     options: BaseRegion.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -194,18 +194,18 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   protected static override _preUpdateOperation(
     documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseRegion.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseRegion.Database.OnDeleteOperation, userId: string): void;
@@ -213,13 +213,13 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   protected static override _preDeleteOperation(
     documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

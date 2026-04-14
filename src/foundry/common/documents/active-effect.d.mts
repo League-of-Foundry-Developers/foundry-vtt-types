@@ -51,7 +51,7 @@ declare abstract class BaseActiveEffect<
   protected override _preCreate(
     data: BaseActiveEffect.CreateData,
     options: BaseActiveEffect.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /**
@@ -175,19 +175,19 @@ declare abstract class BaseActiveEffect<
   protected static override _preCreateOperation(
     documents: ActiveEffect.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseActiveEffect.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: ActiveEffect.Stored[],
     operation: BaseActiveEffect.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseActiveEffect.UpdateData,
     options: BaseActiveEffect.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -199,18 +199,18 @@ declare abstract class BaseActiveEffect<
   protected static override _preUpdateOperation(
     documents: ActiveEffect.Stored[],
     operation: BaseActiveEffect.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: ActiveEffect.Stored[],
     operation: BaseActiveEffect.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseActiveEffect.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseActiveEffect.Database.OnDeleteOperation, userId: string): void;
@@ -218,13 +218,13 @@ declare abstract class BaseActiveEffect<
   protected static override _preDeleteOperation(
     documents: ActiveEffect.Stored[],
     operation: BaseActiveEffect.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: ActiveEffect.Stored[],
     operation: BaseActiveEffect.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

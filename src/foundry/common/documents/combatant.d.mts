@@ -152,7 +152,7 @@ declare abstract class BaseCombatant<
   protected override _preCreate(
     data: BaseCombatant.CreateData,
     options: BaseCombatant.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -164,19 +164,19 @@ declare abstract class BaseCombatant<
   protected static override _preCreateOperation(
     documents: Combatant.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseCombatant.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Combatant.Stored[],
     operation: BaseCombatant.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseCombatant.UpdateData,
     options: BaseCombatant.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -188,18 +188,18 @@ declare abstract class BaseCombatant<
   protected static override _preUpdateOperation(
     documents: Combatant.Stored[],
     operation: BaseCombatant.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Combatant.Stored[],
     operation: BaseCombatant.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseCombatant.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseCombatant.Database.OnDeleteOperation, userId: string): void;
@@ -207,13 +207,13 @@ declare abstract class BaseCombatant<
   protected static override _preDeleteOperation(
     documents: Combatant.Stored[],
     operation: BaseCombatant.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Combatant.Stored[],
     operation: BaseCombatant.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

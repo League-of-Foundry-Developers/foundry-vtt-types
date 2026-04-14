@@ -128,7 +128,7 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
   protected override _preCreate(
     data: BaseWall.CreateData,
     options: BaseWall.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -140,19 +140,19 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
   protected static override _preCreateOperation(
     documents: WallDocument.Implementation[],
     operation: BaseWall.Database.PreCreateOperation,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: WallDocument.Implementation[],
     operation: BaseWall.Database.OnCreateOperation,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseWall.UpdateData,
     options: BaseWall.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -164,18 +164,18 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
   protected static override _preUpdateOperation(
     documents: WallDocument.Implementation[],
     operation: BaseWall.Database.PreUpdateOperation,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: WallDocument.Implementation[],
     operation: BaseWall.Database.OnUpdateOperation,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseWall.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseWall.Database.OnDeleteOptions, userId: string): void;
@@ -183,13 +183,13 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
   protected static override _preDeleteOperation(
     documents: WallDocument.Implementation[],
     operation: BaseWall.Database.PreDeleteOperation,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: WallDocument.Implementation[],
     operation: BaseWall.Database.OnDeleteOperation,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

@@ -134,7 +134,7 @@ declare abstract class BaseJournalEntryCategory extends Document<
   protected override _preCreate(
     data: BaseJournalEntryCategory.CreateData,
     options: BaseJournalEntryCategory.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -146,19 +146,19 @@ declare abstract class BaseJournalEntryCategory extends Document<
   protected static override _preCreateOperation(
     documents: JournalEntryCategory.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseJournalEntryCategory.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: JournalEntryCategory.Stored[],
     operation: BaseJournalEntryCategory.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseJournalEntryCategory.UpdateData,
     options: BaseJournalEntryCategory.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -170,18 +170,18 @@ declare abstract class BaseJournalEntryCategory extends Document<
   protected static override _preUpdateOperation(
     documents: JournalEntryCategory.Stored[],
     operation: BaseJournalEntryCategory.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: JournalEntryCategory.Stored[],
     operation: BaseJournalEntryCategory.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseJournalEntryCategory.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseJournalEntryCategory.Database.OnDeleteOperation, userId: string): void;
@@ -189,13 +189,13 @@ declare abstract class BaseJournalEntryCategory extends Document<
   protected static override _preDeleteOperation(
     documents: JournalEntryCategory.Stored[],
     operation: BaseJournalEntryCategory.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: JournalEntryCategory.Stored[],
     operation: BaseJournalEntryCategory.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

@@ -185,7 +185,7 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   protected override _preCreate(
     data: BaseRollTable.CreateData,
     options: BaseRollTable.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -197,19 +197,19 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   protected static override _preCreateOperation(
     documents: RollTable.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseRollTable.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseRollTable.UpdateData,
     options: BaseRollTable.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -221,18 +221,18 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   protected static override _preUpdateOperation(
     documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseRollTable.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseRollTable.Database.OnDeleteOperation, userId: string): void;
@@ -240,13 +240,13 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
   protected static override _preDeleteOperation(
     documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: RollTable.Stored[],
     operation: BaseRollTable.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

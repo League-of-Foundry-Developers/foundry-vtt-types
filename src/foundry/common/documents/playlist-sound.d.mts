@@ -139,7 +139,7 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   protected override _preCreate(
     data: BasePlaylistSound.CreateData,
     options: BasePlaylistSound.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -151,19 +151,19 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   protected static override _preCreateOperation(
     documents: PlaylistSound.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BasePlaylistSound.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: PlaylistSound.Stored[],
     operation: BasePlaylistSound.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BasePlaylistSound.UpdateData,
     options: BasePlaylistSound.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -175,18 +175,18 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   protected static override _preUpdateOperation(
     documents: PlaylistSound.Stored[],
     operation: BasePlaylistSound.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: PlaylistSound.Stored[],
     operation: BasePlaylistSound.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BasePlaylistSound.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BasePlaylistSound.Database.OnDeleteOperation, userId: string): void;
@@ -194,13 +194,13 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
   protected static override _preDeleteOperation(
     documents: PlaylistSound.Stored[],
     operation: BasePlaylistSound.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: PlaylistSound.Stored[],
     operation: BasePlaylistSound.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

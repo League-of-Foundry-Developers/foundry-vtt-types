@@ -167,7 +167,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   protected override _preCreate(
     data: BaseTile.CreateData,
     options: BaseTile.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -179,19 +179,19 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   protected static override _preCreateOperation(
     documents: TileDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseTile.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: TileDocument.Stored[],
     operation: BaseTile.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseTile.UpdateData,
     options: BaseTile.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -203,18 +203,18 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   protected static override _preUpdateOperation(
     documents: TileDocument.Stored[],
     operation: BaseTile.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: TileDocument.Stored[],
     operation: BaseTile.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseTile.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseTile.Database.OnDeleteOperation, userId: string): void;
@@ -222,13 +222,13 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   protected static override _preDeleteOperation(
     documents: TileDocument.Stored[],
     operation: BaseTile.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: TileDocument.Stored[],
     operation: BaseTile.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

@@ -74,7 +74,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   protected override _preUpdate(
     changed: BaseCombat.UpdateData,
     options: BaseCombat.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /*
@@ -200,7 +200,7 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   protected override _preCreate(
     data: BaseCombat.CreateData,
     options: BaseCombat.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -212,13 +212,13 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   protected static override _preCreateOperation(
     documents: Combat.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseCombat.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Combat.Stored[],
     operation: BaseCombat.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _onUpdate(
@@ -230,18 +230,18 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   protected static override _preUpdateOperation(
     documents: Combat.Stored[],
     operation: BaseCombat.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Combat.Stored[],
     operation: BaseCombat.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseCombat.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseCombat.Database.OnDeleteOperation, userId: string): void;
@@ -249,13 +249,13 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
   protected static override _preDeleteOperation(
     documents: Combat.Stored[],
     operation: BaseCombat.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Combat.Stored[],
     operation: BaseCombat.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

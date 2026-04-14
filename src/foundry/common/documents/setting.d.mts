@@ -123,7 +123,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   protected override _preCreate(
     data: BaseSetting.CreateData,
     options: BaseSetting.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -135,19 +135,19 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   protected static override _preCreateOperation(
     documents: Setting.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseSetting.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Setting.Stored[],
     operation: BaseSetting.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseSetting.UpdateData,
     options: BaseSetting.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -159,18 +159,18 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   protected static override _preUpdateOperation(
     documents: Setting.Stored[],
     operation: BaseSetting.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Setting.Stored[],
     operation: BaseSetting.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseSetting.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseSetting.Database.OnDeleteOperation, userId: string): void;
@@ -178,13 +178,13 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   protected static override _preDeleteOperation(
     documents: Setting.Stored[],
     operation: BaseSetting.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Setting.Stored[],
     operation: BaseSetting.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

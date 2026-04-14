@@ -139,7 +139,7 @@ declare abstract class BaseJournalEntryPage<
   protected override _preCreate(
     data: BaseJournalEntryPage.CreateData,
     options: BaseJournalEntryPage.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -151,19 +151,19 @@ declare abstract class BaseJournalEntryPage<
   protected static override _preCreateOperation(
     documents: JournalEntryPage.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseJournalEntryPage.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: JournalEntryPage.Stored[],
     operation: BaseJournalEntryPage.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseJournalEntryPage.UpdateData,
     options: BaseJournalEntryPage.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -175,18 +175,18 @@ declare abstract class BaseJournalEntryPage<
   protected static override _preUpdateOperation(
     documents: JournalEntryPage.Stored[],
     operation: BaseJournalEntryPage.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: JournalEntryPage.Stored[],
     operation: BaseJournalEntryPage.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseJournalEntryPage.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseJournalEntryPage.Database.OnDeleteOperation, userId: string): void;
@@ -194,13 +194,13 @@ declare abstract class BaseJournalEntryPage<
   protected static override _preDeleteOperation(
     documents: JournalEntryPage.Stored[],
     operation: BaseJournalEntryPage.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: JournalEntryPage.Stored[],
     operation: BaseJournalEntryPage.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
