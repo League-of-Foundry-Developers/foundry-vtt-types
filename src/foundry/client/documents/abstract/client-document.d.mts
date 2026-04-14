@@ -207,8 +207,8 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    */
   _onClickDocumentLink(event: MouseEvent): MaybePromise<unknown>;
 
-  // These lifecycle hook methods have the same `never`-using signatures as `Document` because it is similarly unsound to call
-  // `ClientDocument._(pre|on)(Create|Update|Delete)`; They are provided here for mostly for linking to.
+  // These lifecycle methods have the same `never`-using signatures as `Document` because it is similarly unsound to call
+  // `ClientDocument._(pre|on)(Create|Update|Delete)`; They are provided here primarily for linking to.
 
   // Note(LukeAbby): These methods are currently commented out due to causing a circularity in Lancer.
   // Specifically: `Type 'DocumentInstanceConfig' recursively references itself as a base type.`.
@@ -502,7 +502,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
-   * @param options - Additional options passed to the {@linkcode ClientDocumentMixin.AnyMixed.toCompendium | ClientDocument#toCompendium} method
+   * @param options - Additional options passed to the {@linkcode ClientDocumentMixin.AnyMixed.toCompendium | ClientDocument#toCompendium} method.
    */
   exportToJSON(options?: ClientDocument.ToCompendiumOptions): void;
 
@@ -641,9 +641,7 @@ declare function ClientDocumentMixin<BaseClass extends ClientDocumentMixin.BaseC
 ): ClientDocumentMixin.Mix<BaseClass>;
 
 declare namespace ClientDocumentMixin {
-  interface AnyMixedConstructor extends ReturnType<
-    typeof foundry.documents.abstract.ClientDocumentMixin<Document.AnyConstructor>
-  > {}
+  interface AnyMixedConstructor extends ReturnType<typeof foundry.documents.abstract.ClientDocumentMixin<BaseClass>> {}
   interface AnyMixed extends FixedInstanceType<AnyMixedConstructor> {}
 
   // Note: This used to be `Internal.Constructor` for circularity-dodging reasons, it was changed to provide better Stored typing.
