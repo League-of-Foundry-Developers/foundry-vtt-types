@@ -287,7 +287,7 @@ declare abstract class Document<
    * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
    * without error, so `Implementation` over `Stored`.
    */
-  static canUserCreate(user: User.Implementation): boolean;
+  static canUserCreate(user: User.Internal.Implementation): boolean;
 
   /**
    * Get the explicit permission level that a User has over this Document, a value in {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}.

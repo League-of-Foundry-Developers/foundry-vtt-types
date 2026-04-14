@@ -71,6 +71,8 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   override " fvtt_types_internal_document_parent": BaseAmbientLight.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseAmbientLight.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseAmbientLight.Database.Create<Temporary>>,

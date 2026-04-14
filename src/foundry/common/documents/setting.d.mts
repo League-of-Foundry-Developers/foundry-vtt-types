@@ -44,7 +44,6 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override defineSchema(): BaseSetting.Schema;
 
-  /** @remarks Returns `user.hasPermission("SETTINGS_MODIFY")` */
   static canUserCreate(user: User.Implementation): boolean;
 
   /*

@@ -79,7 +79,6 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    */
   static override validateJoint(data: BaseMacro.Source): void;
 
-  /** @remarks Returns `user.hasRole("PLAYER")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
   override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;

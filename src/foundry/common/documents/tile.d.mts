@@ -115,6 +115,8 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   override " fvtt_types_internal_document_parent": BaseTile.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseTile.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseTile.Database.Create<Temporary>>,

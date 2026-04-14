@@ -76,6 +76,8 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   override " fvtt_types_internal_document_parent": BaseWall.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseWall.CreateInput[],
     operation?: BaseWall.Database.CreateDocumentsOperation<Temporary>,

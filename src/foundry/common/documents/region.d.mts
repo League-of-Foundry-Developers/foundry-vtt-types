@@ -74,6 +74,8 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   override " fvtt_types_internal_document_parent": BaseRegion.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseRegion.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseRegion.Database.Create<Temporary>>,

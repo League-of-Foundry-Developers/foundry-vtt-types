@@ -60,7 +60,6 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    */
   static override validateJoint(data: BaseDrawing.Source): void;
 
-  /** @remarks Returns `user.hasPermission("DRAWING_CREATE")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
   override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;

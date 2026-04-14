@@ -111,6 +111,8 @@ declare abstract class BaseTableResult<
 
   override " fvtt_types_internal_document_parent": BaseTableResult.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseTableResult.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseTableResult.Database.Create<Temporary>>,

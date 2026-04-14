@@ -86,6 +86,8 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   override " fvtt_types_internal_document_parent": BaseFogExploration.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseFogExploration.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseFogExploration.Database.Create<Temporary>>,

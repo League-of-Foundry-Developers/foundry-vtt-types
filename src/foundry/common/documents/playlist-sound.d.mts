@@ -84,6 +84,8 @@ declare abstract class BasePlaylistSound extends Document<"PlaylistSound", BaseP
 
   override " fvtt_types_internal_document_parent": BasePlaylistSound.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BasePlaylistSound.CreateInput[],
     operation?: Document.Database.CreateOperation<BasePlaylistSound.Database.Create<Temporary>>,

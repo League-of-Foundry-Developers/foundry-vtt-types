@@ -58,7 +58,6 @@ declare abstract class BaseRegionBehavior<
   /** @defaultValue `["DOCUMENT", "BEHAVIOR"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
-  /** @remarks Returns `user.isGM` */
   static override canUserCreate(user: User.Implementation): boolean;
 
   /*

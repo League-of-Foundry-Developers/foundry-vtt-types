@@ -118,6 +118,8 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override " fvtt_types_internal_document_parent": BaseUser.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseUser.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseUser.Database.Create<Temporary>>,

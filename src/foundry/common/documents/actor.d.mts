@@ -70,10 +70,8 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
     options?: Document.InitializeSourceOptions,
   ): BaseActor.Source;
 
-  /** @remarks calls `DocumentStatsField._shimDocument(this)` */
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  /** @remarks Returns `user.hasPermission("ACTOR_CREATE")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
   protected override _preCreate(

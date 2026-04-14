@@ -79,6 +79,8 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   override " fvtt_types_internal_document_parent": BaseJournalEntryCategory.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseJournalEntryCategory.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseJournalEntryCategory.Database.Create<Temporary>>,

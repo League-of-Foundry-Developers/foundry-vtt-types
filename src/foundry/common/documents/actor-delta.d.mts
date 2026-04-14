@@ -146,6 +146,8 @@ declare abstract class BaseActorDelta<
 
   override " fvtt_types_internal_document_parent": BaseActorDelta.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActorDelta.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseActorDelta.Database.Create<Temporary>>,

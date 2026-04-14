@@ -116,6 +116,8 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   override " fvtt_types_internal_document_parent": BaseCombat.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseCombat.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseCombat.Database.Create<Temporary>>,
