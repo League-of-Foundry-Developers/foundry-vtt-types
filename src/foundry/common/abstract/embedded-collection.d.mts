@@ -1,10 +1,10 @@
 import type { Identity, InexactPartial } from "#utils";
 import type Collection from "../utils/collection.d.mts";
-/** @privateRemarks `EmbeddedCollectionDelta` used only for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { Document, EmbeddedCollectionDelta } from "#common/abstract/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
 import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
-import type { DatabaseAction, DatabaseOperation } from "./_types.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type EmbeddedCollectionDelta from "#common/abstract/embedded-collection-delta.d.mts";
 
 /**
  * An extension of the Collection.
@@ -14,9 +14,9 @@ import type { DatabaseAction, DatabaseOperation } from "./_types.d.mts";
  * breaks the `AnyEmbeddedDocument` type, among other things.
  */
 declare class EmbeddedCollection<
-  ContainedDocument extends Document.Any,
-  ParentDocument extends Document.Any,
-  Methods extends Collection.Methods.Any = EmbeddedCollection.Methods<ContainedDocument>,
+  out ContainedDocument extends Document.Any,
+  out ParentDocument extends Document.Any,
+  out Methods extends Collection.Methods.Any = EmbeddedCollection.Methods<ContainedDocument>,
 > extends Collection<ContainedDocument, Methods> {
   /**
    * @param name        - The name of this collection in the parent Document.
@@ -165,13 +165,12 @@ declare class EmbeddedCollection<
    * @param user      - The User who performed the operation
    * @internal
    */
-  // TODO: This is updated on the db-ops branch
-  _onModifyContents(
-    action: DatabaseAction,
-    documents: foundry.abstract.Document.Any[],
-    result: unknown,
-    operation: DatabaseOperation,
-    user: User.Implementation,
+  _onModifyContents<Action extends Document.Database.OperationAction>(
+    action: Action,
+    documents: Document.StoredForName<ContainedDocument["documentName"]>[],
+    result: Collection.OnModifyContentsResult<ContainedDocument["documentName"], Action>,
+    operation: Collection.OnModifyContentsOperation<ContainedDocument["documentName"], Action>,
+    user: User.Stored,
   ): void;
 
   /**

@@ -83,12 +83,12 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   static override updateDocuments(
     updates: BaseWall.UpdateInput[],
-    operation?: BaseWall.Database.UpdateDocumentsOperation,
+    operation?: BaseWall.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<WallDocument.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: BaseWall.Database.DeleteDocumentsOperation,
+    operation?: BaseWall.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<WallDocument.Stored>>;
 
   static override create<
@@ -96,15 +96,18 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseWall.Database.CreateOperation<Temporary>,
+    operation?: BaseWall.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseWall.CreateReturn<Data, Temporary>>;
 
-  override update(data: BaseWall.UpdateInput, operation?: BaseWall.Database.UpdateOperation): Promise<this | undefined>;
+  override update(
+    data: BaseWall.UpdateInput,
+    operation?: BaseWall.Database.UpdateOneDocumentOperation,
+  ): Promise<this | undefined>;
 
-  override delete(operation?: BaseWall.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseWall.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   // `WallDocument`s are neither world documents nor compendium documents, so this always returns `null`.
-  static override get(documentId: string, operation?: BaseWall.Database.GetOptions): null;
+  static override get(documentId: string, operation?: BaseWall.Database.GetDocumentsOperation): null;
 
   // `WallDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -144,17 +147,15 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: WallDocument.Implementation[],
+    documents: WallDocument.Stored[],
     operation: BaseWall.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
-
   protected override _preUpdate(
     changed: BaseWall.UpdateData,
     options: BaseWall.Database.PreUpdateOptions,
     user: User.Stored,
   ): Promise<boolean | void>;
-
   protected override _onUpdate(
     changed: BaseWall.UpdateData,
     options: BaseWall.Database.OnUpdateOptions,
@@ -162,32 +163,30 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: WallDocument.Implementation[],
+    documents: WallDocument.Stored[],
     operation: BaseWall.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: WallDocument.Implementation[],
+    documents: WallDocument.Stored[],
     operation: BaseWall.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
-
   protected override _preDelete(
     options: BaseWall.Database.PreDeleteOptions,
     user: User.Stored,
   ): Promise<boolean | void>;
-
   protected override _onDelete(options: BaseWall.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: WallDocument.Implementation[],
+    documents: WallDocument.Stored[],
     operation: BaseWall.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: WallDocument.Implementation[],
+    documents: WallDocument.Stored[],
     operation: BaseWall.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
@@ -198,7 +197,8 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
    */
   protected static override _onCreateDocuments(
     documents: WallDocument.Implementation[],
-    context: BaseWall.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseWall.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -207,7 +207,8 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
    */
   protected static override _onUpdateDocuments(
     documents: WallDocument.Stored[],
-    context: BaseWall.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseWall.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -216,7 +217,8 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
    */
   protected static override _onDeleteDocuments(
     documents: WallDocument.Stored[],
-    context: BaseWall.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseWall.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

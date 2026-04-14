@@ -88,17 +88,17 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseFogExploration.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseFogExploration.Database.Create<Temporary>>,
+    operation?: BaseFogExploration.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseFogExploration.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseFogExploration.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseFogExploration.Database.Update>,
+    operation?: BaseFogExploration.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<FogExploration.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseFogExploration.Database.Delete>,
+    operation?: BaseFogExploration.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<FogExploration.Stored>>;
 
   static override create<
@@ -106,21 +106,21 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseFogExploration.Database.CreateOperation<Temporary>,
+    operation?: BaseFogExploration.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseFogExploration.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseFogExploration.UpdateInput,
-    operation?: BaseFogExploration.Database.UpdateOperation,
+    operation?: BaseFogExploration.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseFogExploration.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseFogExploration.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   // `FogExploration`s cannot exist in compendia, so this never returns an index entry.
   // Also, until v14, this can redirect to `FogExploration.load`, which accounts for the `Promise` part of the return.
   static override get(
     documentId: string,
-    operation?: BaseFogExploration.Database.GetOptions,
+    operation?: BaseFogExploration.Database.GetDocumentsOperation,
   ): Promise<FogExploration.Stored | null> | FogExploration.Stored | null;
 
   // `FogExploration`s have no embedded collections, so this always returns `null`.
@@ -150,37 +150,37 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   protected override _onCreate(
     data: BaseFogExploration.CreateData,
-    options: BaseFogExploration.Database.OnCreateOperation,
+    options: BaseFogExploration.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: FogExploration.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseFogExploration.Database.Create>,
+    operation: BaseFogExploration.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: FogExploration.Stored[],
-    operation: BaseFogExploration.Database.Create,
+    operation: BaseFogExploration.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
   protected override _onUpdate(
     changed: BaseFogExploration.UpdateData,
-    options: BaseFogExploration.Database.OnUpdateOperation,
+    options: BaseFogExploration.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: FogExploration.Stored[],
-    operation: BaseFogExploration.Database.Update,
+    operation: BaseFogExploration.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: FogExploration.Stored[],
-    operation: BaseFogExploration.Database.Update,
+    operation: BaseFogExploration.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -189,17 +189,17 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseFogExploration.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseFogExploration.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: FogExploration.Stored[],
-    operation: BaseFogExploration.Database.Delete,
+    operation: BaseFogExploration.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: FogExploration.Stored[],
-    operation: BaseFogExploration.Database.Delete,
+    operation: BaseFogExploration.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -209,7 +209,8 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    */
   protected static override _onCreateDocuments(
     documents: FogExploration.Implementation[],
-    context: BaseFogExploration.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseFogExploration.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -218,7 +219,8 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    */
   protected static override _onUpdateDocuments(
     documents: FogExploration.Stored[],
-    context: BaseFogExploration.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseFogExploration.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -227,7 +229,8 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
    */
   protected static override _onDeleteDocuments(
     documents: FogExploration.Stored[],
-    context: BaseFogExploration.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseFogExploration.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

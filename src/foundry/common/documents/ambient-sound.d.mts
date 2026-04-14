@@ -74,17 +74,17 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseAmbientSound.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseAmbientSound.Database.Create<Temporary>>,
+    operation?: BaseAmbientSound.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseAmbientSound.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseAmbientSound.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseAmbientSound.Database.Update>,
+    operation?: BaseAmbientSound.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<AmbientSoundDocument.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseAmbientSound.Database.Delete>,
+    operation?: BaseAmbientSound.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<AmbientSoundDocument.Stored>>;
 
   static override create<
@@ -92,18 +92,18 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseAmbientSound.Database.CreateOperation<Temporary>,
+    operation?: BaseAmbientSound.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseAmbientSound.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseAmbientSound.UpdateInput,
-    operation?: BaseAmbientSound.Database.UpdateOperation,
+    operation?: BaseAmbientSound.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseAmbientSound.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseAmbientSound.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   // `AmbientSoundDocument`s are neither world documents nor compendium documents, so this always returns `null`.
-  static override get(documentId: string, operation?: BaseAmbientSound.Database.GetOptions): null;
+  static override get(documentId: string, operation?: BaseAmbientSound.Database.GetDocumentsOperation): null;
 
   // `AmbientSoundDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -132,19 +132,19 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   protected override _onCreate(
     data: BaseAmbientSound.CreateData,
-    options: BaseAmbientSound.Database.OnCreateOperation,
+    options: BaseAmbientSound.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: AmbientSoundDocument.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseAmbientSound.Database.Create>,
+    operation: BaseAmbientSound.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: AmbientSoundDocument.Stored[],
-    operation: BaseAmbientSound.Database.Create,
+    operation: BaseAmbientSound.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -156,19 +156,19 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   protected override _onUpdate(
     changed: BaseAmbientSound.UpdateData,
-    options: BaseAmbientSound.Database.OnUpdateOperation,
+    options: BaseAmbientSound.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: AmbientSoundDocument.Stored[],
-    operation: BaseAmbientSound.Database.Update,
+    operation: BaseAmbientSound.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: AmbientSoundDocument.Stored[],
-    operation: BaseAmbientSound.Database.Update,
+    operation: BaseAmbientSound.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -177,17 +177,17 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseAmbientSound.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseAmbientSound.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: AmbientSoundDocument.Stored[],
-    operation: BaseAmbientSound.Database.Delete,
+    operation: BaseAmbientSound.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: AmbientSoundDocument.Stored[],
-    operation: BaseAmbientSound.Database.Delete,
+    operation: BaseAmbientSound.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -197,7 +197,8 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    */
   protected static override _onCreateDocuments(
     documents: AmbientSoundDocument.Implementation[],
-    context: BaseAmbientSound.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseAmbientSound.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -206,7 +207,8 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    */
   protected static override _onUpdateDocuments(
     documents: AmbientSoundDocument.Stored[],
-    context: BaseAmbientSound.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseAmbientSound.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -215,7 +217,8 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
    */
   protected static override _onDeleteDocuments(
     documents: AmbientSoundDocument.Stored[],
-    context: BaseAmbientSound.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseAmbientSound.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

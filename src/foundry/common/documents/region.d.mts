@@ -76,17 +76,17 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseRegion.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseRegion.Database.Create<Temporary>>,
+    operation?: BaseRegion.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseRegion.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseRegion.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseRegion.Database.Update>,
+    operation?: BaseRegion.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<RegionDocument.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseRegion.Database.Delete>,
+    operation?: BaseRegion.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<RegionDocument.Stored>>;
 
   static override create<
@@ -94,18 +94,18 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseRegion.Database.CreateOperation<Temporary>,
+    operation?: BaseRegion.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseRegion.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseRegion.UpdateInput,
-    operation?: BaseRegion.Database.UpdateOperation,
+    operation?: BaseRegion.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseRegion.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseRegion.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   // `RegionDocument`s are neither world documents nor compendium documents, so this always returns `null`.
-  static override get(documentId: string, operation?: BaseRegion.Database.GetOptions): null;
+  static override get(documentId: string, operation?: BaseRegion.Database.GetDocumentsOperation): null;
 
   static override getCollectionName<CollectionName extends BaseRegion.Embedded.Name>(
     name: CollectionName,
@@ -163,19 +163,19 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   protected override _onCreate(
     data: BaseRegion.CreateData,
-    options: BaseRegion.Database.OnCreateOperation,
+    options: BaseRegion.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: RegionDocument.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseRegion.Database.Create>,
+    operation: BaseRegion.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: RegionDocument.Stored[],
-    operation: BaseRegion.Database.Create,
+    operation: BaseRegion.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -187,19 +187,19 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   protected override _onUpdate(
     changed: BaseRegion.UpdateData,
-    options: BaseRegion.Database.OnUpdateOperation,
+    options: BaseRegion.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: RegionDocument.Stored[],
-    operation: BaseRegion.Database.Update,
+    operation: BaseRegion.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: RegionDocument.Stored[],
-    operation: BaseRegion.Database.Update,
+    operation: BaseRegion.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -208,17 +208,17 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseRegion.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseRegion.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: RegionDocument.Stored[],
-    operation: BaseRegion.Database.Delete,
+    operation: BaseRegion.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: RegionDocument.Stored[],
-    operation: BaseRegion.Database.Delete,
+    operation: BaseRegion.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -228,7 +228,8 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    */
   protected static override _onCreateDocuments(
     documents: RegionDocument.Implementation[],
-    context: BaseRegion.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseRegion.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -237,7 +238,8 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    */
   protected static override _onUpdateDocuments(
     documents: RegionDocument.Stored[],
-    context: BaseRegion.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseRegion.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -246,7 +248,8 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
    */
   protected static override _onDeleteDocuments(
     documents: RegionDocument.Stored[],
-    context: BaseRegion.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseRegion.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

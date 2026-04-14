@@ -4,7 +4,6 @@ import type Document from "#common/abstract/document.d.mts";
 import type { ProseMirrorDropDown } from "#common/prosemirror/_module.d.mts";
 import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
-import type { DatabaseUpdateOperation } from "#common/abstract/_types.d.mts";
 import type CompendiumArt from "#client/helpers/media/compendium-art.d.mts";
 import type { Hooks as HookConfigs } from "#configuration";
 import type Hooks from "./helpers/hooks.d.mts";
@@ -15,9 +14,9 @@ import type {
   EffectsCanvasGroup,
   EnvironmentCanvasGroup,
 } from "#client/canvas/groups/_module.d.mts";
-
 import type { Note, PlaceableObject, Token } from "#client/canvas/placeables/_module.d.mts";
 import type { TokenRingConfig } from "#client/canvas/placeables/tokens/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 import AVSettings = foundry.av.AVSettings;
 import Application = foundry.appv1.api.Application;
@@ -689,18 +688,54 @@ export interface AllHooks extends DynamicHooks {
    * @param options   - Additional options which modified the modification request
    * @param userId    - The ID of the User who triggered the modification workflow
    * @remarks This is called by {@linkcode Hooks.callAll}.
-   * @see {@linkcode foundry.documents.collections.CompendiumCollection._onModifyContents | foundry.documents.collections.CompendiumCollection#_onModifyContents}
+   *
+   * Since {@linkcode CompendiumCollection._onModifyContents | CompendiumCollection#_onModifyContents} does not forward the `action`, we
+   * can't know ahead of time if the `options` will be a `create`, `update`, or `delete` operation.
    */
-  updateCompendium: (
-    pack: foundry.documents.collections.CompendiumCollection.Any,
-    documents: Document.Any[],
-    options: Document.Database.UpdateOptions<DatabaseUpdateOperation>,
+  updateCompendium: <DocumentName extends CompendiumCollection.DocumentName>(
+    pack: CompendiumCollection<DocumentName>,
+    documents: Document.StoredForName<DocumentName>[],
+    options: Collection.OnModifyContentsOperation<DocumentName, Document.Database.OperationAction>,
     userId: string,
   ) => void;
 
   /* TokenDocument */
 
-  // TODO: `preMoveToken` and `moveToken`
+  /**
+   * A hook event that fires for every Token document that is about to me moved before the conclusion of
+   * an update workflow. This hook only fires for the client who is initiating the update request.
+   * The waypoints of the movement are final and cannot be changed. The movement can only be rejected
+   * @param document  - The existing Document which was updated
+   * @param movement  - The pending movement of the Token
+   * @param operation - The update operation that contains the movement
+   * @returns If false, the movement is prevented
+   * @remarks This is called by {@linkcode Hooks.call}.
+   */
+  preMoveToken: (
+    document: TokenDocument.Implementation,
+    movement: TokenDocument.PreUpdateMovement,
+    operation: TokenDocument.Database.PreUpdateOptions,
+  ) => boolean | void;
+
+  /**
+   * A hook event that fires for every Token document that was moved after conclusion of an update
+   * workflow. This hook fires for all connected clients after the update has been processed.
+   * @param document  - The existing TokenDocument which was updated
+   * @param movement  - The movement of the Token
+   * @param operation - The update operation that contains the movement
+   * @param user      - The User that requested the update operation
+   * @remarks This is called by {@linkcode Hooks.callAll}.
+   *
+   * @privateRemarks Foundry types `movement` as `DeepReadonly`, which appears to be true at runtime, despite there being no `seal` or
+   * `freeze` calls after the client gets the operation back from the server; `movement` has therefore been given the pre-server type in
+   * lieu of more complete understanding.
+   */
+  moveToken: (
+    document: TokenDocument.Implementation,
+    movement: TokenDocument.PreUpdateMovement,
+    operation: TokenDocument.Database.OnUpdateOptions,
+    user: User.Stored,
+  ) => void;
 
   /**
    * A hook event that fires when the current movement of a Token document is stopped.
@@ -1014,16 +1049,7 @@ export interface AllHooks extends DynamicHooks {
    * @param combat     - The Combat encounter which is starting
    * @param updateData - An object which contains Combat properties that will be updated. Can be mutated.
    */
-  combatStart: (
-    combat: Combat.Implementation,
-    updateData: {
-      /** The initial round */
-      round: number;
-
-      /** The initial turn */
-      turn: number;
-    },
-  ) => void;
+  combatStart: (combat: Combat.Implementation, updateData: Combat.CombatStartData) => void;
 
   /**
    * A hook event that fires when the turn of the Combat encounter changes.
@@ -1034,20 +1060,8 @@ export interface AllHooks extends DynamicHooks {
    */
   combatTurn: (
     combat: Combat.Implementation,
-    updateData: {
-      /** The current round of combat */
-      round: number;
-
-      /** The new turn number */
-      turn: number;
-    },
-    updateOptions: {
-      /** The amount of time in seconds that time is being advanced */
-      advanceTime: number;
-
-      /** A signed integer for whether the turn order is advancing or rewinding */
-      direction: number;
-    },
+    updateData: Combat.TurnUpdateData,
+    updateOptions: Combat.TurnUpdateOptions,
   ) => void;
 
   /**
@@ -1058,23 +1072,8 @@ export interface AllHooks extends DynamicHooks {
    */
   combatRound: (
     combat: Combat.Implementation,
-    updateData: {
-      /** The new round of combat */
-      round: number;
-
-      /**
-       * The new turn number
-       * @remarks `combatRound`, unlike `combatTurn` and `combatStart`, can have a `null` turn.
-       */
-      turn: number | null;
-    },
-    updateOptions: {
-      /** The amount of time in seconds that time is being advanced */
-      advanceTime: number;
-
-      /** A signed integer for whether the turn order is advancing or rewinding */
-      direction: number;
-    },
+    updateData: Combat.RoundUpdateData,
+    updateOptions: Combat.RoundUpdateOptions,
   ) => void;
 
   /**
@@ -1528,7 +1527,7 @@ declare global {
     type PreCreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       data: Document.CreateDataForName<D["documentName"]>,
-      options: Document.Database.PreCreateOptionsFor<D["documentName"]>,
+      options: Document.Database.PreCreateOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1548,7 +1547,7 @@ declare global {
      */
     type CreateDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.CreateOptionsFor<D["documentName"]>,
+      options: Document.Database.OnCreateOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1574,7 +1573,7 @@ declare global {
     type PreUpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       changed: Document.UpdateDataForName<D["documentName"]>,
-      options: Document.Database.PreUpdateOptionsFor<D["documentName"]>,
+      options: Document.Database.PreUpdateOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1596,7 +1595,7 @@ declare global {
     type UpdateDocument<D extends Document.Any = Document.Any> = (
       document: D,
       change: Document.UpdateDataForName<D["documentName"]>,
-      options: Document.Database.UpdateOptionsFor<D["documentName"]>,
+      options: Document.Database.OnUpdateOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 
@@ -1620,7 +1619,7 @@ declare global {
      */
     type PreDeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.PreDeleteOptionsFor<D["documentName"]>,
+      options: Document.Database.PreDeleteOptionsForName<D["documentName"]>,
       userId: string,
     ) => boolean | void;
 
@@ -1640,7 +1639,7 @@ declare global {
      */
     type DeleteDocument<D extends Document.Any = Document.Any> = (
       document: D,
-      options: Document.Database.DeleteOptionsFor<D["documentName"]>,
+      options: Document.Database.OnDeleteOptionsForName<D["documentName"]>,
       userId: string,
     ) => void;
 

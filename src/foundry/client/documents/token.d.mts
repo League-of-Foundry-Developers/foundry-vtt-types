@@ -8,29 +8,25 @@ import type {
   Merge,
   NullishProps,
 } from "#utils";
-import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { ActorDeltaField } from "#common/documents/token.d.mts";
-import type { BaseActor, BaseActorDelta, BaseRegion, BaseToken, BaseUser } from "#common/documents/_module.d.mts";
 import type { LightData, TextureData, fields } from "#common/data/_module.d.mts";
+import type { DataModel, DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
+import type { BaseActor, BaseActorDelta, BaseRegion, BaseToken, BaseUser } from "#common/documents/_module.d.mts";
 import type { VisionMode } from "#client/canvas/perception/_module.d.mts";
 import type { TerrainData } from "#client/data/terrain-data.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
-/** @privateRemarks `TokenLayer` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { TokenLayer } from "#client/canvas/layers/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type TokenLayer from "#client/canvas/layers/tokens.d.mts";
 
-/** @privateRemarks `AllHooks` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type { AllHooks } from "#client/hooks.d.mts";
 
 declare namespace TokenDocument {
@@ -853,124 +849,779 @@ declare namespace TokenDocument {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for TokenDocuments */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<TokenDocument.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
-    /** Options passed along in Create operations for TokenDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<TokenDocument.CreateData, TokenDocument.Parent, Temporary> {}
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `TokenDocument` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
+     */
+    interface GetOperation extends DatabaseBackend.GetOperation<TokenDocument.Parent> {}
 
-    /** Options passed along in Delete operations for TokenDocuments */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<TokenDocument.Parent> {}
+    /**
+     * The interface for passing to {@linkcode TokenDocument.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
+     */
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
-    /** Options passed along in Update operations for TokenDocuments */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      TokenDocument.UpdateData,
-      TokenDocument.Parent
-    > {
-      previousActorId?: string | null;
-      animate?: boolean;
-      _priorRegions?: Record<string, string[]>;
-      _priorPosition?: Record<string, { x: number; y: number; elevation: number }>;
-      teleport?: boolean;
-      forced?: boolean;
-      // TODO: Type this accurately when going over the Token placeable
-      animation: AnyObject;
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `TokenDocument` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
+     */
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `TokenDocument` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode TokenDocument.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
+     */
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<TokenDocument.CreateInput, TokenDocument.Parent, Temporary>,
+        DatabaseBackend._CommonCanvasDocumentCreateProperties {}
+
+    /**
+     * The interface for passing to {@linkcode TokenDocument.create} or {@linkcode TokenDocument.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `TokenDocument` documents. (see {@linkcode TokenDocument.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `TokenDocument` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode TokenDocument._preCreate | TokenDocument#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateTokenDocument` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode TokenDocument._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode TokenDocument._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode TokenDocument._onCreate | TokenDocument#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createTokenDocument` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TokenDocument._onCreateOperation} and `TokenDocument`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /** @internal */
+    interface _PostWorkflow {
+      _postWorkflow?: {
+        promise: Promise<void>;
+        resolve: () => void;
+      };
     }
 
-    /** Operation for {@linkcode TokenDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      TokenDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode TokenDocument.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<TokenDocument.Database.Update> {}
-
-    /** Operation for {@linkcode TokenDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<TokenDocument.Database.Delete> {}
-
-    /** Operation for {@linkcode TokenDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      TokenDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode TokenDocument.update | TokenDocument#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode TokenDocument.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@linkcode TokenDocument._preCreate | TokenDocument#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@linkcode TokenDocument._onCreate | TokenDocument#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode TokenDocument._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TokenDocument.Database.Create> {}
-
-    /** Operation for {@linkcode TokenDocument._onCreateOperation | TokenDocument#_onCreateOperation} */
-    interface OnCreateOperation extends TokenDocument.Database.Create {}
-
-    /** Options for {@linkcode TokenDocument._preUpdate | TokenDocument#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@linkcode TokenDocument._onUpdate | TokenDocument#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode TokenDocument._preUpdateOperation} */
-    interface PreUpdateOperation extends TokenDocument.Database.Update {}
-
-    /** Operation for {@linkcode TokenDocument._onUpdateOperation | TokenDocument._preUpdateOperation} */
-    interface OnUpdateOperation extends TokenDocument.Database.Update {}
-
-    /** Options for {@linkcode TokenDocument._preDelete | TokenDocument#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@linkcode TokenDocument._onDelete | TokenDocument#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@linkcode TokenDocument._preDeleteOperation | TokenDocument#_preDeleteOperation} */
-    interface PreDeleteOperation extends TokenDocument.Database.Delete {}
-
-    /** Options for {@linkcode TokenDocument._onDeleteOperation | TokenDocument#_onDeleteOperation} */
-    interface OnDeleteOperation extends TokenDocument.Database.Delete {}
-
-    /** Context for {@linkcode TokenDocument._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
-
-    /** Context for {@linkcode TokenDocument._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
-
-    /** Context for {@linkcode TokenDocument._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<TokenDocument.Parent> {}
+    /**
+     * @remarks The interface for {@linkcode TokenDocument.Database.UpdateOperation._movement} before it gets sent to the server, i.e while
+     * it is still `deepFreeze`n.
+     *
+     * @privateRemarks This being a naive intersection is acceptable because nobody should ever have to pass a literal of this part of the
+     * type; at worst, user code will want to mutate a specific `_movement[movementId]` object's properties.
+     */
+    type _MovementPreServer = Record<string, TokenDocument.PreUpdateMovement> & _PostWorkflow;
 
     /**
-     * Options for {@linkcode TokenDocument._preCreateDescendantDocuments | TokenDocument#_preCreateDescendantDocuments}
-     * and {@linkcode TokenDocument._onCreateDescendantDocuments | TokenDocument#_onCreateDescendantDocuments}
+     * @remarks The interface for {@linkcode TokenDocument.Database.UpdateOperation._movement} after it gets sent back by the server, and is
+     * no longer frozen to any depth.
+     *
+     * @privateRemarks This being a naive intersection is acceptable because nobody should ever have to pass a literal of this part of the
+     * type; at worst, user code will want to mutate a specific `_movement[movementId]` object's properties.
      */
-    interface CreateOptions extends Document.Database.CreateOptions<TokenDocument.Database.Create> {}
+    type _MovementPostServer = Record<string, TokenDocument.MovementOperation> & _PostWorkflow;
 
     /**
-     * Options for {@linkcode TokenDocument._preUpdateDescendantDocuments | TokenDocument#_preUpdateDescendantDocuments}
-     * and {@linkcode TokenDocument._onUpdateDescendantDocuments | TokenDocument#_onUpdateDescendantDocuments}
+     * @remarks The interface for {@linkcode TokenDocument.Database.UpdateOperation._movementArguments}. It's probably considered
+     * internal-to-foundry, but isn't marked as such beyond the `_` prefix. Not internal to us.
      */
-    interface UpdateOptions extends Document.Database.UpdateOptions<TokenDocument.Database.Update> {}
+    interface _MovementArguments extends InexactPartial<Pick<MovementData, "chain">> {
+      result: boolean;
+      movementId?: string | undefined;
+      unrecorded?: MeasuredMovementWaypoint[] | null;
+    }
 
     /**
-     * Options for {@linkcode TokenDocument._preDeleteDescendantDocuments | TokenDocument#_preDeleteDescendantDocuments}
-     * and {@linkcode TokenDocument._onDeleteDescendantDocuments | TokenDocument#_onDeleteDescendantDocuments}
+     * @remarks An entry under {@linkcode TokenDocument.Database._PreServerUpdateOperation.movement}
      */
-    interface DeleteOptions extends Document.Database.DeleteOptions<TokenDocument.Database.Delete> {}
+    interface MovementEntry extends InexactPartial<TokenDocument._MoveOptions> {
+      waypoints?: TokenDocument.MovementWaypoint[] | undefined;
+    }
 
     /**
-     * Create options for {@linkcode TokenDocument.createDialog}.
+     * @remarks Keys are `TokenDocument` IDs
      */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    interface Movement extends Record<string, MovementEntry> {}
+
+    /**
+     * Properties that can only appear to user code *before* the operation is sent to the server,
+     * or that need different types before and after.
+     * @internal
+     */
+    interface _PreServerUpdateOperation {
+      movement?: Movement | undefined;
+
+      /**
+       * @remarks A record of `movementId` keys and mostly-frozen {@linkcode TokenDocument.MovementOperation} values.
+       * See {@linkcode TokenDocument.Database._MovementEntry}.
+       */
+      _movement?: TokenDocument.Database._MovementPreServer | undefined;
+
+      /**
+       * @remarks Used by some parts of the token movement machinery. Can be seen in the client-side parts of operations made by
+       * {@linkcode TokenDocument.move | TokenDocument#move}, {@linkcode TokenDocument.revertRecordedMovement | #revertRecordedMovement},
+       * and `##continueMovement`, but is deleted in `##preUpdateOperationMovement` before being sent to the server.
+       */
+      _movementArguments?: TokenDocument.Database._MovementArguments;
+
+      /**
+       * @deprecated "`DatabaseUpdateOperation#teleport` has been deprecated. Override {@linkcode TokenDocument._onUpdateMovement | TokenDocument#_onUpdateMovement}
+       * or hook {@linkcode AllHooks.moveToken | moveToken} to handle movement." (since v13, until v15)
+       * @remarks Deleted before being sent to the server in `TokenDocument.#preUpdateMovementOperation`.
+       */
+      teleport?: boolean;
+
+      /**
+       * @deprecated "`DatabaseUpdateOperation#forced` has been deprecated. Override {@linkcode TokenDocument._onUpdateMovement | TokenDocument#_onUpdateMovement}
+       * or hook {@linkcode AllHooks.moveToken | moveToken} to handle movement." (since v13, until v15)
+       * @remarks Deleted before being sent to the server in `TokenDocument.#preUpdateMovementOperation`.
+       */
+      forced?: boolean;
+    }
+
+    /**
+     * Properties that can only appear to user code *after* the operation is returned by the server,
+     * or that need different types before and after.
+     * @internal
+     */
+    interface _PostServerUpdateOperation {
+      /**
+       * @remarks Added/updated by the server's `TokenDocument#_preUpdate` if a token will be changing which Region(s) it is counted as
+       * inside of. Keys are Token IDs, values are arrays of Region IDs.
+       */
+      _priorRegions?: Record<string, string[]>;
+
+      /**
+       * @remarks A record of `movementId` keys and {@linkcode TokenDocument.MovementOperation} values.
+       */
+      _movement?: TokenDocument.Database._MovementPostServer;
+    }
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `TokenDocument` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode TokenDocument.update | TokenDocument#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<TokenDocument.UpdateInput, TokenDocument.Parent>,
+        DatabaseBackend._CommonCanvasDocumentUpdateProperties {
+      /**
+       * @remarks Passing `false` both prevents the current operation from animating and stops existing animations, via
+       * {@linkcode TokenDocument._onUpdate | TokenDocument#_onUpdate} calling `TokenDocument##onUpdateAnimation`.
+       */
+      animate?: boolean;
+
+      /**
+       * @remarks Options for the animation of changes in this update. See `Token##onUpdateAnimation`.
+       */
+      animation?: Token.AnimateOptions;
+
+      /**
+       * @remarks Unless this is explicitly `false`, position updates that put a token outside the viewport will cause the camera to pan
+       * to that token's center. See `Token##panCanvas`.
+       */
+      pan?: boolean;
+
+      /**
+       * @remarks If a token's {@linkcode TokenDocument.actorId | actorId} is being updated,
+       * {@linkcode TokenDocument._preUpdate | TokenDocument#_preUpdate} sets this property, and
+       * {@linkcode TokenDocument._onUpdate | TokenDocument#_onUpdate} tidies the previous actor's apps and dependent tokens.
+       *
+       * **NOTE**: Since the sequence described above mutates the one operation object, even for updates with more than one token affected,
+       * batching together two or more updates changing away *from* different `actorIds` can leave some erroneous references in one or more
+       * of the actors belonging to those IDs.
+       */
+      previousActorId?: string | null;
+
+      /**
+       * @remarks If passed, `TokenDocument##preUpdateMovement` will use this value in place of the
+       * {@linkcode TokenDocument.Database.MovementEntry.method | method} of the specific Token's `movement` entry.
+       */
+      method?: TokenDocument.MovementMethod;
+
+      /**
+       * @remarks Only passed in updates made by `TokenDocument##stopMovement`. Value is the relevant
+       * {@linkcode TokenDocument.MovementData.id}. Such updates will have an empty changes object.
+       */
+      _stopMovement?: string;
+
+      /**
+       * @remarks Only passed in updates made by `TokenDocument##pauseMovement`, Value is the relevant
+       * {@linkcode TokenDocument.MovementData.id}. Such updates will have an empty changes object.
+       */
+      _pauseMovement?: boolean;
+
+      /**
+       * @remarks Only passed in updates made by {@linkcode TokenDocument.resumeMovement | TokenDocument#resumeMovement}, is a tuple of the
+       * relevant {@linkcode TokenDocument.MovementData.id} and the key being used to reference the pause being resumed, that was originally
+       * passed to {@linkcode TokenDocument.pauseMovement | TokenDocument#pauseMovement}. Such updates will have an empty changes object.
+       */
+      _resumeMovement?: [movementId: string, pauseKey: string];
+
+      /**
+       * @remarks Is this operation clearing the movement history of the Tokens involved?
+       *
+       * Set `true` in update calls made in {@linkcode Combat.clearMovementHistories | Combat#clearMovementHistories},
+       * {@linkcode Scene.clearMovementHistories | Scene#clearMovementHistories}, and
+       * {@linkcode TokenDocument.clearMovementHistory | TokenDocument#clearMovementHistory}; Checked in
+       * {@linkcode TokenLayer.storeHistory | TokenLayer#storeHistory} and `TokenDocument##preUpdateMovement` and `##onUpdateMovement`.
+       */
+      _clearMovementHistory?: boolean;
+
+      /** @deprecated Removed in v13. This warning will be removed in v14. */
+      _priorPosition?: never;
+    }
+
+    /**
+     * The interface for passing to {@linkcode TokenDocument.update | TokenDocument#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation
+      extends
+        Document.Database.UpdateOneDocumentOperation<UpdateOperation>,
+        TokenDocument.Database._PreServerUpdateOperation {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `TokenDocument` documents (see {@linkcode TokenDocument.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation
+      extends UpdateOneDocumentOperation, TokenDocument.Database._PreServerUpdateOperation {}
+
+    /**
+     * The interface for passing to {@linkcode TokenDocument.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation
+      extends
+        Document.Database.UpdateManyDocumentsOperation<UpdateOperation>,
+        TokenDocument.Database._PreServerUpdateOperation {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `TokenDocument` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation
+      extends
+        Document.Database.BackendUpdateOperation<UpdateOperation>,
+        TokenDocument.Database._PreServerUpdateOperation {}
+
+    /**
+     * The interface passed to {@linkcode TokenDocument._preUpdate | TokenDocument#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateTokenDocument` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions
+      extends Document.Database.PreUpdateOptions<UpdateOperation>, TokenDocument.Database._PreServerUpdateOperation {}
+
+    /**
+     * The interface passed to {@linkcode TokenDocument._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation
+      extends Document.Database.PreUpdateOperation<UpdateOperation>, TokenDocument.Database._PreServerUpdateOperation {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode TokenDocument._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation
+      extends
+        Omit<Document.Database.OnUpdateDocumentsOperation<UpdateOperation>, "_movementArguments">,
+        TokenDocument.Database._PostServerUpdateOperation {}
+
+    /**
+     * The interface passed to {@linkcode TokenDocument._onUpdate | TokenDocument#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateTokenDocument` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions
+      extends
+        Omit<Document.Database.OnUpdateOptions<UpdateOperation>, "_movementArguments">,
+        TokenDocument.Database._PostServerUpdateOperation {}
+
+    /**
+     * The interface passed to {@linkcode TokenDocument._onUpdateOperation} and `TokenDocument`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     * @remarks `forced` and `teleport` are added back to this object as deprecation shims by
+     * {@linkcode TokenDocument._addTeleportAndForcedShims}.
+     */
+    interface OnUpdateOperation
+      extends
+        Omit<Document.Database.OnUpdateOperation<UpdateOperation>, "_movementArguments">,
+        TokenDocument.Database._PostServerUpdateOperation,
+        Readonly<Pick<_PreServerUpdateOperation, "forced" | "teleport">> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `TokenDocument` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode TokenDocument.delete | TokenDocument#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<TokenDocument.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode TokenDocument.delete | TokenDocument#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `TokenDocument` documents (see {@linkcode TokenDocument.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode TokenDocument.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `TokenDocument` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TokenDocument._preDelete | TokenDocument#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteTokenDocument` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TokenDocument._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode TokenDocument._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TokenDocument._onDelete | TokenDocument#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteTokenDocument` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode TokenDocument._onDeleteOperation} and `TokenDocument`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: TokenDocument.Database.GetDocumentsOperation;
+        BackendGetOperation: TokenDocument.Database.BackendGetOperation;
+        GetOperation: TokenDocument.Database.GetOperation;
+
+        CreateDocumentsOperation: TokenDocument.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: TokenDocument.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: TokenDocument.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: TokenDocument.Database.CreateOperation<Temporary>;
+        PreCreateOptions: TokenDocument.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: TokenDocument.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: TokenDocument.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: TokenDocument.Database.OnCreateOptions;
+        OnCreateOperation: TokenDocument.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: TokenDocument.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: TokenDocument.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: TokenDocument.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: TokenDocument.Database.BackendUpdateOperation;
+        UpdateOperation: TokenDocument.Database.UpdateOperation;
+        PreUpdateOptions: TokenDocument.Database.PreUpdateOptions;
+        PreUpdateOperation: TokenDocument.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: TokenDocument.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: TokenDocument.Database.OnUpdateOptions;
+        OnUpdateOperation: TokenDocument.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: TokenDocument.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: TokenDocument.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: TokenDocument.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: TokenDocument.Database.BackendDeleteOperation;
+        DeleteOperation: TokenDocument.Database.DeleteOperation;
+        PreDeleteOptions: TokenDocument.Database.PreDeleteOptions;
+        PreDeleteOperation: TokenDocument.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: TokenDocument.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: TokenDocument.Database.OnDeleteOptions;
+        OnDeleteOperation: TokenDocument.Database.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
@@ -1428,12 +2079,21 @@ declare namespace TokenDocument {
     updateOptions: Database.UpdateOperation;
   }
 
-  interface MoveOptions extends Database.UpdateOperation {
-    method: MovementMethod;
-    autoRotate: boolean;
-    showRuler: boolean;
-    constrainOptions: ConstrainOptions;
-  }
+  /**
+   * Used by both {@linkcode MoveOptions} and {@linkcode Database._PreServerUpdateOperation.movement}.
+   * @internal
+   */
+  interface _MoveOptions extends Pick<MovementData, "method" | "autoRotate" | "showRuler" | "constrainOptions"> {}
+
+  /**
+   * The interface for passing to {@linkcode TokenDocument.move | TokenDocument#move}.
+   * @remarks `movement` and `_movementArguments` are omitted because they're supplied
+   * to the `#update` call *after* spreading in this object.
+   */
+  interface MoveOptions
+    extends
+      Omit<Database.UpdateOneDocumentOperation, "movement" | "_movementArguments">,
+      InexactPartial<_MoveOptions> {}
 
   interface MovementCostFunction extends Omit<foundry.grid.BaseGrid.MeasurePathCostFunction3D, "segment"> {
     segment: MovementSegmentData;
@@ -1500,7 +2160,11 @@ declare namespace TokenDocument {
     anchor: foundry.canvas.Canvas.Point;
   }
 
-  interface PreMovementOptions
+  /**
+   * @remarks This is the type for entries in {@linkcode TokenDocument.Database._PreServerUpdateOperation._movement}, as well as the first
+   * argument of {@linkcode TokenDocument._preUpdateMovement | TokenDocument#_preUpdateMovement}
+   */
+  interface PreUpdateMovement
     extends
       DeepReadonly<Omit<MovementOperation, "autoRotate" | "showRuler">>,
       Pick<MovementOperation, "autoRotate" | "showRuler"> {}
@@ -1511,6 +2175,12 @@ declare namespace TokenDocument {
       "x" | "y" | "elevation" | "width" | "height" | "shape" | "action" | "terrain" | "snapped"
     >
   > {}
+
+  /**
+   * @deprecated This interface has been renamed, use {@linkcode TokenDocument.PreUpdateMovement} instead.
+   * This warning will be removed in v15.
+   */
+  type PreMovementOptions = PreUpdateMovement;
 
   /**
    * The arguments to construct the document.
@@ -1837,6 +2507,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @remarks default implementation does nothing
    */
   protected _preUpdateMovement(
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     movement: TokenDocument.PreMovementOptions,
     operation: TokenDocument.Database.UpdateOperation,
   ): Promise<boolean | void>;
@@ -2075,6 +2746,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: TokenDocument.CreateDialogData | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: TokenDocument.Database.DialogCreateOptions,
     options?: TokenDocument.CreateDialogOptions,
   ): Promise<TokenDocument.Stored | null | undefined>;

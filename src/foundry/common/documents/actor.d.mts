@@ -138,17 +138,17 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActor.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseActor.Database.Create<Temporary>>,
+    operation?: BaseActor.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseActor.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseActor.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseActor.Database.Update>,
+    operation?: BaseActor.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<Actor.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseActor.Database.Delete>,
+    operation?: BaseActor.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<Actor.Stored>>;
 
   static override create<
@@ -156,19 +156,19 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseActor.Database.CreateOperation<Temporary>,
+    operation?: BaseActor.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseActor.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseActor.UpdateInput,
-    operation?: BaseActor.Database.UpdateOperation,
+    operation?: BaseActor.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseActor.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseActor.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    operation?: BaseActor.Database.GetOptions,
+    operation?: BaseActor.Database.GetDocumentsOperation,
   ): Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | null;
 
   static override getCollectionName<CollectionName extends BaseActor.Embedded.Name>(
@@ -221,37 +221,37 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
 
   protected override _onCreate(
     data: BaseActor.CreateData,
-    options: BaseActor.Database.OnCreateOperation,
+    options: BaseActor.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Actor.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseActor.Database.Create>,
+    operation: BaseActor.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Actor.Stored[],
-    operation: BaseActor.Database.Create,
+    operation: BaseActor.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
   protected override _onUpdate(
     changed: BaseActor.UpdateData,
-    options: BaseActor.Database.OnUpdateOperation,
+    options: BaseActor.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Actor.Stored[],
-    operation: BaseActor.Database.Update,
+    operation: BaseActor.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Actor.Stored[],
-    operation: BaseActor.Database.Update,
+    operation: BaseActor.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -260,17 +260,17 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseActor.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseActor.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Actor.Stored[],
-    operation: BaseActor.Database.Delete,
+    operation: BaseActor.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Actor.Stored[],
-    operation: BaseActor.Database.Delete,
+    operation: BaseActor.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -280,7 +280,8 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
    */
   protected static override _onCreateDocuments(
     documents: Actor.Implementation[],
-    context: BaseActor.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseActor.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -289,7 +290,8 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
    */
   protected static override _onUpdateDocuments(
     documents: Actor.Stored[],
-    context: BaseActor.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseActor.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -298,7 +300,8 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
    */
   protected static override _onDeleteDocuments(
     documents: Actor.Stored[],
-    context: BaseActor.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseActor.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

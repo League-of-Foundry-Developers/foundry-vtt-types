@@ -86,17 +86,17 @@ declare abstract class BaseJournalEntryPage<
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseJournalEntryPage.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseJournalEntryPage.Database.Create<Temporary>>,
+    operation?: BaseJournalEntryPage.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseJournalEntryPage.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseJournalEntryPage.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseJournalEntryPage.Database.Update>,
+    operation?: BaseJournalEntryPage.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<JournalEntryPage.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseJournalEntryPage.Database.Delete>,
+    operation?: BaseJournalEntryPage.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<JournalEntryPage.Stored>>;
 
   static override create<
@@ -104,18 +104,18 @@ declare abstract class BaseJournalEntryPage<
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseJournalEntryPage.Database.CreateOperation<Temporary>,
+    operation?: BaseJournalEntryPage.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseJournalEntryPage.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseJournalEntryPage.UpdateInput,
-    operation?: BaseJournalEntryPage.Database.UpdateOperation,
+    operation?: BaseJournalEntryPage.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseJournalEntryPage.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseJournalEntryPage.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   // `JournalEntryPage`s are neither world documents nor compendium documents, so this always returns `null`.
-  static override get(documentId: string, operation?: BaseJournalEntryPage.Database.GetOptions): null;
+  static override get(documentId: string, operation?: BaseJournalEntryPage.Database.GetDocumentsOperation): null;
 
   // `JournalEntryPage`s have no embedded collections, so this always returns `null`
   static override getCollectionName(name: string): null;
@@ -144,19 +144,19 @@ declare abstract class BaseJournalEntryPage<
 
   protected override _onCreate(
     data: BaseJournalEntryPage.CreateData,
-    options: BaseJournalEntryPage.Database.OnCreateOperation,
+    options: BaseJournalEntryPage.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: JournalEntryPage.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseJournalEntryPage.Database.Create>,
+    operation: BaseJournalEntryPage.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: JournalEntryPage.Stored[],
-    operation: BaseJournalEntryPage.Database.Create,
+    operation: BaseJournalEntryPage.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -168,19 +168,19 @@ declare abstract class BaseJournalEntryPage<
 
   protected override _onUpdate(
     changed: BaseJournalEntryPage.UpdateData,
-    options: BaseJournalEntryPage.Database.OnUpdateOperation,
+    options: BaseJournalEntryPage.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: JournalEntryPage.Stored[],
-    operation: BaseJournalEntryPage.Database.Update,
+    operation: BaseJournalEntryPage.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: JournalEntryPage.Stored[],
-    operation: BaseJournalEntryPage.Database.Update,
+    operation: BaseJournalEntryPage.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -189,17 +189,17 @@ declare abstract class BaseJournalEntryPage<
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseJournalEntryPage.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseJournalEntryPage.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: JournalEntryPage.Stored[],
-    operation: BaseJournalEntryPage.Database.Delete,
+    operation: BaseJournalEntryPage.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: JournalEntryPage.Stored[],
-    operation: BaseJournalEntryPage.Database.Delete,
+    operation: BaseJournalEntryPage.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -209,7 +209,8 @@ declare abstract class BaseJournalEntryPage<
    */
   protected static override _onCreateDocuments(
     documents: JournalEntryPage.Implementation[],
-    context: BaseJournalEntryPage.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseJournalEntryPage.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -218,7 +219,8 @@ declare abstract class BaseJournalEntryPage<
    */
   protected static override _onUpdateDocuments(
     documents: JournalEntryPage.Stored[],
-    context: BaseJournalEntryPage.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseJournalEntryPage.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -227,7 +229,8 @@ declare abstract class BaseJournalEntryPage<
    */
   protected static override _onDeleteDocuments(
     documents: JournalEntryPage.Stored[],
-    context: BaseJournalEntryPage.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseJournalEntryPage.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

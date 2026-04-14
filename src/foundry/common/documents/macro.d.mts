@@ -128,17 +128,17 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseMacro.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseMacro.Database.Create<Temporary>>,
+    operation?: BaseMacro.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseMacro.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseMacro.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseMacro.Database.Update>,
+    operation?: BaseMacro.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<Macro.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseMacro.Database.Delete>,
+    operation?: BaseMacro.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<Macro.Stored>>;
 
   static override create<
@@ -146,19 +146,19 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseMacro.Database.CreateOperation<Temporary>,
+    operation?: BaseMacro.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseMacro.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseMacro.UpdateInput,
-    operation?: BaseMacro.Database.UpdateOperation,
+    operation?: BaseMacro.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseMacro.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseMacro.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    operation?: BaseMacro.Database.GetOptions,
+    operation?: BaseMacro.Database.GetDocumentsOperation,
   ): Macro.Stored | CompendiumCollection.IndexEntry<"Macro"> | null;
 
   // `Macro`s have no embedded collections, so this always returns `null`.
@@ -182,19 +182,19 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   protected override _onCreate(
     data: BaseMacro.CreateData,
-    options: BaseMacro.Database.OnCreateOperation,
+    options: BaseMacro.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Macro.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseMacro.Database.Create>,
+    operation: BaseMacro.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Macro.Stored[],
-    operation: BaseMacro.Database.Create,
+    operation: BaseMacro.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -206,19 +206,19 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   protected override _onUpdate(
     changed: BaseMacro.UpdateData,
-    options: BaseMacro.Database.OnUpdateOperation,
+    options: BaseMacro.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Macro.Stored[],
-    operation: BaseMacro.Database.Update,
+    operation: BaseMacro.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Macro.Stored[],
-    operation: BaseMacro.Database.Update,
+    operation: BaseMacro.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -227,17 +227,17 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseMacro.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseMacro.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Macro.Stored[],
-    operation: BaseMacro.Database.Delete,
+    operation: BaseMacro.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Macro.Stored[],
-    operation: BaseMacro.Database.Delete,
+    operation: BaseMacro.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -247,7 +247,8 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    */
   protected static override _onCreateDocuments(
     documents: Macro.Implementation[],
-    context: BaseMacro.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseMacro.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -256,7 +257,8 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    */
   protected static override _onUpdateDocuments(
     documents: Macro.Stored[],
-    context: BaseMacro.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseMacro.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -265,7 +267,8 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    */
   protected static override _onDeleteDocuments(
     documents: Macro.Stored[],
-    context: BaseMacro.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseMacro.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

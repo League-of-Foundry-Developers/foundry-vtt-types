@@ -98,17 +98,17 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseJournalEntry.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseJournalEntry.Database.Create<Temporary>>,
+    operation?: BaseJournalEntry.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseJournalEntry.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseJournalEntry.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseJournalEntry.Database.Update>,
+    operation?: BaseJournalEntry.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<JournalEntry.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseJournalEntry.Database.Delete>,
+    operation?: BaseJournalEntry.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<JournalEntry.Stored>>;
 
   static override create<
@@ -116,19 +116,19 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseJournalEntry.Database.CreateOperation<Temporary>,
+    operation?: BaseJournalEntry.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseJournalEntry.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseJournalEntry.UpdateInput,
-    operation?: BaseJournalEntry.Database.UpdateOperation,
+    operation?: BaseJournalEntry.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseJournalEntry.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseJournalEntry.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    operation?: BaseJournalEntry.Database.GetOptions,
+    operation?: BaseJournalEntry.Database.GetDocumentsOperation,
   ): JournalEntry.Stored | CompendiumCollection.IndexEntry<"JournalEntry"> | null;
 
   static override getCollectionName<CollectionName extends BaseJournalEntry.Embedded.Name>(
@@ -187,19 +187,19 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   protected override _onCreate(
     data: BaseJournalEntry.CreateData,
-    options: BaseJournalEntry.Database.OnCreateOperation,
+    options: BaseJournalEntry.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: JournalEntry.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseJournalEntry.Database.Create>,
+    operation: BaseJournalEntry.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: JournalEntry.Stored[],
-    operation: BaseJournalEntry.Database.Create,
+    operation: BaseJournalEntry.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -211,19 +211,19 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   protected override _onUpdate(
     changed: BaseJournalEntry.UpdateData,
-    options: BaseJournalEntry.Database.OnUpdateOperation,
+    options: BaseJournalEntry.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: JournalEntry.Stored[],
-    operation: BaseJournalEntry.Database.Update,
+    operation: BaseJournalEntry.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: JournalEntry.Stored[],
-    operation: BaseJournalEntry.Database.Update,
+    operation: BaseJournalEntry.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -232,17 +232,17 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseJournalEntry.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseJournalEntry.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: JournalEntry.Stored[],
-    operation: BaseJournalEntry.Database.Delete,
+    operation: BaseJournalEntry.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: JournalEntry.Stored[],
-    operation: BaseJournalEntry.Database.Delete,
+    operation: BaseJournalEntry.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -252,7 +252,8 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    */
   protected static override _onCreateDocuments(
     documents: JournalEntry.Implementation[],
-    context: BaseJournalEntry.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseJournalEntry.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -261,7 +262,8 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    */
   protected static override _onUpdateDocuments(
     documents: JournalEntry.Stored[],
-    context: BaseJournalEntry.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseJournalEntry.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -270,7 +272,8 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
    */
   protected static override _onDeleteDocuments(
     documents: JournalEntry.Stored[],
-    context: BaseJournalEntry.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseJournalEntry.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */
