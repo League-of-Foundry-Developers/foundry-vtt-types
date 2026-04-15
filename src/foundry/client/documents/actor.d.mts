@@ -22,7 +22,7 @@ declare namespace Actor {
   type Name = "Actor";
 
   /**
-   * The context used to create a `Actor`.
+   * The context used to create an `Actor`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 

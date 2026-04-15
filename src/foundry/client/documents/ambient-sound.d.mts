@@ -17,7 +17,7 @@ declare namespace AmbientSoundDocument {
   type Name = "AmbientSound";
 
   /**
-   * The context used to create a `AmbientSoundDocument`.
+   * The context used to create an `AmbientSoundDocument`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 

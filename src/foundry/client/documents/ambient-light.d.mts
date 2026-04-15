@@ -17,7 +17,7 @@ declare namespace AmbientLightDocument {
   type Name = "AmbientLight";
 
   /**
-   * The context used to create a `AmbientLightDocument`.
+   * The context used to create an `AmbientLightDocument`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 

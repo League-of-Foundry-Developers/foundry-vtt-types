@@ -17,7 +17,7 @@ declare namespace Adventure {
   type Name = "Adventure";
 
   /**
-   * The context used to create a `Adventure`.
+   * The context used to create an `Adventure`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
