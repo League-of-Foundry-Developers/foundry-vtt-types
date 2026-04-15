@@ -124,6 +124,22 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   override " fvtt_types_internal_document_parent": BaseMacro.Parent;
 
+  // `canUserCreate` omitted from template due to actual override above.
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Macro", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseMacro.CreateInput[],
     operation?: BaseMacro.Database.CreateDocumentsOperation<Temporary>,

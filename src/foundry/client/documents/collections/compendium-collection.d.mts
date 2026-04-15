@@ -590,7 +590,7 @@ declare namespace CompendiumCollection {
    */
   interface ManageCompendiumSocketOptions extends _ManageCompendiumSocketOptions {}
 
-  interface TestUserPermissionOptions extends Document._TestUserPermissionsOptions {}
+  interface TestUserPermissionOptions extends InexactPartial<Document._TestUserPermissionsOptions> {}
 
   /**
    * Used in {@linkcode ImportFolderOptions} and {@linkcode ImportFoldersOptions}.

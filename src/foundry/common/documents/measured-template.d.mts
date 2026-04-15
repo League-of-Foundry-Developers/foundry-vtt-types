@@ -102,6 +102,22 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   override " fvtt_types_internal_document_parent": BaseMeasuredTemplate.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"MeasuredTemplate", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseMeasuredTemplate.CreateInput[],
     operation?: BaseMeasuredTemplate.Database.CreateDocumentsOperation<Temporary>,

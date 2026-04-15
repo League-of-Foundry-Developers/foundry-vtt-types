@@ -134,6 +134,22 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
 
   override " fvtt_types_internal_document_parent": BaseActor.Parent;
 
+  // `canUserCreate` omitted from template due to actual override above.
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Actor", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActor.CreateInput[],
     operation?: BaseActor.Database.CreateDocumentsOperation<Temporary>,
