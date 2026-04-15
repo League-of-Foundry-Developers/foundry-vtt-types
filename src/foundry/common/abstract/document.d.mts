@@ -3110,18 +3110,22 @@ declare namespace Document {
     type PreDeleteOptionsFor<DocumentName extends Document.Type> = PreDeleteOptionsForName<DocumentName>;
   }
 
+  /**
+   * @remarks {@linkcode Document.testUserPermission | Document#testUserPermission}'s second param can take either the string level name or
+   * the numerical (branded) value.
+   */
   type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /** @internal */
-  type _TestUserPermissionsOptions = InexactPartial<{
+  interface _TestUserPermissionsOptions {
     /**
      * Require the exact permission level requested?
      * @defaultValue `false`
      */
     exact: boolean;
-  }>;
+  }
 
-  interface TestUserPermissionOptions extends _TestUserPermissionsOptions {}
+  interface TestUserPermissionOptions extends InexactPartial<_TestUserPermissionsOptions> {}
 
   type CanUserModifyData<Name extends Document.Type, Action extends Document.Database.OperationAction> =
     | (Action extends "create" ? CreateDataForName<Name> : never)
