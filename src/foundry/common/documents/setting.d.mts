@@ -243,7 +243,6 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override validateJoint(data: BaseSetting.Source): void;
 
-  // options: not null (parameter default only, destructured in super)
   static override fromSource(
     source: BaseSetting.CreateData,
     context?: DataModel.FromSourceOptions,
