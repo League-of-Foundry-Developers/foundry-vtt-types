@@ -8,6 +8,7 @@ class TestBaseAdventure extends foundry.documents.BaseAdventure {
       : null;
   }
 }
+
 // @ts-expect-error name is a required field
 new TestBaseAdventure();
 
