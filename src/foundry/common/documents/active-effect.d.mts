@@ -114,6 +114,22 @@ declare abstract class BaseActiveEffect<
 
   override " fvtt_types_internal_document_parent": BaseActiveEffect.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"ActiveEffect", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActiveEffect.CreateInput[],
     operation?: BaseActiveEffect.Database.CreateDocumentsOperation<Temporary>,

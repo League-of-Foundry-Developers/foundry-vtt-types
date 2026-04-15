@@ -123,7 +123,7 @@ expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER")).toBeBoolean();
 expectTypeOf(myDelta.testUserPermission(someUser, CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED)).toBeBoolean();
 expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", {})).toBeBoolean();
 expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", { exact: true })).toBeBoolean();
-expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", { exact: null })).toBeBoolean();
+expectTypeOf(myDelta.testUserPermission(someUser, "OBSERVER", { exact: undefined })).toBeBoolean();
 
 // @ts-expect-error Tile is not a valid name of an embedded document of Actor
 myDelta.getBaseCollection("Tile");

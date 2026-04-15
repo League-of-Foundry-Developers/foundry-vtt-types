@@ -212,7 +212,7 @@ expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER")).toBeBoolean();
 expectTypeOf(fullTestAE.testUserPermission(someUser, CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED)).toBeBoolean();
 expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", {})).toBeBoolean();
 expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: true })).toBeBoolean();
-expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: null })).toBeBoolean();
+expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: undefined })).toBeBoolean();
 
 // migrateData and shimData overridden with no signature changes
 
