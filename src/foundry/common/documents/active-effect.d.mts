@@ -124,6 +124,12 @@ declare abstract class BaseActiveEffect<
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"ActiveEffect", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActiveEffect.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseActiveEffect.Database.Create<Temporary>>,

@@ -91,6 +91,12 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Setting", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseSetting.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseSetting.Database.Create<Temporary>>,

@@ -121,6 +121,12 @@ declare abstract class BaseTableResult<
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"TableResult", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseTableResult.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseTableResult.Database.Create<Temporary>>,

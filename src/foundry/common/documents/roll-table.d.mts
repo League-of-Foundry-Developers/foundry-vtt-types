@@ -109,6 +109,12 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"RollTable", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseRollTable.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseRollTable.Database.Create<Temporary>>,

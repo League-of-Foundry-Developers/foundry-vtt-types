@@ -101,6 +101,12 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Note", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseNote.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseNote.Database.Create<Temporary>>,

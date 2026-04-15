@@ -101,7 +101,7 @@ declare abstract class BaseActorDelta<
 
   /** @remarks Strips optional (`required: false`) fields from the object before returning */
   // TODO: Properly type this override
-  override toObject(source?: boolean): SchemaField.SourceData<BaseActorDelta.Schema>;
+  override toObject(source?: boolean): BaseActorDelta.Source;
 
   /*
    * After this point these are not really overridden methods.
@@ -154,6 +154,12 @@ declare abstract class BaseActorDelta<
     user: User.Implementation,
     permission: Document.ActionPermission,
     options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"ActorDelta", Action>,
   ): boolean;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(

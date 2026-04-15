@@ -123,6 +123,12 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Cards", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseCards.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseCards.Database.Create<Temporary>>,

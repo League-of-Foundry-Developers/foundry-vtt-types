@@ -106,6 +106,12 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Playlist", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BasePlaylist.CreateInput[],
     operation?: Document.Database.CreateOperation<BasePlaylist.Database.Create<Temporary>>,

@@ -122,6 +122,12 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Drawing", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseDrawing.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseDrawing.Database.Create<Temporary>>,

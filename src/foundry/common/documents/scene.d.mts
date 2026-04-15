@@ -211,6 +211,12 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Scene", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseScene.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseScene.Database.Create<Temporary>>,

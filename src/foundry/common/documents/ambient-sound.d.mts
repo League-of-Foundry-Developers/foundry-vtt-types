@@ -82,6 +82,12 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"AmbientSound", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseAmbientSound.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseAmbientSound.Database.Create<Temporary>>,

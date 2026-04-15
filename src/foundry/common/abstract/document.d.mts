@@ -335,11 +335,13 @@ declare abstract class Document<
    *
    * @privateRemarks Temporary `User`s {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
    * without error, so `Implementation` over `Stored`.
+   *
+   * This method has been added to the document template to remove the exposure of `User.Internal.Implementation`.
    */
-  canUserModify<Action extends "create" | "update" | "delete">(
+  canUserModify<Action extends Document.Database.OperationAction>(
     user: User.Internal.Implementation,
     action: Action,
-    data?: Document.CanUserModifyData<Schema, Action>,
+    data?: Document.CanUserModifyData<DocumentName, Action>,
   ): boolean;
 
   /**
@@ -2614,9 +2616,9 @@ declare namespace Document {
 
   interface TestUserPermissionOptions extends InexactPartial<_TestUserPermissionsOptions> {}
 
-  type CanUserModifyData<Schema extends DataSchema, Action extends "create" | "update" | "delete"> =
-    | (Action extends "create" ? SchemaField.CreateData<Schema> : never)
-    | (Action extends "update" ? SchemaField.UpdateData<Schema> : never)
+  type CanUserModifyData<Name extends Document.Type, Action extends Document.Database.OperationAction> =
+    | (Action extends "create" ? CreateDataForName<Name> : never)
+    | (Action extends "update" ? UpdateDataForName<Name> : never)
     | (Action extends "delete" ? EmptyObject : never);
 
   interface GetEmbeddedDocumentOptions extends EmbeddedCollection.GetOptions {}

@@ -108,6 +108,12 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
     options?: Document.TestUserPermissionOptions,
   ): boolean;
 
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Folder", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseFolder.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseFolder.Database.Create<Temporary>>,
