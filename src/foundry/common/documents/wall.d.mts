@@ -78,6 +78,8 @@ declare abstract class BaseWall extends Document<"Wall", BaseWall.Schema, any> {
 
   static override canUserCreate(user: User.Implementation): boolean;
 
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseWall.CreateInput[],
     operation?: BaseWall.Database.CreateDocumentsOperation<Temporary>,

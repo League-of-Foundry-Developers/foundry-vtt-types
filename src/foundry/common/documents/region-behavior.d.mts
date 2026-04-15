@@ -98,6 +98,10 @@ declare abstract class BaseRegionBehavior<
 
   override " fvtt_types_internal_document_parent": BaseRegionBehavior.Parent;
 
+  // `canUserCreate` omitted from template due to actual override above.
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseRegionBehavior.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseRegionBehavior.Database.Create<Temporary>>,

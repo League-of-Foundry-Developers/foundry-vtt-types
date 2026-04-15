@@ -299,11 +299,11 @@ declare abstract class Document<
    *
    * To test whether a user has a certain capability over the document, testUserPermission should be used.
    * @param user - The User being tested (default: `game.user`)
-   * @returns A numeric permission level from `CONST.DOCUMENT_OWNERSHIP_LEVELS` or `null`
+   * @returns A numeric permission level from `CONST.DOCUMENT_OWNERSHIP_LEVELS`
    *
    * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} methods work without error, so `Implementation` over `Stored`.
    */
-  getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document

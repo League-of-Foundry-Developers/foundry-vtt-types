@@ -98,6 +98,8 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override canUserCreate(user: User.Implementation): boolean;
 
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseJournalEntry.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseJournalEntry.Database.Create<Temporary>>,

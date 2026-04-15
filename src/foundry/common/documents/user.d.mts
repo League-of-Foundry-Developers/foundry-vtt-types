@@ -66,8 +66,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
   can(action: BaseUser.ActionPermission): boolean;
 
-  /** @remarks Returns `.OWNER` for the User in question, `.NONE` for everyone else */
-  override getUserLevel(user: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Test whether the User has at least a specific permission
@@ -119,6 +118,8 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   override " fvtt_types_internal_document_parent": BaseUser.Parent;
 
   static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseUser.CreateInput[],

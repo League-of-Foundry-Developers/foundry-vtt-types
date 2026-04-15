@@ -81,6 +81,10 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   override " fvtt_types_internal_document_parent": BaseSetting.Parent;
 
+  // `canUserCreate` omitted from template due to actual override above.
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseSetting.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseSetting.Database.Create<Temporary>>,

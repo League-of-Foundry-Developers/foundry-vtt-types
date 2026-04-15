@@ -53,7 +53,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    */
   static DEFAULT_ICON: string;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   static override canUserCreate(user: User.Implementation): boolean;
 
@@ -90,6 +90,10 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   override parent: BaseNote.Parent;
 
   override " fvtt_types_internal_document_parent": BaseNote.Parent;
+
+  // `canUserCreate` omitted from template due to actual override above.
+
+  // `getUserLevel` omitted from template due to actual override above.
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseNote.CreateInput[],

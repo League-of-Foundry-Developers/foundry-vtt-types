@@ -74,6 +74,8 @@ declare abstract class BaseAmbientSound extends Document<"AmbientSound", BaseAmb
 
   static override canUserCreate(user: User.Implementation): boolean;
 
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseAmbientSound.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseAmbientSound.Database.Create<Temporary>>,

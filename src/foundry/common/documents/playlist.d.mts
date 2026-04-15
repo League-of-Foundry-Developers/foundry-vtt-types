@@ -98,6 +98,8 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static override canUserCreate(user: User.Implementation): boolean;
 
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BasePlaylist.CreateInput[],
     operation?: Document.Database.CreateOperation<BasePlaylist.Database.Create<Temporary>>,

@@ -76,6 +76,8 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   static override canUserCreate(user: User.Implementation): boolean;
 
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseRegion.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseRegion.Database.Create<Temporary>>,

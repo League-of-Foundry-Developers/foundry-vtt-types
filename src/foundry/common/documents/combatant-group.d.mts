@@ -84,6 +84,8 @@ declare abstract class BaseCombatantGroup<
 
   static override canUserCreate(user: User.Implementation): boolean;
 
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseCombatantGroup.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseCombatantGroup.Database.Create<Temporary>>,

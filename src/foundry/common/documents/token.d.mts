@@ -151,7 +151,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     columns: boolean,
   ): DeepReadonly<TokenDocument.HexagonalOffsetsData>;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   // TODO: Update with the Delta conditionality
   override toObject(source?: boolean): BaseToken.Source;
@@ -228,6 +228,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   override " fvtt_types_internal_document_parent": BaseToken.Parent;
 
   static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseToken.CreateInput[],

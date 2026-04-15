@@ -50,12 +50,6 @@ declare abstract class BaseCombatant<
 
   static override defineSchema(): BaseCombatant.Schema;
 
-  /**
-   * @remarks Uses `game.user` if `user` is falsey.
-   *
-   * Returns {@linkcode DOCUMENT_OWNERSHIP_LEVELS.OWNER | OWNER} if `user.isGM`, otherwise forwards to `this.actor?.getUserLevel(user)`.
-   * If thats nullish, returns {@linkcode DOCUMENT_OWNERSHIP_LEVELS.NONE | NONE}
-   */
   override getUserLevel(user?: User.Implementation): DOCUMENT_OWNERSHIP_LEVELS;
 
   /*
@@ -98,6 +92,8 @@ declare abstract class BaseCombatant<
   override " fvtt_types_internal_document_parent": BaseCombatant.Parent;
 
   static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseCombatant.CreateInput[],

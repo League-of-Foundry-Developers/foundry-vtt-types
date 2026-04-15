@@ -112,6 +112,8 @@ declare abstract class BaseChatMessage<
 
   static override canUserCreate(user: User.Implementation): boolean;
 
+  // `getUserLevel` omitted from template due to actual override above.
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseChatMessage.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseChatMessage.Database.Create<Temporary>>,

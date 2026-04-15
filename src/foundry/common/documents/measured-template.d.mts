@@ -47,7 +47,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   /** @defaultValue `["DOCUMENT", "TEMPLATE"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * @remarks
@@ -104,6 +104,8 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   override " fvtt_types_internal_document_parent": BaseMeasuredTemplate.Parent;
 
   static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseMeasuredTemplate.CreateInput[],

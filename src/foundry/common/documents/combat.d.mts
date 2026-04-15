@@ -118,6 +118,8 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   static override canUserCreate(user: User.Implementation): boolean;
 
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseCombat.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseCombat.Database.Create<Temporary>>,

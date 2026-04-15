@@ -101,6 +101,8 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   static override canUserCreate(user: User.Implementation): boolean;
 
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseRollTable.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseRollTable.Database.Create<Temporary>>,

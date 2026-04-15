@@ -100,6 +100,8 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
 
   static override canUserCreate(user: User.Implementation): boolean;
 
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseFolder.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseFolder.Database.Create<Temporary>>,
