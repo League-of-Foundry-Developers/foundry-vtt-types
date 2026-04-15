@@ -126,6 +126,12 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   // `getUserLevel` omitted from template due to actual override above.
 
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseItem.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseItem.Database.Create<Temporary>>,

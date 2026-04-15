@@ -286,6 +286,8 @@ declare abstract class Document<
    *
    * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
    * without error, so `Implementation` over `Stored`.
+   *
+   * This method has been added to the document template to remove the exposure of `User.Internal.Implementation`.
    */
   static canUserCreate(user: User.Internal.Implementation): boolean;
 
@@ -302,6 +304,8 @@ declare abstract class Document<
    * @returns A numeric permission level from `CONST.DOCUMENT_OWNERSHIP_LEVELS`
    *
    * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} methods work without error, so `Implementation` over `Stored`.
+   *
+   * This method has been added to the document template to remove the exposure of `User.Internal.Implementation`.
    */
   getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
@@ -313,6 +317,8 @@ declare abstract class Document<
    * @returns Does the user have this permission level over the Document?
    *
    * @privateRemarks Temporary `User`s still have {@linkcode User.role | role}s, so `Implementation` over `Stored`.
+   *
+   * This method has been added to the document template to remove the exposure of `User.Internal.Implementation`.
    */
   testUserPermission(
     user: User.Internal.Implementation,

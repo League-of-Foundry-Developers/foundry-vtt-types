@@ -102,6 +102,12 @@ declare abstract class BaseRegionBehavior<
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseRegionBehavior.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseRegionBehavior.Database.Create<Temporary>>,

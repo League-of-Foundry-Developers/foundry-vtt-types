@@ -116,6 +116,12 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   // `getUserLevel` omitted from template due to actual override above.
 
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseDrawing.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseDrawing.Database.Create<Temporary>>,

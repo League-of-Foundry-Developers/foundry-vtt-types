@@ -102,6 +102,12 @@ declare abstract class BaseCard<out SubType extends BaseCard.SubType = BaseCard.
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseCard.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseCard.Database.Create<Temporary>>,

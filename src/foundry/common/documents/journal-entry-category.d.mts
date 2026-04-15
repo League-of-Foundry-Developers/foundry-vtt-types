@@ -83,6 +83,12 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseJournalEntryCategory.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseJournalEntryCategory.Database.Create<Temporary>>,

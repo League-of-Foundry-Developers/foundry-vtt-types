@@ -107,6 +107,12 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   // `getUserLevel` omitted from template due to actual override above.
 
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseMeasuredTemplate.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseMeasuredTemplate.Database.Create<Temporary>>,

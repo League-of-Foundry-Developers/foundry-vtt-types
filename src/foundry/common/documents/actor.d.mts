@@ -138,6 +138,12 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActor.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseActor.Database.Create<Temporary>>,

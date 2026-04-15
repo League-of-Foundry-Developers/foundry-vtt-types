@@ -90,6 +90,12 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseFogExploration.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseFogExploration.Database.Create<Temporary>>,
