@@ -2591,6 +2591,39 @@ declare namespace Document {
       | (DocumentType extends "Wall" ? WallDocument.Database.PreDeleteOptions : never);
   }
 
+  /**
+   * @remarks {@linkcode Document.testUserPermission | Document#testUserPermission}'s second param can take either the string level name or
+   * the numerical (branded) value.
+   */
+  type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  /** @internal */
+  interface _TestUserPermissionsOptions {
+    /**
+     * Require the exact permission level requested?
+     * @defaultValue `false`
+     */
+    exact: boolean;
+  }
+
+  interface TestUserPermissionOptions extends InexactPartial<_TestUserPermissionsOptions> {}
+
+  type CanUserModifyData<Schema extends DataSchema, Action extends "create" | "update" | "delete"> =
+    | (Action extends "create" ? SchemaField.CreateData<Schema> : never)
+    | (Action extends "update" ? SchemaField.UpdateData<Schema> : never)
+    | (Action extends "delete" ? EmptyObject : never);
+
+  interface GetEmbeddedDocumentOptions extends EmbeddedCollection.GetOptions {}
+
+  /**
+   * Gets the hierarchical fields in the schema. Hardcoded to whatever Foundry fields are hierarchical
+   * as there is no way to access the a static property of a custom fields from an instance.
+   */
+  type HierarchyOf<Schema extends DataSchema> = PickValue<
+    Schema,
+    EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
+  >;
+
   interface DataFieldShimOptions {
     /**
      * A string to log as a compatibility warning on accessing the `oldKey`
@@ -2850,52 +2883,6 @@ declare namespace Document {
      */
     strict?: boolean;
   }
-
-  type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
-
-  /** @internal */
-  type _TestUserPermissionsOptions = NullishProps<{
-    /**
-     * Require the exact permission level requested?
-     * @defaultValue `false`
-     */
-    exact: boolean;
-  }>;
-
-  interface TestUserPermissionOptions extends _TestUserPermissionsOptions {}
-
-  type CanUserModifyData<Schema extends DataSchema, Action extends "create" | "update" | "delete"> =
-    | (Action extends "create" ? SchemaField.CreateData<Schema> : never)
-    | (Action extends "update" ? SchemaField.UpdateData<Schema> : never)
-    | (Action extends "delete" ? EmptyObject : never);
-
-  /**
-   * @internal
-   */
-  type _GetEmbeddedDocumentOptions = InexactPartial<{
-    /**
-     * Throw an Error if the requested id does not exist. See {@link Collection.get | `Collection#get`}
-     * @defaultValue `false`
-     */
-    strict: boolean;
-
-    /**
-     * Allow retrieving an invalid Embedded Document.
-     * @defaultValue `false`
-     */
-    invalid: boolean;
-  }>;
-
-  interface GetEmbeddedDocumentOptions extends _GetEmbeddedDocumentOptions {}
-
-  /**
-   * Gets the hierarchical fields in the schema. Hardcoded to whatever Foundry fields are hierarchical
-   * as there is no way to access the a static property of a custom fields from an instance.
-   */
-  type HierarchyOf<Schema extends DataSchema> = PickValue<
-    Schema,
-    EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
-  >;
 
   type Clone<This extends Document.Any, Save extends boolean | undefined> = Save extends true ? Promise<This> : This;
 
