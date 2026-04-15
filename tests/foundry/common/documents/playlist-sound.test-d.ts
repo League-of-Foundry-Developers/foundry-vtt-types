@@ -8,6 +8,7 @@ class TestBasePlaylistSound extends foundry.documents.BasePlaylistSound {
       : null;
   }
 }
+
 // @ts-expect-error name is a required field
 new TestBasePlaylistSound();
 
