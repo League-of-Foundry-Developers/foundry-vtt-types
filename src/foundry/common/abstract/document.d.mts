@@ -2632,13 +2632,12 @@ declare namespace Document {
     EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
   >;
 
-  interface DataFieldShimOptions {
-    /**
-     * A string to log as a compatibility warning on accessing the `oldKey`
-     */
-    warning?: string | null | undefined;
+  interface DataFieldShimOptions extends LogCompatibilityWarningOptions {
+    /** The deprecation message */
+    warning?: string | undefined;
 
     /**
+     * The value of the shim
      * @remarks Foundry uses `if ("value" in options)` to determine whether to override the default value.
      */
     value?: unknown;
