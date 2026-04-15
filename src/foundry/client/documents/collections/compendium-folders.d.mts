@@ -1,7 +1,7 @@
+import type { Identity } from "#utils";
 import type { DocumentCollection } from "#client/documents/abstract/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
-import type Document from "#common/abstract/document.mjs";
-import type { Identity } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
 
 /**
  * A Collection of Folder documents within a Compendium pack.
