@@ -418,7 +418,7 @@ declare namespace ClientSettings {
 
   /** @internal */
   interface _SetOptionsCreate<Doc extends boolean | undefined>
-    extends _SetOptions<Doc>, Setting.Database.CreateDocumentsOperation<undefined | false> {}
+    extends _SetOptions<Doc>, Setting.Database.CreateDocumentsOperation {}
 
   /** @internal */
   interface _SetOptionsUpdate<Doc extends boolean | undefined>

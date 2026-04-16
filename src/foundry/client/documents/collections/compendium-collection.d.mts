@@ -16,7 +16,11 @@ import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { Game } from "#client/_module.d.mts";
 import type { SocketInterface } from "#client/helpers/_module.d.mts";
 import type { BasePackage } from "#common/packages/_module.d.mts";
-import type { DocumentCollection, DirectoryCollectionMixin } from "#client/documents/abstract/_module.d.mts";
+import type {
+  DocumentCollection,
+  DirectoryCollectionMixin,
+  WorldCollection,
+} from "#client/documents/abstract/_module.d.mts";
 import type { CompendiumFolderCollection } from "#client/documents/collections/_module.d.mts";
 
 /** @privateRemarks `AllHooks` only used for links */
@@ -329,7 +333,7 @@ declare class CompendiumCollection<
 
   override updateAll(
     transformation: DocumentCollection.Transformation<DocumentName>,
-    condition?: ((obj: Document.StoredForName<DocumentName>) => boolean) | null,
+    condition?: ((doc: Document.StoredForName<DocumentName>) => boolean) | null,
     options?: DocumentCollection.UpdateAllOperation<DocumentName>,
   ): Promise<Document.StoredForName<DocumentName>[]>;
 
@@ -338,7 +342,6 @@ declare class CompendiumCollection<
 
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
-  /** @remarks Calls the {@linkcode AllHooks.updateCompendium | updateCompendium} hook via `callAll` */
   override _onModifyContents<Action extends Document.Database.OperationAction>(
     action: Action,
     documents: Document.StoredForName<DocumentName>[],
@@ -349,7 +352,7 @@ declare class CompendiumCollection<
 
   /**
    * Handle changes to the world compendium configuration setting.
-   * @remarks As the setting's {@linkcode foundry.helpers.ClientSettings.SettingConfig.onChange | onChange} function,
+   * @remarks As the setting's {@linkcode f oundry.helpers.ClientSettings.SettingConfig.onChange | onChange} function,
    * this gets passed the new value after it's been cleaned and validated by the field in `ClientSettings##cleanJSON`
    */
   protected static _onConfigure(config: CompendiumCollection.SettingData): void;
@@ -629,12 +632,12 @@ declare namespace CompendiumCollection {
    * @remarks The same options object is passed to {@linkcode WorldCollection.fromCompendium | WorldCompendium#fromCompendium} and
    * {@linkcode Document.createDocuments | documentClass.createDocuments}, after having `folderId` and `folderName` pulled out.
    *
-   * @privateRemarks Needs to be a type here because `CreateDocumentsOperationForName` doesn't have statically known keys
+   * @privateRemarks Needs to be a type here, rather than interface, because `CreateDocumentsOperationForName`
+   * doesn't have statically known keys.
    */
-  type ImportAllOptions<Type extends CompendiumCollection.DocumentName> =
-    foundry.documents.abstract.WorldCollection.FromCompendiumOptions &
-      Document.Database.CreateDocumentsOperationForName<Type> &
-      InexactPartial<_ImportAllOptions>;
+  type ImportAllOptions<Type extends CompendiumCollection.DocumentName> = WorldCollection.FromCompendiumOptions &
+    Document.Database.CreateDocumentsOperationForName<Type> &
+    InexactPartial<_ImportAllOptions>;
 
   /** @internal */
   type _ImportDialogOptions = InexactPartial<{

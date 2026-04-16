@@ -7,7 +7,7 @@ declare const actorPack: CompendiumCollection<"Actor">;
 declare const itemPack: CompendiumCollection<"Item">;
 declare const folderSourceArray: Folder.Source[];
 declare const folderCreateDataArray: Folder.CreateData[];
-declare const folderStored: Folder.Stored;
+declare const actorFolderStored: Folder.Stored<"Actor">;
 declare const onFolderCreateOperation: Folder.Database.OnCreateOperation;
 declare const onFolderUpdateOperation: Folder.Database.OnUpdateOperation;
 declare const onFolderDeleteOperation: Folder.Database.OnDeleteOperation;
@@ -113,13 +113,15 @@ describe("CompendiumFolderCollection Tests", () => {
   // There is an override, but we don't type it because it doesn't change anything, so this should be identical to `DocumentCollection`
   test("_onModifyContents", () => {
     // @ts-expect-error wrong document's operation type
-    cfc._onModifyContents("update", [folderStored], folderCreateDataArray, onSceneUpdateOperation);
+    cfc._onModifyContents("update", [actorFolderStored], folderCreateDataArray, onSceneUpdateOperation);
     expectTypeOf(
-      cfc._onModifyContents("create", [folderStored], folderCreateDataArray, onFolderCreateOperation, user),
+      cfc._onModifyContents("create", [actorFolderStored], folderCreateDataArray, onFolderCreateOperation, user),
     ).toBeVoid();
     expectTypeOf(
-      cfc._onModifyContents("update", [folderStored], folderCreateDataArray, onFolderUpdateOperation, user),
+      cfc._onModifyContents("update", [actorFolderStored], folderCreateDataArray, onFolderUpdateOperation, user),
     ).toBeVoid();
-    expectTypeOf(cfc._onModifyContents("delete", [folderStored], ["ID"], onFolderDeleteOperation, user)).toBeVoid();
+    expectTypeOf(
+      cfc._onModifyContents("delete", [actorFolderStored], ["ID"], onFolderDeleteOperation, user),
+    ).toBeVoid();
   });
 });

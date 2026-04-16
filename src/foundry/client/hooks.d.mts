@@ -6,7 +6,7 @@ import type ProseMirrorMenu from "#common/prosemirror/menu.d.mts";
 import type RenderedEffectSource from "#client/canvas/sources/rendered-effect-source.d.mts";
 import type CompendiumArt from "#client/helpers/media/compendium-art.d.mts";
 import type { Hooks as HookConfigs } from "#configuration";
-import type Hooks from "./helpers/hooks.d.mts";
+import type { ClientSettings, Hooks } from "#client/helpers/_module.d.mts";
 import type { Canvas, layers } from "#client/canvas/_module.d.mts";
 import type {
   CanvasGroupMixin,
@@ -331,12 +331,7 @@ export interface AllHooks extends DynamicHooks {
    * @remarks This is called by {@linkcode Hooks.callAll}.
    * @see {@linkcode GameTime.onUpdateWorldTime | GameTime#onUpdateWorldTime}
    */
-  updateWorldTime: (
-    worldTime: number,
-    delta: number,
-    options: foundry.helpers.ClientSettings.OnChangeOptions,
-    userId: string,
-  ) => void;
+  updateWorldTime: (worldTime: number, delta: number, options: ClientSettings.OnChangeOptions, userId: string) => void;
 
   /* CanvasLifecycle */
 
@@ -1214,7 +1209,7 @@ export interface AllHooks extends DynamicHooks {
    * @param options - Additional options passed with the request
    * @remarks This is called by {@linkcode Hooks.callAll}.
    */
-  clientSettingChanged: (key: string, value: unknown, options: foundry.helpers.ClientSettings.OnChangeOptions) => void;
+  clientSettingChanged: (key: string, value: unknown, options: ClientSettings.OnChangeOptions) => void;
 
   /* RollTableConfig */
 
@@ -1647,7 +1642,7 @@ declare global {
      * @remarks The name for this hook is dynamically created by wrapping the type name of the shader in `initialize` and `Shaders`.
      * @remarks This is called by {@linkcode Hooks.callAll}.
      */
-    // TODO: wire this up
+    // TODO: this is currently unused and needs to be properly wired up
     type InitializeRenderedEffectSourceShaders<RPS extends RenderedEffectSource.Any = RenderedEffectSource.Any> = (
       source: RPS,
     ) => void;

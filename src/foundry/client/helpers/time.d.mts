@@ -1,6 +1,6 @@
 import type { Identity } from "#utils";
+import type { CalendarData, fields } from "#client/data/_module.d.mts";
 import type { ClientSettings } from "#client/helpers/_module.d.mts";
-import type CalendarData from "#client/data/calendar.mjs";
 
 /**
  * A singleton class at which keeps the official Server and World time stamps.
@@ -78,7 +78,7 @@ declare namespace GameTime {
   interface Any extends AnyGameTime {}
   interface AnyConstructor extends Identity<typeof AnyGameTime> {}
 
-  type SettingField = foundry.data.fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
+  type SettingField = fields.NumberField<{ required: true; nullable: false; initial: 0 }>;
 }
 
 export default GameTime;

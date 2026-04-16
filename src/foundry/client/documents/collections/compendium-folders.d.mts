@@ -19,7 +19,7 @@ declare class CompendiumFolderCollection<
   /** @remarks Forwards to {@linkcode CompendiumCollection.render | this.pack.render} */
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
 
-  override updateAll( // TODO: StoredOfType
+  override updateAll(
     transformation: DocumentCollection.Transformation<"Folder">,
     condition?: ((doc: Folder.Stored<DocumentName>) => boolean) | null,
     options?: DocumentCollection.UpdateAllOperation<"Folder">,
@@ -27,7 +27,7 @@ declare class CompendiumFolderCollection<
 
   override _onModifyContents<Action extends Document.Database.OperationAction>(
     action: Action,
-    documents: Folder.Stored[], // TODO: StoredOfType
+    documents: Folder.Stored<DocumentName>[],
     result: Collection.OnModifyContentsResult<"Folder", Action>,
     operation: Collection.OnModifyContentsOperation<"Folder", Action>,
     user: User.Stored,
