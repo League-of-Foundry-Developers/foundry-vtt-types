@@ -89,7 +89,11 @@ expectTypeOf(tile["_refreshVideo"]()).toBeVoid();
 expectTypeOf(tile.activateListeners()).toBeVoid();
 
 expectTypeOf(
-  tile["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+  tile["_onCreate"](
+    doc.toObject(),
+    { action: "create", modifiedTime: 7, render: true, renderSheet: false, parent: null },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 expectTypeOf(
@@ -101,12 +105,14 @@ expectTypeOf(
       restrictions: { weather: false },
       flags: { core: { sheetLock: true } },
     },
-    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    { action: "update", modifiedTime: 7, render: true, diff: true, recursive: true, parent: null },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(tile["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
+expectTypeOf(
+  tile["_onDelete"]({ action: "delete", modifiedTime: 7, render: true, parent: null }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
 
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 

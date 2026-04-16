@@ -65,19 +65,25 @@ expectTypeOf(light["_refreshElevation"]()).toBeVoid();
 expectTypeOf(light["_refreshState"]()).toBeVoid();
 
 expectTypeOf(
-  light["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+  light["_onCreate"](
+    doc.toObject(),
+    { action: "create", modifiedTime: 7, render: true, renderSheet: false, parent: null },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 expectTypeOf(
   light["_onUpdate"](
     // partial source data
     { config: { bright: 20, dim: 50, color: "#AB9435" }, flags: { core: { sheetLock: true } } },
-    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    { action: "update", modifiedTime: 7, render: true, diff: true, recursive: true, parent: null },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(light["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
+expectTypeOf(
+  light["_onDelete"]({ action: "delete", modifiedTime: 7, render: true, parent: null }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
 
 expectTypeOf(light.refreshControl()).toBeVoid();
 

@@ -68,19 +68,25 @@ expectTypeOf(sound.refreshControl()).toBeVoid();
 expectTypeOf(sound["_refreshElevation"]()).toBeVoid();
 
 expectTypeOf(
-  sound["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+  sound["_onCreate"](
+    doc.toObject(),
+    { action: "create", modifiedTime: 7, render: true, renderSheet: false, parent: null },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 expectTypeOf(
   sound["_onUpdate"](
     // partial source data
     { easing: true, path: "path/to/sound.ogg", repeat: true, flags: { core: { sheetLock: true } } },
-    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    { action: "update", modifiedTime: 7, render: true, diff: true, recursive: true, parent: null },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(sound["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
+expectTypeOf(
+  sound["_onDelete"]({ action: "delete", modifiedTime: 7, render: true, parent: null }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
 
 expectTypeOf(sound.initializeSoundSource()).toBeVoid();
 expectTypeOf(sound.initializeSoundSource({})).toBeVoid();

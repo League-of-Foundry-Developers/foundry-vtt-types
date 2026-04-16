@@ -33,5 +33,5 @@ expectTypeOf(
 
 expectTypeOf(gameTime.sync()).toEqualTypeOf<Promise<GameTime>>();
 expectTypeOf(
-  gameTime.onUpdateWorldTime(100, { diff: true, modifiedTime: 5, render: true, recursive: true }, game.userId!),
+  gameTime.onUpdateWorldTime(100, { diff: true, render: true, recursive: true }, game.userId!),
 ).toEqualTypeOf<void>();

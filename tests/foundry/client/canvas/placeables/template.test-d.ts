@@ -87,19 +87,25 @@ expectTypeOf(template["_getGridHighlightPositions"]()).toEqualTypeOf<Canvas.Poin
 expectTypeOf(template.rotate(52, 3)).toEqualTypeOf<Promise<MeasuredTemplate.Implementation>>();
 
 expectTypeOf(
-  template["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+  template["_onCreate"](
+    doc.toObject(),
+    { action: "create", modifiedTime: 7, render: true, renderSheet: false, parent: null },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 expectTypeOf(
   template["_onUpdate"](
     // partial source data
     { elevation: 30, texture: "path/to/tex.webp", direction: 234, flags: { core: { sheetLock: true } } },
-    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    { action: "update", modifiedTime: 7, render: true, diff: true, recursive: true, parent: null },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(template["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
+expectTypeOf(
+  template["_onDelete"]({ action: "delete", modifiedTime: 7, render: true, parent: null }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
 
 declare const someUser: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;

@@ -23,14 +23,13 @@ declare class Folders extends WorldCollection<"Folder"> {
    */
   _expanded: Record<string, boolean>;
 
-  // TODO: The following is working on the db-ops branch
-  // override _onModifyContents<Action extends Document.Database.OperationAction>(
-  //   action: Action,
-  //   documents: Folder.Stored[],
-  //   result: Collection.OnModifyContentsResult<"Folder", Action>,
-  //   operation: Collection.OnModifyContentsOperation<"Folder", Action>,
-  //   user: User.Stored,
-  // ): void;
+  override _onModifyContents<Action extends Document.Database.OperationAction>(
+    action: Action,
+    documents: Folder.Stored[],
+    result: Collection.OnModifyContentsResult<"Folder", Action>,
+    operation: Collection.OnModifyContentsOperation<"Folder", Action>,
+    user: User.Stored,
+  ): void;
 
   /** @remarks This is a no-op in {@linkcode Folders}, Foundry logs "The Folders collection is not directly rendered" as a warning.  */
   override render(force?: boolean, context?: DocumentCollection.RenderOptions): void;

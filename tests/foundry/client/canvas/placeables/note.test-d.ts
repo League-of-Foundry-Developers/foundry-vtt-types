@@ -64,19 +64,25 @@ expectTypeOf(note["_refreshPosition"]()).toBeVoid();
 expectTypeOf(note["_refreshElevation"]()).toBeVoid();
 
 expectTypeOf(
-  note["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+  note["_onCreate"](
+    doc.toObject(),
+    { action: "create", modifiedTime: 7, render: true, renderSheet: false, parent: null },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 expectTypeOf(
   note["_onUpdate"](
     // partial source data
     { elevation: 20, entryId: "YYYYYSomeIDYYYYY", fontSize: 60, flags: { core: { sheetLock: true } } },
-    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    { action: "update", modifiedTime: 7, render: true, diff: true, recursive: true, parent: null },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(note["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
+expectTypeOf(
+  note["_onDelete"]({ action: "delete", modifiedTime: 7, render: true, parent: null }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
 
 declare const someUser: User.Implementation;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
