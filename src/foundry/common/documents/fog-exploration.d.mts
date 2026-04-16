@@ -65,9 +65,6 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
 
   override readonly parentCollection: BaseFogExploration.ParentCollectionName | null;
 
-  // `FogExploration`s can never be in compendia.
-  override get pack(): null;
-
   static override get implementation(): FogExploration.ImplementationClass;
 
   static override get baseDocument(): typeof BaseFogExploration;

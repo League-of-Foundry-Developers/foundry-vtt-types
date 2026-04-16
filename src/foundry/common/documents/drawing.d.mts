@@ -92,8 +92,6 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   override readonly parentCollection: BaseDrawing.ParentCollectionName | null;
 
-  override get pack(): string | null;
-
   static override get implementation(): DrawingDocument.ImplementationClass;
 
   static override get baseDocument(): typeof BaseDrawing;

@@ -105,8 +105,6 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   override readonly parentCollection: BaseMacro.ParentCollectionName | null;
 
-  override get pack(): string | null;
-
   static override get implementation(): Macro.ImplementationClass;
 
   static override get baseDocument(): typeof BaseMacro;
