@@ -82,8 +82,6 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   override readonly parentCollection: BaseMeasuredTemplate.ParentCollectionName | null;
 
-  override get pack(): string | null;
-
   static override get implementation(): MeasuredTemplateDocument.ImplementationClass;
 
   static override get baseDocument(): typeof BaseMeasuredTemplate;

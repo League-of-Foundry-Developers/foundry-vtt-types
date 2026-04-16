@@ -76,8 +76,6 @@ declare abstract class BaseRollTable extends Document<"RollTable", BaseRollTable
 
   readonly parentCollection: BaseRollTable.ParentCollectionName | null;
 
-  override get pack(): string | null;
-
   static override get implementation(): RollTable.ImplementationClass;
 
   static override get baseDocument(): typeof BaseRollTable;

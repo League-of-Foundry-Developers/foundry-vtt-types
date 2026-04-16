@@ -136,7 +136,7 @@ declare abstract class Document<
    * An immutable reference to a containing Compendium collection to which this Document belongs.
    * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`
    */
-  get pack(): string | null;
+  get pack(): Document.Pack<DocumentName>;
 
   /**
    * A mapping of embedded Document collections which exist in this model.
@@ -2007,6 +2007,15 @@ declare namespace Document {
    * forwarding to {@linkcode Document._configure | #_configure}
    */
   interface ConfigureOptions extends Omit<ConstructionContext, "parent" | "strict"> {}
+
+  /**
+   * The type for {@linkcode Document.pack | Document#pack}. Types that can never exist in compendia get `null`, everything else gets
+   * `string | null`. We unfortunately can't exclude `null` for {@link AlwaysCompendiumType | documents only persisted in compendia}
+   * because temporary documents exist.
+   */
+  type Pack<Name extends Document.Type> =
+    | null
+    | (CompendiumCollection.ForDocument<Name> extends never ? never : string);
 
   /**
    * `Document` has no constructor override, and `DataModel#constructor` pulls `parent` out of the passed context before forwarding to

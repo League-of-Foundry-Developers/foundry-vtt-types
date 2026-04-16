@@ -102,8 +102,6 @@ declare abstract class BaseTableResult<
 
   override readonly parentCollection: BaseTableResult.ParentCollectionName | null;
 
-  override get pack(): string | null;
-
   static override get implementation(): TableResult.ImplementationClass;
 
   static override get baseDocument(): typeof BaseTableResult;

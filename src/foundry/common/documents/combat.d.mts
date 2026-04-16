@@ -95,9 +95,6 @@ declare abstract class BaseCombat<out SubType extends BaseCombat.SubType = BaseC
 
   override readonly parentCollection: BaseCombat.ParentCollectionName | null;
 
-  // `Combat` documents can never exist in compendia.
-  override get pack(): null;
-
   static override get implementation(): Combat.ImplementationClass;
 
   static override get baseDocument(): typeof BaseCombat;

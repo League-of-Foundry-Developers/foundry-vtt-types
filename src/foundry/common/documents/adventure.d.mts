@@ -70,9 +70,6 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   // `Adventure`s are never embedded.
   override readonly parentCollection: null;
 
-  // `Adventure`s are only persisted in compendia, but temporary docs can still have a `null` pack.
-  override get pack(): string | null;
-
   static override get implementation(): Adventure.ImplementationClass;
 
   static override get baseDocument(): typeof BaseAdventure;
