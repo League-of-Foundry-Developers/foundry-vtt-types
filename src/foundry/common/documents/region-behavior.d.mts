@@ -77,8 +77,6 @@ declare abstract class BaseRegionBehavior<
 
   override readonly parentCollection: BaseRegionBehavior.ParentCollectionName | null;
 
-  override get pack(): string | null;
-
   static override get implementation(): RegionBehavior.ImplementationClass;
 
   static override get baseDocument(): typeof BaseRegionBehavior;

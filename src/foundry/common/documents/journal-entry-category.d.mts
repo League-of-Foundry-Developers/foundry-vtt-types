@@ -59,8 +59,6 @@ declare abstract class BaseJournalEntryCategory extends Document<
 
   override readonly parentCollection: BaseJournalEntryCategory.ParentCollectionName | null;
 
-  override get pack(): string | null;
-
   static override get implementation(): JournalEntryCategory.ImplementationClass;
 
   static override get baseDocument(): typeof BaseJournalEntryCategory;

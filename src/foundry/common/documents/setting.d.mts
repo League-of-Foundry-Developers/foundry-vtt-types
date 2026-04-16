@@ -61,9 +61,6 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   override readonly parentCollection: BaseSetting.ParentCollectionName | null;
 
-  // `Setting`s can never be in compendia.
-  override get pack(): null;
-
   static override get baseDocument(): typeof BaseSetting;
 
   static override get implementation(): Setting.ImplementationClass;

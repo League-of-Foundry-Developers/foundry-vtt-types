@@ -59,9 +59,6 @@ declare abstract class BaseCombatantGroup<
 
   override readonly parentCollection: BaseCombatantGroup.ParentCollectionName | null;
 
-  // Neither `CombatantGroup`s nor any of its ancestor document(s) can exist in compendia.
-  override get pack(): null;
-
   static override get implementation(): CombatantGroup.ImplementationClass;
 
   static override get baseDocument(): typeof BaseCombatantGroup;

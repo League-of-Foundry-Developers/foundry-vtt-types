@@ -92,8 +92,6 @@ declare abstract class BaseActiveEffect<
 
   override readonly parentCollection: BaseActiveEffect.ParentCollectionName | null;
 
-  override get pack(): string | null;
-
   static override get implementation(): ActiveEffect.ImplementationClass;
 
   static override get baseDocument(): typeof BaseActiveEffect;

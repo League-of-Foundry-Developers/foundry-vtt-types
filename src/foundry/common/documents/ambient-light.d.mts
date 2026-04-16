@@ -51,8 +51,6 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   override readonly parentCollection: BaseAmbientLight.ParentCollectionName | null;
 
-  override get pack(): string | null;
-
   static override get implementation(): AmbientLightDocument.ImplementationClass;
 
   static override get baseDocument(): typeof BaseAmbientLight;

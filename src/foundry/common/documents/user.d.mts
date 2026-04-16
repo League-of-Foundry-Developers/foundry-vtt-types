@@ -97,9 +97,6 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
 
   override readonly parentCollection: BaseUser.ParentCollectionName | null;
 
-  // `User`s can never be in compendia.
-  override get pack(): null;
-
   static override get implementation(): User.ImplementationClass;
 
   static override get baseDocument(): typeof BaseUser;
