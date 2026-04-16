@@ -95,8 +95,6 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   override readonly parentCollection: BaseTile.ParentCollectionName | null;
 
-  override get pack(): string | null;
-
   static override get implementation(): TileDocument.ImplementationClass;
 
   static override get baseDocument(): typeof BaseTile;

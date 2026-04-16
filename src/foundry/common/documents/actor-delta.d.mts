@@ -124,8 +124,6 @@ declare abstract class BaseActorDelta<
   // Even temporary `ActorDelta`s require parents, so this is never `null`.
   override readonly parentCollection: BaseActorDelta.ParentCollectionName;
 
-  override get pack(): string | null;
-
   static override get implementation(): ActorDelta.ImplementationClass;
 
   static override get baseDocument(): typeof BaseActorDelta;
