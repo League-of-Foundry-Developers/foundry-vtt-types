@@ -68,7 +68,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
 
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   static override canUserCreate(user: User.Implementation): boolean;
 
@@ -119,6 +119,22 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   override parent: BaseItem.Parent;
 
   override " fvtt_types_internal_document_parent": BaseItem.Parent;
+
+  // `canUserCreate` omitted from template due to actual override above.
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Item", Action>,
+  ): boolean;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseItem.CreateInput[],
@@ -203,7 +219,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   protected override _preCreate(
     data: BaseItem.CreateData,
     options: BaseItem.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -215,19 +231,19 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   protected static override _preCreateOperation(
     documents: Item.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseItem.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Item.Stored[],
     operation: BaseItem.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseItem.UpdateData,
     options: BaseItem.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -239,18 +255,18 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   protected static override _preUpdateOperation(
     documents: Item.Stored[],
     operation: BaseItem.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Item.Stored[],
     operation: BaseItem.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseItem.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseItem.Database.OnDeleteOperation, userId: string): void;
@@ -258,13 +274,13 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   protected static override _preDeleteOperation(
     documents: Item.Stored[],
     operation: BaseItem.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Item.Stored[],
     operation: BaseItem.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

@@ -53,7 +53,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    */
   static DEFAULT_ICON: string;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   static override canUserCreate(user: User.Implementation): boolean;
 
@@ -88,6 +88,22 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   override parent: BaseNote.Parent;
 
   override " fvtt_types_internal_document_parent": BaseNote.Parent;
+
+  // `canUserCreate` omitted from template due to actual override above.
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Note", Action>,
+  ): boolean;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseNote.CreateInput[],
@@ -141,7 +157,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   protected override _preCreate(
     data: BaseNote.CreateData,
     options: BaseNote.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -153,19 +169,19 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   protected static override _preCreateOperation(
     documents: NoteDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseNote.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseNote.UpdateData,
     options: BaseNote.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -177,18 +193,18 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   protected static override _preUpdateOperation(
     documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseNote.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseNote.Database.OnDeleteOperation, userId: string): void;
@@ -196,13 +212,13 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   protected static override _preDeleteOperation(
     documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

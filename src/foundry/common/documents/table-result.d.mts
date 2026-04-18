@@ -109,6 +109,22 @@ declare abstract class BaseTableResult<
 
   override " fvtt_types_internal_document_parent": BaseTableResult.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"TableResult", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseTableResult.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseTableResult.Database.Create<Temporary>>,
@@ -164,7 +180,7 @@ declare abstract class BaseTableResult<
   protected override _preCreate(
     data: BaseTableResult.CreateData,
     options: BaseTableResult.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -176,19 +192,19 @@ declare abstract class BaseTableResult<
   protected static override _preCreateOperation(
     documents: TableResult.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseTableResult.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseTableResult.UpdateData,
     options: BaseTableResult.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -200,18 +216,18 @@ declare abstract class BaseTableResult<
   protected static override _preUpdateOperation(
     documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseTableResult.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseTableResult.Database.OnDeleteOperation, userId: string): void;
@@ -219,13 +235,13 @@ declare abstract class BaseTableResult<
   protected static override _preDeleteOperation(
     documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

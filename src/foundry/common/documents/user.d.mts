@@ -66,8 +66,7 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
    */
   can(action: BaseUser.ActionPermission): boolean;
 
-  /** @remarks Returns `.OWNER` for the User in question, `.NONE` for everyone else */
-  override getUserLevel(user: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Test whether the User has at least a specific permission
@@ -114,6 +113,22 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   override parent: BaseUser.Parent;
 
   override " fvtt_types_internal_document_parent": BaseUser.Parent;
+
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"User", Action>,
+  ): boolean;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseUser.CreateInput[],
@@ -179,13 +194,13 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   protected static override _preCreateOperation(
     documents: User.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseUser.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: User.Stored[],
     operation: BaseUser.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
@@ -203,13 +218,13 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   protected static override _preUpdateOperation(
     documents: User.Stored[],
     operation: BaseUser.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: User.Stored[],
     operation: BaseUser.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
@@ -222,13 +237,13 @@ declare abstract class BaseUser extends Document<"User", BaseUser.Schema, any> {
   protected static override _preDeleteOperation(
     documents: User.Stored[],
     operation: BaseUser.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: User.Stored[],
     operation: BaseUser.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

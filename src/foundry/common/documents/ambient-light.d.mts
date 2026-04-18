@@ -69,6 +69,22 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
 
   override " fvtt_types_internal_document_parent": BaseAmbientLight.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"AmbientLight", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseAmbientLight.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseAmbientLight.Database.Create<Temporary>>,
@@ -124,7 +140,7 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   protected override _preCreate(
     data: BaseAmbientLight.CreateData,
     options: BaseAmbientLight.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -136,19 +152,19 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   protected static override _preCreateOperation(
     documents: AmbientLightDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseAmbientLight.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: AmbientLightDocument.Stored[],
     operation: BaseAmbientLight.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseAmbientLight.UpdateData,
     options: BaseAmbientLight.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -160,18 +176,18 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   protected static override _preUpdateOperation(
     documents: AmbientLightDocument.Stored[],
     operation: BaseAmbientLight.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: AmbientLightDocument.Stored[],
     operation: BaseAmbientLight.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseAmbientLight.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseAmbientLight.Database.OnDeleteOperation, userId: string): void;
@@ -179,13 +195,13 @@ declare abstract class BaseAmbientLight extends Document<"AmbientLight", BaseAmb
   protected static override _preDeleteOperation(
     documents: AmbientLightDocument.Stored[],
     operation: BaseAmbientLight.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: AmbientLightDocument.Stored[],
     operation: BaseAmbientLight.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

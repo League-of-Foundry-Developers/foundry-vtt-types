@@ -111,6 +111,22 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
 
   override " fvtt_types_internal_document_parent": BaseCards.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Cards", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseCards.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseCards.Database.Create<Temporary>>,
@@ -197,7 +213,7 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   protected override _preCreate(
     data: BaseCards.CreateData,
     options: BaseCards.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -209,19 +225,19 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   protected static override _preCreateOperation(
     documents: Cards.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseCards.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Cards.Stored[],
     operation: BaseCards.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseCards.UpdateData,
     options: BaseCards.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -233,18 +249,18 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   protected static override _preUpdateOperation(
     documents: Cards.Stored[],
     operation: BaseCards.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Cards.Stored[],
     operation: BaseCards.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseCards.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseCards.Database.OnDeleteOperation, userId: string): void;
@@ -252,13 +268,13 @@ declare abstract class BaseCards<out SubType extends BaseCards.SubType = BaseCar
   protected static override _preDeleteOperation(
     documents: Cards.Stored[],
     operation: BaseCards.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Cards.Stored[],
     operation: BaseCards.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

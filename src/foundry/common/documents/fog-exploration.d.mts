@@ -48,7 +48,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   protected override _preUpdate(
     changed: BaseFogExploration.UpdateData,
     options: BaseFogExploration.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /*
@@ -82,6 +82,22 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   override parent: BaseFogExploration.Parent;
 
   override " fvtt_types_internal_document_parent": BaseFogExploration.Parent;
+
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"FogExploration", Action>,
+  ): boolean;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseFogExploration.CreateInput[],
@@ -142,7 +158,7 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   protected override _preCreate(
     data: BaseFogExploration.CreateData,
     options: BaseFogExploration.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -154,13 +170,13 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   protected static override _preCreateOperation(
     documents: FogExploration.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseFogExploration.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: FogExploration.Stored[],
     operation: BaseFogExploration.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _onUpdate(
@@ -172,18 +188,18 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   protected static override _preUpdateOperation(
     documents: FogExploration.Stored[],
     operation: BaseFogExploration.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: FogExploration.Stored[],
     operation: BaseFogExploration.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseFogExploration.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseFogExploration.Database.OnDeleteOperation, userId: string): void;
@@ -191,13 +207,13 @@ declare abstract class BaseFogExploration extends Document<"FogExploration", Bas
   protected static override _preDeleteOperation(
     documents: FogExploration.Stored[],
     operation: BaseFogExploration.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: FogExploration.Stored[],
     operation: BaseFogExploration.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

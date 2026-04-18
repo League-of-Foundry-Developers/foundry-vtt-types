@@ -286,8 +286,10 @@ declare abstract class Document<
    *
    * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
    * without error, so `Implementation` over `Stored`.
+   *
+   * This method has been added to the document template to remove the exposure of `User.Internal.Implementation`.
    */
-  static canUserCreate(user: User.Implementation): boolean;
+  static canUserCreate(user: User.Internal.Implementation): boolean;
 
   /**
    * Get the explicit permission level that a User has over this Document, a value in {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}.
@@ -299,11 +301,13 @@ declare abstract class Document<
    *
    * To test whether a user has a certain capability over the document, testUserPermission should be used.
    * @param user - The User being tested (default: `game.user`)
-   * @returns A numeric permission level from `CONST.DOCUMENT_OWNERSHIP_LEVELS` or `null`
+   * @returns A numeric permission level from `CONST.DOCUMENT_OWNERSHIP_LEVELS`
    *
    * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} methods work without error, so `Implementation` over `Stored`.
+   *
+   * This method has been added to the document template to remove the exposure of `User.Internal.Implementation`.
    */
-  getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
@@ -313,6 +317,8 @@ declare abstract class Document<
    * @returns Does the user have this permission level over the Document?
    *
    * @privateRemarks Temporary `User`s still have {@linkcode User.role | role}s, so `Implementation` over `Stored`.
+   *
+   * This method has been added to the document template to remove the exposure of `User.Internal.Implementation`.
    */
   testUserPermission(
     user: User.Internal.Implementation,
@@ -329,11 +335,13 @@ declare abstract class Document<
    *
    * @privateRemarks Temporary `User`s {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
    * without error, so `Implementation` over `Stored`.
+   *
+   * This method has been added to the document template to remove the exposure of `User.Internal.Implementation`.
    */
-  canUserModify<Action extends "create" | "update" | "delete">(
+  canUserModify<Action extends Document.Database.OperationAction>(
     user: User.Internal.Implementation,
     action: Action,
-    data?: Document.CanUserModifyData<Schema, Action>,
+    data?: Document.CanUserModifyData<DocumentName, Action>,
   ): boolean;
 
   /**
@@ -2600,6 +2608,39 @@ declare namespace Document {
       | (DocumentType extends "Wall" ? WallDocument.Database.PreDeleteOptions : never);
   }
 
+  /**
+   * @remarks {@linkcode Document.testUserPermission | Document#testUserPermission}'s second param can take either the string level name or
+   * the numerical (branded) value.
+   */
+  type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  /** @internal */
+  interface _TestUserPermissionsOptions {
+    /**
+     * Require the exact permission level requested?
+     * @defaultValue `false`
+     */
+    exact: boolean;
+  }
+
+  interface TestUserPermissionOptions extends InexactPartial<_TestUserPermissionsOptions> {}
+
+  type CanUserModifyData<Name extends Document.Type, Action extends Document.Database.OperationAction> =
+    | (Action extends "create" ? CreateDataForName<Name> : never)
+    | (Action extends "update" ? UpdateDataForName<Name> : never)
+    | (Action extends "delete" ? EmptyObject : never);
+
+  interface GetEmbeddedDocumentOptions extends EmbeddedCollection.GetOptions {}
+
+  /**
+   * Gets the hierarchical fields in the schema. Hardcoded to whatever Foundry fields are hierarchical
+   * as there is no way to access the a static property of a custom fields from an instance.
+   */
+  type HierarchyOf<Schema extends DataSchema> = PickValue<
+    Schema,
+    EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
+  >;
+
   interface DataFieldShimOptions extends LogCompatibilityWarningOptions {
     /** The deprecation message */
     warning?: string | undefined;
@@ -2858,52 +2899,6 @@ declare namespace Document {
      */
     strict?: boolean;
   }
-
-  type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
-
-  /** @internal */
-  type _TestUserPermissionsOptions = NullishProps<{
-    /**
-     * Require the exact permission level requested?
-     * @defaultValue `false`
-     */
-    exact: boolean;
-  }>;
-
-  interface TestUserPermissionOptions extends _TestUserPermissionsOptions {}
-
-  type CanUserModifyData<Schema extends DataSchema, Action extends "create" | "update" | "delete"> =
-    | (Action extends "create" ? SchemaField.CreateData<Schema> : never)
-    | (Action extends "update" ? SchemaField.UpdateData<Schema> : never)
-    | (Action extends "delete" ? EmptyObject : never);
-
-  /**
-   * @internal
-   */
-  type _GetEmbeddedDocumentOptions = InexactPartial<{
-    /**
-     * Throw an Error if the requested id does not exist. See {@link Collection.get | `Collection#get`}
-     * @defaultValue `false`
-     */
-    strict: boolean;
-
-    /**
-     * Allow retrieving an invalid Embedded Document.
-     * @defaultValue `false`
-     */
-    invalid: boolean;
-  }>;
-
-  interface GetEmbeddedDocumentOptions extends _GetEmbeddedDocumentOptions {}
-
-  /**
-   * Gets the hierarchical fields in the schema. Hardcoded to whatever Foundry fields are hierarchical
-   * as there is no way to access the a static property of a custom fields from an instance.
-   */
-  type HierarchyOf<Schema extends DataSchema> = PickValue<
-    Schema,
-    EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
-  >;
 
   type Clone<This extends Document.Any, Save extends boolean | undefined> = Save extends true ? Promise<This> : This;
 

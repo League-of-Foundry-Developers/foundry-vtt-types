@@ -70,22 +70,20 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
     options?: Document.InitializeSourceOptions,
   ): BaseActor.Source;
 
-  /** @remarks calls `DocumentStatsField._shimDocument(this)` */
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  /** @remarks Returns `user.hasPermission("ACTOR_CREATE")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
   protected override _preCreate(
     data: BaseActor.CreateData,
     options: BaseActor.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _preUpdate(
     changed: BaseActor.UpdateData,
     options: BaseActor.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /**
@@ -133,6 +131,22 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   override parent: BaseActor.Parent;
 
   override " fvtt_types_internal_document_parent": BaseActor.Parent;
+
+  // `canUserCreate` omitted from template due to actual override above.
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Actor", Action>,
+  ): boolean;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActor.CreateInput[],
@@ -226,13 +240,13 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   protected static override _preCreateOperation(
     documents: Actor.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseActor.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Actor.Stored[],
     operation: BaseActor.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _onUpdate(
@@ -244,18 +258,18 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   protected static override _preUpdateOperation(
     documents: Actor.Stored[],
     operation: BaseActor.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Actor.Stored[],
     operation: BaseActor.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseActor.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseActor.Database.OnDeleteOperation, userId: string): void;
@@ -263,13 +277,13 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   protected static override _preDeleteOperation(
     documents: Actor.Stored[],
     operation: BaseActor.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Actor.Stored[],
     operation: BaseActor.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

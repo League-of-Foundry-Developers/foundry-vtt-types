@@ -107,6 +107,22 @@ declare abstract class BaseChatMessage<
 
   override " fvtt_types_internal_document_parent": BaseChatMessage.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"ChatMessage", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseChatMessage.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseChatMessage.Database.Create<Temporary>>,
@@ -162,7 +178,7 @@ declare abstract class BaseChatMessage<
   protected override _preCreate(
     data: BaseChatMessage.CreateData,
     options: BaseChatMessage.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -174,19 +190,19 @@ declare abstract class BaseChatMessage<
   protected static override _preCreateOperation(
     documents: ChatMessage.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseChatMessage.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseChatMessage.UpdateData,
     options: BaseChatMessage.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -198,18 +214,18 @@ declare abstract class BaseChatMessage<
   protected static override _preUpdateOperation(
     documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseChatMessage.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseChatMessage.Database.OnDeleteOperation, userId: string): void;
@@ -217,13 +233,13 @@ declare abstract class BaseChatMessage<
   protected static override _preDeleteOperation(
     documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

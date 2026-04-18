@@ -94,6 +94,22 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   override " fvtt_types_internal_document_parent": BaseJournalEntry.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"JournalEntry", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseJournalEntry.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseJournalEntry.Database.Create<Temporary>>,
@@ -180,7 +196,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   protected override _preCreate(
     data: BaseJournalEntry.CreateData,
     options: BaseJournalEntry.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -192,19 +208,19 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   protected static override _preCreateOperation(
     documents: JournalEntry.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseJournalEntry.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseJournalEntry.UpdateData,
     options: BaseJournalEntry.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -216,18 +232,18 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   protected static override _preUpdateOperation(
     documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseJournalEntry.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseJournalEntry.Database.OnDeleteOperation, userId: string): void;
@@ -235,13 +251,13 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   protected static override _preDeleteOperation(
     documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

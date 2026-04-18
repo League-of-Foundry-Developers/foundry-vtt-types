@@ -199,6 +199,22 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
 
   override " fvtt_types_internal_document_parent": BaseScene.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Scene", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseScene.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseScene.Database.Create<Temporary>>,
@@ -285,7 +301,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   protected override _preCreate(
     data: BaseScene.CreateData,
     options: BaseScene.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -297,19 +313,19 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   protected static override _preCreateOperation(
     documents: Scene.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseScene.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Scene.Stored[],
     operation: BaseScene.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseScene.UpdateData,
     options: BaseScene.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -321,18 +337,18 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   protected static override _preUpdateOperation(
     documents: Scene.Stored[],
     operation: BaseScene.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Scene.Stored[],
     operation: BaseScene.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseScene.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseScene.Database.OnDeleteOperation, userId: string): void;
@@ -340,13 +356,13 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
   protected static override _preDeleteOperation(
     documents: Scene.Stored[],
     operation: BaseScene.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Scene.Stored[],
     operation: BaseScene.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

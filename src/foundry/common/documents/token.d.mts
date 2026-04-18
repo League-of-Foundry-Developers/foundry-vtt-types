@@ -151,7 +151,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     columns: boolean,
   ): DeepReadonly<TokenDocument.HexagonalOffsetsData>;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   // TODO: Update with the Delta conditionality
   override toObject(source?: boolean): BaseToken.Source;
@@ -224,6 +224,22 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   override parent: BaseToken.Parent;
 
   override " fvtt_types_internal_document_parent": BaseToken.Parent;
+
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Token", Action>,
+  ): boolean;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseToken.CreateInput[],
@@ -314,7 +330,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   protected override _preCreate(
     data: BaseToken.CreateData,
     options: BaseToken.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -326,19 +342,19 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   protected static override _preCreateOperation(
     documents: TokenDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseToken.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseToken.UpdateData,
     options: BaseToken.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -350,18 +366,18 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   protected static override _preUpdateOperation(
     documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseToken.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseToken.Database.OnDeleteOperation, userId: string): void;
@@ -369,13 +385,13 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   protected static override _preDeleteOperation(
     documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

@@ -88,6 +88,22 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   override " fvtt_types_internal_document_parent": BaseAdventure.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Adventure", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseAdventure.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseAdventure.Database.Create<Temporary>>,
@@ -146,7 +162,7 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   protected override _preCreate(
     data: BaseAdventure.CreateData,
     options: BaseAdventure.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -158,19 +174,19 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   protected static override _preCreateOperation(
     documents: Adventure.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseAdventure.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseAdventure.UpdateData,
     options: BaseAdventure.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -182,18 +198,18 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   protected static override _preUpdateOperation(
     documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseAdventure.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseAdventure.Database.OnDeleteOperation, userId: string): void;
@@ -201,13 +217,13 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   protected static override _preDeleteOperation(
     documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

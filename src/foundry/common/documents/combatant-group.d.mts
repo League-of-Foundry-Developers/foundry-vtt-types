@@ -79,6 +79,22 @@ declare abstract class BaseCombatantGroup<
 
   override " fvtt_types_internal_document_parent": BaseCombatantGroup.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"CombatantGroup", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseCombatantGroup.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseCombatantGroup.Database.Create<Temporary>>,
@@ -134,7 +150,7 @@ declare abstract class BaseCombatantGroup<
   protected override _preCreate(
     data: BaseCombatantGroup.CreateData,
     options: BaseCombatantGroup.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -146,19 +162,19 @@ declare abstract class BaseCombatantGroup<
   protected static override _preCreateOperation(
     documents: CombatantGroup.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseCombatantGroup.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: CombatantGroup.Stored[],
     operation: BaseCombatantGroup.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseCombatantGroup.UpdateData,
     options: BaseCombatantGroup.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -170,18 +186,18 @@ declare abstract class BaseCombatantGroup<
   protected static override _preUpdateOperation(
     documents: CombatantGroup.Stored[],
     operation: BaseCombatantGroup.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: CombatantGroup.Stored[],
     operation: BaseCombatantGroup.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseCombatantGroup.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseCombatantGroup.Database.OnDeleteOperation, userId: string): void;
@@ -189,13 +205,13 @@ declare abstract class BaseCombatantGroup<
   protected static override _preDeleteOperation(
     documents: CombatantGroup.Stored[],
     operation: BaseCombatantGroup.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: CombatantGroup.Stored[],
     operation: BaseCombatantGroup.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

@@ -79,15 +79,14 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    */
   static override validateJoint(data: BaseMacro.Source): void;
 
-  /** @remarks Returns `user.hasRole("PLAYER")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   protected override _preCreate(
     data: BaseMacro.CreateData,
     options: BaseMacro.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /*
@@ -123,6 +122,22 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   override parent: BaseMacro.Parent;
 
   override " fvtt_types_internal_document_parent": BaseMacro.Parent;
+
+  // `canUserCreate` omitted from template due to actual override above.
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Macro", Action>,
+  ): boolean;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseMacro.CreateInput[],
@@ -187,19 +202,19 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   protected static override _preCreateOperation(
     documents: Macro.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseMacro.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Macro.Stored[],
     operation: BaseMacro.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseMacro.UpdateData,
     options: BaseMacro.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -211,18 +226,18 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   protected static override _preUpdateOperation(
     documents: Macro.Stored[],
     operation: BaseMacro.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Macro.Stored[],
     operation: BaseMacro.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseMacro.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseMacro.Database.OnDeleteOperation, userId: string): void;
@@ -230,13 +245,13 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
   protected static override _preDeleteOperation(
     documents: Macro.Stored[],
     operation: BaseMacro.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Macro.Stored[],
     operation: BaseMacro.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

@@ -44,7 +44,6 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override defineSchema(): BaseSetting.Schema;
 
-  /** @remarks Returns `user.hasPermission("SETTINGS_MODIFY")` */
   static canUserCreate(user: User.Implementation): boolean;
 
   /*
@@ -78,6 +77,22 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   override parent: BaseSetting.Parent;
 
   override " fvtt_types_internal_document_parent": BaseSetting.Parent;
+
+  // `canUserCreate` omitted from template due to actual override above.
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Setting", Action>,
+  ): boolean;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseSetting.CreateInput[],
@@ -120,7 +135,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   protected override _preCreate(
     data: BaseSetting.CreateData,
     options: BaseSetting.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -132,19 +147,19 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   protected static override _preCreateOperation(
     documents: Setting.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseSetting.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Setting.Stored[],
     operation: BaseSetting.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseSetting.UpdateData,
     options: BaseSetting.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -156,18 +171,18 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   protected static override _preUpdateOperation(
     documents: Setting.Stored[],
     operation: BaseSetting.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Setting.Stored[],
     operation: BaseSetting.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseSetting.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseSetting.Database.OnDeleteOperation, userId: string): void;
@@ -175,13 +190,13 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   protected static override _preDeleteOperation(
     documents: Setting.Stored[],
     operation: BaseSetting.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Setting.Stored[],
     operation: BaseSetting.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

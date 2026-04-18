@@ -53,7 +53,7 @@ declare abstract class BaseActorDelta<
 
   static override defineSchema(): BaseActorDelta.Schema;
 
-  override getUserLevel(user: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Retrieve the base actor's collection, if it exists.
@@ -101,7 +101,7 @@ declare abstract class BaseActorDelta<
 
   /** @remarks Strips optional (`required: false`) fields from the object before returning */
   // TODO: Properly type this override
-  override toObject(source?: boolean): SchemaField.SourceData<BaseActorDelta.Schema>;
+  override toObject(source?: boolean): BaseActorDelta.Source;
 
   /*
    * After this point these are not really overridden methods.
@@ -143,6 +143,22 @@ declare abstract class BaseActorDelta<
   override parent: BaseActorDelta.Parent;
 
   override " fvtt_types_internal_document_parent": BaseActorDelta.Parent;
+
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"ActorDelta", Action>,
+  ): boolean;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActorDelta.CreateInput[],
@@ -230,7 +246,7 @@ declare abstract class BaseActorDelta<
   protected override _preCreate(
     data: BaseActorDelta.CreateData,
     options: BaseActorDelta.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -242,19 +258,19 @@ declare abstract class BaseActorDelta<
   protected static override _preCreateOperation(
     documents: ActorDelta.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseActorDelta.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseActorDelta.UpdateData,
     options: BaseActorDelta.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -266,18 +282,18 @@ declare abstract class BaseActorDelta<
   protected static override _preUpdateOperation(
     documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseActorDelta.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseActorDelta.Database.OnDeleteOperation, userId: string): void;
@@ -285,13 +301,13 @@ declare abstract class BaseActorDelta<
   protected static override _preDeleteOperation(
     documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

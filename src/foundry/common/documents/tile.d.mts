@@ -113,6 +113,22 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
 
   override " fvtt_types_internal_document_parent": BaseTile.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Tile", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseTile.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseTile.Database.Create<Temporary>>,
@@ -165,7 +181,7 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   protected override _preCreate(
     data: BaseTile.CreateData,
     options: BaseTile.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -177,19 +193,19 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   protected static override _preCreateOperation(
     documents: TileDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseTile.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: TileDocument.Stored[],
     operation: BaseTile.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseTile.UpdateData,
     options: BaseTile.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -201,18 +217,18 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   protected static override _preUpdateOperation(
     documents: TileDocument.Stored[],
     operation: BaseTile.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: TileDocument.Stored[],
     operation: BaseTile.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseTile.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseTile.Database.OnDeleteOperation, userId: string): void;
@@ -220,13 +236,13 @@ declare abstract class BaseTile extends Document<"Tile", BaseTile.Schema, any> {
   protected static override _preDeleteOperation(
     documents: TileDocument.Stored[],
     operation: BaseTile.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: TileDocument.Stored[],
     operation: BaseTile.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

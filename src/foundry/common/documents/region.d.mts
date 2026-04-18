@@ -72,6 +72,22 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
 
   override " fvtt_types_internal_document_parent": BaseRegion.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Region", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseRegion.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseRegion.Database.Create<Temporary>>,
@@ -156,7 +172,7 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   protected override _preCreate(
     data: BaseRegion.CreateData,
     options: BaseRegion.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -168,19 +184,19 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   protected static override _preCreateOperation(
     documents: RegionDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseRegion.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseRegion.UpdateData,
     options: BaseRegion.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -192,18 +208,18 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   protected static override _preUpdateOperation(
     documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseRegion.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseRegion.Database.OnDeleteOperation, userId: string): void;
@@ -211,13 +227,13 @@ declare abstract class BaseRegion extends Document<"Region", BaseRegion.Schema, 
   protected static override _preDeleteOperation(
     documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: RegionDocument.Stored[],
     operation: BaseRegion.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**

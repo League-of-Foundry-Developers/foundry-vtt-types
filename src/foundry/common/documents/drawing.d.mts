@@ -60,10 +60,9 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    */
   static override validateJoint(data: BaseDrawing.Source): void;
 
-  /** @remarks Returns `user.hasPermission("DRAWING_CREATE")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * @remarks
@@ -110,6 +109,22 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   override parent: BaseDrawing.Parent;
 
   override " fvtt_types_internal_document_parent": BaseDrawing.Parent;
+
+  // `canUserCreate` omitted from template due to actual override above.
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Drawing", Action>,
+  ): boolean;
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseDrawing.CreateInput[],
@@ -166,7 +181,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   protected override _preCreate(
     data: BaseDrawing.CreateData,
     options: BaseDrawing.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -178,19 +193,19 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   protected static override _preCreateOperation(
     documents: DrawingDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseDrawing.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseDrawing.UpdateData,
     options: BaseDrawing.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -202,18 +217,18 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   protected static override _preUpdateOperation(
     documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseDrawing.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseDrawing.Database.OnDeleteOperation, userId: string): void;
@@ -221,13 +236,13 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   protected static override _preDeleteOperation(
     documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
