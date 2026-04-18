@@ -1172,7 +1172,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    */
   toMessage<Temporary extends boolean | undefined = undefined>(
     messageData?: DeepPartial<foundry.documents.BaseChatMessage.CreateData>,
-    options?: ChatMessage.Database.CreateOperation<Temporary>,
+    options?: ChatMessage.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<ChatMessage.TemporaryIf<Temporary> | undefined>;
 
   /*
