@@ -375,7 +375,7 @@ declare abstract class TypeDataModel<
   protected _preCreate(
     data: TypeDataModel.ParentAssignmentType<Schema, Parent>,
     options: Document.Database.PreCreateOptions<DatabaseCreateOperation>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /**
@@ -403,7 +403,7 @@ declare abstract class TypeDataModel<
   protected _preUpdate(
     changes: DeepPartial<TypeDataModel.ParentAssignmentType<Schema, Parent>>,
     options: Document.Database.PreUpdateOptions<DatabaseUpdateOperation>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /**
@@ -429,7 +429,7 @@ declare abstract class TypeDataModel<
    */
   protected _preDelete(
     options: Document.Database.PreDeleteOperationInstance<DatabaseDeleteOperation>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /**

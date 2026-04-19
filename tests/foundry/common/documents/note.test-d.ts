@@ -3,7 +3,13 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseNote = foundry.documents.BaseNote;
 import Document = foundry.abstract.Document;
 
-class TestBaseNote extends BaseNote {}
+class TestBaseNote extends BaseNote {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Note">)
+      : null;
+  }
+}
 
 // Note has no hard required fields for creation
 const myNote = new TestBaseNote();
@@ -106,7 +112,7 @@ new TestBaseNote({
 });
 new TestBaseNote({ texture: undefined });
 
-expectTypeOf(myNote).toEqualTypeOf<BaseNote>();
+expectTypeOf(myNote).toEqualTypeOf<TestBaseNote>();
 
 expectTypeOf(myNote._id).toEqualTypeOf<string | null>();
 expectTypeOf(myNote.entryId).toEqualTypeOf<string | null>();

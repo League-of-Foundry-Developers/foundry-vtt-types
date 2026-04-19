@@ -1,6 +1,6 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Document definition for a MeasuredTemplate.
@@ -47,7 +47,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   /** @defaultValue `["DOCUMENT", "TEMPLATE"]` */
   static override LOCALIZATION_PREFIXES: string[];
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * @remarks
@@ -81,12 +81,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
   override readonly parentCollection: BaseMeasuredTemplate.ParentCollectionName | null;
-
-  override readonly pack: string | null;
 
   static override get implementation(): MeasuredTemplateDocument.ImplementationClass;
 
@@ -98,52 +93,65 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseMeasuredTemplate.Hierarchy;
+  static override readonly hierarchy: BaseMeasuredTemplate.Hierarchy;
 
   override parent: BaseMeasuredTemplate.Parent;
 
   override " fvtt_types_internal_document_parent": BaseMeasuredTemplate.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"MeasuredTemplate", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<MeasuredTemplateDocument.Implementation | BaseMeasuredTemplate.CreateData> | undefined,
+    data: BaseMeasuredTemplate.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseMeasuredTemplate.Database.Create<Temporary>>,
   ): Promise<Array<BaseMeasuredTemplate.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseMeasuredTemplate.UpdateData[] | undefined,
+    updates: BaseMeasuredTemplate.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseMeasuredTemplate.Database.Update>,
-  ): Promise<MeasuredTemplateDocument.Implementation[]>;
+  ): Promise<Array<MeasuredTemplateDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseMeasuredTemplate.Database.Delete>,
-  ): Promise<MeasuredTemplateDocument.Implementation[]>;
+  ): Promise<Array<MeasuredTemplateDocument.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseMeasuredTemplate.CreateData | BaseMeasuredTemplate.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseMeasuredTemplate.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseMeasuredTemplate.Database.CreateOperation<Temporary>,
-  ): Promise<BaseMeasuredTemplate.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseMeasuredTemplate.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseMeasuredTemplate.UpdateData | undefined,
+    data: BaseMeasuredTemplate.UpdateInput,
     operation?: BaseMeasuredTemplate.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
   override delete(operation?: BaseMeasuredTemplate.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseMeasuredTemplate.Database.GetOptions,
-  ): MeasuredTemplateDocument.Implementation | null;
+  // `MeasuredTemplateDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseMeasuredTemplate.Database.GetOptions): null;
 
+  // `MeasuredTemplateDocument`s have no embedded collections, so this always returns `null`
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends BaseMeasuredTemplate.Flags.Scope, Key extends BaseMeasuredTemplate.Flags.Key<Scope>>(
     scope: Scope,
@@ -154,17 +162,17 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
     Scope extends BaseMeasuredTemplate.Flags.Scope,
     Key extends BaseMeasuredTemplate.Flags.Key<Scope>,
     Value extends BaseMeasuredTemplate.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseMeasuredTemplate.Flags.Scope, Key extends BaseMeasuredTemplate.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseMeasuredTemplate.CreateData,
     options: BaseMeasuredTemplate.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -176,19 +184,19 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   protected static override _preCreateOperation(
     documents: MeasuredTemplateDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseMeasuredTemplate.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: MeasuredTemplateDocument.Implementation[],
+    documents: MeasuredTemplateDocument.Stored[],
     operation: BaseMeasuredTemplate.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseMeasuredTemplate.UpdateData,
     options: BaseMeasuredTemplate.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -198,62 +206,64 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: MeasuredTemplateDocument.Implementation[],
+    documents: MeasuredTemplateDocument.Stored[],
     operation: BaseMeasuredTemplate.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: MeasuredTemplateDocument.Implementation[],
+    documents: MeasuredTemplateDocument.Stored[],
     operation: BaseMeasuredTemplate.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseMeasuredTemplate.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseMeasuredTemplate.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: MeasuredTemplateDocument.Implementation[],
+    documents: MeasuredTemplateDocument.Stored[],
     operation: BaseMeasuredTemplate.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: MeasuredTemplateDocument.Implementation[],
+    documents: MeasuredTemplateDocument.Stored[],
     operation: BaseMeasuredTemplate.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `MeasuredTemplateDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode MeasuredTemplateDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: MeasuredTemplateDocument.Implementation[],
-    context: Document.ModificationContext<BaseMeasuredTemplate.Parent>,
+    context: BaseMeasuredTemplate.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `MeasuredTemplateDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode MeasuredTemplateDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: MeasuredTemplateDocument.Implementation[],
-    context: Document.ModificationContext<BaseMeasuredTemplate.Parent>,
+    documents: MeasuredTemplateDocument.Stored[],
+    context: BaseMeasuredTemplate.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `MeasuredTemplateDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode MeasuredTemplateDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: MeasuredTemplateDocument.Implementation[],
-    context: Document.ModificationContext<BaseMeasuredTemplate.Parent>,
+    documents: MeasuredTemplateDocument.Stored[],
+    context: BaseMeasuredTemplate.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
+
+  /* DataModel overrides */
 
   protected static override _schema: SchemaField<BaseMeasuredTemplate.Schema>;
 
@@ -289,7 +299,6 @@ declare namespace BaseMeasuredTemplate {
   export import CollectionClass = MeasuredTemplateDocument.CollectionClass;
   export import Collection = MeasuredTemplateDocument.Collection;
   export import Invalid = MeasuredTemplateDocument.Invalid;
-  export import Stored = MeasuredTemplateDocument.Stored;
   export import Source = MeasuredTemplateDocument.Source;
   export import CreateData = MeasuredTemplateDocument.CreateData;
   export import CreateInput = MeasuredTemplateDocument.CreateInput;

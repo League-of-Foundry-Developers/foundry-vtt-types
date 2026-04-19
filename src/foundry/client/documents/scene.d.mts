@@ -1310,7 +1310,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * @param createData - (default: `{}`)
    * @param options    - (default: `{}`)
    */
-  override clone<Save extends boolean | null | undefined = false>(
+  override clone<Save extends boolean | undefined = false>(
     data?: Scene.CreateData,
     context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;
@@ -1361,7 +1361,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * @param tokens - The Tokens whose regions should be updates
    * @returns The array of Tokens whose regions changed
    */
-  updateTokenRegions(tokens?: Iterable<TokenDocument.Implementation>): Promise<TokenDocument.Implementation[]>;
+  updateTokenRegions(tokens?: Iterable<TokenDocument.Implementation>): Promise<Array<TokenDocument.Stored>>;
 
   /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
   protected _repositionObject(sceneUpdateData: never): never;

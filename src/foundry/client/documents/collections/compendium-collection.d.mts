@@ -489,9 +489,10 @@ declare namespace CompendiumCollection {
   // TODO: Improve automatic index properties based on document type
   // TODO(LukeAbby): Switch to `Document.StoredSourceForName`.
   // Investigate why the `DeepPartial` too
-  type IndexEntry<Type extends DocumentName> = { _id: string; uuid: string } & DeepPartial<
-    Document.SourceForName<Type>
-  >;
+  type IndexEntry<Type extends CompendiumCollection.DocumentName = CompendiumCollection.DocumentName> = {
+    _id: string;
+    uuid: string;
+  } & DeepPartial<Omit<Document.SourceForName<Type>, "_id" | "uuid">>;
 
   type ImportDocumentReturn<Doc extends DocOrFolder<CompendiumCollection.DocumentName>> =
     Doc extends Folder.Implementation
@@ -581,7 +582,7 @@ declare namespace CompendiumCollection {
    */
   interface ManageCompendiumSocketOptions extends _ManageCompendiumSocketOptions {}
 
-  interface TestUserPermissionOptions extends Document._TestUserPermissionsOptions {}
+  interface TestUserPermissionOptions extends InexactPartial<Document._TestUserPermissionsOptions> {}
 
   /**
    * Used in {@linkcode ImportFolderOptions} and {@linkcode ImportFoldersOptions}.

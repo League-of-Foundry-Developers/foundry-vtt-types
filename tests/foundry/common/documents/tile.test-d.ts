@@ -3,15 +3,21 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseTile = foundry.documents.BaseTile;
 import Document = foundry.abstract.Document;
 
-class TestTile extends BaseTile {}
+class TestBaseTile extends BaseTile {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Tile">)
+      : null;
+  }
+}
 
 // @ts-expect-error Tiles require a provided width and height
-new TestTile();
+new TestBaseTile();
 
 // @ts-expect-error Tiles require a provided width and height
-new TestTile({});
+new TestBaseTile({});
 
-const myTile = new TestTile({
+const myTile = new TestBaseTile({
   _id: "XXXXXSomeIDXXXXX",
   texture: {
     src: "path/to/some/image.png",
@@ -56,7 +62,7 @@ const myTile = new TestTile({
   },
 });
 
-new TestTile({
+new TestBaseTile({
   _id: null,
   texture: {
     src: null,
@@ -96,7 +102,7 @@ new TestTile({
   },
   flags: null,
 });
-new TestTile({
+new TestBaseTile({
   width: 200, // actually required for construction
   height: 200, // actually required for construction
   texture: null,
@@ -105,7 +111,7 @@ new TestTile({
   video: null,
 });
 
-new TestTile({
+new TestBaseTile({
   _id: undefined,
   texture: {
     src: undefined,
@@ -145,7 +151,7 @@ new TestTile({
   },
   flags: undefined,
 });
-new TestTile({
+new TestBaseTile({
   width: 200, // actually required for construction
   height: 200, // actually required for construction
   texture: undefined,
@@ -154,7 +160,7 @@ new TestTile({
   video: undefined,
 });
 
-expectTypeOf(myTile).toEqualTypeOf<BaseTile>();
+expectTypeOf(myTile).toEqualTypeOf<TestBaseTile>();
 
 expectTypeOf(myTile._id).toEqualTypeOf<string | null>();
 

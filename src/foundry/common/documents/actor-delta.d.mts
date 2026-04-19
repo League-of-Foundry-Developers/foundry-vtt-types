@@ -1,6 +1,6 @@
-import type { AnyMutableObject, Identity } from "#utils";
+import type { AnyMutableObject, Identity, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 import type EmbeddedCollection from "../abstract/embedded-collection.d.mts";
 
 /**
@@ -53,7 +53,7 @@ declare abstract class BaseActorDelta<
 
   static override defineSchema(): BaseActorDelta.Schema;
 
-  override getUserLevel(user: User.Implementation): foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Retrieve the base actor's collection, if it exists.
@@ -101,7 +101,7 @@ declare abstract class BaseActorDelta<
 
   /** @remarks Strips optional (`required: false`) fields from the object before returning */
   // TODO: Properly type this override
-  override toObject(source?: boolean): SchemaField.SourceData<BaseActorDelta.Schema>;
+  override toObject(source?: boolean): BaseActorDelta.Source;
 
   /*
    * After this point these are not really overridden methods.
@@ -121,12 +121,8 @@ declare abstract class BaseActorDelta<
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
-  override readonly parentCollection: BaseActorDelta.ParentCollectionName | null;
-
-  override readonly pack: string | null;
+  // Even temporary `ActorDelta`s require parents, so this is never `null`.
+  override readonly parentCollection: BaseActorDelta.ParentCollectionName;
 
   static override get implementation(): ActorDelta.ImplementationClass;
 
@@ -138,9 +134,9 @@ declare abstract class BaseActorDelta<
 
   static override get TYPES(): BaseActorDelta.SubType[];
 
-  static override get hasTypeData(): true;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseActorDelta.Hierarchy;
+  static override readonly hierarchy: BaseActorDelta.Hierarchy;
 
   override system: BaseActorDelta.SystemOfType<SubType>;
 
@@ -148,33 +144,52 @@ declare abstract class BaseActorDelta<
 
   override " fvtt_types_internal_document_parent": BaseActorDelta.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"ActorDelta", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<ActorDelta.Implementation | BaseActorDelta.CreateData> | undefined,
+    data: BaseActorDelta.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseActorDelta.Database.Create<Temporary>>,
   ): Promise<Array<BaseActorDelta.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseActorDelta.UpdateData[] | undefined,
+    updates: BaseActorDelta.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseActorDelta.Database.Update>,
-  ): Promise<ActorDelta.Implementation[]>;
+  ): Promise<Array<ActorDelta.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseActorDelta.Database.Delete>,
-  ): Promise<ActorDelta.Implementation[]>;
+  ): Promise<Array<ActorDelta.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseActorDelta.CreateData | BaseActorDelta.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseActorDelta.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseActorDelta.Database.CreateOperation<Temporary>,
-  ): Promise<BaseActorDelta.TemporaryIf<Temporary> | undefined>;
-
+  ): Promise<BaseActorDelta.CreateReturn<Data, Temporary>>;
   override update(
-    data: BaseActorDelta.UpdateData | undefined,
+    data: BaseActorDelta.UpdateInput,
     operation?: BaseActorDelta.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
   override delete(operation?: BaseActorDelta.Database.DeleteOperation): Promise<this | undefined>;
 
+  // `ActorDelta`s are neither world documents nor compendium documents, so this always returns `null`.
   static override get(
     documentId: string,
     options?: BaseActorDelta.Database.GetOptions,
@@ -212,11 +227,6 @@ declare abstract class BaseActorDelta<
     operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
-
   override getFlag<Scope extends BaseActorDelta.Flags.Scope, Key extends BaseActorDelta.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
@@ -226,17 +236,17 @@ declare abstract class BaseActorDelta<
     Scope extends BaseActorDelta.Flags.Scope,
     Key extends BaseActorDelta.Flags.Key<Scope>,
     Value extends BaseActorDelta.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseActorDelta.Flags.Scope, Key extends BaseActorDelta.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseActorDelta.CreateData,
     options: BaseActorDelta.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -248,19 +258,19 @@ declare abstract class BaseActorDelta<
   protected static override _preCreateOperation(
     documents: ActorDelta.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseActorDelta.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: ActorDelta.Implementation[],
+    documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseActorDelta.UpdateData,
     options: BaseActorDelta.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -270,61 +280,61 @@ declare abstract class BaseActorDelta<
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: ActorDelta.Implementation[],
+    documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: ActorDelta.Implementation[],
+    documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseActorDelta.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseActorDelta.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: ActorDelta.Implementation[],
+    documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: ActorDelta.Implementation[],
+    documents: ActorDelta.Stored[],
     operation: BaseActorDelta.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `ActorDelta._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode ActorDelta._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: ActorDelta.Implementation[],
-    context: Document.ModificationContext<BaseActorDelta.Parent>,
+    context: BaseActorDelta.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `ActorDelta._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode ActorDelta._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: ActorDelta.Implementation[],
-    context: Document.ModificationContext<BaseActorDelta.Parent>,
+    documents: ActorDelta.Stored[],
+    context: BaseActorDelta.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `ActorDelta._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode ActorDelta._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: ActorDelta.Implementation[],
-    context: Document.ModificationContext<BaseActorDelta.Parent>,
+    documents: ActorDelta.Stored[],
+    context: BaseActorDelta.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -372,7 +382,6 @@ declare namespace BaseActorDelta {
   export import CollectionClass = ActorDelta.CollectionClass;
   export import Collection = ActorDelta.Collection;
   export import Invalid = ActorDelta.Invalid;
-  export import Stored = ActorDelta.Stored;
   export import Source = ActorDelta.Source;
   export import CreateData = ActorDelta.CreateData;
   export import CreateInput = ActorDelta.CreateInput;

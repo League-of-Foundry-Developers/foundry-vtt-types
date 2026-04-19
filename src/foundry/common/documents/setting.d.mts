@@ -1,5 +1,6 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Setting Document.
@@ -43,7 +44,6 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override defineSchema(): BaseSetting.Schema;
 
-  /** @remarks Returns `user.hasPermission("SETTINGS_MODIFY")` */
   static canUserCreate(user: User.Implementation): boolean;
 
   /*
@@ -58,12 +58,7 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
   override readonly parentCollection: BaseSetting.ParentCollectionName | null;
-
-  override readonly pack: string | null;
 
   static override get baseDocument(): typeof BaseSetting;
 
@@ -75,54 +70,72 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseSetting.Hierarchy;
+  static override readonly hierarchy: BaseSetting.Hierarchy;
 
   override parent: BaseSetting.Parent;
 
   override " fvtt_types_internal_document_parent": BaseSetting.Parent;
 
+  // `canUserCreate` omitted from template due to actual override above.
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Setting", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Setting.Implementation | BaseSetting.CreateData> | undefined,
+    data: BaseSetting.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseSetting.Database.Create<Temporary>>,
   ): Promise<Array<BaseSetting.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseSetting.UpdateData[] | undefined,
+    updates: BaseSetting.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseSetting.Database.Update>,
-  ): Promise<Setting.Implementation[]>;
+  ): Promise<Array<Setting.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseSetting.Database.Delete>,
-  ): Promise<Setting.Implementation[]>;
+  ): Promise<Array<Setting.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseSetting.CreateData | BaseSetting.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseSetting.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseSetting.Database.CreateOperation<Temporary>,
-  ): Promise<BaseSetting.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseSetting.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseSetting.UpdateData | undefined,
+    data: BaseSetting.UpdateInput,
     operation?: BaseSetting.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
   override delete(operation?: BaseSetting.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseSetting.Database.GetOptions): Setting.Implementation | null;
+  // `Setting`s cannot exist in compendia, so this never returns an index entry.
+  static override get(documentId: string, operation?: BaseSetting.Database.GetOptions): Setting.Stored | null;
 
+  // `Setting`s have no embedded collections, so this always returns `null`
   static override getCollectionName(name: string): null;
 
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
+  // TODO: Settings have no `flags` in their schema, but the methods still work and just return `undefined`; they should be added to the template.
 
   protected override _preCreate(
     data: BaseSetting.CreateData,
     options: BaseSetting.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -134,19 +147,19 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   protected static override _preCreateOperation(
     documents: Setting.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseSetting.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Setting.Implementation[],
+    documents: Setting.Stored[],
     operation: BaseSetting.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseSetting.UpdateData,
     options: BaseSetting.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -156,61 +169,61 @@ declare abstract class BaseSetting extends Document<"Setting", BaseSetting.Schem
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Setting.Implementation[],
+    documents: Setting.Stored[],
     operation: BaseSetting.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Setting.Implementation[],
+    documents: Setting.Stored[],
     operation: BaseSetting.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseSetting.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseSetting.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Setting.Implementation[],
+    documents: Setting.Stored[],
     operation: BaseSetting.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Setting.Implementation[],
+    documents: Setting.Stored[],
     operation: BaseSetting.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `Setting._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Setting._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Setting.Implementation[],
-    context: Document.ModificationContext<BaseSetting.Parent>,
+    context: BaseSetting.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `Setting._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Setting._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Setting.Implementation[],
-    context: Document.ModificationContext<BaseSetting.Parent>,
+    documents: Setting.Stored[],
+    context: BaseSetting.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `Setting._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Setting._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Setting.Implementation[],
-    context: Document.ModificationContext<BaseSetting.Parent>,
+    documents: Setting.Stored[],
+    context: BaseSetting.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -249,7 +262,6 @@ declare namespace BaseSetting {
   export import CollectionClass = Setting.CollectionClass;
   export import Collection = Setting.Collection;
   export import Invalid = Setting.Invalid;
-  export import Stored = Setting.Stored;
   export import Source = Setting.Source;
   export import CreateData = Setting.CreateData;
   export import CreateInput = Setting.CreateInput;

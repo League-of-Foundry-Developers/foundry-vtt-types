@@ -1,6 +1,6 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Document definition for a Drawing.
@@ -60,10 +60,9 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    */
   static override validateJoint(data: BaseDrawing.Source): void;
 
-  /** @remarks Returns `user.hasPermission("DRAWING_CREATE")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * @remarks
@@ -91,12 +90,7 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
    * defined DRY-ly while also being easily overridable.
    */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
   override readonly parentCollection: BaseDrawing.ParentCollectionName | null;
-
-  override readonly pack: string | null;
 
   static override get implementation(): DrawingDocument.ImplementationClass;
 
@@ -108,52 +102,65 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseDrawing.Hierarchy;
+  static override readonly hierarchy: BaseDrawing.Hierarchy;
 
   override parent: BaseDrawing.Parent;
 
   override " fvtt_types_internal_document_parent": BaseDrawing.Parent;
 
+  // `canUserCreate` omitted from template due to actual override above.
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Drawing", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<DrawingDocument.Implementation | BaseDrawing.CreateData> | undefined,
+    data: BaseDrawing.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseDrawing.Database.Create<Temporary>>,
   ): Promise<Array<BaseDrawing.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseDrawing.UpdateData[] | undefined,
+    updates: BaseDrawing.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseDrawing.Database.Update>,
-  ): Promise<DrawingDocument.Implementation[]>;
+  ): Promise<Array<DrawingDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseDrawing.Database.Delete>,
-  ): Promise<DrawingDocument.Implementation[]>;
+  ): Promise<Array<DrawingDocument.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseDrawing.CreateData | BaseDrawing.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseDrawing.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseDrawing.Database.CreateOperation<Temporary>,
-  ): Promise<BaseDrawing.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseDrawing.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseDrawing.UpdateData | undefined,
+    data: BaseDrawing.UpdateInput,
     operation?: BaseDrawing.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
   override delete(operation?: BaseDrawing.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseDrawing.Database.GetOptions,
-  ): DrawingDocument.Implementation | null;
+  // `DrawingDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseDrawing.Database.GetOptions): null;
 
+  // `DrawingDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends BaseDrawing.Flags.Scope, Key extends BaseDrawing.Flags.Key<Scope>>(
     scope: Scope,
@@ -164,17 +171,17 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
     Scope extends BaseDrawing.Flags.Scope,
     Key extends BaseDrawing.Flags.Key<Scope>,
     Value extends BaseDrawing.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseDrawing.Flags.Scope, Key extends BaseDrawing.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseDrawing.CreateData,
     options: BaseDrawing.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -186,19 +193,19 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   protected static override _preCreateOperation(
     documents: DrawingDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseDrawing.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: DrawingDocument.Implementation[],
+    documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseDrawing.UpdateData,
     options: BaseDrawing.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -208,61 +215,61 @@ declare abstract class BaseDrawing extends Document<"Drawing", BaseDrawing.Schem
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: DrawingDocument.Implementation[],
+    documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: DrawingDocument.Implementation[],
+    documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseDrawing.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseDrawing.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: DrawingDocument.Implementation[],
+    documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: DrawingDocument.Implementation[],
+    documents: DrawingDocument.Stored[],
     operation: BaseDrawing.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `DrawingDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode DrawingDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: DrawingDocument.Implementation[],
-    context: Document.ModificationContext<BaseDrawing.Parent>,
+    context: BaseDrawing.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `DrawingDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode DrawingDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: DrawingDocument.Implementation[],
-    context: Document.ModificationContext<BaseDrawing.Parent>,
+    documents: DrawingDocument.Stored[],
+    context: BaseDrawing.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `DrawingDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode DrawingDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: DrawingDocument.Implementation[],
-    context: Document.ModificationContext<BaseDrawing.Parent>,
+    documents: DrawingDocument.Stored[],
+    context: BaseDrawing.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -299,7 +306,6 @@ declare namespace BaseDrawing {
   export import CollectionClass = DrawingDocument.CollectionClass;
   export import Collection = DrawingDocument.Collection;
   export import Invalid = DrawingDocument.Invalid;
-  export import Stored = DrawingDocument.Stored;
   export import Source = DrawingDocument.Source;
   export import CreateData = DrawingDocument.CreateData;
   export import CreateInput = DrawingDocument.CreateInput;

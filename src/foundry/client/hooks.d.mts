@@ -837,9 +837,8 @@ export interface AllHooks extends DynamicHooks {
    * @param source        - The Document's source data.
    * @param pack          - The Document's compendium.
    * @param art           - The art being applied.
-   * @remarks Called as part of _initializeSource, after data migration, cleaning, and shims
-   * @remarks Currently only called by Actor but comments are more generic
-   * @remarks This is called by {@linkcode Hooks.callAll}.
+   * @remarks This is called by {@linkcode Hooks.callAll}. Currently only called, after data migration, cleaning, and shims, by
+   * {@linkcode Actor._initializeSource | Actor#_initializeSource}, though the comments are more generic.
    */
   applyCompendiumArt: (
     documentClass: Actor.ImplementationClass,
@@ -855,8 +854,7 @@ export interface AllHooks extends DynamicHooks {
    * @param actor - The Actor
    * @param sheet - The ActorSheet application
    * @param data  - The data that has been dropped onto the sheet
-   * @remarks This is called by {@linkcode Hooks.call}.
-   * @remarks An explicit return value of `false` prevents the Document being created.
+   * @remarks This is called by {@linkcode Hooks.call}. An explicit return value of `false` prevents the Document being created.
    * @see {@linkcode ActorSheet._onDrop | ActorSheet#_onDrop}
    */
   dropActorSheetData: (
@@ -1501,7 +1499,7 @@ declare global {
      * @template P   - the type of the PlaceableObject
      * @remarks The name for this hook is dynamically created by joining "hover" and the type name of the PlaceableObject.
      * @remarks This is called by {@linkcode Hooks.callAll}.
-     * @see {@linkcode PlaceableObject._onHoverIn |  PlaceableObject#_onHoverIn}
+     * @see {@linkcode PlaceableObject._onHoverIn | PlaceableObject#_onHoverIn}
      * @see {@linkcode PlaceableObject._onHoverOut | PlaceableObject#_onHoverOut}
      */
     type HoverObject<P extends PlaceableObject.Any = PlaceableObject.Any> = (object: P, hover: boolean) => void;

@@ -1,6 +1,7 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The JournalEntry Document.
@@ -73,12 +74,7 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
   override readonly parentCollection: BaseJournalEntry.ParentCollectionName | null;
-
-  override readonly pack: string | null;
 
   static override get implementation(): JournalEntry.ImplementationClass;
 
@@ -90,36 +86,55 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseJournalEntry.Hierarchy;
+  static override readonly hierarchy: BaseJournalEntry.Hierarchy;
 
   override parent: BaseJournalEntry.Parent;
 
   override " fvtt_types_internal_document_parent": BaseJournalEntry.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"JournalEntry", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<JournalEntry.Implementation | BaseJournalEntry.CreateData> | undefined,
+    data: BaseJournalEntry.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseJournalEntry.Database.Create<Temporary>>,
   ): Promise<Array<BaseJournalEntry.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseJournalEntry.UpdateData[] | undefined,
+    updates: BaseJournalEntry.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseJournalEntry.Database.Update>,
-  ): Promise<JournalEntry.Implementation[]>;
+  ): Promise<Array<JournalEntry.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseJournalEntry.Database.Delete>,
-  ): Promise<JournalEntry.Implementation[]>;
+  ): Promise<Array<JournalEntry.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseJournalEntry.CreateData | BaseJournalEntry.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseJournalEntry.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseJournalEntry.Database.CreateOperation<Temporary>,
-  ): Promise<BaseJournalEntry.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseJournalEntry.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseJournalEntry.UpdateData | undefined,
+    data: BaseJournalEntry.UpdateInput,
     operation?: BaseJournalEntry.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
@@ -127,8 +142,8 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
 
   static override get(
     documentId: string,
-    options?: BaseJournalEntry.Database.GetOptions,
-  ): JournalEntry.Implementation | null;
+    operation?: BaseJournalEntry.Database.GetOptions,
+  ): JournalEntry.Stored | CompendiumCollection.IndexEntry<"JournalEntry"> | null;
 
   static override getCollectionName<CollectionName extends BaseJournalEntry.Embedded.Name>(
     name: CollectionName,
@@ -162,11 +177,6 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
-
   override getFlag<Scope extends BaseJournalEntry.Flags.Scope, Key extends BaseJournalEntry.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
@@ -176,17 +186,17 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
     Scope extends BaseJournalEntry.Flags.Scope,
     Key extends BaseJournalEntry.Flags.Key<Scope>,
     Value extends BaseJournalEntry.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseJournalEntry.Flags.Scope, Key extends BaseJournalEntry.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseJournalEntry.CreateData,
     options: BaseJournalEntry.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -198,19 +208,19 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   protected static override _preCreateOperation(
     documents: JournalEntry.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseJournalEntry.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: JournalEntry.Implementation[],
+    documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseJournalEntry.UpdateData,
     options: BaseJournalEntry.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -220,61 +230,61 @@ declare abstract class BaseJournalEntry extends Document<"JournalEntry", BaseJou
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: JournalEntry.Implementation[],
+    documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: JournalEntry.Implementation[],
+    documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseJournalEntry.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseJournalEntry.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: JournalEntry.Implementation[],
+    documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: JournalEntry.Implementation[],
+    documents: JournalEntry.Stored[],
     operation: BaseJournalEntry.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `JournalEntry._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntry._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: JournalEntry.Implementation[],
-    context: Document.ModificationContext<BaseJournalEntry.Parent>,
+    context: BaseJournalEntry.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `JournalEntry._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntry._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: JournalEntry.Implementation[],
-    context: Document.ModificationContext<BaseJournalEntry.Parent>,
+    documents: JournalEntry.Stored[],
+    context: BaseJournalEntry.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `JournalEntry._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode JournalEntry._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: JournalEntry.Implementation[],
-    context: Document.ModificationContext<BaseJournalEntry.Parent>,
+    documents: JournalEntry.Stored[],
+    context: BaseJournalEntry.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -311,7 +321,6 @@ declare namespace BaseJournalEntry {
   export import CollectionClass = JournalEntry.CollectionClass;
   export import Collection = JournalEntry.Collection;
   export import Invalid = JournalEntry.Invalid;
-  export import Stored = JournalEntry.Stored;
   export import Source = JournalEntry.Source;
   export import CreateData = JournalEntry.CreateData;
   export import CreateInput = JournalEntry.CreateInput;

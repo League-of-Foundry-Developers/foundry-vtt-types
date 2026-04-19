@@ -2,8 +2,8 @@ import { expectTypeOf } from "vitest";
 
 expectTypeOf(foundry.documents.BaseUser.create({ name: "SomeUser" })).toEqualTypeOf<Promise<User.Stored | undefined>>();
 expectTypeOf(foundry.documents.BaseUser.createDocuments([])).toEqualTypeOf<Promise<User.Stored[]>>();
-expectTypeOf(foundry.documents.BaseUser.updateDocuments([])).toEqualTypeOf<Promise<User.Implementation[]>>();
-expectTypeOf(foundry.documents.BaseUser.deleteDocuments([])).toEqualTypeOf<Promise<User.Implementation[]>>();
+expectTypeOf(foundry.documents.BaseUser.updateDocuments([])).toEqualTypeOf<Promise<User.Stored[]>>();
+expectTypeOf(foundry.documents.BaseUser.deleteDocuments([])).toEqualTypeOf<Promise<User.Stored[]>>();
 
 const user = await foundry.documents.BaseUser.create({ name: "Another User" }, { temporary: true });
 if (user) {
@@ -11,7 +11,12 @@ if (user) {
   expectTypeOf(user.character).toEqualTypeOf<Actor.Stored | null>();
 }
 
-class TestBaseUser extends foundry.documents.BaseUser {}
+class TestBaseUser extends foundry.documents.BaseUser {
+  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
+  get compendium() {
+    return null;
+  }
+}
 
 // @ts-expect-error name may not be undefined
 new TestBaseUser();

@@ -1,6 +1,6 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The TableResult Document.
@@ -89,12 +89,7 @@ declare abstract class BaseTableResult<
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
   override readonly parentCollection: BaseTableResult.ParentCollectionName | null;
-
-  override readonly pack: string | null;
 
   static override get implementation(): TableResult.ImplementationClass;
 
@@ -106,52 +101,65 @@ declare abstract class BaseTableResult<
 
   static override get TYPES(): BaseTableResult.SubType[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseTableResult.Hierarchy;
+  static override readonly hierarchy: BaseTableResult.Hierarchy;
 
   override parent: BaseTableResult.Parent;
 
   override " fvtt_types_internal_document_parent": BaseTableResult.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"TableResult", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<TableResult.Implementation | BaseTableResult.CreateData> | undefined,
+    data: BaseTableResult.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseTableResult.Database.Create<Temporary>>,
   ): Promise<Array<BaseTableResult.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseTableResult.UpdateData[] | undefined,
+    updates: BaseTableResult.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseTableResult.Database.Update>,
-  ): Promise<TableResult.Implementation[]>;
+  ): Promise<Array<TableResult.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseTableResult.Database.Delete>,
-  ): Promise<TableResult.Implementation[]>;
+  ): Promise<Array<TableResult.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseTableResult.CreateData | BaseTableResult.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseTableResult.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseTableResult.Database.CreateOperation<Temporary>,
-  ): Promise<BaseTableResult.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseTableResult.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseTableResult.UpdateData | undefined,
+    data: BaseTableResult.UpdateInput,
     operation?: BaseTableResult.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
   override delete(operation?: BaseTableResult.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseTableResult.Database.GetOptions,
-  ): TableResult.Implementation | null;
+  // `TableResult`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseTableResult.Database.GetOptions): null;
 
+  // `TableResult`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends BaseTableResult.Flags.Scope, Key extends BaseTableResult.Flags.Key<Scope>>(
     scope: Scope,
@@ -162,17 +170,17 @@ declare abstract class BaseTableResult<
     Scope extends BaseTableResult.Flags.Scope,
     Key extends BaseTableResult.Flags.Key<Scope>,
     Value extends BaseTableResult.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseTableResult.Flags.Scope, Key extends BaseTableResult.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseTableResult.CreateData,
     options: BaseTableResult.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -184,19 +192,19 @@ declare abstract class BaseTableResult<
   protected static override _preCreateOperation(
     documents: TableResult.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseTableResult.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: TableResult.Implementation[],
+    documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseTableResult.UpdateData,
     options: BaseTableResult.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -206,61 +214,61 @@ declare abstract class BaseTableResult<
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: TableResult.Implementation[],
+    documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: TableResult.Implementation[],
+    documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseTableResult.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseTableResult.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: TableResult.Implementation[],
+    documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: TableResult.Implementation[],
+    documents: TableResult.Stored[],
     operation: BaseTableResult.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `TableResult._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode TableResult._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: TableResult.Implementation[],
-    context: Document.ModificationContext<BaseTableResult.Parent>,
+    context: BaseTableResult.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `TableResult._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode TableResult._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: TableResult.Implementation[],
-    context: Document.ModificationContext<BaseTableResult.Parent>,
+    documents: TableResult.Stored[],
+    context: BaseTableResult.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `TableResult._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode TableResult._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: TableResult.Implementation[],
-    context: Document.ModificationContext<BaseTableResult.Parent>,
+    documents: TableResult.Stored[],
+    context: BaseTableResult.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -305,7 +313,6 @@ declare namespace BaseTableResult {
   export import CollectionClass = TableResult.CollectionClass;
   export import Collection = TableResult.Collection;
   export import Invalid = TableResult.Invalid;
-  export import Stored = TableResult.Stored;
   export import Source = TableResult.Source;
   export import CreateData = TableResult.CreateData;
   export import CreateInput = TableResult.CreateInput;

@@ -10,7 +10,13 @@ import TypeDataModel = foundry.abstract.TypeDataModel;
 type DataSchema = foundry.data.fields.DataSchema;
 
 // This exists to make the class non-abstract.
-declare class TestBaseActor extends foundry.documents.BaseActor {}
+class TestBaseActor extends foundry.documents.BaseActor {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Actor">)
+      : null;
+  }
+}
 
 // @ts-expect-error name and type are required
 new TestBaseActor();

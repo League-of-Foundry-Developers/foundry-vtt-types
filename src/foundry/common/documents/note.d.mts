@@ -1,5 +1,6 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
 
 /**
  * The Document definition for a Note.
@@ -52,7 +53,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
    */
   static DEFAULT_ICON: string;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   static override canUserCreate(user: User.Implementation): boolean;
 
@@ -68,12 +69,7 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
   override readonly parentCollection: BaseNote.ParentCollectionName | null;
-
-  override readonly pack: string | null;
 
   static override get implementation(): NoteDocument.ImplementationClass;
 
@@ -85,49 +81,62 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseNote.Hierarchy;
+  static override readonly hierarchy: BaseNote.Hierarchy;
 
   override parent: BaseNote.Parent;
 
   override " fvtt_types_internal_document_parent": BaseNote.Parent;
 
+  // `canUserCreate` omitted from template due to actual override above.
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Note", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<NoteDocument.Implementation | BaseNote.CreateData> | undefined,
+    data: BaseNote.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseNote.Database.Create<Temporary>>,
   ): Promise<Array<BaseNote.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseNote.UpdateData[] | undefined,
+    updates: BaseNote.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseNote.Database.Update>,
-  ): Promise<NoteDocument.Implementation[]>;
+  ): Promise<Array<NoteDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseNote.Database.Delete>,
-  ): Promise<NoteDocument.Implementation[]>;
+  ): Promise<Array<NoteDocument.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseNote.CreateData | BaseNote.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseNote.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseNote.Database.CreateOperation<Temporary>,
-  ): Promise<BaseNote.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseNote.CreateReturn<Data, Temporary>>;
 
-  override update(
-    data: BaseNote.UpdateData | undefined,
-    operation?: BaseNote.Database.UpdateOperation,
-  ): Promise<this | undefined>;
+  override update(data: BaseNote.UpdateInput, operation?: BaseNote.Database.UpdateOperation): Promise<this | undefined>;
 
   override delete(operation?: BaseNote.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseNote.Database.GetOptions): NoteDocument.Implementation | null;
+  // `NoteDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseNote.Database.GetOptions): null;
 
+  // `NoteDocument`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends BaseNote.Flags.Scope, Key extends BaseNote.Flags.Key<Scope>>(
     scope: Scope,
@@ -138,17 +147,17 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
     Scope extends BaseNote.Flags.Scope,
     Key extends BaseNote.Flags.Key<Scope>,
     Value extends BaseNote.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseNote.Flags.Scope, Key extends BaseNote.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseNote.CreateData,
     options: BaseNote.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -160,19 +169,19 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   protected static override _preCreateOperation(
     documents: NoteDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseNote.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: NoteDocument.Implementation[],
+    documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseNote.UpdateData,
     options: BaseNote.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -182,61 +191,61 @@ declare abstract class BaseNote extends Document<"Note", BaseNote.Schema, any> {
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: NoteDocument.Implementation[],
+    documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: NoteDocument.Implementation[],
+    documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseNote.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseNote.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: NoteDocument.Implementation[],
+    documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: NoteDocument.Implementation[],
+    documents: NoteDocument.Stored[],
     operation: BaseNote.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `NoteDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode NoteDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: NoteDocument.Implementation[],
-    context: Document.ModificationContext<BaseNote.Parent>,
+    context: BaseNote.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `NoteDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode NoteDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: NoteDocument.Implementation[],
-    context: Document.ModificationContext<BaseNote.Parent>,
+    documents: NoteDocument.Stored[],
+    context: BaseNote.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `NoteDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode NoteDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: NoteDocument.Implementation[],
-    context: Document.ModificationContext<BaseNote.Parent>,
+    documents: NoteDocument.Stored[],
+    context: BaseNote.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -273,7 +282,6 @@ declare namespace BaseNote {
   export import CollectionClass = NoteDocument.CollectionClass;
   export import Collection = NoteDocument.Collection;
   export import Invalid = NoteDocument.Invalid;
-  export import Stored = NoteDocument.Stored;
   export import Source = NoteDocument.Source;
   export import CreateData = NoteDocument.CreateData;
   export import CreateInput = NoteDocument.CreateInput;

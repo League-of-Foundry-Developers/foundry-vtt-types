@@ -4,34 +4,32 @@ import type {
   ConfiguredMetadata,
 } from "../../../types/documentConfiguration.d.mts";
 import type {
+  AllKeysOf,
+  AnyMutableObject,
+  AnyObject,
+  Brand,
+  Coalesce,
+  ConcreteKeys,
+  EmptyObject,
+  FixedInstanceType,
   GetKey,
+  Identity,
+  InexactPartial,
+  IntentionalPartial,
   InterfaceToObject,
   MakeConform,
-  MustConform,
-  ToMethod,
-  AnyObject,
-  EmptyObject,
-  InexactPartial,
-  RemoveIndexSignatures,
-  FixedInstanceType,
-  NullishProps,
-  PickValue,
-  Identity,
-  Brand,
-  AnyMutableObject,
   MaybePromise,
-  SimpleMerge,
-  PrettifyType,
-  AllKeysOf,
+  NullishProps,
   Override,
-  ConcreteKeys,
-  Coalesce,
-  IntentionalPartial,
+  PickValue,
+  PrettifyType,
+  RemoveIndexSignatures,
+  SimpleMerge,
+  ToMethod,
 } from "#utils";
-import type * as CONST from "../constants.mts";
 import type {
-  DataSchema,
   DataField,
+  DataSchema,
   DocumentStatsField,
   EmbeddedCollectionField,
   EmbeddedDocumentField,
@@ -49,9 +47,14 @@ import type {
   DocumentSocketRequest,
 } from "./_types.d.mts";
 import type { DataModel, DocumentSocketResponse, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 import type { ClientDocumentMixin, WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { SystemConfig } from "#configuration";
 import type { ApplicationV2, DialogV2 } from "#client/applications/api/_module.d.mts";
+
+/** @privateRemarks  `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type DocumentCollection from "#client/documents/abstract/document-collection.d.mts";
 
 export default Document;
 
@@ -60,9 +63,6 @@ type InexactPartialExcept<T extends object, RequiredKey> = {
 } & {
   [K in keyof T as Exclude<K, RequiredKey>]?: T[K] | undefined;
 };
-
-type _ClassMustBeAssignableToInternal = MustConform<typeof Document, Document.Internal.Constructor>;
-type _InstanceMustBeAssignableToInternal = MustConform<Document.Any, Document.Internal.Instance.Any>;
 
 // Note(LukeAbby): Properties from `Schema` technically derive from `DataModel`. This means that if
 // `name?: string` etc. were to be put in `Document` directly they'd actually override the schema.
@@ -117,23 +117,36 @@ declare abstract class Document<
 
   /**
    * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
+   * @defaultValue {@linkcode Document._getParentCollection | this._getParentCollection(parentCollection)}
+   *
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`.
+   *
+   * Always `null` in temporary documents, except {@linkcode foundry.documents.BaseActorDelta.parentCollection | ActorDelta}s.
+   *
+   * @privateRemarks This could realistically be any string passed as
+   * {@linkcode Document.ConstructionContext.parentCollection | parentCollection} in the construction context of a `new Document()`. It's
+   * typed as-is because everywhere it is specified by core, it happens to match the `metadata.collection` of the given document type, and
+   * users are not realistically going to pass it, since they can't define new `EmbeddedCollectionField`s or `EmbeddedDocumentField`s.
    */
   readonly parentCollection: Document.MetadataFor<DocumentName>["collection"] | null;
 
   /**
    * An immutable reference to a containing Compendium collection to which this Document belongs.
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`
    */
-  readonly pack: string | null;
+  get pack(): Document.Pack<DocumentName>;
 
   /**
    * A mapping of embedded Document collections which exist in this model.
+   * @remarks Defined via `Object.defineProperty` in {@linkcode Document._configure | #_configure} with `writable: false`, and the value is
+   * {@linkcode Object.seal}ed.
    */
   readonly collections: Document.CollectionRecord<Schema>;
 
   /**
    * Ensure that all Document classes share the same schema of their base declaration.
    */
-  static get schema(): SchemaField.Any;
+  static override get schema(): SchemaField.Any;
 
   protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
 
@@ -210,29 +223,39 @@ declare abstract class Document<
 
   /**
    * Does this Document support additional subtypes?
+   * @remarks This is `false` in {@linkcode Document.metadata}, and is only `true` in subclasses that override it so, as of 13.351
    */
-  static get hasTypeData(): undefined | true;
+  static get hasTypeData(): boolean;
 
   /**
    * The Embedded Document hierarchy for this Document.
+   * @remarks This is a getter until first access, at which point it calculates the value, and replaces itself via
+   * `Object.defineProperty(this, "hierarchy", { value: Object.freeze(hierarchy), writable: false });`
    */
-  static get hierarchy(): Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>;
+  static readonly hierarchy: Readonly<Record<string, EmbeddedCollectionField.Any | EmbeddedDocumentField.Any>>;
 
   /**
    * Identify the collection in a parent Document that this Document exists belongs to, if any.
    * @param parentCollection - An explicitly provided parent collection name.
-   * @remarks If passed a value for `parentCollection`, simply returns that value
-   *
-   * Foundry marked `@internal`
+   * @remarks If passed a value for `parentCollection`, simply returns that value.
+   * @internal
    */
-  _getParentCollection(parentCollection?: string): string | null;
+  _getParentCollection(parentCollection?: string | null): string | null;
 
+  // TODO: is this fake property necessary?
   _id: string | null;
 
   /**
    * The canonical identifier for this Document
    */
   get id(): string | null;
+
+  /**
+   * A reference to the Compendium Collection containing this Document, if any, and otherwise null.
+   * @remarks The body in `Document` simply throws; All documents just use the override defined at
+   * {@linkcode ClientDocumentMixin.AnyMixed.compendium | ClientDocument#compendium} out of the box.
+   */
+  abstract get compendium(): unknown;
 
   /**
    * Test whether this Document is embedded within a parent Document
@@ -246,8 +269,10 @@ declare abstract class Document<
 
   /**
    * A Universally Unique Identifier (uuid) for this Document instance.
+   * @remarks Always `null` for temporary documents, always `string` for persisted,  though embedded
+   * documents in non-persisted parents may have incorrect values at runtime.
    */
-  get uuid(): string;
+  get uuid(): string | null;
 
   /**
    * Test whether a given User has sufficient permissions to create Documents of this type in general. This does not
@@ -258,33 +283,42 @@ declare abstract class Document<
    * Documents of this type in the UI.
    * @param user - The User being tested
    * @returns Does the User have a sufficient role to create?
+   *
+   * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
+   * without error, so `Implementation` over `Stored`.
+   *
+   * This method has been added to the document template to remove the exposure of `User.Internal.Implementation`.
    */
-  static canUserCreate(user: User.Implementation): boolean;
+  static canUserCreate(user: User.Internal.Implementation): boolean;
 
   /**
-   * Get the explicit permission level that a User has over this Document, a value in {@link CONST.DOCUMENT_OWNERSHIP_LEVELS | `CONST.DOCUMENT_OWNERSHIP_LEVELS`}.
+   * Get the explicit permission level that a User has over this Document, a value in {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS}.
    * Compendium content ignores the ownership field in favor of User role-based ownership. Otherwise, Documents use
    * granular per-User ownership definitions and Embedded Documents defer to their parent ownership.
    *
    * This method returns the value recorded in Document ownership, regardless of the User's role, for example a
-   * GAMEMASTER user might still return a result of NONE if they are not explicitly denoted as having a level.
+   * `GAMEMASTER` user might still return a result of `NONE` if they are not explicitly denoted as having a level.
    *
    * To test whether a user has a certain capability over the document, testUserPermission should be used.
    * @param user - The User being tested (default: `game.user`)
-   * @returns A numeric permission level from CONST.DOCUMENT_OWNERSHIP_LEVELS or null
+   * @returns A numeric permission level from `CONST.DOCUMENT_OWNERSHIP_LEVELS`
    *
-   * @privateRemarks Making this just `User.Implementation` causes circularities
+   * @privateRemarks Temporary `User`s' {@linkcode User.hasRole | #hasRole} methods work without error, so `Implementation` over `Stored`.
+   *
+   * This method has been added to the document template to remove the exposure of `User.Internal.Implementation`.
    */
-  getUserLevel(user?: User.Internal.Implementation | null): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Test whether a certain User has a requested permission level (or greater) over the Document
    * @param user       - The User being tested
-   * @param permission - The permission level from DOCUMENT_PERMISSION_LEVELS to test
+   * @param permission - The permission level from {@linkcode CONST.DOCUMENT_OWNERSHIP_LEVELS} to test
    * @param options    - Additional options involved in the permission test
    * @returns Does the user have this permission level over the Document?
    *
-   * @privateRemarks Making this just `User.Implementation` causes circularities
+   * @privateRemarks Temporary `User`s still have {@linkcode User.role | role}s, so `Implementation` over `Stored`.
+   *
+   * This method has been added to the document template to remove the exposure of `User.Internal.Implementation`.
    */
   testUserPermission(
     user: User.Internal.Implementation,
@@ -299,12 +333,15 @@ declare abstract class Document<
    * @param data   - Data involved in the attempted action (default: `{}`)
    * @returns Does the User have permission?
    *
-   * @privateRemarks Making this just `User.Implementation` causes circularities
+   * @privateRemarks Temporary `User`s {@linkcode User.hasRole | #hasRole} and {@linkcode User.hasPermission | #hasPermission} methods work
+   * without error, so `Implementation` over `Stored`.
+   *
+   * This method has been added to the document template to remove the exposure of `User.Internal.Implementation`.
    */
-  canUserModify<Action extends "create" | "update" | "delete">(
+  canUserModify<Action extends Document.Database.OperationAction>(
     user: User.Internal.Implementation,
     action: Action,
-    data?: Document.CanUserModifyData<Schema, Action>,
+    data?: Document.CanUserModifyData<DocumentName, Action>,
   ): boolean;
 
   /**
@@ -314,7 +351,7 @@ declare abstract class Document<
    * @param context - Additional context options passed to the create method
    * @returns The cloned Document instance
    */
-  override clone<Save extends boolean | null | undefined = undefined>(
+  override clone<Save extends boolean | undefined = undefined>(
     data?: SchemaField.UpdateData<Schema>,
     context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;
@@ -323,46 +360,49 @@ declare abstract class Document<
    * For Documents which include game system data, migrate the system data object to conform to its latest data model.
    * The data model is defined by the template.json specification included by the game system.
    * @returns The migrated system data object
-   * @throws If this document type either doesn't have subtypes or it does but the one on this document is a DataModel
+   * @remarks
+   * @throws If this document type either doesn't have subtypes or it does but the one on this document is a `DataModel`
    */
   migrateSystemData(): object;
 
   /** @remarks `Document#toObject` calls `this.constructor.shimData()` on the data before returning */
-  override toObject(source?: boolean | null): SchemaField.SourceData<Schema>;
+  override toObject(source?: boolean): SchemaField.SourceData<Schema>;
 
   /**
    * Create multiple Documents using provided input data.
    * Data is provided as an array of objects where each individual object becomes one new Document.
    *
-   * @param data    - An array of data objects or existing Documents to persist.
-   *                  (default: `[]`)
-   * @param operation - Parameters of the requested creation operation
-   *                  (default: `{}`)
+   * @param data      - An array of data objects or existing Documents to persist. (default: `[]`)
+   * @param operation - Parameters of the requested creation operation (default: `{}`)
    * @returns An array of created Document instances
    *
-   * @example Create a single Document
-   * ```typescript
+   * @example
+   * Create a single Document
+   * ```js
    * const data = [{name: "New Actor", type: "character", img: "path/to/profile.jpg"}];
-   * const created = await Actor.createDocuments(data);
+   * const created = await Actor.implementation.createDocuments(data);
    * ```
    *
-   * @example Create multiple Documents
-   * ```typescript
-   * const data = [{name: "Tim", type: "npc"], [{name: "Tom", type: "npc"}];
-   * const created = await Actor.createDocuments(data);
+   * @example
+   * Create multiple Documents
+   * ```js
+   * const data = [{name: "Tim", type: "npc"}, {name: "Tom", type: "npc"}];
+   * const created = await Actor.implementation.createDocuments(data);
    * ```
    *
-   * @example Create multiple embedded Documents within a parent
-   * ```typescript
+   * @example
+   * Create multiple embedded Documents within a parent
+   * ```js
    * const actor = game.actors.getName("Tim");
    * const data = [{name: "Sword", type: "weapon"}, {name: "Breastplate", type: "equipment"}];
-   * const created = await Item.createDocuments(data, {parent: actor});
+   * const created = await Item.implementation.createDocuments(data, {parent: actor});
    * ```
    *
-   * @example Create a Document within a Compendium pack
-   * ```typescript
+   * @example
+   * Create a Document within a Compendium pack
+   * ```js
    * const data = [{name: "Compendium Actor", type: "character", img: "path/to/profile.jpg"}];
-   * const created = await Actor.createDocuments(data, {pack: "mymodule.mypack"});
+   * const created = await Actor.implementation.createDocuments(data, {pack: "mymodule.mypack"});
    * ```
    *
    * @remarks If a document is skipped by a hook or `_preCreate` then that element is skipped in the
@@ -375,35 +415,38 @@ declare abstract class Document<
    * Update multiple Document instances using provided differential data.
    * Data is provided as an array of objects where each individual object updates one existing Document.
    *
-   * @param updates - An array of differential data objects, each used to update a single Document
-   *                  (default: `[]`)
-   * @param operation - Parameters of the database update operation
-   *                  (default: `{}`)
+   * @param updates   - An array of differential data objects, each used to update a single Document (default: `[]`)
+   * @param operation - Parameters of the database update operation (default: `{}`)
    * @returns An array of updated Document instances
    *
-   * @example Update a single Document
-   * ```typescript
+   * @example
+   * Update a single Document
+   * ```js
    * const updates = [{_id: "12ekjf43kj2312ds", name: "Timothy"}];
-   * const updated = await Actor.updateDocuments(updates);
+   * const updated = await Actor.implementation.updateDocuments(updates);
    * ```
    *
-   * @example Update multiple Documents
-   * ```typescript
+   * @example
+   * Update multiple Documents
+   * ```js
    * const updates = [{_id: "12ekjf43kj2312ds", name: "Timothy"}, {_id: "kj549dk48k34jk34", name: "Thomas"}]};
-   * const updated = await Actor.updateDocuments(updates);
+   * const updated = await Actor.implementation.updateDocuments(updates);
    * ```
    *
-   * @example Update multiple embedded Documents within a parent
-   * ```typescript
+   * @example
+   * Update multiple embedded Documents within a parent
+   * ```js
    * const actor = game.actors.getName("Timothy");
    * const updates = [{_id: sword.id, name: "Magic Sword"}, {_id: shield.id, name: "Magic Shield"}];
-   * const updated = await Item.updateDocuments(updates, {parent: actor});
+   * const updated = await Item.implementation.updateDocuments(updates, {parent: actor});
    * ```
    *
-   * @example Update Documents within a Compendium pack
-   * ```typescript
+   * @example
+   * Update Documents within a Compendium pack
+   * ```js
    * const actor = await pack.getDocument(documentId);
-   * const updated = await Actor.updateDocuments([{_id: actor.id, name: "New Name"}], {pack: "mymodule.mypack"});
+   * const updated = await Actor.implementation.updateDocuments([{_id: actor.id, name: "New Name"}],
+   *   {pack: "mymodule.mypack"});
    * ```
    *
    * @remarks If a document is skipped by a hook or `_preCreate` then that element is skipped in the
@@ -416,74 +459,84 @@ declare abstract class Document<
    * Delete one or multiple existing Documents using an array of provided ids.
    * Data is provided as an array of string ids for the documents to delete.
    *
-   * @param ids - An array of string ids for the documents to be deleted
-   *              (default: `[]`)
-   * @param operation - Parameters of the database deletion operation
-   *                  (default: `{}`)
+   * @param ids       - An array of string ids for the documents to be deleted (default: `[]`)
+   * @param operation - Parameters of the database deletion operation (default: `{}`)
    * @returns An array of deleted Document instances
    *
-   * @example Delete a single Document
-   * ```typescript
+   * @example
+   * Delete a single Document
+   * ```js
    * const tim = game.actors.getName("Tim");
-   * const deleted = await Actor.deleteDocuments([tim.id]);
+   * const deleted = await Actor.implementation.deleteDocuments([tim.id]);
    * ```
    *
-   * @example Delete multiple Documents
-   * ```typescript
+   * @example
+   * Delete multiple Documents
+   * ```js
    * const tim = game.actors.getName("Tim");
    * const tom = game.actors.getName("Tom");
-   * const deleted = await Actor.deleteDocuments([tim.id, tom.id]);
+   * const deleted = await Actor.implementation.deleteDocuments([tim.id, tom.id]);
    * ```
    *
-   * @example Delete multiple embedded Documents within a parent
-   * ```typescript
+   * @example
+   * Delete multiple embedded Documents within a parent
+   * ```js
    * const tim = game.actors.getName("Tim");
    * const sword = tim.items.getName("Sword");
    * const shield = tim.items.getName("Shield");
-   * const deleted = await Item.deleteDocuments([sword.id, shield.id], parent: actor});
+   * const deleted = await Item.implementation.deleteDocuments([sword.id, shield.id], parent: actor});
    * ```
    *
-   * @example Delete Documents within a Compendium pack
-   * ```typescript
+   * @example
+   * Delete Documents within a Compendium pack
+   * ```js
    * const actor = await pack.getDocument(documentId);
-   * const deleted = await Actor.deleteDocuments([actor.id], {pack: "mymodule.mypack"});
+   * const deleted = await Actor.implementation.deleteDocuments([actor.id], {pack: "mymodule.mypack"});
    * ```
    *
    * @remarks If a document is skipped by a hook or `_preDelete` then that element is skipped in the
    * return type. This means that you receive only documents that were actually deleted.
+   *
+   * `ids` is required because despite it having a parameter default, passing no IDs is a nonsense call on its own; however, specific
+   * document overrides type `ids` as `| undefined` because the {@linkcode DatabaseBackend.DeleteOperation.deleteAll | deleteAll} operation
+   * property exists, but using it requires passing *something* to the first parameter.
    */
-  // Note: This uses `never` because it's unsound to try to pass the operation for `Document.deleteDocument`
-  static deleteDocuments(ids?: readonly string[], operation?: never): Promise<Document.Any[]>;
+  // Note: This uses `never` because it's unsound to try to call `Document.deleteDocument` rather than a specific document's method.
+  static deleteDocuments(ids: never, operation?: never): Promise<Document.Any[]>;
 
   /**
    * Create a new Document using provided input data, saving it to the database.
    * @see {@linkcode Document.createDocuments}
    * @param data      - Initial data used to create this Document, or a Document instance to persist.
-   * @param operation - Parameters of the creation operation
-   *                    (default: `{}`)
+   * @param operation - Parameters of the creation operation (default: `{}`)
    * @returns The created Document instance
    *
-   * @example Create a World-level Item
-   * ```typescript
+   * @example
+   * Create a World-level Item
+   * ```js
    * const data = [{name: "Special Sword", type: "weapon"}];
-   * const created = await Item.create(data);
+   * const created = await Item.implementation.create(data);
    * ```
    *
-   * @example Create an Actor-owned Item
-   * ```typescript
+   * @example
+   * Create an Actor-owned Item
+   * ```js
    * const data = [{name: "Special Sword", type: "weapon"}];
    * const actor = game.actors.getName("My Hero");
-   * const created = await Item.create(data, {parent: actor});
+   * const created = await Item.implementation.create(data, {parent: actor});
    * ```
    *
-   * @example Create an Item in a Compendium pack
-   * ```typescript
+   * @example
+   * Create an Item in a Compendium pack
+   * ```js
    * const data = [{name: "Special Sword", type: "weapon"}];
-   * const created = await Item.create(data, {pack: "mymodule.mypack"});
+   * const created = await Item.implementation.create(data, {pack: "mymodule.mypack"});
    * ```
    *
-   * @remarks If the document creation is skipped by a hook or `_preCreate` then `undefined` is
-   * returned.
+   * @remarks If the document creation is skipped by a hook or `_preCreate` then `undefined` is returned.
+   *
+   * `data` can be a `CreateData` object, an instance of this specific Document, or a possibly-mixed array of those types.
+   * If an array is passed, an array will be returned.
    */
   // Note: This uses `never` because it's unsound to try to call `Document.create` directly.
   // TODO: This can take an array of data and return an array of documents, in addition to its current typing
@@ -492,10 +545,8 @@ declare abstract class Document<
   /**
    * Update this Document using incremental data, saving it to the database.
    * @see {@linkcode Document.updateDocuments}
-   * @param data      - Differential update data which modifies the existing values of this document data
-   *                    (default: `{}`)
-   * @param operation - Parameters of the update operation
-   *                    (default: `{}`)
+   * @param data      - Differential update data which modifies the existing values of this document data (default: `{}`)
+   * @param operation - Parameters of the update operation (default: `{}`)
    * @returns The updated Document instance
    *
    * @remarks If the document update is skipped by a hook or `_preUpdate` then `undefined` is
@@ -507,11 +558,10 @@ declare abstract class Document<
   /**
    * Delete this Document, removing it from the database.
    * @see {@linkcode Document.deleteDocuments}
-   * @param operation - Parameters of the deletion operation
-   *                    (default: `{}`)
+   * @param operation - Parameters of the deletion operation (default: `{}`)
    * @returns The deleted Document instance
    *
-   * @remarks If the document deletion is skipped by a hook or `_preUpdate` then `undefined` is
+   * @remarks If the document deletion is skipped by a hook or `_preDelete` then `undefined` is
    * returned.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#delete` directly.
@@ -523,39 +573,46 @@ declare abstract class Document<
    * @param operation  - Additional options which customize the request
    * @returns The retrieved Document, or null
    *
-   * @remarks If the Document is in a compendium (i.e `operation.pack` is provided), returns the index
-   * entry (or `null`), instead of the Document.
+   * @remarks Contrary to the above, this *can* be used to 'get' compendium documents by passing `operation.pack`, but this will return the
+   * index entry (or `null`) instead of the Document.
    *
-   * {@link FogExploration.get | `FogExploration.get`} can possibly forward args and return to/from
-   * {@link FogExploration.load | `FogExploration.load`}, which accounts for the `Promise<>` part
-   * of the return; All other documents return `SomeDoc.Implementation | null`
+   * {@linkcode FogExploration.get} can possibly forward args and return to/from {@linkcode FogExploration.load},
+   * which accounts for the `Promise<>` part of the return; All other documents return `SomeDoc.Implementation | IndexEntry<DocName> | null`
    */
-  // TODO: Type for possible index entry return
-  static get(documentId: string, operation?: Document.Database.GetOptions): MaybePromise<Document.Any | null>;
+  // TODO: improve with a conditional return possibly: https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3545
+  static get(
+    documentId: string,
+    operation?: never,
+  ): MaybePromise<Document.Any | CompendiumCollection.IndexEntry | null>;
 
   /**
    * A compatibility method that returns the appropriate name of an embedded collection within this Document.
    * @param name - An existing collection name or a document name.
-   * @returns The provided collection name if it exists, the first available collection for the
-   *          document name provided, or null if no appropriate embedded collection could be found.
-   * @example Passing an existing collection name.
+   * @returns The provided collection name if it exists, the first available collection for the document name
+   * provided, or null if no appropriate embedded collection could be found.
+   *
+   * @example
+   * Passing an existing collection name.
    * ```js
-   * Actor.getCollectionName("items");
+   * Actor.implementation.getCollectionName("items");
    * // returns "items"
    * ```
    *
-   * @example Passing a document name.
+   * @example
+   * Passing a document name.
    * ```js
-   * Actor.getCollectionName("Item");
+   * Actor.implementation.getCollectionName("Item");
    * // returns "items"
    * ```
    */
+  // Calling `Document.getCollectionName` always throws as the relevant `baseDocument` cannot be found.
   static getCollectionName(name: never): string | null;
 
   /**
    * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
    * @param embeddedName - The name of the embedded Document type
    * @returns The Collection instance of embedded Documents of the requested type
+   *
    * @remarks Usually returns some form of DocumentCollection, but not always (e.g. Token["actors"])
    */
   // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedCollection` directly.
@@ -567,61 +624,66 @@ declare abstract class Document<
    * @param id           - The id of the child document to retrieve
    * @param options      - Additional options which modify how embedded documents are retrieved
    * @returns The retrieved embedded Document instance, or undefined
+   *
+   * @remarks `embeddedName` can also be the collection name, e.g to get an `Item` from an `Actor` instance, both `"Item"` and `"items"` are
+   * valid.
    * @throws If the embedded collection does not exist, or if strict is true and the Embedded Document could not be found.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#getEmbeddedDocument` directly.
   getEmbeddedDocument(
     embeddedName: never,
     id: string,
-    options: Document.GetEmbeddedDocumentOptions,
+    options?: Document.GetEmbeddedDocumentOptions,
   ): Document.Any | undefined;
 
   /**
    * Create multiple embedded Document instances within this parent Document using provided input data.
    * @see {@linkcode Document.createDocuments}
    * @param embeddedName - The name of the embedded Document type
-   * @param data         - An array of data objects used to create multiple documents
-   *                       (default: `[]`)
-   * @param operation    - Parameters of the database creation workflow
-   *                       (default: `{}`)
+   * @param data         - An array of data objects used to create multiple documents (default: `[]`)
+   * @param operation    - Parameters of the database creation workflow (default: `{}`)
    * @returns An array of created Document instances
+   *
+   * @remarks Unlike {@linkcode Document.getEmbeddedDocument | Document#getEmbeddedDocument}, `embeddedName` must be a document type;
+   * collection names are not valid.
+   *
+   * As this is a create operation, `| undefined` is included in the specific document overrides' return type
+   *
+   * @privateRemarks `data` has a parameter default but passing no updates is nonsensical, so it's not marked optional here.
+   *
+   * `Temporary` is not handled here as making temporary embedded documents is nonsense, and it's going away in v14.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#createEmbeddedDocuments` directly.
   // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
-  createEmbeddedDocuments(
-    embeddedName: never,
-    // Note: Not optional because `createEmbeddedDocuments("Actor")` does effectively nothing.
-    data: never,
-    operation?: never,
-  ): unknown;
+  createEmbeddedDocuments(embeddedName: never, data: never, operation?: never): unknown;
 
   /**
    * Update multiple embedded Document instances within a parent Document using provided differential data.
    * @see {@linkcode Document.updateDocuments}
    * @param embeddedName - The name of the embedded Document type
-   * @param updates      - An array of differential data objects, each used to update a single Document
-   *                       (default: `[]`)
-   * @param operation    - Parameters of the database update workflow
-   *                       (default: `{}`)
+   * @param updates      - An array of differential data objects, each used to update a single Document (default: `[]`)
+   * @param operation    - Parameters of the database update workflow (default: `{}`)
    * @returns An array of updated Document instances
+   *
+   * @remarks Unlike {@linkcode Document.getEmbeddedDocument | Document#getEmbeddedDocument}, `embeddedName` must be a document type;
+   * collection names are not valid.
+   *
+   * @privateRemarks `updates` has a parameter default but passing no updates is nonsensical, so it's not marked optional here.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#updateEmbeddedDocuments` directly.
   // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
-  updateEmbeddedDocuments(
-    embeddedName: never,
-    // Note: Not optional because `updateEmbeddedDocuments("Actor")` does effectively nothing.
-    updates: never,
-    context?: never,
-  ): unknown;
+  updateEmbeddedDocuments(embeddedName: never, updates: never, context?: never): unknown;
 
   /**
    * Delete multiple embedded Document instances within a parent Document using provided string ids.
    * @see {@linkcode Document.deleteDocuments}
    * @param embeddedName - The name of the embedded Document type
    * @param ids          - An array of string ids for each Document to be deleted
-   * @param operation    - Parameters of the database deletion workflow
-   *                       (default: `{}`)
+   * @param operation    - Parameters of the database deletion workflow (default: `{}`)
    * @returns An array of deleted Document instances
+   *
+   * @remarks Unlike {@linkcode Document.getEmbeddedDocument | Document#getEmbeddedDocument}, `embeddedName` must be a document type;
+   * collection names are not valid.
    */
   // Note: This uses `never` because it's unsound to try to call `Document#deleteEmbeddedDocuments` directly.
   // Note(LukeAbby): Returns `unknown` instead of `Promise<Array<Document.AnyStored> | undefined>` to stymy errors.
@@ -632,11 +694,13 @@ declare abstract class Document<
    * @param _parentPath - A parent field path already traversed
    * @remarks Not called within Foundry's client-side code, likely exists for server documents
    */
-  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.AnyChild<this>], void, undefined>;
+  // TODO: Put this into the document template with types that recurse Doc.Hierarchy for embedded documents
+  // TODO: https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3546
+  traverseEmbeddedDocuments(_parentPath?: string): Generator<[string, Document.Any], void, undefined>;
 
   /**
    * Get the value of a "flag" for this document
-   * See the setFlag method for more details on flags
+   * See the {@linkcode Document.setFlag | #setFlag} method for more details on flags
    *
    * @param scope - The flag scope which namespaces the key
    * @param key   - The flag key
@@ -661,21 +725,27 @@ declare abstract class Document<
    * @param key   - The flag key
    * @param value - The flag value
    * @returns A Promise resolving to the updated document
+   *
+   * @remarks This method is a wrapper on {@linkcode Document.update | #update}, so it can return `undefined` if the update
+   * is cancelled by {@linkcode Document._preUpdate | #_preUpdate} or the associated hook.
    */
-  setFlag(scope: never, key: never, value: never): Promise<this>;
+  setFlag(scope: never, key: never, value: never): Promise<this | undefined>;
 
   /**
    * Remove a flag assigned to the document
    * @param scope - The flag scope which namespaces the key
    * @param key   - The flag key
    * @returns The updated document instance
+   *
+   * @remarks This method is a wrapper on {@linkcode Document.delete | #delete}, so it can return `undefined` if the update
+   * is cancelled by {@linkcode Document._preDelete | #_preDelete} or the associated hook.
    */
-  unsetFlag(scope: never, key: never): Promise<this>;
+  unsetFlag(scope: never, key: never): Promise<this | undefined>;
 
   /**
    * Pre-process a creation operation for a single Document instance.
    * Pre-operation events only occur for the client which requested the operation.
-   * Modifications to the pending Document instance must be performed using {@link Document.updateSource | `Document#updateSource`}.
+   * Modifications to the pending Document instance must be performed using {@linkcode Document.updateSource | Document#updateSource}.
    * @param data    - The initial data object provided to the document creation request
    * @param options - Additional options which modify the creation request
    * @param user    - The User requesting the document creation
@@ -696,11 +766,11 @@ declare abstract class Document<
    * Pre-process a creation operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document._preCreate | `Document#_preCreate`} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@linkcode Document._preCreate | Document#_preCreate} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to pending documents must mutate the documents array or alter individual document instances using
-   * {@link Document.updateSource | `Document#updateSource`}.
+   * {@linkcode Document.updateSource | Document#updateSource}.
    * @param documents - Pending document instances ot be created
    * @param operation - Parameters of the database creation operation
    * @param user      - The User requesting the creation operation
@@ -717,7 +787,7 @@ declare abstract class Document<
    * Post-process a creation operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document._onCreate | `Document#_onCreate`} workflows.
+   * This batch-wise workflow occurs after individual {@linkcode Document._onCreate | Document#_onCreate} workflows.
    *
    * @param documents - The Document instances which were created
    * @param operation - Parameters of the database creation operation
@@ -753,11 +823,11 @@ declare abstract class Document<
    * Pre-process an update operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document._preUpdate | `Document#_preUpdate`} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@linkcode Document._preUpdate | Document#_preUpdate} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to the requested updates are performed by mutating the data array of the operation.
-   * {@link Document.updateSource | `Document#updateSource`}.
+   * {@linkcode Document.updateSource | Document#updateSource}.
    *
    * @param documents - Document instances to be updated
    * @param operation - Parameters of the database update operation
@@ -775,7 +845,7 @@ declare abstract class Document<
    * Post-process an update operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document._onUpdate | `Document#_onUpdate`} workflows.
+   * This batch-wise workflow occurs after individual {@linkcode Document._onUpdate | Document#_onUpdate} workflows.
    *
    * @param documents - The Document instances which were updated
    * @param operation - Parameters of the database update operation
@@ -809,11 +879,11 @@ declare abstract class Document<
    * Pre-process a deletion operation, potentially altering its instructions or input data. Pre-operation events only
    * occur for the client which requested the operation.
    *
-   * This batch-wise workflow occurs after individual {@link Document._preDelete | `Document#_preDelete`} workflows and provides a final
+   * This batch-wise workflow occurs after individual {@linkcode Document._preDelete | Document#_preDelete} workflows and provides a final
    * pre-flight check before a database operation occurs.
    *
    * Modifications to the requested deletions are performed by mutating the operation object.
-   * {@link Document.updateSource | `Document#updateSource`}.
+   * {@linkcode Document.updateSource | Document#updateSource}.
    *
    * @param documents - Document instances to be deleted
    * @param operation - Parameters of the database update operation
@@ -832,7 +902,7 @@ declare abstract class Document<
    * Post-process a deletion operation, reacting to database changes which have occurred. Post-operation events occur
    * for all connected clients.
    *
-   * This batch-wise workflow occurs after individual {@link Document._onDelete | `Document#_onDelete`} workflows.
+   * This batch-wise workflow occurs after individual {@linkcode Document._onDelete | Document#_onDelete} workflows.
    *
    * @param documents - The Document instances which were deleted
    * @param operation - Parameters of the database deletion operation
@@ -847,6 +917,12 @@ declare abstract class Document<
 
   /**
    * A reusable helper for adding migration shims.
+   * @param data    - The data object being shimmed
+   * @param shims   - The mapping of old keys to new keys
+   * @param options - Options passed to {@linkcode foundry.utils.logCompatibilityWarning}
+   * @internal
+   *
+   * @remarks See {@linkcode Document._addDataFieldShim} remarks
    */
   protected static _addDataFieldShims(
     data: AnyMutableObject,
@@ -856,6 +932,16 @@ declare abstract class Document<
 
   /**
    * A reusable helper for adding a migration shim
+   * The value of the data can be transformed during the migration by an optional application function.
+   * @param data    - The data object being shimmed
+   * @param oldKey  - The old field name
+   * @param newKey  - The new field name
+   * @param options - Options passed to {@linkcode foundry.utils.logCompatibilityWarning} (default: `{}`)
+   * @internal
+   *
+   * @remarks This method calls {@linkcode Document._logDataFieldMigration | this._logDataFieldMigration}, but that is the only reference to
+   * `this`, meaning if you're okay with nonsense being logged, it's valid to call for any data object, and if you provide your own
+   * `_logDataFieldMigration`, doing `Document._addDataFieldShim.call(MyClass, ...)` can avoid even that.
    */
   protected static _addDataFieldShim(
     data: AnyMutableObject,
@@ -871,15 +957,27 @@ declare abstract class Document<
    * @param oldKey - The old field name
    * @param newKey - The new field name
    * @param apply  - An application function, otherwise the old value is applied
-   * @remarks Foundry marked `@internal`
+   * @returns Whether a migration was applied.
+   * @internal
+   *
+   * @remarks This method has no references to `this` at all, and is not limited to operating on `Document` source data; it can be
+   * used as a helper on any data object, making it one of the few static methods on `Document` it's valid to call on the base
+   * class.
    */
-  protected static _addDataFieldMigration(
-    data: AnyMutableObject,
+  protected static _addDataFieldMigration<Data extends AnyMutableObject>(
+    data: Data,
     oldKey: string,
     newKey: string,
-    apply?: (data: AnyMutableObject) => unknown,
-  ): unknown;
+    apply?: (data: Data) => unknown,
+  ): boolean;
 
+  /**
+   * Log a compatibility warning for the data field migration.
+   * @param oldKey  - The old field name
+   * @param newKey  - The new field name
+   * @param options - Options passed to {@linkcode foundry.utils.logCompatibilityWarning} (default: `{}`)
+   * @internal
+   */
   protected static _logDataFieldMigration(
     oldKey: string,
     newKey: string,
@@ -887,8 +985,21 @@ declare abstract class Document<
   ): void;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * Clear the fields from the given Document data recursively.
+   * @param data       - The (partial) Document data
+   * @param fieldNames - The fields that are cleared
+   * @param options    - (default: `{}`)
+   * @internal
+   */
+  protected static _clearFieldsRecursively(
+    data: AnyMutableObject,
+    fieldNames: string[],
+    options?: Document.ClearFieldsRecursivelyOptions,
+  ): void;
+
+  /**
+   * @deprecated "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation}"
+   * (since v12, until v14)
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onCreateDocuments` directly.
   protected static _onCreateDocuments(
@@ -897,8 +1008,8 @@ declare abstract class Document<
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @deprecated "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation}"
+   * (since v12, until v14)
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onUpdateDocuments` directly.
   protected static _onUpdateDocuments(
@@ -907,8 +1018,8 @@ declare abstract class Document<
   ): Promise<unknown>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @deprecated "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation}"
+   * (since v12, until v14)
    */
   // Note: This uses `never` because it's unsound to try to do `Document._onDeleteDocuments` directly.
   protected static _onDeleteDocuments(
@@ -1050,7 +1161,10 @@ declare namespace Document {
    */
   type UnknownSystem = UnknownSourceData | TypeDataField.UnknownTypeDataModel | DataModel.UnknownDataModel;
 
-  // TODO: Probably a way to auto-determine this
+  /**
+   * @privateRemarks This is hand-written here as a preemptive anti-circularity measure, it is checked against calculated values in tests.
+   */
+  // TODO: actually write said tests
   type SystemType =
     | "ActiveEffect"
     | "Actor"
@@ -1411,7 +1525,8 @@ declare namespace Document {
     // Note(LukeAbby): It's at times been very important for `GetFlag` to be covariant over `ConcreteSchema`.
     // If it isn't then issues arise where the `Document` type ends up becoming invariant.
     // Currently it is actually contravariant over `ConcreteSchema` and this may cause issues (because of the usage of `keyof`).
-    // Unfortunately it's not easy to avoid because the typical `GetKey` trick has issues between `never`, not defined at all, and `unknown` etc.
+    // Unfortunately it's not easy to avoid because the typical `GetKey` trick has issues between `never`, not defined at all, and `unknown`
+    // etc.
     type GetFlag<Flags extends object, S extends string, K extends string> = FlagGetKey<
       FlagGetKey<Flags & CoreFlags, S>,
       K
@@ -1778,7 +1893,10 @@ declare namespace Document {
     };
   }
 
-  /** @internal */
+  /**
+   * This ensures that Documents that require a parent even for temporary construction
+   * @internal
+   */
   interface _ParentContext<Parent extends Document.Any | null> extends _DynamicBase<
     Parent extends null
       ? {
@@ -1818,9 +1936,10 @@ declare namespace Document {
 
         /**
          * An immutable reverse-reference to the name of the collection that this Document exists in on its parent, if any.
-         * @privateRemarks Omitted from the typedef, inferred from usage in {@link Document._configure | `Document#_configure`}
+         * @privateRemarks Omitted from the typedef, inferred from usage in {@linkcode Document._configure | Document#_configure}
          * (and included in the construction context rather than `ConfigureOptions` due to being passed to construction in
-         * {@link foundry.abstract.EmbeddedCollection.createDocument | `EmbeddedCollection#createDocument`})
+         * {@linkcode EmbeddedCollection.createDocument | EmbeddedCollection#createDocument}). See
+         * {@linkcode Document.parentCollection | Document#parentCollection}.
          */
         parentCollection: string;
       }> {}
@@ -1835,10 +1954,25 @@ declare namespace Document {
   interface ConstructionContext<Parent extends Document.Any | null = Document.Any | null>
     extends Omit<DataModel._ConstructionContext, "strict">, _ConstructionContext<Parent> {}
 
-  /** `DataModel#constructor` pulls `parent` and `strict` out of the passed context before forwarding to `#_configure` */
+  /**
+   * `Document` has no constructor override, and `DataModel#constructor` pulls `parent` and `strict` out of the passed context before
+   * forwarding to {@linkcode Document._configure | #_configure}
+   */
   interface ConfigureOptions extends Omit<ConstructionContext, "parent" | "strict"> {}
 
-  /** `DataModel#constructor` pulls `parent` out of the passed context before forwarding to `#_initializeSource` */
+  /**
+   * The type for {@linkcode Document.pack | Document#pack}. Types that can never exist in compendia get `null`, everything else gets
+   * `string | null`. We unfortunately can't exclude `null` for {@link AlwaysCompendiumType | documents only persisted in compendia}
+   * because temporary documents exist.
+   */
+  type Pack<Name extends Document.Type> =
+    | null
+    | (CompendiumCollection.ForDocument<Name> extends never ? never : string);
+
+  /**
+   * `Document` has no constructor override, and `DataModel#constructor` pulls `parent` out of the passed context before forwarding to
+   * {@linkcode Document._initializeSource | #_initializeSource}
+   */
   interface InitializeOptions extends Omit<ConstructionContext, "parent"> {}
 
   /**
@@ -1933,8 +2067,9 @@ declare namespace Document {
     deleteAll?: boolean | undefined;
   }
 
+  // TODO: properly test passing save: true and not
   /** @internal */
-  type _CloneContext<Save extends boolean | null | undefined = boolean | null | undefined> = NullishProps<{
+  type _CloneContext<Save extends boolean | undefined> = InexactPartial<{
     /**
      * Save the clone to the World database?
      * @defaultValue `false`
@@ -1958,7 +2093,7 @@ declare namespace Document {
    * @privateRemarks Since we've lost the ExtraConstructorOptions type param, we have to extend
    * the (parentless) construction context
    */
-  interface CloneContext<Save extends boolean | null | undefined = boolean | null | undefined>
+  interface CloneContext<Save extends boolean | undefined = boolean | undefined>
     extends _CloneContext<Save>, Omit<Document.ConstructionContext, "parent"> {}
 
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
@@ -2473,16 +2608,55 @@ declare namespace Document {
       | (DocumentType extends "Wall" ? WallDocument.Database.PreDeleteOptions : never);
   }
 
-  interface DataFieldShimOptions {
+  /**
+   * @remarks {@linkcode Document.testUserPermission | Document#testUserPermission}'s second param can take either the string level name or
+   * the numerical (branded) value.
+   */
+  type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  /** @internal */
+  interface _TestUserPermissionsOptions {
     /**
-     * A string to log as a compatibility warning on accessing the `oldKey`
+     * Require the exact permission level requested?
+     * @defaultValue `false`
      */
-    warning?: string | null | undefined;
+    exact: boolean;
+  }
+
+  interface TestUserPermissionOptions extends InexactPartial<_TestUserPermissionsOptions> {}
+
+  type CanUserModifyData<Name extends Document.Type, Action extends Document.Database.OperationAction> =
+    | (Action extends "create" ? CreateDataForName<Name> : never)
+    | (Action extends "update" ? UpdateDataForName<Name> : never)
+    | (Action extends "delete" ? EmptyObject : never);
+
+  interface GetEmbeddedDocumentOptions extends EmbeddedCollection.GetOptions {}
+
+  /**
+   * Gets the hierarchical fields in the schema. Hardcoded to whatever Foundry fields are hierarchical
+   * as there is no way to access the a static property of a custom fields from an instance.
+   */
+  type HierarchyOf<Schema extends DataSchema> = PickValue<
+    Schema,
+    EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
+  >;
+
+  interface DataFieldShimOptions extends LogCompatibilityWarningOptions {
+    /** The deprecation message */
+    warning?: string | undefined;
 
     /**
+     * The value of the shim
      * @remarks Foundry uses `if ("value" in options)` to determine whether to override the default value.
      */
     value?: unknown;
+  }
+
+  type RecursiveFieldClearCallback = (data: AnyMutableObject, fieldName: string) => void;
+
+  interface ClearFieldsRecursivelyOptions {
+    /** A callback that is invoked on each field in order to clear it. */
+    callback?: RecursiveFieldClearCallback | undefined;
   }
 
   /* ***********************************************
@@ -2726,55 +2900,7 @@ declare namespace Document {
     strict?: boolean;
   }
 
-  type ActionPermission = keyof typeof CONST.DOCUMENT_OWNERSHIP_LEVELS | CONST.DOCUMENT_OWNERSHIP_LEVELS;
-
-  /** @internal */
-  type _TestUserPermissionsOptions = NullishProps<{
-    /**
-     * Require the exact permission level requested?
-     * @defaultValue `false`
-     */
-    exact: boolean;
-  }>;
-
-  interface TestUserPermissionOptions extends _TestUserPermissionsOptions {}
-
-  type CanUserModifyData<Schema extends DataSchema, Action extends "create" | "update" | "delete"> =
-    | (Action extends "create" ? SchemaField.CreateData<Schema> : never)
-    | (Action extends "update" ? SchemaField.UpdateData<Schema> : never)
-    | (Action extends "delete" ? EmptyObject : never);
-
-  /**
-   * @internal
-   */
-  type _GetEmbeddedDocumentOptions = InexactPartial<{
-    /**
-     * Throw an Error if the requested id does not exist. See {@link Collection.get | `Collection#get`}
-     * @defaultValue `false`
-     */
-    strict: boolean;
-
-    /**
-     * Allow retrieving an invalid Embedded Document.
-     * @defaultValue `false`
-     */
-    invalid: boolean;
-  }>;
-
-  interface GetEmbeddedDocumentOptions extends _GetEmbeddedDocumentOptions {}
-
-  /**
-   * Gets the hierarchical fields in the schema. Hardcoded to whatever Foundry fields are hierarchical
-   * as there is no way to access the a static property of a custom fields from an instance.
-   */
-  type HierarchyOf<Schema extends DataSchema> = PickValue<
-    Schema,
-    EmbeddedCollectionField.Any | EmbeddedDocumentField.Any
-  >;
-
-  type Clone<This extends Document.Any, Save extends boolean | null | undefined> = Save extends true
-    ? Promise<This>
-    : This;
+  type Clone<This extends Document.Any, Save extends boolean | undefined> = Save extends true ? Promise<This> : This;
 
   /**
    * The options for `fromDropData`. Foundry never uses these so the interface is currently empty.
@@ -2826,21 +2952,6 @@ declare namespace Document {
   type Invalid<D extends Document.Any> = Document.Internal.Invalid<D>;
 
   /**
-   * @deprecated Replaced with {@linkcode Document.SheetClassFor}
-   */
-  export import ConfiguredSheetClassFor = Document.SheetClassFor;
-
-  /**
-   * @deprecated Replaced with {@linkcode Document.ObjectClassFor}
-   */
-  export import ConfiguredObjectClassFor = Document.ObjectClassFor;
-
-  /**
-   * @deprecated Replaced with {@linkcode Document.LayerClassFor}
-   */
-  export import ConfiguredLayerClassFor = Document.LayerClassFor;
-
-  /**
    * Returns the type of the constructor data for the given {@linkcode foundry.abstract.Document}.
    * @deprecated Replaced with {@linkcode CreateDataForName}
    */
@@ -2890,7 +3001,8 @@ declare namespace Document {
   }
 
   /**
-   * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use {@linkcode Document.ModuleSubType} instead.
+   * @deprecated This type has been deprecated because of the inconsistent casing of "Subtype" instead of "SubType". Use
+   * {@linkcode Document.ModuleSubType} instead.
    */
   type ModuleSubtype = ModuleSubType;
 
@@ -2922,8 +3034,9 @@ declare namespace Document {
     readonly flags?: DataField<Options, any>;
   }
 
-  // These types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint `this extends Document.Any` has to be proved.
-  // This is much more complex than proving the constraint for `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
+  // These types only exists to simplify solving the `Document` type. Using `Document.Flags<this>` means the constraint
+  // `this extends Document.Any` has to be proved. This is much more complex than proving the constraint for
+  // `Document.FlagsInternal<Schema>` that `Schema extends DataSchema`.
 
   /**
    * @deprecated This type is being made internal.

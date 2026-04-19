@@ -1,6 +1,8 @@
+import type { MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
-import type { fields } from "../data/_module.d.mts";
+import type { SchemaField } from "#common/data/fields.d.mts";
+import type { fields } from "#client/data/_module.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The Adventure Document.
@@ -65,12 +67,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
-  override readonly parentCollection: BaseAdventure.ParentCollectionName | null;
-
-  override readonly pack: string | null;
+  // `Adventure`s are never embedded.
+  override readonly parentCollection: null;
 
   static override get implementation(): Adventure.ImplementationClass;
 
@@ -82,49 +80,68 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseAdventure.Hierarchy;
+  static override readonly hierarchy: BaseAdventure.Hierarchy;
 
   override parent: BaseAdventure.Parent;
 
   override " fvtt_types_internal_document_parent": BaseAdventure.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Adventure", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Adventure.Implementation | BaseAdventure.CreateData> | undefined,
+    data: BaseAdventure.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseAdventure.Database.Create<Temporary>>,
   ): Promise<Array<BaseAdventure.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseAdventure.UpdateData[] | undefined,
+    updates: BaseAdventure.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseAdventure.Database.Update>,
-  ): Promise<Adventure.Implementation[]>;
+  ): Promise<Array<Adventure.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseAdventure.Database.Delete>,
-  ): Promise<Adventure.Implementation[]>;
+  ): Promise<Array<Adventure.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseAdventure.CreateData | BaseAdventure.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseAdventure.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseAdventure.Database.CreateOperation<Temporary>,
-  ): Promise<BaseAdventure.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseAdventure.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseAdventure.UpdateData | undefined,
+    data: BaseAdventure.UpdateInput,
     operation?: BaseAdventure.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
   override delete(operation?: BaseAdventure.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseAdventure.Database.GetOptions): Adventure.Implementation | null;
+  // Since persisted `Adventure`s only exist in compendia, this only returns an index entry (if a `pack` is passed in `operation`) or `null`.
+  static override get(
+    documentId: string,
+    operation?: BaseAdventure.Database.GetOptions,
+  ): CompendiumCollection.IndexEntry<"Adventure"> | null;
 
+  // `Adventure`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends BaseAdventure.Flags.Scope, Key extends BaseAdventure.Flags.Key<Scope>>(
     scope: Scope,
@@ -135,17 +152,17 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     Scope extends BaseAdventure.Flags.Scope,
     Key extends BaseAdventure.Flags.Key<Scope>,
     Value extends BaseAdventure.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseAdventure.Flags.Scope, Key extends BaseAdventure.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseAdventure.CreateData,
     options: BaseAdventure.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -157,19 +174,19 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   protected static override _preCreateOperation(
     documents: Adventure.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseAdventure.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Adventure.Implementation[],
+    documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseAdventure.UpdateData,
     options: BaseAdventure.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -179,61 +196,61 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Adventure.Implementation[],
+    documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Adventure.Implementation[],
+    documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseAdventure.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseAdventure.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Adventure.Implementation[],
+    documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Adventure.Implementation[],
+    documents: Adventure.Stored[],
     operation: BaseAdventure.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `Adventure._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Adventure._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Adventure.Implementation[],
-    context: Document.ModificationContext<BaseAdventure.Parent>,
+    context: BaseAdventure.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `Adventure._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Adventure._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Adventure.Implementation[],
-    context: Document.ModificationContext<BaseAdventure.Parent>,
+    documents: Adventure.Stored[],
+    context: BaseAdventure.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `Adventure._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Adventure._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Adventure.Implementation[],
-    context: Document.ModificationContext<BaseAdventure.Parent>,
+    documents: Adventure.Stored[],
+    context: BaseAdventure.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -270,7 +287,6 @@ declare namespace BaseAdventure {
   export import CollectionClass = Adventure.CollectionClass;
   export import Collection = Adventure.Collection;
   export import Invalid = Adventure.Invalid;
-  export import Stored = Adventure.Stored;
   export import Source = Adventure.Source;
   export import CreateData = Adventure.CreateData;
   export import CreateInput = Adventure.CreateInput;

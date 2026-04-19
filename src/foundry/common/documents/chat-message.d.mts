@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
 
@@ -87,8 +87,6 @@ declare abstract class BaseChatMessage<
 
   override readonly parentCollection: BaseChatMessage.ParentCollectionName | null;
 
-  override readonly pack: string | null;
-
   static override get implementation(): ChatMessage.ImplementationClass;
 
   static override get baseDocument(): typeof BaseChatMessage;
@@ -101,7 +99,7 @@ declare abstract class BaseChatMessage<
 
   static override get hasTypeData(): true;
 
-  static override get hierarchy(): BaseChatMessage.Hierarchy;
+  static override readonly hierarchy: BaseChatMessage.Hierarchy;
 
   override system: BaseChatMessage.SystemOfType<SubType>;
 
@@ -109,44 +107,57 @@ declare abstract class BaseChatMessage<
 
   override " fvtt_types_internal_document_parent": BaseChatMessage.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"ChatMessage", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<ChatMessage.Implementation | BaseChatMessage.CreateData> | undefined,
+    data: BaseChatMessage.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseChatMessage.Database.Create<Temporary>>,
   ): Promise<Array<BaseChatMessage.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseChatMessage.UpdateData[] | undefined,
+    updates: BaseChatMessage.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseChatMessage.Database.Update>,
-  ): Promise<ChatMessage.Implementation[]>;
+  ): Promise<Array<ChatMessage.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseChatMessage.Database.Delete>,
-  ): Promise<ChatMessage.Implementation[]>;
+  ): Promise<Array<ChatMessage.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseChatMessage.CreateData | BaseChatMessage.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseChatMessage.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseChatMessage.Database.CreateOperation<Temporary>,
-  ): Promise<BaseChatMessage.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseChatMessage.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseChatMessage.UpdateData | undefined,
+    data: BaseChatMessage.UpdateInput,
     operation?: BaseChatMessage.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
   override delete(operation?: BaseChatMessage.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(
-    documentId: string,
-    options?: BaseChatMessage.Database.GetOptions,
-  ): ChatMessage.Implementation | null;
+  // `ChatMessage`s cannot exist in compendia, so this never returns an index entry.
+  static override get(documentId: string, operation?: BaseChatMessage.Database.GetOptions): ChatMessage.Stored | null;
 
+  // `ChatMessage`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
-
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
 
   override getFlag<Scope extends BaseChatMessage.Flags.Scope, Key extends BaseChatMessage.Flags.Key<Scope>>(
     scope: Scope,
@@ -157,17 +168,17 @@ declare abstract class BaseChatMessage<
     Scope extends BaseChatMessage.Flags.Scope,
     Key extends BaseChatMessage.Flags.Key<Scope>,
     Value extends BaseChatMessage.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseChatMessage.Flags.Scope, Key extends BaseChatMessage.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseChatMessage.CreateData,
     options: BaseChatMessage.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -179,19 +190,19 @@ declare abstract class BaseChatMessage<
   protected static override _preCreateOperation(
     documents: ChatMessage.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseChatMessage.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: ChatMessage.Implementation[],
+    documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseChatMessage.UpdateData,
     options: BaseChatMessage.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -201,61 +212,61 @@ declare abstract class BaseChatMessage<
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: ChatMessage.Implementation[],
+    documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: ChatMessage.Implementation[],
+    documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseChatMessage.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseChatMessage.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: ChatMessage.Implementation[],
+    documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: ChatMessage.Implementation[],
+    documents: ChatMessage.Stored[],
     operation: BaseChatMessage.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `ChatMessage._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode ChatMessage._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: ChatMessage.Implementation[],
-    context: Document.ModificationContext<BaseChatMessage.Parent>,
+    context: BaseChatMessage.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `ChatMessage._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode ChatMessage._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: ChatMessage.Implementation[],
-    context: Document.ModificationContext<BaseChatMessage.Parent>,
+    documents: ChatMessage.Stored[],
+    context: BaseChatMessage.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `ChatMessage._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode ChatMessage._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: ChatMessage.Implementation[],
-    context: Document.ModificationContext<BaseChatMessage.Parent>,
+    documents: ChatMessage.Stored[],
+    context: BaseChatMessage.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -299,7 +310,6 @@ declare namespace BaseChatMessage {
   export import CollectionClass = ChatMessage.CollectionClass;
   export import Collection = ChatMessage.Collection;
   export import Invalid = ChatMessage.Invalid;
-  export import Stored = ChatMessage.Stored;
   export import Source = ChatMessage.Source;
   export import CreateData = ChatMessage.CreateData;
   export import CreateInput = ChatMessage.CreateInput;

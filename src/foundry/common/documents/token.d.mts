@@ -1,6 +1,6 @@
-import type { AnyMutableObject, DeepReadonly, InexactPartial } from "#utils";
+import type { AnyMutableObject, DeepReadonly, InexactPartial, MaybeArray } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { DataField, SchemaField } from "../data/fields.d.mts";
+import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
 
 /**
@@ -75,7 +75,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   override updateSource(changes?: BaseToken.UpdateData, options?: DataModel.UpdateOptions): BaseToken.UpdateData;
 
-  override clone<Save extends boolean | null | undefined = false>(
+  override clone<Save extends boolean | undefined = false>(
     data?: BaseToken.CreateData,
     context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;
@@ -151,7 +151,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     columns: boolean,
   ): DeepReadonly<TokenDocument.HexagonalOffsetsData>;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   // TODO: Update with the Delta conditionality
   override toObject(source?: boolean): BaseToken.Source;
@@ -205,12 +205,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   /* Document overrides */
 
-  // Same as Document for now
-  protected static override _initializationOrder(): Generator<[string, DataField.Any], void, undefined>;
-
   override readonly parentCollection: BaseToken.ParentCollectionName | null;
-
-  override readonly pack: string | null;
 
   static override get implementation(): TokenDocument.ImplementationClass;
 
@@ -222,42 +217,62 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   static override get TYPES(): CONST.BASE_DOCUMENT_TYPE[];
 
-  static override get hasTypeData(): undefined;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): BaseToken.Hierarchy;
+  static override readonly hierarchy: BaseToken.Hierarchy;
 
   override parent: BaseToken.Parent;
 
   override " fvtt_types_internal_document_parent": BaseToken.Parent;
 
+  static override canUserCreate(user: User.Implementation): boolean;
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Token", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<TokenDocument.Implementation | BaseToken.CreateData> | undefined,
+    data: BaseToken.CreateInput[],
     operation?: Document.Database.CreateOperation<BaseToken.Database.Create<Temporary>>,
   ): Promise<Array<BaseToken.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: BaseToken.UpdateData[] | undefined,
+    updates: BaseToken.UpdateInput[],
     operation?: Document.Database.UpdateDocumentsOperation<BaseToken.Database.Update>,
-  ): Promise<TokenDocument.Implementation[]>;
+  ): Promise<Array<TokenDocument.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
+    ids: readonly string[],
     operation?: Document.Database.DeleteDocumentsOperation<BaseToken.Database.Delete>,
-  ): Promise<TokenDocument.Implementation[]>;
+  ): Promise<Array<TokenDocument.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: BaseToken.CreateData | BaseToken.CreateData[],
+  static override create<
+    Data extends MaybeArray<BaseToken.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
     operation?: BaseToken.Database.CreateOperation<Temporary>,
-  ): Promise<BaseToken.TemporaryIf<Temporary> | undefined>;
+  ): Promise<BaseToken.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: BaseToken.UpdateData | undefined,
+    data: BaseToken.UpdateInput,
     operation?: BaseToken.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
   override delete(operation?: BaseToken.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: BaseToken.Database.GetOptions): TokenDocument.Implementation | null;
+  // `TokenDocument`s are neither world documents nor compendium documents, so this always returns `null`.
+  static override get(documentId: string, operation?: BaseToken.Database.GetOptions): null;
 
   static override getCollectionName<CollectionName extends BaseToken.Embedded.Name>(
     name: CollectionName,
@@ -296,11 +311,6 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
-
   override getFlag<Scope extends BaseToken.Flags.Scope, Key extends BaseToken.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
@@ -310,17 +320,17 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     Scope extends BaseToken.Flags.Scope,
     Key extends BaseToken.Flags.Key<Scope>,
     Value extends BaseToken.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
   override unsetFlag<Scope extends BaseToken.Flags.Scope, Key extends BaseToken.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
   protected override _preCreate(
     data: BaseToken.CreateData,
     options: BaseToken.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onCreate(
@@ -332,19 +342,19 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   protected static override _preCreateOperation(
     documents: TokenDocument.Implementation[],
     operation: Document.Database.PreCreateOperationStatic<BaseToken.Database.Create>,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: TokenDocument.Implementation[],
+    documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Create,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
     changed: BaseToken.UpdateData,
     options: BaseToken.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
@@ -354,61 +364,61 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: TokenDocument.Implementation[],
+    documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: TokenDocument.Implementation[],
+    documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Update,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
     options: BaseToken.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onDelete(options: BaseToken.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: TokenDocument.Implementation[],
+    documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: TokenDocument.Implementation[],
+    documents: TokenDocument.Stored[],
     operation: BaseToken.Database.Delete,
-    user: User.Implementation,
+    user: User.Stored,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@linkcode Document._onCreateOperation | Document._onCreateOperation}"
+   * @deprecated "The `TokenDocument._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode TokenDocument._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: TokenDocument.Implementation[],
-    context: Document.ModificationContext<BaseToken.Parent>,
+    context: BaseToken.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@linkcode Document._onUpdateOperation | Document._onUpdateOperation}"
+   * @deprecated "The `TokenDocument._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode TokenDocument._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: TokenDocument.Implementation[],
-    context: Document.ModificationContext<BaseToken.Parent>,
+    documents: TokenDocument.Stored[],
+    context: BaseToken.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@linkcode Document._onDeleteOperation | Document._onDeleteOperation}"
+   * @deprecated "The `TokenDocument._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode TokenDocument._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: TokenDocument.Implementation[],
-    context: Document.ModificationContext<BaseToken.Parent>,
+    documents: TokenDocument.Stored[],
+    context: BaseToken.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */
@@ -463,7 +473,6 @@ declare namespace BaseToken {
   export import CollectionClass = TokenDocument.CollectionClass;
   export import Collection = TokenDocument.Collection;
   export import Invalid = TokenDocument.Invalid;
-  export import Stored = TokenDocument.Stored;
   export import Source = TokenDocument.Source;
   export import CreateData = TokenDocument.CreateData;
   export import CreateInput = TokenDocument.CreateInput;
