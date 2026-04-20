@@ -1237,7 +1237,7 @@ declare namespace Document {
       [K in keyof Embedded]: K extends Document.Type ? Extract<K | Embedded[K], string> : never;
     }[keyof Embedded];
 
-    // TODO: description
+    /** Provides a union of `Implementation` types for all possible parents of a given embedded Document type */
     type ParentForName<Name extends Document.EmbeddedType> = Document.ImplementationFor<
       Document.Internal.DocumentNameFor<Exclude<Document.ParentForName<Name>, null>>
     >;
@@ -2031,6 +2031,10 @@ declare namespace Document {
    */
   interface InitializeSourceOptions extends DataModel.InitializeSourceOptions, Omit<ConstructionContext, "parent"> {}
 
+  /**
+   * @deprecated This type has been replaced with per-operation types under `namespace Database` in the client document namespaces. It will
+   * be removed in v14.
+   */
   interface ModificationContext<Parent extends Document.Any | null> {
     /**
      * A parent Document within which these Documents should be embedded
@@ -2160,6 +2164,11 @@ declare namespace Document {
         "parent" | "pack" | "keepId" | "temporary"
       > {}
 
+  /**
+   * @deprecated This type has been replaced with per-operation types under `namespace Database` in the client document namespaces. It will
+   * be removed in v14.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ModificationOptions = Omit<Document.ModificationContext<Document.Any | null>, "parent" | "pack">;
 
   interface Metadata<out ThisType extends Document.Any> {
