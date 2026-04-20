@@ -1235,7 +1235,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
 
   static override fromImport(
     source: Combatant.Source,
-    context?: Document.FromImportContext<Combatant.Parent> | null,
+    context?: Document.FromImportContext<Combatant.Parent>,
   ): Promise<Combatant.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

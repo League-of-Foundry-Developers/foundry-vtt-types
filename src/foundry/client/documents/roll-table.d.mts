@@ -1422,7 +1422,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
 
   static override fromImport(
     source: RollTable.Source,
-    context?: Document.FromImportContext<RollTable.Parent> | null,
+    context?: Document.FromImportContext<RollTable.Parent>,
   ): Promise<RollTable.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

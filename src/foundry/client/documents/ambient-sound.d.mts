@@ -1077,7 +1077,7 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
 
   static override fromImport(
     source: AmbientSoundDocument.Source,
-    context?: Document.FromImportContext<AmbientSoundDocument.Parent> | null,
+    context?: Document.FromImportContext<AmbientSoundDocument.Parent>,
   ): Promise<AmbientSoundDocument.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

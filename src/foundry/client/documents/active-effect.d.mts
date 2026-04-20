@@ -1573,7 +1573,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   static override fromImport(
     source: ActiveEffect.Source,
-    context?: Document.FromImportContext<ActiveEffect.Parent> | null,
+    context?: Document.FromImportContext<ActiveEffect.Parent>,
   ): Promise<ActiveEffect.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

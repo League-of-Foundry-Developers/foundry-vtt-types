@@ -1198,7 +1198,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
 
   static override fromImport(
     source: JournalEntry.Source,
-    context?: Document.FromImportContext<JournalEntry.Parent> | null,
+    context?: Document.FromImportContext<JournalEntry.Parent>,
   ): Promise<JournalEntry.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

@@ -1116,7 +1116,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
 
   static override fromImport(
     source: PlaylistSound.Source,
-    context?: Document.FromImportContext<PlaylistSound.Parent> | null,
+    context?: Document.FromImportContext<PlaylistSound.Parent>,
   ): Promise<PlaylistSound.Implementation>;
 
   // Embedded document operations have been left out because PlaylistSound does not have any embedded documents.

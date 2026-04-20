@@ -1081,7 +1081,7 @@ declare class CombatantGroup<
 
   static override fromImport(
     source: CombatantGroup.Source,
-    context?: Document.FromImportContext<CombatantGroup.Parent> | null,
+    context?: Document.FromImportContext<CombatantGroup.Parent>,
   ): Promise<CombatantGroup.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

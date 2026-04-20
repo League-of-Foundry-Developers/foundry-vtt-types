@@ -1078,7 +1078,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
 
   static override fromImport(
     source: MeasuredTemplateDocument.Source,
-    context?: Document.FromImportContext<MeasuredTemplateDocument.Parent> | null,
+    context?: Document.FromImportContext<MeasuredTemplateDocument.Parent>,
   ): Promise<MeasuredTemplateDocument.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

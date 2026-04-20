@@ -1283,7 +1283,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
 
   static override fromImport(
     source: Item.Source,
-    context?: Document.FromImportContext<Item.Parent> | null,
+    context?: Document.FromImportContext<Item.Parent>,
   ): Promise<Item.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

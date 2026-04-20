@@ -1548,7 +1548,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
 
   static override fromImport(
     source: Cards.Source,
-    context?: Document.FromImportContext<Cards.Parent> | null,
+    context?: Document.FromImportContext<Cards.Parent>,
   ): Promise<Cards.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

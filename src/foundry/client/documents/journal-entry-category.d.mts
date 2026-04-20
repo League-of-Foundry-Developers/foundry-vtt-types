@@ -965,7 +965,7 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
 
   static override fromImport(
     source: JournalEntryCategory.Source,
-    context?: Document.FromImportContext<JournalEntryCategory.Parent> | null,
+    context?: Document.FromImportContext<JournalEntryCategory.Parent>,
   ): Promise<JournalEntryCategory.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

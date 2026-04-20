@@ -2035,7 +2035,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
 
   static override fromImport(
     source: Scene.Source,
-    context?: Document.FromImportContext<Scene.Parent> | null,
+    context?: Document.FromImportContext<Scene.Parent>,
   ): Promise<Scene.Implementation>;
 
   #Scene: true;

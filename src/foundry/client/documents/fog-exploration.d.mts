@@ -1071,7 +1071,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
 
   static override fromImport(
     source: FogExploration.Source,
-    context?: Document.FromImportContext<FogExploration.Parent> | null,
+    context?: Document.FromImportContext<FogExploration.Parent>,
   ): Promise<FogExploration.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
