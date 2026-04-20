@@ -1593,6 +1593,10 @@ declare namespace Document {
     // Note(LukeAbby): Will be updated with the CONFIG revamp.
     type ConfiguredCollection<Name extends Document.Type> = FixedInstanceType<ConfiguredCollectionClass<Name>>;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ._preCreateDescendantDocuments}
+     */
     type PreCreateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1607,6 +1611,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ._onCreateDescendantDocuments}
+     */
     type OnCreateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1622,6 +1630,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._preUpdateDescendantDocuments | ._preUpdateDescendantDocuments}
+     */
     type PreUpdateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1636,6 +1648,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._onUpdateDescendantDocuments | ._onUpdateDescendantDocuments}
+     */
     type OnUpdateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1651,6 +1667,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._preDeleteDescendantDocuments | ._preDeleteDescendantDocuments}
+     */
     type PreDeleteDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1665,6 +1685,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._onDeleteDescendantDocuments | ._onDeleteDescendantDocuments}
+     */
     type OnDeleteDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -3424,117 +3448,6 @@ declare namespace Document {
      */
     strict?: boolean;
   }
-
-  /**
-   * A helper type to define the args list for a specific document's
-   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ._preCreateDescendantDocuments}
-   */
-  type PreCreateDescendantDocumentsArgs<
-    Parent extends Document.AnyStored,
-    DirectDescendant extends Document.Any,
-    Embedded extends Document.Metadata.Embedded,
-  > = DirectDescendant extends unknown
-    ? [
-        parent: Parent,
-        collection: Embedded[DirectDescendant["documentName"]],
-        data: Document.CreateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database.PreCreateOptionsForName<DirectDescendant["documentName"]>,
-        userId: string,
-      ]
-    : never;
-
-  /**
-   * A helper type to define the args list for a specific document's
-   * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ._onCreateDescendantDocuments}
-   */
-  type OnCreateDescendantDocumentsArgs<
-    Parent extends Document.AnyStored,
-    DirectDescendant extends Document.Any,
-    Embedded extends Document.Metadata.Embedded,
-  > = DirectDescendant extends unknown
-    ? [
-        parent: Parent,
-        collection: Embedded[DirectDescendant["documentName"]],
-        documents: DirectDescendant[],
-        data: Document.CreateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database.OnCreateOptionsForName<DirectDescendant["documentName"]>,
-        userId: string,
-      ]
-    : never;
-
-  /**
-   * A helper type to define the args list for a specific document's
-   * {@linkcode ClientDocumentMixin.AnyMixed._preUpdateDescendantDocuments | ._preUpdateDescendantDocuments}
-   */
-  type PreUpdateDescendantDocumentsArgs<
-    Parent extends Document.AnyStored,
-    DirectDescendant extends Document.Any,
-    Embedded extends Document.Metadata.Embedded,
-  > = DirectDescendant extends unknown
-    ? [
-        parent: Parent,
-        collection: Embedded[DirectDescendant["documentName"]],
-        changes: Document.UpdateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database.PreUpdateOptionsForName<DirectDescendant["documentName"]>,
-        userId: string,
-      ]
-    : never;
-
-  /**
-   * A helper type to define the args list for a specific document's
-   * {@linkcode ClientDocumentMixin.AnyMixed._onUpdateDescendantDocuments | ._onUpdateDescendantDocuments}
-   */
-  type OnUpdateDescendantDocumentsArgs<
-    Parent extends Document.AnyStored,
-    DirectDescendant extends Document.Any,
-    Embedded extends Document.Metadata.Embedded,
-  > = DirectDescendant extends unknown
-    ? [
-        parent: Parent,
-        collection: Embedded[DirectDescendant["documentName"]],
-        documents: DirectDescendant[],
-        changes: Document.UpdateDataForName<DirectDescendant["documentName"]>[],
-        options: Document.Database.OnUpdateOptionsForName<DirectDescendant["documentName"]>,
-        userId: string,
-      ]
-    : never;
-
-  /**
-   * A helper type to define the args list for a specific document's
-   * {@linkcode ClientDocumentMixin.AnyMixed._preDeleteDescendantDocuments | ._preDeleteDescendantDocuments}
-   */
-  type PreDeleteDescendantDocumentsArgs<
-    Parent extends Document.AnyStored,
-    DirectDescendant extends Document.Any,
-    Embedded extends Document.Metadata.Embedded,
-  > = DirectDescendant extends unknown
-    ? [
-        parent: Parent,
-        collection: Embedded[DirectDescendant["documentName"]],
-        ids: string[],
-        options: Document.Database.PreDeleteOptionsForName<DirectDescendant["documentName"]>,
-        userId: string,
-      ]
-    : never;
-
-  /**
-   * A helper type to define the args list for a specific document's
-   * {@linkcode ClientDocumentMixin.AnyMixed._onDeleteDescendantDocuments | ._onDeleteDescendantDocuments}
-   */
-  type OnDeleteDescendantDocumentsArgs<
-    Parent extends Document.AnyStored,
-    DirectDescendant extends Document.Any,
-    Embedded extends Document.Metadata.Embedded,
-  > = DirectDescendant extends unknown
-    ? [
-        parent: Parent,
-        collection: Embedded[DirectDescendant["documentName"]],
-        documents: DirectDescendant[],
-        ids: string[],
-        options: Document.Database.OnDeleteOptionsForName<DirectDescendant["documentName"]>,
-        userId: string,
-      ]
-    : never;
 
   /**
    * @deprecated Foundry, prior to v13, had a completely unused `options` parameter in the
