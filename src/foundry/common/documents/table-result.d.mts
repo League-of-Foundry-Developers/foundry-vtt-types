@@ -52,17 +52,18 @@ declare abstract class BaseTableResult<
   static override defineSchema(): BaseTableResult.Schema;
 
   /**
-   * @deprecated since V13 until V15
+   * @deprecated "`#text` is deprecated. Use {@linkcode BaseTableResult.name | #name} or
+   * {@linkcode BaseTableResult.description | #description} instead." (since v13, until v15)
    */
   get text(): string;
 
   /**
-   * @deprecated since V13 until V15
+   * @deprecated "`#documentId` is deprecated. Consult {@linkcode BaseTableResult.uuid | #uuid} instead." (since v13, until v15)
    */
   get documentId(): string | null;
 
   /**
-   * @deprecated since v13 until V15
+   * @deprecated "`#documentCollection` is deprecated. Consult {@linkcode BaseTableResult.uuid | #uuid} instead." (since v13, until v15)
    */
   get documentCollection(): string;
 
@@ -70,9 +71,19 @@ declare abstract class BaseTableResult<
    * @remarks
    * Migrations:
    * - Numeric `type`s to their new — since v12 — string values
+   * - `type: "pack"` -\> {@linkcode CONST.TABLE_RESULT_TYPES.DOCUMENT} (since v13)
+   * - `documentId` and `documentCollection` -\> `documentUuid`
+   * - `text` -\> `description` (since v13, until v15)
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
+  /**
+   * @remarks
+   * Shims:
+   * - `documentId` -\> the `id` part of a {@linkcode foundry.utils.parseUuid} call or `null` (since v13, until v15)
+   * - `documentCollection` -\> a pack ID, document type, or `null` (since v13, until v15)
+   * - `text` -\> `description` (since v13, until v15)
+   */
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*
