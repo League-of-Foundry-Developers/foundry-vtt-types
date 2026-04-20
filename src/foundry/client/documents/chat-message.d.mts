@@ -1162,7 +1162,7 @@ declare namespace ChatMessage {
     user: User.Stored;
 
     /** @remarks The message's {@linkcode ChatMessage.author | author} */
-    author: User.Implementation;
+    author: User.Stored;
 
     /** @remarks The message's {@linkcode ChatMessage.alias | alias} */
     alias: string;
