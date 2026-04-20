@@ -268,7 +268,6 @@ declare namespace AmbientLightDocument {
      * @see {@linkcode Document.Database.BackendGetOperation}
      */
     interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
-
     /* ***********************************************
      *              CREATE OPERATIONS                *
      *************************************************/
@@ -408,7 +407,6 @@ declare namespace AmbientLightDocument {
      * use case for doing so, please let us know.
      */
     interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
-
     /* ***********************************************
      *              UPDATE OPERATIONS                *
      *************************************************/
@@ -563,7 +561,6 @@ declare namespace AmbientLightDocument {
      * use case for doing so, please let us know.
      */
     interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
-
     /* ***********************************************
      *              DELETE OPERATIONS                *
      *************************************************/
