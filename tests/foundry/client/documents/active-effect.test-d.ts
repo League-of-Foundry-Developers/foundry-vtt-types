@@ -71,7 +71,7 @@ expectTypeOf(
       parent: someActor,
     },
   ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null | "ok">>();
 expectTypeOf(
   ActiveEffect.createDialog(
     createData,
@@ -84,7 +84,7 @@ expectTypeOf(
       //types: [],
     },
   ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null | "ok">>();
 expectTypeOf(
   ActiveEffect.createDialog(
     {},
@@ -93,13 +93,13 @@ expectTypeOf(
       pack: undefined,
     },
   ),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null | "ok">>();
 expectTypeOf(
   ActiveEffect.createDialog(createData, {
     parent: someActor,
     pack: null,
   }),
-).toEqualTypeOf<Promise<ActiveEffect.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<ActiveEffect.Stored | null | "ok">>();
 
 declare const aeSource: ActiveEffect.Source;
 expectTypeOf(
@@ -113,12 +113,9 @@ expectTypeOf(
   }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
 expectTypeOf(
-  ActiveEffect.fromDropData(
-    {
-      data: aeSource,
-    },
-    {}, // options is vestigial, this is AnyObject
-  ),
+  ActiveEffect.fromDropData({
+    data: aeSource,
+  }),
 ).toEqualTypeOf<Promise<ActiveEffect.Implementation | undefined>>();
 
 expectTypeOf(ActiveEffect.fromImport(aeSource)).toEqualTypeOf<Promise<ActiveEffect.Implementation>>();

@@ -1072,6 +1072,10 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
     operation?: MeasuredTemplateDocument.Database.DeleteOneDocumentOperation,
   ): Promise<MeasuredTemplateDocument.DeleteDialogReturn<Options>>;
 
+  static override fromDropData(
+    data: MeasuredTemplateDocument.DropData,
+  ): Promise<MeasuredTemplateDocument.Implementation | undefined>;
+
   static override fromImport(
     source: MeasuredTemplateDocument.Source,
     context?: Document.FromImportContext<MeasuredTemplateDocument.Parent> | null,

@@ -959,6 +959,10 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
     operation?: JournalEntryCategory.Database.DeleteOneDocumentOperation,
   ): Promise<JournalEntryCategory.DeleteDialogReturn<Options>>;
 
+  static override fromDropData(
+    data: JournalEntryCategory.DropData,
+  ): Promise<JournalEntryCategory.Implementation | undefined>;
+
   static override fromImport(
     source: JournalEntryCategory.Source,
     context?: Document.FromImportContext<JournalEntryCategory.Parent> | null,

@@ -18,14 +18,14 @@ declare const activeEffect: ActiveEffect.Stored;
 const anyClientDoc: ClientDocumentMixin.AnyMixed = item;
 // Test the inheritance of static members
 expectTypeOf(Item.documentName).toEqualTypeOf<"Item">(); // Document
-expectTypeOf(Item.createDialog()).toEqualTypeOf<Promise<Item.Stored | null | undefined>>(); // ClientDocumentMixin
+expectTypeOf(Item.createDialog()).toEqualTypeOf<Promise<Item.Stored | null | "ok">>(); // ClientDocumentMixin
 
 // ensure source can be used to create a new document with createDialog
-expectTypeOf(Item.createDialog(item.toObject())).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+expectTypeOf(Item.createDialog(item.toObject())).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 
 declare const createData: Item.CreateData;
 declare const dialogOptions: InexactPartial<Dialog.Options>;
-expectTypeOf(Item.createDialog({}, {})).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+expectTypeOf(Item.createDialog({}, {})).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 expectTypeOf(
   Item.createDialog(
     createData,
@@ -37,7 +37,7 @@ expectTypeOf(
     //   ...dialogOptions,
     // },
   ),
-).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 
 // @ts-expect-error "foo" is not a valid Item type
 Item.createDialog({}, { types: ["foo"] });
@@ -55,19 +55,19 @@ expectTypeOf(
     //   ...dialogOptions,
     // },
   ),
-).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 expectTypeOf(
   Item.createDialog(createData, {
     pack: null,
     parent: null,
   }),
-).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 expectTypeOf(
   Item.createDialog(createData, {
     pack: undefined,
     parent: undefined,
   }),
-).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
+).toEqualTypeOf<Promise<Item.Stored | null | "ok">>();
 
 expectTypeOf(Item.defaultName()).toBeString();
 expectTypeOf(Item.defaultName({})).toBeString();
@@ -83,8 +83,6 @@ expectTypeOf(Item.defaultName({ type: undefined, pack: undefined, parent: undefi
 
 declare const itemDropData: Item.DropData;
 expectTypeOf(Item.fromDropData(itemDropData)).toEqualTypeOf<Promise<Item.Implementation | undefined>>();
-// there are no actual options to test
-expectTypeOf(Item.fromDropData(itemDropData, {})).toEqualTypeOf<Promise<Item.Implementation | undefined>>();
 
 declare const itemSource: Item.Source;
 const constructionContext = {
@@ -170,7 +168,7 @@ expectTypeOf(item.link).toBeString();
 // @ts-expect-error Only getter, no setter
 item.link = "foo";
 
-expectTypeOf(item.permission).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS | null>();
+expectTypeOf(item.permission).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS>();
 // @ts-expect-error Only getter, no setter
 item.permission = CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER;
 
@@ -304,9 +302,9 @@ expectTypeOf(item["_onSheetChange"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({ sheetOpen: true })).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({ sheetOpen: undefined })).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(item.deleteDialog()).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
-expectTypeOf(item.deleteDialog({})).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
-expectTypeOf(item.deleteDialog(dialogOptions)).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
+expectTypeOf(item.deleteDialog()).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
+expectTypeOf(item.deleteDialog({})).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
+expectTypeOf(item.deleteDialog(dialogOptions)).toEqualTypeOf<Promise<Item.Stored | false | null | "yes">>();
 
 // Using exportToJSON to test ToCompendiumOptions for now
 expectTypeOf(item.exportToJSON()).toBeVoid();

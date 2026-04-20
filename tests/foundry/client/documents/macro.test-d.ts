@@ -50,7 +50,7 @@ expectTypeOf(script.folder).toEqualTypeOf<Folder.Stored | null>();
 expectTypeOf(script.isOwner).toEqualTypeOf<boolean>();
 
 // static properties and functions of `ClientDocumentMixin`
-expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro.Stored | null | undefined>>();
+expectTypeOf(Macro.createDialog()).toEqualTypeOf<Promise<Macro.Stored | null | "ok">>();
 
 // properties of `Document`
 expectTypeOf(script.parent).toEqualTypeOf<null>();
