@@ -3,6 +3,8 @@ import { assertType, expectTypeOf, test } from "vitest";
 import UserTargets = foundry.canvas.placeables.tokens.UserTargets;
 import Application = foundry.appv1.api.Application;
 
+declare const storedMacro: Macro.Stored;
+
 // @ts-expect-error requires a name.
 new User.implementation();
 
@@ -16,10 +18,10 @@ expectTypeOf(user.targets).toEqualTypeOf<UserTargets>();
 expectTypeOf(user.id).toEqualTypeOf<string | null>();
 expectTypeOf(user.viewedScene).toEqualTypeOf<string | null>();
 assertType<Partial<Record<string, boolean>>>(user.permissions);
-expectTypeOf(user.getHotbarMacros().map((each) => each.macro)).toEqualTypeOf<Array<Macro.Implementation | null>>();
-expectTypeOf(user.getHotbarMacros().map((each) => each.macro)).toEqualTypeOf<Array<Macro.Implementation | null>>();
+expectTypeOf(user.getHotbarMacros().map((each) => each.macro)).toEqualTypeOf<Array<Macro.Stored | null>>();
+expectTypeOf(user.getHotbarMacros().map((each) => each.macro)).toEqualTypeOf<Array<Macro.Stored | null>>();
 
-user.assignHotbarMacro(new Macro.implementation({ name: "Foo" }), 1);
+user.assignHotbarMacro(storedMacro, 1);
 
 expectTypeOf(user._id).toEqualTypeOf<string | null>();
 expectTypeOf(user.avatar).toEqualTypeOf<string | null>();
