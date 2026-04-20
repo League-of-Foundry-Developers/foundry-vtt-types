@@ -250,44 +250,44 @@ declare namespace AmbientLightDocument {
 
     /**
      * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
-     * `Adventure` documents. Valid for passing to
+     * `AmbientLightDocument` documents. Valid for passing to
      * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
      *
      * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
      */
-    interface GetOperation extends DatabaseBackend.GetOperation<Adventure.Parent> {}
+    interface GetOperation extends DatabaseBackend.GetOperation<AmbientLightDocument.Parent> {}
 
     /**
-     * The interface for passing to {@linkcode Adventure.get}.
+     * The interface for passing to {@linkcode AmbientLightDocument.get}.
      * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
     interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
-     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `Adventure` documents.
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `AmbientLightDocument` documents.
      * @see {@linkcode Document.Database.BackendGetOperation}
      */
     interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
-
     /* ***********************************************
      *              CREATE OPERATIONS                *
      *************************************************/
 
     /**
      * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
-     * interface for `Adventure` documents.
+     * interface for `AmbientLightDocument` documents.
      *
      * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
      *
-     * @remarks This interface was previously typed for passing to {@linkcode Adventure.create}. The new name for that
+     * @remarks This interface was previously typed for passing to {@linkcode AmbientLightDocument.create}. The new name for that
      * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface CreateOperation<
-      Temporary extends boolean | undefined = boolean | undefined,
-    > extends DatabaseBackend.CreateOperation<Adventure.CreateInput, Adventure.Parent, Temporary> {}
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<AmbientLightDocument.CreateInput, AmbientLightDocument.Parent, Temporary>,
+        DatabaseBackend._CommonCanvasDocumentCreateProperties {}
 
     /**
-     * The interface for passing to {@linkcode Adventure.create} or {@linkcode Adventure.createDocuments}.
+     * The interface for passing to {@linkcode AmbientLightDocument.create} or {@linkcode AmbientLightDocument.createDocuments}.
      * @see {@linkcode Document.Database.CreateDocumentsOperation}
      *
      * ---
@@ -302,10 +302,8 @@ declare namespace AmbientLightDocument {
       .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
-     * @deprecated `Adventure` documents are never embedded. This interface exists for consistency with other documents.
-     *
      * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
-     * can contain `Adventure` documents. (see {@linkcode Adventure.Parent})
+     * can contain `AmbientLightDocument` documents. (see {@linkcode AmbientLightDocument.Parent})
      * @see {@linkcode Document.Database.CreateEmbeddedOperation}
      *
      * ---
@@ -319,7 +317,7 @@ declare namespace AmbientLightDocument {
     interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
 
     /**
-     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `Adventure` documents.
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `AmbientLightDocument` documents.
      * @see {@linkcode Document.Database.BackendCreateOperation}
      *
      * ---
@@ -334,8 +332,8 @@ declare namespace AmbientLightDocument {
       .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
 
     /**
-     * The interface passed to {@linkcode Adventure._preCreate | Adventure#_preCreate} and
-     * {@link Hooks.PreCreateDocument | the `preCreateAdventure` hook}.
+     * The interface passed to {@linkcode AmbientLightDocument._preCreate | AmbientLightDocument#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateAmbientLightDocument` hook}.
      * @see {@linkcode Document.Database.PreCreateOptions}
      *
      * ---
@@ -350,7 +348,7 @@ declare namespace AmbientLightDocument {
       .PreCreateOptions<CreateOperation<Temporary>> {}
 
     /**
-     * The interface passed to {@linkcode Adventure._preCreateOperation}.
+     * The interface passed to {@linkcode AmbientLightDocument._preCreateOperation}.
      * @see {@linkcode Document.Database.PreCreateOperation}
      *
      * ---
@@ -365,7 +363,7 @@ declare namespace AmbientLightDocument {
       .PreCreateOperation<CreateOperation<Temporary>> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode Adventure._onCreateDocuments}. It will be removed in v14 along with the
+     * @deprecated The interface passed to {@linkcode AmbientLightDocument._onCreateDocuments}. It will be removed in v14 along with the
      * method it is for.
      * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
      *
@@ -381,8 +379,8 @@ declare namespace AmbientLightDocument {
       .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
 
     /**
-     * The interface passed to {@linkcode Adventure._onCreate | Adventure#_onCreate} and
-     * {@link Hooks.CreateDocument | the `createAdventure` hook}.
+     * The interface passed to {@linkcode AmbientLightDocument._onCreate | AmbientLightDocument#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createAmbientLightDocument` hook}.
      * @see {@linkcode Document.Database.OnCreateOptions}
      *
      * ---
@@ -396,7 +394,7 @@ declare namespace AmbientLightDocument {
     interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
 
     /**
-     * The interface passed to {@linkcode Adventure._onCreateOperation} and `Adventure`-related collections'
+     * The interface passed to {@linkcode AmbientLightDocument._onCreateOperation} and `AmbientLightDocument`-related collections'
      * `#_onModifyContents` methods.
      * @see {@linkcode Document.Database.OnCreateOperation}
      *
@@ -409,24 +407,32 @@ declare namespace AmbientLightDocument {
      * use case for doing so, please let us know.
      */
     interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
-
     /* ***********************************************
      *              UPDATE OPERATIONS                *
      *************************************************/
 
     /**
      * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
-     * interface for `Adventure` documents.
+     * interface for `AmbientLightDocument` documents.
      *
      * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
      *
-     * @remarks This interface was previously typed for passing to {@linkcode Adventure.update | Adventure#update}.
+     * @remarks This interface was previously typed for passing to {@linkcode AmbientLightDocument.update | AmbientLightDocument#update}.
      * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
      */
-    interface UpdateOperation extends DatabaseBackend.UpdateOperation<Adventure.UpdateInput, Adventure.Parent> {}
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<AmbientLightDocument.UpdateInput, AmbientLightDocument.Parent>,
+        DatabaseBackend._CommonCanvasDocumentUpdateProperties {
+      /**
+       * @remarks Appears to be unused. {@linkcode AmbientLightDocument._onUpdate} conditionally sets this `false`, but nothing in
+       * `AmbientLightDocument`, {@linkcode BaseAmbientLight}, {@linkcode AmbientLight}, or anywhere else ever checks for it.
+       */
+      animate?: boolean;
+    }
 
     /**
-     * The interface for passing to {@linkcode Adventure.update | Adventure#update}.
+     * The interface for passing to {@linkcode AmbientLightDocument.update | AmbientLightDocument#update}.
      * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
      *
      * ---
@@ -440,10 +446,8 @@ declare namespace AmbientLightDocument {
     interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
 
     /**
-     * @deprecated `Adventure` documents are never embedded. This interface exists for consistency with other documents.
-     *
      * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
-     * can contain `Adventure` documents (see {@linkcode Adventure.Parent}). This interface is just an alias
+     * can contain `AmbientLightDocument` documents (see {@linkcode AmbientLightDocument.Parent}). This interface is just an alias
      * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
      *
      * ---
@@ -457,7 +461,7 @@ declare namespace AmbientLightDocument {
     interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
 
     /**
-     * The interface for passing to {@linkcode Adventure.updateDocuments}.
+     * The interface for passing to {@linkcode AmbientLightDocument.updateDocuments}.
      * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
      *
      * ---
@@ -471,7 +475,7 @@ declare namespace AmbientLightDocument {
     interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
 
     /**
-     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `Adventure` documents.
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `AmbientLightDocument` documents.
      * @see {@linkcode Document.Database.BackendUpdateOperation}
      *
      * ---
@@ -485,8 +489,8 @@ declare namespace AmbientLightDocument {
     interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
 
     /**
-     * The interface passed to {@linkcode Adventure._preUpdate | Adventure#_preUpdate} and
-     * {@link Hooks.PreUpdateDocument | the `preUpdateAdventure` hook}.
+     * The interface passed to {@linkcode AmbientLightDocument._preUpdate | AmbientLightDocument#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateAmbientLightDocument` hook}.
      * @see {@linkcode Document.Database.PreUpdateOptions}
      *
      * ---
@@ -500,7 +504,7 @@ declare namespace AmbientLightDocument {
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
 
     /**
-     * The interface passed to {@linkcode Adventure._preUpdateOperation}.
+     * The interface passed to {@linkcode AmbientLightDocument._preUpdateOperation}.
      * @see {@linkcode Document.Database.PreUpdateOperation}
      *
      * ---
@@ -514,7 +518,7 @@ declare namespace AmbientLightDocument {
     interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode Adventure._onUpdateDocuments}. It will be removed in v14 along with the
+     * @deprecated The interface passed to {@linkcode AmbientLightDocument._onUpdateDocuments}. It will be removed in v14 along with the
      * method it is for.
      * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
      *
@@ -529,8 +533,8 @@ declare namespace AmbientLightDocument {
     interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
 
     /**
-     * The interface passed to {@linkcode Adventure._onUpdate | Adventure#_onUpdate} and
-     * {@link Hooks.UpdateDocument | the `updateAdventure` hook}.
+     * The interface passed to {@linkcode AmbientLightDocument._onUpdate | AmbientLightDocument#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateAmbientLightDocument` hook}.
      * @see {@linkcode Document.Database.OnUpdateOptions}
      *
      * ---
@@ -544,7 +548,7 @@ declare namespace AmbientLightDocument {
     interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
 
     /**
-     * The interface passed to {@linkcode Adventure._onUpdateOperation} and `Adventure`-related collections'
+     * The interface passed to {@linkcode AmbientLightDocument._onUpdateOperation} and `AmbientLightDocument`-related collections'
      * `#_onModifyContents` methods.
      * @see {@linkcode Document.Database.OnUpdateOperation}
      *
@@ -557,24 +561,23 @@ declare namespace AmbientLightDocument {
      * use case for doing so, please let us know.
      */
     interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
-
     /* ***********************************************
      *              DELETE OPERATIONS                *
      *************************************************/
 
     /**
      * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
-     * interface for `Adventure` documents.
+     * interface for `AmbientLightDocument` documents.
      *
      * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
      *
-     * @remarks This interface was previously typed for passing to {@linkcode Adventure.delete | Adventure#delete}.
+     * @remarks This interface was previously typed for passing to {@linkcode AmbientLightDocument.delete | AmbientLightDocument#delete}.
      * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
      */
-    interface DeleteOperation extends DatabaseBackend.DeleteOperation<Adventure.Parent> {}
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<AmbientLightDocument.Parent> {}
 
     /**
-     * The interface for passing to {@linkcode Adventure.delete | Adventure#delete}.
+     * The interface for passing to {@linkcode AmbientLightDocument.delete | AmbientLightDocument#delete}.
      * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
      *
      * ---
@@ -588,10 +591,8 @@ declare namespace AmbientLightDocument {
     interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
 
     /**
-     * @deprecated `Adventure` documents are never embedded. This interface exists for consistency with other documents.
-     *
      * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
-     * can contain `Adventure` documents (see {@linkcode Adventure.Parent}). This interface is just an alias
+     * can contain `AmbientLightDocument` documents (see {@linkcode AmbientLightDocument.Parent}). This interface is just an alias
      * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
      *
      * ---
@@ -605,7 +606,7 @@ declare namespace AmbientLightDocument {
     interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
 
     /**
-     * The interface for passing to {@linkcode Adventure.deleteDocuments}.
+     * The interface for passing to {@linkcode AmbientLightDocument.deleteDocuments}.
      * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
      *
      * ---
@@ -619,7 +620,7 @@ declare namespace AmbientLightDocument {
     interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
 
     /**
-     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `Adventure` documents.
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `AmbientLightDocument` documents.
      * @see {@linkcode Document.Database.BackendDeleteOperation}
      *
      * ---
@@ -633,8 +634,8 @@ declare namespace AmbientLightDocument {
     interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
 
     /**
-     * The interface passed to {@linkcode Adventure._preDelete | Adventure#_preDelete} and
-     * {@link Hooks.PreDeleteDocument | the `preDeleteAdventure` hook}.
+     * The interface passed to {@linkcode AmbientLightDocument._preDelete | AmbientLightDocument#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteAmbientLightDocument` hook}.
      * @see {@linkcode Document.Database.PreDeleteOptions}
      *
      * ---
@@ -648,7 +649,7 @@ declare namespace AmbientLightDocument {
     interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
 
     /**
-     * The interface passed to {@linkcode Adventure._preDeleteOperation}.
+     * The interface passed to {@linkcode AmbientLightDocument._preDeleteOperation}.
      * @see {@linkcode Document.Database.PreDeleteOperation}
      *
      * ---
@@ -662,7 +663,7 @@ declare namespace AmbientLightDocument {
     interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
 
     /**
-     * @deprecated The interface passed to {@linkcode Adventure._onDeleteDocuments}. It will be removed in v14 along with the
+     * @deprecated The interface passed to {@linkcode AmbientLightDocument._onDeleteDocuments}. It will be removed in v14 along with the
      * method it is for.
      * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
      *
@@ -677,8 +678,8 @@ declare namespace AmbientLightDocument {
     interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
 
     /**
-     * The interface passed to {@linkcode Adventure._onDelete | Adventure#_onDelete} and
-     * {@link Hooks.DeleteDocument | the `deleteAdventure` hook}.
+     * The interface passed to {@linkcode AmbientLightDocument._onDelete | AmbientLightDocument#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteAmbientLightDocument` hook}.
      * @see {@linkcode Document.Database.OnDeleteOptions}
      *
      * ---
@@ -692,7 +693,7 @@ declare namespace AmbientLightDocument {
     interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
 
     /**
-     * The interface passed to {@linkcode Adventure._onDeleteOperation} and `Adventure`-related collections'
+     * The interface passed to {@linkcode AmbientLightDocument._onDeleteOperation} and `AmbientLightDocument`-related collections'
      * `#_onModifyContents` methods.
      * @see {@linkcode Document.Database.OnDeleteOperation}
      *
@@ -708,47 +709,44 @@ declare namespace AmbientLightDocument {
 
     namespace Internal {
       interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
-        GetDocumentsOperation: Adventure.Database.GetDocumentsOperation;
-        BackendGetOperation: Adventure.Database.BackendGetOperation;
-        GetOperation: Adventure.Database.GetOperation;
+        GetDocumentsOperation: AmbientLightDocument.Database.GetDocumentsOperation;
+        BackendGetOperation: AmbientLightDocument.Database.BackendGetOperation;
+        GetOperation: AmbientLightDocument.Database.GetOperation;
 
-        CreateDocumentsOperation: Adventure.Database.CreateDocumentsOperation<Temporary>;
+        CreateDocumentsOperation: AmbientLightDocument.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: AmbientLightDocument.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: AmbientLightDocument.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: AmbientLightDocument.Database.CreateOperation<Temporary>;
+        PreCreateOptions: AmbientLightDocument.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: AmbientLightDocument.Database.PreCreateOperation<Temporary>;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        CreateEmbeddedOperation: Adventure.Database.CreateEmbeddedOperation;
-        BackendCreateOperation: Adventure.Database.BackendCreateOperation<Temporary>;
-        CreateOperation: Adventure.Database.CreateOperation<Temporary>;
-        PreCreateOptions: Adventure.Database.PreCreateOptions<Temporary>;
-        PreCreateOperation: Adventure.Database.PreCreateOperation<Temporary>;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnCreateDocumentsOperation: Adventure.Database.OnCreateDocumentsOperation<Temporary>;
-        OnCreateOptions: Adventure.Database.OnCreateOptions;
-        OnCreateOperation: Adventure.Database.OnCreateOperation;
+        OnCreateDocumentsOperation: AmbientLightDocument.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: AmbientLightDocument.Database.OnCreateOptions;
+        OnCreateOperation: AmbientLightDocument.Database.OnCreateOperation;
 
-        UpdateOneDocumentOperation: Adventure.Database.UpdateOneDocumentOperation;
+        UpdateOneDocumentOperation: AmbientLightDocument.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: AmbientLightDocument.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: AmbientLightDocument.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: AmbientLightDocument.Database.BackendUpdateOperation;
+        UpdateOperation: AmbientLightDocument.Database.UpdateOperation;
+        PreUpdateOptions: AmbientLightDocument.Database.PreUpdateOptions;
+        PreUpdateOperation: AmbientLightDocument.Database.PreUpdateOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        UpdateEmbeddedOperation: Adventure.Database.UpdateEmbeddedOperation;
-        UpdateManyDocumentsOperation: Adventure.Database.UpdateManyDocumentsOperation;
-        BackendUpdateOperation: Adventure.Database.BackendUpdateOperation;
-        UpdateOperation: Adventure.Database.UpdateOperation;
-        PreUpdateOptions: Adventure.Database.PreUpdateOptions;
-        PreUpdateOperation: Adventure.Database.PreUpdateOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnUpdateDocumentsOperation: Adventure.Database.OnUpdateDocumentsOperation;
-        OnUpdateOptions: Adventure.Database.OnUpdateOptions;
-        OnUpdateOperation: Adventure.Database.OnUpdateOperation;
+        OnUpdateDocumentsOperation: AmbientLightDocument.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: AmbientLightDocument.Database.OnUpdateOptions;
+        OnUpdateOperation: AmbientLightDocument.Database.OnUpdateOperation;
 
-        DeleteOneDocumentOperation: Adventure.Database.DeleteOneDocumentOperation;
+        DeleteOneDocumentOperation: AmbientLightDocument.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: AmbientLightDocument.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: AmbientLightDocument.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: AmbientLightDocument.Database.BackendDeleteOperation;
+        DeleteOperation: AmbientLightDocument.Database.DeleteOperation;
+        PreDeleteOptions: AmbientLightDocument.Database.PreDeleteOptions;
+        PreDeleteOperation: AmbientLightDocument.Database.PreDeleteOperation;
         // eslint-disable-next-line @typescript-eslint/no-deprecated
-        DeleteEmbeddedOperation: Adventure.Database.DeleteEmbeddedOperation;
-        DeleteManyDocumentsOperation: Adventure.Database.DeleteManyDocumentsOperation;
-        BackendDeleteOperation: Adventure.Database.BackendDeleteOperation;
-        DeleteOperation: Adventure.Database.DeleteOperation;
-        PreDeleteOptions: Adventure.Database.PreDeleteOptions;
-        PreDeleteOperation: Adventure.Database.PreDeleteOperation;
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
-        OnDeleteDocumentsOperation: Adventure.Database.OnDeleteDocumentsOperation;
-        OnDeleteOptions: Adventure.Database.OnDeleteOptions;
-        OnDeleteOperation: Adventure.Database.OnDeleteOperation;
+        OnDeleteDocumentsOperation: AmbientLightDocument.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: AmbientLightDocument.Database.OnDeleteOptions;
+        OnDeleteOperation: AmbientLightDocument.Database.OnDeleteOperation;
       }
     }
 

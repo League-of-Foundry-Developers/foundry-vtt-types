@@ -18,7 +18,7 @@ declare namespace Item {
   type Name = "Item";
 
   /**
-   * The context used to create a `Item`.
+   * The context used to create an `Item`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 

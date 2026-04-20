@@ -18,7 +18,7 @@ declare namespace ActorDelta {
   type Name = "ActorDelta";
 
   /**
-   * The context used to create a `ActorDelta`.
+   * The context used to create an `ActorDelta`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
