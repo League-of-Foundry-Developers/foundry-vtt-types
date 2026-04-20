@@ -48,6 +48,7 @@ declare abstract class BaseFolder<out SubType extends BaseFolder.SubType = BaseF
   static override LOCALIZATION_PREFIXES: string[];
 
   /**
+   * @remarks
    * @throws If `data.folder === data._id` (no putting folders inside themselves)
    */
   static validateJoint(data: BaseFolder.Source): void;
