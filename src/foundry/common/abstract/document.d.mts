@@ -3435,7 +3435,7 @@ declare namespace Document {
    */
   interface DeleteDialogDeprecatedConfig extends DialogV2.ConfirmConfig, IntentionalPartial<ApplicationV2.Position> {}
 
-  /** This interface is necessitated by the change in default `strict` behaviour and nothing else */
+  /** This interface is necessitated by the change in default `strict` behaviour between `fromImport` and `fromSource` and nothing else */
   interface FromImportContext<Parent extends Document.Any | null> extends Omit<
     Document.ConstructionContext<Parent>,
     "strict"
