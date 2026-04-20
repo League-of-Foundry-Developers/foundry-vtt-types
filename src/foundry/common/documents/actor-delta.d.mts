@@ -68,13 +68,15 @@ declare abstract class BaseActorDelta<
    * @param delta     - The ActorDelta.
    * @param baseActor - The base Actor.
    * @param context   - Context to supply to synthetic Actor instantiation.
-   * @remarks `baseActor` is documented as being a `BaseActor` but in practice can only ever be `Actor.Implementation`
+   * @remarks If the parent `TokenDocument` {@linkcode TokenDocument.isLinked | isLinked}, returns the passed `baseActor`, otherwise
+   * returns a freshly constructed temporary `Actor`.
+   * @privateRemarks Foundry includes `| null` in the return, but that case only arises if `baseActor` is falsey, so is prevented by TS.
    */
   static applyDelta(
-    delta: BaseActorDelta,
-    baseActor: Actor.Implementation,
+    delta: ActorDelta.Implementation,
+    baseActor: Actor.Stored,
     context?: BaseActorDelta.ApplyDeltaContext,
-  ): Actor.Implementation | null;
+  ): Actor.Stored | Actor.Implementation;
 
   /**
    * @remarks
@@ -89,17 +91,19 @@ declare abstract class BaseActorDelta<
    * Prepare changes to a descendent delta collection.
    * @param changes - Candidate source changes. (default: `{}`)
    * @param options - Options which determine how the new data is merged. (default: `{}`)
+   * @internal
+   * @remarks Forwards sections of the passed `changes` to the relevant
+   * {@linkcode foundry.abstract.EmbeddedCollectionDelta._prepareDeltaUpdate | EmbeddedCollectionDelta#_prepareDeltaUpdate}s.
    */
-  protected _prepareDeltaUpdate(changes: BaseActorDelta.UpdateData, options: DataModel.UpdateOptions): void;
+  _prepareDeltaUpdate(changes: ActorDelta.UpdateData, options: DataModel.UpdateOptions): void;
 
-  /** @remarks passes to {@linkcode _prepareDeltaUpdate} prior to calling super */
-  override updateSource(
-    changes?: BaseActorDelta.UpdateData,
-    options?: DataModel.UpdateOptions,
-  ): BaseActorDelta.UpdateData;
+  /** @remarks Calls {@linkcode _prepareDeltaUpdate} with both args prior to returning a call to `super` */
+  override updateSource(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): ActorDelta.UpdateData;
 
-  /** @remarks Strips optional (`required: false`) fields from the object before returning */
-  // TODO: Properly type this override
+  /**
+   * @remarks Strips properties from optional (`required: false`) fields, with currently-nullish values, from the object before returning
+   */
+  // TODO: Properly type this override, if required? Requires all optional fields to be optional in Source
   override toObject(source?: boolean): BaseActorDelta.Source;
 
   /*

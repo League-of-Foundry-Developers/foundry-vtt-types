@@ -1254,7 +1254,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   /** @remarks `"No-op as ActorDeltas do not have sheets."` */
   protected override _onSheetChange(): Promise<void>;
 
-  protected override _prepareDeltaUpdate(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): void;
+  override _prepareDeltaUpdate(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): void;
 
   // _onUpdate and _onDelete are all overridden but with no signature changes from BaseActorDelta.
 
