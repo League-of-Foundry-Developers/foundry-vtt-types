@@ -1067,7 +1067,7 @@ declare namespace RollTable {
   >;
 
   /* ***********************************************
-   *          ROLL-TABLE-SPECIFIC TYPES            *
+   *           ROLLTABLE-SPECIFIC TYPES            *
    *************************************************/
 
   /**

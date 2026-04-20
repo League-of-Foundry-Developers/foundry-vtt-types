@@ -960,6 +960,10 @@ declare namespace Card {
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
 
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
+
     /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
     type DeleteOptions = OnDeleteOptions;
 
@@ -1062,6 +1066,10 @@ declare namespace Card {
     Card.Stored,
     PassedConfig
   >;
+
+  /* ***********************************************
+   *              CARD-SPECIFIC TYPES              *
+   *************************************************/
 
   /**
    * @remarks {@link Card.pass | `Card#pass`} calls {@link Cards.pass | `this.parent.pass`} with `action: "pass"` provided by default.
