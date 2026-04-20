@@ -1171,11 +1171,14 @@ declare namespace Actor {
    *************************************************/
 
   interface GetDefaultArtworkReturn {
+    /** @defaultValue {@linkcode Actor.DEFAULT_ICON } */
     img: string;
+
     texture: GetDefaultArtworkTextureReturn;
   }
 
   interface GetDefaultArtworkTextureReturn {
+    /** @defaultValue {@linkcode Actor.DEFAULT_ICON } */
     src: string;
   }
 
