@@ -1,7 +1,6 @@
-import type { AnyMutableObject, Identity, MaybeArray } from "#utils";
+import type { AnyMutableObject, Identity, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
-import type EmbeddedCollection from "../abstract/embedded-collection.d.mts";
 
 /**
  * The ActorDelta Document.
@@ -60,9 +59,9 @@ declare abstract class BaseActorDelta<
    * @param collectionName - The collection name.
    * @remarks Passes `collectionName` to the token's `baseActor`'s {@linkcode Actor.getEmbeddedCollection | #getEmbeddedCollection}
    */
-  getBaseCollection<DocType extends Actor.Embedded.Name>(
-    collectionName: DocType,
-  ): EmbeddedCollection<Document.ImplementationFor<DocType>, Actor.Implementation> | undefined;
+  getBaseCollection<CollectionName extends Actor.Embedded.CollectionName>(
+    collectionName: CollectionName,
+  ): Actor.Embedded.CollectionFor<CollectionName> | undefined;
 
   /**
    * Apply an ActorDelta to an Actor and return the resultant synthetic Actor.
@@ -193,36 +192,39 @@ declare abstract class BaseActorDelta<
   // `ActorDelta`s are neither world documents nor compendium documents, so this always returns `null`.
   static override get(documentId: string, operation?: BaseActorDelta.Database.GetDocumentsOperation): null;
 
-  static override getCollectionName<CollectionName extends BaseActorDelta.Embedded.Name>(
-    name: CollectionName,
-  ): BaseActorDelta.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseActorDelta.Embedded.CollectionName>,
+  ): BaseActorDelta.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends BaseActorDelta.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
   ): BaseActorDelta.Embedded.CollectionFor<EmbeddedName>;
 
-  override getEmbeddedDocument<EmbeddedName extends BaseActorDelta.Embedded.CollectionName>(
+  override getEmbeddedDocument<
+    EmbeddedName extends BaseActorDelta.Embedded.CollectionName,
+    Options extends Document.GetEmbeddedDocumentOptions | undefined = undefined,
+  >(
     embeddedName: EmbeddedName,
     id: string,
-    options: Document.GetEmbeddedDocumentOptions,
-  ): BaseActorDelta.Embedded.DocumentFor<EmbeddedName> | undefined;
+    options?: Options,
+  ): BaseActorDelta.Embedded.GetReturn<EmbeddedName, Options>;
 
   override createEmbeddedDocuments<EmbeddedName extends BaseActorDelta.Embedded.Name>(
     embeddedName: EmbeddedName,
-    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+    data: Document.CreateDataForName<EmbeddedName>[],
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseActorDelta.Embedded.Name>(
     embeddedName: EmbeddedName,
-    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+    updates: Document.UpdateDataForName<EmbeddedName>[],
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseActorDelta.Embedded.Name>(
     embeddedName: EmbeddedName,
-    ids: Array<string>,
-    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+    ids: string[],
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseActorDelta.Flags.Scope, Key extends BaseActorDelta.Flags.Key<Scope>>(
