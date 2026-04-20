@@ -169,14 +169,16 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
 
   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs): void;
 
-  static override defaultName(context?: RegionDocument.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: RegionDocument.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends RegionDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data?: RegionDocument.CreateDialogData,
-    createOptions?: RegionDocument.Database.CreateDocumentsOperation<Temporary>,
+    data: RegionDocument.CreateDialogData | undefined,
+    createOptions: RegionDocument.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<RegionDocument.CreateDialogReturn<Temporary, Options>>;
 
@@ -190,7 +192,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
     Temporary extends boolean | undefined = undefined,
     Options extends RegionDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data: RegionDocument.CreateDialogData,
+    data: RegionDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: RegionDocument.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

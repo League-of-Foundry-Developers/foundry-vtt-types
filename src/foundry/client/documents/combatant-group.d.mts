@@ -1031,14 +1031,16 @@ declare class CombatantGroup<
 
   // Descendant Document operations have been left out because CombatantGroup does not have any descendant documents.
 
-  static override defaultName(context?: CombatantGroup.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: CombatantGroup.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends CombatantGroup.CreateDialogOptions | undefined = undefined,
   >(
-    data?: CombatantGroup.CreateDialogData,
-    createOptions?: CombatantGroup.Database.CreateDocumentsOperation<Temporary>,
+    data: CombatantGroup.CreateDialogData | undefined,
+    createOptions: CombatantGroup.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<CombatantGroup.CreateDialogReturn<Temporary, Options>>;
 
@@ -1052,7 +1054,7 @@ declare class CombatantGroup<
     Temporary extends boolean | undefined = undefined,
     Options extends CombatantGroup.CreateDialogOptions | undefined = undefined,
   >(
-    data: CombatantGroup.CreateDialogData,
+    data: CombatantGroup.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: CombatantGroup.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

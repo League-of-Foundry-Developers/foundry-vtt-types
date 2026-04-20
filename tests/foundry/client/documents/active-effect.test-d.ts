@@ -1432,7 +1432,7 @@ expectTypeOf(ActiveEffect.getInitialDuration()).toEqualTypeOf<ActiveEffect.GetIn
 
 declare const someItem: Item.Implementation;
 
-// // @ts-expect-error `defaultName` requires a `pack` or `parent`.
+// @ts-expect-error `defaultName` requires a `parent`.
 ActiveEffect.defaultName();
 
 expectTypeOf(ActiveEffect.defaultName({ pack: "some.pack", parent: someItem, type: "base" })).toBeString();
@@ -1442,7 +1442,7 @@ expectTypeOf(ActiveEffect.defaultName({ pack: null, parent: null, type: undefine
 // Note: this call will fail at runtime but a validator function to require `pack` or `parent` has not yet been written.
 expectTypeOf(ActiveEffect.defaultName({})).toBeString();
 
-// // @ts-expect-error `ActiveEffect.createDialog` requires `createOptions` for pack information.
+// @ts-expect-error `ActiveEffect.createDialog` requires `createOptions` for parent information.
 await ActiveEffect.createDialog({});
 
 declare const someActor: Actor.Implementation;

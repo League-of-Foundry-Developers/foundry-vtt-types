@@ -1369,14 +1369,16 @@ declare class JournalEntryPage<
 
   // Descendant Document operations have been left out because JournalEntryPage does not have any descendant documents.
 
-  static override defaultName(context?: JournalEntryPage.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: JournalEntryPage.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends JournalEntryPage.CreateDialogOptions | undefined = undefined,
   >(
-    data?: JournalEntryPage.CreateDialogData,
-    createOptions?: JournalEntryPage.Database.CreateDocumentsOperation<Temporary>,
+    data: JournalEntryPage.CreateDialogData | undefined,
+    createOptions: JournalEntryPage.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<JournalEntryPage.CreateDialogReturn<Temporary, Options>>;
 
@@ -1390,7 +1392,7 @@ declare class JournalEntryPage<
     Temporary extends boolean | undefined = undefined,
     Options extends JournalEntryPage.CreateDialogOptions | undefined = undefined,
   >(
-    data: JournalEntryPage.CreateDialogData,
+    data: JournalEntryPage.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: JournalEntryPage.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

@@ -969,6 +969,7 @@ declare namespace Folder {
    *
    * @remarks Rather than a simple `DialogV2`, {@linkcode Folder.createDialog} creates a {@linkcode FolderConfig | FolderConfig}, passing
    * along the returned `Promise`'s `resolve` to the app. As of 13.350, this functionality is bugged and the promise will just never resolve.
+   * TODO: this is fixed in v14
    */
   // NOTE: Off-template due to real override
   interface CreateDialogOptions extends InexactPartial<Omit<FolderConfig.Configuration, "resolve" | "document">> {

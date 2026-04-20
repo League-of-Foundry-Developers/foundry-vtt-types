@@ -1026,14 +1026,16 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
 
   // Descendant Document operations have been left out because MeasuredTemplate does not have any descendant documents.
 
-  static override defaultName(context?: MeasuredTemplateDocument.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: MeasuredTemplateDocument.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends MeasuredTemplateDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data?: MeasuredTemplateDocument.CreateDialogData,
-    createOptions?: MeasuredTemplateDocument.Database.CreateDocumentsOperation<Temporary>,
+    data: MeasuredTemplateDocument.CreateDialogData | undefined,
+    createOptions: MeasuredTemplateDocument.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<MeasuredTemplateDocument.CreateDialogReturn<Temporary, Options>>;
 
@@ -1047,7 +1049,7 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
     Temporary extends boolean | undefined = undefined,
     Options extends MeasuredTemplateDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data: MeasuredTemplateDocument.CreateDialogData,
+    data: MeasuredTemplateDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: MeasuredTemplateDocument.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

@@ -1093,14 +1093,16 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
 
   // Descendant Document operations have been left out because Adventure does not have any descendant documents.
 
-  static override defaultName(context?: Adventure.DefaultNameContext): string;
+  // `context` must contain a `pack`, so is required.
+  static override defaultName(context: Adventure.DefaultNameContext): string;
 
+  // `createOptions` must contain a `pack`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends Adventure.CreateDialogOptions | undefined = undefined,
   >(
-    data?: Adventure.CreateDialogData,
-    createOptions?: Adventure.Database.CreateDocumentsOperation<Temporary>,
+    data: Adventure.CreateDialogData | undefined,
+    createOptions: Adventure.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<Adventure.CreateDialogReturn<Temporary, Options>>;
 
@@ -1114,7 +1116,7 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
     Temporary extends boolean | undefined = undefined,
     Options extends Adventure.CreateDialogOptions | undefined = undefined,
   >(
-    data: Adventure.CreateDialogData,
+    data: Adventure.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: Adventure.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

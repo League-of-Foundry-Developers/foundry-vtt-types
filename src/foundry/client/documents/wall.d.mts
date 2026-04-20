@@ -1140,14 +1140,16 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
-  static override defaultName(context?: WallDocument.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: WallDocument.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends WallDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data?: WallDocument.CreateDialogData,
-    createOptions?: WallDocument.Database.CreateDocumentsOperation<Temporary>,
+    data: WallDocument.CreateDialogData | undefined,
+    createOptions: WallDocument.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<WallDocument.CreateDialogReturn<Temporary, Options>>;
 
@@ -1161,7 +1163,7 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
     Temporary extends boolean | undefined = undefined,
     Options extends WallDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data: WallDocument.CreateDialogData,
+    data: WallDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: WallDocument.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

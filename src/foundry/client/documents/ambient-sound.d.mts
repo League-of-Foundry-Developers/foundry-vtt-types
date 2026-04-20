@@ -1029,14 +1029,16 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
 
   // Descendant Document operations have been left out because Wall does not have any descendant documents.
 
-  static override defaultName(context?: AmbientSoundDocument.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: AmbientSoundDocument.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends AmbientSoundDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data?: AmbientSoundDocument.CreateDialogData,
-    createOptions?: AmbientSoundDocument.Database.CreateDocumentsOperation<Temporary>,
+    data: AmbientSoundDocument.CreateDialogData | undefined,
+    createOptions: AmbientSoundDocument.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<AmbientSoundDocument.CreateDialogReturn<Temporary, Options>>;
 
@@ -1050,7 +1052,7 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
     Temporary extends boolean | undefined = undefined,
     Options extends AmbientSoundDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data: AmbientSoundDocument.CreateDialogData,
+    data: AmbientSoundDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: AmbientSoundDocument.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,
@@ -1072,10 +1074,6 @@ declare class AmbientSoundDocument extends BaseAmbientSound.Internal.CanvasDocum
     options?: Options,
     operation?: AmbientSoundDocument.Database.DeleteOneDocumentOperation,
   ): Promise<AmbientSoundDocument.DeleteDialogReturn<Options>>;
-
-  static override fromDropData(
-    data: AmbientSoundDocument.DropData,
-  ): Promise<AmbientSoundDocument.Implementation | undefined>;
 
   static override fromImport(
     source: AmbientSoundDocument.Source,

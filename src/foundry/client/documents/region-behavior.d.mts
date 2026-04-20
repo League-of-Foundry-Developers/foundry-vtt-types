@@ -1034,12 +1034,13 @@ declare class RegionBehavior<
    */
   protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends RegionBehavior.CreateDialogOptions | undefined = undefined,
   >(
-    data?: RegionBehavior.CreateDialogData,
-    createOptions?: RegionBehavior.Database.CreateDocumentsOperation<Temporary>,
+    data: RegionBehavior.CreateDialogData | undefined,
+    createOptions: RegionBehavior.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<RegionBehavior.CreateDialogReturn<Temporary, Options>>;
 
@@ -1053,7 +1054,7 @@ declare class RegionBehavior<
     Temporary extends boolean | undefined = undefined,
     Options extends RegionBehavior.CreateDialogOptions | undefined = undefined,
   >(
-    data: RegionBehavior.CreateDialogData,
+    data: RegionBehavior.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: RegionBehavior.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,
@@ -1073,6 +1074,7 @@ declare class RegionBehavior<
 
   // Descendant Document operations have been left out because RegionBehavior does not have any descendant documents.
 
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: RegionBehavior.DefaultNameContext): string;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(

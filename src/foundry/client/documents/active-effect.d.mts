@@ -1518,14 +1518,18 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   // Descendant Document operations have been left out because ActiveEffect does not have any descendant documents.
 
-  static override defaultName(context?: ActiveEffect.DefaultNameContext): string;
+  // TODO: update to include 'pack' in v14
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: ActiveEffect.DefaultNameContext): string;
 
+  // TODO: update to include 'pack' in v14
+  // `createOptions` must contain a `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends ActiveEffect.CreateDialogOptions | undefined = undefined,
   >(
-    data?: ActiveEffect.CreateDialogData,
-    createOptions?: ActiveEffect.Database.CreateDocumentsOperation<Temporary>,
+    data: ActiveEffect.CreateDialogData | undefined,
+    createOptions: ActiveEffect.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<ActiveEffect.CreateDialogReturn<Temporary, Options>>;
 
@@ -1539,7 +1543,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
     Temporary extends boolean | undefined = undefined,
     Options extends ActiveEffect.CreateDialogOptions | undefined = undefined,
   >(
-    data: ActiveEffect.CreateDialogData,
+    data: ActiveEffect.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: ActiveEffect.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

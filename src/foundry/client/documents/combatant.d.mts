@@ -1186,14 +1186,16 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
 
   // Descendant Document operations have been left out because Combatant does not have any descendant documents.
 
-  static override defaultName(context?: Combatant.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: Combatant.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends Combatant.CreateDialogOptions | undefined = undefined,
   >(
-    data?: Combatant.CreateDialogData,
-    createOptions?: Combatant.Database.CreateDocumentsOperation<Temporary>,
+    data: Combatant.CreateDialogData | undefined,
+    createOptions: Combatant.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<Combatant.CreateDialogReturn<Temporary, Options>>;
 
@@ -1207,7 +1209,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
     Temporary extends boolean | undefined = undefined,
     Options extends Combatant.CreateDialogOptions | undefined = undefined,
   >(
-    data: Combatant.CreateDialogData,
+    data: Combatant.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: Combatant.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

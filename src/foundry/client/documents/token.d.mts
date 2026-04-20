@@ -2929,14 +2929,18 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   // ClientDocument overrides
 
-  static override defaultName(context?: TokenDocument.DefaultNameContext): string;
+  // Descendant Document operations are actually overridden above
 
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: TokenDocument.DefaultNameContext): string;
+
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends TokenDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data?: TokenDocument.CreateDialogData,
-    createOptions?: TokenDocument.Database.CreateDocumentsOperation<Temporary>,
+    data: TokenDocument.CreateDialogData | undefined,
+    createOptions: TokenDocument.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<TokenDocument.CreateDialogReturn<Temporary, Options>>;
 
@@ -2950,7 +2954,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
     Temporary extends boolean | undefined = undefined,
     Options extends TokenDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data: TokenDocument.CreateDialogData,
+    data: TokenDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: TokenDocument.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

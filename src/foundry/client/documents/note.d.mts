@@ -1015,12 +1015,13 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
   constructor(data?: NoteDocument.CreateData, context?: NoteDocument.ConstructionContext);
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends NoteDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data?: NoteDocument.CreateDialogData,
-    createOptions?: NoteDocument.Database.CreateDocumentsOperation<Temporary>,
+    data: NoteDocument.CreateDialogData | undefined,
+    createOptions: NoteDocument.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<NoteDocument.CreateDialogReturn<Temporary, Options>>;
 
@@ -1034,7 +1035,7 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
     Temporary extends boolean | undefined = undefined,
     Options extends NoteDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data: NoteDocument.CreateDialogData,
+    data: NoteDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: NoteDocument.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,
@@ -1069,7 +1070,8 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Note does not have any descendant documents.
 
-  static override defaultName(context?: NoteDocument.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: NoteDocument.DefaultNameContext): string;
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,

@@ -1227,14 +1227,16 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
 
   // Descendant Document operations have been left out because Card does not have any descendant documents.
 
-  static override defaultName(context?: Card.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: Card.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends Card.CreateDialogOptions | undefined = undefined,
   >(
-    data?: Card.CreateDialogData,
-    createOptions?: Card.Database.CreateDocumentsOperation<Temporary>,
+    data: Card.CreateDialogData | undefined,
+    createOptions: Card.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<Card.CreateDialogReturn<Temporary, Options>>;
 
@@ -1248,7 +1250,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
     Temporary extends boolean | undefined = undefined,
     Options extends Card.CreateDialogOptions | undefined = undefined,
   >(
-    data: Card.CreateDialogData,
+    data: Card.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: Card.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

@@ -967,14 +967,16 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
 
   // Descendant Document operations have been left out because AmbientLight does not have any descendant documents.
 
-  static override defaultName(context?: AmbientLightDocument.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: AmbientLightDocument.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends AmbientLightDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data?: AmbientLightDocument.CreateDialogData,
-    createOptions?: AmbientLightDocument.Database.CreateDocumentsOperation<Temporary>,
+    data: AmbientLightDocument.CreateDialogData | undefined,
+    createOptions: AmbientLightDocument.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<AmbientLightDocument.CreateDialogReturn<Temporary, Options>>;
 
@@ -988,7 +990,7 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
     Temporary extends boolean | undefined = undefined,
     Options extends AmbientLightDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data: AmbientLightDocument.CreateDialogData,
+    data: AmbientLightDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: AmbientLightDocument.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

@@ -913,14 +913,16 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
 
   // Descendant Document operations have been left out because JournalEntryCategory does not have any descendant documents.
 
-  static override defaultName(context?: JournalEntryCategory.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: JournalEntryCategory.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends JournalEntryCategory.CreateDialogOptions | undefined = undefined,
   >(
-    data?: JournalEntryCategory.CreateDialogData,
-    createOptions?: JournalEntryCategory.Database.CreateDocumentsOperation<Temporary>,
+    data: JournalEntryCategory.CreateDialogData | undefined,
+    createOptions: JournalEntryCategory.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<JournalEntryCategory.CreateDialogReturn<Temporary, Options>>;
 
@@ -934,7 +936,7 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
     Temporary extends boolean | undefined = undefined,
     Options extends JournalEntryCategory.CreateDialogOptions | undefined = undefined,
   >(
-    data: JournalEntryCategory.CreateDialogData,
+    data: JournalEntryCategory.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: JournalEntryCategory.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

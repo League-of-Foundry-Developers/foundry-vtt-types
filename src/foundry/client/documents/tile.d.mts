@@ -1059,14 +1059,16 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Tile does not have any descendant documents.
 
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: TileDocument.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends TileDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data?: TileDocument.CreateDialogData,
-    createOptions?: TileDocument.Database.CreateDocumentsOperation<Temporary>,
+    data: TileDocument.CreateDialogData | undefined,
+    createOptions: TileDocument.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<TileDocument.CreateDialogReturn<Temporary, Options>>;
 
@@ -1080,7 +1082,7 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
     Temporary extends boolean | undefined = undefined,
     Options extends TileDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data: TileDocument.CreateDialogData,
+    data: TileDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: TileDocument.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

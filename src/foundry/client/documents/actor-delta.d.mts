@@ -1285,14 +1285,16 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs): void;
 
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: ActorDelta.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends ActorDelta.CreateDialogOptions | undefined = undefined,
   >(
-    data?: ActorDelta.CreateDialogData,
-    createOptions?: ActorDelta.Database.CreateDocumentsOperation<Temporary>,
+    data: ActorDelta.CreateDialogData | undefined,
+    createOptions: ActorDelta.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<ActorDelta.CreateDialogReturn<Temporary, Options>>;
 
@@ -1306,7 +1308,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
     Temporary extends boolean | undefined = undefined,
     Options extends ActorDelta.CreateDialogOptions | undefined = undefined,
   >(
-    data: ActorDelta.CreateDialogData,
+    data: ActorDelta.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: ActorDelta.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

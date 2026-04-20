@@ -1101,14 +1101,16 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Drawing does not have any descendant documents.
 
-  static override defaultName(context?: DrawingDocument.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context: DrawingDocument.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends DrawingDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data?: DrawingDocument.CreateDialogData,
-    createOptions?: DrawingDocument.Database.CreateDocumentsOperation<Temporary>,
+    data: DrawingDocument.CreateDialogData | undefined,
+    createOptions: DrawingDocument.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<DrawingDocument.CreateDialogReturn<Temporary, Options>>;
 
@@ -1122,7 +1124,7 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
     Temporary extends boolean | undefined = undefined,
     Options extends DrawingDocument.CreateDialogOptions | undefined = undefined,
   >(
-    data: DrawingDocument.CreateDialogData,
+    data: DrawingDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: DrawingDocument.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

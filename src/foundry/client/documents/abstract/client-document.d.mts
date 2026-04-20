@@ -485,7 +485,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * This returns `Promise<unknown>` here because as of 13.350 there's a bug ({@link https://github.com/foundryvtt/foundryvtt/issues/13545})
    * in {@linkcode Folder.createDialog}.
    */
-  static createDialog(data?: never, createOptions?: never, options?: never): Promise<unknown>;
+  static createDialog(data: never, createOptions: never, options?: never): Promise<unknown>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
@@ -493,12 +493,13 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param operation - Document deletion options. (default: `{}`)
    * @returns A Promise that resolves to the deleted Document
    *
-   * @remarks The only part of the {@linkcode DialogV2.ConfirmConfig} that one should be cautious passing is `"yes.callback"`, which actually does the delete.
+   * @remarks The only part of the {@linkcode DialogV2.ConfirmConfig} that one should be cautious passing is `"yes.callback"`, which
+   * actually does the delete.
    *
-   * `"yes"` is in the computed return type because if deletion is cancelled by hook or {@linkcode Document._preDelete | Document#_preDelete}, the `yes` callback returns
-   * undefined, and when button callbacks return undefined, the button's action is returned.
+   * `"yes"` is in the computed return type because if deletion is cancelled by hook or {@linkcode Document._preDelete | Document#_preDelete},
+   * the `yes` callback returns undefined, and when button callbacks return undefined, the button's action is returned.
    */
-  deleteDialog(options?: never, operation?: never): Promise<Document.DeleteDialogReturn<Document.Any, undefined>>;
+  deleteDialog(options: never, operation: never): Promise<Document.DeleteDialogReturn<Document.Any, undefined>>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.

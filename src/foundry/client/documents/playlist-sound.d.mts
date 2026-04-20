@@ -1066,16 +1066,16 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because PlaylistSound does not have any descendant documents.
 
-  // Note: `context` is required because otherwise a `collection` cannot be found.
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context?: PlaylistSound.DefaultNameContext): string;
 
-  // Note: `context` is required because otherwise a `collection` cannot be found.
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends PlaylistSound.CreateDialogOptions | undefined = undefined,
   >(
-    data?: PlaylistSound.CreateDialogData,
-    createOptions?: PlaylistSound.Database.CreateDocumentsOperation<Temporary>,
+    data: PlaylistSound.CreateDialogData | undefined,
+    createOptions: PlaylistSound.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<PlaylistSound.CreateDialogReturn<Temporary, Options>>;
 
@@ -1089,7 +1089,7 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
     Temporary extends boolean | undefined = undefined,
     Options extends PlaylistSound.CreateDialogOptions | undefined = undefined,
   >(
-    data: PlaylistSound.CreateDialogData,
+    data: PlaylistSound.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: PlaylistSound.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

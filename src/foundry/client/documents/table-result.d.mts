@@ -1057,14 +1057,16 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
 
   // Descendant Document operations have been left out because TableResult does not have any descendant documents.
 
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: TableResult.DefaultNameContext): string;
 
+  // `createOptions` must contain a  `parent`, so is required.
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends TableResult.CreateDialogOptions | undefined = undefined,
   >(
-    data?: TableResult.CreateDialogData,
-    createOptions?: TableResult.Database.CreateDocumentsOperation<Temporary>,
+    data: TableResult.CreateDialogData | undefined,
+    createOptions: TableResult.Database.CreateDocumentsOperation<Temporary>,
     options?: Options,
   ): Promise<TableResult.CreateDialogReturn<Temporary, Options>>;
 
@@ -1078,7 +1080,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
     Temporary extends boolean | undefined = undefined,
     Options extends TableResult.CreateDialogOptions | undefined = undefined,
   >(
-    data: TableResult.CreateDialogData,
+    data: TableResult.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: TableResult.CreateDialogDeprecatedOptions<Temporary>,
     options?: Options,

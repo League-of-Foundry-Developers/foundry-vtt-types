@@ -12,7 +12,7 @@ ActorDelta.defaultName();
 // Note: this call will fail at runtime but a validator function to require `pack` or `parent` has not yet been written.
 expectTypeOf(ActorDelta.defaultName({})).toBeString();
 
-// // @ts-expect-error `ActorDelta.createDialog` requires `createOptions` for pack information.
+// @ts-expect-error `ActorDelta.createDialog` requires `createOptions` for pack information.
 await ActorDelta.createDialog({});
 
 expectTypeOf(actorDelta).toEqualTypeOf<ActorDelta.Implementation>();
