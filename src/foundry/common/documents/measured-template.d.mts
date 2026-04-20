@@ -64,8 +64,7 @@ declare abstract class BaseMeasuredTemplate extends Document<"MeasuredTemplate",
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
-   * @deprecated since v12, until 14
-   * @remarks "You are accessing `user` which has been migrated to `author`"
+   * @deprecated "You are accessing `user` which has been migrated to `author`" (since v12, until 14)
    */
   get user(): this["author"];
 
