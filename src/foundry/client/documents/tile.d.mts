@@ -952,8 +952,7 @@ declare namespace TileDocument {
   interface CoreFlags {
     core?: {
       /**
-       * @deprecated since v12, until 14
-       * @remarks "Tiling Sprites are deprecated without replacement."
+       * @deprecated "Tiling Sprites are deprecated without replacement." (since v12, until 14)
        */
       isTilingSprite?: boolean;
 
@@ -1019,6 +1018,10 @@ declare namespace TileDocument {
     TileDocument.Stored,
     PassedConfig
   >;
+
+  /* ***********************************************
+   *              TILE-SPECIFIC TYPES              *
+   *************************************************/
 
   /**
    * The arguments to construct the document.
