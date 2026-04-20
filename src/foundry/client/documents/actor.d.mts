@@ -1543,7 +1543,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param options - The update context.
    * @remarks Forwards to {@linkcode Token._onUpdateBaseActor | Token#_onUpdateBaseActor}
    */
-  protected _updateDependentTokens(update: Actor.UpdateData, options: Actor.Database.UpdateOperation): void;
+  protected _updateDependentTokens(update: Actor.UpdateData, options: Actor.Database.OnUpdateOptions): void;
 
   /*
    * After this point these are not really overridden methods.
