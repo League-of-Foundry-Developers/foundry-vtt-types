@@ -976,13 +976,59 @@ declare namespace RollTable {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode RollTable.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode RollTable.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode RollTable.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode RollTable.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode RollTable.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode RollTable.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode RollTable.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends RollTable.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<RollTable.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode RollTable.deleteDialog | RollTable#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    RollTable.Stored,
+    PassedConfig
+  >;
 
   type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     RollTable.Stored,
@@ -1330,22 +1376,49 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
 
   static override defaultName(context?: RollTable.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends RollTable.CreateDialogOptions | undefined = undefined,
+  >(
     data?: RollTable.CreateDialogData,
+    createOptions?: RollTable.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<RollTable.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode RollTable.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends RollTable.CreateDialogOptions | undefined = undefined,
+  >(
+    data: RollTable.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: RollTable.Database.DialogCreateOptions,
-    options?: RollTable.CreateDialogOptions,
-  ): Promise<RollTable.Stored | null | undefined>;
+    createOptions: RollTable.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<RollTable.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"RollTable">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: RollTable.Database.DeleteOneDocumentOperation,
+  ): Promise<RollTable.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: RollTable.DropData,
-    options?: RollTable.DropDataOptions,
-  ): Promise<RollTable.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: RollTable.Database.DeleteOneDocumentOperation,
+  ): Promise<RollTable.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: RollTable.DropData): Promise<RollTable.Implementation | undefined>;
 
   static override fromImport(
     source: RollTable.Source,

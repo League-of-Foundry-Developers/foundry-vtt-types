@@ -1,4 +1,4 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { Sound } from "#client/audio/_module.d.mts";
@@ -882,13 +882,59 @@ declare namespace PlaylistSound {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode PlaylistSound.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode PlaylistSound.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode PlaylistSound.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode PlaylistSound.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode PlaylistSound.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode PlaylistSound.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode PlaylistSound.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends PlaylistSound.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<PlaylistSound.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode PlaylistSound.deleteDialog | PlaylistSound#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    PlaylistSound.Stored,
+    PassedConfig
+  >;
 
   /**
    * The arguments to construct the document.
@@ -1020,27 +1066,53 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because PlaylistSound does not have any descendant documents.
 
-  // Note: `context` is required because otherwise a `collection` cannot be found.
-  static override defaultName(context: PlaylistSound.DefaultNameContext): string;
+  // `context` must contain a `parent`, so is required.
+  static override defaultName(context?: PlaylistSound.DefaultNameContext): string;
 
-  /** @remarks `context.parent` is required as creation requires one */
-  // Note: `context` is required because otherwise a `collection` cannot be found.
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends PlaylistSound.CreateDialogOptions | undefined = undefined,
+  >(
+    data: PlaylistSound.CreateDialogData | undefined,
+    createOptions: PlaylistSound.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<PlaylistSound.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode PlaylistSound.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends PlaylistSound.CreateDialogOptions | undefined = undefined,
+  >(
     data: PlaylistSound.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: PlaylistSound.Database.DialogCreateOptions,
-    options?: PlaylistSound.CreateDialogOptions,
-  ): Promise<PlaylistSound.Stored | null | undefined>;
+    createOptions: PlaylistSound.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<PlaylistSound.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"PlaylistSound">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: PlaylistSound.Database.DeleteOneDocumentOperation,
+  ): Promise<PlaylistSound.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: PlaylistSound.DropData,
-    options?: PlaylistSound.DropDataOptions,
-  ): Promise<PlaylistSound.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: PlaylistSound.Database.DeleteOneDocumentOperation,
+  ): Promise<PlaylistSound.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: PlaylistSound.DropData): Promise<PlaylistSound.Implementation | undefined>;
 
   static override fromImport(
     source: PlaylistSound.Source,

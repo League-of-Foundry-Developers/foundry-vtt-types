@@ -1,5 +1,5 @@
 import type { ConfiguredChatMessage } from "#configuration";
-import type { AnyObject, Identity, InexactPartial, InterfaceToObject, MaybeArray, Merge, NullishProps } from "#utils";
+import type { AnyObject, Identity, InterfaceToObject, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseActor, BaseChatMessage, BaseScene, BaseToken, BaseUser } from "#client/documents/_module.d.mts";
@@ -1039,13 +1039,59 @@ declare namespace ChatMessage {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode ChatMessage.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode ChatMessage.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode ChatMessage.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode ChatMessage.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode ChatMessage.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode ChatMessage.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode ChatMessage.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends ChatMessage.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<ChatMessage.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode ChatMessage.deleteDialog | ChatMessage#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    ChatMessage.Stored,
+    PassedConfig
+  >;
 
   /* ***********************************************
    *         CHAT-MESSAGE-SPECIFIC TYPES           *
@@ -1166,11 +1212,6 @@ declare namespace ChatMessage {
     canDelete?: boolean | undefined;
     canClose?: boolean | undefined;
   }
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.
@@ -1354,22 +1395,49 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
 
   static override defaultName(context?: ChatMessage.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends ChatMessage.CreateDialogOptions | undefined = undefined,
+  >(
     data?: ChatMessage.CreateDialogData,
+    createOptions?: ChatMessage.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<ChatMessage.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode ChatMessage.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends ChatMessage.CreateDialogOptions | undefined = undefined,
+  >(
+    data: ChatMessage.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: ChatMessage.Database.DialogCreateOptions,
-    options?: ChatMessage.CreateDialogOptions,
-  ): Promise<ChatMessage.Stored | null | undefined>;
+    createOptions: ChatMessage.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<ChatMessage.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"ChatMessage">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: ChatMessage.Database.DeleteOneDocumentOperation,
+  ): Promise<ChatMessage.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: ChatMessage.DropData,
-    options?: ChatMessage.DropDataOptions,
-  ): Promise<ChatMessage.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: ChatMessage.Database.DeleteOneDocumentOperation,
+  ): Promise<ChatMessage.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: ChatMessage.DropData): Promise<ChatMessage.Implementation | undefined>;
 
   static override fromImport(
     source: ChatMessage.Source,

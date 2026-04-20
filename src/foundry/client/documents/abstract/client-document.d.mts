@@ -91,7 +91,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * actor.permission; // 2
    * ```
    */
-  get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Lazily obtain an Application instance used to configure this Document, or null if no sheet is available.
@@ -471,24 +471,35 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param createOptions - Document creation options            (default: `{}`)
    * @param options       - Options forwarded to DialogV2.prompt (default: `{}`)
    * @returns A Promise which resolves to the created Document, or null if the dialog was closed.
-   * @throws If the document has
-   * @privateRemarks `| undefined` is included in the return types of the specific document overrides due to {@link Document.create | `Document.create`}
-   * possibly being `undefined` if creation is cancelled by preCreate methods or hooks
+   *
+   * @remarks
+   * @throws If the passed {@linkcode Document.CreateDialogOptions.types} whitelist does not contain any valid,
+   * non-{@linkcode CONST.BASE_DOCUMENT_TYPE} types.
+   *
+   * @privateRemarks `| undefined` is included in the return types of the specific document overrides due to {@linkcode Document.create}
+   * possibly being `undefined` if creation is cancelled by preCreate methods or hooks.
+   *
+   * Specific document overrides for non-{@link CONST.PRIMARY_DOCUMENT_TYPES | primary} documents should make `createOptions` required, as
+   * they require a passed `parent`
+   *
+   * This returns `Promise<unknown>` here because as of 13.350 there's a bug ({@link https://github.com/foundryvtt/foundryvtt/issues/13545})
+   * in {@linkcode Folder.createDialog}.
    */
   static createDialog(data: never, createOptions: never, options?: never): Promise<unknown>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
-   * @param options   - Additional options passed to `DialogV2.confirm`
-   *                    (default: `{}`)
-   * @param operation - Document deletion options.
-   *                    (default: `{}`)
+   * @param options   - Additional options passed to {@linkcode DialogV2.confirm} (default: `{}`)
+   * @param operation - Document deletion options. (default: `{}`)
    * @returns A Promise that resolves to the deleted Document
+   *
+   * @remarks The only part of the {@linkcode DialogV2.ConfirmConfig} that one should be cautious passing is `"yes.callback"`, which
+   * actually does the delete.
+   *
+   * `"yes"` is in the computed return type because if deletion is cancelled by hook or {@linkcode Document._preDelete | Document#_preDelete},
+   * the `yes` callback returns undefined, and when button callbacks return undefined, the button's action is returned.
    */
-  deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-    operation?: never,
-  ): Promise<this | false | null | undefined>;
+  deleteDialog(options: never, operation: never): Promise<Document.DeleteDialogReturn<Document.Any, undefined>>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
@@ -508,7 +519,6 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * 2. A UUID
    *
    * @param data    - The data object extracted from a DataTransfer event
-   * @param options - Additional options which affect drop data behavior
    * @returns The resolved Document
    * @throws If a Document could not be retrieved from the provided data.
    */

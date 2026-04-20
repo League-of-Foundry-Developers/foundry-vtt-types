@@ -1,4 +1,4 @@
-import type { InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
+import type { IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields, ShapeData } from "#common/data/_module.mjs";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseDrawing, BaseUser } from "#client/documents/_module.d.mts";
@@ -985,13 +985,59 @@ declare namespace DrawingDocument {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode DrawingDocument.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode DrawingDocument.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode DrawingDocument.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode DrawingDocument.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode DrawingDocument.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode DrawingDocument.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode DrawingDocument.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends DrawingDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<DrawingDocument.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode DrawingDocument.deleteDialog | DrawingDocument#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    DrawingDocument.Stored,
+    PassedConfig
+  >;
 
   /* ***********************************************
    *            DRAWING-SPECIFIC TYPES             *
@@ -1055,26 +1101,53 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Drawing does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: DrawingDocument.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends DrawingDocument.CreateDialogOptions | undefined = undefined,
+  >(
+    data: DrawingDocument.CreateDialogData | undefined,
+    createOptions: DrawingDocument.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<DrawingDocument.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode DrawingDocument.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends DrawingDocument.CreateDialogOptions | undefined = undefined,
+  >(
     data: DrawingDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: DrawingDocument.Database.DialogCreateOptions,
-    options?: DrawingDocument.CreateDialogOptions,
-  ): Promise<DrawingDocument.Stored | null | undefined>;
+    createOptions: DrawingDocument.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<DrawingDocument.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Drawing">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: DrawingDocument.Database.DeleteOneDocumentOperation,
+  ): Promise<DrawingDocument.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: DrawingDocument.DropData,
-    options?: DrawingDocument.DropDataOptions,
-  ): Promise<DrawingDocument.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: DrawingDocument.Database.DeleteOneDocumentOperation,
+  ): Promise<DrawingDocument.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: DrawingDocument.DropData): Promise<DrawingDocument.Implementation | undefined>;
 
   static override fromImport(
     source: DrawingDocument.Source,

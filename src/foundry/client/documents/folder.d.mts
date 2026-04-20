@@ -3,6 +3,7 @@ import type { Identity, InexactPartial, IntentionalPartial, MaybeArray, Merge, N
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseFolder } from "#common/documents/_module.d.mts";
+import type { FolderConfig } from "#client/applications/sheets/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
@@ -931,25 +932,73 @@ declare namespace Folder {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode Folder.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
 
   /**
-   * @remarks Rather than a simple `Dialog`, {@linkcode Folder.createDialog | Folder.createDialog} creates a {@linkcode FolderConfig | FolderConfig},
-   * passing along the returned `Promise`'s `resolve` to the app.
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Folder.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
    */
-  // TODO: Generally fix this up to be correct, temp fix here for the appv1 removal
-  // TODO (v13): `options.document` is also force set
-  interface CreateDialogOptions extends InexactPartial<
-    Omit<foundry.applications.sheets.FolderConfig.Configuration, "resolve">
-  > {
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode Folder.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode Folder.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
+  // NOTE: Off-template due to real override
+  interface CreateDialogData
+    extends
+      Omit<Document.CreateDialogData<CreateData>, "name" | "color" | "sorting">,
+      InexactPartial<Pick<CreateData, "name" | "color" | "sorting">> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Folder.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Folder.createDialog}'s third parameter
+   *
+   * @remarks Rather than a simple `DialogV2`, {@linkcode Folder.createDialog} creates a {@linkcode FolderConfig | FolderConfig}, passing
+   * along the returned `Promise`'s `resolve` to the app. As of 13.350, this functionality is bugged and the promise will just never resolve.
+   * TODO: this is fixed in v14
+   */
+  // NOTE: Off-template due to real override
+  interface CreateDialogOptions extends InexactPartial<Omit<FolderConfig.Configuration, "resolve" | "document">> {
     /** @deprecated This is force set to the `resolve` of the Promise returned by this `createDialog` call */
     resolve?: never;
+
+    /** @deprecated This is force set to a constructed, temporary `Folder` */
+    document?: never;
   }
+
+  /**
+   * The return type for {@linkcode Folder.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Folder.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Folder.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Folder.deleteDialog | Folder#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Folder.Stored,
+    PassedConfig
+  >;
 
   /* ***********************************************
    *             FOLDER-SPECIFIC TYPES             *
@@ -1125,18 +1174,51 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
   // _preCreate overridden but with no signature changes.
   // For type simplicity it is left off. These methods historically have been the source of a large amount of computation from tsc.
 
-  /** @remarks Creates and renders a {@linkcode FolderConfig | FolderConfig} instead of a simple Dialog */
-  static override createDialog(
+  /** @remarks Creates and renders a {@link FolderConfig | `FolderConfig`} instead of a simple Dialog */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Folder.CreateDialogOptions | undefined = undefined,
+  >(
     data?: Folder.CreateDialogData,
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: Folder.Database.DialogCreateOptions,
-    options?: Folder.CreateDialogOptions,
-  ): Promise<Folder.Stored | null | undefined>;
+    createOptions?: Folder.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<void>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Folder">,
-  ): Promise<this | false | null | undefined>;
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Folder.CreateDialogDeprecatedOptions}
+   * @remarks Creates and renders a {@linkcode foundry.applications.sheets.FolderConfig | FolderConfig} instead of a simple `DialogV2`.
+   *
+   * As of 13.350, that class does nothing with the passed promise resolver, and so this actually returns a promise that never returns.
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Folder.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Folder.CreateDialogData,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    createOptions: Folder.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<void>;
+
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Folder.Database.DeleteOneDocumentOperation,
+  ): Promise<Folder.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Folder.Database.DeleteOneDocumentOperation,
+  ): Promise<Folder.DeleteDialogReturn<Options>>;
 
   /**
    * Export all Documents contained in this Folder to a given Compendium pack.
@@ -1190,10 +1272,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
 
   static override defaultName(context?: Folder.DefaultNameContext): string;
 
-  static override fromDropData(
-    data: Folder.DropData,
-    options?: Folder.DropDataOptions,
-  ): Promise<Folder.Implementation | undefined>;
+  static override fromDropData(data: Folder.DropData): Promise<Folder.Implementation | undefined>;
 
   static override fromImport(
     source: Folder.Source,

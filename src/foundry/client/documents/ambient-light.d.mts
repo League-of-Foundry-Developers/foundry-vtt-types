@@ -1,4 +1,4 @@
-import type { InexactPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { InterfaceToObject, MaybeArray, Merge } from "#utils";
 import type { LightData, fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseAmbientLight } from "#common/documents/_module.d.mts";
@@ -869,13 +869,59 @@ declare namespace AmbientLightDocument {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode AmbientLightDocument.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode AmbientLightDocument.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode AmbientLightDocument.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode AmbientLightDocument.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode AmbientLightDocument.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode AmbientLightDocument.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode AmbientLightDocument.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends AmbientLightDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<AmbientLightDocument.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode AmbientLightDocument.deleteDialog | AmbientLightDocument#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    AmbientLightDocument.Stored,
+    PassedConfig
+  >;
 
   /**
    * The arguments to construct the document.
@@ -925,25 +971,54 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
 
   // Descendant Document operations have been left out because AmbientLight does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: AmbientLightDocument.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends AmbientLightDocument.CreateDialogOptions | undefined = undefined,
+  >(
+    data: AmbientLightDocument.CreateDialogData | undefined,
+    createOptions: AmbientLightDocument.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<AmbientLightDocument.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode AmbientLightDocument.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends AmbientLightDocument.CreateDialogOptions | undefined = undefined,
+  >(
     data: AmbientLightDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: AmbientLightDocument.Database.DialogCreateOptions,
-    options?: AmbientLightDocument.CreateDialogOptions,
-  ): Promise<AmbientLightDocument.Stored | null | undefined>;
+    createOptions: AmbientLightDocument.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<AmbientLightDocument.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"AmbientLight">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: AmbientLightDocument.Database.DeleteOneDocumentOperation,
+  ): Promise<AmbientLightDocument.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: AmbientLightDocument.Database.DeleteOneDocumentOperation,
+  ): Promise<AmbientLightDocument.DeleteDialogReturn<Options>>;
 
   static override fromDropData(
     data: AmbientLightDocument.DropData,
-    options?: AmbientLightDocument.DropDataOptions,
   ): Promise<AmbientLightDocument.Implementation | undefined>;
 
   static override fromImport(

@@ -2,7 +2,6 @@ import type { ConfiguredActiveEffect } from "#configuration";
 import type {
   AnyMutableObject,
   Identity,
-  InexactPartial,
   IntentionalPartial,
   InterfaceToObject,
   MaybeArray,
@@ -1089,13 +1088,59 @@ declare namespace ActiveEffect {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode ActiveEffect.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode ActiveEffect.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode ActiveEffect.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode ActiveEffect.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode ActiveEffect.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode ActiveEffect.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode ActiveEffect.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends ActiveEffect.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<ActiveEffect.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode ActiveEffect.deleteDialog | ActiveEffect#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    ActiveEffect.Stored,
+    PassedConfig
+  >;
 
   /* ***********************************************
    *         ACTIVE-EFFECT-SPECIFIC TYPES          *
@@ -1172,11 +1217,6 @@ declare namespace ActiveEffect {
   type ApplyFieldReturn<Field extends fields.DataField.Any | null | undefined> = Field extends fields.DataField.Any
     ? fields.DataField.InitializedTypeFor<Field>
     : unknown;
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.
@@ -1481,26 +1521,55 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   // Descendant Document operations have been left out because ActiveEffect does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // TODO: update to include 'pack' in v14
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: ActiveEffect.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // TODO: update to include 'pack' in v14
+  // `createOptions` must contain a `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends ActiveEffect.CreateDialogOptions | undefined = undefined,
+  >(
+    data: ActiveEffect.CreateDialogData | undefined,
+    createOptions: ActiveEffect.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<ActiveEffect.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode ActiveEffect.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends ActiveEffect.CreateDialogOptions | undefined = undefined,
+  >(
     data: ActiveEffect.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: ActiveEffect.Database.DialogCreateOptions,
-    options?: ActiveEffect.CreateDialogOptions,
-  ): Promise<ActiveEffect.Stored | null | undefined>;
+    createOptions: ActiveEffect.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<ActiveEffect.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: ActiveEffect.Database.DeleteOperation,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: ActiveEffect.Database.DeleteOneDocumentOperation,
+  ): Promise<ActiveEffect.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: ActiveEffect.DropData,
-    options?: ActiveEffect.DropDataOptions,
-  ): Promise<ActiveEffect.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: ActiveEffect.Database.DeleteOneDocumentOperation,
+  ): Promise<ActiveEffect.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: ActiveEffect.DropData): Promise<ActiveEffect.Implementation | undefined>;
 
   static override fromImport(
     source: ActiveEffect.Source,

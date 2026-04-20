@@ -1,4 +1,4 @@
-import type { InexactPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { InterfaceToObject, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type {
@@ -971,13 +971,59 @@ declare namespace JournalEntry {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode JournalEntry.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode JournalEntry.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode JournalEntry.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode JournalEntry.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode JournalEntry.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode JournalEntry.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode JournalEntry.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends JournalEntry.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<JournalEntry.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode JournalEntry.deleteDialog | JournalEntry#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    JournalEntry.Stored,
+    PassedConfig
+  >;
 
   type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     JournalEntry.Stored,
@@ -1092,36 +1138,63 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
 
   // ClientDocument overrides
 
-  protected override _preCreateDescendantDocuments(...args: Cards.PreCreateDescendantDocumentsArgs): void;
+  protected override _preCreateDescendantDocuments(...args: JournalEntry.PreCreateDescendantDocumentsArgs): void;
 
-  protected override _onCreateDescendantDocuments(...args: Cards.OnCreateDescendantDocumentsArgs): void;
+  protected override _onCreateDescendantDocuments(...args: JournalEntry.OnCreateDescendantDocumentsArgs): void;
 
-  protected override _preUpdateDescendantDocuments(...args: Cards.PreUpdateDescendantDocumentsArgs): void;
+  protected override _preUpdateDescendantDocuments(...args: JournalEntry.PreUpdateDescendantDocumentsArgs): void;
 
-  protected override _onUpdateDescendantDocuments(...args: Cards.OnUpdateDescendantDocumentsArgs): void;
+  protected override _onUpdateDescendantDocuments(...args: JournalEntry.OnUpdateDescendantDocumentsArgs): void;
 
-  protected override _preDeleteDescendantDocuments(...args: Cards.PreDeleteDescendantDocumentsArgs): void;
+  protected override _preDeleteDescendantDocuments(...args: JournalEntry.PreDeleteDescendantDocumentsArgs): void;
 
-  protected override _onDeleteDescendantDocuments(...args: Cards.OnDeleteDescendantDocumentsArgs): void;
+  protected override _onDeleteDescendantDocuments(...args: JournalEntry.OnDeleteDescendantDocumentsArgs): void;
 
   static override defaultName(context?: JournalEntry.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends JournalEntry.CreateDialogOptions | undefined = undefined,
+  >(
     data?: JournalEntry.CreateDialogData,
+    createOptions?: JournalEntry.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<JournalEntry.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode JournalEntry.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends JournalEntry.CreateDialogOptions | undefined = undefined,
+  >(
+    data: JournalEntry.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: JournalEntry.Database.DialogCreateOptions,
-    options?: JournalEntry.CreateDialogOptions,
-  ): Promise<JournalEntry.Stored | null | undefined>;
+    createOptions: JournalEntry.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<JournalEntry.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"JournalEntry">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: JournalEntry.Database.DeleteOneDocumentOperation,
+  ): Promise<JournalEntry.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: JournalEntry.DropData,
-    options?: JournalEntry.DropDataOptions,
-  ): Promise<JournalEntry.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: JournalEntry.Database.DeleteOneDocumentOperation,
+  ): Promise<JournalEntry.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: JournalEntry.DropData): Promise<JournalEntry.Implementation | undefined>;
 
   static override fromImport(
     source: JournalEntry.Source,

@@ -1,4 +1,4 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { MaybeArray, Merge } from "#utils";
 import type { fields, TextureData } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseJournalEntryPage, BaseJournalEntry, BaseNote } from "#client/documents/_module.d.mts";
@@ -936,13 +936,59 @@ declare namespace NoteDocument {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode NoteDocument.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode NoteDocument.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode NoteDocument.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode NoteDocument.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode NoteDocument.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode NoteDocument.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode NoteDocument.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends NoteDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<NoteDocument.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode NoteDocument.deleteDialog | NoteDocument#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    NoteDocument.Stored,
+    PassedConfig
+  >;
 
   /**
    * The arguments to construct the document.
@@ -969,18 +1015,31 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
   constructor(data?: NoteDocument.CreateData, context?: NoteDocument.ConstructionContext);
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends NoteDocument.CreateDialogOptions | undefined = undefined,
+  >(
+    data: NoteDocument.CreateDialogData | undefined,
+    createOptions: NoteDocument.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<NoteDocument.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode NoteDocument.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends NoteDocument.CreateDialogOptions | undefined = undefined,
+  >(
     data: NoteDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: NoteDocument.Database.DialogCreateOptions,
-    dialogoptions?: NoteDocument.CreateDialogOptions,
-  ): Promise<NoteDocument.Stored | null | undefined>;
-
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Note">,
-  ): Promise<this | false | null | undefined>;
+    createOptions: NoteDocument.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<NoteDocument.CreateDialogReturn<Temporary, Options>>;
 
   /**
    * The associated JournalEntry which is referenced by this Note
@@ -1011,13 +1070,27 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Note does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: NoteDocument.DefaultNameContext): string;
 
-  static override fromDropData(
-    data: NoteDocument.DropData,
-    options?: NoteDocument.DropDataOptions,
-  ): Promise<NoteDocument.Implementation | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: NoteDocument.Database.DeleteOneDocumentOperation,
+  ): Promise<NoteDocument.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: NoteDocument.Database.DeleteOneDocumentOperation,
+  ): Promise<NoteDocument.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: NoteDocument.DropData): Promise<NoteDocument.Implementation | undefined>;
 
   static override fromImport(
     source: NoteDocument.Source,

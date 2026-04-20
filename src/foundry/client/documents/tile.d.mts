@@ -1,4 +1,4 @@
-import type { InexactPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { InterfaceToObject, MaybeArray, Merge } from "#utils";
 import type { fields, TextureData } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseTile } from "#common/documents/_module.d.mts";
@@ -966,13 +966,59 @@ declare namespace TileDocument {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode TileDocument.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode TileDocument.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode TileDocument.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode TileDocument.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode TileDocument.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode TileDocument.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode TileDocument.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends TileDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<TileDocument.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode TileDocument.deleteDialog | TileDocument#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    TileDocument.Stored,
+    PassedConfig
+  >;
 
   /**
    * The arguments to construct the document.
@@ -1013,26 +1059,53 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
 
   // Descendant Document operations have been left out because Tile does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: TileDocument.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends TileDocument.CreateDialogOptions | undefined = undefined,
+  >(
+    data: TileDocument.CreateDialogData | undefined,
+    createOptions: TileDocument.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<TileDocument.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode TileDocument.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends TileDocument.CreateDialogOptions | undefined = undefined,
+  >(
     data: TileDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: TileDocument.Database.DialogCreateOptions,
-    options?: TileDocument.CreateDialogOptions,
-  ): Promise<TileDocument.Stored | null | undefined>;
+    createOptions: TileDocument.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<TileDocument.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Tile">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: TileDocument.Database.DeleteOneDocumentOperation,
+  ): Promise<TileDocument.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: TileDocument.DropData,
-    options?: TileDocument.DropDataOptions,
-  ): Promise<TileDocument.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: TileDocument.Database.DeleteOneDocumentOperation,
+  ): Promise<TileDocument.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: TileDocument.DropData): Promise<TileDocument.Implementation | undefined>;
 
   static override fromImport(
     source: TileDocument.Source,

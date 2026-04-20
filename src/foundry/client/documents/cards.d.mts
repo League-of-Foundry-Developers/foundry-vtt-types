@@ -1056,6 +1056,64 @@ declare namespace Cards {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
+  /** The interface {@linkcode Cards.fromDropData} receives */
+  interface DropData extends Document.Internal.DropData<Name> {}
+
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Cards.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode Cards.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode Cards.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Cards.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Cards.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Cards.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Cards.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Cards.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Cards.deleteDialog | Cards#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Cards.Stored,
+    PassedConfig
+  >;
+
   type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     Cards.Stored,
     Cards.DirectDescendantName,
@@ -1219,22 +1277,6 @@ declare namespace Cards {
      */
     toUpdate: Card.UpdateData[];
   }
-
-  /* ***********************************************
-   *       CLIENT DOCUMENT TEMPLATE TYPES          *
-   *************************************************/
-
-  interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
-
-  /* ***********************************************
-   *             CARDS-SPECIFIC TYPES              *
-   *************************************************/
 
   /**
    * @remarks {@linkcode Cards.draw | Cards#draw} spreads this into an object, minus `how`, with the `action` preset to `"draw"`,
@@ -1434,15 +1476,47 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
    */
   resetDialog(): Promise<this | false | null>;
 
-  override deleteDialog(options?: InexactPartial<DialogV2.ConfirmConfig>): Promise<this | false | null | undefined>;
-
-  /** @remarks No type changes, just creates a fancier `Dialog` than `super` */
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Cards.CreateDialogOptions | undefined = undefined,
+  >(
     data?: Cards.CreateDialogData,
+    createOptions?: Cards.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Cards.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Cards.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Cards.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Cards.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: Cards.Database.DialogCreateOptions,
-    options?: Cards.CreateDialogOptions,
-  ): Promise<Cards.Stored | null | undefined>;
+    createOptions: Cards.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Cards.CreateDialogReturn<Temporary, Options>>;
+
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Cards.Database.DeleteOneDocumentOperation,
+  ): Promise<Cards.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Cards.Database.DeleteOneDocumentOperation,
+  ): Promise<Cards.DeleteDialogReturn<Options>>;
 
   /*
    * After this point these are not really overridden methods.
@@ -1470,10 +1544,7 @@ declare class Cards<out SubType extends Cards.SubType = Cards.SubType> extends B
 
   static override defaultName(context?: Cards.DefaultNameContext): string;
 
-  static override fromDropData(
-    data: Cards.DropData,
-    options?: Cards.DropDataOptions,
-  ): Promise<Cards.Implementation | undefined>;
+  static override fromDropData(data: Cards.DropData): Promise<Cards.Implementation | undefined>;
 
   static override fromImport(
     source: Cards.Source,

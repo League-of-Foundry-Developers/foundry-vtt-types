@@ -1064,6 +1064,60 @@ declare namespace Actor {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode Actor.fromDropData} receives */
+  interface DropData extends Document.Internal.DropData<Name> {}
+
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Actor.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode Actor.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode Actor.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Actor.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Actor.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Actor.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Actor.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Actor.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Actor.deleteDialog | Actor#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Actor.Stored,
+    PassedConfig
+  >;
+
   type PreCreateDescendantDocumentsArgs =
     | Document.Internal.PreCreateDescendantDocumentsArgs<
         Actor.Stored,
@@ -1111,14 +1165,6 @@ declare namespace Actor {
         Actor.Metadata.Embedded
       >
     | Item.OnDeleteDescendantDocumentsArgs;
-
-  interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /* ***********************************************
    *             ACTOR-SPECIFIC TYPES              *
@@ -1612,22 +1658,49 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
 
   static override defaultName(context?: Actor.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Actor.CreateDialogOptions | undefined = undefined,
+  >(
     data?: Actor.CreateDialogData,
+    createOptions?: Actor.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Actor.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Actor.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Actor.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Actor.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: Actor.Database.DialogCreateOptions,
-    options?: Actor.CreateDialogOptions,
-  ): Promise<Actor.Stored | null | undefined>;
+    createOptions: Actor.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Actor.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Actor">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Actor.Database.DeleteOneDocumentOperation,
+  ): Promise<Actor.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: Actor.DropData,
-    options?: Actor.DropDataOptions,
-  ): Promise<Actor.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Actor.Database.DeleteOneDocumentOperation,
+  ): Promise<Actor.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Actor.DropData): Promise<Actor.Implementation | undefined>;
 
   static override fromImport(
     source: Actor.Source,

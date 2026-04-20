@@ -1,4 +1,4 @@
-import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseMeasuredTemplate, BaseUser } from "#client/documents/_module.d.mts";
@@ -925,13 +925,59 @@ declare namespace MeasuredTemplateDocument {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode MeasuredTemplateDocument.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode MeasuredTemplateDocument.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode MeasuredTemplateDocument.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode MeasuredTemplateDocument.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode MeasuredTemplateDocument.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode MeasuredTemplateDocument.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode MeasuredTemplateDocument.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends MeasuredTemplateDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<MeasuredTemplateDocument.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode MeasuredTemplateDocument.deleteDialog | MeasuredTemplateDocument#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    MeasuredTemplateDocument.Stored,
+    PassedConfig
+  >;
 
   /**
    * The arguments to construct the document.
@@ -980,26 +1026,51 @@ declare class MeasuredTemplateDocument extends BaseMeasuredTemplate.Internal.Can
 
   // Descendant Document operations have been left out because MeasuredTemplate does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: MeasuredTemplateDocument.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends MeasuredTemplateDocument.CreateDialogOptions | undefined = undefined,
+  >(
+    data: MeasuredTemplateDocument.CreateDialogData | undefined,
+    createOptions: MeasuredTemplateDocument.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<MeasuredTemplateDocument.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode MeasuredTemplateDocument.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends MeasuredTemplateDocument.CreateDialogOptions | undefined = undefined,
+  >(
     data: MeasuredTemplateDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: MeasuredTemplateDocument.Database.DialogCreateOptions,
-    options?: MeasuredTemplateDocument.CreateDialogOptions,
-  ): Promise<MeasuredTemplateDocument.Stored | null | undefined>;
+    createOptions: MeasuredTemplateDocument.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<MeasuredTemplateDocument.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"MeasuredTemplate">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: MeasuredTemplateDocument.Database.DeleteOneDocumentOperation,
+  ): Promise<MeasuredTemplateDocument.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: MeasuredTemplateDocument.DropData,
-    options?: MeasuredTemplateDocument.DropDataOptions,
-  ): Promise<MeasuredTemplateDocument.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: MeasuredTemplateDocument.Database.DeleteOneDocumentOperation,
+  ): Promise<MeasuredTemplateDocument.DeleteDialogReturn<Options>>;
 
   static override fromImport(
     source: MeasuredTemplateDocument.Source,

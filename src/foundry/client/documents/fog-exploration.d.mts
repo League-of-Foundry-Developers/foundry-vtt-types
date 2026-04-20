@@ -1,4 +1,4 @@
-import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseFogExploration, BaseScene, BaseUser } from "#client/documents/_module.d.mts";
@@ -877,13 +877,59 @@ declare namespace FogExploration {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode FogExploration.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode FogExploration.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode FogExploration.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode FogExploration.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode FogExploration.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode FogExploration.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode FogExploration.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends FogExploration.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<FogExploration.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode FogExploration.deleteDialog | FogExploration#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    FogExploration.Stored,
+    PassedConfig
+  >;
 
   /* ***********************************************
    *       FOG-EXPLORATION-SPECIFIC TYPES          *
@@ -977,26 +1023,51 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
 
   // Descendant Document operations have been left out because FogExploration does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
-  static override defaultName(context: FogExploration.DefaultNameContext): string;
+  static override defaultName(context?: FogExploration.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
-    data: FogExploration.CreateData | undefined,
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends FogExploration.CreateDialogOptions | undefined = undefined,
+  >(
+    data?: FogExploration.CreateDialogData,
+    createOptions?: FogExploration.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<FogExploration.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode FogExploration.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends FogExploration.CreateDialogOptions | undefined = undefined,
+  >(
+    data: FogExploration.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: FogExploration.Database.DialogCreateOptions,
-    options?: FogExploration.CreateDialogOptions,
-  ): Promise<FogExploration.Stored | null | undefined>;
+    createOptions: FogExploration.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<FogExploration.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"FogExploration">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: FogExploration.Database.DeleteOneDocumentOperation,
+  ): Promise<FogExploration.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: FogExploration.DropData,
-    options?: FogExploration.DropDataOptions,
-  ): Promise<FogExploration.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: FogExploration.Database.DeleteOneDocumentOperation,
+  ): Promise<FogExploration.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: FogExploration.DropData): Promise<FogExploration.Implementation | undefined>;
 
   static override fromImport(
     source: FogExploration.Source,
@@ -1004,15 +1075,6 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   ): Promise<FogExploration.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
-}
-
-declare namespace FogExploration {
-  interface Any extends AnyFogExploration {}
-  interface AnyConstructor extends Identity<typeof AnyFogExploration> {}
-}
-
-declare abstract class AnyFogExploration extends FogExploration {
-  constructor(...args: never);
 }
 
 export default FogExploration;

@@ -3428,10 +3428,11 @@ declare namespace Document {
   type Clone<This extends Document.Any, Save extends boolean | undefined> = Save extends true ? Promise<This> : This;
 
   /**
-   * The options for `fromDropData`. Foundry never uses these so the interface is currently empty.
+   * @deprecated Foundry, prior to v13, had a completely unused `options` parameter in the
+   * {@linkcode ClientDocumentMixin.AnyMixed.fromDropData | ClientDocument.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface DropDataOptions {}
+  type DropDataOptions = AnyObject;
 
   type DropDataFor<Name extends Document.Type> = {
     ActiveEffect: ActiveEffect.DropData;

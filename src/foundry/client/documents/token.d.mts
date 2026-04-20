@@ -1685,13 +1685,59 @@ declare namespace TokenDocument {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode TokenDocument.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode TokenDocument.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode TokenDocument.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode TokenDocument.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode TokenDocument.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode TokenDocument.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode TokenDocument.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends TokenDocument.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<TokenDocument.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode TokenDocument.deleteDialog | TokenDocument#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    TokenDocument.Stored,
+    PassedConfig
+  >;
 
   type PreCreateDescendantDocumentsArgs =
     | Document.Internal.PreCreateDescendantDocumentsArgs<
@@ -2653,11 +2699,11 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
     waypoints: TokenDocument.SegmentizeMovementWaypoint[],
   ): RegionDocument.MovementSegment[];
 
-  protected override _preCreateDescendantDocuments(...args: ActorDelta.PreCreateDescendantDocumentsArgs): void;
+  protected override _preCreateDescendantDocuments(...args: TokenDocument.PreCreateDescendantDocumentsArgs): void;
 
-  protected override _onCreateDescendantDocuments(...args: ActorDelta.OnCreateDescendantDocumentsArgs): void;
+  protected override _onCreateDescendantDocuments(...args: TokenDocument.OnCreateDescendantDocumentsArgs): void;
 
-  protected override _preUpdateDescendantDocuments(...args: ActorDelta.PreUpdateDescendantDocumentsArgs): void;
+  protected override _preUpdateDescendantDocuments(...args: TokenDocument.PreUpdateDescendantDocumentsArgs): void;
 
   protected override _onUpdateDescendantDocuments(...args: TokenDocument.OnUpdateDescendantDocumentsArgs): void;
 
@@ -2759,26 +2805,53 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   // Descendant Document operations are actually overridden above
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: TokenDocument.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends TokenDocument.CreateDialogOptions | undefined = undefined,
+  >(
+    data: TokenDocument.CreateDialogData | undefined,
+    createOptions: TokenDocument.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<TokenDocument.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode TokenDocument.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends TokenDocument.CreateDialogOptions | undefined = undefined,
+  >(
     data: TokenDocument.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: TokenDocument.Database.DialogCreateOptions,
-    options?: TokenDocument.CreateDialogOptions,
-  ): Promise<TokenDocument.Stored | null | undefined>;
+    createOptions: TokenDocument.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<TokenDocument.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Token">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: TokenDocument.Database.DeleteOneDocumentOperation,
+  ): Promise<TokenDocument.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: TokenDocument.DropData,
-    options?: TokenDocument.DropDataOptions,
-  ): Promise<TokenDocument.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: TokenDocument.Database.DeleteOneDocumentOperation,
+  ): Promise<TokenDocument.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: TokenDocument.DropData): Promise<TokenDocument.Implementation | undefined>;
 
   static override fromImport(
     source: TokenDocument.Source,

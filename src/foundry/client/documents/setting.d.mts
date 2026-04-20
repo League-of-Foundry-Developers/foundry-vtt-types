@@ -1,4 +1,4 @@
-import type { InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
+import type { IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseSetting, BaseUser } from "#client/documents/_module.d.mts";
@@ -902,13 +902,59 @@ declare namespace Setting {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode Setting.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Setting.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode Setting.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode Setting.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Setting.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Setting.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Setting.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Setting.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Setting.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Setting.deleteDialog | Setting#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Setting.Stored,
+    PassedConfig
+  >;
 
   /**
    * The arguments to construct the document.
@@ -965,25 +1011,49 @@ declare class Setting extends BaseSetting.Internal.ClientDocument {
 
   static override defaultName(context?: Setting.DefaultNameContext): string;
 
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Setting.CreateDialogOptions | undefined = undefined,
+  >(
+    data?: Setting.CreateDialogData,
+    createOptions?: Setting.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Setting.CreateDialogReturn<Temporary, Options>>;
+
   /**
-   * @throws Foundry tries to figure out the folders for the world collection and errors out
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Setting.CreateDialogDeprecatedOptions}
    */
-  static override createDialog(
-    data?: Setting.CreateData,
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Setting.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Setting.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: Setting.Database.DialogCreateOptions,
-    options?: Setting.CreateDialogOptions,
-  ): never;
+    createOptions: Setting.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Setting.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Setting">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Setting.Database.DeleteOneDocumentOperation,
+  ): Promise<Setting.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: Setting.DropData,
-    options?: Setting.DropDataOptions,
-  ): Promise<Setting.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Setting.Database.DeleteOneDocumentOperation,
+  ): Promise<Setting.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Setting.DropData): Promise<Setting.Implementation | undefined>;
 
   static override fromImport(
     source: Setting.Source,

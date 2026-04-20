@@ -935,13 +935,59 @@ declare namespace User {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode User.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode User.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode User.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode User.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode User.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode User.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode User.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends User.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<User.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode User.deleteDialog | User#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    User.Stored,
+    PassedConfig
+  >;
 
   /* ***********************************************
    *             USER-SPECIFIC TYPES               *
@@ -1277,24 +1323,49 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   // Descendant Document operations have been left out because User does not have any descendant documents.
 
-  static override defaultName(context?: User.DefaultNameContext): string;
-
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends User.CreateDialogOptions | undefined = undefined,
+  >(
     data?: User.CreateDialogData,
+    createOptions?: User.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<User.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode User.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends User.CreateDialogOptions | undefined = undefined,
+  >(
+    data: User.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: User.Database.DialogCreateOptions,
-    options?: User.CreateDialogOptions,
-  ): Promise<User.Stored | null | undefined>;
+    createOptions: User.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<User.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"User">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: User.Database.DeleteOneDocumentOperation,
+  ): Promise<User.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: User.DropData,
-    options?: User.DropDataOptions,
-  ): Promise<User.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: User.Database.DeleteOneDocumentOperation,
+  ): Promise<User.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: User.DropData): Promise<User.Implementation | undefined>;
 
   static override fromImport(
     source: User.Source,
