@@ -3177,6 +3177,13 @@ declare namespace Document {
     callback?: RecursiveFieldClearCallback | undefined;
   }
 
+  /**
+   * {@linkcode Document.clone | Document#clone} is not an async function, and its default behaviour is to return a constructed, temporary,
+   * document directly, but if `{save: true}` is passed in `context`, it will forward the return of {@linkcode Document.create}.
+   */
+  type Clone<This extends Document.Any, Save extends boolean | undefined> =
+    true extends Extract<Save, true> ? Promise<Document.StoredForName<This["documentName"]> | undefined> : This;
+
   /* ***********************************************
    *             CLIENT DOCUMENT TYPES             *
    *************************************************/
@@ -3528,13 +3535,6 @@ declare namespace Document {
         userId: string,
       ]
     : never;
-
-  /**
-   * {@linkcode Document.clone | Document#clone} is not an async function, and its default behaviour is to return a constructed, temporary,
-   * document directly, but if `{save: true}` is passed in `context`, it will forward the return of {@linkcode Document.create}.
-   */
-  type Clone<This extends Document.Any, Save extends boolean | undefined> =
-    true extends Extract<Save, true> ? Promise<Document.StoredForName<This["documentName"]> | undefined> : This;
 
   /**
    * @deprecated Foundry, prior to v13, had a completely unused `options` parameter in the
