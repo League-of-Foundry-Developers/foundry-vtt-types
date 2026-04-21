@@ -21,6 +21,7 @@ import type {
 import type { ImageHelper } from "#client/helpers/media/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { Notifications } from "#client/applications/ui/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -1769,13 +1770,13 @@ declare namespace Scene {
      * The desired thumbnail width. Default is 300px
      * @defaultValue `300`
      */
-    width: number | null;
+    width: number;
 
     /**
      * The desired thumbnail height. Default is 100px;
      * @defaultValue `100`
      */
-    height: number | null;
+    height: number;
 
     /**
      * Which image format should be used? image/png, image/jpeg, or image/webp
@@ -1861,7 +1862,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * Pull the specified users to this Scene.
    * @param users - An array of User documents or IDs.
    */
-  pullUsers(users?: (User.Implementation | string)[]): void;
+  pullUsers(users?: (User.Stored | string)[]): void;
 
   /**
    * Set this scene as currently active
@@ -1873,17 +1874,13 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * Set this scene as the current view
    * @remarks If `canvas.loading`, returns a `ui.notifications.warn`, thence the `| number` in the return type
    */
-  view(): Promise<this | number>;
+  view(): Promise<this | Notifications.Notification<"warning">>;
 
   /**
    * Unview the current Scene, clearing the game canvas.
    */
   unview(): Promise<this | undefined>;
 
-  /**
-   * @param createData - (default: `{}`)
-   * @param options    - (default: `{}`)
-   */
   override clone<Save extends boolean | undefined = false>(
     data?: Scene.CreateData,
     context?: Document.CloneContext<Save>,
@@ -1895,7 +1892,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * @remarks If `source` is falsey, and the grid is hexagonal with the `legacyHex` flag set,
    * does some conversion on `object.grid.size` (leaving it numeric, no type change) before returning
    */
-  override toObject(source?: boolean | null): fields.SchemaField.SourceData<Scene.Schema>;
+  override toObject(source?: boolean): Scene.Source;
 
   /**
    * @remarks
@@ -1929,33 +1926,64 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * each Token accordingly.
    *
    * This function doesn't need to be called by the systems/modules unless
-   * {@linkcode TokenDocument.testInsideRegion | foundry.documents.TokenDocument#testInsideRegion} is overridden and non-Token properties other than
-   * `Scene#grid.type` and `Scene#grid.size` change that are used in the override of
+   * {@linkcode TokenDocument.testInsideRegion | foundry.documents.TokenDocument#testInsideRegion} is overridden and non-Token properties
+   * other than `Scene#grid.type` and `Scene#grid.size` change that are used in the override of
    * {@linkcode TokenDocument.TestInsideRegion | foundry.documents.TokenDocument#testInsideRegion}.
    * @param tokens - The Tokens whose regions should be updates
    * @returns The array of Tokens whose regions changed
    */
   updateTokenRegions(tokens?: Iterable<TokenDocument.Implementation>): Promise<Array<TokenDocument.Stored>>;
 
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected _repositionObject(sceneUpdateData: never): never;
+  // For type simplicity the following real overrides are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
 
-  // _preCreate, _preCreateOperation, _onCreate, and _preUpdate, _onUpdateOperation, _onUpdate, and _onDelete are all overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  // protected override _preCreate(
+  //   data: Scene.CreateData,
+  //   options: Scene.Database.PreCreateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected static override _preCreateOperation(
+  //   documents: Scene.Implementation[],
+  //   operation: Scene.Database.PreCreateOperation,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected override _onCreate(data: Scene.CreateData, options: Scene.Database.OnCreateOptions, userId: string): void;
+
+  // protected override _preUpdate(
+  //   changed: Scene.UpdateData,
+  //   options: Scene.Database.PreUpdateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected static override _onUpdateOperation(
+  //   documents: Scene.Stored[],
+  //   operation: Scene.Database.OnUpdateOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
+
+  // protected override _onUpdate(
+  //   changed: Scene.UpdateData,
+  //   options: Scene.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: Scene.Database.OnDeleteOptions, userId: string): void;
 
   /**
    * Handle Scene activation workflow if the active state is changed to true
    * @param active - Is the scene now active?
    */
-  protected _onActivate(active: boolean): Promise<this | Canvas>;
+  protected _onActivate(active: boolean): void;
 
   protected override _preCreateDescendantDocuments(...args: Scene.PreCreateDescendantDocumentsArgs): void;
 
   protected override _preUpdateDescendantDocuments(...args: Scene.PreUpdateDescendantDocumentsArgs): void;
 
-  protected override _onUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocumentsArgs): void;
-
   protected override _preDeleteDescendantDocuments(...args: Scene.PreDeleteDescendantDocumentsArgs): void;
+
+  protected override _onUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocumentsArgs): void;
 
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: foundry.documents.collections.CompendiumCollection.Any | null,
@@ -1968,6 +1996,9 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * @returns The created thumbnail data.
    */
   createThumbnail(data?: Scene.ThumbnailCreationData): Promise<ImageHelper.ThumbnailReturn>;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _repositionObject(sceneUpdateData: never): never;
 
   /*
    * After this point these are not really overridden methods.
