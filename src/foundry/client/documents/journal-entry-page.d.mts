@@ -1270,7 +1270,7 @@ declare class JournalEntryPage<
     content: HTMLElement | HTMLCollection,
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLDocumentEmbedElement>;
+  ): Promise<HTMLDocumentEmbedElement | null>;
 
   /**
    * Embed text page content.

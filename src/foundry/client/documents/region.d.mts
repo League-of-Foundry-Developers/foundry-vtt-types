@@ -4,6 +4,8 @@ import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abst
 import type { BaseRegion } from "#common/documents/_module.d.mts";
 import type { Region } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { RegionPolygonTree, RegionShape } from "#client/data/region-shapes/_module.d.mts";
+import type { Canvas } from "#client/canvas/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -27,9 +29,10 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * The value of this property must not be mutated.
    *
    * This property is updated only by a document update.
-   * @remarks marked by foundry as readonly
+   * @remarks Foundry types the return as `ReadonlyArray` but does nothing to that effect at runtime; A reference to the private,
+   * but unfrozen, array is returned.
    */
-  get regionShapes(): foundry.data.regionShapes.RegionShape.Any[];
+  get regionShapes(): RegionShape.Any[];
 
   /**
    * The polygons of this Region.
@@ -37,8 +40,10 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * The value of this property must not be mutated.
    *
    * This property is updated only by a document update.
+   * @remarks Foundry types the return as `ReadonlyArray` but does nothing to that effect at runtime;
+   * A reference to the private, but unfrozen, array is returned.
    */
-  get polygons(): ReadonlyArray<PIXI.Polygon>;
+  get polygons(): PIXI.Polygon[];
 
   /**
    * The polygon tree of this Region.
@@ -47,7 +52,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    *
    * This property is updated only by a document update.
    */
-  get polygonTree(): foundry.data.regionShapes.RegionPolygonTree;
+  get polygonTree(): RegionPolygonTree;
 
   /**
    * The Clipper paths of this Region.
@@ -55,6 +60,8 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * The value of this property must not be mutated.
    *
    * This property is updated only by a document update.
+   * @remarks Foundry types the return as `ReadonlyArray` but does nothing to that effect at runtime;
+   * A reference to the private, but unfrozen, array is returned.
    */
   get clipperPaths(): ReadonlyArray<ReadonlyArray<ClipperLib.IntPoint>>;
 
@@ -64,8 +71,10 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * The value of this property must not be mutated.
    *
    * This property is updated only by a document update.
+   * @remarks Foundry types the return as `ReadonlyArray` but does nothing to that effect at runtime;
+   * A reference to the private, but unfrozen, array is returned.
    */
-  get triangulation(): Readonly<{ vertices: Float32Array; indices: Uint16Array | Uint32Array }>;
+  get triangulation(): RegionDocument.Triangulation;
 
   /**
    * The bounds of this Region.
@@ -73,23 +82,24 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * The value of this property must not be mutated.
    *
    * This property is updated only by a document update.
+   * @remarks Despite the above exhortation, this returns a mutable reference to a private property.
    */
   get bounds(): PIXI.Rectangle;
 
   /**
    * The tokens inside this region.
-   * @remarks marked by foundry as `@readonly`
+   * @remarks Marked by foundry as `@readonly`, but remains fully mutable at runtime.
    */
-  tokens: ReadonlySet<TokenDocument.Implementation>;
+  tokens: Set<TokenDocument.Implementation>;
 
-  prepareBaseData(): void;
+  override prepareBaseData(): void;
 
   /**
    * Test whether the given point (at the given elevation) is inside this Region.
    * @param point - The point.
    * @returns Is this point inside this Region?
    */
-  testPoint(point: foundry.canvas.Canvas.ElevatedPoint): boolean;
+  testPoint(point: Canvas.ElevatedPoint): boolean;
 
   /**
    * Split the movement path into its segments.
@@ -101,8 +111,35 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    */
   segmentizeMovementPath(
     waypoints: RegionDocument.SegmentizeMovementPathWaypoint[],
-    samples: foundry.canvas.Canvas.Point[],
+    samples: Canvas.Point[],
   ): RegionDocument.MovementSegment[];
+
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onUpdate(
+  //   changed: RegionDocument.UpdateData,
+  //   options: RegionDocument.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected static override _onCreateOperation(
+  //   documents: RegionDocument.Stored[],
+  //   operation: RegionDocument.Database.OnCreateOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
+
+  // protected static override _onUpdateOperation(
+  //   documents: RegionDocument.Stored[],
+  //   operation: RegionDocument.Database.OnUpdateOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
+
+  // protected static override _onDeleteOperation(
+  //   documents: RegionDocument.Stored[],
+  //   operation: RegionDocument.Database.OnDeleteOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
 
   /**
    * Teleport a Token into this Region.
@@ -114,14 +151,14 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    * @param token - An existing Token Document to teleport
    * @returns The same Token Document if teleported within the same Scene, or a new Token Document if teleported to a different Scene
    */
-  teleportToken(token: TokenDocument.Implementation): Promise<TokenDocument.Implementation>;
+  teleportToken(token: TokenDocument.Stored): Promise<TokenDocument.Stored>;
 
   /**
    * Activate the Socket event listeners.
    * @param socket - The active game socket
    * @internal
    */
-  protected static _activateSocketListeners(socket: WebSocket): void;
+  protected static _activateSocketListeners(socket: io.Socket): void;
 
   /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
   protected static _updateTokens(regions: never, options?: never): never;
@@ -165,9 +202,15 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
 
   protected override _preCreateDescendantDocuments(...args: RegionDocument.PreCreateDescendantDocumentsArgs): void;
 
+  // _onCreateDescendantDocuments omitted from the template due to real override above
+
   protected override _preUpdateDescendantDocuments(...args: RegionDocument.PreUpdateDescendantDocumentsArgs): void;
 
+  // _onUpdateDescendantDocuments omitted from the template due to real override above
+
   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs): void;
+
+  // _onDeleteDescendantDocuments omitted from the template due to real override above
 
   // `context` must contain a `parent`, so is required.
   static override defaultName(context: RegionDocument.DefaultNameContext): string;
@@ -224,7 +267,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
-  static #RegionDocument: true;
+  #RegionDocument: true;
 }
 
 declare namespace RegionDocument {
@@ -1282,6 +1325,11 @@ declare namespace RegionDocument {
   /* ***********************************************
    *            REGION-SPECIFIC TYPES              *
    *************************************************/
+
+  interface Triangulation {
+    vertices: Float32Array;
+    indices: Uint16Array | Uint32Array;
+  }
 
   // TODO: <Data extends object>
   interface RegionEvent {

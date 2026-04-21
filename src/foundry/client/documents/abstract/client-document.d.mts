@@ -581,6 +581,8 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param config  - Configuration for embedding behavior.
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
    * @returns A representation of the Document as HTML content, or null if such a representation could not be generated.
+   * @privateRemarks Core never returns `null`, but includes it in the return type on their end, and the return is checked for falseyness
+   * where core calls it, so we have included it as well to allow for apparently valid subclassing.
    */
   toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
@@ -609,27 +611,33 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param content - The embedded content.
    * @param config  - Configuration for embedding behavior.
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
-   * @remarks Core uses neither `config` nor `options`, and in at least one case (`#_createFigureEmbed`, below) doesn't pass them along.
+   * @privateRemarks Core uses neither `config` nor `options`, and in at least one case (`#_createFigureEmbed`, below) doesn't pass them along.
+   *
+   * Core never returns `null`, but includes it in the return type on their end, and the return is checked for falseyness where core calls
+   * it, so we have included it as well to allow for apparently valid subclassing.
    */
   protected _createInlineEmbed(
     content: HTMLElement | HTMLCollection,
     config?: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLDocumentEmbedElement>;
+  ): Promise<HTMLDocumentEmbedElement | null>;
 
   /**
    * A method that can be overridden by subclasses to customize the generation of the embed figure.
    * @param content - The embedded content.
    * @param config  - Configuration for embedding behavior.
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
-   * @remarks Core doesn't use `options`, and only a subset of `DocumentHTMLEmbedConfig` keys, but in the latter case it gets forwarded from
-   * {@linkcode ClientDocumentMixin.AnyMixed.toEmbed | #toEmbed} so the full type with no omissions is correct.
+   * @privateRemarks Core doesn't use `options`, and only a subset of `DocumentHTMLEmbedConfig` keys, but in the latter case it gets
+   * forwarded from {@linkcode ClientDocumentMixin.AnyMixed.toEmbed | #toEmbed} so the full type with no omissions is correct.
+   *
+   * Core never returns `null`, but includes it in the return type on their end, and the return is checked for falseyness where core calls
+   * it, so we have included it as well to allow for apparently valid subclassing.
    */
   protected _createFigureEmbed(
     content: HTMLElement | HTMLCollection,
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLDocumentEmbedElement>;
+  ): Promise<HTMLDocumentEmbedElement | null>;
 }
 
 type _ClientDocumentType = InternalClientDocument<Document.Type> & Document.AnyConstructor;

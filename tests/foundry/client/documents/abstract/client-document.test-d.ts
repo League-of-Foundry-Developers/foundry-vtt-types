@@ -372,22 +372,30 @@ expectTypeOf(item["_buildEmbedHTML"](embedConfig, enrichmentOptions)).toEqualTyp
 declare const element: HTMLElement;
 declare const htmlCollection: HTMLCollection;
 
-expectTypeOf(item["_createInlineEmbed"](element, embedConfig)).toEqualTypeOf<Promise<HTMLDocumentEmbedElement>>();
-expectTypeOf(item["_createInlineEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<
-  Promise<HTMLDocumentEmbedElement>
+expectTypeOf(item["_createInlineEmbed"](element, embedConfig)).toEqualTypeOf<
+  Promise<HTMLDocumentEmbedElement | null>
 >();
-expectTypeOf(item["_createInlineEmbed"](element, embedConfig, {})).toEqualTypeOf<Promise<HTMLDocumentEmbedElement>>();
+expectTypeOf(item["_createInlineEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<
+  Promise<HTMLDocumentEmbedElement | null>
+>();
+expectTypeOf(item["_createInlineEmbed"](element, embedConfig, {})).toEqualTypeOf<
+  Promise<HTMLDocumentEmbedElement | null>
+>();
 expectTypeOf(item["_createInlineEmbed"](element, embedConfig, enrichmentOptions)).toEqualTypeOf<
-  Promise<HTMLDocumentEmbedElement>
+  Promise<HTMLDocumentEmbedElement | null>
 >();
 
-expectTypeOf(item["_createFigureEmbed"](element, embedConfig)).toEqualTypeOf<Promise<HTMLDocumentEmbedElement>>();
-expectTypeOf(item["_createFigureEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<
-  Promise<HTMLDocumentEmbedElement>
+expectTypeOf(item["_createFigureEmbed"](element, embedConfig)).toEqualTypeOf<
+  Promise<HTMLDocumentEmbedElement | null>
 >();
-expectTypeOf(item["_createFigureEmbed"](element, embedConfig, {})).toEqualTypeOf<Promise<HTMLDocumentEmbedElement>>();
+expectTypeOf(item["_createFigureEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<
+  Promise<HTMLDocumentEmbedElement | null>
+>();
+expectTypeOf(item["_createFigureEmbed"](element, embedConfig, {})).toEqualTypeOf<
+  Promise<HTMLDocumentEmbedElement | null>
+>();
 expectTypeOf(item["_createFigureEmbed"](element, embedConfig, enrichmentOptions)).toEqualTypeOf<
-  Promise<HTMLDocumentEmbedElement>
+  Promise<HTMLDocumentEmbedElement | null>
 >();
 
 // omitting tests for deprecated _*EmbeddedDocuments methods

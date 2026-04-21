@@ -1346,7 +1346,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
     content: HTMLElement | HTMLCollection,
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLDocumentEmbedElement>;
+  ): Promise<HTMLDocumentEmbedElement | null>;
 
   /**
    * Handle a roll from within embedded content.
