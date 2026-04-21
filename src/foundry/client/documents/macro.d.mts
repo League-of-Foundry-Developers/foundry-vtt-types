@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "#configuration";
-import type { Identity, MaybeArray, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseFolder, BaseMacro, BaseUser } from "#client/documents/_module.d.mts";
@@ -1021,7 +1021,7 @@ declare namespace Macro {
    *************************************************/
 
   /** @internal */
-  type _ScriptScope = NullishProps<{
+  interface _ScriptScope {
     /** An Actor who is the protagonist of the executed action. */
     actor: Actor.Implementation;
 
@@ -1040,15 +1040,17 @@ declare namespace Macro {
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
-     * will be a {@linkcode RegionDocument.Implementation} (possibly `null` if somehow called on a `RegionBehavior` without a parent `RegionDocument`)
+     * - When called in {@linkcode ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
+     * will be a {@linkcode RegionDocument.Implementation} (possibly `null` if somehow called on a `RegionBehavior` without a parent
+     * `RegionDocument`)
      */
     region?: unknown;
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
-     * will be a {@linkcode RegionBehavior.Implementation} (possibly `null` if somehow called on a `RegionBehaviorType` without a parent `RegionBehavior`)
+     * - When called in {@linkcode ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
+     * will be a {@linkcode RegionBehavior.Implementation} (possibly `null` if somehow called on a `RegionBehaviorType` without a parent
+     * `RegionBehavior`)
      */
     behavior?: unknown;
 
@@ -1056,7 +1058,7 @@ declare namespace Macro {
      * @remarks Sometimes provided by core:
      * - When called in {@linkcode Macro._onClickDocumentLink | Macro#_onClickDocumentLink},
      * will be a {@linkcode MouseEvent}
-     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
+     * - When called in {@linkcode ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
      * will be a {@linkcode RegionDocument.RegionEvent}
      */
     event?: unknown;
@@ -1065,9 +1067,9 @@ declare namespace Macro {
      * @remarks Additional arguments passed as part of the scope. Numeric keys are disallowed (`##executeScript` throws).
      */
     [arg: string | symbol]: unknown;
-  }>;
+  }
 
-  interface ScriptScope extends _ScriptScope {}
+  interface ScriptScope extends InexactPartial<_ScriptScope> {}
 
   interface ChatScope extends Pick<ScriptScope, "speaker"> {}
 
@@ -1075,12 +1077,12 @@ declare namespace Macro {
 
   type ExecuteScope<SubType extends Macro.SubType> = SubType extends "chat" | "script"
     ? UnknownScope
-    : (SubType extends "script" ? ScriptScope : never) | (SubType extends "chat" ? ScriptScope : never);
+    : (SubType extends "script" ? ScriptScope : never) | (SubType extends "chat" ? ChatScope : never);
 
   // Note: If extra types ever get added this will need to be updated to account for them, even if
   // just to return `undefined`.
   type ExecuteReturn<SubType extends Macro.SubType> =
-    | (SubType extends "chat" ? Promise<ChatMessage.Implementation | undefined | void> : never)
+    | (SubType extends "chat" ? Promise<ChatMessage.Stored | undefined | void> : never)
     // Note(LukeAbby): As of 13.346 this `| void` is only possible if there's a syntax error in the function.
     | (SubType extends "script" ? Promise<unknown> | void : never);
 
@@ -1135,6 +1137,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    * Test whether the given User is capable of executing this Macro.
    * @param user - The User to test.
    * @returns Can this User execute this Macro?
+   * @privateRemarks Only tests permissions, non-persisted `User`s work.
    */
   canUserExecute(user: User.Implementation): boolean;
 
@@ -1151,7 +1154,14 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   /** @remarks Returns `this.execute({event})` */
   override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
 
-  // _onCreate is overridden but with no signature changes from its definition in BaseMacro.
+  // For type simplicity the following real overrides are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onCreate(
+  //   data: Macro.CreateData,
+  //   options: Macro.Database.OnCreateOptions,
+  //   userId: string,
+  // ): void;
 
   /*
    * After this point these are not really overridden methods.
