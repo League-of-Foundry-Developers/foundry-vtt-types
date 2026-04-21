@@ -6,6 +6,7 @@ import type { BaseJournalEntryPage } from "#common/documents/_module.d.mts";
 import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { HTMLDocumentEmbedElement } from "#client/applications/elements/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -1269,7 +1270,7 @@ declare class JournalEntryPage<
     content: HTMLElement | HTMLCollection,
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLElement | null>;
+  ): Promise<HTMLDocumentEmbedElement>;
 
   /**
    * Embed text page content.

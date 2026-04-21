@@ -10,6 +10,7 @@ import Dialog = foundry.appv1.api.Dialog;
 import TextEditor = foundry.applications.ux.TextEditor;
 import ClientDocumentMixin = foundry.documents.abstract.ClientDocumentMixin;
 import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
+import HTMLDocumentEmbedElement = foundry.applications.elements.HTMLDocumentEmbedElement;
 
 const item = new Item.implementation({ name: "foo", type: "base" });
 declare const someActor: Actor.Implementation;
@@ -371,18 +372,22 @@ expectTypeOf(item["_buildEmbedHTML"](embedConfig, enrichmentOptions)).toEqualTyp
 declare const element: HTMLElement;
 declare const htmlCollection: HTMLCollection;
 
-expectTypeOf(item["_createInlineEmbed"](element, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
-expectTypeOf(item["_createInlineEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
-expectTypeOf(item["_createInlineEmbed"](element, embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(item["_createInlineEmbed"](element, embedConfig)).toEqualTypeOf<Promise<HTMLDocumentEmbedElement>>();
+expectTypeOf(item["_createInlineEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<
+  Promise<HTMLDocumentEmbedElement>
+>();
+expectTypeOf(item["_createInlineEmbed"](element, embedConfig, {})).toEqualTypeOf<Promise<HTMLDocumentEmbedElement>>();
 expectTypeOf(item["_createInlineEmbed"](element, embedConfig, enrichmentOptions)).toEqualTypeOf<
-  Promise<HTMLElement | null>
+  Promise<HTMLDocumentEmbedElement>
 >();
 
-expectTypeOf(item["_createFigureEmbed"](element, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
-expectTypeOf(item["_createFigureEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<Promise<HTMLElement | null>>();
-expectTypeOf(item["_createFigureEmbed"](element, embedConfig, {})).toEqualTypeOf<Promise<HTMLElement | null>>();
+expectTypeOf(item["_createFigureEmbed"](element, embedConfig)).toEqualTypeOf<Promise<HTMLDocumentEmbedElement>>();
+expectTypeOf(item["_createFigureEmbed"](htmlCollection, embedConfig)).toEqualTypeOf<
+  Promise<HTMLDocumentEmbedElement>
+>();
+expectTypeOf(item["_createFigureEmbed"](element, embedConfig, {})).toEqualTypeOf<Promise<HTMLDocumentEmbedElement>>();
 expectTypeOf(item["_createFigureEmbed"](element, embedConfig, enrichmentOptions)).toEqualTypeOf<
-  Promise<HTMLElement | null>
+  Promise<HTMLDocumentEmbedElement>
 >();
 
 // omitting tests for deprecated _*EmbeddedDocuments methods

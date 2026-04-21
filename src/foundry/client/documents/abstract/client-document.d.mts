@@ -14,6 +14,7 @@ import type { Application, FormApplication } from "#client/appv1/api/_module.d.m
 import type { ApplicationV2, DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
 import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+import type { HTMLDocumentEmbedElement } from "#client/applications/elements/_module.d.mts";
 
 declare class InternalClientDocument<DocumentName extends Document.Type> {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
@@ -562,9 +563,10 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param pack    - A specific pack being exported to
    * @param options - Additional options which modify how the document is converted (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import
+   * @remarks Core makes no use of `pack`, neither here in `ClientDocument` nor in any override.
    */
   toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
-    pack?: CompendiumCollection.Any | null,
+    pack?: CompendiumCollection.Any,
     options?: Options,
   ): ClientDocument.ToCompendiumReturnType<DocumentName, Options>;
 
@@ -607,24 +609,27 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param content - The embedded content.
    * @param config  - Configuration for embedding behavior.
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
+   * @remarks Core uses neither `config` nor `options`, and in at least one case (`#_createFigureEmbed`, below) doesn't pass them along.
    */
   protected _createInlineEmbed(
     content: HTMLElement | HTMLCollection,
-    config: TextEditor.DocumentHTMLEmbedConfig,
+    config?: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLElement | null>;
+  ): Promise<HTMLDocumentEmbedElement>;
 
   /**
    * A method that can be overridden by subclasses to customize the generation of the embed figure.
    * @param content - The embedded content.
    * @param config  - Configuration for embedding behavior.
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
+   * @remarks Core doesn't use `options`, and only a subset of `DocumentHTMLEmbedConfig` keys, but in the latter case it gets forwarded from
+   * {@linkcode ClientDocumentMixin.AnyMixed.toEmbed | #toEmbed} so the full type with no omissions is correct.
    */
   protected _createFigureEmbed(
     content: HTMLElement | HTMLCollection,
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLElement | null>;
+  ): Promise<HTMLDocumentEmbedElement>;
 }
 
 type _ClientDocumentType = InternalClientDocument<Document.Type> & Document.AnyConstructor;
