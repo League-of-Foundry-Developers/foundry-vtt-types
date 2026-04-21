@@ -1036,11 +1036,14 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
    */
   documentToAnchor(): HTMLAnchorElement | null;
 
-  protected override _preUpdate(
-    changed: TableResult.UpdateData,
-    options: TableResult.Database.PreUpdateOptions,
-    user: User.Stored,
-  ): Promise<boolean | void>;
+  // For type simplicity the following real overrides are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preUpdate(
+  //   changed: TableResult.UpdateData,
+  //   options: TableResult.Database.PreUpdateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
 
   /**
    * @deprecated "`TableResult#getChatText` is deprecated. Use the asynchronous

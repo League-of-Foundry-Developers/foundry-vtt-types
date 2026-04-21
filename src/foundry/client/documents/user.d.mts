@@ -1318,9 +1318,12 @@ declare class User extends BaseUser.Internal.ClientDocument {
     queryOptions?: User.QueryOptions,
   ): Promise<User.QueryReturn<QueryName>>;
 
-  protected override _onUpdate(changed: User.UpdateData, options: User.Database.OnUpdateOptions, userId: string): void;
+  // For type simplicity the following real overrides are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
 
-  protected override _onDelete(options: User.Database.OnDeleteOptions, userId: string): void;
+  // protected override _onUpdate(changed: User.UpdateData, options: User.Database.OnUpdateOptions, userId: string): void;
+
+  // protected override _onDelete(options: User.Database.OnDeleteOptions, userId: string): void;
 
   /*
    * After this point these are not really overridden methods.
