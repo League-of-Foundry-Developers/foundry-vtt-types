@@ -980,6 +980,10 @@ declare namespace RegionBehavior {
     PassedConfig
   >;
 
+  /* ***********************************************
+   *         REGIONBEHAVIOR-SPECIFIC TYPES         *
+   *************************************************/
+
   /**
    * The arguments to construct the document.
    *
@@ -1007,10 +1011,16 @@ declare class RegionBehavior<
    */
   constructor(data: RegionBehavior.CreateData<SubType>, context?: RegionBehavior.ConstructionContext);
 
-  /** A convenience reference to the RegionDocument which contains this RegionBehavior. */
+  /**
+   * A convenience reference to the RegionDocument which contains this RegionBehavior.
+   * @privateRemarks Can be a non-persisted Region, so `Implementation`
+   */
   get region(): RegionDocument.Implementation | null;
 
-  /** A convenience reference to the Scene which contains this RegionBehavior. */
+  /**
+   * A convenience reference to the Scene which contains this RegionBehavior.
+   * @privateRemarks Can be a non-persisted Scene, so `Implementation`
+   */
   get scene(): Scene.Implementation | null;
 
   /** A RegionBehavior is active if and only if it was created, hasn't been deleted yet, and isn't disabled. */
@@ -1025,6 +1035,7 @@ declare class RegionBehavior<
    * Does this RegionBehavior handle the Region events with the given name?
    * @param eventName - The Region event name
    */
+  // TODO: are event names statically known?
   hasEvent(eventName: string): boolean;
 
   /**
@@ -1076,6 +1087,8 @@ declare class RegionBehavior<
 
   // `context` must contain a `parent`, so is required.
   static override defaultName(context: RegionBehavior.DefaultNameContext): string;
+
+  // `createDialog` omitted from template due to real override above.
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
