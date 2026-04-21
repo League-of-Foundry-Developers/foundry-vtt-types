@@ -1255,18 +1255,18 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   // These methods historically have been the source of a large amount of computation from tsc.
 
   // protected override _preUpdate(
-  //   changed: BasePlaylist.UpdateData,
-  //   options: BasePlaylist.Database.PreUpdateOptions,
+  //   changed: Playlist.UpdateData,
+  //   options: Playlist.Database.PreUpdateOptions,
   //   user: User.Stored,
   // ): Promise<boolean | void>;
 
   // protected override _onUpdate(
-  //   changed: BasePlaylist.UpdateData,
-  //   options: BasePlaylist.Database.OnUpdateOptions,
+  //   changed: Playlist.UpdateData,
+  //   options: Playlist.Database.OnUpdateOptions,
   //   userId: string,
   // ): void;
 
-  // protected override _onDelete(options: BasePlaylist.Database.OnDeleteOptions, userId: string): void;
+  // protected override _onDelete(options: Playlist.Database.OnDeleteOptions, userId: string): void;
 
   protected override _onCreateDescendantDocuments(...args: Playlist.OnCreateDescendantDocumentsArgs): void;
 
