@@ -58,9 +58,9 @@ describe("Set Tests", () => {
     expectTypeOf(stringSet.map((_v: string, _i: number, _s: Set<string>) => true)).toEqualTypeOf<Set<boolean>>();
 
     expectTypeOf(
-      stringSet.reduce((_a: ReduceType, _v: string, _i: number, _s: Set<string>): ReduceType => ({ foo: "a" }), {
+      stringSet.reduce<ReduceType>((_a, _v: string, _i: number, _s: Set<string>) => ({ foo: "a" }), {
         foo: "a",
-      } as ReduceType),
+      }),
     ).toEqualTypeOf<ReduceType>();
   });
 
