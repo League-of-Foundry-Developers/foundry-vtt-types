@@ -93,6 +93,13 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
   ): number;
 
   /**
+   * Assign multiple token targets
+   * @param targetIds - The array or set of Token IDs.
+   * @param options   - Additional options to configure targeting behaviour.
+   */
+  setTargets(targetIds: Iterable<string>, options?: TokenLayer.SetTargetsOptions): void;
+
+  /**
    * Cycle the controlled token by rotating through the list of Owned Tokens that are available within the Scene
    * Tokens are currently sorted in order of their TokenID
    * @param forwards - Which direction to cycle. A truthy value cycles forward, while a false value cycles backwards.
@@ -193,6 +200,16 @@ declare namespace TokenLayer {
   type _TargetObjectsOptions = NullishProps<PlaceableObject.ControlOptions>;
 
   interface TargetObjectsOptions extends _TargetObjectsOptions {}
+
+  interface SetTargetsOptions {
+    /**
+     * The mode that determines the targeting behavior.
+     *   - `"replace"` (default): Replace the current set of targeted Tokens with provided set of Tokens.
+     *   - `"acquire"`: Acquire the given Tokens as targets without releasing already targeted Tokens.
+     *   - `"release"`: Release the given Tokens as targets.
+     */
+    mode?: "replace" | "acquire" | "release" | null | undefined;
+  }
 
   /** @internal */
   type _ToggleCombatOptions = NullishProps<{

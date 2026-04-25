@@ -116,7 +116,7 @@ declare class ActorSheetV2<
    * @param event - The initiating drop event
    * @param item  - The dropped Item document
    */
-  protected _onSortItem(event: DragEvent, item: Item.Implementation): Promise<Item.Implementation[]> | void;
+  protected _onSortItem(event: Event, item: Item.Implementation): Promise<Item.Implementation[]> | void;
 
   static #ActorSheetV2;
 }

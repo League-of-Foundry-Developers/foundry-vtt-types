@@ -91,7 +91,7 @@ declare abstract class BaseActorDelta<
    * @param changes - Candidate source changes. (default: `{}`)
    * @param options - Options which determine how the new data is merged. (default: `{}`)
    */
-  protected _prepareDeltaUpdate(changes: BaseActorDelta.UpdateData, options: DataModel.UpdateOptions): void;
+  protected _prepareDeltaUpdate(changes?: BaseActorDelta.UpdateData, options?: DataModel.UpdateOptions): void;
 
   /** @remarks passes to {@linkcode _prepareDeltaUpdate} prior to calling super */
   override updateSource(
