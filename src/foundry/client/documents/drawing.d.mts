@@ -1045,9 +1045,9 @@ declare namespace DrawingDocument {
 
   interface ValidateVisibleContentData
     extends
-      IntentionalPartial<Pick<BaseDrawing.InitializedData, "shape">>,
+      IntentionalPartial<Pick<DrawingDocument.InitializedData, "shape">>,
       Pick<
-        BaseDrawing.InitializedData,
+        DrawingDocument.InitializedData,
         "text" | "textAlpha" | "fillType" | "fillAlpha" | "strokeWidth" | "strokeAlpha"
       > {}
 
@@ -1078,7 +1078,24 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
 
   /**
    * Fields included in the drawing defaults setting
-   * @defaultValue `["strokeWidth", "strokeColor", "strokeAlpha", "bezierFactor", "fillType", "fillColor", "fillAlpha", "texture", "text", "fontFamily", "fontSize", "textColor", "textAlpha"]`
+   * @defaultValue
+   * ```js
+   * [
+   *   "strokeWidth",
+   *   "strokeColor",
+   *   "strokeAlpha",
+   *   "bezierFactor",
+   *   "fillType",
+   *   "fillColor",
+   *   "fillAlpha",
+   *   "texture",
+   *   "text",
+   *   "fontFamily",
+   *   "fontSize",
+   *   "textColor",
+   *   "textAlpha"
+   * ]
+   * ```
    */
   static defaultDrawingFields: (keyof DrawingDocument.InitializedData)[];
 
