@@ -1,4 +1,4 @@
-import type { MaybeArray, Merge, NullishProps } from "#utils";
+import type { MaybeArray, Merge } from "#utils";
 import type { fields, BaseShapeData } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseRegion } from "#common/documents/_module.d.mts";
@@ -160,10 +160,32 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    */
   protected static _activateSocketListeners(socket: io.Socket): void;
 
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected static _updateTokens(regions: never, options?: never): never;
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
 
-  // _onUpdate, _onCreateOperation, _onUpdateOperation, and _onDeleteOperation are overridden from BaseRegion without signature changes.
+  // protected static override _onCreateOperation(
+  //   documents: RegionDocument.Stored[],
+  //   operation: RegionDocument.Database.OnCreateOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
+
+  // protected override _onUpdate(
+  //   changed: RegionDocument.UpdateData,
+  //   options: RegionDocument.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected static override _onUpdateOperation(
+  //   documents: RegionDocument.Stored[],
+  //   operation: RegionDocument.Database.OnUpdateOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
+
+  // protected static override _onDeleteOperation(
+  //   documents: RegionDocument.Stored[],
+  //   operation: RegionDocument.Database.OnDeleteOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
 
   /**
    * Trigger the Region event.
@@ -266,6 +288,9 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   ): Promise<RegionDocument.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected static _updateTokens(regions: never, options?: never): never;
 
   #RegionDocument: true;
 }
@@ -1363,23 +1388,6 @@ declare namespace RegionDocument {
     eventDataUuids: string[];
   }
 
-  /** @internal */
-  type _UpdateTokensOptions = NullishProps<{
-    /**
-     * Are the Region documents deleted?
-     * @defaultValue `false`
-     */
-    deleted: boolean;
-
-    /**
-     * Reset the Token document if animated?
-     * @defaultValue `true`
-     */
-    reset: boolean;
-  }>;
-
-  interface UpdateTokensOptions extends _UpdateTokensOptions {}
-
   type EventData =
     | {
         token: TokenDocument.Implementation;
@@ -1438,6 +1446,10 @@ declare namespace RegionDocument {
     /** Teleport between the waypoints? */
     teleport: boolean;
   }
+
+  /** @deprecated The method this interface was for was made hard private in v13. This type will be removed in v14. */
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-empty-object-type
+  type UpdateTokensOptions = {};
 
   /**
    * The arguments to construct the document.
