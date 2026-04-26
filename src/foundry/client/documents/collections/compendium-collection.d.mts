@@ -47,7 +47,7 @@ declare class CompendiumCollection<
   metadata: CompendiumCollection.Metadata<DocumentName>;
 
   /** A subsidiary collection which contains the more minimal index of the pack */
-  index: IndexTypeForMetadata<DocumentName>;
+  index: Collection<CompendiumCollection.IndexEntry<DocumentName>>;
 
   /** @deprecated Foundry made this property truly private in v13 (this warning will be removed in v14) */
   _flush: never;
@@ -720,10 +720,6 @@ declare namespace CompendiumCollection {
 export default CompendiumCollection;
 
 type IsComparable<T> = T extends boolean | string | number | bigint | symbol | null | undefined ? true : false;
-
-type IndexTypeForMetadata<Type extends CompendiumCollection.DocumentName> = Collection<
-  CompendiumCollection.IndexEntry<Type>
->;
 
 declare abstract class AnyCompendiumCollection extends CompendiumCollection<CompendiumCollection.DocumentName> {
   constructor(...args: never);

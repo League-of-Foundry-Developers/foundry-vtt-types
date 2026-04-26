@@ -1072,6 +1072,9 @@ declare namespace Document {
   /** Documents which can only be persisted inside compendia. As of 13.351 this is only `Adventure`. */
   type AlwaysCompendiumType = "Adventure";
 
+  /** Documents which can never be found inside compendia. */
+  type NeverCompendiumType = Exclude<Type, CompendiumType | EmbeddedType | "Folder">;
+
   type WithSubTypes = WithSystem | "Folder" | "Macro" | "TableResult";
 
   type WithSystem =
