@@ -1318,7 +1318,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
     queryOptions?: User.QueryOptions,
   ): Promise<User.QueryReturn<QueryName>>;
 
-  // For type simplicity the following real overrides are commented out.
+  // For type simplicity the following real override(s) are commented out.
   // These methods historically have been the source of a large amount of computation from tsc.
 
   // protected override _onUpdate(changed: User.UpdateData, options: User.Database.OnUpdateOptions, userId: string): void;

@@ -1119,7 +1119,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    */
   panToNote(options?: NotesLayer.PanToNoteOptions): Promise<void>;
 
-  // For type simplicity the following real overrides are commented out.
+  // For type simplicity the following real override(s) are commented out.
   // These methods historically have been the source of a large amount of computation from tsc.
 
   // protected override _onUpdate(

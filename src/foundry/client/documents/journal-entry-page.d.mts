@@ -1,5 +1,5 @@
 import type { ConfiguredJournalEntryPage } from "#configuration";
-import type { AnyObject, Identity, MaybeArray, Merge, NullishProps } from "#utils";
+import type { AnyObject, Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseJournalEntryPage } from "#common/documents/_module.d.mts";
@@ -1109,7 +1109,13 @@ declare namespace JournalEntryPage {
    *      JOURNAL-ENTRY-PAGE-SPECIFIC TYPES        *
    *************************************************/
 
-  interface JournalEntryPageHeading {
+  /**
+   * Properties that always exist on `Heading`s no matter where in the process of generation they are.
+   * {@linkcode JournalEntryPage._makeHeadingNode} returns, and {@linkcode JournalEntryPage._flattenTOC} accepts,
+   * interfaces lacking the `order` property
+   * @internal
+   */
+  interface _Heading {
     /** The heading level, 1-6. */
     level: number;
 
@@ -1119,54 +1125,76 @@ declare namespace JournalEntryPage {
     /** The generated slug for this heading. */
     slug: string;
 
-    /** The currently rendered element for this heading, if it exists. */
+    /**
+     * The currently rendered element for this heading, if it exists.
+     * @remarks Whether this exists or not depends on the `includeElement` option passed to {@linkcode JournalEntryPage.buildTOC}.
+     * It defaults to `true`, but is passed explicit `false`  when generating {@linkcode JournalEntryPage.toc | JournalEntryPage#toc}/
+     * {@linkcode JournalEntryPage._toc | #_toc}. Both {@linkcode foundry.appv1.sheets.JournalPageSheet.toc | JournalPageSheet#toc}
+     * and {@linkcode foundry.applications.sheets.journal.JournalEntryPageSheet.toc | JournalEntryPageSheet#toc} will have it defined by default.
+     */
     element?: HTMLHeadingElement;
 
     /** Any child headings of this one. */
     children: string[];
+  }
 
+  interface IntermediaryHeading extends _Heading {}
+
+  interface Heading extends _Heading {
     /** The linear ordering of the heading in the table of contents. */
     order: number;
   }
 
-  interface CreateDocumentLinkOptions extends ClientDocument.CreateDocumentLinkOptions {
-    /**
-     * @remarks If the `eventData` passed with these options has an `anchor.slug`, the default is `eventData.anchor.name`,
-     * otherwise uses `super`'s default of `this.name`
-     */
-    label?: string | null | undefined;
-  }
+  /** A Table of Contents record. */
+  interface TOC extends Record<string, Heading> {}
 
   /**
    * Slightly editorializing the description with the addition of parentheses to make this scan
-   * for both {@linkcode JournalEntryPage.buildTOC} and {@linkcode JournalEntryPage._makeHeadingNode}
-   *
+   * for both {@linkcode JournalEntryPage.buildTOC} and {@linkcode JournalEntryPage._makeHeadingNode}.   *
    * @internal
    */
-  type _IncludeElement = NullishProps<{
+  interface _IncludeElement {
     /**
      * Include reference(s) to the heading DOM element(s) in the returned ToC.
      * @defaultValue `true`
+     * @remarks See {@linkcode JournalEntryPage.Heading.element} remarks.
      */
     includeElement: boolean;
-  }>;
+  }
 
-  interface BuildTOCOptions extends _IncludeElement {}
+  interface BuildTOCOptions extends InexactPartial<_IncludeElement> {}
 
-  interface MakeHeadingNodeOptions extends _IncludeElement {}
+  interface MakeHeadingNodeOptions extends InexactPartial<_IncludeElement> {}
 
+  /**
+   * Configuration for embedding behavior. This can include enrichment options to override
+   * those passed as part of the root enrichment process.
+   *
+   * @privateRemarks The above is the description for the first param of
+   * {@linkcode JournalEntryPage._embedTextPage | JournalEntryPage#_embedTextPage}. This should arguably
+   * just be merged into `DocumentHTMLEmbedConfig` like `alt` was for the config 'extension' `#_embedImagePage` does, but
+   * that feels too messy; since typing people's `@Embed[]` enrichers is out of scope for this project, this is probably fine.
+   */
   interface EmbedTextPageConfig extends TextEditor.EnrichmentOptions, TextEditor.DocumentHTMLEmbedConfig {}
 
-  /** @internal */
-  type _EmbedImagePageConfig = NullishProps<{
-    /**
-     * Alt text for the image, otherwise the caption will be used.
-     * @remarks If both `alt` and `label` are omitted, the returned Element's `alt` will fall back to using `this.image.caption || this.name`
-     */
-    alt: string;
-  }>;
+  /**
+   * @deprecated There is no difference between the options for
+   * {@linkcode JournalEntryPage._createDocumentLink | JournalEntryPage#_createDocumentLink} and its super in `ClientDocument`.
+   * Use {@linkcode ClientDocument.CreateDocumentLinkOptions} instead. This alias will be removed in v15.
+   */
+  type CreateDocumentLinkOptions = ClientDocument.CreateDocumentLinkOptions;
 
-  interface EmbedImagePageConfig extends _EmbedImagePageConfig, TextEditor.DocumentHTMLEmbedConfig {}
+  /**
+   * @deprecated This type is no longer required, the single property it added (`alt`) has been folded
+   * into {@linkcode TextEditor.DocumentHTMLEmbedConfig}; Use that interface instead. This alias will be removed in v15.
+   */
+  type EmbedImagePageConfig = TextEditor.DocumentHTMLEmbedConfig;
+
+  /**
+   * @deprecated This type has been renamed to be less unwieldy; Use {@linkcode JournalEntryPage.Heading} instead.
+   * This alias will be removed in v15.
+   */
+  type JournalEntryPageHeading = Heading;
 
   /**
    * The arguments to construct the document.
@@ -1200,12 +1228,12 @@ declare class JournalEntryPage<
   /**
    * The cached table of contents for this JournalEntryPage.
    */
-  protected _toc: Record<string, JournalEntryPage.JournalEntryPageHeading>;
+  protected _toc: JournalEntryPage.TOC;
 
   /**
    * The table of contents for this JournalEntryPage.
    */
-  get toc(): Record<string, JournalEntryPage.JournalEntryPageHeading>;
+  get toc(): JournalEntryPage.TOC;
 
   override get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
@@ -1218,6 +1246,7 @@ declare class JournalEntryPage<
   /**
    * Convert a heading into slug suitable for use as an identifier.
    * @param heading - The heading element or some text content.
+   * @remarks Truncates long returns to the first 64 characters.
    */
   static slugifyHeading(heading: HTMLHeadingElement | string): string;
 
@@ -1226,18 +1255,13 @@ declare class JournalEntryPage<
    * @param html    - The HTML content to generate a ToC outline for.
    * @param options - Additional options to configure ToC generation.
    */
-  static buildTOC(
-    html: HTMLElement[],
-    options?: JournalEntryPage.BuildTOCOptions,
-  ): Record<string, JournalEntryPage.JournalEntryPageHeading>;
+  static buildTOC(html: HTMLElement[], options?: JournalEntryPage.BuildTOCOptions): JournalEntryPage.TOC;
 
   /**
    * Flatten the tree structure into a single object with each node's slug as the key.
    * @param nodes - The root ToC nodes.
    */
-  protected static _flattenTOC(
-    nodes: JournalEntryPage.JournalEntryPageHeading[],
-  ): Record<string, JournalEntryPage.JournalEntryPageHeading>;
+  protected static _flattenTOC(nodes: JournalEntryPage.IntermediaryHeading[]): JournalEntryPage.TOC;
 
   /**
    * Construct a table of contents node from a heading element.
@@ -1247,20 +1271,27 @@ declare class JournalEntryPage<
   protected static _makeHeadingNode(
     heading: HTMLHeadingElement,
     options?: JournalEntryPage.MakeHeadingNodeOptions,
-  ): JournalEntryPage.JournalEntryPageHeading;
-
-  /** @remarks Uses `eventData`, unlike {@linkcode ClientDocument._createDocumentLink | ClientDocument#_createDocumentLink} */
-  override _createDocumentLink(eventData: AnyObject, options?: JournalEntryPage.CreateDocumentLinkOptions): string;
+  ): JournalEntryPage.IntermediaryHeading;
 
   /**
-   * @remarks
-   * As `super`, but return the parent's sheet's `#render`:
-   * - AppV1: returns that sheet
-   * - AppV2: returns a Promise of that sheet
+   * @remarks This override uses `eventData`, unlike
+   * {@linkcode ClientDocumentMixin.AnyMixed._createDocumentLink | ClientDocument#_createDocumentLink}.
+   */
+  override _createDocumentLink(eventData: AnyObject, options?: ClientDocument.CreateDocumentLinkOptions): string;
+
+  /**
+   * @remarks Returns `this.parent.sheet.render()`, without the possibility of `null` that the `ClientDocument` method has.
    */
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
-  // _onUpdate is overridden but with no signature changes from the template in BaseJournalEntryPage
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onUpdate(
+  //   changed: JournalEntryPage.UpdateData,
+  //   options: JournalEntryPage.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;ns: JournalEntryPage.Database.OnDeleteOptions, userId: string): void;
 
   protected override _buildEmbedHTML(
     config: TextEditor.DocumentHTMLEmbedConfig,
@@ -1274,14 +1305,13 @@ declare class JournalEntryPage<
 
   /**
    * Embed text page content.
-   * @param config        - Configuration for embedding behavior. This can include
-   *                        enrichment options to override those passed as part of
-   *                        the root enrichment process.
-   * @param options       - The original enrichment options to propagate to the embedded text page's
-   *                        enrichment.
+   * @param config  - Configuration for embedding behavior. This can include enrichment options to
+   *                  override those passed as part of the root enrichment process.
+   * @param options - The original enrichment options to propagate to the embedded text page's enrichment.
    * @returns
    *
-   * @example Embed the content of the Journal Entry Page as a figure.
+   * @example
+   * Embed the content of the Journal Entry Page as a figure.
    * ```
    * @Embed[.yDbDF1ThSfeinh3Y classes="small right"]{Special caption}
    * ```
@@ -1303,7 +1333,8 @@ declare class JournalEntryPage<
    * </figure>
    * ```
    *
-   * @example Embed the content of the Journal Entry Page into the main content flow.
+   * @example
+   * Embed the content of the Journal Entry Page into the main content flow.
    * ```
    * @Embed[.yDbDF1ThSfeinh3Y inline]
    * ```
@@ -1314,6 +1345,8 @@ declare class JournalEntryPage<
    *   <p>The contents of the page</p>
    * </section>
    * ```
+   *
+   * @privateRemarks `config` is required to destructuring assignment and lack of parameter default.
    */
   protected _embedTextPage(
     config: JournalEntryPage.EmbedTextPageConfig,
@@ -1326,7 +1359,8 @@ declare class JournalEntryPage<
    * @param options           - The original enrichment options for cases where the Document embed content
    *                            also contains text that must be enriched.
    *
-   * @example Create an embedded image from a sibling journal entry page.
+   * @example
+   * Create an embedded image from a sibling journal entry page.
    * ```
    * @Embed[.QnH8yGIHy4pmFBHR classes="small right"]{Special caption}
    * ```
@@ -1351,7 +1385,7 @@ declare class JournalEntryPage<
    * @remarks Core's implementation always returns a {@linkcode HTMLImageElement}, and does not use `options`
    */
   protected _embedImagePage(
-    config?: JournalEntryPage.EmbedImagePageConfig,
+    config?: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null>;
 
@@ -1423,6 +1457,8 @@ declare class JournalEntryPage<
   ): Promise<JournalEntryPage.Implementation>;
 
   // Embedded document operations have been left out because JournalEntryPage does not have any embedded documents.
+
+  #JournalEntryPage: true;
 }
 
 export default JournalEntryPage;

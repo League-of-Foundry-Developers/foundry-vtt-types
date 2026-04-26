@@ -1,4 +1,4 @@
-import type { ValueOf, AnyObject, Identity, JSONValue, MaybePromise } from "#utils";
+import type { ValueOf, AnyObject, Identity, JSONValue, MaybePromise, InexactPartial } from "#utils";
 import type { HTMLEnrichedContentElement } from "../elements/_module.d.mts";
 import type ProseMirrorEditor from "./prosemirror-editor.mjs";
 
@@ -357,16 +357,12 @@ declare namespace TextEditor {
    */
   type TextContentReplacer = (match: RegExpMatchArray) => Promise<HTMLElement>;
 
-  interface DocumentHTMLEmbedConfig {
-    /**
-     * Any strings that did not have a key name associated with them.
-     */
-    values: string[];
-
+  /** @internal */
+  interface _DocumentHTMLEmbedConfig {
     /**
      * Classes to attach to the outermost element.
      */
-    classes?: string | undefined;
+    classes?: string;
 
     /**
      * By default Documents are embedded inside a figure element. If this option is
@@ -400,6 +396,23 @@ declare namespace TextEditor {
 
     /** The label. */
     label: string;
+
+    /**
+     * Alt text for the image, otherwise the caption will be used.
+     * @remarks Only used by core in {@linkcode JournalEntryPage._embedImagePage | JournalEntryPage#_embedImagePage}, included here for
+     * visibility because that method will likely never be called directly by users.
+     *
+     * The description above is actually only partially correct; `#_embedImagePage` will use the config's {@linkcode label} over the `Page`'s
+     * `image.caption`, if provided.
+     */
+    alt: string;
+  }
+
+  interface DocumentHTMLEmbedConfig extends InexactPartial<_DocumentHTMLEmbedConfig> {
+    /**
+     * Any strings that did not have a key name associated with them.
+     */
+    values: string[];
   }
 
   interface EnrichmentAnchorOptions {

@@ -1154,7 +1154,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   /** @remarks Returns `this.execute({event})` */
   override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
 
-  // For type simplicity the following real overrides are commented out.
+  // For type simplicity the following real override(s) are commented out.
   // These methods historically have been the source of a large amount of computation from tsc.
 
   // protected override _onCreate(

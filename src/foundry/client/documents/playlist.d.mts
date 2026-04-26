@@ -1251,7 +1251,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    */
   override _onClickDocumentLink(event: MouseEvent): Promise<this | undefined>;
 
-  // For type simplicity the following real overrides are commented out.
+  // For type simplicity the following real override(s) are commented out.
   // These methods historically have been the source of a large amount of computation from tsc.
 
   // protected override _preUpdate(

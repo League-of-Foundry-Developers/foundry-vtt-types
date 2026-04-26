@@ -10,7 +10,7 @@ import type {
   NullishProps,
 } from "#utils";
 import type { Document, EmbeddedCollection } from "#common/abstract/_module.mjs";
-import type { Application, FormApplication } from "#client/appv1/api/_module.d.mts";
+import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { ApplicationV2, DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
 import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
@@ -199,7 +199,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * Handle clicking on a content link for this document.
    * @param event - The triggering click event.
    * @remarks
-   * In `ClientDocument`, returns `this.sheet.render(true)`:
+   * In `ClientDocument`, returns `this.sheet?.render(true) ?? null`:
    * - AppV1: returns that sheet
    * - AppV2: returns a Promise of that sheet
    *
@@ -781,7 +781,7 @@ declare global {
     interface CreateDocumentLinkOptions extends _CreateDocumentLinkOptions {}
 
     /** The return type of {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} if not overridden */
-    type OnClickDocumentLinkReturn = FormApplication.Any | Promise<ApplicationV2.Any>;
+    type OnClickDocumentLinkReturn = Application.Any | Promise<DocumentSheetV2.Any>;
 
     type ToCompendiumReturnType<
       DocumentName extends Document.Type,

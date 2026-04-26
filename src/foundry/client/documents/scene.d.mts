@@ -1934,7 +1934,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    */
   updateTokenRegions(tokens?: Iterable<TokenDocument.Implementation>): Promise<Array<TokenDocument.Stored>>;
 
-  // For type simplicity the following real overrides are commented out.
+  // For type simplicity the following real override(s) are commented out.
   // These methods historically have been the source of a large amount of computation from tsc.
 
   // protected override _preCreate(
