@@ -3,13 +3,13 @@ import { expectTypeOf } from "vitest";
 const combat = new Combat.implementation();
 
 // properties
-expectTypeOf(combat.turns).toEqualTypeOf<Combatant.Implementation[]>();
+expectTypeOf(combat.turns).toEqualTypeOf<Combatant.Stored[]>();
 expectTypeOf(combat.current).toEqualTypeOf<Combat.HistoryData>();
 expectTypeOf(combat.previous).toEqualTypeOf<Combat.HistoryData | undefined>();
 
 expectTypeOf(Combat.CONFIG_SETTING).toEqualTypeOf<"combatTrackerConfig">();
 
-expectTypeOf(combat.combatant).toEqualTypeOf<Combat.Implementation["turns"][number] | null | undefined>();
+expectTypeOf(combat.combatant).toEqualTypeOf<Combat.Implementation["turns"][number] | null>();
 expectTypeOf(combat.started).toEqualTypeOf<boolean>();
 expectTypeOf(combat.visible).toEqualTypeOf<boolean>();
 expectTypeOf(combat.isActive).toEqualTypeOf<boolean>();
@@ -18,7 +18,7 @@ expectTypeOf(combat.activate()).toEqualTypeOf<Promise<Combat.Implementation[]>>(
 expectTypeOf(combat.prepareDerivedData()).toEqualTypeOf<void>();
 
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(combat.getCombatantByActor("")).toEqualTypeOf<Combatant.Implementation | null>();
+expectTypeOf(combat.getCombatantByActor("")).toEqualTypeOf<Combatant.Stored | null>();
 
 expectTypeOf(combat.startCombat()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.nextRound()).toEqualTypeOf<Promise<Combat.Implementation>>();
@@ -28,7 +28,7 @@ expectTypeOf(combat.previousTurn()).toEqualTypeOf<Promise<Combat.Implementation>
 expectTypeOf(combat.endCombat()).toEqualTypeOf<Promise<Combat.Implementation>>();
 
 expectTypeOf(combat.toggleSceneLink()).toEqualTypeOf<Promise<Combat.Implementation>>();
-expectTypeOf(combat.resetAll()).toEqualTypeOf<Promise<Combat.Implementation | undefined>>();
+expectTypeOf(combat.resetAll()).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(combat.rollInitiative("")).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.rollAll()).toEqualTypeOf<Promise<Combat.Implementation>>();

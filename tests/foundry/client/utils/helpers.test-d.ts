@@ -9,8 +9,8 @@ expectTypeOf(foundry.utils.readTextFromFile(file)).toEqualTypeOf<Promise<string>
 expectTypeOf(getDocumentClass("Actor")).toEqualTypeOf<Actor.ImplementationClass>();
 expectTypeOf(getDocumentClass("Item")).toEqualTypeOf<Item.ImplementationClass>();
 
-expectTypeOf(fromUuid("Actor.uuid1")).toEqualTypeOf<Promise<Actor.Implementation | null>>;
-expectTypeOf(fromUuid("Actor.uuid1.Item.uuid2")).toEqualTypeOf<Promise<Item.Implementation | null>>;
+expectTypeOf(fromUuid("Actor.uuid1")).toEqualTypeOf<Promise<Actor.Stored | null>>;
+expectTypeOf(fromUuid("Actor.uuid1.Item.uuid2")).toEqualTypeOf<Promise<Item.Stored | null>>;
 
 // This is actually incorrect but can't be easily fixed.
 // The issue is that as soon as a generic parameter is provided all other generic parameters use their
@@ -27,8 +27,8 @@ fromUuid("invalid");
 // `Item.${string}` would erroneously allow it as a 'valid' uuid.
 fromUuid("Item.uuid1.Abc.uuid2");
 
-expectTypeOf(fromUuidSync("Actor.uuid1")).toEqualTypeOf<Actor.Implementation | AnyObject | null>;
-expectTypeOf(fromUuidSync("Actor.uuid1.Item.uuid2")).toEqualTypeOf<Item.Implementation | AnyObject | null>;
+expectTypeOf(fromUuidSync("Actor.uuid1")).toEqualTypeOf<Actor.Stored | AnyObject | null>;
+expectTypeOf(fromUuidSync("Actor.uuid1.Item.uuid2")).toEqualTypeOf<Item.Stored | AnyObject | null>;
 
 // @ts-expect-error This is an invalid Uuid.
 fromUuidSync("invalid");
