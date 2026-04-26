@@ -101,7 +101,7 @@ expectTypeOf(Item.fromImport(itemSource, constructionContext)).toEqualTypeOf<Pro
 expectTypeOf(item.documentName).toEqualTypeOf<"Item">(); // Document
 expectTypeOf(item.migrateSystemData()).toEqualTypeOf<object>(); // Base-Document
 expectTypeOf(item.uuid).toEqualTypeOf<string | null>(); // ClientDocumentMixin
-expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>(); // class itself
+expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Stored[]>(); // class itself
 
 // Properties
 declare const someApp: Application.Any;

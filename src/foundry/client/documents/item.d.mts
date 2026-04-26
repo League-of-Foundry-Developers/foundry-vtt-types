@@ -1146,7 +1146,7 @@ declare namespace Item {
    *************************************************/
 
   interface GetDefaultArtworkReturn {
-    /** @defaultValue `Item.DEFAULT_ICON` */
+    /** @defaultValue {@linkcode Item.DEFAULT_ICON} */
     img: string;
   }
 
@@ -1189,11 +1189,12 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
 
   /**
    * Provide a thumbnail image path used to represent this document.
+   * @remarks Core's default artwork handling will mean this is only `null` if explicitly set so.
    */
-  get thumbnail(): string;
+  get thumbnail(): string | null;
 
   /**
-   * A convenience alias of Item#isEmbedded which is preserves legacy support
+   * A legacy alias of {@linkcode Item.isEmbedded | Item#isEmbedded}
    */
   get isOwned(): boolean;
 
@@ -1201,7 +1202,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    * Return an array of the Active Effect instances which originated from this Item.
    * The returned instances are the ActiveEffect instances which exist on the Item itself.
    */
-  get transferredEffects(): ActiveEffect.Implementation[];
+  get transferredEffects(): ActiveEffect.Stored[];
 
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Item
@@ -1209,7 +1210,26 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    */
   getRollData(): AnyObject;
 
-  // _preCreate, _onCreateOperation and _onDeleteOperation are all overridden but with no signature changes from BaseItem.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preCreate(
+  //   data: Item.CreateData,
+  //   options: Item.Database.PreCreateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected static override _onCreateOperation(
+  //   documents: Item.Stored[],
+  //   operation: Item.Database.OnCreateOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
+
+  // protected static override _onDeleteOperation(
+  //   documents: Item.Stored[],
+  //   operation: Item.Database.OnDeleteOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
 
   /*
    * After this point these are not really overridden methods.
