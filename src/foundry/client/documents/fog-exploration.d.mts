@@ -1,4 +1,4 @@
-import type { MaybeArray, Merge, NullishProps } from "#utils";
+import type { InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseFogExploration, BaseScene, BaseUser } from "#client/documents/_module.d.mts";
@@ -936,20 +936,24 @@ declare namespace FogExploration {
    *************************************************/
 
   /** @internal */
-  type _LoadQuery = NullishProps<{
+  interface _LoadQuery {
     /**
      * A certain Scene ID
      * @defaultValue `canvas.scene`
+     * @remarks This is bugged in v13; Foundry types this as `string`, but due to bad parenthesis placement, it effectively takes a `Scene`.
+     * This is fixed in v14.
      */
-    scene: string;
+    // TODO: this is fixed in v14; return to `string`
+    scene: Scene.Stored | string;
 
     /**
      * A certain User ID
      * @defaultValue `game.user`
      */
     user: string;
-  }>;
-  interface LoadQuery extends _LoadQuery {}
+  }
+
+  interface LoadQuery extends InexactPartial<_LoadQuery> {}
 
   /**
    * @remarks {@linkcode FogExploration.load | FogExploration#load} takes the `query` property separately as its first argument, then merges that
@@ -993,7 +997,22 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
    */
   getTexture(): PIXI.Texture | null;
 
-  // _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseFogExploration.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onCreate(
+  //   data: FogExploration.CreateData,
+  //   options: FogExploration.Database.OnCreateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onUpdate(
+  //   changed: FogExploration.UpdateData,
+  //   options: FogExploration.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: FogExploration.Database.OnDeleteOptions, userId: string): void;
 
   static override get(
     documentId: string,
