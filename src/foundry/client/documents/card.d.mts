@@ -1,5 +1,5 @@
 import type { ConfiguredCard } from "#configuration";
-import type { AnyObject, DeepPartial, Identity, MaybeArray, Merge } from "#utils";
+import type { AnyObject, Identity, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseCard, BaseCards } from "#client/documents/_module.d.mts";
@@ -299,25 +299,7 @@ declare namespace Card {
     /**
      * An object of face data which describes the back of this card
      */
-    back: fields.SchemaField<{
-      /**
-       * A name for this card face
-       * @defaultValue `undefined`
-       */
-      name: fields.StringField;
-
-      /**
-       * Displayed text that belongs to this face
-       * @defaultValue `""`
-       */
-      text: fields.HTMLField;
-
-      /**
-       * A displayed image or video file which depicts the face
-       * @defaultValue `null`
-       */
-      img: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
-    }>;
+    back: fields.SchemaField<BackSchema>;
 
     /**
      * An array of face data which represent displayable faces of this card
@@ -375,6 +357,28 @@ declare namespace Card {
 
     _stats: fields.DocumentStatsField;
   }
+
+  interface BackSchema extends fields.DataSchema {
+    /**
+     * A name for this card face
+     * @defaultValue `undefined`
+     */
+    name: fields.StringField;
+
+    /**
+     * Displayed text that belongs to this face
+     * @defaultValue `""`
+     */
+    text: fields.HTMLField;
+
+    /**
+     * A displayed image or video file which depicts the face
+     * @defaultValue `null`
+     */
+    img: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
+  }
+
+  interface BackData extends fields.SchemaField.InitializedData<BackSchema> {}
 
   interface FaceSchema extends fields.DataSchema {
     /**
@@ -1138,14 +1142,14 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
 
   /**
    * The image of the currently displayed card face or back
-   * @remarks Falls back to {@linkcode Card.DEFAULT_ICON}
+   * @remarks Falls back to {@linkcode Card.DEFAULT_ICON}.
    */
   get img(): string;
 
   /**
    * A reference to the source Cards document which defines this Card.
    */
-  get source(): Cards.Implementation | null;
+  get source(): Cards.Stored | null;
 
   /**
    * A convenience property for whether or not the Card is within its source Cards stack. Cards in decks are always
@@ -1178,7 +1182,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @param face - A specific face to flip the card to
    * @returns A reference to this card after the flip operation is complete
    */
-  flip(face?: number | null): Promise<Card.Implementation | undefined>;
+  flip(face?: number | null): Promise<this | undefined>;
 
   /**
    * Pass this Card to some other Cards document.
@@ -1186,38 +1190,40 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @param options - Options which modify the pass operation (default: `{}`)
    * @returns A reference to this card after the it has been passed to another parent document
    */
-  pass(to: Cards.Implementation, options?: Card.PassOptions): Promise<Card.Implementation | undefined>;
+  pass(to: Cards.Stored, options?: Card.PassOptions): Promise<Card.Stored | undefined>;
 
   /**
    * Play a specific card to some other Cards document.
    * @see {@linkcode Card.pass | Card#pass}
    * @remarks This method is currently a more semantic alias for {@linkcode Card.pass | Card#pass}.
    */
-  play(to: Cards.Implementation, options?: Card.PlayOptions): Promise<Card.Implementation | undefined>;
+  play(to: Cards.Stored, options?: Card.PlayOptions): Promise<Card.Stored | undefined>;
 
   /**
    * Discard a specific card to some other Cards document.
    * @see {@linkcode Card.pass | Card#pass}
    * @remarks This method is currently a more semantic alias for {@linkcode Card.pass | Card#pass}.
    */
-  discard(to: Cards.Implementation, options?: Card.DiscardOptions): Promise<Card.Implementation | undefined>;
+  discard(to: Cards.Stored, options?: Card.DiscardOptions): Promise<Card.Stored | undefined>;
 
   /**
    * Recall this Card to its original Cards parent.
    * @param options - Options which modify the recall operation (default: `{}`)
    * @returns A reference to the recalled card belonging to its original parent
-   * @remarks Core's implementation doesn't use `options` at all
+   * @remarks Core's implementation doesn't use `options` at all, and no core call passes anything, so we can't infer anything about the
+   * shape of the interface.
    */
-  recall(options?: AnyObject): Promise<Card.Implementation | undefined>;
+  recall(options?: AnyObject): Promise<Card.Stored | undefined>;
 
   /**
    * Create a chat message which displays this Card.
    * @param messageData - Additional data which becomes part of the created ChatMessageData (default: `{}`)
    * @param options     - Options which modify the message creation operation (default: `{}`)
    * @returns The created chat message
+   * @privateRemarks {@linkcode ChatMessage.CreateData} has no required properties, so no need for extra `Partial`ing of the `messageData`
    */
   toMessage<Temporary extends boolean | undefined = undefined>(
-    messageData?: DeepPartial<foundry.documents.BaseChatMessage.CreateData>,
+    messageData?: ChatMessage.CreateData,
     options?: ChatMessage.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<ChatMessage.TemporaryIf<Temporary> | undefined>;
 
