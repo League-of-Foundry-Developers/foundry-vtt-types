@@ -1,5 +1,5 @@
 import type { ConfiguredChatMessage } from "#configuration";
-import type { AnyObject, Identity, InterfaceToObject, MaybeArray, Merge, NullishProps } from "#utils";
+import type { AnyObject, Identity, InexactPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseActor, BaseChatMessage, BaseScene, BaseToken, BaseUser } from "#client/documents/_module.d.mts";
@@ -1097,55 +1097,37 @@ declare namespace ChatMessage {
    *         CHAT-MESSAGE-SPECIFIC TYPES           *
    *************************************************/
 
-  /** @internal */
+  /**
+   * This interface has the `| null`s added to match {@linkcode SpeakerData}, as many of the references one would reach for are nullable,
+   * e.g `game.user.character` or `canvas.scene`
+   * @internal
+   */
   interface _BaseSpeakerOptions {
     /** The Scene in which the speaker resides */
-    scene: Scene.Implementation | null;
+    scene: Scene.Stored | null;
 
     /** The Actor whom is speaking */
-    actor: Actor.Implementation | null | undefined;
+    actor: Actor.Stored | null;
 
     /** The Token whom is speaking */
-    token: TokenDocument.Implementation | Token.Implementation | null | undefined;
+    token: TokenDocument.Stored | Token.Implementation | null;
 
     /** The name of the speaker to display */
     alias: string;
   }
 
-  interface GetSpeakerOptions extends NullishProps<_BaseSpeakerOptions> {}
-
-  /**
-   * @deprecated The associated function was made private without deprecation or direct replacement.
-   */
-  interface GetSpeakerFromTokenOptions extends NullishProps<Pick<_BaseSpeakerOptions, "token" | "alias">> {}
-
-  /**
-   * @deprecated The associated function was made private without deprecation or direct replacement.
-   */
-  interface GetSpeakerFromActorOptions extends NullishProps<Pick<_BaseSpeakerOptions, "scene" | "actor" | "alias">> {}
-
-  /**
-   *@deprecated The associated function was made private without deprecation or direct replacement.
-   */
-  interface GetSpeakerFromUserOptions extends NullishProps<Pick<_BaseSpeakerOptions, "scene" | "alias">> {
-    /** The User who is speaking */
-    user: User.Implementation;
-  }
-
-  /** @internal */
-  type _SpeakerData = fields.SchemaField.InitializedData<ChatMessage.SpeakerSchema>;
-
-  interface SpeakerData extends _SpeakerData {}
+  interface GetSpeakerOptions extends InexactPartial<_BaseSpeakerOptions> {}
 
   /**
    * @remarks
    * {@linkcode ChatMessage.getWhisperRecipients} has a couple special-cased values, and a couple fallback behaviors.
-   * _ALL_ comparisons are case-**in**sensitive, compared lowercase.
-   * - `"GM"` or `"DM"` inputs returns `game.users.filter(u => u.isGM)`
-   * - `"players"` returns `game.users.players`
-   * - Then if any User names match, returns all that do
-   * - Then returns any Users whose assigned `character` matches
-   * - Finally returns `[]`
+   * _ALL_ comparisons are case-**in**sensitive, i.e `"gm"` or `"pLaYeRs"` are valid special values, and `"thaddeus"` would
+   * match an assigned character named `"Thaddeus"`.
+   * - `"GM"` or `"DM"` inputs returns `game.users.filter(u => u.isGM)`.
+   * - `"players"` returns {@linkcode foundry.documents.collections.Users.players | game.users.players}.
+   * - If any `User` names match (exact, not substring), returns all that do.
+   * - Then returns any `User`s whose assigned `character` matches.
+   * - Returns `[]` if no results found.
    */
   type WhisperRecipient = "GM" | "DM" | "players" | (string & {});
 
@@ -1193,8 +1175,7 @@ declare namespace ChatMessage {
   type PassableRollMode = foundry.dice.Roll.Mode | "roll";
 
   /**
-   * These keys are overridden in `ChatMessage#renderHTML`
-   *
+   * These keys are overridden in `ChatMessage#renderHTML`.
    * @internal
    */
   type _SetMessageKey =
@@ -1247,7 +1228,8 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   /**
    * Is this ChatMessage currently displayed in the sidebar ChatLog?
    * @defaultValue `false`
-   * @remarks Set `true` in {@linkcode ChatLog.postOne | ChatLog#postOne} and {@linkcode ChatLog._renderBatch | ChatLog#_renderBatch}
+   * @remarks Set `true` in {@linkcode ChatLog.postOne | ChatLog#postOne} and {@linkcode ChatLog._renderBatch | ChatLog#_renderBatch}, which
+   * are the only places core touches this.
    */
   logged: boolean;
 
@@ -1283,7 +1265,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   /**
    * The Actor which represents the speaker of this message (if any).
    */
-  get speakerActor(): Actor.Implementation | null;
+  get speakerActor(): Actor.Stored | null;
 
   /**
    * @remarks Initializes `this.rolls` from an array of JSON-serializable objects to instances of their listed Roll class,
@@ -1300,6 +1282,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * @param chatData - The object of ChatMessage data
    * @param rollMode - The roll mode to apply to this message data. `"roll"` is the current roll mode.
    * @returns The modified ChatMessage data with the roll mode applied
+   * @remarks Passing `"roll"` for `rollMode` uses the user's currently selected roll mode in the chat log.
    */
   static applyRollMode(
     chatData: ChatMessage.CreateData,
@@ -1310,16 +1293,14 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * Update the data of a ChatMessage instance to apply a requested roll mode.
    * This function calls {@link ChatMessage.applyRollMode} and updates the source of the ChatMessage.
    * @param rollMode - The roll mode to apply to this message data. `"roll"` is the current roll mode.
-   * @remarks Only calls `this.updateSource`, doesn't db update messages already stored
+   * @remarks Only calls `this.updateSource`, core uses it on temporary documents before proper creation.
    */
   applyRollMode(rollMode: ChatMessage.PassableRollMode): void;
 
   /**
    * Attempt to determine who is the speaking character (and token) for a certain Chat Message
    * First assume that the currently controlled Token is the speaker
-   *
    * @param options - Options which affect speaker identification (default: `{}`)
-   *
    * @returns The identified speaker data
    */
   static getSpeaker(options?: ChatMessage.GetSpeakerOptions): ChatMessage.SpeakerData;
@@ -1344,7 +1325,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    * @param speaker - The speaker data object
    * @remarks `speaker` has no parameter default, if it's falsey this returns `null`
    */
-  static getSpeakerActor(speaker?: ChatMessage.SpeakerData): Actor.Implementation | null;
+  static getSpeakerActor(speaker?: ChatMessage.SpeakerData): Actor.Stored | null;
 
   /**
    * Obtain a data object used to evaluate any dice rolls associated with this particular chat message
@@ -1366,8 +1347,28 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
    */
   renderHTML(options?: ChatMessage.RenderHTMLOptions): Promise<HTMLElement>;
 
-  // _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preCreate(
+  //   data: ChatMessage.CreateData,
+  //   options: ChatMessage.Database.PreCreateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected override _onCreate(
+  //   data: ChatMessage.CreateData,
+  //   options: ChatMessage.Database.OnCreateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onUpdate(
+  //   changed: ChatMessage.UpdateData,
+  //   options: ChatMessage.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: ChatMessage.Database.OnDeleteOptions, userId: string): void;
 
   /**
    * Export the content of the chat message into a standardized log format
@@ -1375,7 +1376,8 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
   export(): string;
 
   /**
-   * @deprecated since v13 until v15
+   * @deprecated "`ChatMessage#getHTML` is deprecated. Please use {@linkcode ChatMessage.renderHTML | ChatMessage#renderHTML} instead,
+   * which now returns an `HTMLElement` instead of a jQuery object." (since v13, until v15)
    */
   getHTML(): Promise<JQuery>;
 
