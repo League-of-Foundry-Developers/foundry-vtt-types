@@ -1,5 +1,5 @@
 import type { ConfiguredActorDelta } from "#configuration";
-import type { Identity, MaybeArray, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataModel, DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
@@ -1151,16 +1151,43 @@ declare namespace ActorDelta {
    *           ACTOR-DELTA-SPECIFIC TYPES          *
    *************************************************/
 
+  /**
+   * This interface is spread into an object that already has `parent` defined, and as this is ActorDelta logic,
+   * let's assume that overwriting the parent is contraindicated.
+   *
+   * @internal
+   */
+  type _ApplyDeltaContext = Omit<Document.ConstructionContext<TokenDocument.Implementation>, "parent">;
+
+  interface ApplyDeltaContext extends _ApplyDeltaContext {
+    /**
+     * @deprecated This context is spread into an `Actor` creation context for the synthetic actor,
+     * overriding the provided default of `parent: delta.parent` is nonsensical
+     */
+    parent?: never;
+  }
+
   /** @internal */
-  type _InitializeOptions = NullishProps<{
+  interface _InitializeOptions {
     /**
      * @remarks Is this initialization part of a {@linkcode Scene.reset | Scene#reset} call? (skips further initialization if truthy)
      * @defaultValue `false`
      */
     sceneReset: boolean;
-  }>;
+  }
 
-  interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
+  interface InitializeOptions extends Document.InitializeOptions, InexactPartial<_InitializeOptions> {}
+
+  interface _CreateSyntheticActorOptions {
+    /**
+     * Whether to fully re-initialize this ActorDelta's collections in
+     * order to re-retrieve embedded Documents from the synthetic
+     * Actor.
+     */
+    reinitializeCollections: boolean;
+  }
+
+  interface CreateSyntheticActorOptions extends InexactPartial<_CreateSyntheticActorOptions> {}
 
   /**
    * The arguments to construct the document.
@@ -1200,14 +1227,15 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   set type(type);
 
-  protected _type: string;
+  /** @internal */
+  _type: string;
 
   /**
    * Apply this ActorDelta to the base Actor and return a synthetic Actor.
    * @param context - Context to supply to synthetic Actor instantiation.
    * @remarks Forwards `context` to {@linkcode BaseActorDelta.applyDelta | this.constructor.applyDelta(this, this.parent.baseActor, context)}
    */
-  apply(context?: BaseActorDelta.ApplyDeltaContext): Actor.Implementation | null;
+  apply(context?: ActorDelta.ApplyDeltaContext): Actor.Implementation | null;
 
   /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
   override prepareEmbeddedDocuments(): void;
@@ -1224,15 +1252,15 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   /**
    * Generate a synthetic Actor instance when constructed, or when the represented Actor, or actorLink status changes.
+   * @internal
    */
-  protected _createSyntheticActor(options?: {
-    /**
-     * Whether to fully re-initialize this ActorDelta's collections in
-     * order to re-retrieve embedded Documents from the synthetic
-     * Actor.
-     */
-    reinitializeCollections: boolean;
-  }): void;
+  _createSyntheticActor(options?: ActorDelta.CreateSyntheticActorOptions): void;
+
+  /**
+   * @remarks Created by `Object.defineProperty` in {@linkcode _createSyntheticActor} with an unnecessary `{ configurable: true }`.
+   * Since that method is called by {@linkcode _configure} during construction, it's not optional.
+   */
+  syntheticActor: Actor.Stored<SubType> | Actor.OfType<SubType> | null;
 
   /**
    * Update the synthetic Actor instance with changes from the delta or the base Actor.
@@ -1243,20 +1271,35 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    * Restore this delta to empty, inheriting all its properties from the base actor.
    * @returns The restored synthetic Actor.
    */
-  restore(): Promise<Actor.Implementation>;
+  restore(): Promise<Actor.Stored>;
 
   /**
    * Ensure that the embedded collection delta is managing any entries that have had their descendants updated.
    * @param doc - The parent whose immediate children have been modified.
+   * @internal
    */
   _handleDeltaCollectionUpdates(doc: Document.Any): void;
 
-  /** @remarks `"No-op as ActorDeltas do not have sheets."` */
+  /** @remarks Foundry comments: "No-op as ActorDeltas do not have sheets." */
   protected override _onSheetChange(): Promise<void>;
 
   override _prepareDeltaUpdate(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): void;
 
-  // _onUpdate and _onDelete are all overridden but with no signature changes from BaseActorDelta.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preDelete(
+  //   options: ActorDelta.Database.PreDeleteOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected override _onUpdate(
+  //   changed: ActorDelta.UpdateData,
+  //   options: ActorDelta.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: ActorDelta.Database.OnDeleteOptions, userId: string): void;
 
   protected override _dispatchDescendantDocumentEvents(
     event: ClientDocument.LifeCycleEventName,

@@ -23,9 +23,11 @@ new TestBaseActorDelta(undefined, { strict: false });
 const myDelta = new ActorDelta.implementation({}, { parent: someToken });
 
 declare const someActor: Actor.Stored;
-expectTypeOf(TestBaseActorDelta.applyDelta(myDelta, someActor)).toEqualTypeOf<Actor.Implementation | Actor.Stored>();
+expectTypeOf(TestBaseActorDelta.applyDelta(myDelta, someActor)).toEqualTypeOf<
+  Actor.Implementation | Actor.Stored | null
+>();
 expectTypeOf(TestBaseActorDelta.applyDelta(myDelta, someActor, {})).toEqualTypeOf<
-  Actor.Implementation | Actor.Stored
+  Actor.Implementation | Actor.Stored | null
 >();
 // @ts-expect-error parent is not allowed to be passed, as that context is used for the synthetic actor creation, its parent must be the same as the delta's parent
 TestBaseActorDelta.applyDelta(myDelta, someActor, { parent: someToken });
@@ -36,7 +38,7 @@ expectTypeOf(
     parentCollection: "foo",
     strict: false,
   }),
-).toEqualTypeOf<Actor.Implementation | Actor.Stored>();
+).toEqualTypeOf<Actor.Implementation | Actor.Stored | null>();
 
 new TestBaseActorDelta(
   {
