@@ -575,7 +575,7 @@ expectTypeOf(token.toggleEffect(CONFIG.statusEffects[0]!, { active: true, overla
   Promise<ActiveEffect.Stored | boolean | undefined>
 >();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(token.toggleEffect(CONFIG.statusEffects[0]!, { active: null, overlay: null })).toEqualTypeOf<
+expectTypeOf(token.toggleEffect(CONFIG.statusEffects[0]!, { active: undefined, overlay: undefined })).toEqualTypeOf<
   Promise<ActiveEffect.Stored | boolean | undefined>
 >();
 

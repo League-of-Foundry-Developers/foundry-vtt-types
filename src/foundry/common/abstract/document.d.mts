@@ -1444,7 +1444,7 @@ declare namespace Document {
 
         /**
          * A Universally Unique Identifier (uuid) for this Document instance.
-         * @remarks Always `null` for temporary documents, always `string` for persisted,  though embedded
+         * @remarks Always `null` for temporary documents, always `string` for persisted, though embedded
          * documents in non-persisted parents may have incorrect values at runtime.
          */
         get uuid(): string;
@@ -2027,9 +2027,9 @@ declare namespace Document {
 
   /**
    * `DataModel#constructor` pulls `parent` out of the passed context before forwarding to `#_initializeSource`
-   * @privateRemarks `Document` doesn't override `_initializeSource`, but at least one specific document does (Actor only, as of v12);
-   * Without an override, this is handled by the `& ExtraConstructorOptions` in the `DataModel` signature, but with one,
-   * a manually combined interface is needed.
+   * @privateRemarks `Document` doesn't override `_initializeSource`, but at least one specific document does (`Actor` (both client and
+   * base) and `TokenDocument` as of 13.351); Without an override, this is handled by the `& ExtraConstructorOptions` in the `DataModel`
+   * signature, but with one, a manually combined interface is needed.
    */
   interface InitializeSourceOptions extends DataModel.InitializeSourceOptions, Omit<ConstructionContext, "parent"> {}
 
