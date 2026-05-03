@@ -2377,8 +2377,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   /**
    * The movement continuation state of this Token document.
+   * @internal
    * @defaultValue
-   * -
    * ```js
    * {
    *   movementId: "",
@@ -2391,7 +2391,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    *   states: {}
    * }
    * ```
-   * @internal
    */
   protected _movementContinuation: TokenDocument.MovementContinuationData;
 
