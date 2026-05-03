@@ -74,9 +74,9 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param options - Options which determine how the new data is merged.
    * @internal
    */
-  _prepareDeltaUpdate(changes?: TokenDocument.UpdateData, options?: DataModel.UpdateOptions): void;
+  _prepareDeltaUpdate(changes?: BaseToken.UpdateData, options?: DataModel.UpdateOptions): void;
 
-  override updateSource(changes: TokenDocument.UpdateData, options?: DataModel.UpdateOptions): TokenDocument.UpdateData;
+  override updateSource(changes: BaseToken.UpdateData, options?: DataModel.UpdateOptions): BaseToken.UpdateData;
 
   override clone<Save extends boolean | undefined = false>(
     data?: BaseToken.CreateData,
