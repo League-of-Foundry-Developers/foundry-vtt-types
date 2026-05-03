@@ -12,6 +12,8 @@ expectTypeOf(AmbientLight.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
 >();
 
 declare const doc: AmbientLightDocument.Stored;
+declare const scene: Scene.Stored;
+
 const light = new CONFIG.AmbientLight.objectClass(doc);
 
 expectTypeOf(light.field).toEqualTypeOf<PIXI.Graphics | undefined>();
@@ -76,13 +78,13 @@ expectTypeOf(
   light["_onUpdate"](
     // partial source data
     { config: { bright: 20, dim: 50, color: "#AB9435" }, flags: { core: { sheetLock: true } } },
-    { action: "update", modifiedTime: 7, render: true, diff: true, recursive: true, parent: null },
+    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
 expectTypeOf(
-  light["_onDelete"]({ action: "delete", modifiedTime: 7, render: true, parent: null }, "XXXXXSomeIDXXXXX"),
+  light["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
 ).toBeVoid();
 
 expectTypeOf(light.refreshControl()).toBeVoid();

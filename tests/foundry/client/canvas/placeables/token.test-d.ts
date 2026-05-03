@@ -10,6 +10,8 @@ import PreciseText = foundry.canvas.containers.PreciseText;
 import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
 import TextureTransitionFilter = foundry.canvas.rendering.filters.TextureTransitionFilter;
 
+declare const scene: Scene.Stored;
+
 expectTypeOf(Token.embeddedName).toEqualTypeOf<"Token">();
 expectTypeOf(Token.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
@@ -466,7 +468,7 @@ expectTypeOf(token["_removeAllFilterEffects"]()).toBeVoid();
 expectTypeOf(
   token["_onCreate"](
     doc.toObject(),
-    { action: "create", modifiedTime: 7, render: true, renderSheet: false, parent: null },
+    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -481,13 +483,13 @@ expectTypeOf(
 
       flags: { core: { sheetLock: true } },
     },
-    { action: "update", modifiedTime: 7, render: true, diff: true, recursive: true, parent: null },
+    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
 expectTypeOf(
-  token["_onDelete"]({ action: "delete", modifiedTime: 7, render: true, parent: null }, "XXXXXSomeIDXXXXX"),
+  token["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
 ).toBeVoid();
 
 // @ts-expect-error _onControl is always passed a value
