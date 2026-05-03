@@ -1072,7 +1072,7 @@ declare namespace Card {
    *************************************************/
 
   /**
-   * @remarks {@link Card.pass | `Card#pass`} calls {@link Cards.pass | `this.parent.pass`} with `action: "pass"` provided by default.
+   * @remarks {@linkcode Card.pass | Card#pass} calls {@linkcode Cards.pass | this.parent.pass} with `action: "pass"` provided by default.
    */
   interface PassOptions extends Cards.PassOptions {
     /**
@@ -1108,7 +1108,7 @@ declare namespace Card {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
