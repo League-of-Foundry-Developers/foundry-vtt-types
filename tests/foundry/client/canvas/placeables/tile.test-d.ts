@@ -6,6 +6,7 @@ import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
 
 declare const doc: TileDocument.Stored;
+declare const scene: Scene.Stored;
 
 expectTypeOf(Tile.embeddedName).toEqualTypeOf<"Tile">();
 expectTypeOf(Tile.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
@@ -91,7 +92,7 @@ expectTypeOf(tile.activateListeners()).toBeVoid();
 expectTypeOf(
   tile["_onCreate"](
     doc.toObject(),
-    { action: "create", modifiedTime: 7, render: true, renderSheet: false, parent: null },
+    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -105,13 +106,13 @@ expectTypeOf(
       restrictions: { weather: false },
       flags: { core: { sheetLock: true } },
     },
-    { action: "update", modifiedTime: 7, render: true, diff: true, recursive: true, parent: null },
+    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
 expectTypeOf(
-  tile["_onDelete"]({ action: "delete", modifiedTime: 7, render: true, parent: null }, "XXXXXSomeIDXXXXX"),
+  tile["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
 ).toBeVoid();
 
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
