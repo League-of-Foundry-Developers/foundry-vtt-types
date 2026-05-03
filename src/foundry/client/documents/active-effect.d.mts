@@ -1284,6 +1284,8 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   /**
    * Is there some system logic that makes this active effect ineligible for application?
+   * @remarks Core's implementation defers to `system.isSuppressed` on a `TypeDataModel`, else `false`. As such all overrides should
+   * begin with `if (super.isSuppressed) return true;`.
    */
   get isSuppressed(): boolean;
 
