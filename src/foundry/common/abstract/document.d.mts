@@ -17,7 +17,6 @@ import type {
   InexactPartial,
   IntentionalPartial,
   InterfaceToObject,
-  MakeConform,
   MaybeArray,
   MaybePromise,
   NullishProps,
@@ -1595,6 +1594,10 @@ declare namespace Document {
     // Note(LukeAbby): Will be updated with the CONFIG revamp.
     type ConfiguredCollection<Name extends Document.Type> = FixedInstanceType<ConfiguredCollectionClass<Name>>;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ._preCreateDescendantDocuments}
+     */
     type PreCreateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1609,6 +1612,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ._onCreateDescendantDocuments}
+     */
     type OnCreateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1624,6 +1631,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._preUpdateDescendantDocuments | ._preUpdateDescendantDocuments}
+     */
     type PreUpdateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1638,6 +1649,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._onUpdateDescendantDocuments | ._onUpdateDescendantDocuments}
+     */
     type OnUpdateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1653,6 +1668,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._preDeleteDescendantDocuments | ._preDeleteDescendantDocuments}
+     */
     type PreDeleteDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1667,6 +1686,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._onDeleteDescendantDocuments | ._onDeleteDescendantDocuments}
+     */
     type OnDeleteDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -2215,11 +2238,6 @@ declare namespace Document {
 
     interface Embedded extends Identity<{ [K in Document.Type]?: string }> {}
   }
-
-  type SheetClassFor<Name extends Document.Type> = MakeConform<
-    GetKey<GetKey<CONFIG, Name>, "sheetClass">,
-    AnyConstructor
-  >;
 
   type LayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
 
