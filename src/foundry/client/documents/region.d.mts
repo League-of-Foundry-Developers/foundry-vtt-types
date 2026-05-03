@@ -286,6 +286,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
     source: RegionDocument.Source,
     context?: Document.FromImportContext<RegionDocument.Parent>,
   ): Promise<RegionDocument.Implementation>;
+
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
   /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
