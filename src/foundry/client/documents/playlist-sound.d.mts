@@ -186,7 +186,7 @@ declare namespace PlaylistSound {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode PlaylistSound}. This is the source of truth for how an PlaylistSound document
+   * The schema for {@linkcode PlaylistSound}. This is the source of truth for how a `PlaylistSound` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode PlaylistSound}. For example

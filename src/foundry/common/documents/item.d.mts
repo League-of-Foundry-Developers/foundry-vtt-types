@@ -68,6 +68,7 @@ declare abstract class BaseItem<out SubType extends Item.SubType = Item.SubType>
   static getDefaultArtwork(itemData?: BaseItem.CreateData): BaseItem.GetDefaultArtworkReturn;
 
   /** @remarks Calls {@linkcode DocumentStatsField._shimDocument}`(this)` */
+  protected override _initialize(options?: Document.InitializeOptions): void;
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 

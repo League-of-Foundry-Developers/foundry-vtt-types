@@ -833,7 +833,7 @@ declare namespace TokenDocument {
   interface CompleteMovementWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {}
 
   /**
-   * The schema for {@linkcode TokenDocument}. This is the source of truth for how an TokenDocument document
+   * The schema for {@linkcode TokenDocument}. This is the source of truth for how a `TokenDocument` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode TokenDocument}. For example
@@ -2391,6 +2391,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    *   states: {}
    * }
    * ```
+   * @internal
    */
   protected _movementContinuation: TokenDocument.MovementContinuationData;
 
@@ -2485,7 +2486,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   /**
    * A helper method to retrieve the underlying data behind one of the Token's attribute bars
-   * @param barName     - The named bar to retrieve the attribute for
+   * @param barName - The named bar to retrieve the attribute for
    * @returns The attribute displayed on the Token bar, if any
    */
   getBarAttribute(barName: string, options?: TokenDocument.GetBarAttributeOptions): TokenDocument.GetBarAttributeReturn;
@@ -2763,7 +2764,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @internal
    * @deprecated (since v13, until v15)
    */
-  protected static _addTeleportAndForcedShims(operation: TokenDocument.Database.OnUpdateOperation): void;
+  static _addTeleportAndForcedShims(operation: TokenDocument.Database.OnUpdateOperation): void;
 
   /**
    * Are these changes moving the Token?

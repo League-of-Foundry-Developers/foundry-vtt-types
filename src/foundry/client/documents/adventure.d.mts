@@ -173,7 +173,7 @@ declare namespace Adventure {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Adventure}. This is the source of truth for how an Adventure document
+   * The schema for {@linkcode Adventure}. This is the source of truth for how an `Adventure` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Adventure}. For example

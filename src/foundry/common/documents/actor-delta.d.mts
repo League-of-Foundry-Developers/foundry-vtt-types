@@ -98,10 +98,13 @@ declare abstract class BaseActorDelta<
    * @remarks Forwards sections of the passed `changes` to the relevant
    * {@linkcode foundry.abstract.EmbeddedCollectionDelta._prepareDeltaUpdate | EmbeddedCollectionDelta#_prepareDeltaUpdate}s.
    */
-  _prepareDeltaUpdate(changes: ActorDelta.UpdateData, options: DataModel.UpdateOptions): void;
+  _prepareDeltaUpdate(changes: BaseActorDelta.UpdateData, options: DataModel.UpdateOptions): void;
 
   /** @remarks Calls {@linkcode _prepareDeltaUpdate} with both args prior to returning a call to `super` */
-  override updateSource(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): ActorDelta.UpdateData;
+  override updateSource(
+    changes: BaseActorDelta.UpdateData,
+    options?: DataModel.UpdateOptions,
+  ): BaseActorDelta.UpdateData;
 
   /**
    * @remarks Strips properties from optional (`required: false`) fields, with currently-nullish values, from the object before returning

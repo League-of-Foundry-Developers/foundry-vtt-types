@@ -247,7 +247,7 @@ declare namespace Card {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Card}. This is the source of truth for how an Card document
+   * The schema for {@linkcode Card}. This is the source of truth for how a `Card` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Card}. For example

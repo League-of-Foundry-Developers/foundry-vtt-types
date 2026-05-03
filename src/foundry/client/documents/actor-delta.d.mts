@@ -336,7 +336,7 @@ declare namespace ActorDelta {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode ActorDelta}. This is the source of truth for how an ActorDelta document
+   * The schema for {@linkcode ActorDelta}. This is the source of truth for how an `ActorDelta` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode ActorDelta}. For example
@@ -1244,7 +1244,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   override updateSource(
     // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });` and `super.updateSource`.
     // However it's likely the overlap between these two types is pretty high.
-    changes?: ActorDelta.Source,
+    changes: ActorDelta.Source,
     options?: DataModel.UpdateOptions,
   ): object;
 

@@ -185,7 +185,7 @@ declare namespace User {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode User}. This is the source of truth for how an User document
+   * The schema for {@linkcode User}. This is the source of truth for how a `User` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode User}. For example

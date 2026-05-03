@@ -181,7 +181,7 @@ declare namespace NoteDocument {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode NoteDocument}. This is the source of truth for how an NoteDocument document
+   * The schema for {@linkcode NoteDocument}. This is the source of truth for how a `NoteDocument` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode NoteDocument}. For example

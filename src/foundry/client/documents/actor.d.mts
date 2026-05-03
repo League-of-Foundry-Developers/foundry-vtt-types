@@ -351,7 +351,7 @@ declare namespace Actor {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Actor}. This is the source of truth for how an Actor document
+   * The schema for {@linkcode Actor}. This is the source of truth for how an `Actor` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Actor}. For example

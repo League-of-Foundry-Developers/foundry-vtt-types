@@ -238,7 +238,7 @@ declare namespace Macro {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Macro}. This is the source of truth for how an Macro document
+   * The schema for {@linkcode Macro}. This is the source of truth for how a `Macro` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Macro}. For example
@@ -1033,8 +1033,9 @@ declare namespace Macro {
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
-     * will be a {@linkcode Scene.Implementation} (possibly `null` if somehow called on a `RegionBehavior` whose `RegionDocument` doesn't have a parent `Scene`)
+     * - When called in {@linkcode ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
+     * will be a {@linkcode Scene.Implementation} (possibly `null` if somehow called on a `RegionBehavior` whose `RegionDocument` doesn't
+     * have a parent `Scene`)
      */
     scene?: unknown;
 
@@ -1151,7 +1152,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    */
   execute(scope?: Macro.ExecuteScope<SubType>): Macro.ExecuteReturn<SubType>;
 
-  /** @remarks Returns `this.execute({event})` */
+  /** @remarks Returns {@linkcode Macro.execute | this.execute}`({event})` */
   override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
 
   // For type simplicity the following real override(s) are commented out.

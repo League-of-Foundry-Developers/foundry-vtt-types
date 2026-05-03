@@ -167,7 +167,7 @@ declare namespace JournalEntryCategory {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode JournalEntryCategory}. This is the source of truth for how an JournalEntryCategory document
+   * The schema for {@linkcode JournalEntryCategory}. This is the source of truth for how a `JournalEntryCategory` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode JournalEntryCategory}. For example

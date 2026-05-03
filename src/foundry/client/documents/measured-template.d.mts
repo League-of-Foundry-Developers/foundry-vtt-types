@@ -182,7 +182,7 @@ declare namespace MeasuredTemplateDocument {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode MeasuredTemplateDocument}. This is the source of truth for how an MeasuredTemplateDocument document
+   * The schema for {@linkcode MeasuredTemplateDocument}. This is the source of truth for how a `MeasuredTemplateDocument` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode MeasuredTemplateDocument}. For example

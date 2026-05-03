@@ -229,7 +229,7 @@ declare namespace Folder {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Folder}. This is the source of truth for how an Folder document
+   * The schema for {@linkcode Folder}. This is the source of truth for how a `Folder` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Folder}. For example

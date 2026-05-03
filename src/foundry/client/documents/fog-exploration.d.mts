@@ -183,7 +183,7 @@ declare namespace FogExploration {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode FogExploration}. This is the source of truth for how an FogExploration document
+   * The schema for {@linkcode FogExploration}. This is the source of truth for how a `FogExploration` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode FogExploration}. For example

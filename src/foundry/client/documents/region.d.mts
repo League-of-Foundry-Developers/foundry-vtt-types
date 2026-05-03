@@ -546,7 +546,7 @@ declare namespace RegionDocument {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode RegionDocument}. This is the source of truth for how an Region document
+   * The schema for {@linkcode RegionDocument}. This is the source of truth for how a `Region` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode RegionDocument}. For example
@@ -1368,7 +1368,7 @@ declare namespace RegionDocument {
     region: RegionDocument.Implementation;
 
     /** The User that triggered the event */
-    user: User.Implementation;
+    user: User.Stored;
   }
 
   interface SocketRegionEvent {
