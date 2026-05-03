@@ -1072,7 +1072,7 @@ declare namespace RollTable {
      * Additional options which customize the created messages
      * @defaultValue `{}`
      */
-    messageOptions: ChatMessage.Database.CreateOperation<Temporary>;
+    messageOptions: ChatMessage.Database.CreateDocumentsOperation<Temporary>;
   }
 
   interface RollOptions {
@@ -1286,7 +1286,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    */
   static fromFolder<Temporary extends boolean | undefined = undefined>(
     folder: Folder.Implementation,
-    options?: RollTable.Database.CreateOperation<Temporary>,
+    options?: RollTable.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<RollTable.TemporaryIf<Temporary> | undefined>;
 
   /*
