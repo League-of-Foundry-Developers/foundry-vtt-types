@@ -1323,6 +1323,8 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   // Descendant Document operations have been left out because User does not have any descendant documents.
 
+  static override defaultName(context?: User.DefaultNameContext): string;
+
   static override createDialog<
     Temporary extends boolean | undefined = undefined,
     Options extends User.CreateDialogOptions | undefined = undefined,
