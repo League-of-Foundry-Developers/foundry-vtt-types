@@ -6,6 +6,8 @@ import Canvas = foundry.canvas.Canvas;
 import ControlIcon = foundry.canvas.containers.ControlIcon;
 import PreciseText = foundry.canvas.containers.PreciseText;
 
+declare const scene: Scene.Stored;
+
 expectTypeOf(MeasuredTemplate.embeddedName).toEqualTypeOf<"MeasuredTemplate">();
 expectTypeOf(MeasuredTemplate.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
@@ -89,7 +91,7 @@ expectTypeOf(template.rotate(52, 3)).toEqualTypeOf<Promise<MeasuredTemplate.Impl
 expectTypeOf(
   template["_onCreate"](
     doc.toObject(),
-    { action: "create", modifiedTime: 7, render: true, renderSheet: false, parent: null },
+    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -98,13 +100,13 @@ expectTypeOf(
   template["_onUpdate"](
     // partial source data
     { elevation: 30, texture: "path/to/tex.webp", direction: 234, flags: { core: { sheetLock: true } } },
-    { action: "update", modifiedTime: 7, render: true, diff: true, recursive: true, parent: null },
+    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
 expectTypeOf(
-  template["_onDelete"]({ action: "delete", modifiedTime: 7, render: true, parent: null }, "XXXXXSomeIDXXXXX"),
+  template["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
 ).toBeVoid();
 
 declare const someUser: User.Implementation;
