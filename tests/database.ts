@@ -239,7 +239,7 @@ export const onUpdateOperationBase = {
   // `parent` and `updates` are always document-specific
 };
 
-/** Keys all operation object types post-{@linkcode foundry.abstract.DatabaseBackend.delete | DatabseBackend#delete} have. */
+/** Keys all operation object types post-{@linkcode foundry.abstract.DatabaseBackend.delete | DatabaseBackend#delete} have. */
 const postBackendDeleteOpProperties = {
   action: "delete",
   modifiedTime: Date.now(),
