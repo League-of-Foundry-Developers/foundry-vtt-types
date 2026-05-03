@@ -72,8 +72,9 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * Prepare changes to a descendent delta collection.
    * @param changes - Candidate source changes.
    * @param options - Options which determine how the new data is merged.
+   * @internal
    */
-  protected _prepareDeltaUpdate(changes?: BaseToken.UpdateData, options?: DataModel.UpdateOptions): void;
+  _prepareDeltaUpdate(changes?: BaseToken.UpdateData, options?: DataModel.UpdateOptions): void;
 
   override updateSource(changes?: BaseToken.UpdateData, options?: DataModel.UpdateOptions): BaseToken.UpdateData;
 
