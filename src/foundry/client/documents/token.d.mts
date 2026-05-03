@@ -2,7 +2,9 @@ import type {
   AnyArray,
   AnyObject,
   DeepReadonly,
+  EmptyObject,
   InexactPartial,
+  IntentionalPartial,
   InterfaceToObject,
   MaybeArray,
   Merge,
@@ -2201,6 +2203,46 @@ declare namespace TokenDocument {
   > {}
 
   /**
+   * @remarks The type for the `operation` argument of {@linkcode TokenDocument._onRelatedUpdate | TokenDocument#_onRelatedUpdate}.
+   *
+   * The method, in core, is called in four places:
+   * {@linkcode TokenDocument._onCreateDescendantDocuments | TokenDocument#_onCreateDescendantDocuments},
+   * {@linkcode TokenDocument._onUpdateDescendantDocuments | TokenDocument#_onUpdateDescendantDocuments},
+   * and {@linkcode TokenDocument._onDeleteDescendantDocuments | TokenDocument#_onDeleteDescendantDocuments},
+   * which reliably forward {@linkcode ActorDelta.CreateData}, {@linkcode ActorDelta.UpdateData}, and
+   * an empty object literal, respectively, and
+   * {@linkcode TokenDocument._onUpdateBaseActor | TokenDocument#_onUpdateBaseActor}, which in core is only called from
+   * {@linkcode Actor._updateDependentTokens | Actor#_updateDependentTokens}, which can be called so that it forwards either an
+   * {@linkcode Actor.UpdateData} via {@linkcode Actor._onUpdate | Actor#_onUpdate}, or as little as an empty object via
+   * {@linkcode Actor._onEmbeddedDocumentChange | Actor#_onEmbeddedDocumentChange}; unlike with {@linkcode OnRelatedUpdateOperation},
+   * we already have {@linkcode EmptyObject} in the union, so nothing needs to be additionally partialed.
+   */
+  type OnRelatedUpdateData = ActorDelta.CreateData[] | ActorDelta.UpdateData[] | EmptyObject | Actor.UpdateData;
+
+  /**
+   * @remarks The type for the `operation` argument of {@linkcode TokenDocument._onRelatedUpdate | TokenDocument#_onRelatedUpdate}.
+   *
+   * The method, in core, is called in four places:
+   * {@linkcode TokenDocument._onCreateDescendantDocuments | TokenDocument#_onCreateDescendantDocuments},
+   * {@linkcode TokenDocument._onUpdateDescendantDocuments | TokenDocument#_onUpdateDescendantDocuments},
+   * and {@linkcode TokenDocument._onDeleteDescendantDocuments | TokenDocument#_onDeleteDescendantDocuments},
+   * which reliably forward {@linkcode ActorDelta.Database.OnCreateOptions}, {@linkcode ActorDelta.Database.OnUpdateOptions}, and
+   * {@linkcode ActorDelta.Database.OnDeleteOptions}, respectively, and
+   * {@linkcode TokenDocument._onUpdateBaseActor | TokenDocument#_onUpdateBaseActor}, which in core is only called from
+   * {@linkcode Actor._updateDependentTokens | Actor#_updateDependentTokens}, which can be called so that it forwards either an
+   * {@linkcode Actor.Database.OnUpdateOptions} via {@linkcode Actor._onUpdate | Actor#_onUpdate}, or as little as an empty object via
+   * {@linkcode Actor._onEmbeddedDocumentChange | Actor#_onEmbeddedDocumentChange}; the latter is covered by just `IntentionalPartial`ing
+   * the actor `OnUpdateOptions`, as it's only the `Actor` path that can be empty.
+   *
+   * Foundry types this as just {@linkcode DatabaseBackend.DatabaseOperation | Partial<DatabaseOperation>}
+   */
+  type OnRelatedUpdateOperation =
+    | IntentionalPartial<Actor.Database.OnUpdateOptions>
+    | ActorDelta.Database.OnCreateOptions
+    | ActorDelta.Database.OnUpdateOptions
+    | ActorDelta.Database.OnDeleteOptions;
+
+  /**
    * @deprecated This interface has been renamed, use {@linkcode TokenDocument.PreUpdateMovement} instead.
    * This warning will be removed in v15.
    */
@@ -2370,7 +2412,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    */
   move(
     waypoints: InexactPartial<TokenDocument.MovementWaypoint> | InexactPartial<TokenDocument.MovementWaypoint>[],
-    options?: InexactPartial<TokenDocument.MoveOptions>,
+    options?: TokenDocument.MoveOptions,
   ): Promise<boolean>;
 
   /**
@@ -2388,7 +2430,10 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param options    - Parameters of the update operation
    * @returns A Promise that resolves to true if the Token was resized, otherwise resolves to false
    */
-  resize(dimensions: TokenDocument.PartialDimensions, options?: TokenDocument.ResizeOptions): Promise<boolean>;
+  resize(
+    dimensions: TokenDocument.PartialDimensions,
+    options?: TokenDocument.Database.UpdateOneDocumentOperation,
+  ): Promise<boolean>;
 
   /**
    * Stop the movement of this Token document. The movement cannot be continued after being stopped.
@@ -2532,7 +2577,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   protected _preUpdateMovement(
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     movement: TokenDocument.PreMovementOptions,
-    operation: TokenDocument.Database.UpdateOperation,
+    operation: TokenDocument.Database.PreUpdateOptions,
   ): Promise<boolean | void>;
 
   /**
@@ -2544,8 +2589,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    */
   protected _onUpdateMovement(
     movement: TokenDocument.MovementOperation,
-    operation: TokenDocument.Database.UpdateOperation,
-    user: User.Implementation,
+    operation: TokenDocument.Database.OnUpdateOptions,
+    user: User.Stored,
   ): void;
 
   /**
@@ -2568,7 +2613,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @internal
    * @deprecated since v13
    */
-  protected static _addTeleportAndForcedShims(operation: TokenDocument.Database.UpdateOperation): void;
+  protected static _addTeleportAndForcedShims(operation: TokenDocument.Database.OnUpdateOperation): void;
 
   /**
    * Are these changes moving the Token?
@@ -2681,13 +2726,8 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    * @param options - The options provided to the update.
    */
   protected _onRelatedUpdate(
-    update?: Actor.UpdateData | ActorDelta.UpdateData,
-
-    /**
-     * @privateRemarks foundry calls this field operation
-     * but it's being passed options (and then ignores them)
-     */
-    operation?: Actor.Database.OnUpdateOperation,
+    update?: TokenDocument.OnRelatedUpdateData,
+    operation?: TokenDocument.OnRelatedUpdateOperation,
   ): void;
 
   /**
