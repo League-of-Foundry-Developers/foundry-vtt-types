@@ -69,7 +69,7 @@ expectTypeOf(light["_refreshState"]()).toBeVoid();
 expectTypeOf(
   light["_onCreate"](
     doc.toObject(),
-    { action: "create", modifiedTime: 7, render: true, renderSheet: false, parent: null },
+    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
