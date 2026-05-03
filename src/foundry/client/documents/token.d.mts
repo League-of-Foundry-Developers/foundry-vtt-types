@@ -2500,11 +2500,10 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
   ): Promise<TokenDocument.Implementation | undefined>;
 
   /**
-   * @remarks Foundry specifically overrides this method such that unlinked `TokenDocument` instances
-   * handles 3 extra cases:
-   * - Passing `"Actor"` returns `this.actors`.
-   * - Passing `"Item"` returns `this.actor.items`.
-   * - Passing `"ActiveEffect"` returns `this.actor.effects`.
+   * @remarks Foundry specifically overrides this method such that unlinked `TokenDocument` instances handle 3 extra cases:
+   * - Passing `"Actor"` returns {@linkcode TokenDocument.actors | this.actors}.
+   * - Passing `"Item"` returns {@linkcode Actor.items | this.actor.items}.
+   * - Passing `"ActiveEffect"` returns {@linkcode Actor.effects | this.actor.effects}.
    */
   override getEmbeddedCollection<EmbeddedName extends TokenDocument.GetEmbeddedCollectionName>(
     embeddedName: EmbeddedName,
