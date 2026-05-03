@@ -1,4 +1,4 @@
-import type { InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataModel, DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseAdventure } from "#common/documents/_module.d.mts";
@@ -1000,19 +1000,13 @@ declare namespace Adventure {
   }
 
   /** @internal */
-  type _PrepareImportOptions = InexactPartial<{
+  interface _ImportOptions {
     /**
      * A subset of adventure fields to import.
      * @defaultValue `[]`
-     * @remarks Can't be `null` as it only has a parameter default
      */
-    importFields: Array<keyof typeof foundry.documents.BaseAdventure.contentFields | "all">;
-  }>;
+    importFields: Array<keyof typeof BaseAdventure.contentFields | "all">;
 
-  interface PrepareImportOptions extends _PrepareImportOptions {}
-
-  /** @internal */
-  type _ImportOptions = NullishProps<{
     /**
      * Display a warning dialog if existing documents would be overwritten
      * @defaultValue `true`
@@ -1022,15 +1016,22 @@ declare namespace Adventure {
     /**
      * An array of awaited pre-import callbacks
      */
-    preImport?: ((data: Adventure.ImportData, options: Adventure.ImportOptions) => Promise<void>)[];
+    preImport: ((data: Adventure.ImportData, options: Adventure.ImportOptions) => Promise<void>)[];
 
     /**
      * An array of awaited post-import callbacks
      */
-    postImport?: ((result: Adventure.ImportResult, options: Adventure.ImportOptions) => Promise<void>)[];
-  }>;
+    postImport: ((result: Adventure.ImportResult, options: Adventure.ImportOptions) => Promise<void>)[];
+  }
 
-  interface ImportOptions extends _ImportOptions, PrepareImportOptions {}
+  interface ImportOptions extends InexactPartial<_ImportOptions> {}
+
+  /**
+   * {@linkcode Adventure.prepareImport | Adventure#prepareImport} is passed on the full options object from
+   * {@linkcode Adventure.import | #import}, though core's implementation only accesses
+   * {@linkcode ImportOptions.importFields | importFields}.
+   */
+  interface PrepareImportOptions extends ImportOptions {}
 
   /**
    * The arguments to construct the document.
@@ -1054,7 +1055,7 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
 
   /**
    * @remarks If this creation is happening in a provided `pack`, and that pack is **not** system-specific,
-   * strips `Actor`s, `Item`s, and `Actor` and `Item` `Folders` from `source`s
+   * strips `Actor`s, `Item`s, and `Actor` and `Item` `Folders`, from `source`s
    */
   static override fromSource(
     source: Adventure.CreateData,

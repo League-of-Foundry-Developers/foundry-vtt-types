@@ -1,13 +1,5 @@
 import type { ConfiguredDocumentClass } from "../../../types/documentConfiguration.d.mts";
-import type {
-  AnyObject,
-  FixedInstanceType,
-  InexactPartial,
-  IntentionalPartial,
-  MaybeArray,
-  Merge,
-  NullishProps,
-} from "#utils";
+import type { AnyObject, FixedInstanceType, InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseActor, BaseUser } from "#common/documents/_module.d.mts";
@@ -15,6 +7,7 @@ import type { UserTargets } from "#client/canvas/placeables/tokens/_module.d.mts
 import type { BaseRuler, Ping } from "#client/canvas/interaction/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 import type { AVSettings } from "#client/av/_module.d.mts";
+import type { Users } from "#client/documents/collections/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -114,12 +107,12 @@ declare namespace User {
   /**
    * The world collection that contains `User`s. Will be `never` if none exists.
    */
-  type CollectionClass = foundry.documents.collections.Users.ImplementationClass;
+  type CollectionClass = Users.ImplementationClass;
 
   /**
    * The world collection that contains `User`s. Will be `never` if none exists.
    */
-  type Collection = foundry.documents.collections.Users.Implementation;
+  type Collection = Users.Implementation;
 
   /**
    * An instance of `User` that comes from the database but failed validation meaning that
@@ -1001,46 +994,35 @@ declare namespace User {
   }
 
   /** @internal */
-  type _PingData = InexactPartial<{
+  interface _HasRoleOptions {
     /**
-     * The zoom level at which the ping was made.
-     * @defaultValue `1`
-     * @remarks Can't be `null` because it only has a parameter default and is eventually used as a divisor in `Canvas#_constrainView`
+     * Require the role match to be exact
+     * @defaultValue `false`
      */
-    zoom: number;
-  }> &
-    NullishProps<{
-      /**
-       * Pulls all connected clients' views to the pinged co-ordinates.
-       */
-      pull: boolean;
-
-      /**
-       * The ping style, see CONFIG.Canvas.pings.
-       * @defaultValue `"pulse"`
-       * @remarks Overridden with `"arrow"` if the position of the ping is outside the viewport
-       *
-       * Overridden with `CONFIG.Canvas.pings.types.PULL` (`"chevron"` by default) if photosensitive mode is enabled and the ping is within the viewport
-       */
-      style: Ping.ConfiguredStyles;
-    }>;
-
-  /** @privateRemarks Only consumed by {@linkcode ControlsLayer.handlePing | ControlsLayer#handlePing} */
-  interface PingData extends _PingData {
-    /**
-     * The ID of the scene that was pinged.
-     */
-    scene: string;
+    exact?: boolean;
   }
+
+  /** Used by {@linkcode BaseUser.hasRole | BaseUser#hasRole}. */
+  interface HasRoleOptions extends InexactPartial<_HasRoleOptions> {}
+
+  /** Used by {@linkcode BaseUser.can | BaseUser#can}. */
+  type ActionPermission = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
+
+  /**
+   * A callback for {@linkcode User.isDesignated | User#isDesignated}. Will be passed to
+   * {@linkcode Users.getDesignatedUser | Users#getDesignatedUser}, where it's used as a
+   * {@linkcode Collection.filter | filter} conditional.
+   */
+  type DesignationCallback = (user: User.Stored) => boolean;
 
   /**
    * No core {@linkcode User.broadcastActivity | User#broadcastActivity} call provides all keys, most only provide one,
    * this is essentially bundling a bunch of unrelated update types into one socket handler, but the socket drops
-   * explicit `undefined` keys, so `IntentionalPartial` and `| null` as appropriate it is.
+   * explicit `undefined` keys, so we use `IntentionalPartial` below.
    *
    * @internal
    */
-  type _ActivityData = IntentionalPartial<{
+  interface _ActivityData {
     /**
      * The ID of the scene that the user is viewing.
      * @remarks Foundry types this as possibly being `null`, but no code path in core seems to be able to produce such a broadcast,
@@ -1089,62 +1071,84 @@ declare namespace User {
      * which has no default and has `in` checks applied.
      */
     av: AVSettings.Data;
-  }>;
+  }
 
-  interface ActivityData extends _ActivityData {}
+  interface ActivityData extends IntentionalPartial<_ActivityData> {}
 
   /** @internal */
-  type _BroadcastActivityOptions = NullishProps<{
+  interface _AssignHotbarMacroOptions {
+    /**
+     * An optional origin slot from which the Macro is being shifted
+     * @remarks No default value, and non-{@linkcode Number.isNumeric | numeric} values are ignored
+     */
+    fromSlot: number | `${number}`;
+  }
+
+  interface AssignHotbarMacroOptions extends InexactPartial<_AssignHotbarMacroOptions> {}
+
+  /** @internal */
+  interface _BroadcastActivityOptions {
     /**
      * If undefined, volatile is inferred from the activity data.
      * @remarks The update is assumed volatile if it has `av`, `targets`, or `ping` data,
      *  lacks a `sceneId`, or has `ruler` data of exactly `null`
      */
     volatile: boolean;
-  }>;
+  }
 
-  interface BroadcastActivityOptions extends _BroadcastActivityOptions {}
-
-  /** @internal */
-  type _HasRoleOptions = NullishProps<{
-    /**
-     * Require the role match to be exact
-     * @defaultValue `false`
-     */
-    exact?: boolean | undefined;
-  }>;
-
-  interface HasRoleOptions extends _HasRoleOptions {}
-
-  /** @internal */
-  type _AssignHotbarMacroOptions = NullishProps<{
-    /**
-     * An optional origin slot from which the Macro is being shifted
-     * @remarks No default value, and non-numeric values are ignored
-     */
-    fromSlot: number;
-  }>;
-
-  interface AssignHotbarMacroOptions extends _AssignHotbarMacroOptions {}
+  interface BroadcastActivityOptions extends InexactPartial<_BroadcastActivityOptions> {}
 
   /** The data {@linkcode User.getHotbarMacros | User#getHotbarMacros} returns for each of the 10 entries in its returned array */
   interface GetHotbarMacrosData {
     slot: number;
-    macro: Macro.Implementation | null;
+    macro: Macro.Stored | null;
   }
 
-  type ActionPermission = keyof typeof CONST.USER_PERMISSIONS | CONST.USER_ROLE_NAMES | CONST.USER_ROLES;
-
-  interface QueryOptions {
+  /** @internal */
+  interface _QueryOptions {
     /**
      * The timeout in milliseconds
      */
-    timeout?: number | undefined;
+    timeout: number;
   }
+
+  interface QueryOptions extends InexactPartial<_QueryOptions> {}
 
   type QueryName = keyof typeof CONFIG.queries;
   type QueryData<QueryName extends User.QueryName> = Parameters<(typeof CONFIG.queries)[QueryName]>[0];
   type QueryReturn<QueryName extends User.QueryName> = Awaited<ReturnType<(typeof CONFIG.queries)[QueryName]>>;
+
+  /** @internal */
+  interface _PingData {
+    /**
+     * The zoom level at which the ping was made.
+     * @defaultValue `1`
+     */
+    zoom: number;
+
+    /**
+     * Pulls all connected clients' views to the pinged co-ordinates.
+     */
+    pull: boolean;
+
+    /**
+     * The ping style, see CONFIG.Canvas.pings.
+     * @defaultValue `"pulse"`
+     * @remarks Overridden with `"arrow"` if the position of the ping is outside the viewport
+     *
+     * Overridden with `CONFIG.Canvas.pings.types.PULL` (`"chevron"` by default) if photosensitive
+     * mode is enabled and the ping is within the viewport.
+     */
+    style: Ping.ConfiguredStyles;
+  }
+
+  /** @privateRemarks Only consumed by {@linkcode ControlsLayer.handlePing | ControlsLayer#handlePing} */
+  interface PingData extends InexactPartial<_PingData> {
+    /**
+     * The ID of the scene that was pinged.
+     */
+    scene: string;
+  }
 
   /**
    * The arguments to construct the document.
@@ -1190,7 +1194,8 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   /**
    * Track the Token documents that this User is currently moving.
-   * @remarks foundry marks as `@readonly`
+   * @remarks foundry marks as `@readonly`, but really just mean `@internal`; Tokens are added by `TokenDocument##onUpdateMovement`,
+   * and deleted by that method and `##stopMovement`.
    */
   movingTokens: Set<TokenDocument.Implementation>;
 
@@ -1225,17 +1230,17 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   /**
    * Is this User the designated User among the Users that satisfy the given condition?
-   * This function calls {@linkcode foundry.documents.collections.Users.getDesignatedUser | `foundry.documents.collections.Users#getDesignatedUser`} and compares the designated User
+   * This function calls {@linkcode Users.getDesignatedUser | game.users.Users#getDesignatedUser} and compares the designated User
    * to this User.
    * @example
-   * // Is the current User the designated User to create Tokens?
    * ```js
+   * // Is the current User the designated User to create Tokens?
    * const isDesignated = game.user.isDesignated(user => user.active && user.can("TOKEN_CREATE"));
    * ```
    * @param condition - The condition the Users must satisfy
    * @returns Is designated User?
    */
-  isDesignated(condition: (user: User.Stored) => boolean): boolean;
+  isDesignated(condition: User.DesignationCallback): boolean;
 
   /**
    * @remarks Doesn't exist prior to data prep, set in {@linkcode User.prepareDerivedData | User#prepareDerivedData}
@@ -1255,8 +1260,14 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * @throws If `slot` is provided and either less than `1` or more than `50`, or not provided when there's no open slots
    */
   assignHotbarMacro(
-    macro: Macro.Implementation | null,
+    macro: Macro.Stored,
     slot?: `${number}` | number,
+    options?: User.AssignHotbarMacroOptions,
+  ): Promise<this | undefined>;
+
+  assignHotbarMacro(
+    macro: null,
+    slot: `${number}` | number,
     options?: User.AssignHotbarMacroOptions,
   ): Promise<this | undefined>;
 
@@ -1264,7 +1275,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * Assign a specific boolean permission to this user.
    * Modifies the user permissions to grant or restrict access to a feature.
    *
-   * @param permission - The permission name from USER_PERMISSIONS
+   * @param permission - The permission name from {@linkcode CONST.USER_PERMISSIONS}
    * @param allowed    - Whether to allow or restrict the permission
    * @remarks
    * @throws If the calling user is not at least an Assistant GM
@@ -1290,6 +1301,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
    * Update the set of Token targets for the user given an array of provided Token ids.
    * This function handles changes made elsewhere and does not broadcast to other connected clients.
    * @param targetIds - An array of Token ids which represents the new target set (default: `[]`)
+   * @internal
    */
   protected _onUpdateTokenTargets(targetIds?: string[]): void;
 
@@ -1303,11 +1315,15 @@ declare class User extends BaseUser.Internal.ClientDocument {
   query<QueryName extends User.QueryName>(
     queryName: QueryName,
     queryData: User.QueryData<QueryName>,
-    { timeout }?: User.QueryOptions,
+    queryOptions?: User.QueryOptions,
   ): Promise<User.QueryReturn<QueryName>>;
 
-  // _onUpdate and _onDelete are overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onUpdate(changed: User.UpdateData, options: User.Database.OnUpdateOptions, userId: string): void;
+
+  // protected override _onDelete(options: User.Database.OnDeleteOptions, userId: string): void;
 
   /*
    * After this point these are not really overridden methods.

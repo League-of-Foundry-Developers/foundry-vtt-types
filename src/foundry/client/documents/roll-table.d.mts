@@ -4,6 +4,7 @@ import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abst
 import type { BaseFolder, BaseRollTable, BaseTableResult } from "#client/documents/_module.d.mts";
 import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { HTMLDocumentEmbedElement } from "#client/applications/elements/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -1071,57 +1072,9 @@ declare namespace RollTable {
    *************************************************/
 
   /**
-   * An object containing the executed Roll and the produced results
-   */
-  interface Draw {
-    /**
-     * The Dice roll which generated the draw
-     */
-    roll: Roll;
-
-    /**
-     * An array of drawn TableResult documents
-     */
-    results: TableResult.Implementation[];
-  }
-
-  /**
-   * Optional arguments which customize the draw
-   */
-  interface DrawOptions {
-    /**
-     * An existing Roll instance to use for drawing from the table
-     */
-    roll?: Roll | undefined;
-
-    /**
-     * Allow drawing recursively from inner RollTable results
-     * @defaultValue `true`
-     */
-    recursive?: boolean | undefined;
-
-    /**
-     * One or more table results which have been drawn
-     * @defaultValue `[]`
-     */
-    results?: TableResult.Implementation[] | undefined;
-
-    /**
-     * Whether to automatically display the results in chat
-     * @defaultValue `true`
-     */
-    displayChat?: boolean | undefined;
-
-    /**
-     * The chat roll mode to use when displaying the result
-     */
-    rollMode?: ChatMessage.PassableRollMode | undefined;
-  }
-
-  /**
    * Additional options which modify message creation
    */
-  interface ToMessageOptions<Temporary extends boolean | undefined = undefined> {
+  interface _ToMessageOptions<Temporary extends boolean | undefined> {
     /**
      * An optional Roll instance which produced the drawn results
      */
@@ -1140,32 +1093,102 @@ declare namespace RollTable {
     messageOptions: ChatMessage.Database.CreateDocumentsOperation<Temporary>;
   }
 
-  interface RollOptions {
+  interface ToMessageOptions<Temporary extends boolean | undefined = undefined> extends InexactPartial<
+    _ToMessageOptions<Temporary>
+  > {}
+
+  /**
+   * An object containing the executed Roll and the produced results
+   */
+  interface Draw {
+    /**
+     * The Dice roll which generated the draw
+     */
+    roll: Roll;
+
+    /**
+     * An array of drawn TableResult documents
+     */
+    results: TableResult.Stored[];
+  }
+
+  /** @internal */
+  interface _DrawOptions {
+    /**
+     * An existing Roll instance to use for drawing from the table
+     */
+    roll: Roll;
+
+    /**
+     * Allow drawing recursively from inner RollTable results
+     * @defaultValue `true`
+     */
+    recursive: boolean;
+
+    /**
+     * One or more table results which have been drawn
+     * @defaultValue `[]`
+     */
+    results: TableResult.Implementation[];
+
+    /**
+     * Whether to automatically display the results in chat
+     * @defaultValue `true`
+     */
+    displayChat: boolean;
+
+    /**
+     * The chat roll mode to use when displaying the result
+     */
+    rollMode: ChatMessage.PassableRollMode;
+  }
+
+  /** Optional arguments which customize the draw */
+  interface DrawOptions extends InexactPartial<_DrawOptions> {}
+
+  /** {@linkcode RollTable.drawMany | #drawMany} doesn't take a `results` array in its options. */
+  interface DrawManyOptions extends InexactPartial<Omit<_DrawOptions, "results">> {}
+
+  /** @internal */
+  interface _RollOptions {
     /**
      * An alternative dice Roll to use instead of the default table formula
      */
-    roll?: Roll;
+    roll: Roll;
 
     /**
      * If a RollTable document is drawn as a result, recursively roll it
      * @defaultValue `true`
      */
-    recursive?: boolean;
+    recursive: boolean;
 
     /**
      * An internal flag used to track recursion depth
      * @defaultValue `0`
      */
-    _depth?: number;
+    _depth: number;
   }
 
-  interface RollTableHTMLEmbedConfig extends TextEditor.DocumentHTMLEmbedConfig {
+  interface RollOptions extends InexactPartial<_RollOptions> {}
+
+  interface _HTMLEmbedConfig {
     /**
      * Adds a button allowing the table to be rolled directly from its embedded context.
-     * Default: `false`
+     * @defaultValue `false`
      */
-    rollable?: boolean | undefined;
+    rollable: boolean;
+
+    /** The label to use for the range column. If rollable is true, this option is ignored. */
+    rangeLabel: string;
+
+    /** The label to use for the result column. */
+    resultLabel: string;
   }
+
+  interface HTMLEmbedConfig extends TextEditor.DocumentHTMLEmbedConfig, InexactPartial<_HTMLEmbedConfig> {}
+
+  /** @deprecated This type has been renamed to be less unwieldy. This alias will be removed in v15. */
+  type RollTableHTMLEmbedConfig = HTMLEmbedConfig;
 
   /**
    * The arguments to construct the document.
@@ -1241,8 +1264,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * Note that this function only performs the roll and identifies the result, the RollTable#draw function should be
    * called to formalize the draw from the table.
    *
-   * @param options - Options which modify rolling behavior
-   *                  (default: `{}`)
+   * @param options - Options which modify rolling behavior (default: `{}`)
    * @returns The Roll and results drawn by that Roll
    *
    * @example
@@ -1316,7 +1338,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * ```
    */
   protected _buildEmbedHTML(
-    config: TextEditor.DocumentHTMLEmbedConfig & { rollable: boolean },
+    config: RollTable.HTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | null>;
 
@@ -1324,7 +1346,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
     content: HTMLElement | HTMLCollection,
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLElement | null>;
+  ): Promise<HTMLDocumentEmbedElement | null>;
 
   /**
    * Handle a roll from within embedded content.
@@ -1333,7 +1355,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    */
   protected _onClickEmbedAction(event: PointerEvent, action: string): Promise<void>;
 
-  override onEmbed(element: foundry.applications.elements.HTMLDocumentEmbedElement): void;
+  override onEmbed(element: HTMLDocumentEmbedElement): void;
 
   protected override _onCreateDescendantDocuments(...args: RollTable.OnCreateDescendantDocumentsArgs): void;
 
@@ -1350,7 +1372,7 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
    * @param options - Additional options passed to the RollTable.create method
    */
   static fromFolder<Temporary extends boolean | undefined = undefined>(
-    folder: Folder.Implementation,
+    folder: Folder.Stored,
     options?: RollTable.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<RollTable.TemporaryIf<Temporary> | undefined>;
 
@@ -1368,11 +1390,15 @@ declare class RollTable extends BaseRollTable.Internal.ClientDocument {
 
   protected override _preCreateDescendantDocuments(...args: RollTable.PreCreateDescendantDocumentsArgs): void;
 
+  // _onCreateDescendantDocuments omitted due to real override above.
+
   protected override _preUpdateDescendantDocuments(...args: RollTable.PreUpdateDescendantDocumentsArgs): void;
 
   protected override _onUpdateDescendantDocuments(...args: RollTable.OnUpdateDescendantDocumentsArgs): void;
 
   protected override _preDeleteDescendantDocuments(...args: RollTable.PreDeleteDescendantDocumentsArgs): void;
+
+  // _onDeleteDescendantDocuments omitted due to real override above.
 
   static override defaultName(context?: RollTable.DefaultNameContext): string;
 

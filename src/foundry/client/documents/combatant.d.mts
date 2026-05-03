@@ -1041,23 +1041,10 @@ declare namespace Combatant {
    *************************************************/
 
   /**
-   * @remarks
-   * This is typed based on what is reasonable to expect, rather than accurately, as accurately would mean `unknown` (Foundry's type is
-   * `object|null`).
-   *
-   * Technically this is the value of an arbitrary property path in the Combatant's Actor's `system` (using `getProperty`), and while that
-   * path can usually be assumed to have been set to something in the return of {@linkcode TokenDocument.getTrackedAttributes}, since that's
-   * what the {@linkcode CombatTrackerConfig} provides as options, the path is stored in the {@linkcode Combat.CONFIG_SETTING} which could
-   * be updated to be anything. Also, `TokenDocument.getTrackedAttributes` doesn't actually check what the type of `value` and `max` are for
-   * bar type attributes, so even sticking to those choices isn't guaranteed safe.
-   *
-   * There's clear intent that the value *should* be numeric or null, but nothing seems to do math on it in core, and it's simply output in
-   * the {@linkcode CombatEncounters} template as `{{resource}}`, so `string` has been allowed.
-   *
-   * @privateRemarks Adding `boolean` is something that was discussed and decided against for now, but its plausible a system may request
-   * such in the future, and wouldn't make us any more wrong than currently.
+   * @remarks This is only ever typed by Foundry as `object | null`, but based on usage (especially
+   * {@linkcode Actor.modifyTokenAttribute | Actor#modifyTokenAttribute}) it has been narrowed.
    */
-  type Resource = string | number | null;
+  type Resource = number | null;
 
   /**
    * The arguments to construct the document.
@@ -1092,6 +1079,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   /**
    * The token video source image (if any)
    * @defaultValue `null`
+   * @internal
    */
   _videoSrc: string | null;
 
@@ -1108,7 +1096,6 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
 
   /**
    * Eschew `ClientDocument`'s redirection to `Combat#permission` in favor of special ownership determination.
-   * @remarks Uses {@linkcode BaseCombatant.getUserLevel | BaseCombatant#getUserLevel}, so can't return `null`
    */
   override get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
@@ -1131,7 +1118,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   /**
    * Get a Roll object which represents the initiative roll for this Combatant.
    * @param formula -  An explicit Roll formula to use for the combatant.
-   * @returns The Roll instance to use for the combatant.
+   * @returns The unevaluated Roll instance to use for the combatant.
    */
   getInitiativeRoll(formula?: string): Roll.Implementation;
 
@@ -1143,7 +1130,8 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   rollInitiative(formula?: string): Promise<this | undefined>;
 
   /**
-   * @remarks Initializes `_videoSrc`, applies `img` and `name` fallbacks, and calls {@linkcode Combatant.updateResource | Combatant#updateResource}
+   * @remarks Initializes `_videoSrc`, applies `img` and `name` fallbacks, and calls
+   * {@linkcode Combatant.updateResource | Combatant#updateResource}.
    */
   override prepareDerivedData(): void;
 
@@ -1169,8 +1157,26 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    */
   clearMovementHistory(): Promise<void>;
 
-  // DatabaseLifecycle Events are overridden but with no signature changes.
-  // These are already covered in BaseCombatant
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected static override _preCreateOperation(
+  //   documents: Combatant.Implementation[],
+  //   operation: Combatant.Database.PreCreateOperation,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected static override _preUpdateOperation(
+  //   documents: Combatant.Stored[],
+  //   operation: Combatant.Database.PreUpdateOperation,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected static override _preDeleteOperation(
+  //   documents: Combatant.Stored[],
+  //   operation: Combatant.Database.PreDeleteOperation,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
 
   /*
    * After this point these are not really overridden methods.

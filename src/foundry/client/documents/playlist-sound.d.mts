@@ -4,6 +4,7 @@ import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { Sound } from "#client/audio/_module.d.mts";
 import type { BasePlaylistSound } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -982,6 +983,8 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
 
   /**
    * Create a Sound used to play this PlaylistSound document
+   * @remarks
+   * @throws If called before `game.audio.locked` is falsey.
    */
   protected _createSound(): Sound | null;
 
@@ -1019,15 +1022,29 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
    */
   load(): Promise<void>;
 
-  toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
+  toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
-   * @remarks Returns {@linkcode Playlist.stopSound | this.parent.stopSound()} or {@linkcode Playlist.playSound | this.parent.playSound()}
+   * @remarks Returns {@linkcode Playlist.stopSound | this.parent.stopSound()} or {@linkcode Playlist.playSound | this.parent.playSound()}.
    */
-  override _onClickDocumentLink(event: MouseEvent): Promise<Playlist.Implementation | undefined>;
+  override _onClickDocumentLink(event: MouseEvent): Promise<Playlist.Stored | undefined>;
 
-  // _preUpdate, _onUpdate, and _onDelete are all overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preUpdate(
+  //   changed: PlaylistSound.UpdateData,
+  //   options: PlaylistSound.Database.PreUpdateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected override _onUpdate(
+  //   changed: PlaylistSound.UpdateData,
+  //   options: PlaylistSound.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: PlaylistSound.Database.OnDeleteOptions, userId: string): void;
 
   /**
    * Special handling that occurs when playback of a PlaylistSound is started.
@@ -1047,8 +1064,8 @@ declare class PlaylistSound extends BasePlaylistSound.Internal.CanvasDocument {
 
   /**
    * The effective volume at which this playlist sound is played, incorporating the global playlist volume setting.
-   * @deprecated since v12 until v14
-   * @remarks "`PlaylistSound#effectiveVolume` is deprecated in favor of using {@linkcode PlaylistSound.volume | PlaylistSound#volume} directly"
+   * @deprecated "`PlaylistSound#effectiveVolume` is deprecated in favor of using {@linkcode PlaylistSound.volume | PlaylistSound#volume}
+   * directly" (since v12 until v14)
    */
   get effectiveVolume(): number;
 

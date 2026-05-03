@@ -10,10 +10,11 @@ import type {
   NullishProps,
 } from "#utils";
 import type { Document, EmbeddedCollection } from "#common/abstract/_module.mjs";
-import type { Application, FormApplication } from "#client/appv1/api/_module.d.mts";
+import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { ApplicationV2, DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
 import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+import type { HTMLDocumentEmbedElement } from "#client/applications/elements/_module.d.mts";
 
 declare class InternalClientDocument<DocumentName extends Document.Type> {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
@@ -198,7 +199,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * Handle clicking on a content link for this document.
    * @param event - The triggering click event.
    * @remarks
-   * In `ClientDocument`, returns `this.sheet.render(true)`:
+   * In `ClientDocument`, returns `this.sheet?.render(true) ?? null`:
    * - AppV1: returns that sheet
    * - AppV2: returns a Promise of that sheet
    *
@@ -562,9 +563,10 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param pack    - A specific pack being exported to
    * @param options - Additional options which modify how the document is converted (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import
+   * @remarks Core makes no use of `pack`, neither here in `ClientDocument` nor in any override.
    */
   toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
-    pack?: CompendiumCollection.Any | null,
+    pack?: CompendiumCollection.Any,
     options?: Options,
   ): ClientDocument.ToCompendiumReturnType<DocumentName, Options>;
 
@@ -579,6 +581,8 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param config  - Configuration for embedding behavior.
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
    * @returns A representation of the Document as HTML content, or null if such a representation could not be generated.
+   * @privateRemarks Core never returns `null`, but includes it in the return type on their end, and the return is checked for falseyness
+   * where core calls it, so we have included it as well to allow for apparently valid subclassing.
    */
   toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
@@ -607,24 +611,33 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param content - The embedded content.
    * @param config  - Configuration for embedding behavior.
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
+   * @privateRemarks Core uses neither `config` nor `options`, and in at least one case (`#_createFigureEmbed`, below) doesn't pass them along.
+   *
+   * Core never returns `null`, but includes it in the return type on their end, and the return is checked for falseyness where core calls
+   * it, so we have included it as well to allow for apparently valid subclassing.
    */
   protected _createInlineEmbed(
     content: HTMLElement | HTMLCollection,
-    config: TextEditor.DocumentHTMLEmbedConfig,
+    config?: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLElement | null>;
+  ): Promise<HTMLDocumentEmbedElement | null>;
 
   /**
    * A method that can be overridden by subclasses to customize the generation of the embed figure.
    * @param content - The embedded content.
    * @param config  - Configuration for embedding behavior.
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
+   * @privateRemarks Core doesn't use `options`, and only a subset of `DocumentHTMLEmbedConfig` keys, but in the latter case it gets
+   * forwarded from {@linkcode ClientDocumentMixin.AnyMixed.toEmbed | #toEmbed} so the full type with no omissions is correct.
+   *
+   * Core never returns `null`, but includes it in the return type on their end, and the return is checked for falseyness where core calls
+   * it, so we have included it as well to allow for apparently valid subclassing.
    */
   protected _createFigureEmbed(
     content: HTMLElement | HTMLCollection,
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLElement | null>;
+  ): Promise<HTMLDocumentEmbedElement | null>;
 }
 
 type _ClientDocumentType = InternalClientDocument<Document.Type> & Document.AnyConstructor;
@@ -763,7 +776,7 @@ declare global {
     interface CreateDocumentLinkOptions extends _CreateDocumentLinkOptions {}
 
     /** The return type of {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} if not overridden */
-    type OnClickDocumentLinkReturn = FormApplication.Any | Promise<ApplicationV2.Any>;
+    type OnClickDocumentLinkReturn = Application.Any | Promise<DocumentSheetV2.Any>;
 
     type ToCompendiumReturnType<
       DocumentName extends Document.Type,

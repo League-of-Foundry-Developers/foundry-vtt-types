@@ -1023,7 +1023,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
    */
   get icon(): string;
 
-  /** @remarks Overrides `this.img` with the `img` of the associated Document, if this result is a `document` or `compendium` type */
+  /** @remarks Overrides `this.img` with the `img` of the associated Document, if this result is a `document` type */
   override prepareBaseData(): void;
 
   /**
@@ -1036,10 +1036,18 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
    */
   documentToAnchor(): HTMLAnchorElement | null;
 
-  // _preUpdate is overridden but with no signature changes.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preUpdate(
+  //   changed: TableResult.UpdateData,
+  //   options: TableResult.Database.PreUpdateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
 
   /**
-   * @deprecated since V13 until V15
+   * @deprecated "`TableResult#getChatText` is deprecated. Use the asynchronous
+   * {@linkcode TableResult.getHTML | TableResult#getHTML} instead." (since V13 until V15)
    */
   getChatText(): string;
 
@@ -1114,7 +1122,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
 
   // Embedded document operations have been left out because TableResult does not have any embedded documents.
 
-  static #TableResult: true;
+  #TableResult: true;
 }
 
 export default TableResult;

@@ -77,13 +77,11 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
   protected override _initialize(options?: Document.InitializeOptions): void;
 
   static override canUserCreate(user: User.Implementation): boolean;
-
   protected override _preCreate(
     data: BaseActor.CreateData,
     options: BaseActor.Database.PreCreateOptions,
     user: User.Stored,
   ): Promise<boolean | void>;
-
   protected override _preUpdate(
     changed: BaseActor.UpdateData,
     options: BaseActor.Database.PreUpdateOptions,

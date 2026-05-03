@@ -981,12 +981,24 @@ declare class Setting extends BaseSetting.Internal.ClientDocument {
   /**
    * The setting configuration for this setting document.
    */
-  get config(): foundry.applications.settings.SettingsConfig | undefined;
+  get config(): foundry.helpers.ClientSettings.SettingConfig | undefined;
 
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  // _onCreate and _onUpdate are overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onCreate(
+  //   data: Setting.CreateData,
+  //   options: Setting.Database.OnCreateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onUpdate(
+  //   changed: Setting.UpdateData,
+  //   options: Setting.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
 
   /**
    * Cast the value of the Setting into its defined type.

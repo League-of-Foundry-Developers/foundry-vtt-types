@@ -70,13 +70,16 @@ declare abstract class BaseActorDelta<
    * @param context   - Context to supply to synthetic Actor instantiation.
    * @remarks If the parent `TokenDocument` {@linkcode TokenDocument.isLinked | isLinked}, returns the passed `baseActor`, otherwise
    * returns a freshly constructed temporary `Actor`.
-   * @privateRemarks Foundry includes `| null` in the return, but that case only arises if `baseActor` is falsey, so is prevented by TS.
+   * @privateRemarks The `null` return only arises if `baseActor` is falsey, which should only happen in normal use in the case of actorless
+   * tokens.
+   *
+   * `baseActor` is just {@linkcode Actor.toObject | #toObject }ed, so `Implementation`s are allowed.
    */
   static applyDelta(
     delta: ActorDelta.Implementation,
-    baseActor: Actor.Stored,
+    baseActor: Actor.Implementation | null,
     context?: BaseActorDelta.ApplyDeltaContext,
-  ): Actor.Stored | Actor.Implementation;
+  ): Actor.Stored | Actor.Implementation | null;
 
   /**
    * @remarks
@@ -100,8 +103,10 @@ declare abstract class BaseActorDelta<
   /** @remarks Calls {@linkcode _prepareDeltaUpdate} with both args prior to returning a call to `super` */
   override updateSource(changes?: BaseActorDelta.UpdateData, options?: DataModel.UpdateOptions): ActorDelta.UpdateData;
 
-  /** @remarks Strips optional (`required: false`) fields from the object before returning */
-  // TODO: Properly type this override
+  /**
+   * @remarks Strips properties from optional (`required: false`) fields, with currently-nullish values, from the object before returning
+   */
+  // TODO: Properly type this override, if required? Requires all optional fields to be optional in Source
   override toObject(source?: boolean): BaseActorDelta.Source;
 
   /*
@@ -398,22 +403,7 @@ declare namespace BaseActorDelta {
   export import Database = ActorDelta.Database;
   export import TemporaryIf = ActorDelta.TemporaryIf;
   export import Flags = ActorDelta.Flags;
-
-  /**
-   * This interface is spread into an object that already has `parent` defined, and as this is ActorDelta logic,
-   * let's assume that overwriting the parent is contraindicated.
-   *
-   * @internal
-   */
-  type _ApplyDeltaContext = Omit<Document.ConstructionContext<TokenDocument.Implementation>, "parent">;
-
-  interface ApplyDeltaContext extends _ApplyDeltaContext {
-    /**
-     * @deprecated This context is spread into an `Actor` creation context for the synthetic actor,
-     * overriding the provided default of `parent: delta.parent` is nonsensical
-     */
-    parent?: never;
-  }
+  export import ApplyDeltaContext = ActorDelta.ApplyDeltaContext;
 
   namespace Internal {
     // Note(LukeAbby): The point of this is to give the base class of `ActorDelta` a name.

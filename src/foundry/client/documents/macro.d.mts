@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "#configuration";
-import type { Identity, MaybeArray, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseFolder, BaseMacro, BaseUser } from "#client/documents/_module.d.mts";
@@ -1021,7 +1021,7 @@ declare namespace Macro {
    *************************************************/
 
   /** @internal */
-  type _ScriptScope = NullishProps<{
+  interface _ScriptScope {
     /** An Actor who is the protagonist of the executed action. */
     actor: Actor.Implementation;
 
@@ -1068,9 +1068,9 @@ declare namespace Macro {
      * @remarks Additional arguments passed as part of the scope. Numeric keys are disallowed (`##executeScript` throws).
      */
     [arg: string | symbol]: unknown;
-  }>;
+  }
 
-  interface ScriptScope extends _ScriptScope {}
+  interface ScriptScope extends InexactPartial<_ScriptScope> {}
 
   interface ChatScope extends Pick<ScriptScope, "speaker"> {}
 
@@ -1078,12 +1078,12 @@ declare namespace Macro {
 
   type ExecuteScope<SubType extends Macro.SubType> = SubType extends "chat" | "script"
     ? UnknownScope
-    : (SubType extends "script" ? ScriptScope : never) | (SubType extends "chat" ? ScriptScope : never);
+    : (SubType extends "script" ? ScriptScope : never) | (SubType extends "chat" ? ChatScope : never);
 
   // Note: If extra types ever get added this will need to be updated to account for them, even if
   // just to return `undefined`.
   type ExecuteReturn<SubType extends Macro.SubType> =
-    | (SubType extends "chat" ? Promise<ChatMessage.Implementation | undefined | void> : never)
+    | (SubType extends "chat" ? Promise<ChatMessage.Stored | undefined | void> : never)
     // Note(LukeAbby): As of 13.346 this `| void` is only possible if there's a syntax error in the function.
     | (SubType extends "script" ? Promise<unknown> | void : never);
 
@@ -1138,7 +1138,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    * Test whether the given User is capable of executing this Macro.
    * @param user - The User to test.
    * @returns Can this User execute this Macro?
-   * @privateRemarks Only does role checks, so temporary `User`s are allowed.
+   * @privateRemarks Only tests permissions, non-persisted `User`s work.
    */
   canUserExecute(user: User.Implementation): boolean;
 
@@ -1155,7 +1155,14 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   /** @remarks Returns {@linkcode Macro.execute | this.execute}`({event})` */
   override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
 
-  // _onCreate is overridden but with no signature changes from its definition in BaseMacro.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onCreate(
+  //   data: Macro.CreateData,
+  //   options: Macro.Database.OnCreateOptions,
+  //   userId: string,
+  // ): void;
 
   /*
    * After this point these are not really overridden methods.

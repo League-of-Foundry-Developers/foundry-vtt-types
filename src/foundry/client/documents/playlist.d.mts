@@ -3,6 +3,7 @@ import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseFolder, BasePlaylist, BasePlaylistSound } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -1116,7 +1117,7 @@ declare namespace Playlist {
    *************************************************/
 
   /** @internal */
-  type _PlayNextOptions = InexactPartial<{
+  interface _PlayNextOptions {
     /**
      * Whether to advance forward (if 1) or backwards (if -1)
      * @defaultValue `1`
@@ -1124,9 +1125,17 @@ declare namespace Playlist {
      * @privateRemarks This is only checked for `=== 1`, restricting 'backward' values to `-1` based on core's description
      */
     direction: 1 | -1;
-  }>;
+  }
 
-  interface PlayNextOptions extends _PlayNextOptions {}
+  interface PlayNextOptions extends InexactPartial<_PlayNextOptions> {}
+
+  /**
+   * @privateRemarks There's no user opportunity to pass additional config to {@linkcode Playlist.bulkImportDialog | #bulkImportDialog},
+   * so no merging necessary.
+   */
+  type BulkImportDialogReturn = DialogV2.PromptReturn<{
+    ok: { callback: (event: Event, button: HTMLElement) => boolean };
+  }>;
 
   /**
    * The arguments to construct the document.
@@ -1167,8 +1176,9 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
   /**
    * Find all content links belonging to a given {@linkcode Playlist} or {@linkcode PlaylistSound}.
    * @param doc - The Playlist or PlaylistSound.
+   * @privateRemarks The doc's `uuid` is checked, so `Stored` over `Implementation`.
    */
-  static _getSoundContentLinks(doc: Playlist.Implementation | PlaylistSound.Implementation): NodeListOf<Element>;
+  protected static _getSoundContentLinks(doc: Playlist.Stored | PlaylistSound.Stored): NodeListOf<Element>;
 
   override prepareDerivedData(): void;
 
@@ -1184,23 +1194,25 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * @param options - Additional options which configure the next track
    * @returns If successfully updated, this Playlist document
    */
-  playNext(soundId?: string | null, options?: Playlist.PlayNextOptions): Promise<this | undefined | null>;
+  playNext(soundId?: string, options?: Playlist.PlayNextOptions): Promise<this | undefined | null>;
 
   /**
    * Begin playback of a specific Sound within this Playlist.
    * Determine which other sounds should remain playing, if any.
    * @param sound - The desired sound that should play
    * @returns The updated Playlist
+   * @privateRemarks The sound's `id` is checked and used in an update, so `Stored` over `Implementation`.
    */
-  playSound(sound: PlaylistSound.Implementation): Promise<this | undefined>;
+  playSound(sound: PlaylistSound.Stored): Promise<this | undefined>;
 
   /**
    * Stop playback of a specific Sound within this Playlist.
    * Determine which other sounds should remain playing, if any.
    * @param sound - The desired sound that should play
    * @returns The updated Playlist
+   * @privateRemarks The sound's `id` is checked and used in an update, so `Stored` over `Implementation`.
    */
-  stopSound(sound: PlaylistSound.Implementation): Promise<this | undefined>;
+  stopSound(sound: PlaylistSound.Stored): Promise<this | undefined>;
 
   /**
    * End playback for any/all currently playing sounds within the Playlist.
@@ -1216,13 +1228,11 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
 
   /**
    * Get the next sound in the cached playback order. For internal use.
-   * @private
    */
   protected _getNextSound(soundId: string): PlaylistSound.Implementation | undefined;
 
   /**
    * Get the previous sound in the cached playback order. For internal use.
-   * @private
    */
   protected _getPreviousSound(soundId: string): PlaylistSound.Implementation | undefined;
 
@@ -1230,18 +1240,33 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * Define the sorting order for the Sounds within this Playlist. For internal use.
    * If sorting alphabetically, the sounds are sorted with a locale-independent comparator
    * to ensure the same order on all clients.
-   * @private
+   * @privateRemarks Only `name`s are compared, so `Implementation`s are allowed
    */
   protected _sortSounds(a: PlaylistSound.Implementation, b: PlaylistSound.Implementation): number;
 
-  override toAnchor(options?: foundry.applications.ux.TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
+  override toAnchor(options?: TextEditor.EnrichmentAnchorOptions): HTMLAnchorElement;
 
   /**
    * @remarks Returns {@linkcode Playlist.playAll | this.playAll()} or {@linkcode Playlist.stopAll | this.stopAll()}
    */
   override _onClickDocumentLink(event: MouseEvent): Promise<this | undefined>;
 
-  // _preUpdate, _onUpdate, _onDelete are all overridden but with no signature changes from the BasePlaylist class.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preUpdate(
+  //   changed: Playlist.UpdateData,
+  //   options: Playlist.Database.PreUpdateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected override _onUpdate(
+  //   changed: Playlist.UpdateData,
+  //   options: Playlist.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: Playlist.Database.OnDeleteOptions, userId: string): void;
 
   protected override _onCreateDescendantDocuments(...args: Playlist.OnCreateDescendantDocumentsArgs): void;
 
@@ -1267,13 +1292,13 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
    * Spawn a dialog for bulk importing sound files into a playlist.
    * @returns Returns true if any sound files were successfully imported.
    */
-  bulkImportDialog(): Promise<boolean>;
+  bulkImportDialog(): Promise<Playlist.BulkImportDialogReturn>;
 
   /**
    * Create PlaylistSounds in this Playlist from the given file paths.
    * @param paths - File paths to import.
    */
-  bulkImportSounds(paths: string[]): Promise<PlaylistSound.Implementation[]>;
+  bulkImportSounds(paths: string[]): Promise<PlaylistSound.Stored[]>;
 
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: foundry.documents.collections.CompendiumCollection.Any | null,
@@ -1296,9 +1321,15 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
 
   protected override _preCreateDescendantDocuments(...args: Playlist.PreCreateDescendantDocumentsArgs): void;
 
+  // `_onCreateDescendantDocuments` omitted from template due to real override above.
+
   protected override _preUpdateDescendantDocuments(...args: Playlist.PreUpdateDescendantDocumentsArgs): void;
 
+  // `_onUpdateDescendantDocuments` omitted from template due to real override above.
+
   protected override _preDeleteDescendantDocuments(...args: Playlist.PreDeleteDescendantDocumentsArgs): void;
+
+  // `_onDeleteDescendantDocuments` omitted from template due to real override above.
 
   static override defaultName(context?: Playlist.DefaultNameContext): string;
 

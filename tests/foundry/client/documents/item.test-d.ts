@@ -137,7 +137,7 @@ await Item.create({ name: "Mighty Axe of Killing", type: "weapon" });
 expectTypeOf(item.actor).toEqualTypeOf<Actor.Implementation | null>();
 expectTypeOf(item.img).toEqualTypeOf<string | null>();
 expectTypeOf(item.isOwned).toEqualTypeOf<boolean>();
-expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>();
+expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Stored[]>();
 expectTypeOf(item.type).toEqualTypeOf<"weapon">();
 expectTypeOf(item.getRollData()).toEqualTypeOf<AnyObject>();
 

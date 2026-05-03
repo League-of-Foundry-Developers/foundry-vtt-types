@@ -61,22 +61,23 @@ declare class AdventureImporter<
   ): Promise<void | ReturnType<Adventure.Implementation["import"]>>;
 
   /**
-   * Mirror Adventure#import but call AdventureImporter#_importContent and AdventureImport#_prepareImportData
-   * @deprecated since v11, will be removed in v13
+   * Mirror {@linkcode Adventure.import | Adventure#import} but call {@linkcode _importContent | AdventureImporter#_importContent} and
+   * {@linkcode _prepareImportData | AdventureImport#_prepareImportData}
+   * @remarks This isn't itself deprecated but calls two deprecated methods and will likely be removed with them in v16.
    */
   _importLegacy(formData: object): Promise<void>;
 
   /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks `"AdventureImporter#_prepareImportData is deprecated. Please use Adventure#prepareImport instead."`
+   * @deprecated "`AdventureImporter#_prepareImportData` is deprecated. Please use
+   * {@linkcode Adventure.prepareImport Adventure#prepareImport} instead." (since v11, until v16)
    */
-  _prepareImportData(formData: object): Promise<void>;
+  _prepareImportData(formData: object): Promise<Adventure.ImportData>;
 
   /**
-   * @deprecated since v11, will be removed in v13
-   * @remarks `"AdventureImporter#_importContent is deprecated. Please use Adventure#importContent instead."`
+   * @deprecated "`AdventureImporter#_importContent` is deprecated. Please use {@linkcode Adventure.importContent | Adventure#importContent}
+   * instead." (since v13, until v16)
    */
-  _importContent(formData: object): Promise<void>;
+  _importContent(formData: object): Promise<Adventure.ImportResult>;
 }
 
 declare namespace AdventureImporter {

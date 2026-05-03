@@ -1090,8 +1090,8 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
   get visible(): boolean;
 
   /**
-   * @remarks "Upgrade to OBSERVER ownership if the journal entry is in a LIMITED compendium,
-   * as LIMITED has no special meaning for journal entries in this context."
+   * @remarks "Upgrade to `OBSERVER` ownership if the journal entry is in a `LIMITED` compendium,
+   * as `LIMITED` has no special meaning for journal entries in this context."
    */
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
@@ -1109,7 +1109,7 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    * @param force - Display the entry to all players regardless of normal permissions (default: `false`)
    * @returns A Promise that resolves back to the shown entry once the request is processed
    */
-  show(force?: boolean | null): Promise<this>;
+  show(force?: boolean): Promise<this>;
 
   /**
    * If the JournalEntry has a pinned note on the canvas, this method will animate to that note
@@ -1119,7 +1119,16 @@ declare class JournalEntry extends BaseJournalEntry.Internal.ClientDocument {
    */
   panToNote(options?: NotesLayer.PanToNoteOptions): Promise<void>;
 
-  // _onUpdate and _onDelete are overridden but with no signature changes from their definition in BaseJournalEntry.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onUpdate(
+  //   changed: JournalEntry.UpdateData,
+  //   options: JournalEntry.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: JournalEntry.Database.OnDeleteOptions, userId: string): void;
 
   /**
    * A sorting comparator for `JournalEntryCategory` documents

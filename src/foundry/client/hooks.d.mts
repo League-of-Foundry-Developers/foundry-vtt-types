@@ -827,11 +827,7 @@ export interface AllHooks extends DynamicHooks {
    * @param context            - Additional context which describes the operation
    * @remarks This is called by {@linkcode Hooks.call}. An explicit return value of `false` prevents the operation.
    */
-  dealCards: (
-    origin: Cards.Implementation,
-    destinations: Cards.Implementation[],
-    context: Cards.DealContext,
-  ) => boolean | void;
+  dealCards: (origin: Cards.Stored, destinations: Cards.Stored[], context: Cards.DealContext) => boolean | void;
 
   /**
    * A hook event that fires when Cards are passed from one stack to another
@@ -840,11 +836,7 @@ export interface AllHooks extends DynamicHooks {
    * @param context     - Additional context which describes the operation
    * @remarks This is called by {@linkcode Hooks.call}. An explicit return value of `false` prevents the operation.
    */
-  passCards: (
-    origin: Cards.Implementation,
-    destination: Cards.Implementation,
-    context: Cards.PassContext,
-  ) => boolean | void;
+  passCards: (origin: Cards.Stored, destination: Cards.Stored, context: Cards.PassContext) => boolean | void;
 
   /**
    * A hook event that fires when a stack of Cards are returned to the decks they originally came from.

@@ -950,7 +950,14 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
     context?: AmbientLightDocument.ConstructionContext,
   );
 
-  // _onUpdate is overridden but with no signature changes from its implementation in BaseAmbientLight.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onUpdate(
+  //   changed: AmbientLightDocument.UpdateData,
+  //   options: AmbientLightDocument.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
 
   /**
    * Is this ambient light source global in nature?

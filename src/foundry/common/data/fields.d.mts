@@ -4894,7 +4894,7 @@ declare class DocumentStatsField<
    * `JournalEntry`, `Macro`, `Playlist`, `RollTable`, `Scene`)
    */
   // TODO: add this shim to DocumentFlagsField.InitializedType?
-  protected static _shimDocument(document: Document.AnyConstructor): void;
+  protected static _shimDocument(document: Document.Any): void;
 }
 
 declare namespace DocumentStatsField {

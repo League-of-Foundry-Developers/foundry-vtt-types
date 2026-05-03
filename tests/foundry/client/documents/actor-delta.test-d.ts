@@ -22,4 +22,4 @@ expectTypeOf(actorDelta.prepareEmbeddedDocuments()).toEqualTypeOf<void>();
 expectTypeOf(actorDelta.updateSource()).toEqualTypeOf<object>();
 expectTypeOf(actorDelta.reset()).toEqualTypeOf<void>();
 expectTypeOf(actorDelta.updateSyntheticActor()).toEqualTypeOf<void>();
-expectTypeOf(actorDelta.restore()).toEqualTypeOf<Promise<Actor.Implementation>>();
+expectTypeOf(actorDelta.restore()).toEqualTypeOf<Promise<Actor.Stored>>();

@@ -975,6 +975,7 @@ declare namespace NoteDocument {
    * The return type for {@linkcode NoteDocument.createDialog}.
    * @see {@linkcode Document.CreateDialogReturn}
    */
+  // TODO: Type for the override returning a `Note` placeable in some cases.
   // TODO: inline .Stored in v14 instead of taking Temporary
   type CreateDialogReturn<
     Temporary extends boolean | undefined,
@@ -1044,12 +1045,12 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
   /**
    * The associated JournalEntry which is referenced by this Note
    */
-  get entry(): JournalEntry.Implementation | undefined;
+  get entry(): JournalEntry.Stored | undefined;
 
   /**
    * The specific JournalEntryPage within the associated JournalEntry referenced by this Note.
    */
-  get page(): JournalEntryPage.Implementation | undefined;
+  get page(): JournalEntryPage.Stored | undefined;
 
   /**
    * The text label used to annotate this Note
@@ -1072,6 +1073,8 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
 
   // `context` must contain a `parent`, so is required.
   static override defaultName(context: NoteDocument.DefaultNameContext): string;
+
+  // `createDialog` omitted from template due to real override above
 
   override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
     options?: Options,
