@@ -260,7 +260,6 @@ declare namespace Combatant {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-
   interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Combatant embedded document
