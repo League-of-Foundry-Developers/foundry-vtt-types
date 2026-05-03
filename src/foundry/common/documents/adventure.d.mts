@@ -106,17 +106,17 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseAdventure.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseAdventure.Database.Create<Temporary>>,
+    operation?: BaseAdventure.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseAdventure.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseAdventure.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseAdventure.Database.Update>,
+    operation?: BaseAdventure.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<Adventure.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseAdventure.Database.Delete>,
+    operation?: BaseAdventure.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<Adventure.Stored>>;
 
   static override create<
@@ -124,20 +124,20 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseAdventure.Database.CreateOperation<Temporary>,
+    operation?: BaseAdventure.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseAdventure.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseAdventure.UpdateInput,
-    operation?: BaseAdventure.Database.UpdateOperation,
+    operation?: BaseAdventure.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseAdventure.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseAdventure.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  // Since persisted `Adventure`s only exist in compendia, this only returns an index entry (if a `pack` is passed in `operation`) or `null`.
+  // Since `Adventure`s only exist in compendia, this can only return an index entry (if a `pack` is passed in `operation`) or `null`
   static override get(
     documentId: string,
-    operation?: BaseAdventure.Database.GetOptions,
+    operation?: BaseAdventure.Database.GetDocumentsOperation,
   ): CompendiumCollection.IndexEntry<"Adventure"> | null;
 
   // `Adventure`s have no embedded collections, so this always returns `null`.
@@ -167,19 +167,19 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   protected override _onCreate(
     data: BaseAdventure.CreateData,
-    options: BaseAdventure.Database.OnCreateOperation,
+    options: BaseAdventure.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Adventure.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseAdventure.Database.Create>,
+    operation: BaseAdventure.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Adventure.Stored[],
-    operation: BaseAdventure.Database.Create,
+    operation: BaseAdventure.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -191,19 +191,19 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
 
   protected override _onUpdate(
     changed: BaseAdventure.UpdateData,
-    options: BaseAdventure.Database.OnUpdateOperation,
+    options: BaseAdventure.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Adventure.Stored[],
-    operation: BaseAdventure.Database.Update,
+    operation: BaseAdventure.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Adventure.Stored[],
-    operation: BaseAdventure.Database.Update,
+    operation: BaseAdventure.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -212,17 +212,17 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseAdventure.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseAdventure.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Adventure.Stored[],
-    operation: BaseAdventure.Database.Delete,
+    operation: BaseAdventure.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Adventure.Stored[],
-    operation: BaseAdventure.Database.Delete,
+    operation: BaseAdventure.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -232,7 +232,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    */
   protected static override _onCreateDocuments(
     documents: Adventure.Implementation[],
-    context: BaseAdventure.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseAdventure.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -241,7 +242,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    */
   protected static override _onUpdateDocuments(
     documents: Adventure.Stored[],
-    context: BaseAdventure.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseAdventure.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -250,7 +252,8 @@ declare abstract class BaseAdventure extends Document<"Adventure", BaseAdventure
    */
   protected static override _onDeleteDocuments(
     documents: Adventure.Stored[],
-    context: BaseAdventure.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseAdventure.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

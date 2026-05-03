@@ -10,6 +10,8 @@ import PreciseText = foundry.canvas.containers.PreciseText;
 import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
 import TextureTransitionFilter = foundry.canvas.rendering.filters.TextureTransitionFilter;
 
+declare const scene: Scene.Stored;
+
 expectTypeOf(Token.embeddedName).toEqualTypeOf<"Token">();
 expectTypeOf(Token.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
   | Array<
@@ -464,7 +466,11 @@ expectTypeOf(token["_removeAllFilterEffects"]()).toBeVoid();
 
 // TODO: see if we can fix the 'possibly infinite' here
 expectTypeOf(
-  token["_onCreate"](doc.toObject(), { modifiedTime: 7, render: true, renderSheet: false }, "XXXXXSomeIDXXXXX"),
+  token["_onCreate"](
+    doc.toObject(),
+    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
+    "XXXXXSomeIDXXXXX",
+  ),
 ).toBeVoid();
 
 expectTypeOf(
@@ -477,12 +483,14 @@ expectTypeOf(
 
       flags: { core: { sheetLock: true } },
     },
-    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(token["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
+expectTypeOf(
+  token["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
 
 // @ts-expect-error _onControl is always passed a value
 expectTypeOf(token["_onControl"]()).toBeVoid();

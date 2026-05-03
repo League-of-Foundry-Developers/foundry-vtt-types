@@ -38,7 +38,7 @@ Hooks.on("error", (location, _err, data) => {
 // Test for @peril_maelstrom on Discord, see https://discord.com/channels/732325252788387980/803646399014109205/1377367755338289223
 Hooks.on("deleteToken", (document, options) => {
   expectTypeOf(document).toEqualTypeOf<TokenDocument.Implementation>();
-  expectTypeOf(options.parent).toEqualTypeOf<TokenDocument.Parent | undefined>();
+  expectTypeOf(options.parent).toEqualTypeOf<TokenDocument.Parent>();
 });
 
 Hooks.on("preCreateActiveEffect", (document, data, options) => {

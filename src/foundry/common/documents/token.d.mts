@@ -243,17 +243,17 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseToken.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseToken.Database.Create<Temporary>>,
+    operation?: BaseToken.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseToken.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseToken.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseToken.Database.Update>,
+    operation?: BaseToken.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<TokenDocument.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseToken.Database.Delete>,
+    operation?: BaseToken.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<TokenDocument.Stored>>;
 
   static override create<
@@ -261,18 +261,18 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseToken.Database.CreateOperation<Temporary>,
+    operation?: BaseToken.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseToken.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseToken.UpdateInput,
-    operation?: BaseToken.Database.UpdateOperation,
+    operation?: BaseToken.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseToken.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseToken.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   // `TokenDocument`s are neither world documents nor compendium documents, so this always returns `null`.
-  static override get(documentId: string, operation?: BaseToken.Database.GetOptions): null;
+  static override get(documentId: string, operation?: BaseToken.Database.GetDocumentsOperation): null;
 
   static override getCollectionName<CollectionName extends BaseToken.Embedded.Name>(
     name: CollectionName,
@@ -335,19 +335,19 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   protected override _onCreate(
     data: BaseToken.CreateData,
-    options: BaseToken.Database.OnCreateOperation,
+    options: BaseToken.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: TokenDocument.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseToken.Database.Create>,
+    operation: BaseToken.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: TokenDocument.Stored[],
-    operation: BaseToken.Database.Create,
+    operation: BaseToken.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -359,38 +359,38 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   protected override _onUpdate(
     changed: BaseToken.UpdateData,
-    options: BaseToken.Database.OnUpdateOperation,
+    options: BaseToken.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: TokenDocument.Stored[],
-    operation: BaseToken.Database.Update,
+    operation: BaseToken.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: TokenDocument.Stored[],
-    operation: BaseToken.Database.Update,
+    operation: BaseToken.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: BaseToken.Database.PreUpdateOptions,
+    options: BaseToken.Database.PreDeleteOptions,
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseToken.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseToken.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: TokenDocument.Stored[],
-    operation: BaseToken.Database.Delete,
+    operation: BaseToken.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: TokenDocument.Stored[],
-    operation: BaseToken.Database.Delete,
+    operation: BaseToken.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -400,7 +400,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    */
   protected static override _onCreateDocuments(
     documents: TokenDocument.Implementation[],
-    context: BaseToken.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseToken.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -409,7 +410,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    */
   protected static override _onUpdateDocuments(
     documents: TokenDocument.Stored[],
-    context: BaseToken.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseToken.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -418,7 +420,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    */
   protected static override _onDeleteDocuments(
     documents: TokenDocument.Stored[],
-    context: BaseToken.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseToken.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

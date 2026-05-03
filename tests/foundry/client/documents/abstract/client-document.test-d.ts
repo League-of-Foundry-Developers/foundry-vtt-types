@@ -244,7 +244,7 @@ expectTypeOf(
     storedItem, // cannot just be `item`
     "effects",
     aeCreateDataArray,
-    { modifiedTime: 0, render: false, renderSheet: false },
+    { action: "create", modifiedTime: 0, render: false, renderSheet: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -254,7 +254,7 @@ expectTypeOf(
     "effects",
     createdAEs,
     aeCreateDataArray,
-    { modifiedTime: 0, render: false, renderSheet: false },
+    { action: "create", modifiedTime: 0, render: false, renderSheet: false, parent: null },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -264,7 +264,7 @@ expectTypeOf(
     storedItem, // cannot just be `item`
     "effects",
     aeUpdateDataArray,
-    { modifiedTime: 0, render: false, diff: true, recursive: true },
+    { action: "update", modifiedTime: 0, render: false, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -274,7 +274,7 @@ expectTypeOf(
     "effects",
     createdAEs,
     aeUpdateDataArray,
-    { modifiedTime: 0, render: false, diff: true, recursive: true },
+    { action: "update", modifiedTime: 0, render: false, diff: true, recursive: true, parent: null },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -284,7 +284,7 @@ expectTypeOf(
     storedItem, // cannot just be `item`
     "effects",
     aeIDs,
-    { modifiedTime: 0, render: false },
+    { action: "delete", modifiedTime: 0, render: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -294,7 +294,7 @@ expectTypeOf(
     "effects",
     createdAEs,
     aeIDs,
-    { modifiedTime: 0, render: false },
+    { action: "delete", modifiedTime: 0, render: false, parent: null },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();

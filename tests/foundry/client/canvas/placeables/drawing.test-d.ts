@@ -5,6 +5,7 @@ import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import PrimaryGraphics = foundry.canvas.primary.PrimaryGraphics;
 
 declare const drawingDoc: DrawingDocument.Stored;
+declare const scene: Scene.Stored;
 
 expectTypeOf(Drawing.embeddedName).toEqualTypeOf<"Drawing">();
 expectTypeOf(Drawing.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
@@ -123,7 +124,7 @@ expectTypeOf(drawing["_removePoint"]()).toBeVoid();
 expectTypeOf(
   drawing["_onCreate"](
     drawingDoc.toObject(),
-    { modifiedTime: 7, render: true, renderSheet: false },
+    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -132,12 +133,14 @@ expectTypeOf(
   drawing["_onUpdate"](
     // partial source data
     { bezierFactor: 2, flags: { core: { sheetLock: true } }, fillColor: "#ABCFEF" },
-    { modifiedTime: 7, render: true, diff: true, recursive: true },
+    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
-expectTypeOf(drawing["_onDelete"]({ modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX")).toBeVoid();
+expectTypeOf(
+  drawing["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
+).toBeVoid();
 
 // @ts-expect-error _onControl is always passed a value
 expectTypeOf(drawing["_onControl"]()).toBeVoid();

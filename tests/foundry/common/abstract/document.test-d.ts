@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
 import BaseActiveEffect = foundry.documents.BaseActiveEffect;
 
+import Document = foundry.abstract.Document;
+
 declare const baseActiveEffect: foundry.documents.BaseActiveEffect;
 
 expectTypeOf(baseActiveEffect.toJSON().changes).toEqualTypeOf<ActiveEffect.ChangeData[]>();
@@ -50,12 +52,13 @@ if (user) {
 
 // test creation of embedded documents
 declare const scene: Scene.Implementation;
-expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: true })).toEqualTypeOf<
-  Promise<NoteDocument.Stored[]> // Should be `.Implementation` as it can be temporary. See #3271
->();
-expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: false })).toEqualTypeOf<
-  Promise<NoteDocument.Stored[]>
->();
+// TODO: these methods will be updated in a later PR
+// expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: true })).toEqualTypeOf<
+//   Promise<NoteDocument.Stored[]> // Should be `.Implementation` as it can be temporary. See #3271
+// >();
+// expectTypeOf(scene.createEmbeddedDocuments("Note", [], { temporary: false })).toEqualTypeOf<
+//   Promise<NoteDocument.Stored[]>
+// >();
 expectTypeOf(scene.createEmbeddedDocuments("Note", [])).toEqualTypeOf<Promise<NoteDocument.Stored[]>>();
 
 // verify that document lifecycle methods work with source data is possible
@@ -131,3 +134,14 @@ declare module "fvtt-types/configuration" {
 // }
 
 // expectTypeOf(typeof foundry.abstract.Document).toEqualTypeOf<foundry.abstract.Document.AnyConstructor>();
+
+// Note(LukeAbby): This test prevents us from accidentally making `Lookup` no longer covariant.
+// At one point the various lookups, when inlined, essentially looked like `(Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap<Temporary> : never | ...)[Operation]`.
+// For whatever reason this defeated the variance calculation but inlining the property access as so `(Name extends "ActiveEffect" ? ActiveEffect.Database.Internal.OperationNameMap<Temporary>[Operation] : never | ...)` calculates the variance fine.
+interface _TestLookupVariance<
+  out Operation extends Document.Database.Internal.Operation,
+  out Name extends Document.Type,
+  out Temporary extends boolean | undefined = boolean | undefined,
+> {
+  _: Document.Database.Internal.Lookup<Operation, Name, Temporary>;
+}

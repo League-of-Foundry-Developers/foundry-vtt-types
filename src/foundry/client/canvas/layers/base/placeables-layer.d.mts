@@ -328,17 +328,15 @@ declare class PlaceablesLayer<out DocumentName extends PlaceablesLayer.DocumentN
    * Update all objects in this layer with a provided transformation.
    * Conditionally filter to only apply to objects which match a certain condition.
    * @param transformation - An object of data or function to apply to all matched objects
-   * @param condition      - A function which tests whether to target each object
-   *                         (default: `null`)
-   * @param options        - Additional options passed to Document.update
-   *                         (default: `{}`)
+   * @param condition      - A function which tests whether to target each object (default: `null`)
+   * @param options        - Additional options passed to Document.update (default: `{}`)
    * @returns An array of updated data once the operation is complete
    * @throws An error if the `transformation` parameter is neither a function nor a plain object
    */
   updateAll(
     transformation: PlaceablesLayer.UpdateAllTransformation<DocumentName>,
     condition?: PlaceablesLayer.UpdateAllCondition<DocumentName> | null,
-    options?: PlaceablesLayer.UpdateAllOptions<DocumentName>, // not:null (updateEmbeddedDocuments tries to set `parent` on it)
+    options?: Document.Database.UpdateManyDocumentsOperationForName<DocumentName>,
   ): Promise<Array<Document.ImplementationFor<DocumentName>>>;
 
   /**
@@ -655,7 +653,9 @@ declare namespace PlaceablesLayer {
     placeable: Document.ObjectFor<DocumentName>,
   ) => boolean;
 
-  type UpdateAllOptions<DocumentName extends DocumentNames> = Document.Database.UpdateOperationForName<DocumentName>;
+  /** @deprecated Use {@linkcode Document.Database.UpdateManyDocumentsOperationForName} directly. This type will be removed in v14. */
+  type UpdateAllOptions<DocumentName extends DocumentNames> =
+    Document.Database.UpdateManyDocumentsOperationForName<DocumentName>;
 
   /** @internal */
   type _CanvasCoordinatesFromDropOptions = NullishProps<{

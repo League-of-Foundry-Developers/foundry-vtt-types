@@ -1,15 +1,7 @@
 import { expectTypeOf, test } from "vitest";
-import type { DeepPartial, EmptyObject } from "fvtt-types/utils";
+import type { DeepPartial, EmptyObject } from "#utils";
 
 import TypeDataModel = foundry.abstract.TypeDataModel;
-
-// Import necessary as this is otherwise inaccessible.
-import type {
-  DatabaseCreateOperation,
-  DatabaseUpdateOperation,
-} from "../../../../src/foundry/common/abstract/_types.d.mts";
-
-import Document = foundry.abstract.Document;
 import fields = foundry.data.fields;
 
 /* attempting to use the example as a test */
@@ -125,16 +117,16 @@ class QuestModel extends TypeDataModel<QuestSchema, JournalEntryPage.Implementat
 
   protected override async _preCreate(
     data: TypeDataModel.ParentAssignmentType<QuestSchema, JournalEntryPage.Implementation>,
-    _options: Document.Database.PreCreateOptions<DatabaseCreateOperation>,
-    _user: User.Implementation,
+    _options: JournalEntryPage.Database.PreCreateOptions,
+    _user: User.Stored,
   ): Promise<boolean | void> {
     expectTypeOf(data.system.steps).toEqualTypeOf<string[]>();
   }
 
   protected override async _preUpdate(
     changes: DeepPartial<TypeDataModel.ParentAssignmentType<QuestSchema, JournalEntryPage.Implementation>>,
-    _options: Document.Database.PreUpdateOptions<DatabaseUpdateOperation>,
-    _user: User.Implementation,
+    _options: JournalEntryPage.Database.PreUpdateOptions,
+    _user: User.Stored,
   ): Promise<boolean | void> {
     expectTypeOf(changes.system?.steps).toEqualTypeOf<string[] | undefined>();
   }
