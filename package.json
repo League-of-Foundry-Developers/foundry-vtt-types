@@ -197,7 +197,7 @@
   },
   "peerDependencies": {
     "@typescript/native-preview": "*",
-    "typescript": "^5.4"
+    "typescript": ">=5.4"
   },
   "peerDependenciesMeta": {
     "typescript": {
