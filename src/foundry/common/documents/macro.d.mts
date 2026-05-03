@@ -88,8 +88,6 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  type: SubType;
-
   /*
    * After this point these are not really overridden methods.
    * They are here because Foundry's documents are complex and have lots of edge cases.
@@ -99,6 +97,8 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    * as there is no data that can safely construct every possible document. Finally keeping definitions
    * separate like this helps against circularities.
    */
+
+  type: SubType;
 
   /* Document overrides */
 
