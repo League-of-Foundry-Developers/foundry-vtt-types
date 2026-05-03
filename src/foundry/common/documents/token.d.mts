@@ -84,7 +84,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   ): Document.Clone<this, Save>;
 
   /**
-   * Get the snapped position of the TokenDocument.
+   * Get the snapped position of the Token.
    * @param data - The position and dimensions
    * @returns The snapped position
    */
@@ -115,14 +115,14 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   getSize(data?: TokenDocument.PartialShapelessDimensions): TokenDocument.ShapelessDimensions;
 
   /**
-   * Get the center point of the TokenDocument.
+   * Get the center point of the Token.
    * @param data - The position and dimensions
    * @returns The center point
    */
   getCenterPoint(data?: TokenDocument.Dimensions3D): Canvas.ElevatedPoint;
 
   /**
-   * Get the grid space polygon of the TokenDocument.
+   * Get the grid space polygon of the Token.
    * Returns undefined in gridless grids because there are no grid spaces.
    * @param data - The dimensions
    * @returns The grid space polygon or undefined if gridless
@@ -155,7 +155,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
 
   override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
-  override toObject(source?: boolean): TokenDocument.Source;
+  // TODO: Update with the Delta conditionality
+  override toObject(source?: boolean): BaseToken.Source;
 
   /**
    * @remarks
