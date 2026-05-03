@@ -2391,7 +2391,6 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
    *   states: {}
    * }
    * ```
-   * @internal
    */
   protected _movementContinuation: TokenDocument.MovementContinuationData;
 
