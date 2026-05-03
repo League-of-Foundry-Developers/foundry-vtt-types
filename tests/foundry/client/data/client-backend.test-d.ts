@@ -40,6 +40,7 @@ describe("ClientDatabaseBackend Tests", () => {
     expectTypeOf(cdb["_log"]("warn", "a message")).toBeVoid();
   });
 });
+
 const myBackend = new foundry.data.ClientDatabaseBackend();
 
 expectTypeOf(

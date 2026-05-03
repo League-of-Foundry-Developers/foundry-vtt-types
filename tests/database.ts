@@ -1,5 +1,3 @@
-// import Document = foundry.abstract.Document;
-
 export const getOperationName = ["GetDocumentsOperation", "BackendGetOperation"] as const;
 
 export const createOperationName = [
@@ -241,7 +239,7 @@ export const onUpdateOperationBase = {
   // `parent` and `updates` are always document-specific
 };
 
-/** Keys all operation object types post-{@linkcode foundry.abstract.DatabaseBackend.delete | DatabseBackend#delete} have. */
+/** Keys all operation object types post-{@linkcode foundry.abstract.DatabaseBackend.delete | DatabaseBackend#delete} have. */
 const postBackendDeleteOpProperties = {
   action: "delete",
   modifiedTime: Date.now(),
@@ -320,24 +318,3 @@ export const onDeleteOperationBase = {
   ...minimalOnDeleteOperationBase,
   ...deleteOpPropsNeverOmitted,
 };
-
-// type Lookup<
-//   OpName extends Document.Database.Internal.Operation,
-//   DocName extends Document.Type,
-//   Temporary extends boolean | undefined = boolean | undefined,
-// > = Document.Database.Internal.Lookup<OpName, DocName, Temporary>;
-
-// function buildCreateOperation<
-//   DocName extends Document.Type,
-//   OpName extends Document.Database.Internal.Operation,
-//   Temporary extends boolean | undefined = boolean | undefined,
-// >(
-//   documentName: DocName,
-//   operationName: OpName,
-//   context: IntentionalPartial<Lookup<OpName, DocName, Temporary>>,
-//   temporary: Temporary,
-// ): Lookup<OpName, DocName, Temporary> {
-//   const out = {};
-
-//   return out as Lookup<OpName, DocName, Temporary>
-// }
