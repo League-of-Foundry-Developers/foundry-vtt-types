@@ -34,7 +34,7 @@ expectTypeOf(combat.rollInitiative("")).toEqualTypeOf<Promise<Combat.Implementat
 expectTypeOf(combat.rollAll()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.rollNPC()).toEqualTypeOf<Promise<Combat.Implementation>>();
 expectTypeOf(combat.setInitiative("", 1)).toEqualTypeOf<Promise<void>>();
-expectTypeOf(combat.setupTurns()).toEqualTypeOf<Combat.Implementation["turns"]>();
+expectTypeOf(combat.setupTurns()).toEqualTypeOf<Combatant.Stored[]>();
 expectTypeOf(combat.debounceSetup()).toEqualTypeOf<void>();
 expectTypeOf(combat.updateCombatantActors()).toEqualTypeOf<void>();
 
