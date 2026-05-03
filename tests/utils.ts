@@ -1,5 +1,4 @@
 import ClientDocument = foundry.documents.abstract.ClientDocumentMixin;
-// import Document = foundry.abstract.Document;
 
 export * as database from "./database.ts";
 
@@ -27,9 +26,3 @@ export async function cleanupDocuments(docs: Iterable<ClientDocument.AnyMixed | 
     }
   }
 }
-
-// export function isStored<Doc extends ClientDocument.AnyMixed>(
-//   doc: Doc,
-// ): doc is Document.StoredForName<Document.NameFor<Doc>> {
-//   return doc.collection.has(doc.id ?? "");
-// }
