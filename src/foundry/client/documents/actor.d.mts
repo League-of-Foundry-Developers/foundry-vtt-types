@@ -1542,7 +1542,6 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param options - The update context.
    * @remarks Forwards to {@linkcode Token._onUpdateBaseActor | Token#_onUpdateBaseActor}
    */
-  // TODO(esheyw): verify operation is correct
   protected _updateDependentTokens(update: Actor.UpdateData, options: Actor.Database.OnUpdateOperation): void;
 
   /*
