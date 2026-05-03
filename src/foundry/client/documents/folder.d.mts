@@ -1275,7 +1275,7 @@ declare class Folder<out SubType extends Folder.SubType = Folder.SubType> extend
 
   static override fromImport(
     source: Folder.Source,
-    context?: Document.FromImportContext<Folder.Parent> | null,
+    context?: Document.FromImportContext<Folder.Parent>,
   ): Promise<Folder.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

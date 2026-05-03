@@ -1730,7 +1730,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   static override fromImport(
     source: Combat.Source,
-    context?: Document.FromImportContext<Combat.Parent> | null,
+    context?: Document.FromImportContext<Combat.Parent>,
   ): Promise<Combat.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

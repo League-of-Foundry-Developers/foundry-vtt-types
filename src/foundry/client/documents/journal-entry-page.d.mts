@@ -1419,7 +1419,7 @@ declare class JournalEntryPage<
 
   static override fromImport(
     source: JournalEntryPage.Source,
-    context?: Document.FromImportContext<JournalEntryPage.Parent> | null,
+    context?: Document.FromImportContext<JournalEntryPage.Parent>,
   ): Promise<JournalEntryPage.Implementation>;
 
   // Embedded document operations have been left out because JournalEntryPage does not have any embedded documents.

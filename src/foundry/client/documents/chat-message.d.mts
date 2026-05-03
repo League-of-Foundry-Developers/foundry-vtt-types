@@ -1442,7 +1442,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
 
   static override fromImport(
     source: ChatMessage.Source,
-    context?: Document.FromImportContext<ChatMessage.Parent> | null,
+    context?: Document.FromImportContext<ChatMessage.Parent>,
   ): Promise<ChatMessage.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

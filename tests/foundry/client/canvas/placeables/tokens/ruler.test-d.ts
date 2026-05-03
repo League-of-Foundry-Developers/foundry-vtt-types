@@ -84,7 +84,7 @@ class DrawSteelTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
     waypoint: TokenRuler.Waypoint,
     state: DrawSteelTokenRuler.State,
   ): DrawSteelTokenRuler.WaypointContext | void {
-    const context = super._getWaypointLabelContext(waypoint, state) as DrawSteelTokenRuler.WaypointContext | void;
+    const context: DrawSteelTokenRuler.WaypointContext | void = super._getWaypointLabelContext(waypoint, state);
 
     if (!this.token.inCombat) return context;
 

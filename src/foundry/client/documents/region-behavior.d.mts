@@ -1098,7 +1098,7 @@ declare class RegionBehavior<
 
   static override fromImport(
     source: RegionBehavior.Source,
-    context?: Document.FromImportContext<RegionBehavior.Parent> | null,
+    context?: Document.FromImportContext<RegionBehavior.Parent>,
   ): Promise<RegionBehavior.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

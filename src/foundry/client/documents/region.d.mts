@@ -219,7 +219,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
 
   static override fromImport(
     source: RegionDocument.Source,
-    context?: Document.FromImportContext<RegionDocument.Parent> | null,
+    context?: Document.FromImportContext<RegionDocument.Parent>,
   ): Promise<RegionDocument.Implementation>;
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 

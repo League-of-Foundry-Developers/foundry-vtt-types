@@ -1190,7 +1190,7 @@ declare class WallDocument extends BaseWall.Internal.CanvasDocument {
 
   static override fromImport(
     source: WallDocument.Source,
-    context?: Document.FromImportContext<WallDocument.Parent> | null,
+    context?: Document.FromImportContext<WallDocument.Parent>,
   ): Promise<WallDocument.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

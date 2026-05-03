@@ -1151,7 +1151,7 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
 
   static override fromImport(
     source: DrawingDocument.Source,
-    context?: Document.FromImportContext<DrawingDocument.Parent> | null,
+    context?: Document.FromImportContext<DrawingDocument.Parent>,
   ): Promise<DrawingDocument.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

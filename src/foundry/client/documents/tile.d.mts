@@ -1109,7 +1109,7 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
 
   static override fromImport(
     source: TileDocument.Source,
-    context?: Document.FromImportContext<TileDocument.Parent> | null,
+    context?: Document.FromImportContext<TileDocument.Parent>,
   ): Promise<TileDocument.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

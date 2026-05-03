@@ -1339,7 +1339,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   static override fromImport(
     source: ActorDelta.Source,
-    context?: Document.FromImportContext<ActorDelta.Parent> | null,
+    context?: Document.FromImportContext<ActorDelta.Parent>,
   ): Promise<ActorDelta.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

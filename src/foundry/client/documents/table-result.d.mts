@@ -1107,7 +1107,7 @@ declare class TableResult<out SubType extends TableResult.SubType = TableResult.
 
   static override fromImport(
     source: TableResult.Source,
-    context?: Document.FromImportContext<TableResult.Parent> | null,
+    context?: Document.FromImportContext<TableResult.Parent>,
   ): Promise<TableResult.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

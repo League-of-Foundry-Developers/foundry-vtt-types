@@ -1023,7 +1023,7 @@ declare class AmbientLightDocument extends BaseAmbientLight.Internal.CanvasDocum
 
   static override fromImport(
     source: AmbientLightDocument.Source,
-    context?: Document.FromImportContext<AmbientLightDocument.Parent> | null,
+    context?: Document.FromImportContext<AmbientLightDocument.Parent>,
   ): Promise<AmbientLightDocument.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

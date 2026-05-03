@@ -1057,7 +1057,7 @@ declare class Setting extends BaseSetting.Internal.ClientDocument {
 
   static override fromImport(
     source: Setting.Source,
-    context?: Document.FromImportContext<Setting.Parent> | null,
+    context?: Document.FromImportContext<Setting.Parent>,
   ): Promise<Setting.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

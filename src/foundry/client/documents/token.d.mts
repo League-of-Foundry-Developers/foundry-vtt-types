@@ -2981,7 +2981,7 @@ declare class TokenDocument extends BaseToken.Internal.CanvasDocument {
 
   static override fromImport(
     source: TokenDocument.Source,
-    context?: Document.FromImportContext<TokenDocument.Parent> | null,
+    context?: Document.FromImportContext<TokenDocument.Parent>,
   ): Promise<TokenDocument.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

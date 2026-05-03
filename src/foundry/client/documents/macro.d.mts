@@ -1219,7 +1219,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
 
   static override fromImport(
     source: Macro.Source,
-    context?: Document.FromImportContext<Macro.Parent> | null,
+    context?: Document.FromImportContext<Macro.Parent>,
   ): Promise<Macro.Implementation>;
 
   #Macro: true;

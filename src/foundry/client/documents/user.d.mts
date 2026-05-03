@@ -1371,7 +1371,7 @@ declare class User extends BaseUser.Internal.ClientDocument {
 
   static override fromImport(
     source: User.Source,
-    context?: Document.FromImportContext<User.Parent> | null,
+    context?: Document.FromImportContext<User.Parent>,
   ): Promise<User.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

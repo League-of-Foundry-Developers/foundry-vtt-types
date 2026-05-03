@@ -1147,7 +1147,7 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
 
   static override fromImport(
     source: Adventure.Source,
-    context?: Document.FromImportContext<Adventure.Parent> | null,
+    context?: Document.FromImportContext<Adventure.Parent>,
   ): Promise<Adventure.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

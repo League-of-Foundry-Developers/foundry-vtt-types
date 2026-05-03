@@ -1611,7 +1611,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
 
   static override fromImport(
     source: Actor.Source,
-    context?: Document.FromImportContext<Actor.Parent> | null,
+    context?: Document.FromImportContext<Actor.Parent>,
   ): Promise<Actor.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

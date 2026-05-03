@@ -1348,7 +1348,7 @@ declare class Playlist extends BasePlaylist.Internal.ClientDocument {
 
   static override fromImport(
     source: Playlist.Source,
-    context?: Document.FromImportContext<Playlist.Parent> | null,
+    context?: Document.FromImportContext<Playlist.Parent>,
   ): Promise<Playlist.Implementation>;
 
   #Playlist: true;

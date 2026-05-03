@@ -1094,7 +1094,7 @@ declare class NoteDocument extends BaseNote.Internal.CanvasDocument {
 
   static override fromImport(
     source: NoteDocument.Source,
-    context?: Document.FromImportContext<NoteDocument.Parent> | null,
+    context?: Document.FromImportContext<NoteDocument.Parent>,
   ): Promise<NoteDocument.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
