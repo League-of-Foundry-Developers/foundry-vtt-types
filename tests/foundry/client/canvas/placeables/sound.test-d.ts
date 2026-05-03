@@ -11,6 +11,7 @@ expectTypeOf(AmbientSound.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
 >();
 
 declare const doc: AmbientSoundDocument.Stored;
+declare const scene: Scene.Stored;
 const sound = new CONFIG.AmbientSound.objectClass(doc);
 
 expectTypeOf(sound.controlIcon).toEqualTypeOf<ControlIcon | null>();
@@ -70,7 +71,7 @@ expectTypeOf(sound["_refreshElevation"]()).toBeVoid();
 expectTypeOf(
   sound["_onCreate"](
     doc.toObject(),
-    { action: "create", modifiedTime: 7, render: true, renderSheet: false, parent: null },
+    { action: "create", parent: scene, modifiedTime: 7, render: true, renderSheet: false },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
@@ -79,13 +80,13 @@ expectTypeOf(
   sound["_onUpdate"](
     // partial source data
     { easing: true, path: "path/to/sound.ogg", repeat: true, flags: { core: { sheetLock: true } } },
-    { action: "update", modifiedTime: 7, render: true, diff: true, recursive: true, parent: null },
+    { action: "update", parent: scene, modifiedTime: 7, render: true, diff: true, recursive: true },
     "XXXXXSomeIDXXXXX",
   ),
 ).toBeVoid();
 
 expectTypeOf(
-  sound["_onDelete"]({ action: "delete", modifiedTime: 7, render: true, parent: null }, "XXXXXSomeIDXXXXX"),
+  sound["_onDelete"]({ action: "delete", parent: scene, modifiedTime: 7, render: true }, "XXXXXSomeIDXXXXX"),
 ).toBeVoid();
 
 expectTypeOf(sound.initializeSoundSource()).toBeVoid();
