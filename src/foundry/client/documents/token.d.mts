@@ -1826,10 +1826,15 @@ declare namespace TokenDocument {
     active: boolean;
   }
 
+  /**
+   * {@linkcode TokenDocument.getEmbeddedCollection | TokenDocument#getEmbeddedCollection} adds cases for these extra valid values if the
+   * token is unlinked. They are specifically enumerated, with no support for e.g passing `"actors"` in place of `"Actor"`, like you can
+   * with {@linkcode Document.getEmbeddedCollection | Document#getEmbeddedCollection}.
+   */
   type GetEmbeddedCollectionName = Embedded.CollectionName | "Actor" | "Item" | "ActiveEffect";
 
   type GetEmbeddedCollectionResult<Name extends GetEmbeddedCollectionName> =
-    | (Name extends Document.Type ? globalThis.Collection<Document.ImplementationFor<Name>> : never)
+    | (Name extends Document.Type ? foundry.utils.Collection<Document.ImplementationFor<Name>> : never)
     | (Name extends Embedded.CollectionName ? Embedded.CollectionFor<Name> : never);
 
   type MovementState = "completed" | "paused" | "pending" | "stopped";
