@@ -25,7 +25,6 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    * on the server to manage document validation and storage.
    *
    * You should use {@linkcode Macro.implementation | new Macro.implementation(...)} instead which will give you
-   * You should use {@linkcode Macro.implementation | new Macro.implementation(...)} instead which will give you
    * a system specific implementation of `Macro`.
    */
   constructor(data: BaseMacro.CreateData, context?: BaseMacro.ConstructionContext);
