@@ -1148,6 +1148,7 @@ declare namespace ActiveEffect {
 
   type DurationType = "seconds" | "turns" | "none";
 
+  // TODO: figure out what reference should finish the following comment
   // Must be kept in sync with
   interface Duration extends DurationData {
     /** The duration type, either "seconds", "turns", or "none" */
@@ -1169,6 +1170,7 @@ declare namespace ActiveEffect {
     _combatTime?: number;
   }
 
+  /** Despite Foundry's typing, only `type` is actually guaranteed to be in the return. */
   interface PrepareDurationReturn extends RequiredProps<IntentionalPartial<Duration>, "type"> {}
 
   interface InitialDurationData {
@@ -1203,7 +1205,7 @@ declare namespace ActiveEffect {
 
     /**
      * The modification mode with which the change is applied
-     * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
+     * @defaultValue {@linkcode CONST.ACTIVE_EFFECT_MODES.ADD}
      */
     mode: CONST.ACTIVE_EFFECT_MODES;
 
@@ -1214,7 +1216,7 @@ declare namespace ActiveEffect {
     priority: number | null | undefined;
   }
 
-  type ApplyFieldReturn<Field extends fields.DataField.Any | null | undefined> = Field extends fields.DataField.Any
+  type ApplyFieldReturn<Field extends fields.DataField.Any | undefined> = Field extends fields.DataField.Any
     ? fields.DataField.InitializedTypeFor<Field>
     : unknown;
 
@@ -1290,6 +1292,8 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   /**
    * Retrieve the Document that this ActiveEffect targets for modification.
+   * @privateRemarks This could be reasonably narrowed to `Actor.Implementation | null` for how core uses them, but Foundry types it as just
+   * `Document|null`, and some systems make AEs apply to Items directly, so it's been left as-is.
    */
   get target(): Document.Any | null;
 
@@ -1319,7 +1323,10 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    */
   protected _requiresDurationUpdate(): boolean;
 
-  /** @internal */
+  /**
+   * Compute derived data related to active effect duration
+   * @internal
+   */
   protected _prepareDuration(): ActiveEffect.PrepareDurationReturn;
 
   /**
@@ -1328,18 +1335,18 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param turn   - The turn number
    * @param nTurns - The maximum number of turns in the encounter
    * @returns The decimal representation
-   * @private
+   * @internal
    */
-  protected _getCombatTime(round: number, turn: number, nTurns?: number): number;
+  _getCombatTime(round: number, turn: number, nTurns?: number): number;
 
   /**
    * Format a number of rounds and turns into a human-readable duration label
    * @param rounds - The number of rounds
    * @param turns  - The number of turns
    * @returns The formatted label
-   * @private
+   * @internal
    */
-  protected _getDurationLabel(rounds: number, turns: number): string;
+  _getDurationLabel(rounds: number, turns: number): string;
 
   /**
    * Describe whether the ActiveEffect has a temporary duration based on combat turns or rounds.
@@ -1362,7 +1369,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    *
    * @remarks `field` default provided by `??= model.schema.getField(change.key)`
    */
-  static applyField<Field extends fields.DataField.Any | null | undefined = undefined>(
+  static applyField<Field extends fields.DataField.Any | undefined = undefined>(
     model: DataModel.Any,
     change: ActiveEffect.ChangeData,
     field?: Field,
@@ -1499,7 +1506,28 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    */
   static getInitialDuration(): ActiveEffect.GetInitialDurationReturn;
 
-  // _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseActiveEffect.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preCreate(
+  //   data: ActiveEffect.CreateData,
+  //   options: ActiveEffect.Database.PreCreateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected override _onCreate(
+  //   data: ActiveEffect.CreateData,
+  //   options: ActiveEffect.Database.OnCreateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onUpdate(
+  //   changed: ActiveEffect.UpdateData,
+  //   options: ActiveEffect.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: ActiveEffect.Database.OnDeleteOptions, userId: string): void;
 
   /**
    * Display changes to active effects as scrolling Token status text.

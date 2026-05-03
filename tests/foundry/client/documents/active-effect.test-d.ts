@@ -39,7 +39,7 @@ declare const sf: foundry.data.fields.StringField;
 declare const nf: foundry.data.fields.NumberField;
 declare const edf: foundry.data.fields.EmbeddedDataField<typeof foundry.data.LightData>;
 expectTypeOf(ActiveEffect.applyField(model, change)).toEqualTypeOf<unknown>();
-expectTypeOf(ActiveEffect.applyField(model, change, null)).toEqualTypeOf<unknown>();
+expectTypeOf(ActiveEffect.applyField(model, change, undefined)).toEqualTypeOf<unknown>();
 expectTypeOf(ActiveEffect.applyField(model, change, sf)).toEqualTypeOf<string | undefined>();
 expectTypeOf(ActiveEffect.applyField(model, change, nf)).toEqualTypeOf<number | undefined | null>();
 expectTypeOf(ActiveEffect.applyField(model, change, edf)).toEqualTypeOf<foundry.data.LightData>();
@@ -179,10 +179,10 @@ expectTypeOf(effect.updateDuration()).toEqualTypeOf<ActiveEffect.Duration>();
 expectTypeOf(effect["_requiresDurationUpdate"]()).toBeBoolean();
 expectTypeOf(effect["_prepareDuration"]()).toEqualTypeOf<ActiveEffect.PrepareDurationReturn>();
 
-expectTypeOf(effect["_getCombatTime"](0, 3)).toBeNumber();
-expectTypeOf(effect["_getCombatTime"](0, 7, 3)).toBeNumber();
+expectTypeOf(effect._getCombatTime(0, 3)).toBeNumber();
+expectTypeOf(effect._getCombatTime(0, 7, 3)).toBeNumber();
 
-expectTypeOf(effect["_getDurationLabel"](2, 4)).toBeString();
+expectTypeOf(effect._getDurationLabel(2, 4)).toBeString();
 
 expectTypeOf(effect.isTemporary).toEqualTypeOf<boolean>();
 // @ts-expect-error Only getter, no setter
