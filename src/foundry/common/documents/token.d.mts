@@ -76,7 +76,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    */
   _prepareDeltaUpdate(changes?: BaseToken.UpdateData, options?: DataModel.UpdateOptions): void;
 
-  override updateSource(changes?: BaseToken.UpdateData, options?: DataModel.UpdateOptions): BaseToken.UpdateData;
+  override updateSource(changes: BaseToken.UpdateData, options?: DataModel.UpdateOptions): BaseToken.UpdateData;
 
   override clone<Save extends boolean | undefined = false>(
     data?: BaseToken.CreateData,
@@ -136,7 +136,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @param data - The position and dimensions
    * @returns The offsets of occupied grid spaces
    */
-  getOccupiedGridSpaceOffsets(data?: TokenDocument.Dimensions2D): foundry.grid.BaseGrid.Offset2D[];
+  getOccupiedGridSpaceOffsets(data?: TokenDocument.Dimensions2D): BaseGrid.Offset2D[];
 
   /**
    * Get the hexagonal offsets given the type, width, and height.
