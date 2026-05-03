@@ -1242,9 +1242,11 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   // TODO: accurately type changes and return type
   override updateSource(
-    // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });` and `super.updateSource`.
-    // However it's likely the overlap between these two types is pretty high.
-    changes: ActorDelta.Source,
+    // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });`,
+    // `this.syntheticActor.updateSource`, and `super.updateSource`. However it's likely the overlap between these types is pretty high.
+    // Note(esheyw): `Actor.UpdateData` has been chosen as it is actually the most restrictive relevant type;
+    // `ActorDelta`s require no data for construction.
+    changes: Actor.UpdateData,
     options?: DataModel.UpdateOptions,
   ): object;
 
