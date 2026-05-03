@@ -12,7 +12,6 @@ expectTypeOf(AmbientSound.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
 
 declare const doc: AmbientSoundDocument.Stored;
 declare const scene: Scene.Stored;
-
 const sound = new CONFIG.AmbientSound.objectClass(doc);
 
 expectTypeOf(sound.controlIcon).toEqualTypeOf<ControlIcon | null>();

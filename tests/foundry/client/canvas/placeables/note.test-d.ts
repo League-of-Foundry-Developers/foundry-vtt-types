@@ -21,7 +21,6 @@ expectTypeOf(Note.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<
 
 declare const doc: NoteDocument.Stored;
 declare const scene: Scene.Stored;
-
 const note = new CONFIG.Note.objectClass(doc);
 
 expectTypeOf(note.controlIcon).toEqualTypeOf<ControlIcon | null>();
