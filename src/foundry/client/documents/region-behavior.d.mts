@@ -261,7 +261,7 @@ declare namespace RegionBehavior {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode RegionBehavior}. This is the source of truth for how an RegionBehavior document
+   * The schema for {@linkcode RegionBehavior}. This is the source of truth for how a `RegionBehavior` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode RegionBehavior}. For example

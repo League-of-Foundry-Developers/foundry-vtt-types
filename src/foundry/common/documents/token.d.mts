@@ -2,8 +2,8 @@ import type { AnyMutableObject, DeepReadonly, MaybeArray, OverlapsWith } from "#
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { DataField, SchemaField } from "#common/data/fields.d.mts";
 import type { fields } from "../data/_module.d.mts";
-import type { BaseGrid } from "#common/grid/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
+import type { BaseGrid } from "#common/grid/_module.d.mts";
 
 /**
  * The base Token model definition which defines common behavior of an Token document between both client and server.
@@ -96,7 +96,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @returns The top-left grid offset
    * @internal
    */
-  protected _positionToGridOffset(data?: TokenDocument.Dimensions3D): BaseGrid.Offset3D;
+  _positionToGridOffset(data?: TokenDocument.Dimensions3D): BaseGrid.Offset3D;
 
   /**
    * Get the position of the Token from the top-left grid offset.
@@ -105,10 +105,7 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
    * @returns The snapped position
    * @internal
    */
-  protected _gridOffsetToPosition(
-    offset: BaseGrid.Offset3D,
-    data?: TokenDocument.PartialDimensions,
-  ): Canvas.ElevatedPoint;
+  _gridOffsetToPosition(offset: BaseGrid.Offset3D, data?: TokenDocument.PartialDimensions): Canvas.ElevatedPoint;
 
   /**
    * Get the width and height of the Token in pixels.
@@ -180,7 +177,8 @@ declare abstract class BaseToken extends Document<"Token", BaseToken.Schema, any
   static override shimData(data: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
-   * @deprecated "TokenDocument#overlayEffect is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated Actor" (since v12, until v14)
+   * @deprecated "TokenDocument#overlayEffect is deprecated in favor of using {@linkcode ActiveEffect} documents on the associated Actor"
+   * (since v12, until v14)
    */
   get effects(): [];
 

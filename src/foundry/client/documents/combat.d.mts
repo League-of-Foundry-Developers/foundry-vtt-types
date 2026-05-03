@@ -342,7 +342,7 @@ declare namespace Combat {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Combat}. This is the source of truth for how an Combat document
+   * The schema for {@linkcode Combat}. This is the source of truth for how a `Combat` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Combat}. For example

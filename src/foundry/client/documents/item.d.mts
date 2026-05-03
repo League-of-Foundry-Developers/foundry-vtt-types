@@ -334,7 +334,7 @@ declare namespace Item {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Item}. This is the source of truth for how an Item document
+   * The schema for {@linkcode Item}. This is the source of truth for how an `Item` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Item}. For example

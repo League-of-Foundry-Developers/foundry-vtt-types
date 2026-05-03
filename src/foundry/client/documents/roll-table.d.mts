@@ -264,7 +264,7 @@ declare namespace RollTable {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode RollTable}. This is the source of truth for how an RollTable document
+   * The schema for {@linkcode RollTable}. This is the source of truth for how a `RollTable` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode RollTable}. For example

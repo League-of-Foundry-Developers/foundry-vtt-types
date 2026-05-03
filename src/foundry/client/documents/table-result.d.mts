@@ -233,7 +233,7 @@ declare namespace TableResult {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode TableResult}. This is the source of truth for how an TableResult document
+   * The schema for {@linkcode TableResult}. This is the source of truth for how a `TableResult` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode TableResult}. For example

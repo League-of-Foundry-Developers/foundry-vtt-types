@@ -238,7 +238,7 @@ declare namespace Macro {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Macro}. This is the source of truth for how an Macro document
+   * The schema for {@linkcode Macro}. This is the source of truth for how a `Macro` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Macro}. For example

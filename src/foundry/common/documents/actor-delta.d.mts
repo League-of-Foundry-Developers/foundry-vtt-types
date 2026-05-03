@@ -101,7 +101,10 @@ declare abstract class BaseActorDelta<
   _prepareDeltaUpdate(changes: BaseActorDelta.UpdateData, options: DataModel.UpdateOptions): void;
 
   /** @remarks Calls {@linkcode _prepareDeltaUpdate} with both args prior to returning a call to `super` */
-  override updateSource(changes?: BaseActorDelta.UpdateData, options?: DataModel.UpdateOptions): ActorDelta.UpdateData;
+  override updateSource(
+    changes: BaseActorDelta.UpdateData,
+    options?: DataModel.UpdateOptions,
+  ): BaseActorDelta.UpdateData;
 
   /**
    * @remarks Strips properties from optional (`required: false`) fields, with currently-nullish values, from the object before returning

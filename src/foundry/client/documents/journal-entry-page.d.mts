@@ -253,7 +253,7 @@ declare namespace JournalEntryPage {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode JournalEntryPage}. This is the source of truth for how an JournalEntryPage document
+   * The schema for {@linkcode JournalEntryPage}. This is the source of truth for how a `JournalEntryPage` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode JournalEntryPage}. For example

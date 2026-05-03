@@ -466,7 +466,7 @@ declare namespace Scene {
   }
 
   /**
-   * The schema for {@linkcode Scene}. This is the source of truth for how an Scene document
+   * The schema for {@linkcode Scene}. This is the source of truth for how a `Scene` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Scene}. For example
@@ -1932,7 +1932,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * @param tokens - The Tokens whose regions should be updates
    * @returns The array of Tokens whose regions changed
    */
-  updateTokenRegions(tokens?: Iterable<TokenDocument.Implementation>): Promise<TokenDocument.Implementation[]>;
+  updateTokenRegions(tokens?: Iterable<TokenDocument.Implementation>): Promise<TokenDocument.Stored[]>;
 
   // For type simplicity the following real override(s) are commented out.
   // These methods historically have been the source of a large amount of computation from tsc.

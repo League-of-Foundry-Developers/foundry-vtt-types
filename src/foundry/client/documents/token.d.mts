@@ -833,7 +833,7 @@ declare namespace TokenDocument {
   interface CompleteMovementWaypoint extends Omit<MeasuredMovementWaypoint, "userId" | "movementId" | "cost"> {}
 
   /**
-   * The schema for {@linkcode TokenDocument}. This is the source of truth for how an TokenDocument document
+   * The schema for {@linkcode TokenDocument}. This is the source of truth for how a `TokenDocument` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode TokenDocument}. For example

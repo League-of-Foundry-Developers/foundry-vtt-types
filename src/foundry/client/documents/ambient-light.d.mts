@@ -172,7 +172,7 @@ declare namespace AmbientLightDocument {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode AmbientLightDocument}. This is the source of truth for how an AmbientLightDocument document
+   * The schema for {@linkcode AmbientLightDocument}. This is the source of truth for how an `AmbientLightDocument` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode AmbientLightDocument}. For example

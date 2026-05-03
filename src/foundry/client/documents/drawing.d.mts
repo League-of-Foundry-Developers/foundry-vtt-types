@@ -182,7 +182,7 @@ declare namespace DrawingDocument {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode DrawingDocument}. This is the source of truth for how an DrawingDocument document
+   * The schema for {@linkcode DrawingDocument}. This is the source of truth for how a `DrawingDocument` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode DrawingDocument}. For example

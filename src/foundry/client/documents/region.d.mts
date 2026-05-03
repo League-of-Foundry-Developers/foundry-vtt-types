@@ -545,7 +545,7 @@ declare namespace RegionDocument {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode RegionDocument}. This is the source of truth for how a Region document
+   * The schema for {@linkcode RegionDocument}. This is the source of truth for how a `Region` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode RegionDocument}. For example

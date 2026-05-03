@@ -237,7 +237,7 @@ declare namespace CombatantGroup {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode CombatantGroup}. This is the source of truth for how an CombatantGroup document
+   * The schema for {@linkcode CombatantGroup}. This is the source of truth for how a `CombatantGroup` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode CombatantGroup}. For example

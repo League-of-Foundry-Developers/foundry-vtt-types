@@ -249,7 +249,7 @@ declare namespace ChatMessage {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode ChatMessage}. This is the source of truth for how an ChatMessage document
+   * The schema for {@linkcode ChatMessage}. This is the source of truth for how a `ChatMessage` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode ChatMessage}. For example
@@ -1253,7 +1253,7 @@ declare class ChatMessage<out SubType extends ChatMessage.SubType = ChatMessage.
 
   /**
    * Test whether the chat message contains a dice roll
-   * @remarks Core's implementation checks for `this.rolls.length > 0`
+   * @remarks Core's implementation checks for `this.rolls.length > 0`.
    */
   get isRoll(): boolean;
 

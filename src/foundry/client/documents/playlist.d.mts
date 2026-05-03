@@ -272,7 +272,7 @@ declare namespace Playlist {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Playlist}. This is the source of truth for how an Playlist document
+   * The schema for {@linkcode Playlist}. This is the source of truth for how a `Playlist` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Playlist}. For example
