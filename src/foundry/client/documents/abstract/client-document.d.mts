@@ -473,8 +473,8 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @returns A Promise which resolves to the created Document, or null if the dialog was closed.
    *
    * @remarks
-   * @throws If the passed {@linkcode Document.CreateDialogOptions.types} whitelist does not contain any valid, non-{@linkcode CONST.BASE_DOCUMENT_TYPE}
-   * types.
+   * @throws If the passed {@linkcode Document.CreateDialogOptions.types} whitelist does not contain any valid,
+   * non-{@linkcode CONST.BASE_DOCUMENT_TYPE} types.
    *
    * @privateRemarks `| undefined` is included in the return types of the specific document overrides due to {@linkcode Document.create}
    * possibly being `undefined` if creation is cancelled by preCreate methods or hooks.
