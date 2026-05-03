@@ -1279,8 +1279,8 @@ declare namespace Cards {
   }
 
   /**
-   * @remarks {@link Cards.draw | `Cards#draw`} spreads this into an object, minus `how`, with the `action` preset to `"draw"`,
-   * which wouldn't make sense to change, then passes that to {@link Cards.pass | `Cards#pass`}
+   * @remarks {@linkcode Cards.draw | Cards#draw} spreads this into an object, minus `how`, with the `action` preset to `"draw"`,
+   * which wouldn't make sense to change, then passes that to {@linkcode Cards.pass | Cards#pass}
    * @privateRemarks `action` omitted as it's already provided.
    */
   interface DrawOptions extends _HowOption, Omit<PassOptions, "action"> {

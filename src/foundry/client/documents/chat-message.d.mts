@@ -1161,7 +1161,7 @@ declare namespace ChatMessage {
     /** @remarks Always `game.user` */
     user: User.Stored;
 
-    /** @remarks The message's {@link ChatMessage.author | `author`} */
+    /** @remarks The message's {@linkcode ChatMessage.author | author} */
     author: User.Stored;
 
     /** @remarks The message's {@linkcode ChatMessage.alias | alias} */
