@@ -3,6 +3,14 @@ import { afterAll, describe, expectTypeOf, test } from "vitest";
 import CompendiumFolderCollection = foundry.documents.collections.CompendiumFolderCollection;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
 
+declare const folderCreateDataArray: Folder.CreateData[];
+declare const actorFolderStored: Folder.Stored<"Actor">;
+declare const onFolderCreateOperation: Folder.Database.OnCreateOperation;
+declare const onFolderUpdateOperation: Folder.Database.OnUpdateOperation;
+declare const onFolderDeleteOperation: Folder.Database.OnDeleteOperation;
+declare const onSceneUpdateOperation: Scene.Database.OnUpdateOperation;
+declare const user: User.Stored;
+
 describe("CompendiumFolderCollection Tests", async () => {
   const compendiaToCleanUp = new Set<CompendiumCollection.Any>();
   const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
@@ -111,7 +119,38 @@ describe("CompendiumFolderCollection Tests", async () => {
     expectTypeOf(apf.delete("ID")).toBeBoolean();
   });
 
-  // TODO: updateAll and _onModifyContents tests on the db-ops branch
+  test("updateAll", () => {
+    expectTypeOf(apf.updateAll({ sorting: "m" })).toEqualTypeOf<Promise<Folder.Stored[]>>();
+    expectTypeOf(apf.updateAll((folder) => ({ name: folder.name + " 2" }))).toEqualTypeOf<Promise<Folder.Stored[]>>();
+    expectTypeOf(apf.updateAll({ sorting: "a" }, (folder) => folder.visible)).toEqualTypeOf<Promise<Folder.Stored[]>>();
+    expectTypeOf(apf.updateAll((folder) => ({ name: folder.name + " 2" }), null)).toEqualTypeOf<
+      Promise<Folder.Stored[]>
+    >();
+    expectTypeOf(apf.updateAll((folder) => ({ name: folder.name + " 2" }), null, {})).toEqualTypeOf<
+      Promise<Folder.Stored[]>
+    >();
+    expectTypeOf(
+      apf.updateAll((folder) => ({ name: folder.name + " 2" }), null, {
+        diff: false,
+        recursive: false,
+      }),
+    ).toEqualTypeOf<Promise<Folder.Stored[]>>();
+  });
+
+  // There is an override, but we don't type it because it doesn't change anything, so this should be identical to `DocumentCollection`
+  test("_onModifyContents", () => {
+    // @ts-expect-error wrong document's operation type
+    apf._onModifyContents("update", [actorFolderStored], folderCreateDataArray, onSceneUpdateOperation);
+    expectTypeOf(
+      apf._onModifyContents("create", [actorFolderStored], folderCreateDataArray, onFolderCreateOperation, user),
+    ).toBeVoid();
+    expectTypeOf(
+      apf._onModifyContents("update", [actorFolderStored], folderCreateDataArray, onFolderUpdateOperation, user),
+    ).toBeVoid();
+    expectTypeOf(
+      apf._onModifyContents("delete", [actorFolderStored], ["ID"], onFolderDeleteOperation, user),
+    ).toBeVoid();
+  });
 
   afterAll(async () => {
     for (const doc of docsToCleanUp) await doc.delete();
