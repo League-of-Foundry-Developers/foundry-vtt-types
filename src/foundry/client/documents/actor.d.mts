@@ -1,10 +1,11 @@
-import type { AnyObject, InexactPartial, NullishProps, MaybeArray, Merge, Identity } from "#utils";
+import type { AnyObject, InexactPartial, MaybeArray, Merge, Identity } from "#utils";
 import type { ConfiguredActor } from "#configuration";
 import type { fields, PrototypeToken } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseActiveEffect, BaseActor, BaseFolder, BaseItem } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { IterableWeakMap, IterableWeakSet } from "#common/utils/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -350,7 +351,7 @@ declare namespace Actor {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Actor}. This is the source of truth for how an Actor document
+   * The schema for {@linkcode Actor}. This is the source of truth for how an `Actor` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Actor}. For example
@@ -1064,6 +1065,60 @@ declare namespace Actor {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode Actor.fromDropData} receives */
+  interface DropData extends Document.Internal.DropData<Name> {}
+
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Actor.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode Actor.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode Actor.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Actor.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Actor.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Actor.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Actor.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Actor.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Actor.deleteDialog | Actor#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Actor.Stored,
+    PassedConfig
+  >;
+
   type PreCreateDescendantDocumentsArgs =
     | Document.Internal.PreCreateDescendantDocumentsArgs<
         Actor.Stored,
@@ -1112,68 +1167,58 @@ declare namespace Actor {
       >
     | Item.OnDeleteDescendantDocumentsArgs;
 
-  interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
-
   /* ***********************************************
    *             ACTOR-SPECIFIC TYPES              *
    *************************************************/
 
   interface GetDefaultArtworkReturn {
+    /** @defaultValue {@linkcode Actor.DEFAULT_ICON } */
     img: string;
+
     texture: GetDefaultArtworkTextureReturn;
   }
 
   interface GetDefaultArtworkTextureReturn {
+    /** @defaultValue {@linkcode Actor.DEFAULT_ICON } */
     src: string;
   }
 
   type ItemTypes = {
     // Note(LukeAbby): `keyof Item._SystemMap` is used to preserve optional modifiers
-    [SubType in keyof Item._SystemMap]: Array<Item.OfType<SubType>>;
+    [SubType in keyof Item._SystemMap]: Array<Item.Stored<SubType>>;
   };
 
   type GetActiveTokensReturn<Document extends boolean | undefined> = Document extends true
-    ? TokenDocument.Implementation[]
+    ? TokenDocument.Stored[]
     : Token.Implementation[];
 
   /** @internal */
-  type _RollInitiativeOptions = NullishProps<{
+  interface _RollInitiativeOptions {
     /**
-     * Create new Combatant entries for Tokens associated with this actor.
+     * Create new `Combatant` entries for `Token`s associated with this actor.
      * @defaultValue `false`
      */
     createCombatants: boolean;
 
     /**
-     * Re-roll the initiative for this Actor if it has already been rolled.
+     * Re-roll the initiative for this `Actor` if it has already been rolled.
      * @defaultValue `false`
      */
     rerollInitiative: boolean;
-  }> &
-    InexactPartial<{
-      /**
-       * Additional options passed to the Combat#rollInitiative method.
-       * @defaultValue `{}`
-       * @remarks Can't be `null` as it only has a parameter default
-       */
-      initiativeOptions: Combat.InitiativeOptions;
-    }>;
 
-  interface RollInitiativeOptions extends _RollInitiativeOptions {}
+    /**
+     * Additional options passed to the {@linkcode Combat.rollInitiative | Combat#rollInitiative} method.
+     * @defaultValue `{}`
+     */
+    initiativeOptions: Combat.InitiativeOptions;
+  }
+
+  interface RollInitiativeOptions extends InexactPartial<_RollInitiativeOptions> {}
 
   /** @internal */
-  type _ToggleStatusEffectOptions = NullishProps<{
+  interface _ToggleStatusEffectOptions {
     /**
      * Force a certain active state for the effect
-     * @defaultValue `undefined`
-     * @remarks `null` is treated as `false`, `undefined` or omitted is treated as `true` *if no status
-     * with the given ID already exists*, otherwise also as `false`
      */
     active: boolean;
 
@@ -1182,39 +1227,28 @@ declare namespace Actor {
      * @defaultValue `false`
      */
     overlay: boolean;
-  }>;
+  }
 
-  interface ToggleStatusEffectOptions extends _ToggleStatusEffectOptions {}
-
-  /** @internal */
-  type _RequestTokenImagesOptions = NullishProps<{
-    /**
-     * The name of the compendium the actor is in.
-     * @defaultValue `null`
-     * @remarks The default comes from the `"requestTokenImages"` socket handler in `dist/database/documents/actor.mjs` where it's the parameter default
-     */
-    pack: string;
-  }>;
-
-  interface RequestTokenImagesOptions extends _RequestTokenImagesOptions {}
+  interface ToggleStatusEffectOptions extends InexactPartial<_ToggleStatusEffectOptions> {}
 
   /** @internal */
-  type _GetDependentTokensOptions = NullishProps<{
+  interface _GetDependentTokensOptions {
     /**
      * A single Scene, or list of Scenes to filter by.
      * @defaultValue `Array.from(this._dependentTokens.keys())`
      */
-    scenes: Scene.Implementation | Scene.Implementation[];
+    scenes: MaybeArray<Scene.Implementation>;
 
     /**
      * Limit the results to tokens that are linked to the actor.
      * @defaultValue `false`
      */
     linked: boolean;
-  }>;
+  }
 
-  interface GetDependentTokensOptions extends _GetDependentTokensOptions {}
+  interface GetDependentTokensOptions extends InexactPartial<_GetDependentTokensOptions> {}
 
+  /** The interface passed to the {@linkcode Hooks.StaticCallbacks.modifyTokenAttribute | modifyTokenAttribute} hook. */
   interface ModifyTokenAttributeData {
     /** The attribute path */
     attribute: string;
@@ -1253,7 +1287,8 @@ declare namespace Actor {
  * @see {@linkcode Actors}            The world-level collection of Actor documents
  * @see {@linkcode ActorSheet}     The Actor configuration application
  *
- * @example <caption>Create a new Actor</caption>
+ * @example
+ * Create a new Actor
  * ```typescript
  * let actor = await Actor.create({
  *   name: "New Test Actor",
@@ -1262,7 +1297,8 @@ declare namespace Actor {
  * });
  * ```
  *
- * @example <caption>Retrieve an existing Actor</caption>
+ * @example
+ * Retrieve an existing Actor
  * ```typescript
  * let actor = game.actors.get(actorId);
  * ```
@@ -1280,12 +1316,10 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   /**
    * Maintain a list of Token Documents that represent this Actor, stored by Scene. This list may include unpersisted
    * Token Documents (along with possibly unpersisted parent Scenes), including those with a null `_id`.
+   * @internal
    * @remarks `defineProperty`'d at construction with no options specified
    */
-  protected _dependentTokens?: foundry.utils.IterableWeakMap<
-    Scene.Implementation,
-    foundry.utils.IterableWeakSet<TokenDocument.Implementation>
-  >;
+  _dependentTokens: IterableWeakMap<Scene.Implementation, IterableWeakSet<TokenDocument.Implementation>>;
 
   /** @remarks `||=`s the `prototypeToken`'s `name` and `texture.src` fields with the main actor's values */
   protected override _initializeSource(
@@ -1329,12 +1363,12 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   /**
    * Retrieve the list of ActiveEffects that are currently applied to this Actor.
    */
-  get appliedEffects(): ActiveEffect.Implementation[];
+  get appliedEffects(): ActiveEffect.Stored[];
 
   /**
    * An array of ActiveEffect instances which are present on the Actor which have a limited duration.
    */
-  get temporaryEffects(): ActiveEffect.Implementation[];
+  get temporaryEffects(): ActiveEffect.Stored[];
 
   /**
    * Return a reference to the TokenDocument which owns this Actor as a synthetic override
@@ -1346,8 +1380,11 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    */
   get inCombat(): boolean;
 
+  /**
+   * @remarks If cloning without saving, but while keeping ID, copies dependent tokens over.
+   */
   override clone<Save extends boolean | undefined = false>(
-    data?: Actor.CreateData,
+    data?: Actor.UpdateData,
     context?: Document.CloneContext<Save>,
   ): Document.Clone<this, Save>;
 
@@ -1363,8 +1400,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    *
    * @param linked   - Limit results to Tokens which are linked to the Actor. Otherwise return all
    *                   Tokens even those which are not linked. (default: `false`)
-   * @param document - Return the Document instance rather than the PlaceableObject
-   *                   (default: `false`)
+   * @param document - Return the Document instance rather than the PlaceableObject (default: `false`)
    * @returns An array of Token instances in the current Scene which reference this Actor.
    */
   getActiveTokens<ReturnDocument extends boolean | undefined = false>(
@@ -1378,7 +1414,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * If CONFIG.ActiveEffect.legacyTransferral is false, this will also return all the transferred ActiveEffects on any
    * of the Actor's owned Items.
    */
-  allApplicableEffects(): Generator<ActiveEffect.Implementation, void, undefined>;
+  allApplicableEffects(): Generator<ActiveEffect.Stored, void, undefined>;
 
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Actor
@@ -1390,6 +1426,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * Create a new TokenData object which can be used to create a Token representation of the Actor.
    * @param data - Additional data, such as x, y, rotation, etc. for the created token data (default: `{}`)
    * @returns The created TokenData instance
+   * @privateRemarks `TokenDocument.CreateData` has no required properties and so needs no additional `Partial`ing.
    */
   getTokenDocument(
     data?: TokenDocument.CreateData,
@@ -1409,15 +1446,9 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param isDelta   - Whether the number represents a relative change (true) or an absolute change (false) (default: `false`)
    * @param isBar     - Whether the new value is part of an attribute bar, or just a direct value (default: `true`)
    * @returns The updated Actor document
+   * @privateRemarks Must be kept in sync with {@linkcode Actor.ModifyTokenAttributeData}
    */
-  // Note: Must be kept in sync with `Actor.ModifyTokenAttributeData`
-  modifyTokenAttribute(
-    attribute: string,
-    // TODO: tighten Combatant.Resource with the justification of this being simply `number`
-    value: number,
-    isDelta?: boolean,
-    isBar?: boolean,
-  ): Promise<this | undefined>;
+  modifyTokenAttribute(attribute: string, value: number, isDelta?: boolean, isBar?: boolean): Promise<this | undefined>;
 
   override prepareData(): void;
 
@@ -1431,7 +1462,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param options - Configuration for how initiative for this Actor is rolled.
    * @returns A promise which resolves to the Combat document once rolls are complete.
    */
-  rollInitiative(options?: Actor.RollInitiativeOptions): Promise<Combat.Implementation | null>;
+  rollInitiative(options?: Actor.RollInitiativeOptions): Promise<Combat.Stored | null>;
 
   /**
    * Toggle a configured status effect for the Actor.
@@ -1446,36 +1477,43 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
   toggleStatusEffect(
     statusId: string,
     options?: Actor.ToggleStatusEffectOptions,
-  ): Promise<ActiveEffect.Implementation | boolean | undefined>;
+  ): Promise<ActiveEffect.Stored | boolean | undefined>;
 
   /**
    * Get this actor's dependent tokens.
    * If the actor is a synthetic token actor, only the exact Token which it represents will be returned.
    */
-  getDependentTokens(options?: Actor.GetDependentTokensOptions): TokenDocument.Implementation[];
+  getDependentTokens(options?: Actor.GetDependentTokensOptions): TokenDocument.Stored[];
 
   /**
    * Register a token as a dependent of this actor.
    * @param token - The Token
    * @internal
    */
-  protected _registerDependantToken(token: TokenDocument.Implementation): void;
+  _registerDependantToken(token: TokenDocument.Implementation): void;
 
   /**
    * Remove a token from this actor's dependents.
    * @param token - The Token
    * @internal
    */
-  protected _unregisterDependentToken(token: TokenDocument.Implementation): void;
+  _unregisterDependentToken(token: TokenDocument.Implementation): void;
 
   /**
    * Prune a whole scene from this actor's dependent tokens.
    * @param scene - The scene
    * @internal
    */
-  protected _unregisterDependentScene(scene: Scene.Implementation): void;
+  _unregisterDependentScene(scene: Scene.Implementation): void;
 
-  // _onUpdate is overridden but with no signature changes from BaseActor.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onUpdate(
+  //   changed: Actor.UpdateData,
+  //   options: Actor.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
 
   protected override _onCreateDescendantDocuments(...args: Actor.OnCreateDescendantDocumentsArgs): void;
 
@@ -1494,7 +1532,7 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
    * @param options - The update context.
    * @remarks Forwards to {@linkcode Token._onUpdateBaseActor | Token#_onUpdateBaseActor}
    */
-  protected _updateDependentTokens(update: Actor.UpdateData, options: Actor.Database.OnUpdateOptions): void;
+  protected _updateDependentTokens(update?: Actor.UpdateData, options?: Actor.Database.OnUpdateOptions): void;
 
   /*
    * After this point these are not really overridden methods.
@@ -1510,32 +1548,65 @@ declare class Actor<out SubType extends Actor.SubType = Actor.SubType> extends f
 
   protected override _preCreateDescendantDocuments(...args: Actor.PreCreateDescendantDocumentsArgs): void;
 
+  // `_onCreateDescendantDocuments` omitted from template due to real override above.
+
   protected override _preUpdateDescendantDocuments(...args: Actor.PreUpdateDescendantDocumentsArgs): void;
+
+  // `_onUpdateDescendantDocuments` omitted from template due to real override above.
 
   protected override _preDeleteDescendantDocuments(...args: Actor.PreDeleteDescendantDocumentsArgs): void;
 
+  // `_onDeleteDescendantDocuments` omitted from template due to real override above.
+
   static override defaultName(context?: Actor.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Actor.CreateDialogOptions | undefined = undefined,
+  >(
     data?: Actor.CreateDialogData,
+    createOptions?: Actor.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Actor.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Actor.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Actor.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Actor.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: Actor.Database.DialogCreateOptions,
-    options?: Actor.CreateDialogOptions,
-  ): Promise<Actor.Stored | null | undefined>;
+    createOptions: Actor.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Actor.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Actor">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Actor.Database.DeleteOneDocumentOperation,
+  ): Promise<Actor.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: Actor.DropData,
-    options?: Actor.DropDataOptions,
-  ): Promise<Actor.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Actor.Database.DeleteOneDocumentOperation,
+  ): Promise<Actor.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Actor.DropData): Promise<Actor.Implementation | undefined>;
 
   static override fromImport(
     source: Actor.Source,
-    context?: Document.FromImportContext<Actor.Parent> | null,
+    context?: Document.FromImportContext<Actor.Parent>,
   ): Promise<Actor.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

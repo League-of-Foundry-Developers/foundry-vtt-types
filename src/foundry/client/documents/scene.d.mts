@@ -21,6 +21,7 @@ import type {
 import type { ImageHelper } from "#client/helpers/media/_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { Notifications } from "#client/applications/ui/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -465,7 +466,7 @@ declare namespace Scene {
   }
 
   /**
-   * The schema for {@linkcode Scene}. This is the source of truth for how an Scene document
+   * The schema for {@linkcode Scene}. This is the source of truth for how a `Scene` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Scene}. For example
@@ -1594,13 +1595,59 @@ declare namespace Scene {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode Scene.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Scene.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode Scene.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode Scene.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Scene.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Scene.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Scene.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Scene.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Scene.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Scene.deleteDialog | Scene#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Scene.Stored,
+    PassedConfig
+  >;
 
   type PreCreateDescendantDocumentsArgs =
     | Document.Internal.PreCreateDescendantDocumentsArgs<
@@ -1723,13 +1770,13 @@ declare namespace Scene {
      * The desired thumbnail width. Default is 300px
      * @defaultValue `300`
      */
-    width: number | null;
+    width: number;
 
     /**
      * The desired thumbnail height. Default is 100px;
      * @defaultValue `100`
      */
-    height: number | null;
+    height: number;
 
     /**
      * Which image format should be used? image/png, image/jpeg, or image/webp
@@ -1815,7 +1862,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * Pull the specified users to this Scene.
    * @param users - An array of User documents or IDs.
    */
-  pullUsers(users?: (User.Implementation | string)[]): void;
+  pullUsers(users?: (User.Stored | string)[]): void;
 
   /**
    * Set this scene as currently active
@@ -1827,17 +1874,13 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * Set this scene as the current view
    * @remarks If `canvas.loading`, returns a `ui.notifications.warn`, thence the `| number` in the return type
    */
-  view(): Promise<this | number>;
+  view(): Promise<this | Notifications.Notification<"warning">>;
 
   /**
    * Unview the current Scene, clearing the game canvas.
    */
   unview(): Promise<this | undefined>;
 
-  /**
-   * @param createData - (default: `{}`)
-   * @param options    - (default: `{}`)
-   */
   override clone<Save extends boolean | undefined = false>(
     data?: Scene.CreateData,
     context?: Document.CloneContext<Save>,
@@ -1849,7 +1892,7 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * @remarks If `source` is falsey, and the grid is hexagonal with the `legacyHex` flag set,
    * does some conversion on `object.grid.size` (leaving it numeric, no type change) before returning
    */
-  override toObject(source?: boolean | null): fields.SchemaField.SourceData<Scene.Schema>;
+  override toObject(source?: boolean): Scene.Source;
 
   /**
    * @remarks
@@ -1883,33 +1926,64 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * each Token accordingly.
    *
    * This function doesn't need to be called by the systems/modules unless
-   * {@linkcode TokenDocument.testInsideRegion | foundry.documents.TokenDocument#testInsideRegion} is overridden and non-Token properties other than
-   * `Scene#grid.type` and `Scene#grid.size` change that are used in the override of
+   * {@linkcode TokenDocument.testInsideRegion | foundry.documents.TokenDocument#testInsideRegion} is overridden and non-Token properties
+   * other than `Scene#grid.type` and `Scene#grid.size` change that are used in the override of
    * {@linkcode TokenDocument.TestInsideRegion | foundry.documents.TokenDocument#testInsideRegion}.
    * @param tokens - The Tokens whose regions should be updates
    * @returns The array of Tokens whose regions changed
    */
-  updateTokenRegions(tokens?: Iterable<TokenDocument.Implementation>): Promise<Array<TokenDocument.Stored>>;
+  updateTokenRegions(tokens?: Iterable<TokenDocument.Implementation>): Promise<TokenDocument.Stored[]>;
 
-  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
-  protected _repositionObject(sceneUpdateData: never): never;
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
 
-  // _preCreate, _preCreateOperation, _onCreate, and _preUpdate, _onUpdateOperation, _onUpdate, and _onDelete are all overridden but with no signature changes.
-  // For type simplicity they are left off. These methods historically have been the source of a large amount of computation from tsc.
+  // protected override _preCreate(
+  //   data: Scene.CreateData,
+  //   options: Scene.Database.PreCreateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected static override _preCreateOperation(
+  //   documents: Scene.Implementation[],
+  //   operation: Scene.Database.PreCreateOperation,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected override _onCreate(data: Scene.CreateData, options: Scene.Database.OnCreateOptions, userId: string): void;
+
+  // protected override _preUpdate(
+  //   changed: Scene.UpdateData,
+  //   options: Scene.Database.PreUpdateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected static override _onUpdateOperation(
+  //   documents: Scene.Stored[],
+  //   operation: Scene.Database.OnUpdateOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
+
+  // protected override _onUpdate(
+  //   changed: Scene.UpdateData,
+  //   options: Scene.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: Scene.Database.OnDeleteOptions, userId: string): void;
 
   /**
    * Handle Scene activation workflow if the active state is changed to true
    * @param active - Is the scene now active?
    */
-  protected _onActivate(active: boolean): Promise<this | Canvas>;
+  protected _onActivate(active: boolean): void;
 
   protected override _preCreateDescendantDocuments(...args: Scene.PreCreateDescendantDocumentsArgs): void;
 
   protected override _preUpdateDescendantDocuments(...args: Scene.PreUpdateDescendantDocumentsArgs): void;
 
-  protected override _onUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocumentsArgs): void;
-
   protected override _preDeleteDescendantDocuments(...args: Scene.PreDeleteDescendantDocumentsArgs): void;
+
+  protected override _onUpdateDescendantDocuments(...args: Scene.OnUpdateDescendantDocumentsArgs): void;
 
   override toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
     pack?: foundry.documents.collections.CompendiumCollection.Any | null,
@@ -1922,6 +1996,9 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
    * @returns The created thumbnail data.
    */
   createThumbnail(data?: Scene.ThumbnailCreationData): Promise<ImageHelper.ThumbnailReturn>;
+
+  /** @deprecated Foundry made this method truly private in v13 (this warning will be removed in v14) */
+  protected _repositionObject(sceneUpdateData: never): never;
 
   /*
    * After this point these are not really overridden methods.
@@ -1943,26 +2020,53 @@ declare class Scene extends BaseScene.Internal.ClientDocument {
 
   static override defaultName(context?: Scene.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Scene.CreateDialogOptions | undefined = undefined,
+  >(
     data?: Scene.CreateDialogData,
+    createOptions?: Scene.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Scene.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Scene.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Scene.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Scene.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: Scene.Database.DialogCreateOptions,
-    options?: Scene.CreateDialogOptions,
-  ): Promise<Scene.Stored | null | undefined>;
+    createOptions: Scene.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Scene.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Scene">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Scene.Database.DeleteOneDocumentOperation,
+  ): Promise<Scene.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: Scene.DropData,
-    options?: Scene.DropDataOptions,
-  ): Promise<Scene.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Scene.Database.DeleteOneDocumentOperation,
+  ): Promise<Scene.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Scene.DropData): Promise<Scene.Implementation | undefined>;
 
   static override fromImport(
     source: Scene.Source,
-    context?: Document.FromImportContext<Scene.Parent> | null,
+    context?: Document.FromImportContext<Scene.Parent>,
   ): Promise<Scene.Implementation>;
 
   #Scene: true;

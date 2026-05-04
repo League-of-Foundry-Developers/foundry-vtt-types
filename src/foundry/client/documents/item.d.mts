@@ -1,5 +1,5 @@
 import type { ConfiguredItem } from "#configuration";
-import type { AnyObject, Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { AnyObject, Identity, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseActiveEffect, BaseFolder, BaseItem } from "#client/documents/_module.d.mts";
@@ -334,7 +334,7 @@ declare namespace Item {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Item}. This is the source of truth for how an Item document
+   * The schema for {@linkcode Item}. This is the source of truth for how an `Item` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Item}. For example
@@ -1051,13 +1051,59 @@ declare namespace Item {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode Item.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Item.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode Item.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode Item.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Item.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Item.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Item.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Item.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Item.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Item.deleteDialog | Item#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Item.Stored,
+    PassedConfig
+  >;
 
   type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     Item.Stored,
@@ -1100,7 +1146,7 @@ declare namespace Item {
    *************************************************/
 
   interface GetDefaultArtworkReturn {
-    /** @defaultValue `Item.DEFAULT_ICON` */
+    /** @defaultValue {@linkcode Item.DEFAULT_ICON} */
     img: string;
   }
 
@@ -1143,11 +1189,12 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
 
   /**
    * Provide a thumbnail image path used to represent this document.
+   * @remarks Core's default artwork handling will mean this is only `null` if explicitly set so.
    */
-  get thumbnail(): string;
+  get thumbnail(): string | null;
 
   /**
-   * A convenience alias of Item#isEmbedded which is preserves legacy support
+   * A legacy alias of {@linkcode Item.isEmbedded | Item#isEmbedded}
    */
   get isOwned(): boolean;
 
@@ -1155,7 +1202,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    * Return an array of the Active Effect instances which originated from this Item.
    * The returned instances are the ActiveEffect instances which exist on the Item itself.
    */
-  get transferredEffects(): ActiveEffect.Implementation[];
+  get transferredEffects(): ActiveEffect.Stored[];
 
   /**
    * Prepare a data object which defines the data schema used by dice roll commands against this Item
@@ -1163,7 +1210,26 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
    */
   getRollData(): AnyObject;
 
-  // _preCreate, _onCreateOperation and _onDeleteOperation are all overridden but with no signature changes from BaseItem.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preCreate(
+  //   data: Item.CreateData,
+  //   options: Item.Database.PreCreateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected static override _onCreateOperation(
+  //   documents: Item.Stored[],
+  //   operation: Item.Database.OnCreateOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
+
+  // protected static override _onDeleteOperation(
+  //   documents: Item.Stored[],
+  //   operation: Item.Database.OnDeleteOperation,
+  //   user: User.Stored,
+  // ): Promise<void>;
 
   /*
    * After this point these are not really overridden methods.
@@ -1191,26 +1257,53 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
 
   static override defaultName(context?: Item.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Item.CreateDialogOptions | undefined = undefined,
+  >(
     data?: Item.CreateDialogData,
+    createOptions?: Item.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Item.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Item.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Item.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Item.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: Item.Database.DialogCreateOptions,
-    options?: Item.CreateDialogOptions,
-  ): Promise<Item.Stored | null | undefined>;
+    createOptions: Item.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Item.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Item">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Item.Database.DeleteOneDocumentOperation,
+  ): Promise<Item.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: Item.DropData,
-    options?: Item.DropDataOptions,
-  ): Promise<Item.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Item.Database.DeleteOneDocumentOperation,
+  ): Promise<Item.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Item.DropData): Promise<Item.Implementation | undefined>;
 
   static override fromImport(
     source: Item.Source,
-    context?: Document.FromImportContext<Item.Parent> | null,
+    context?: Document.FromImportContext<Item.Parent>,
   ): Promise<Item.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

@@ -1,11 +1,12 @@
 import type { ConfiguredJournalEntryPage } from "#configuration";
-import type { AnyObject, Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { AnyObject, Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseJournalEntryPage } from "#common/documents/_module.d.mts";
 import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { HTMLDocumentEmbedElement } from "#client/applications/elements/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -252,7 +253,7 @@ declare namespace JournalEntryPage {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode JournalEntryPage}. This is the source of truth for how an JournalEntryPage document
+   * The schema for {@linkcode JournalEntryPage}. This is the source of truth for how a `JournalEntryPage` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode JournalEntryPage}. For example
@@ -1050,19 +1051,71 @@ declare namespace JournalEntryPage {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode JournalEntryPage.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode JournalEntryPage.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode JournalEntryPage.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode JournalEntryPage.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode JournalEntryPage.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode JournalEntryPage.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode JournalEntryPage.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends JournalEntryPage.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<JournalEntryPage.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode JournalEntryPage.deleteDialog | JournalEntryPage#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    JournalEntryPage.Stored,
+    PassedConfig
+  >;
 
   /* ***********************************************
    *      JOURNAL-ENTRY-PAGE-SPECIFIC TYPES        *
    *************************************************/
 
-  interface JournalEntryPageHeading {
+  /**
+   * Properties that always exist on `Heading`s no matter where in the process of generation they are.
+   * {@linkcode JournalEntryPage._makeHeadingNode} returns, and {@linkcode JournalEntryPage._flattenTOC} accepts,
+   * interfaces lacking the `order` property
+   * @internal
+   */
+  interface _Heading {
     /** The heading level, 1-6. */
     level: number;
 
@@ -1072,54 +1125,76 @@ declare namespace JournalEntryPage {
     /** The generated slug for this heading. */
     slug: string;
 
-    /** The currently rendered element for this heading, if it exists. */
+    /**
+     * The currently rendered element for this heading, if it exists.
+     * @remarks Whether this exists or not depends on the `includeElement` option passed to {@linkcode JournalEntryPage.buildTOC}.
+     * It defaults to `true`, but is passed explicit `false`  when generating {@linkcode JournalEntryPage.toc | JournalEntryPage#toc}/
+     * {@linkcode JournalEntryPage._toc | #_toc}. Both {@linkcode foundry.appv1.sheets.JournalPageSheet.toc | JournalPageSheet#toc}
+     * and {@linkcode foundry.applications.sheets.journal.JournalEntryPageSheet.toc | JournalEntryPageSheet#toc} will have it defined by default.
+     */
     element?: HTMLHeadingElement;
 
     /** Any child headings of this one. */
     children: string[];
+  }
 
+  interface IntermediaryHeading extends _Heading {}
+
+  interface Heading extends _Heading {
     /** The linear ordering of the heading in the table of contents. */
     order: number;
   }
 
-  interface CreateDocumentLinkOptions extends ClientDocument.CreateDocumentLinkOptions {
-    /**
-     * @remarks If the `eventData` passed with these options has an `anchor.slug`, the default is `eventData.anchor.name`,
-     * otherwise uses `super`'s default of `this.name`
-     */
-    label?: string | null | undefined;
-  }
+  /** A Table of Contents record. */
+  interface TOC extends Record<string, Heading> {}
 
   /**
    * Slightly editorializing the description with the addition of parentheses to make this scan
-   * for both {@linkcode JournalEntryPage.buildTOC} and {@linkcode JournalEntryPage._makeHeadingNode}
-   *
+   * for both {@linkcode JournalEntryPage.buildTOC} and {@linkcode JournalEntryPage._makeHeadingNode}.   *
    * @internal
    */
-  type _IncludeElement = NullishProps<{
+  interface _IncludeElement {
     /**
      * Include reference(s) to the heading DOM element(s) in the returned ToC.
      * @defaultValue `true`
+     * @remarks See {@linkcode JournalEntryPage.Heading.element} remarks.
      */
     includeElement: boolean;
-  }>;
+  }
 
-  interface BuildTOCOptions extends _IncludeElement {}
+  interface BuildTOCOptions extends InexactPartial<_IncludeElement> {}
 
-  interface MakeHeadingNodeOptions extends _IncludeElement {}
+  interface MakeHeadingNodeOptions extends InexactPartial<_IncludeElement> {}
 
+  /**
+   * Configuration for embedding behavior. This can include enrichment options to override
+   * those passed as part of the root enrichment process.
+   *
+   * @privateRemarks The above is the description for the first param of
+   * {@linkcode JournalEntryPage._embedTextPage | JournalEntryPage#_embedTextPage}. This should arguably
+   * just be merged into `DocumentHTMLEmbedConfig` like `alt` was for the config 'extension' `#_embedImagePage` does, but
+   * that feels too messy; since typing people's `@Embed[]` enrichers is out of scope for this project, this is probably fine.
+   */
   interface EmbedTextPageConfig extends TextEditor.EnrichmentOptions, TextEditor.DocumentHTMLEmbedConfig {}
 
-  /** @internal */
-  type _EmbedImagePageConfig = NullishProps<{
-    /**
-     * Alt text for the image, otherwise the caption will be used.
-     * @remarks If both `alt` and `label` are omitted, the returned Element's `alt` will fall back to using `this.image.caption || this.name`
-     */
-    alt: string;
-  }>;
+  /**
+   * @deprecated There is no difference between the options for
+   * {@linkcode JournalEntryPage._createDocumentLink | JournalEntryPage#_createDocumentLink} and its super in `ClientDocument`.
+   * Use {@linkcode ClientDocument.CreateDocumentLinkOptions} instead. This alias will be removed in v15.
+   */
+  type CreateDocumentLinkOptions = ClientDocument.CreateDocumentLinkOptions;
 
-  interface EmbedImagePageConfig extends _EmbedImagePageConfig, TextEditor.DocumentHTMLEmbedConfig {}
+  /**
+   * @deprecated This type is no longer required, the single property it added (`alt`) has been folded
+   * into {@linkcode TextEditor.DocumentHTMLEmbedConfig}; Use that interface instead. This alias will be removed in v15.
+   */
+  type EmbedImagePageConfig = TextEditor.DocumentHTMLEmbedConfig;
+
+  /**
+   * @deprecated This type has been renamed to be less unwieldy; Use {@linkcode JournalEntryPage.Heading} instead.
+   * This alias will be removed in v15.
+   */
+  type JournalEntryPageHeading = Heading;
 
   /**
    * The arguments to construct the document.
@@ -1153,14 +1228,14 @@ declare class JournalEntryPage<
   /**
    * The cached table of contents for this JournalEntryPage.
    */
-  protected _toc: Record<string, JournalEntryPage.JournalEntryPageHeading>;
+  protected _toc: JournalEntryPage.TOC;
 
   /**
    * The table of contents for this JournalEntryPage.
    */
-  get toc(): Record<string, JournalEntryPage.JournalEntryPageHeading>;
+  get toc(): JournalEntryPage.TOC;
 
-  override get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  override get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Return a reference to the Note instance for this Journal Entry Page in the current Scene, if any.
@@ -1171,6 +1246,7 @@ declare class JournalEntryPage<
   /**
    * Convert a heading into slug suitable for use as an identifier.
    * @param heading - The heading element or some text content.
+   * @remarks Truncates long returns to the first 64 characters.
    */
   static slugifyHeading(heading: HTMLHeadingElement | string): string;
 
@@ -1179,18 +1255,13 @@ declare class JournalEntryPage<
    * @param html    - The HTML content to generate a ToC outline for.
    * @param options - Additional options to configure ToC generation.
    */
-  static buildTOC(
-    html: HTMLElement[],
-    options?: JournalEntryPage.BuildTOCOptions,
-  ): Record<string, JournalEntryPage.JournalEntryPageHeading>;
+  static buildTOC(html: HTMLElement[], options?: JournalEntryPage.BuildTOCOptions): JournalEntryPage.TOC;
 
   /**
    * Flatten the tree structure into a single object with each node's slug as the key.
    * @param nodes - The root ToC nodes.
    */
-  protected static _flattenTOC(
-    nodes: JournalEntryPage.JournalEntryPageHeading[],
-  ): Record<string, JournalEntryPage.JournalEntryPageHeading>;
+  protected static _flattenTOC(nodes: JournalEntryPage.IntermediaryHeading[]): JournalEntryPage.TOC;
 
   /**
    * Construct a table of contents node from a heading element.
@@ -1200,20 +1271,27 @@ declare class JournalEntryPage<
   protected static _makeHeadingNode(
     heading: HTMLHeadingElement,
     options?: JournalEntryPage.MakeHeadingNodeOptions,
-  ): JournalEntryPage.JournalEntryPageHeading;
-
-  /** @remarks Uses `eventData`, unlike {@linkcode ClientDocument._createDocumentLink | ClientDocument#_createDocumentLink} */
-  override _createDocumentLink(eventData: AnyObject, options?: JournalEntryPage.CreateDocumentLinkOptions): string;
+  ): JournalEntryPage.IntermediaryHeading;
 
   /**
-   * @remarks
-   * As `super`, but return the parent's sheet's `#render`:
-   * - AppV1: returns that sheet
-   * - AppV2: returns a Promise of that sheet
+   * @remarks This override uses `eventData`, unlike
+   * {@linkcode ClientDocumentMixin.AnyMixed._createDocumentLink | ClientDocument#_createDocumentLink}.
+   */
+  override _createDocumentLink(eventData: AnyObject, options?: ClientDocument.CreateDocumentLinkOptions): string;
+
+  /**
+   * @remarks Returns `this.parent.sheet.render()`, without the possibility of `null` that the `ClientDocument` method has.
    */
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
 
-  // _onUpdate is overridden but with no signature changes from the template in BaseJournalEntryPage
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onUpdate(
+  //   changed: JournalEntryPage.UpdateData,
+  //   options: JournalEntryPage.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;ns: JournalEntryPage.Database.OnDeleteOptions, userId: string): void;
 
   protected override _buildEmbedHTML(
     config: TextEditor.DocumentHTMLEmbedConfig,
@@ -1223,18 +1301,17 @@ declare class JournalEntryPage<
     content: HTMLElement | HTMLCollection,
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLElement | null>;
+  ): Promise<HTMLDocumentEmbedElement | null>;
 
   /**
    * Embed text page content.
-   * @param config        - Configuration for embedding behavior. This can include
-   *                        enrichment options to override those passed as part of
-   *                        the root enrichment process.
-   * @param options       - The original enrichment options to propagate to the embedded text page's
-   *                        enrichment.
+   * @param config  - Configuration for embedding behavior. This can include enrichment options to
+   *                  override those passed as part of the root enrichment process.
+   * @param options - The original enrichment options to propagate to the embedded text page's enrichment.
    * @returns
    *
-   * @example Embed the content of the Journal Entry Page as a figure.
+   * @example
+   * Embed the content of the Journal Entry Page as a figure.
    * ```
    * @Embed[.yDbDF1ThSfeinh3Y classes="small right"]{Special caption}
    * ```
@@ -1256,7 +1333,8 @@ declare class JournalEntryPage<
    * </figure>
    * ```
    *
-   * @example Embed the content of the Journal Entry Page into the main content flow.
+   * @example
+   * Embed the content of the Journal Entry Page into the main content flow.
    * ```
    * @Embed[.yDbDF1ThSfeinh3Y inline]
    * ```
@@ -1267,6 +1345,8 @@ declare class JournalEntryPage<
    *   <p>The contents of the page</p>
    * </section>
    * ```
+   *
+   * @privateRemarks `config` is required to destructuring assignment and lack of parameter default.
    */
   protected _embedTextPage(
     config: JournalEntryPage.EmbedTextPageConfig,
@@ -1279,7 +1359,8 @@ declare class JournalEntryPage<
    * @param options           - The original enrichment options for cases where the Document embed content
    *                            also contains text that must be enriched.
    *
-   * @example Create an embedded image from a sibling journal entry page.
+   * @example
+   * Create an embedded image from a sibling journal entry page.
    * ```
    * @Embed[.QnH8yGIHy4pmFBHR classes="small right"]{Special caption}
    * ```
@@ -1304,7 +1385,7 @@ declare class JournalEntryPage<
    * @remarks Core's implementation always returns a {@linkcode HTMLImageElement}, and does not use `options`
    */
   protected _embedImagePage(
-    config?: JournalEntryPage.EmbedImagePageConfig,
+    config?: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null>;
 
@@ -1322,33 +1403,62 @@ declare class JournalEntryPage<
 
   // Descendant Document operations have been left out because JournalEntryPage does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: JournalEntryPage.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends JournalEntryPage.CreateDialogOptions | undefined = undefined,
+  >(
+    data: JournalEntryPage.CreateDialogData | undefined,
+    createOptions: JournalEntryPage.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<JournalEntryPage.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode JournalEntryPage.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends JournalEntryPage.CreateDialogOptions | undefined = undefined,
+  >(
     data: JournalEntryPage.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: JournalEntryPage.Database.DialogCreateOptions,
-    options?: JournalEntryPage.CreateDialogOptions,
-  ): Promise<JournalEntryPage.Stored | null | undefined>;
+    createOptions: JournalEntryPage.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<JournalEntryPage.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"JournalEntryPage">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: JournalEntryPage.Database.DeleteOneDocumentOperation,
+  ): Promise<JournalEntryPage.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: JournalEntryPage.DropData,
-    options?: JournalEntryPage.DropDataOptions,
-  ): Promise<JournalEntryPage.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: JournalEntryPage.Database.DeleteOneDocumentOperation,
+  ): Promise<JournalEntryPage.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: JournalEntryPage.DropData): Promise<JournalEntryPage.Implementation | undefined>;
 
   static override fromImport(
     source: JournalEntryPage.Source,
-    context?: Document.FromImportContext<JournalEntryPage.Parent> | null,
+    context?: Document.FromImportContext<JournalEntryPage.Parent>,
   ): Promise<JournalEntryPage.Implementation>;
 
   // Embedded document operations have been left out because JournalEntryPage does not have any embedded documents.
+
+  #JournalEntryPage: true;
 }
 
 export default JournalEntryPage;

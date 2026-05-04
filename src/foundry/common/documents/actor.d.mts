@@ -1,6 +1,8 @@
 import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+/** @privateRemarks `DocumentStatsField` only used for links. */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
@@ -54,14 +56,15 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
 
   /**
    * The default icon used for newly created Actor documents.
-   * @defaultValue `CONST.DEFAULT_TOKEN`
+   * @defaultValue {@linkcode CONST.DEFAULT_TOKEN}
    */
   static DEFAULT_ICON: string;
 
   /**
    * Determine default artwork based on the provided actor data
    * @param actorData - The source actor data
-   * @remarks Core's implementation does not use `actorData`
+   * @remarks Foundry's implementation does not use `actorData`, but does mark it required, because it is always passed document source when
+   * called by core.
    */
   static getDefaultArtwork(actorData?: BaseActor.CreateData): BaseActor.GetDefaultArtworkReturn;
 
@@ -70,30 +73,25 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
     options?: Document.InitializeSourceOptions,
   ): BaseActor.Source;
 
+  /** @remarks Calls {@linkcode DocumentStatsField._shimDocument}`(this)` */
   protected override _initialize(options?: Document.InitializeOptions): void;
 
   static override canUserCreate(user: User.Implementation): boolean;
-
   protected override _preCreate(
     data: BaseActor.CreateData,
     options: BaseActor.Database.PreCreateOptions,
     user: User.Stored,
   ): Promise<boolean | void>;
-
   protected override _preUpdate(
     changed: BaseActor.UpdateData,
     options: BaseActor.Database.PreUpdateOptions,
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  /**
-   * @remarks
-   * Migrations:
-   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
-   */
+  /** @remarks Calls {@linkcode DocumentStatsField._migrateData}`(this, source)` */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
-  /** @remarks `source` instead of the parent's `data` here */
+  /** @remarks Calls {@linkcode DocumentStatsField._shimData}`(this, source, options)` */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /*

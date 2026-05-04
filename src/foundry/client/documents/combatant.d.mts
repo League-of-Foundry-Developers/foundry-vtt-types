@@ -1,5 +1,5 @@
 import type { ConfiguredCombatant } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { Identity, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseActor, BaseCombatant, BaseScene, BaseToken } from "#client/documents/_module.d.mts";
@@ -251,7 +251,7 @@ declare namespace Combatant {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Combatant}. This is the source of truth for how an Combatant document
+   * The schema for {@linkcode Combatant}. This is the source of truth for how a `Combatant` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Combatant}. For example
@@ -260,7 +260,6 @@ declare namespace Combatant {
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-
   interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Combatant embedded document
@@ -983,34 +982,69 @@ declare namespace Combatant {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode Combatant.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Combatant.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode Combatant.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode Combatant.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Combatant.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Combatant.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Combatant.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Combatant.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Combatant.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Combatant.deleteDialog | Combatant#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Combatant.Stored,
+    PassedConfig
+  >;
 
   /* ***********************************************
    *          COMBATANT-SPECIFIC TYPES             *
    *************************************************/
 
   /**
-   * @remarks
-   * This is typed based on what is reasonable to expect, rather than accurately, as accurately would mean `unknown` (Foundry's type is `object|null`).
-   *
-   * Technically this is the value of an arbitrary property path in the Combatant's Actor's `system` (using `getProperty`), and while that path can usually be
-   * assumed to have been set to something in the return of {@linkcode TokenDocument.getTrackedAttributes}, since that's what the {@linkcode CombatTrackerConfig}
-   * provides as options, the path is stored in the {@linkcode Combat.CONFIG_SETTING} which could be updated to be anything. Also, `TokenDocument.getTrackedAttributes`
-   * doesn't actually check what the type of `value` and `max` are for bar type attributes, so even sticking to those choices isn't guaranteed safe.
-   *
-   * There's clear intent that the value *should* be numeric or null, but nothing seems to do math on it in core, and it's simply output in the {@linkcode CombatEncounters}
-   * template as `{{resource}}`, so `string` has been allowed.
-   *
-   * @privateRemarks Adding `boolean` is something that was discussed and decided against for now, but its plausible a system may request such in the future, and wouldn't
-   * make us any more wrong than currently.
+   * @remarks This is only ever typed by Foundry as `object | null`, but based on usage (especially
+   * {@linkcode Actor.modifyTokenAttribute | Actor#modifyTokenAttribute}) it has been narrowed.
    */
-  type Resource = string | number | null;
+  type Resource = number | null;
 
   /**
    * The arguments to construct the document.
@@ -1045,6 +1079,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   /**
    * The token video source image (if any)
    * @defaultValue `null`
+   * @internal
    */
   _videoSrc: string | null;
 
@@ -1061,7 +1096,6 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
 
   /**
    * Eschew `ClientDocument`'s redirection to `Combat#permission` in favor of special ownership determination.
-   * @remarks Uses {@linkcode BaseCombatant.getUserLevel | BaseCombatant#getUserLevel}, so can't return `null`
    */
   override get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
@@ -1074,7 +1108,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   get token(): TokenDocument.Implementation | null;
 
   /** An array of non-Gamemaster Users who have ownership of this Combatant. */
-  get players(): User.Implementation[];
+  get players(): User.Stored[];
 
   /**
    * Has this combatant been marked as defeated?
@@ -1084,7 +1118,7 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   /**
    * Get a Roll object which represents the initiative roll for this Combatant.
    * @param formula -  An explicit Roll formula to use for the combatant.
-   * @returns The Roll instance to use for the combatant.
+   * @returns The unevaluated Roll instance to use for the combatant.
    */
   getInitiativeRoll(formula?: string): Roll.Implementation;
 
@@ -1096,7 +1130,8 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
   rollInitiative(formula?: string): Promise<this | undefined>;
 
   /**
-   * @remarks Initializes `_videoSrc`, applies `img` and `name` fallbacks, and calls {@linkcode Combatant.updateResource | Combatant#updateResource}
+   * @remarks Initializes `_videoSrc`, applies `img` and `name` fallbacks, and calls
+   * {@linkcode Combatant.updateResource | Combatant#updateResource}.
    */
   override prepareDerivedData(): void;
 
@@ -1122,8 +1157,26 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
    */
   clearMovementHistory(): Promise<void>;
 
-  // DatabaseLifecycle Events are overridden but with no signature changes.
-  // These are already covered in BaseCombatant
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected static override _preCreateOperation(
+  //   documents: Combatant.Implementation[],
+  //   operation: Combatant.Database.PreCreateOperation,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected static override _preUpdateOperation(
+  //   documents: Combatant.Stored[],
+  //   operation: Combatant.Database.PreUpdateOperation,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected static override _preDeleteOperation(
+  //   documents: Combatant.Stored[],
+  //   operation: Combatant.Database.PreDeleteOperation,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
 
   /*
    * After this point these are not really overridden methods.
@@ -1139,30 +1192,57 @@ declare class Combatant<out SubType extends Combatant.SubType = Combatant.SubTyp
 
   // Descendant Document operations have been left out because Combatant does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: Combatant.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Combatant.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Combatant.CreateDialogData | undefined,
+    createOptions: Combatant.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Combatant.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Combatant.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Combatant.CreateDialogOptions | undefined = undefined,
+  >(
     data: Combatant.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: Combatant.Database.DialogCreateOptions,
-    options?: Combatant.CreateDialogOptions,
-  ): Promise<Combatant.Stored | null | undefined>;
+    createOptions: Combatant.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Combatant.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Combatant">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Combatant.Database.DeleteOneDocumentOperation,
+  ): Promise<Combatant.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: Combatant.DropData,
-    options?: Combatant.DropDataOptions,
-  ): Promise<Combatant.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Combatant.Database.DeleteOneDocumentOperation,
+  ): Promise<Combatant.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Combatant.DropData): Promise<Combatant.Implementation | undefined>;
 
   static override fromImport(
     source: Combatant.Source,
-    context?: Document.FromImportContext<Combatant.Parent> | null,
+    context?: Document.FromImportContext<Combatant.Parent>,
   ): Promise<Combatant.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

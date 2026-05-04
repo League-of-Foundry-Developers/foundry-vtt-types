@@ -1,5 +1,5 @@
 import type { ConfiguredRegionBehavior } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { Identity, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseRegionBehavior } from "#common/documents/_module.d.mts";
@@ -261,7 +261,7 @@ declare namespace RegionBehavior {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode RegionBehavior}. This is the source of truth for how an RegionBehavior document
+   * The schema for {@linkcode RegionBehavior}. This is the source of truth for how a `RegionBehavior` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode RegionBehavior}. For example
@@ -926,13 +926,63 @@ declare namespace RegionBehavior {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode RegionBehavior.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode RegionBehavior.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode RegionBehavior.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode RegionBehavior.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode RegionBehavior.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode RegionBehavior.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode RegionBehavior.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends RegionBehavior.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<RegionBehavior.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode RegionBehavior.deleteDialog | RegionBehavior#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    RegionBehavior.Stored,
+    PassedConfig
+  >;
+
+  /* ***********************************************
+   *         REGIONBEHAVIOR-SPECIFIC TYPES         *
+   *************************************************/
 
   /**
    * The arguments to construct the document.
@@ -961,10 +1011,16 @@ declare class RegionBehavior<
    */
   constructor(data: RegionBehavior.CreateData<SubType>, context?: RegionBehavior.ConstructionContext);
 
-  /** A convenience reference to the RegionDocument which contains this RegionBehavior. */
+  /**
+   * A convenience reference to the RegionDocument which contains this RegionBehavior.
+   * @privateRemarks Can be a non-persisted Region, so `Implementation`
+   */
   get region(): RegionDocument.Implementation | null;
 
-  /** A convenience reference to the Scene which contains this RegionBehavior. */
+  /**
+   * A convenience reference to the Scene which contains this RegionBehavior.
+   * @privateRemarks Can be a non-persisted Scene, so `Implementation`
+   */
   get scene(): Scene.Implementation | null;
 
   /** A RegionBehavior is active if and only if it was created, hasn't been deleted yet, and isn't disabled. */
@@ -979,6 +1035,7 @@ declare class RegionBehavior<
    * Does this RegionBehavior handle the Region events with the given name?
    * @param eventName - The Region event name
    */
+  // TODO: are event names statically known?
   hasEvent(eventName: string): boolean;
 
   /**
@@ -988,17 +1045,31 @@ declare class RegionBehavior<
    */
   protected _handleRegionEvent(event: RegionDocument.RegionEvent): void;
 
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends RegionBehavior.CreateDialogOptions | undefined = undefined,
+  >(
+    data: RegionBehavior.CreateDialogData | undefined,
+    createOptions: RegionBehavior.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<RegionBehavior.CreateDialogReturn<Temporary, Options>>;
+
   /**
-   * @remarks `createOptions` must contain a `pack` or `parent`.
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
    *
-   * Also this override removes `executeScript` from `options.types` if the user lacks the `MACRO_SCRIPT` permission
+   * @see {@linkcode RegionBehavior.CreateDialogDeprecatedOptions}
    */
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends RegionBehavior.CreateDialogOptions | undefined = undefined,
+  >(
     data: RegionBehavior.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: RegionBehavior.Database.DialogCreateOptions,
-    dialogoptions?: RegionBehavior.CreateDialogOptions,
-  ): Promise<RegionBehavior.Stored | null | undefined>;
+    createOptions: RegionBehavior.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<RegionBehavior.CreateDialogReturn<Temporary, Options>>;
 
   /*
    * After this point these are not really overridden methods.
@@ -1014,22 +1085,33 @@ declare class RegionBehavior<
 
   // Descendant Document operations have been left out because RegionBehavior does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: RegionBehavior.DefaultNameContext): string;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"RegionBehavior">,
-  ): Promise<this | false | null | undefined>;
+  // `createDialog` omitted from template due to real override above.
 
-  static override fromDropData(
-    data: RegionBehavior.DropData,
-    options?: RegionBehavior.DropDataOptions,
-  ): Promise<RegionBehavior.Implementation | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: RegionBehavior.Database.DeleteOneDocumentOperation,
+  ): Promise<RegionBehavior.DeleteDialogReturn<Options>>;
+
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: RegionBehavior.Database.DeleteOneDocumentOperation,
+  ): Promise<RegionBehavior.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: RegionBehavior.DropData): Promise<RegionBehavior.Implementation | undefined>;
 
   static override fromImport(
     source: RegionBehavior.Source,
-    context?: Document.FromImportContext<RegionBehavior.Parent> | null,
+    context?: Document.FromImportContext<RegionBehavior.Parent>,
   ): Promise<RegionBehavior.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

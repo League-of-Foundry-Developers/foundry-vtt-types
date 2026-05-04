@@ -87,7 +87,7 @@ declare abstract class InvalidUuid extends AnyDocumentClass {}
 type FromUuid<Uuid extends string> = Uuid extends `${string}.${string}.${infer Rest}`
   ? FromUuid<Rest>
   : Uuid extends `${infer DocumentType extends Document.Type}.${string}`
-    ? Document.ImplementationFor<DocumentType>
+    ? Document.StoredForName<DocumentType>
     : InvalidUuid;
 
 type FromUuidValidate<ConcreteDocument extends Document.Any, Uuid extends string> = string extends Uuid

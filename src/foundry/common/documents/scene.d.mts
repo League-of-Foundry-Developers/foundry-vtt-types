@@ -1,6 +1,7 @@
 import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
-import type { SchemaField } from "#common/data/fields.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- `DocumentStatsField` is only used for links.
+import type { DocumentStatsField, SchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
@@ -62,9 +63,10 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    */
   static get defaultGrid(): foundry.grid.BaseGrid;
 
+  /** @remarks Calls {@linkcode DocumentStatsField._shimDocument}`(this)` */
   protected override _initialize(options?: Document.InitializeOptions): void;
 
-  override updateSource(changes: BaseScene.UpdateData, options: DataModel.UpdateOptions): BaseScene.UpdateData;
+  override updateSource(changes: Scene.UpdateData, options?: DataModel.UpdateOptions): Scene.UpdateData;
 
   /**
    * @remarks
@@ -77,7 +79,7 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * - `globalLight` to `environment.globalLight.enabled` (since v12, until 14 (probably))
    * - `globalLightThreshold` to `environment.globalLight.darkness.max` (since v12, until 14 (probably))
    * - `darkness` to `environment.darknessLevel` (since v12, until 14 (probably))
-   * - `flags.core.sourceId` to `_stats.compendiumSource` (since v12, no specified end)
+   * - Calls {@linkcode DocumentStatsField._migrateData}`(this, source)`
    */
   static override migrateData(source: AnyMutableObject): AnyMutableObject;
 
@@ -92,76 +94,77 @@ declare abstract class BaseScene extends Document<"Scene", BaseScene.Schema, any
    * - `globalLight` to `environment.globalLight.enabled` (since v12, until 14)
    * - `globalLightThreshold` to `environment.globalLight.darkness.max` (since v12, until 14)
    * - `darkness` to `environment.darknessLevel` (since v12, until 14)
+   * - {@linkcode DocumentStatsField._shimData}`(this, source, options)`
    */
   static override shimData(source: AnyMutableObject, options?: DataModel.ShimDataOptions): AnyMutableObject;
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks Replaced with `fog.exploration`
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   * @deprecated Replaced with `fog.exploration` (since v12, until v14)
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
+   * in a static initialization block with options: `{configurable: true}`
    */
   get fogExploration(): this["fog"]["exploration"];
 
   set fogExploration(value);
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks Replaced with `fog.reset`
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   * @deprecated Replaced with `fog.reset` (since v12, until v14)
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
+   * in a static initialization block with options: `{configurable: true}`
    */
   get fogReset(): this["fog"]["reset"];
 
   set fogReset(value);
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks Replaced with `fog.overlay`
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   * @deprecated Replaced with `fog.overlay` (since v12, until v14)
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
+   * in a static initialization block with options: `{configurable: true}`
    */
   get fogOverlay(): this["fog"]["overlay"];
 
   set fogOverlay(value);
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks Replaced with `fog.colors.explored`
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   * @deprecated Replaced with `fog.colors.explored` (since v12, until v14)
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
+   * in a static initialization block with options: `{configurable: true}`
    */
   get fogExploredColor(): this["fog"]["colors"]["explored"];
 
   set fogExploredColor(value);
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks Replaced with `fog.colors.unexplored`
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   * @deprecated Replaced with `fog.colors.unexplored` (since v12, until v14)
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
+   * in a static initialization block with options: `{configurable: true}`
    */
   get fogUnexploredColor(): this["fog"]["colors"]["unexplored"];
 
   set fogUnexploredColor(value);
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks Replaced with `environment.globalLight.enabled`
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   * @deprecated Replaced with `environment.globalLight.enabled` (since v12, until v14)
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
+   * in a static initialization block with options: `{configurable: true}`
    */
   get globalLight(): this["environment"]["globalLight"]["enabled"];
 
   set globalLight(value);
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks Replaced with `environment.globalLight.darkness.max`
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   * @deprecated Replaced with `environment.globalLight.darkness.max` (since v12, until v14)
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
+   * in a static initialization block with options: `{configurable: true}`
    */
   get globalLightThreshold(): this["environment"]["globalLight"]["darkness"]["max"];
 
   set globalLightThreshold(value);
 
   /**
-   * @deprecated since v12, until v14
-   * @remarks Replaced with `environment.darknessLevel`
-   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype` in a static initialization block with options: `{configurable: true}`
+   * @deprecated Replaced with `environment.darknessLevel` (since v12, until v14)
+   * @privateRemarks Defined via `Object.defineProperties` operating on `this.prototype`
+   * in a static initialization block with options: `{configurable: true}`
    */
   get darkness(): this["environment"]["darknessLevel"];
 

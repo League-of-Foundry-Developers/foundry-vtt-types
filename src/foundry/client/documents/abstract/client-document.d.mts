@@ -10,10 +10,11 @@ import type {
   NullishProps,
 } from "#utils";
 import type { Document, EmbeddedCollection } from "#common/abstract/_module.mjs";
-import type { Application, FormApplication } from "#client/appv1/api/_module.d.mts";
+import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { ApplicationV2, DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
 import type { TextEditor } from "#client/applications/ux/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
+import type { HTMLDocumentEmbedElement } from "#client/applications/elements/_module.d.mts";
 
 declare class InternalClientDocument<DocumentName extends Document.Type> {
   /** @privateRemarks All mixin classes should accept anything for its constructor. */
@@ -91,7 +92,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * actor.permission; // 2
    * ```
    */
-  get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS | null;
+  get permission(): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   /**
    * Lazily obtain an Application instance used to configure this Document, or null if no sheet is available.
@@ -198,7 +199,7 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * Handle clicking on a content link for this document.
    * @param event - The triggering click event.
    * @remarks
-   * In `ClientDocument`, returns `this.sheet.render(true)`:
+   * In `ClientDocument`, returns `this.sheet?.render(true) ?? null`:
    * - AppV1: returns that sheet
    * - AppV2: returns a Promise of that sheet
    *
@@ -471,24 +472,35 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param createOptions - Document creation options            (default: `{}`)
    * @param options       - Options forwarded to DialogV2.prompt (default: `{}`)
    * @returns A Promise which resolves to the created Document, or null if the dialog was closed.
-   * @throws If the document has
-   * @privateRemarks `| undefined` is included in the return types of the specific document overrides due to {@link Document.create | `Document.create`}
-   * possibly being `undefined` if creation is cancelled by preCreate methods or hooks
+   *
+   * @remarks
+   * @throws If the passed {@linkcode Document.CreateDialogOptions.types} whitelist does not contain any valid,
+   * non-{@linkcode CONST.BASE_DOCUMENT_TYPE} types.
+   *
+   * @privateRemarks `| undefined` is included in the return types of the specific document overrides due to {@linkcode Document.create}
+   * possibly being `undefined` if creation is cancelled by preCreate methods or hooks.
+   *
+   * Specific document overrides for non-{@link CONST.PRIMARY_DOCUMENT_TYPES | primary} documents should make `createOptions` required, as
+   * they require a passed `parent`
+   *
+   * This returns `Promise<unknown>` here because as of 13.350 there's a bug ({@link https://github.com/foundryvtt/foundryvtt/issues/13545})
+   * in {@linkcode Folder.createDialog}.
    */
   static createDialog(data: never, createOptions: never, options?: never): Promise<unknown>;
 
   /**
    * Present a Dialog form to confirm deletion of this Document.
-   * @param options   - Additional options passed to `DialogV2.confirm`
-   *                    (default: `{}`)
-   * @param operation - Document deletion options.
-   *                    (default: `{}`)
+   * @param options   - Additional options passed to {@linkcode DialogV2.confirm} (default: `{}`)
+   * @param operation - Document deletion options. (default: `{}`)
    * @returns A Promise that resolves to the deleted Document
+   *
+   * @remarks The only part of the {@linkcode DialogV2.ConfirmConfig} that one should be cautious passing is `"yes.callback"`, which
+   * actually does the delete.
+   *
+   * `"yes"` is in the computed return type because if deletion is cancelled by hook or {@linkcode Document._preDelete | Document#_preDelete},
+   * the `yes` callback returns undefined, and when button callbacks return undefined, the button's action is returned.
    */
-  deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
-    operation?: never,
-  ): Promise<this | false | null | undefined>;
+  deleteDialog(options: never, operation: never): Promise<Document.DeleteDialogReturn<Document.Any, undefined>>;
 
   /**
    * Export document data to a JSON file which can be saved by the client and later imported into a different session.
@@ -508,7 +520,6 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * 2. A UUID
    *
    * @param data    - The data object extracted from a DataTransfer event
-   * @param options - Additional options which affect drop data behavior
    * @returns The resolved Document
    * @throws If a Document could not be retrieved from the provided data.
    */
@@ -552,9 +563,10 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param pack    - A specific pack being exported to
    * @param options - Additional options which modify how the document is converted (default: `{}`)
    * @returns A data object of cleaned data suitable for compendium import
+   * @remarks Core makes no use of `pack`, neither here in `ClientDocument` nor in any override.
    */
   toCompendium<Options extends ClientDocument.ToCompendiumOptions | undefined = undefined>(
-    pack?: CompendiumCollection.Any | null,
+    pack?: CompendiumCollection.Any,
     options?: Options,
   ): ClientDocument.ToCompendiumReturnType<DocumentName, Options>;
 
@@ -569,6 +581,8 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param config  - Configuration for embedding behavior.
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
    * @returns A representation of the Document as HTML content, or null if such a representation could not be generated.
+   * @privateRemarks Core never returns `null`, but includes it in the return type on their end, and the return is checked for falseyness
+   * where core calls it, so we have included it as well to allow for apparently valid subclassing.
    */
   toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
@@ -597,24 +611,33 @@ declare class InternalClientDocument<DocumentName extends Document.Type> {
    * @param content - The embedded content.
    * @param config  - Configuration for embedding behavior.
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
+   * @privateRemarks Core uses neither `config` nor `options`, and in at least one case (`#_createFigureEmbed`, below) doesn't pass them along.
+   *
+   * Core never returns `null`, but includes it in the return type on their end, and the return is checked for falseyness where core calls
+   * it, so we have included it as well to allow for apparently valid subclassing.
    */
   protected _createInlineEmbed(
     content: HTMLElement | HTMLCollection,
-    config: TextEditor.DocumentHTMLEmbedConfig,
+    config?: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLElement | null>;
+  ): Promise<HTMLDocumentEmbedElement | null>;
 
   /**
    * A method that can be overridden by subclasses to customize the generation of the embed figure.
    * @param content - The embedded content.
    * @param config  - Configuration for embedding behavior.
    * @param options - The original enrichment options for cases where the Document embed content also contains text that must be enriched.
+   * @privateRemarks Core doesn't use `options`, and only a subset of `DocumentHTMLEmbedConfig` keys, but in the latter case it gets
+   * forwarded from {@linkcode ClientDocumentMixin.AnyMixed.toEmbed | #toEmbed} so the full type with no omissions is correct.
+   *
+   * Core never returns `null`, but includes it in the return type on their end, and the return is checked for falseyness where core calls
+   * it, so we have included it as well to allow for apparently valid subclassing.
    */
   protected _createFigureEmbed(
     content: HTMLElement | HTMLCollection,
     config: TextEditor.DocumentHTMLEmbedConfig,
     options?: TextEditor.EnrichmentOptions,
-  ): Promise<HTMLElement | null>;
+  ): Promise<HTMLDocumentEmbedElement | null>;
 }
 
 type _ClientDocumentType = InternalClientDocument<Document.Type> & Document.AnyConstructor;
@@ -674,11 +697,6 @@ declare global {
       | (Name extends Document.WorldType ? Document.WorldCollectionForName<Name> : never)
       | null;
 
-    type CompendiumForName<Name extends Document.Type> =
-      | (Name extends CompendiumCollection.DocumentName ? CompendiumCollection<Name> : never)
-      | null;
-
-    // TODO: This may be better defined elsewhere
     type LifeCycleEventName = "preCreate" | "onCreate" | "preUpdate" | "onUpdate" | "preDelete" | "onDelete";
 
     // Note(LukeAbby): If the property could be omitted it is. This is the safest option because in indeterminate cases access would be unsafe.
@@ -758,7 +776,7 @@ declare global {
     interface CreateDocumentLinkOptions extends _CreateDocumentLinkOptions {}
 
     /** The return type of {@link ClientDocument._onClickDocumentLink | `ClientDocument#_onClickDocumentLink`} if not overridden */
-    type OnClickDocumentLinkReturn = FormApplication.Any | Promise<ApplicationV2.Any>;
+    type OnClickDocumentLinkReturn = Application.Any | Promise<DocumentSheetV2.Any>;
 
     type ToCompendiumReturnType<
       DocumentName extends Document.Type,
@@ -810,6 +828,12 @@ declare global {
     }
 
     interface OnSheetChangeOptions extends InexactPartial<_OnSheetChangeOptions> {}
+
+    /**
+     * @deprecated This has been replaced by {@linkcode CompendiumCollection.ForDocument}, which you should use instead, and add `| null` if
+     * needed for your use case. This will be removed in v14.
+     */
+    type CompendiumForName<Name extends Document.Type> = CompendiumCollection.ForDocument<Name> | null;
   }
 }
 

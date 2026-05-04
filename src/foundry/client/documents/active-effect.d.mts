@@ -2,7 +2,6 @@ import type { ConfiguredActiveEffect } from "#configuration";
 import type {
   AnyMutableObject,
   Identity,
-  InexactPartial,
   IntentionalPartial,
   InterfaceToObject,
   MaybeArray,
@@ -253,7 +252,7 @@ declare namespace ActiveEffect {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode ActiveEffect}. This is the source of truth for how an ActiveEffect document
+   * The schema for {@linkcode ActiveEffect}. This is the source of truth for how an `ActiveEffect` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode ActiveEffect}. For example
@@ -1089,13 +1088,59 @@ declare namespace ActiveEffect {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode ActiveEffect.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode ActiveEffect.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode ActiveEffect.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode ActiveEffect.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode ActiveEffect.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode ActiveEffect.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode ActiveEffect.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends ActiveEffect.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<ActiveEffect.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode ActiveEffect.deleteDialog | ActiveEffect#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    ActiveEffect.Stored,
+    PassedConfig
+  >;
 
   /* ***********************************************
    *         ACTIVE-EFFECT-SPECIFIC TYPES          *
@@ -1103,6 +1148,7 @@ declare namespace ActiveEffect {
 
   type DurationType = "seconds" | "turns" | "none";
 
+  // TODO: figure out what reference should finish the following comment
   // Must be kept in sync with
   interface Duration extends DurationData {
     /** The duration type, either "seconds", "turns", or "none" */
@@ -1124,6 +1170,7 @@ declare namespace ActiveEffect {
     _combatTime?: number;
   }
 
+  /** Despite Foundry's typing, only `type` is actually guaranteed to be in the return. */
   interface PrepareDurationReturn extends RequiredProps<IntentionalPartial<Duration>, "type"> {}
 
   interface InitialDurationData {
@@ -1158,7 +1205,7 @@ declare namespace ActiveEffect {
 
     /**
      * The modification mode with which the change is applied
-     * @defaultValue `CONST.ACTIVE_EFFECT_MODES.ADD`
+     * @defaultValue {@linkcode CONST.ACTIVE_EFFECT_MODES.ADD}
      */
     mode: CONST.ACTIVE_EFFECT_MODES;
 
@@ -1169,14 +1216,9 @@ declare namespace ActiveEffect {
     priority: number | null | undefined;
   }
 
-  type ApplyFieldReturn<Field extends fields.DataField.Any | null | undefined> = Field extends fields.DataField.Any
+  type ApplyFieldReturn<Field extends fields.DataField.Any | undefined> = Field extends fields.DataField.Any
     ? fields.DataField.InitializedTypeFor<Field>
     : unknown;
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
    * The arguments to construct the document.
@@ -1244,12 +1286,15 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   /**
    * Is there some system logic that makes this active effect ineligible for application?
-   * @remarks Core's implementation defers to `system.isSuppressed` on a `TypeDataModel`, else `false`. As such all overrides should begin with `if (super.isSuppressed) return true;`
+   * @remarks Core's implementation defers to `system.isSuppressed` on a `TypeDataModel`, else `false`. As such all overrides should
+   * begin with `if (super.isSuppressed) return true;`.
    */
   get isSuppressed(): boolean;
 
   /**
    * Retrieve the Document that this ActiveEffect targets for modification.
+   * @privateRemarks This could be reasonably narrowed to `Actor.Implementation | null` for how core uses them, but Foundry types it as just
+   * `Document|null`, and some systems make AEs apply to Items directly, so it's been left as-is.
    */
   get target(): Document.Any | null;
 
@@ -1279,7 +1324,10 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    */
   protected _requiresDurationUpdate(): boolean;
 
-  /** @internal */
+  /**
+   * Compute derived data related to active effect duration
+   * @internal
+   */
   protected _prepareDuration(): ActiveEffect.PrepareDurationReturn;
 
   /**
@@ -1288,18 +1336,18 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    * @param turn   - The turn number
    * @param nTurns - The maximum number of turns in the encounter
    * @returns The decimal representation
-   * @private
+   * @internal
    */
-  protected _getCombatTime(round: number, turn: number, nTurns?: number): number;
+  _getCombatTime(round: number, turn: number, nTurns?: number): number;
 
   /**
    * Format a number of rounds and turns into a human-readable duration label
    * @param rounds - The number of rounds
    * @param turns  - The number of turns
    * @returns The formatted label
-   * @private
+   * @internal
    */
-  protected _getDurationLabel(rounds: number, turns: number): string;
+  _getDurationLabel(rounds: number, turns: number): string;
 
   /**
    * Describe whether the ActiveEffect has a temporary duration based on combat turns or rounds.
@@ -1322,7 +1370,7 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    *
    * @remarks `field` default provided by `??= model.schema.getField(change.key)`
    */
-  static applyField<Field extends fields.DataField.Any | null | undefined = undefined>(
+  static applyField<Field extends fields.DataField.Any | undefined = undefined>(
     model: DataModel.Any,
     change: ActiveEffect.ChangeData,
     field?: Field,
@@ -1459,7 +1507,28 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
    */
   static getInitialDuration(): ActiveEffect.GetInitialDurationReturn;
 
-  // _preCreate, _onCreate, _onUpdate, and _onDelete are all overridden but with no signature changes from BaseActiveEffect.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preCreate(
+  //   data: ActiveEffect.CreateData,
+  //   options: ActiveEffect.Database.PreCreateOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected override _onCreate(
+  //   data: ActiveEffect.CreateData,
+  //   options: ActiveEffect.Database.OnCreateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onUpdate(
+  //   changed: ActiveEffect.UpdateData,
+  //   options: ActiveEffect.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: ActiveEffect.Database.OnDeleteOptions, userId: string): void;
 
   /**
    * Display changes to active effects as scrolling Token status text.
@@ -1481,30 +1550,59 @@ declare class ActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffe
 
   // Descendant Document operations have been left out because ActiveEffect does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // TODO: update to include 'pack' in v14
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: ActiveEffect.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // TODO: update to include 'pack' in v14
+  // `createOptions` must contain a `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends ActiveEffect.CreateDialogOptions | undefined = undefined,
+  >(
+    data: ActiveEffect.CreateDialogData | undefined,
+    createOptions: ActiveEffect.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<ActiveEffect.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode ActiveEffect.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends ActiveEffect.CreateDialogOptions | undefined = undefined,
+  >(
     data: ActiveEffect.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: ActiveEffect.Database.DialogCreateOptions,
-    options?: ActiveEffect.CreateDialogOptions,
-  ): Promise<ActiveEffect.Stored | null | undefined>;
+    createOptions: ActiveEffect.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<ActiveEffect.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: ActiveEffect.Database.DeleteOperation,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: ActiveEffect.Database.DeleteOneDocumentOperation,
+  ): Promise<ActiveEffect.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: ActiveEffect.DropData,
-    options?: ActiveEffect.DropDataOptions,
-  ): Promise<ActiveEffect.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: ActiveEffect.Database.DeleteOneDocumentOperation,
+  ): Promise<ActiveEffect.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: ActiveEffect.DropData): Promise<ActiveEffect.Implementation | undefined>;
 
   static override fromImport(
     source: ActiveEffect.Source,
-    context?: Document.FromImportContext<ActiveEffect.Parent> | null,
+    context?: Document.FromImportContext<ActiveEffect.Parent>,
   ): Promise<ActiveEffect.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

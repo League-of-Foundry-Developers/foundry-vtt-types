@@ -137,7 +137,7 @@ declare class JournalSheet<Options extends JournalSheet.Options = JournalSheet.O
    * @param pageNode - The HTML node of the page's rendered contents.
    * @param toc      - The page's table of contents.
    */
-  protected _renderHeadings(pageNode: HTMLElement, toc: Record<string, JournalEntryPage.JournalEntryPageHeading>): void;
+  protected _renderHeadings(pageNode: HTMLElement, toc: Record<string, JournalEntryPage.Heading>): void;
 
   /**
    * Create an intersection observer to maintain a list of headings that are in view. This is much more performant than

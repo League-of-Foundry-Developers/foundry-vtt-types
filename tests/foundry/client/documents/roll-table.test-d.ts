@@ -11,8 +11,8 @@ const table = new RollTable.implementation({ name: "" });
 expectTypeOf(table.results.get("testing")).toEqualTypeOf<TableResult.Stored | undefined>();
 
 expectTypeOf(await table.draw()).toEqualTypeOf<RollTable.Draw>();
-expectTypeOf((await table.roll()).results).toEqualTypeOf<TableResult.Implementation[]>();
+expectTypeOf((await table.roll()).results).toEqualTypeOf<TableResult.Stored[]>();
 expectTypeOf(table.displayRoll).toEqualTypeOf<boolean>();
 
-declare const folder: Folder.Implementation;
+declare const folder: Folder.Stored;
 expectTypeOf(await RollTable.fromFolder(folder)).toEqualTypeOf<RollTable.Stored | undefined>();

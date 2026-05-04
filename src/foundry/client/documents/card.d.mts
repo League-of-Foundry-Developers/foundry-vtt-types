@@ -1,5 +1,5 @@
 import type { ConfiguredCard } from "#configuration";
-import type { AnyObject, DeepPartial, Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { AnyObject, Identity, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseCard, BaseCards } from "#client/documents/_module.d.mts";
@@ -247,7 +247,7 @@ declare namespace Card {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Card}. This is the source of truth for how an Card document
+   * The schema for {@linkcode Card}. This is the source of truth for how a `Card` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Card}. For example
@@ -299,25 +299,7 @@ declare namespace Card {
     /**
      * An object of face data which describes the back of this card
      */
-    back: fields.SchemaField<{
-      /**
-       * A name for this card face
-       * @defaultValue `undefined`
-       */
-      name: fields.StringField;
-
-      /**
-       * Displayed text that belongs to this face
-       * @defaultValue `""`
-       */
-      text: fields.HTMLField;
-
-      /**
-       * A displayed image or video file which depicts the face
-       * @defaultValue `null`
-       */
-      img: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
-    }>;
+    back: fields.SchemaField<BackSchema>;
 
     /**
      * An array of face data which represent displayable faces of this card
@@ -375,6 +357,28 @@ declare namespace Card {
 
     _stats: fields.DocumentStatsField;
   }
+
+  interface BackSchema extends fields.DataSchema {
+    /**
+     * A name for this card face
+     * @defaultValue `undefined`
+     */
+    name: fields.StringField;
+
+    /**
+     * Displayed text that belongs to this face
+     * @defaultValue `""`
+     */
+    text: fields.HTMLField;
+
+    /**
+     * A displayed image or video file which depicts the face
+     * @defaultValue `null`
+     */
+    img: fields.FilePathField<{ categories: ["IMAGE", "VIDEO"] }>;
+  }
+
+  interface BackData extends fields.SchemaField.InitializedData<BackSchema> {}
 
   interface FaceSchema extends fields.DataSchema {
     /**
@@ -1013,13 +1017,59 @@ declare namespace Card {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode Card.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Card.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
 
+  /**
+   * The interface for passing to {@linkcode Card.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode Card.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Card.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Card.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Card.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Card.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Card.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Card.deleteDialog | Card#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Card.Stored,
+    PassedConfig
+  >;
 
   /* ***********************************************
    *              CARD-SPECIFIC TYPES              *
@@ -1092,14 +1142,14 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
 
   /**
    * The image of the currently displayed card face or back
-   * @remarks Falls back to {@linkcode Card.DEFAULT_ICON}
+   * @remarks Falls back to {@linkcode Card.DEFAULT_ICON}.
    */
   get img(): string;
 
   /**
    * A reference to the source Cards document which defines this Card.
    */
-  get source(): Cards.Implementation | null;
+  get source(): Cards.Stored | null;
 
   /**
    * A convenience property for whether or not the Card is within its source Cards stack. Cards in decks are always
@@ -1132,7 +1182,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @param face - A specific face to flip the card to
    * @returns A reference to this card after the flip operation is complete
    */
-  flip(face?: number | null): Promise<Card.Implementation | undefined>;
+  flip(face?: number | null): Promise<this | undefined>;
 
   /**
    * Pass this Card to some other Cards document.
@@ -1140,38 +1190,40 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
    * @param options - Options which modify the pass operation (default: `{}`)
    * @returns A reference to this card after the it has been passed to another parent document
    */
-  pass(to: Cards.Implementation, options?: Card.PassOptions): Promise<Card.Implementation | undefined>;
+  pass(to: Cards.Stored, options?: Card.PassOptions): Promise<Card.Stored | undefined>;
 
   /**
    * Play a specific card to some other Cards document.
    * @see {@linkcode Card.pass | Card#pass}
    * @remarks This method is currently a more semantic alias for {@linkcode Card.pass | Card#pass}.
    */
-  play(to: Cards.Implementation, options?: Card.PlayOptions): Promise<Card.Implementation | undefined>;
+  play(to: Cards.Stored, options?: Card.PlayOptions): Promise<Card.Stored | undefined>;
 
   /**
    * Discard a specific card to some other Cards document.
    * @see {@linkcode Card.pass | Card#pass}
    * @remarks This method is currently a more semantic alias for {@linkcode Card.pass | Card#pass}.
    */
-  discard(to: Cards.Implementation, options?: Card.DiscardOptions): Promise<Card.Implementation | undefined>;
+  discard(to: Cards.Stored, options?: Card.DiscardOptions): Promise<Card.Stored | undefined>;
 
   /**
    * Recall this Card to its original Cards parent.
    * @param options - Options which modify the recall operation (default: `{}`)
    * @returns A reference to the recalled card belonging to its original parent
-   * @remarks Core's implementation doesn't use `options` at all
+   * @remarks Core's implementation doesn't use `options` at all, and no core call passes anything, so we can't infer anything about the
+   * shape of the interface.
    */
-  recall(options?: AnyObject): Promise<Card.Implementation | undefined>;
+  recall(options?: AnyObject): Promise<Card.Stored | undefined>;
 
   /**
    * Create a chat message which displays this Card.
    * @param messageData - Additional data which becomes part of the created ChatMessageData (default: `{}`)
    * @param options     - Options which modify the message creation operation (default: `{}`)
    * @returns The created chat message
+   * @privateRemarks {@linkcode ChatMessage.CreateData} has no required properties, so no need for extra `Partial`ing of the `messageData`
    */
   toMessage<Temporary extends boolean | undefined = undefined>(
-    messageData?: DeepPartial<foundry.documents.BaseChatMessage.CreateData>,
+    messageData?: ChatMessage.CreateData,
     options?: ChatMessage.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<ChatMessage.TemporaryIf<Temporary> | undefined>;
 
@@ -1189,30 +1241,57 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
 
   // Descendant Document operations have been left out because Card does not have any descendant documents.
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: Card.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Card.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Card.CreateDialogData | undefined,
+    createOptions: Card.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Card.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Card.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Card.CreateDialogOptions | undefined = undefined,
+  >(
     data: Card.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: Card.Database.DialogCreateOptions,
-    options?: Card.CreateDialogOptions,
-  ): Promise<Card.Stored | null | undefined>;
+    createOptions: Card.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Card.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Card">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Card.Database.DeleteOneDocumentOperation,
+  ): Promise<Card.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: Card.DropData,
-    options?: Card.DropDataOptions,
-  ): Promise<Card.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Card.Database.DeleteOneDocumentOperation,
+  ): Promise<Card.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Card.DropData): Promise<Card.Implementation | undefined>;
 
   static override fromImport(
     source: Card.Source,
-    context?: Document.FromImportContext<Card.Parent> | null,
+    context?: Document.FromImportContext<Card.Parent>,
   ): Promise<Card.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

@@ -60,7 +60,7 @@ expectTypeOf(
     color: 0xfaddaf,
     duration: 2323,
     name: "SomePing.ASFASDFAS",
-    pull: null,
+    pull: true,
     size: 120,
     style: "alert",
     zoom: 2.6,

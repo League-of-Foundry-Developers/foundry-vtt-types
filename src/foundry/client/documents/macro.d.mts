@@ -1,5 +1,5 @@
 import type { ConfiguredMacro } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseFolder, BaseMacro, BaseUser } from "#client/documents/_module.d.mts";
@@ -238,7 +238,7 @@ declare namespace Macro {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Macro}. This is the source of truth for how an Macro document
+   * The schema for {@linkcode Macro}. This is the source of truth for how a `Macro` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Macro}. For example
@@ -962,20 +962,66 @@ declare namespace Macro {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode Macro.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Macro.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode Macro.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode Macro.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Macro.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Macro.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Macro.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Macro.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Macro.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Macro.deleteDialog | Macro#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Macro.Stored,
+    PassedConfig
+  >;
 
   /* ***********************************************
    *              MACRO-SPECIFIC TYPES             *
    *************************************************/
 
   /** @internal */
-  type _ScriptScope = NullishProps<{
+  interface _ScriptScope {
     /** An Actor who is the protagonist of the executed action. */
     actor: Actor.Implementation;
 
@@ -987,22 +1033,25 @@ declare namespace Macro {
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
-     * will be a {@linkcode Scene.Implementation} (possibly `null` if somehow called on a `RegionBehavior` whose `RegionDocument` doesn't have a parent `Scene`)
+     * - When called in {@linkcode ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
+     * will be a {@linkcode Scene.Implementation} (possibly `null` if somehow called on a `RegionBehavior` whose `RegionDocument` doesn't
+     * have a parent `Scene`)
      */
     scene?: unknown;
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
-     * will be a {@linkcode RegionDocument.Implementation} (possibly `null` if somehow called on a `RegionBehavior` without a parent `RegionDocument`)
+     * - When called in {@linkcode ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
+     * will be a {@linkcode RegionDocument.Implementation} (possibly `null` if somehow called on a `RegionBehavior` without a parent
+     * `RegionDocument`)
      */
     region?: unknown;
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
-     * will be a {@linkcode RegionBehavior.Implementation} (possibly `null` if somehow called on a `RegionBehaviorType` without a parent `RegionBehavior`)
+     * - When called in {@linkcode ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
+     * will be a {@linkcode RegionBehavior.Implementation} (possibly `null` if somehow called on a `RegionBehaviorType` without a parent
+     * `RegionBehavior`)
      */
     behavior?: unknown;
 
@@ -1010,7 +1059,7 @@ declare namespace Macro {
      * @remarks Sometimes provided by core:
      * - When called in {@linkcode Macro._onClickDocumentLink | Macro#_onClickDocumentLink},
      * will be a {@linkcode MouseEvent}
-     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
+     * - When called in {@linkcode ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
      * will be a {@linkcode RegionDocument.RegionEvent}
      */
     event?: unknown;
@@ -1019,9 +1068,9 @@ declare namespace Macro {
      * @remarks Additional arguments passed as part of the scope. Numeric keys are disallowed (`##executeScript` throws).
      */
     [arg: string | symbol]: unknown;
-  }>;
+  }
 
-  interface ScriptScope extends _ScriptScope {}
+  interface ScriptScope extends InexactPartial<_ScriptScope> {}
 
   interface ChatScope extends Pick<ScriptScope, "speaker"> {}
 
@@ -1029,12 +1078,12 @@ declare namespace Macro {
 
   type ExecuteScope<SubType extends Macro.SubType> = SubType extends "chat" | "script"
     ? UnknownScope
-    : (SubType extends "script" ? ScriptScope : never) | (SubType extends "chat" ? ScriptScope : never);
+    : (SubType extends "script" ? ScriptScope : never) | (SubType extends "chat" ? ChatScope : never);
 
   // Note: If extra types ever get added this will need to be updated to account for them, even if
   // just to return `undefined`.
   type ExecuteReturn<SubType extends Macro.SubType> =
-    | (SubType extends "chat" ? Promise<ChatMessage.Implementation | undefined | void> : never)
+    | (SubType extends "chat" ? Promise<ChatMessage.Stored | undefined | void> : never)
     // Note(LukeAbby): As of 13.346 this `| void` is only possible if there's a syntax error in the function.
     | (SubType extends "script" ? Promise<unknown> | void : never);
 
@@ -1089,6 +1138,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    * Test whether the given User is capable of executing this Macro.
    * @param user - The User to test.
    * @returns Can this User execute this Macro?
+   * @privateRemarks Only tests permissions, non-persisted `User`s work.
    */
   canUserExecute(user: User.Implementation): boolean;
 
@@ -1102,10 +1152,17 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
    */
   execute(scope?: Macro.ExecuteScope<SubType>): Macro.ExecuteReturn<SubType>;
 
-  /** @remarks Returns `this.execute({event})` */
+  /** @remarks Returns {@linkcode Macro.execute | this.execute}`({event})` */
   override _onClickDocumentLink(event: MouseEvent): Macro.ExecuteReturn<SubType>;
 
-  // _onCreate is overridden but with no signature changes from its definition in BaseMacro.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onCreate(
+  //   data: Macro.CreateData,
+  //   options: Macro.Database.OnCreateOptions,
+  //   userId: string,
+  // ): void;
 
   /*
    * After this point these are not really overridden methods.
@@ -1123,26 +1180,53 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
 
   static override defaultName(context?: Macro.DefaultNameContext): string;
 
-  static override createDialog(
-    data?: Macro.CreateData,
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Macro.CreateDialogOptions | undefined = undefined,
+  >(
+    data?: Macro.CreateDialogData,
+    createOptions?: Macro.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Macro.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @remarks @see {@linkcode Macro.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Macro.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Macro.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: Macro.Database.DialogCreateOptions,
-    options?: Macro.CreateDialogOptions,
-  ): Promise<Macro.Stored | null | undefined>;
+    createOptions: Macro.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Macro.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Macro">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Macro.Database.DeleteOneDocumentOperation,
+  ): Promise<Macro.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: Macro.DropData,
-    options?: Macro.DropDataOptions,
-  ): Promise<Macro.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @remarks @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Macro.Database.DeleteOneDocumentOperation,
+  ): Promise<Macro.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Macro.DropData): Promise<Macro.Implementation | undefined>;
 
   static override fromImport(
     source: Macro.Source,
-    context?: Document.FromImportContext<Macro.Parent> | null,
+    context?: Document.FromImportContext<Macro.Parent>,
   ): Promise<Macro.Implementation>;
 
   #Macro: true;

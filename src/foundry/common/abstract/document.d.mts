@@ -17,7 +17,6 @@ import type {
   InexactPartial,
   IntentionalPartial,
   InterfaceToObject,
-  MakeConform,
   MaybeArray,
   MaybePromise,
   NullishProps,
@@ -1072,6 +1071,9 @@ declare namespace Document {
   /** Documents which can only be persisted inside compendia. As of 13.351 this is only `Adventure`. */
   type AlwaysCompendiumType = "Adventure";
 
+  /** Documents which can never be found inside compendia. */
+  type NeverCompendiumType = Exclude<Type, CompendiumType | EmbeddedType | "Folder">;
+
   type WithSubTypes = WithSystem | "Folder" | "Macro" | "TableResult";
 
   type WithSystem =
@@ -1441,7 +1443,7 @@ declare namespace Document {
 
         /**
          * A Universally Unique Identifier (uuid) for this Document instance.
-         * @remarks Always `null` for temporary documents, always `string` for persisted,  though embedded
+         * @remarks Always `null` for temporary documents, always `string` for persisted, though embedded
          * documents in non-persisted parents may have incorrect values at runtime.
          */
         get uuid(): string;
@@ -1595,6 +1597,10 @@ declare namespace Document {
     // Note(LukeAbby): Will be updated with the CONFIG revamp.
     type ConfiguredCollection<Name extends Document.Type> = FixedInstanceType<ConfiguredCollectionClass<Name>>;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ._preCreateDescendantDocuments}
+     */
     type PreCreateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1609,6 +1615,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ._onCreateDescendantDocuments}
+     */
     type OnCreateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1624,6 +1634,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._preUpdateDescendantDocuments | ._preUpdateDescendantDocuments}
+     */
     type PreUpdateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1638,6 +1652,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._onUpdateDescendantDocuments | ._onUpdateDescendantDocuments}
+     */
     type OnUpdateDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1653,6 +1671,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._preDeleteDescendantDocuments | ._preDeleteDescendantDocuments}
+     */
     type PreDeleteDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -1667,6 +1689,10 @@ declare namespace Document {
         ]
       : never;
 
+    /**
+     * A helper type to define the args list for a specific document's
+     * {@linkcode ClientDocumentMixin.AnyMixed._onDeleteDescendantDocuments | ._onDeleteDescendantDocuments}
+     */
     type OnDeleteDescendantDocumentsArgs<
       Parent extends Document.AnyStored,
       DirectDescendantName extends Document.Type,
@@ -2024,9 +2050,9 @@ declare namespace Document {
 
   /**
    * `DataModel#constructor` pulls `parent` out of the passed context before forwarding to `#_initializeSource`
-   * @privateRemarks `Document` doesn't override `_initializeSource`, but at least one specific document does (Actor only, as of v12);
-   * Without an override, this is handled by the `& ExtraConstructorOptions` in the `DataModel` signature, but with one,
-   * a manually combined interface is needed.
+   * @privateRemarks `Document` doesn't override `_initializeSource`, but at least one specific document does (`Actor` (both client and
+   * base) and `TokenDocument` as of 13.351); Without an override, this is handled by the `& ExtraConstructorOptions` in the `DataModel`
+   * signature, but with one, a manually combined interface is needed.
    */
   interface InitializeSourceOptions extends DataModel.InitializeSourceOptions, Omit<ConstructionContext, "parent"> {}
 
@@ -2215,11 +2241,6 @@ declare namespace Document {
 
     interface Embedded extends Identity<{ [K in Document.Type]?: string }> {}
   }
-
-  type SheetClassFor<Name extends Document.Type> = MakeConform<
-    GetKey<GetKey<CONFIG, Name>, "sheetClass">,
-    AnyConstructor
-  >;
 
   type LayerClassFor<Name extends Document.Type> = GetKey<GetKey<CONFIG, Name>, "layerClass">;
 
@@ -3418,7 +3439,7 @@ declare namespace Document {
    */
   interface DeleteDialogDeprecatedConfig extends DialogV2.ConfirmConfig, IntentionalPartial<ApplicationV2.Position> {}
 
-  /** This interface is necessitated by the change in default `strict` behaviour and nothing else */
+  /** This interface is necessitated by the change in default `strict` behaviour between `fromImport` and `fromSource` and nothing else */
   interface FromImportContext<Parent extends Document.Any | null> extends Omit<
     Document.ConstructionContext<Parent>,
     "strict"
@@ -3433,10 +3454,11 @@ declare namespace Document {
   }
 
   /**
-   * The options for `fromDropData`. Foundry never uses these so the interface is currently empty.
+   * @deprecated Foundry, prior to v13, had a completely unused `options` parameter in the
+   * {@linkcode ClientDocumentMixin.AnyMixed.fromDropData | ClientDocument.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
    */
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  interface DropDataOptions {}
+  type DropDataOptions = AnyObject;
 
   type DropDataFor<Name extends Document.Type> = {
     ActiveEffect: ActiveEffect.DropData;

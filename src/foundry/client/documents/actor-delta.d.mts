@@ -1,5 +1,5 @@
 import type { ConfiguredActorDelta } from "#configuration";
-import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DataModel, DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
 import type { BaseActorDelta } from "#common/documents/_module.d.mts";
@@ -336,7 +336,7 @@ declare namespace ActorDelta {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode ActorDelta}. This is the source of truth for how an ActorDelta document
+   * The schema for {@linkcode ActorDelta}. This is the source of truth for how an `ActorDelta` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode ActorDelta}. For example
@@ -1045,6 +1045,60 @@ declare namespace ActorDelta {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode ActorDelta.fromDropData} receives */
+  interface DropData extends Document.Internal.DropData<Name> {}
+
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode ActorDelta.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode ActorDelta.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
+
+  /**
+   * The interface for passing to {@linkcode ActorDelta.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode ActorDelta.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode ActorDelta.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode ActorDelta.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends ActorDelta.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<ActorDelta.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode ActorDelta.deleteDialog | ActorDelta#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    ActorDelta.Stored,
+    PassedConfig
+  >;
+
   type PreCreateDescendantDocumentsArgs =
     | Document.Internal.PreCreateDescendantDocumentsArgs<
         ActorDelta.Stored,
@@ -1093,28 +1147,47 @@ declare namespace ActorDelta {
       >
     | Item.OnDeleteDescendantDocumentsArgs;
 
-  interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
-
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
-
   /* ***********************************************
    *           ACTOR-DELTA-SPECIFIC TYPES          *
    *************************************************/
 
+  /**
+   * This interface is spread into an object that already has `parent` defined, and as this is ActorDelta logic,
+   * let's assume that overwriting the parent is contraindicated.
+   *
+   * @internal
+   */
+  type _ApplyDeltaContext = Omit<Document.ConstructionContext<TokenDocument.Implementation>, "parent">;
+
+  interface ApplyDeltaContext extends _ApplyDeltaContext {
+    /**
+     * @deprecated This context is spread into an `Actor` creation context for the synthetic actor,
+     * overriding the provided default of `parent: delta.parent` is nonsensical
+     */
+    parent?: never;
+  }
+
   /** @internal */
-  type _InitializeOptions = NullishProps<{
+  interface _InitializeOptions {
     /**
      * @remarks Is this initialization part of a {@linkcode Scene.reset | Scene#reset} call? (skips further initialization if truthy)
      * @defaultValue `false`
      */
     sceneReset: boolean;
-  }>;
+  }
 
-  interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
+  interface InitializeOptions extends Document.InitializeOptions, InexactPartial<_InitializeOptions> {}
+
+  interface _CreateSyntheticActorOptions {
+    /**
+     * Whether to fully re-initialize this ActorDelta's collections in
+     * order to re-retrieve embedded Documents from the synthetic
+     * Actor.
+     */
+    reinitializeCollections: boolean;
+  }
+
+  interface CreateSyntheticActorOptions extends InexactPartial<_CreateSyntheticActorOptions> {}
 
   /**
    * The arguments to construct the document.
@@ -1154,23 +1227,26 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   set type(type);
 
-  protected _type: string;
+  /** @internal */
+  _type: string;
 
   /**
    * Apply this ActorDelta to the base Actor and return a synthetic Actor.
    * @param context - Context to supply to synthetic Actor instantiation.
    * @remarks Forwards `context` to {@linkcode BaseActorDelta.applyDelta | this.constructor.applyDelta(this, this.parent.baseActor, context)}
    */
-  apply(context?: BaseActorDelta.ApplyDeltaContext): Actor.Implementation | null;
+  apply(context?: ActorDelta.ApplyDeltaContext): Actor.Implementation | null;
 
   /** @remarks `"The synthetic actor prepares its items in the appropriate context of an actor. The actor delta does not need to prepare its items, and would do so in the incorrect context."` */
   override prepareEmbeddedDocuments(): void;
 
   // TODO: accurately type changes and return type
   override updateSource(
-    // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });` and `super.updateSource`.
-    // However it's likely the overlap between these two types is pretty high.
-    changes?: ActorDelta.Source,
+    // Note(LukeAbby): This must be valid for both `new ActorDelta.implementation(actorChanges, { parent: this.parent });`,
+    // `this.syntheticActor.updateSource`, and `super.updateSource`. However it's likely the overlap between these types is pretty high.
+    // Note(esheyw): `Actor.UpdateData` has been chosen as it is actually the most restrictive relevant type;
+    // `ActorDelta`s require no data for construction.
+    changes: Actor.UpdateData,
     options?: DataModel.UpdateOptions,
   ): object;
 
@@ -1178,15 +1254,15 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   /**
    * Generate a synthetic Actor instance when constructed, or when the represented Actor, or actorLink status changes.
+   * @internal
    */
-  protected _createSyntheticActor(options?: {
-    /**
-     * Whether to fully re-initialize this ActorDelta's collections in
-     * order to re-retrieve embedded Documents from the synthetic
-     * Actor.
-     */
-    reinitializeCollections: boolean;
-  }): void;
+  _createSyntheticActor(options?: ActorDelta.CreateSyntheticActorOptions): void;
+
+  /**
+   * @remarks Created by `Object.defineProperty` in {@linkcode _createSyntheticActor} with an unnecessary `{ configurable: true }`.
+   * Since that method is called by {@linkcode _configure} during construction, it's not optional.
+   */
+  syntheticActor: Actor.Stored<SubType> | Actor.OfType<SubType> | null;
 
   /**
    * Update the synthetic Actor instance with changes from the delta or the base Actor.
@@ -1197,20 +1273,35 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
    * Restore this delta to empty, inheriting all its properties from the base actor.
    * @returns The restored synthetic Actor.
    */
-  restore(): Promise<Actor.Implementation>;
+  restore(): Promise<Actor.Stored>;
 
   /**
    * Ensure that the embedded collection delta is managing any entries that have had their descendants updated.
    * @param doc - The parent whose immediate children have been modified.
+   * @internal
    */
   _handleDeltaCollectionUpdates(doc: Document.Any): void;
 
-  /** @remarks `"No-op as ActorDeltas do not have sheets."` */
+  /** @remarks Foundry comments: "No-op as ActorDeltas do not have sheets." */
   protected override _onSheetChange(): Promise<void>;
 
-  protected override _prepareDeltaUpdate(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): void;
+  override _prepareDeltaUpdate(changes?: ActorDelta.UpdateData, options?: DataModel.UpdateOptions): void;
 
-  // _onUpdate and _onDelete are all overridden but with no signature changes from BaseActorDelta.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _preDelete(
+  //   options: ActorDelta.Database.PreDeleteOptions,
+  //   user: User.Stored,
+  // ): Promise<boolean | void>;
+
+  // protected override _onUpdate(
+  //   changed: ActorDelta.UpdateData,
+  //   options: ActorDelta.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: ActorDelta.Database.OnDeleteOptions, userId: string): void;
 
   protected override _dispatchDescendantDocumentEvents(
     event: ClientDocument.LifeCycleEventName,
@@ -1243,30 +1334,57 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs): void;
 
-  /** @remarks `context` must contain a `pack` or `parent`. */
+  // `context` must contain a `parent`, so is required.
   static override defaultName(context: ActorDelta.DefaultNameContext): string;
 
-  /** @remarks `createOptions` must contain a `pack` or `parent`. */
-  static override createDialog(
+  // `createOptions` must contain a  `parent`, so is required.
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends ActorDelta.CreateDialogOptions | undefined = undefined,
+  >(
+    data: ActorDelta.CreateDialogData | undefined,
+    createOptions: ActorDelta.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<ActorDelta.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode ActorDelta.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends ActorDelta.CreateDialogOptions | undefined = undefined,
+  >(
     data: ActorDelta.CreateDialogData | undefined,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions: ActorDelta.Database.DialogCreateOptions,
-    options?: ActorDelta.CreateDialogOptions,
-  ): Promise<ActorDelta.Stored | null | undefined>;
+    createOptions: ActorDelta.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<ActorDelta.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: ActorDelta.Database.DeleteOperation,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: ActorDelta.Database.DeleteOneDocumentOperation,
+  ): Promise<ActorDelta.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: ActorDelta.DropData,
-    options?: ActorDelta.DropDataOptions,
-  ): Promise<ActorDelta.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: ActorDelta.Database.DeleteOneDocumentOperation,
+  ): Promise<ActorDelta.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: ActorDelta.DropData): Promise<ActorDelta.Implementation | undefined>;
 
   static override fromImport(
     source: ActorDelta.Source,
-    context?: Document.FromImportContext<ActorDelta.Parent> | null,
+    context?: Document.FromImportContext<ActorDelta.Parent>,
   ): Promise<ActorDelta.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;

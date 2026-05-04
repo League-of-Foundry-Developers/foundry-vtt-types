@@ -1,10 +1,10 @@
 import type { ConfiguredCombat } from "#configuration";
-import type { Identity, InexactPartial, IntentionalPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { Identity, InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
 import type { DatabaseBackend, Document, EmbeddedCollection } from "#common/abstract/_module.mjs";
-import type { BaseCombat, BaseCombatant, BaseCombatantGroup, BaseScene } from "#client/documents/_module.d.mts";
-import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import type { BaseCombat, BaseCombatant, BaseCombatantGroup, BaseScene } from "#common/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+import type { ClientSettings } from "#client/helpers/_module.d.mts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
 import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
@@ -342,7 +342,7 @@ declare namespace Combat {
   type UpdateInput = UpdateData | Implementation;
 
   /**
-   * The schema for {@linkcode Combat}. This is the source of truth for how an Combat document
+   * The schema for {@linkcode Combat}. This is the source of truth for how a `Combat` document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Combat}. For example
@@ -1053,13 +1053,59 @@ declare namespace Combat {
    *       CLIENT DOCUMENT TEMPLATE TYPES          *
    *************************************************/
 
+  /** The interface {@linkcode Combat.fromDropData} receives */
   interface DropData extends Document.Internal.DropData<Name> {}
-  interface DropDataOptions extends Document.DropDataOptions {}
 
+  /**
+   * @deprecated Foundry prior to v13 had a completely unused `options` parameter in the {@linkcode Combat.fromDropData}
+   * signature that has since been removed. This type will be removed in v14.
+   */
+  type DropDataOptions = never;
+
+  /**
+   * The interface for passing to {@linkcode Combat.defaultName}
+   * @see {@linkcode Document.DefaultNameContext}
+   */
   interface DefaultNameContext extends Document.DefaultNameContext<Name, Parent> {}
 
+  /**
+   * The interface for passing to {@linkcode Combat.createDialog}'s first parameter
+   * @see {@linkcode Document.CreateDialogData}
+   */
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+
+  /**
+   * @deprecated This is for a deprecated signature, and will be removed in v15.
+   * The interface for passing to {@linkcode Combat.createDialog}'s second parameter that still includes partial Dialog
+   * options, instead of being purely a {@linkcode Database.CreateDocumentsOperation | CreateDocumentsOperation}.
+   */
+  interface CreateDialogDeprecatedOptions<Temporary extends boolean | undefined = boolean | undefined>
+    extends Database.CreateDocumentsOperation<Temporary>, Document._PartialDialogV1OptionsForCreateDialog {}
+
+  /**
+   * The interface for passing to {@linkcode Combat.createDialog}'s third parameter
+   * @see {@linkcode Document.CreateDialogOptions}
+   */
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /**
+   * The return type for {@linkcode Combat.createDialog}.
+   * @see {@linkcode Document.CreateDialogReturn}
+   */
+  // TODO: inline .Stored in v14 instead of taking Temporary
+  type CreateDialogReturn<
+    Temporary extends boolean | undefined,
+    PassedConfig extends Combat.CreateDialogOptions | undefined,
+  > = Document.CreateDialogReturn<Combat.TemporaryIf<Temporary>, PassedConfig>;
+
+  /**
+   * The return type for {@linkcode Combat.deleteDialog | Combat#deleteDialog}.
+   * @see {@linkcode Document.DeleteDialogReturn}
+   */
+  type DeleteDialogReturn<PassedConfig extends DialogV2.ConfirmConfig | undefined> = Document.DeleteDialogReturn<
+    Combat.Stored,
+    PassedConfig
+  >;
 
   type PreCreateDescendantDocumentsArgs = Document.Internal.PreCreateDescendantDocumentsArgs<
     Combat.Stored,
@@ -1100,6 +1146,17 @@ declare namespace Combat {
   /* ***********************************************
    *             COMBAT-SPECIFIC TYPES             *
    *************************************************/
+
+  interface HistoryData {
+    round: number;
+    turn: number | null;
+    tokenId: string | null;
+    combatantId: string | null;
+  }
+
+  type CONFIG_SETTING = typeof Combat.CONFIG_SETTING;
+
+  type SettingData = ClientSettings.SettingInitializedType<"core", Combat.CONFIG_SETTING>;
 
   /**
    * Identical to {@linkcode _TurnUpdateData} except for property descriptions.
@@ -1227,36 +1284,32 @@ declare namespace Combat {
       _TurnOrRoundUpdateOptions {}
 
   /** @internal */
-  type _InitiativeOptions = NullishProps<{
+  interface _UpdateTurn {
+    /**
+     * Update the Combat turn after resetting initiative scores to keep the turn on the same Combatant.
+     * @defaultValue `true`
+     */
+    updateTurn: boolean;
+  }
+
+  interface ResetAllOptions extends InexactPartial<_UpdateTurn> {}
+
+  /** @internal */
+  interface _InitiativeOptions extends _UpdateTurn {
     /**
      * A non-default initiative formula to roll. Otherwise the system default is used.
      * @defaultValue `null`
      */
-    formula: string;
+    formula: string | null;
 
     /**
-     * Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
-     * @defaultValue `true`
+     * Additional options with which to customize created Chat Messages
+     * @defaultValue `{}`
      */
-    updateTurn: boolean;
-  }> &
-    InexactPartial<{
-      /**
-       * Additional options with which to customize created Chat Messages
-       * @defaultValue `{}`
-       * @remarks Can't be `null` as it only has a parameter default
-       */
-      messageOptions: ChatMessage.CreateData;
-    }>;
-
-  interface InitiativeOptions extends _InitiativeOptions {}
-
-  interface HistoryData {
-    round: number | null;
-    turn: number | null;
-    tokenId: string | null;
-    combatantId: string | null;
+    messageOptions: ChatMessage.CreateData;
   }
+
+  interface InitiativeOptions extends InexactPartial<_InitiativeOptions> {}
 
   interface TurnEventContext {
     round: number;
@@ -1265,8 +1318,6 @@ declare namespace Combat {
   }
 
   interface RoundEventContext extends Omit<TurnEventContext, "turn"> {}
-
-  type CONFIG_SETTING = "combatTrackerConfig";
 
   /**
    * The arguments to construct the document.
@@ -1299,40 +1350,41 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   // Note(LukeAbby): Optional as there are currently no required properties on `CreateData`.
   constructor(data?: Combat.CreateData<SubType>, context?: Combat.ConstructionContext);
 
-  /** Track the sorted turn order of this combat encounter */
-  turns: Combatant.Implementation[];
+  /**
+   * Track the sorted turn order of this combat encounter
+   * @remarks Generated by iterating {@linkcode Combat.combatants | this.combatants} in {@linkcode Combat.setupTurns | Combat#setupTurns},
+   * so all elements will be persisted docs.
+   */
+  turns: Combatant.Stored[];
 
   /** Record the current round, turn, and tokenId to understand changes in the encounter state */
   current: Combat.HistoryData;
 
   /**
    * Track the previous round, turn, and tokenId to understand changes in the encounter state
-   * @remarks Only `undefined` prior to first {@linkcode Combat._onUpdate | Combat#_onUpdate} or {@linkcode Combat.setupTurns | Combat#setupTurns} (which is called in
-   * {@linkcode Combat.prepareDerivedData | Combat#prepareDerivedData}) call
+   * @remarks Only `undefined` prior to the first call to {@linkcode Combat._onUpdate | Combat#_onUpdate} or
+   * {@linkcode Combat.setupTurns | Combat#setupTurns} (the latter of which is called in
+   * {@linkcode Combat.prepareDerivedData | Combat#prepareDerivedData}).
    */
   previous: Combat.HistoryData | undefined;
 
   /**
    * The configuration setting used to record Combat preferences
-   * @defaultValue `"combatTrackerConfig"`
-   * @privateRemarks Right now it doesn't make sense to make this not a literal, as `type CONFIG_SETTING` is static, so changing this would
-   * just make {@linkcode Combat.settings | Combat#settings} and {@linkcode CombatEncounters.settings} incorrect
    */
-  // TODO: Make the setting name configurable?
   static CONFIG_SETTING: "combatTrackerConfig";
 
-  /** Get the Combatant who has the current turn. */
-  get combatant(): Combatant.Implementation | undefined | null;
+  /**
+   * Get the Combatant who has the current turn.
+   */
+  get combatant(): Combatant.Stored | null;
 
   /**
    * Get the Combatant who has the next turn.
    */
-  get nextCombatant(): Combatant.Implementation | undefined;
+  get nextCombatant(): Combatant.Stored;
 
   /** Return the object of settings which modify the Combat Tracker behavior */
-  // Type is copied here to avoid recursion issue
-  // TODO: Make the setting name configurable?
-  get settings(): foundry.helpers.ClientSettings.SettingInitializedType<"core", Combat.CONFIG_SETTING>;
+  get settings(): Combat.SettingData;
 
   /** Has this combat encounter been started? */
   get started(): boolean;
@@ -1363,13 +1415,13 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param token - A Token ID or a TokenDocument instance
    * @returns An array of Combatants which represent the Token.
    */
-  getCombatantsByToken(token: string | TokenDocument.Implementation): Combatant.Implementation[];
+  getCombatantsByToken(token: string | TokenDocument.Stored): Combatant.Stored[];
 
   /**
    * Get a Combatant that represents the given Actor or Actor ID.
    * @param actorOrId - An Actor ID or an Actor instance.
    */
-  getCombatantsByActor(actorOrId: string | Actor.Implementation): Combatant.Implementation[];
+  getCombatantsByActor(actorOrId: string | Actor.Stored): Combatant.Stored[];
 
   /**
    * Calculate the time delta between two turns.
@@ -1401,8 +1453,12 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   /** Toggle whether this combat is linked to the scene or globally available. */
   toggleSceneLink(): Promise<this>;
 
-  /** Reset all combatant initiative scores, setting the turn back to zero */
-  resetAll(): Promise<this | undefined>;
+  /**
+   * Reset all combatant initiative scores, setting the turn back to zero
+   * @param options - Additional options
+   * @remarks As of 14.360 Foundry claims this should return a `Promise<this>` but it returns `Promise<void>`.
+   */
+  resetAll(options?: Combat.ResetAllOptions): Promise<void>;
 
   /**
    * Roll initiative for one or multiple Combatants within the Combat document
@@ -1410,7 +1466,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param options - Additional options which modify how initiative rolls are created or presented. (default: `{}`)
    * @returns A promise which resolves to the updated Combat document once updates are complete.
    */
-  rollInitiative(ids: string | string[], options?: Combat.InitiativeOptions): Promise<this>;
+  rollInitiative(ids: MaybeArray<string>, options?: Combat.InitiativeOptions): Promise<this>;
 
   /**
    * Roll initiative for all combatants which have not already rolled
@@ -1433,7 +1489,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   setInitiative(id: string, value: number): Promise<void>;
 
   /** Return the Array of combatants sorted into initiative order, breaking ties alphabetically by name. */
-  setupTurns(): Combatant.Implementation[];
+  setupTurns(): Combatant.Stored[];
 
   /**
    * Debounce changes to the composition of the Combat encounter to de-duplicate multiple concurrent Combatant changes.
@@ -1476,7 +1532,18 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    */
   clearMovementHistories(combatants?: Iterable<Combatant.Implementation>): Promise<void>;
 
-  // _onCreate, _onUpdate, and _onDelete  are all overridden but with no signature changes from BaseCombat.
+  // For type simplicity the following real override(s) are commented out.
+  // These methods historically have been the source of a large amount of computation from tsc.
+
+  // protected override _onCreate(data: Combat.CreateData, options: Combat.Database.OnCreateOptions, userId: string): void;
+
+  // protected override _onUpdate(
+  //   changed: Combat.UpdateData,
+  //   options: Combat.Database.OnUpdateOptions,
+  //   userId: string,
+  // ): void;
+
+  // protected override _onDelete(options: Combat.Database.OnDeleteOptions, userId: string): void;
 
   protected override _onCreateDescendantDocuments(...args: Combat.OnCreateDescendantDocumentsArgs): void;
 
@@ -1491,7 +1558,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * This method only executes for one designated GM user. If no GM users are present this method will not be called.
    * @param combatant - The Combatant that entered the Combat
    */
-  protected _onEnter(combatant: Combatant.Implementation): Promise<void>;
+  protected _onEnter(combatant: Combatant.Stored): Promise<void>;
 
   /**
    * This workflow occurs after a Combatant is removed from the Combat.
@@ -1500,7 +1567,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * This method only executes for one designated GM user. If no GM users are present this method will not be called.
    * @param combatant - The Combatant that exited the Combat
    */
-  protected _onExit(combatant: Combatant.Implementation): Promise<void>;
+  protected _onExit(combatant: Combatant.Stored): Promise<void>;
 
   /**
    * Called after {@link Combat#_onExit} and takes care of clearing the movement history of the
@@ -1542,7 +1609,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param combatant - The Combatant whose turn just ended
    * @param context   - The context of the turn tat just ended
    */
-  protected _onEndTurn(combatant: Combatant.Implementation, context: Combat.TurnEventContext): Promise<void>;
+  protected _onEndTurn(combatant: Combatant.Stored, context: Combat.TurnEventContext): Promise<void>;
 
   /**
    * A workflow that occurs at the end of each Combat Round.
@@ -1573,7 +1640,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param combatant - The Combatant whose turn just started
    * @param context   - The context of the turn that just started
    */
-  protected _onStartTurn(combatant: Combatant.Implementation, context: Combat.TurnEventContext): Promise<void>;
+  protected _onStartTurn(combatant: Combatant.Stored, context: Combat.TurnEventContext): Promise<void>;
 
   /**
    * Called after {@link Combat#_onStartTurn} and takes care of clearing the movement history of the
@@ -1584,7 +1651,7 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
    * @param context   - The context of the turn that just started
    */
   protected _clearMovementHistoryOnStartTurn(
-    combatant: Combatant.Implementation,
+    combatant: Combatant.Stored,
     context: Combat.TurnEventContext,
   ): Promise<void>;
 
@@ -1601,16 +1668,16 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
   ): void;
 
   /**
-   * @deprecated Since v12, no stated end
-   * @remarks Foundry provides no deprecation warning; use {@linkcode Combat.getCombatantsByActor | Combat#getCombatantsByActor} instead.
+   * @deprecated Foundry provides no deprecation warning; use {@linkcode Combat.getCombatantsByActor | Combat#getCombatantsByActor} instead.
+   * (Since v12, no stated end)
    */
-  getCombatantByActor(actor: string | Actor.Implementation): Combatant.Implementation | null;
+  getCombatantByActor(actor: string | Actor.Stored): Combatant.Stored | null;
 
   /**
    * @deprecated Since v12, no stated end
    * @remarks Foundry provides no deprecation warning; use {@linkcode Combat.getCombatantsByActor | Combat#getCombatantsByActor} instead.
    */
-  getCombatantByToken(token: string | Token.Implementation): Combatant.Implementation | null;
+  getCombatantByToken(token: string | TokenDocument.Stored): Combatant.Stored | null;
 
   /*
    * After this point these are not really overridden methods.
@@ -1628,32 +1695,65 @@ declare class Combat<out SubType extends Combat.SubType = Combat.SubType> extend
 
   protected override _preCreateDescendantDocuments(...args: Combat.PreCreateDescendantDocumentsArgs): void;
 
+  // `_onCreateDescendantDocuments` omitted from the template due to real override above.
+
   protected override _preUpdateDescendantDocuments(...args: Combat.PreUpdateDescendantDocumentsArgs): void;
+
+  // `_onUpdateDescendantDocuments` omitted from the template due to real override above.
 
   protected override _preDeleteDescendantDocuments(...args: Combat.PreDeleteDescendantDocumentsArgs): void;
 
+  // `_onDeleteDescendantDocuments` omitted from the template due to real override above.
+
   static override defaultName(context?: Combat.DefaultNameContext): string;
 
-  static override createDialog(
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Combat.CreateDialogOptions | undefined = undefined,
+  >(
     data?: Combat.CreateDialogData,
+    createOptions?: Combat.Database.CreateDocumentsOperation<Temporary>,
+    options?: Options,
+  ): Promise<Combat.CreateDialogReturn<Temporary, Options>>;
+
+  /**
+   * @deprecated "The `ClientDocument.createDialog` signature has changed. It now accepts database operation options in its second
+   * parameter, and options for {@linkcode DialogV2.prompt} in its third parameter." (since v13, until v15)
+   *
+   * @see {@linkcode Combat.CreateDialogDeprecatedOptions}
+   */
+  static override createDialog<
+    Temporary extends boolean | undefined = undefined,
+    Options extends Combat.CreateDialogOptions | undefined = undefined,
+  >(
+    data: Combat.CreateDialogData,
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    createOptions?: Combat.Database.DialogCreateOptions,
-    options?: Combat.CreateDialogOptions,
-  ): Promise<Combat.Stored | null | undefined>;
+    createOptions: Combat.CreateDialogDeprecatedOptions<Temporary>,
+    options?: Options,
+  ): Promise<Combat.CreateDialogReturn<Temporary, Options>>;
 
-  override deleteDialog(
-    options?: InexactPartial<DialogV2.ConfirmConfig>,
-    operation?: Document.Database.DeleteOperationForName<"Combat">,
-  ): Promise<this | false | null | undefined>;
+  override deleteDialog<Options extends DialogV2.ConfirmConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Combat.Database.DeleteOneDocumentOperation,
+  ): Promise<Combat.DeleteDialogReturn<Options>>;
 
-  static override fromDropData(
-    data: Combat.DropData,
-    options?: Combat.DropDataOptions,
-  ): Promise<Combat.Implementation | undefined>;
+  /**
+   * @deprecated "`options` is now an object containing entries supported by {@linkcode DialogV2.confirm | DialogV2.confirm}."
+   * (since v13, until v15)
+   *
+   * @see {@linkcode Document.DeleteDialogDeprecatedConfig}
+   */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  override deleteDialog<Options extends Document.DeleteDialogDeprecatedConfig | undefined = undefined>(
+    options?: Options,
+    operation?: Combat.Database.DeleteOneDocumentOperation,
+  ): Promise<Combat.DeleteDialogReturn<Options>>;
+
+  static override fromDropData(data: Combat.DropData): Promise<Combat.Implementation | undefined>;
 
   static override fromImport(
     source: Combat.Source,
-    context?: Document.FromImportContext<Combat.Parent> | null,
+    context?: Document.FromImportContext<Combat.Parent>,
   ): Promise<Combat.Implementation>;
 
   override _onClickDocumentLink(event: MouseEvent): ClientDocument.OnClickDocumentLinkReturn;
