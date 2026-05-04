@@ -303,7 +303,7 @@ declare namespace FilePicker {
     sources: Sources;
     target: string;
     tileSize: number | null;
-    user: User.Implementation;
+    user: User.Stored;
     favorites: Record<string, FilePicker.FavoriteFolder>;
     buttons: ApplicationV2.FormFooterButton[];
   }

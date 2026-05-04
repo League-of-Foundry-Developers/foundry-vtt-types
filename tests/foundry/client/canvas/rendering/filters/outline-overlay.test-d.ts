@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { OutlineOverlayFilter } from "#client/canvas/rendering/filters/_module.mjs";
+
+import OutlineOverlayFilter = foundry.canvas.rendering.filters.OutlineOverlayFilter;
 
 expectTypeOf(OutlineOverlayFilter.vertexShader).toEqualTypeOf<string>();
 expectTypeOf(OutlineOverlayFilter.createFragmentShader()).toEqualTypeOf<string>();

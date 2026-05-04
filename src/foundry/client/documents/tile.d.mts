@@ -1,10 +1,16 @@
-import type { InexactPartial, InterfaceToObject, Merge } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { TextureData } from "#common/data/data.mjs";
-import type BaseTile from "#common/documents/tile.mjs";
+import type { InexactPartial, InterfaceToObject, MaybeArray, Merge } from "#utils";
+import type { fields, TextureData } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseTile } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace TileDocument {
   /**
@@ -13,24 +19,24 @@ declare namespace TileDocument {
   type Name = "Tile";
 
   /**
-   * The context used to create a `Tile`.
+   * The context used to create a `TileDocument`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
   /**
-   * The documents embedded within `Tile`.
+   * The documents embedded within `TileDocument`.
    */
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `TileDocument` document instance configured through `CONFIG.Tile.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredTileDocument | `fvtt-types/configuration/ConfiguredTileDocument`} in fvtt-types.
+   * The implementation of the `TileDocument` document instance configured through
+   * {@linkcode CONFIG.Tile.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `TileDocument` document configured through `CONFIG.Tile.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `TileDocument` document configured through
+   * {@linkcode CONFIG.Tile.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -43,9 +49,9 @@ declare namespace TileDocument {
     Readonly<{
       name: "Tile";
       collection: "tiles";
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
+      label: "DOCUMENT.Tile";
+      labelPlural: "DOCUMENT.Tiles";
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -70,14 +76,6 @@ declare namespace TileDocument {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  type Pack = never;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -88,7 +86,8 @@ declare namespace TileDocument {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -114,19 +113,19 @@ declare namespace TileDocument {
   type Stored = Document.Internal.Stored<TileDocument.Implementation>;
 
   /**
-   * The data put in {@link TileDocument._source | `TileDocument#_source`}. This data is what was
+   * The data put in {@linkcode TileDocument._source | TileDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode TileDocument.create}
-   * and {@link TileDocument | `new TileDocument(...)`}.
+   * and {@linkcode TileDocument | new TileDocument(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -134,33 +133,58 @@ declare namespace TileDocument {
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link TileDocument.name | `TileDocument#name`}.
+   * Used in the {@linkcode TileDocument.create} and {@linkcode TileDocument.createDocuments} signatures, and
+   * {@linkcode TileDocument.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode TileDocument.create}, returning (a single | an array of) (temporary | stored)
+   * `TileDocument`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<TileDocument.TemporaryIf<Temporary>>
+      : TileDocument.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode TileDocument.name | TileDocument#name}.
    *
    * This is data transformed from {@linkcode TileDocument.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link TileDocument.update | `TileDocument#update`}.
-   * It is a distinct type from {@link TileDocument.CreateData | `DeepPartial<TileDocument.CreateData>`} because
+   * The data used to update a document, for example {@linkcode TileDocument.update | TileDocument#update}.
+   * It is a distinct type from {@linkcode TileDocument.CreateData | DeepPartial<TileDocument.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode TileDocument.update | TileDocument#update} and
+   * {@linkcode TileDocument.updateDocuments} signatures, and {@linkcode TileDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode TileDocument}. This is the source of truth for how an TileDocument document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode TileDocument}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Tile embedded document
      * @defaultValue `null`
@@ -233,13 +257,7 @@ declare namespace TileDocument {
     locked: fields.BooleanField;
 
     /** @defaultValue see properties */
-    restrictions: fields.SchemaField<{
-      /** @defaultValue `false` */
-      light: fields.BooleanField;
-
-      /** @defaultValue `false` */
-      weather: fields.BooleanField;
-    }>;
+    restrictions: fields.SchemaField<RestrictionsSchema>;
 
     /**
      * The tile's occlusion settings
@@ -300,6 +318,16 @@ declare namespace TileDocument {
     flags: fields.DocumentFlagsField<Name, InterfaceToObject<CoreFlags>>;
   }
 
+  interface RestrictionsSchema extends fields.DataSchema {
+    /** @defaultValue `false` */
+    light: fields.BooleanField;
+
+    /** @defaultValue `false` */
+    weather: fields.BooleanField;
+  }
+
+  interface RestrictionsData extends fields.SchemaField.InitializedData<RestrictionsSchema> {}
+
   namespace Database {
     /** Options passed along in Get operations for TileDocuments */
     interface Get extends foundry.abstract.types.DatabaseGetOperation<TileDocument.Parent> {}
@@ -335,7 +363,7 @@ declare namespace TileDocument {
       TileDocument.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link TileDocument.update | `TileDocument#update`} */
+    /** Operation for {@linkcode TileDocument.update | TileDocument#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -343,40 +371,40 @@ declare namespace TileDocument {
     /** Options for {@linkcode TileDocument.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link TileDocument._preCreate | `TileDocument#_preCreate`} */
+    /** Options for {@linkcode TileDocument._preCreate | TileDocument#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link TileDocument._onCreate | `TileDocument#_onCreate`} */
+    /** Options for {@linkcode TileDocument._onCreate | TileDocument#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode TileDocument._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<TileDocument.Database.Create> {}
 
-    /** Operation for {@link TileDocument._onCreateOperation | `TileDocument#_onCreateOperation`} */
+    /** Operation for {@linkcode TileDocument._onCreateOperation | TileDocument#_onCreateOperation} */
     interface OnCreateOperation extends TileDocument.Database.Create {}
 
-    /** Options for {@link TileDocument._preUpdate | `TileDocument#_preUpdate`} */
+    /** Options for {@linkcode TileDocument._preUpdate | TileDocument#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link TileDocument._onUpdate | `TileDocument#_onUpdate`} */
+    /** Options for {@linkcode TileDocument._onUpdate | TileDocument#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode TileDocument._preUpdateOperation} */
     interface PreUpdateOperation extends TileDocument.Database.Update {}
 
-    /** Operation for {@link TileDocument._onUpdateOperation | `TileDocument._preUpdateOperation`} */
+    /** Operation for {@linkcode TileDocument._onUpdateOperation | TileDocument._preUpdateOperation} */
     interface OnUpdateOperation extends TileDocument.Database.Update {}
 
-    /** Options for {@link TileDocument._preDelete | `TileDocument#_preDelete`} */
+    /** Options for {@linkcode TileDocument._preDelete | TileDocument#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link TileDocument._onDelete | `TileDocument#_onDelete`} */
+    /** Options for {@linkcode TileDocument._onDelete | TileDocument#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link TileDocument._preDeleteOperation | `TileDocument#_preDeleteOperation`} */
+    /** Options for {@linkcode TileDocument._preDeleteOperation | TileDocument#_preDeleteOperation} */
     interface PreDeleteOperation extends TileDocument.Database.Delete {}
 
-    /** Options for {@link TileDocument._onDeleteOperation | `TileDocument#_onDeleteOperation`} */
+    /** Options for {@linkcode TileDocument._onDeleteOperation | TileDocument#_onDeleteOperation} */
     interface OnDeleteOperation extends TileDocument.Database.Delete {}
 
     /** Context for {@linkcode TileDocument._onDeleteOperation} */
@@ -389,20 +417,20 @@ declare namespace TileDocument {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<TileDocument.Parent> {}
 
     /**
-     * Options for {@link TileDocument._preCreateDescendantDocuments | `TileDocument#_preCreateDescendantDocuments`}
-     * and {@link TileDocument._onCreateDescendantDocuments | `TileDocument#_onCreateDescendantDocuments`}
+     * Options for {@linkcode TileDocument._preCreateDescendantDocuments | TileDocument#_preCreateDescendantDocuments}
+     * and {@linkcode TileDocument._onCreateDescendantDocuments | TileDocument#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<TileDocument.Database.Create> {}
 
     /**
-     * Options for {@link TileDocument._preUpdateDescendantDocuments | `TileDocument#_preUpdateDescendantDocuments`}
-     * and {@link TileDocument._onUpdateDescendantDocuments | `TileDocument#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode TileDocument._preUpdateDescendantDocuments | TileDocument#_preUpdateDescendantDocuments}
+     * and {@linkcode TileDocument._onUpdateDescendantDocuments | TileDocument#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<TileDocument.Database.Update> {}
 
     /**
-     * Options for {@link TileDocument._preDeleteDescendantDocuments | `TileDocument#_preDeleteDescendantDocuments`}
-     * and {@link TileDocument._onDeleteDescendantDocuments | `TileDocument#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode TileDocument._preDeleteDescendantDocuments | TileDocument#_preDeleteDescendantDocuments}
+     * and {@linkcode TileDocument._onDeleteDescendantDocuments | TileDocument#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<TileDocument.Database.Delete> {}
 
@@ -413,11 +441,10 @@ declare namespace TileDocument {
   }
 
   /**
-   * If `Temporary` is true then `TileDocument.Implementation`, otherwise `TileDocument.Stored`.
+   * If `Temporary` is true then {@linkcode TileDocument.Implementation}, otherwise {@linkcode TileDocument.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? TileDocument.Implementation
-    : TileDocument.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? TileDocument.Implementation : TileDocument.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -454,6 +481,10 @@ declare namespace TileDocument {
     };
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -466,7 +497,7 @@ declare namespace TileDocument {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -512,7 +543,7 @@ declare class TileDocument extends BaseTile.Internal.CanvasDocument {
   ): Promise<TileDocument.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Tile">,
   ): Promise<this | false | null | undefined>;
 

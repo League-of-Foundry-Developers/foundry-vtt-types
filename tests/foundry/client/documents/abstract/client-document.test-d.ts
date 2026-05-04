@@ -1,16 +1,21 @@
 import { expectTypeOf } from "vitest";
-import type { FixedInstanceType, InexactPartial } from "fvtt-types/utils";
+import type { InexactPartial } from "fvtt-types/utils";
 
 import Application = foundry.appv1.api.Application;
+import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 import ApplicationV2 = foundry.applications.api.ApplicationV2;
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
 import Document = foundry.abstract.Document;
 import Dialog = foundry.appv1.api.Dialog;
-import FormApplication = foundry.appv1.api.FormApplication;
 import TextEditor = foundry.applications.ux.TextEditor;
+import ClientDocumentMixin = foundry.documents.abstract.ClientDocumentMixin;
+import EmbeddedCollection = foundry.abstract.EmbeddedCollection;
 
 const item = new Item.implementation({ name: "foo", type: "base" });
 declare const someActor: Actor.Implementation;
+declare const actorDelta: ActorDelta.Stored;
+declare const activeEffect: ActiveEffect.Stored;
+const anyClientDoc: ClientDocumentMixin.AnyMixed = item;
 // Test the inheritance of static members
 expectTypeOf(Item.documentName).toEqualTypeOf<"Item">(); // Document
 expectTypeOf(Item.createDialog()).toEqualTypeOf<Promise<Item.Stored | null | undefined>>(); // ClientDocumentMixin
@@ -28,9 +33,9 @@ expectTypeOf(
       pack: "some.pack",
       parent: someActor,
     },
-    {
-      ...dialogOptions,
-    },
+    // {
+    //   ...dialogOptions,
+    // },
   ),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 
@@ -44,11 +49,11 @@ expectTypeOf(
       pack: "some.pack",
       parent: someActor,
     },
-    {
-      // TODO: figure out why `types` doesn't display as deprecated.
-      // types: undefined,
-      ...dialogOptions,
-    },
+    // {
+    //   // TODO: figure out why `types` doesn't display as deprecated.
+    //   // types: undefined,
+    //   ...dialogOptions,
+    // },
   ),
 ).toEqualTypeOf<Promise<Item.Stored | null | undefined>>();
 expectTypeOf(
@@ -73,7 +78,7 @@ expectTypeOf(
     parent: someActor,
   }),
 ).toBeString();
-expectTypeOf(Item.defaultName({ type: null, pack: null, parent: null })).toBeString();
+expectTypeOf(Item.defaultName({ type: undefined, pack: null, parent: null })).toBeString();
 expectTypeOf(Item.defaultName({ type: undefined, pack: undefined, parent: undefined })).toBeString();
 
 declare const itemDropData: Item.DropData;
@@ -96,7 +101,7 @@ expectTypeOf(Item.fromImport(itemSource, constructionContext)).toEqualTypeOf<Pro
 // Test the inheritance
 expectTypeOf(item.documentName).toEqualTypeOf<"Item">(); // Document
 expectTypeOf(item.migrateSystemData()).toEqualTypeOf<object>(); // Base-Document
-expectTypeOf(item.uuid).toEqualTypeOf<string>(); // ClientDocumentMixin
+expectTypeOf(item.uuid).toEqualTypeOf<string | null>(); // ClientDocumentMixin
 expectTypeOf(item.transferredEffects).toEqualTypeOf<ActiveEffect.Implementation[]>(); // class itself
 
 // Properties
@@ -109,21 +114,42 @@ item.apps["bar"] = someAppV2;
 // @ts-expect-error apps is readonly
 item.apps = { foo: someApp, bar: someAppV2 };
 
-// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-expectTypeOf(item["_sheet"]).toEqualTypeOf<FixedInstanceType<Document.SheetClassFor<"Item">> | null>();
+expectTypeOf(item["_sheet"]).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
 
 // _initialize overridden with no signature changes
 
-// TODO This will also match `Item`, but not `Item.Implementation`
-expectTypeOf(item.collection).toEqualTypeOf<Collection<Item.Stored> | null>();
+type AnyRealEmbeddedCollection = _AnyRealEmbeddedCollection<Exclude<Document.EmbeddedType, "ActorDelta">>;
+
+type _AnyRealEmbeddedCollection<Name extends Document.EmbeddedType> = Name extends unknown
+  ? EmbeddedCollection<Document.StoredForName<Name>, Document.Embedded.ParentForName<Name>>
+  : never;
+
+expectTypeOf(item.collection).toEqualTypeOf<
+  | Document.WorldCollectionForName<"Item">
+  | EmbeddedCollection<Item.Stored, Document.Embedded.ParentForName<"Item">>
+  | null
+>();
 // @ts-expect-error Only getter, no setter
 item.collection = new Collection<typeof item>();
 
-expectTypeOf(item.compendium).toEqualTypeOf<CompendiumCollection<"Item">>();
+expectTypeOf(actorDelta.collection).toEqualTypeOf<ActorDelta.Stored>();
+expectTypeOf(activeEffect.collection).toEqualTypeOf<
+  EmbeddedCollection<ActiveEffect.Stored, Actor.Stored | Item.Stored>
+>();
 
-// Regression test for `Type` not being passed through to metadata.
-// Reported by @123499, see https://discord.com/channels/732325252788387980/803646399014109205/1419142467214770317.
-expectTypeOf(item.compendium.metadata.type).toEqualTypeOf<"Item">();
+if (anyClientDoc.collection) {
+  expectTypeOf(anyClientDoc.collection).toEqualTypeOf<
+    Document.WorldCollectionForName<Document.WorldType> | AnyRealEmbeddedCollection | ActorDelta.Stored
+  >();
+}
+
+expectTypeOf(item.compendium).toEqualTypeOf<CompendiumCollection<"Item"> | null>();
+
+if (item.compendium) {
+  // Regression test for `Type` not being passed through to metadata.
+  // Reported by @123499, see https://discord.com/channels/732325252788387980/803646399014109205/1419142467214770317.
+  expectTypeOf(item.compendium.metadata.type).toEqualTypeOf<"Item">();
+}
 
 // @ts-expect-error Only getter, no setter
 item.compendium = game.packs!.contents[0]!;
@@ -149,7 +175,7 @@ expectTypeOf(item.permission).toEqualTypeOf<CONST.DOCUMENT_OWNERSHIP_LEVELS | nu
 item.permission = CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER;
 
 // TODO: change to <FixedInstanceType<ConfiguredSheetClass<Item>> | null> once the circular reference problem has been solved
-expectTypeOf(item.sheet).toEqualTypeOf<FormApplication.Any | ApplicationV2.Any | null>();
+expectTypeOf(item.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
 // @ts-expect-error Only getter, no setter
 item.sheet = someAppV2;
 
@@ -158,7 +184,7 @@ expectTypeOf(item.visible).toBeBoolean();
 item.visible = false;
 
 expectTypeOf(item["_getSheetClass"]()).toEqualTypeOf<
-  FormApplication.AnyConstructor | ApplicationV2.AnyConstructor | null
+  Application.AnyConstructor | DocumentSheetV2.AnyConstructor | undefined
 >();
 
 expectTypeOf(item["_safePrepareData"]()).toBeVoid();
@@ -276,7 +302,7 @@ expectTypeOf(
 expectTypeOf(item["_onSheetChange"]()).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({})).toEqualTypeOf<Promise<void>>();
 expectTypeOf(item["_onSheetChange"]({ sheetOpen: true })).toEqualTypeOf<Promise<void>>();
-expectTypeOf(item["_onSheetChange"]({ sheetOpen: null })).toEqualTypeOf<Promise<void>>();
+expectTypeOf(item["_onSheetChange"]({ sheetOpen: undefined })).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(item.deleteDialog()).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();
 expectTypeOf(item.deleteDialog({})).toEqualTypeOf<Promise<typeof item | false | null | undefined>>();

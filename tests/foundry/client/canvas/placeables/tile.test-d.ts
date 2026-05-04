@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
-import { PlaceableObject, Tile, Token } from "#client/canvas/placeables/_module.mjs";
 
+import Tile = foundry.canvas.placeables.Tile;
+import Token = foundry.canvas.placeables.Token;
+import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import PrimarySpriteMesh = foundry.canvas.primary.PrimarySpriteMesh;
 
 declare const doc: TileDocument.Stored;

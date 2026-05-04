@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { OccludableSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
-import { BatchRenderer } from "#client/canvas/rendering/batching/_module.mjs";
+
+import OccludableSamplerShader = foundry.canvas.rendering.shaders.OccludableSamplerShader;
+import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
 
 const myOSS = OccludableSamplerShader.create();
 expectTypeOf(myOSS).toEqualTypeOf<OccludableSamplerShader>();

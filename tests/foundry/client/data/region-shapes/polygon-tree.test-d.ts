@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { ValueOf } from "fvtt-types/utils";
-import { RegionPolygonTree } from "#client/data/region-shapes/_module.mjs";
+
+import RegionPolygonTree = foundry.data.regionShapes.RegionPolygonTree;
 
 declare const somePath: ClipperLib.Path;
 declare const somePolyTree: ClipperLib.PolyTree;

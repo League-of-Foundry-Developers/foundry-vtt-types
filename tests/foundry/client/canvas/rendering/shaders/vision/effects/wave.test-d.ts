@@ -1,9 +1,8 @@
 import { expectTypeOf } from "vitest";
-import {
-  AbstractBaseShader,
-  WaveBackgroundVisionShader,
-  WaveColorationVisionShader,
-} from "#client/canvas/rendering/shaders/_module.mjs";
+
+import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
+import WaveBackgroundVisionShader = foundry.canvas.rendering.shaders.WaveBackgroundVisionShader;
+import WaveColorationVisionShader = foundry.canvas.rendering.shaders.WaveColorationShader;
 
 const WBVS = WaveBackgroundVisionShader;
 let myWBVS;

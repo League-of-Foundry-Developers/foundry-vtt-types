@@ -81,7 +81,8 @@ type __UnsetDocument = Document.Any & {
   [__Unset]: true;
 };
 
-declare class InvalidUuid extends foundry.abstract.Document<any, any, any> {}
+declare const AnyDocumentClass: Document.AnyConstructor;
+declare abstract class InvalidUuid extends AnyDocumentClass {}
 
 type FromUuid<Uuid extends string> = Uuid extends `${string}.${string}.${infer Rest}`
   ? FromUuid<Rest>

@@ -2,8 +2,7 @@ import { expectTypeOf } from "vitest";
 import type { Fragment, Mark } from "prosemirror-model";
 
 // Import necessary as this is otherwise inaccessible.
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports, import-x/extensions
-import StringSerializer, { StringNode } from "../../../../src/foundry/common/prosemirror/string-serializer.mjs";
+import StringSerializer, { StringNode } from "../../../../src/foundry/common/prosemirror/string-serializer.mts";
 
 declare const schema: foundry.prosemirror.Schema;
 
@@ -18,7 +17,7 @@ declare const node: globalThis.Node;
 declare const el: HTMLElement;
 expectTypeOf(stringSerializer["_specToStringNode"]("some spec string")).toEqualTypeOf<{
   outer: StringNode;
-  content?: StringNode;
+  content?: StringNode | undefined;
 }>();
 expectTypeOf(
   stringSerializer["_specToStringNode"]({ dom: node, contentDOM: el }, false),

@@ -1,11 +1,17 @@
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { BaseActorDelta } from "#common/documents/_module.d.mts";
-import type Document from "#common/abstract/document.d.mts";
 import type { ConfiguredActorDelta } from "#configuration";
-import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
-import type DataModel from "#common/abstract/data.d.mts";
+import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
+import type { BaseActorDelta } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace ActorDelta {
   /**
@@ -24,14 +30,15 @@ declare namespace ActorDelta {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `ActorDelta` document instance configured through `CONFIG.ActorDelta.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`} in fvtt-types.
+   * The implementation of the `ActorDelta` document instance configured through
+   * {@linkcode CONFIG.ActorDelta.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredActorDelta | fvtt-types/configuration/ConfiguredActorDelta} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `ActorDelta` document configured through `CONFIG.ActorDelta.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `ActorDelta` document configured through
+   * {@linkcode CONFIG.ActorDelta.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -44,12 +51,12 @@ declare namespace ActorDelta {
     Readonly<{
       name: "ActorDelta";
       collection: "delta";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.ActorDelta";
+      labelPlural: "DOCUMENT.ActorDeltas";
       isEmbedded: true;
       embedded: Metadata.Embedded;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -95,7 +102,7 @@ declare namespace ActorDelta {
   /**
    * `OfType` returns an instance of `ActorDelta` with the corresponding type. This works with both the
    * builtin `ActorDelta` class or a custom subclass if that is set up in
-   * {@link ConfiguredActorDelta | `fvtt-types/configuration/ConfiguredActorDelta`}.
+   * {@linkcode ConfiguredActorDelta | fvtt-types/configuration/ConfiguredActorDelta}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -130,7 +137,7 @@ declare namespace ActorDelta {
    * A document's parent is something that can contain it.
    * For example an `Item` can be contained by an `Actor` which makes `Actor` one of its possible parents.
    *
-   * `ActorDelta` requires a parent so `null` is not an option here.
+   * @remarks `ActorDelta` requires a parent, even for `new ActorDelta`, so `null` is not an option here.
    */
   type Parent = TokenDocument.Implementation;
 
@@ -164,15 +171,6 @@ declare namespace ActorDelta {
    * This is a union of all classes, or never if the document doesn't have any descendants.
    */
   type DescendantClass = DirectDescendantClass | Item.DescendantClass;
-
-  /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Scene">;
 
   /**
    * An embedded document is a document contained in another.
@@ -227,7 +225,8 @@ declare namespace ActorDelta {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -253,10 +252,10 @@ declare namespace ActorDelta {
   type Stored = Document.Internal.Stored<ActorDelta.Implementation>;
 
   /**
-   * The data put in {@link ActorDelta._source | `ActorDelta#_source`}. This data is what was
+   * The data put in {@linkcode ActorDelta._source | ActorDelta#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source<SubType extends ActorDelta.SubType = ActorDelta.SubType> extends fields.SchemaField
@@ -266,9 +265,9 @@ declare namespace ActorDelta {
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode ActorDelta.create}
-   * and {@link ActorDelta | `new ActorDelta(...)`}.
+   * and {@linkcode ActorDelta | new ActorDelta(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -278,33 +277,58 @@ declare namespace ActorDelta {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link ActorDelta.name | `ActorDelta#name`}.
+   * Used in the {@linkcode ActorDelta.create} and {@linkcode ActorDelta.createDocuments} signatures, and
+   * {@linkcode ActorDelta.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode ActorDelta.create}, returning (a single | an array of) (temporary | stored)
+   * `ActorDelta`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<ActorDelta.TemporaryIf<Temporary>>
+      : ActorDelta.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode ActorDelta.name | ActorDelta#name}.
    *
    * This is data transformed from {@linkcode ActorDelta.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link ActorDelta.update | `ActorDelta#update`}.
-   * It is a distinct type from {@link ActorDelta.CreateData | `DeepPartial<ActorDelta.CreateData>`} because
+   * The data used to update a document, for example {@linkcode ActorDelta.update | ActorDelta#update}.
+   * It is a distinct type from {@linkcode ActorDelta.CreateData | DeepPartial<ActorDelta.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode ActorDelta.update | ActorDelta#update} and
+   * {@linkcode ActorDelta.updateDocuments} signatures, and {@linkcode ActorDelta.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode ActorDelta}. This is the source of truth for how an ActorDelta document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode ActorDelta}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this ActorDelta document.
      */
@@ -385,7 +409,7 @@ declare namespace ActorDelta {
       ActorDelta.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link ActorDelta.update | `ActorDelta#update`} */
+    /** Operation for {@linkcode ActorDelta.update | ActorDelta#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -393,40 +417,40 @@ declare namespace ActorDelta {
     /** Options for {@linkcode ActorDelta.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link ActorDelta._preCreate | `ActorDelta#_preCreate`} */
+    /** Options for {@linkcode ActorDelta._preCreate | ActorDelta#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link ActorDelta._onCreate | `ActorDelta#_onCreate`} */
+    /** Options for {@linkcode ActorDelta._onCreate | ActorDelta#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode ActorDelta._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<ActorDelta.Database.Create> {}
 
-    /** Operation for {@link ActorDelta._onCreateOperation | `ActorDelta#_onCreateOperation`} */
+    /** Operation for {@linkcode ActorDelta._onCreateOperation | ActorDelta#_onCreateOperation} */
     interface OnCreateOperation extends ActorDelta.Database.Create {}
 
-    /** Options for {@link ActorDelta._preUpdate | `ActorDelta#_preUpdate`} */
+    /** Options for {@linkcode ActorDelta._preUpdate | ActorDelta#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link ActorDelta._onUpdate | `ActorDelta#_onUpdate`} */
+    /** Options for {@linkcode ActorDelta._onUpdate | ActorDelta#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode ActorDelta._preUpdateOperation} */
     interface PreUpdateOperation extends ActorDelta.Database.Update {}
 
-    /** Operation for {@link ActorDelta._onUpdateOperation | `ActorDelta._preUpdateOperation`} */
+    /** Operation for {@linkcode ActorDelta._onUpdateOperation | ActorDelta._preUpdateOperation} */
     interface OnUpdateOperation extends ActorDelta.Database.Update {}
 
-    /** Options for {@link ActorDelta._preDelete | `ActorDelta#_preDelete`} */
+    /** Options for {@linkcode ActorDelta._preDelete | ActorDelta#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link ActorDelta._onDelete | `ActorDelta#_onDelete`} */
+    /** Options for {@linkcode ActorDelta._onDelete | ActorDelta#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link ActorDelta._preDeleteOperation | `ActorDelta#_preDeleteOperation`} */
+    /** Options for {@linkcode ActorDelta._preDeleteOperation | ActorDelta#_preDeleteOperation} */
     interface PreDeleteOperation extends ActorDelta.Database.Delete {}
 
-    /** Options for {@link ActorDelta._onDeleteOperation | `ActorDelta#_onDeleteOperation`} */
+    /** Options for {@linkcode ActorDelta._onDeleteOperation | ActorDelta#_onDeleteOperation} */
     interface OnDeleteOperation extends ActorDelta.Database.Delete {}
 
     /** Context for {@linkcode ActorDelta._onDeleteOperation} */
@@ -439,20 +463,20 @@ declare namespace ActorDelta {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<ActorDelta.Parent> {}
 
     /**
-     * Options for {@link ActorDelta._preCreateDescendantDocuments | `ActorDelta#_preCreateDescendantDocuments`}
-     * and {@link ActorDelta._onCreateDescendantDocuments | `ActorDelta#_onCreateDescendantDocuments`}
+     * Options for {@linkcode ActorDelta._preCreateDescendantDocuments | ActorDelta#_preCreateDescendantDocuments}
+     * and {@linkcode ActorDelta._onCreateDescendantDocuments | ActorDelta#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<ActorDelta.Database.Create> {}
 
     /**
-     * Options for {@link ActorDelta._preUpdateDescendantDocuments | `ActorDelta#_preUpdateDescendantDocuments`}
-     * and {@link ActorDelta._onUpdateDescendantDocuments | `ActorDelta#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode ActorDelta._preUpdateDescendantDocuments | ActorDelta#_preUpdateDescendantDocuments}
+     * and {@linkcode ActorDelta._onUpdateDescendantDocuments | ActorDelta#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<ActorDelta.Database.Update> {}
 
     /**
-     * Options for {@link ActorDelta._preDeleteDescendantDocuments | `ActorDelta#_preDeleteDescendantDocuments`}
-     * and {@link ActorDelta._onDeleteDescendantDocuments | `ActorDelta#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode ActorDelta._preDeleteDescendantDocuments | ActorDelta#_preDeleteDescendantDocuments}
+     * and {@linkcode ActorDelta._onDeleteDescendantDocuments | ActorDelta#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<ActorDelta.Database.Delete> {}
 
@@ -463,11 +487,10 @@ declare namespace ActorDelta {
   }
 
   /**
-   * If `Temporary` is true then `ActorDelta.Implementation`, otherwise `ActorDelta.Stored`.
+   * If `Temporary` is true then {@linkcode ActorDelta.Implementation}, otherwise {@linkcode ActorDelta.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? ActorDelta.Implementation
-    : ActorDelta.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? ActorDelta.Implementation : ActorDelta.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -490,6 +513,10 @@ declare namespace ActorDelta {
      */
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
+
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
   type PreCreateDescendantDocumentsArgs =
     | Document.Internal.PreCreateDescendantDocumentsArgs<
@@ -542,10 +569,19 @@ declare namespace ActorDelta {
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
+  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
+
+  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
+  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *           ACTOR-DELTA-SPECIFIC TYPES          *
+   *************************************************/
+
   /** @internal */
   type _InitializeOptions = NullishProps<{
     /**
-     * @remarks Is this initialization part of a {@link Scene.reset | `Scene#reset`} call? (skips further initialization if truthy)
+     * @remarks Is this initialization part of a {@linkcode Scene.reset | Scene#reset} call? (skips further initialization if truthy)
      * @defaultValue `false`
      */
     sceneReset: boolean;
@@ -553,16 +589,11 @@ declare namespace ActorDelta {
 
   interface InitializeOptions extends Document.InitializeOptions, _InitializeOptions {}
 
-  interface DefaultNameContext extends Document.DefaultNameContext<Name, NonNullable<Parent>> {}
-
-  interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
-  interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
-
   /**
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    * @privateRemarks This is off-template, as ActorDelta throws if not provided a valid TokenDocument
    * parent in the construction context for any construction, not just `.create`ion
    */
@@ -601,7 +632,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   /**
    * Apply this ActorDelta to the base Actor and return a synthetic Actor.
    * @param context - Context to supply to synthetic Actor instantiation.
-   * @remarks Forwards `context` to {@link BaseActorDelta.applyDelta | `this.constructor.applyDelta(this, this.parent.baseActor, context)`}
+   * @remarks Forwards `context` to {@linkcode BaseActorDelta.applyDelta | this.constructor.applyDelta(this, this.parent.baseActor, context)}
    */
   apply(context?: BaseActorDelta.ApplyDeltaContext): Actor.Implementation | null;
 
@@ -673,112 +704,16 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
 
   // ClientDocument overrides
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class SwadeActorDelta extends ActorDelta {
-   *   protected override _preCreateDescendantDocuments(...args: ActorDelta.PreCreateDescendantDocumentsArgs) {
-   *     super._preCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, data, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preCreateDescendantDocuments(...args: ActorDelta.PreCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class GurpsActorDelta extends ActorDelta {
-   *   protected override _onCreateDescendantDocuments(...args: ActorDelta.OnCreateDescendantDocumentsArgs) {
-   *     super._onCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, data, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onCreateDescendantDocuments(...args: ActorDelta.OnCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class LancerActorDelta extends ActorDelta {
-   *   protected override _preUpdateDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocuments) {
-   *     super._preUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, changes, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preUpdateDescendantDocuments(...args: ActorDelta.PreUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class Ptr2eActorDelta extends ActorDelta {
-   *   protected override _onUpdateDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocumentsArgs) {
-   *     super._onUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, changes, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onUpdateDescendantDocuments(...args: ActorDelta.OnUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class KultActorDelta extends ActorDelta {
-   *   protected override _preDeleteDescendantDocuments(...args: ActorDelta.PreDeleteDescendantDocumentsArgs) {
-   *     super._preDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, ids, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preDeleteDescendantDocuments(...args: ActorDelta.PreDeleteDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class BladesActorDelta extends ActorDelta {
-   *   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs) {
-   *     super._onDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, ids, options, userId] = args;
-   *     if (collection === "items") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onDeleteDescendantDocuments(...args: ActorDelta.OnDeleteDescendantDocumentsArgs): void;
 
   /** @remarks `context` must contain a `pack` or `parent`. */
@@ -792,7 +727,7 @@ declare class ActorDelta<out SubType extends ActorDelta.SubType = ActorDelta.Sub
   ): Promise<ActorDelta.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: ActorDelta.Database.DeleteOperation,
   ): Promise<this | false | null | undefined>;
 

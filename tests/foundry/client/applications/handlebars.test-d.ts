@@ -12,7 +12,7 @@ expectTypeOf(handlebars.editor("", { hash: { target: "" } })).toEqualTypeOf<Hand
 expectTypeOf(handlebars.ifThen(true, "", "")).toEqualTypeOf<string>();
 expectTypeOf(handlebars.localize("", { hash: {} })).toEqualTypeOf<string>();
 expectTypeOf(handlebars.numberFormat("", { hash: {} })).toEqualTypeOf<string>();
-expectTypeOf(handlebars.numberInput("", { hash: {} })).toEqualTypeOf<Handlebars.SafeString>();
+expectTypeOf(handlebars.numberInput("", { hash: { name: "numberField" } })).toEqualTypeOf<Handlebars.SafeString>();
 expectTypeOf(handlebars.radioBoxes("", {}, { hash: {} })).toEqualTypeOf<Handlebars.SafeString>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(handlebars.rangePicker(rangePickerOptions)).toEqualTypeOf<Handlebars.SafeString>();

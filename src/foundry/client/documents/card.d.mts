@@ -1,11 +1,17 @@
 import type { ConfiguredCard } from "#configuration";
-import type { AnyObject, DeepPartial, Identity, InexactPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseCard from "#common/documents/card.d.mts";
+import type { AnyObject, DeepPartial, Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseCard, BaseCards } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace Card {
   /**
@@ -24,14 +30,15 @@ declare namespace Card {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Card` document instance configured through `CONFIG.Card.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`} in fvtt-types.
+   * The implementation of the `Card` document instance configured through
+   * {@linkcode CONFIG.Card.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredCard | fvtt-types/configuration/ConfiguredCard} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Card` document configured through `CONFIG.Card.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Card` document configured through
+   * {@linkcode CONFIG.Card.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -46,11 +53,11 @@ declare namespace Card {
       collection: "cards";
       hasTypeData: true;
       indexed: true;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Card";
+      labelPlural: "DOCUMENT.CardPlural";
       permissions: Metadata.Permissions;
       compendiumIndexFields: ["name", "type", "suit", "sort"];
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -96,7 +103,7 @@ declare namespace Card {
   /**
    * `OfType` returns an instance of `Card` with the corresponding type. This works with both the
    * builtin `Card` class or a custom subclass if that is set up in
-   * {@link ConfiguredCard | `fvtt-types/configuration/ConfiguredCard`}.
+   * {@linkcode ConfiguredCard | fvtt-types/configuration/ConfiguredCard}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -144,15 +151,6 @@ declare namespace Card {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Cards">;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -163,7 +161,8 @@ declare namespace Card {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -189,19 +188,19 @@ declare namespace Card {
   type Stored<SubType extends Card.SubType = Card.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link Card._source | `Card#_source`}. This data is what was
+   * The data put in {@linkcode Card._source | Card#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Card.create}
-   * and {@link Card | `new Card(...)`}.
+   * and {@linkcode Card | new Card(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -210,33 +209,56 @@ declare namespace Card {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Card.name | `Card#name`}.
+   * Used in the {@linkcode Card.create} and {@linkcode Card.createDocuments} signatures, and
+   * {@linkcode Card.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Card.create}, returning (a single | an array of) (temporary | stored)
+   * `Card`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput> ? Array<Card.TemporaryIf<Temporary>> : Card.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode Card.name | Card#name}.
    *
    * This is data transformed from {@linkcode Card.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Card.update | `Card#update`}.
-   * It is a distinct type from {@link Card.CreateData | `DeepPartial<Card.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Card.update | Card#update}.
+   * It is a distinct type from {@linkcode Card.CreateData | DeepPartial<Card.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode Card.update | Card#update} and
+   * {@linkcode Card.updateDocuments} signatures, and {@linkcode Card.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode Card}. This is the source of truth for how an Card document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Card}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Card document
      * @defaultValue `null`
@@ -321,7 +343,7 @@ declare namespace Card {
      * The document ID of the origin deck to which this card belongs
      * @defaultValue `null`
      */
-    origin: fields.ForeignDocumentField<typeof documents.BaseCards>;
+    origin: fields.ForeignDocumentField<typeof BaseCards>;
 
     /**
      * The visible width of this card
@@ -356,7 +378,7 @@ declare namespace Card {
     _stats: fields.DocumentStatsField;
   }
 
-  interface FaceSchema extends DataSchema {
+  interface FaceSchema extends fields.DataSchema {
     /**
      * A name for this card face
      * @defaultValue `undefined`
@@ -411,7 +433,7 @@ declare namespace Card {
       Card.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Card.update | `Card#update`} */
+    /** Operation for {@linkcode Card.update | Card#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -419,40 +441,40 @@ declare namespace Card {
     /** Options for {@linkcode Card.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Card._preCreate | `Card#_preCreate`} */
+    /** Options for {@linkcode Card._preCreate | Card#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Card._onCreate | `Card#_onCreate`} */
+    /** Options for {@linkcode Card._onCreate | Card#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Card._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Card.Database.Create> {}
 
-    /** Operation for {@link Card._onCreateOperation | `Card#_onCreateOperation`} */
+    /** Operation for {@linkcode Card._onCreateOperation | Card#_onCreateOperation} */
     interface OnCreateOperation extends Card.Database.Create {}
 
-    /** Options for {@link Card._preUpdate | `Card#_preUpdate`} */
+    /** Options for {@linkcode Card._preUpdate | Card#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Card._onUpdate | `Card#_onUpdate`} */
+    /** Options for {@linkcode Card._onUpdate | Card#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Card._preUpdateOperation} */
     interface PreUpdateOperation extends Card.Database.Update {}
 
-    /** Operation for {@link Card._onUpdateOperation | `Card._preUpdateOperation`} */
+    /** Operation for {@linkcode Card._onUpdateOperation | Card._preUpdateOperation} */
     interface OnUpdateOperation extends Card.Database.Update {}
 
-    /** Options for {@link Card._preDelete | `Card#_preDelete`} */
+    /** Options for {@linkcode Card._preDelete | Card#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Card._onDelete | `Card#_onDelete`} */
+    /** Options for {@linkcode Card._onDelete | Card#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Card._preDeleteOperation | `Card#_preDeleteOperation`} */
+    /** Options for {@linkcode Card._preDeleteOperation | Card#_preDeleteOperation} */
     interface PreDeleteOperation extends Card.Database.Delete {}
 
-    /** Options for {@link Card._onDeleteOperation | `Card#_onDeleteOperation`} */
+    /** Options for {@linkcode Card._onDeleteOperation | Card#_onDeleteOperation} */
     interface OnDeleteOperation extends Card.Database.Delete {}
 
     /** Context for {@linkcode Card._onDeleteOperation} */
@@ -465,20 +487,20 @@ declare namespace Card {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Card.Parent> {}
 
     /**
-     * Options for {@link Card._preCreateDescendantDocuments | `Card#_preCreateDescendantDocuments`}
-     * and {@link Card._onCreateDescendantDocuments | `Card#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Card._preCreateDescendantDocuments | Card#_preCreateDescendantDocuments}
+     * and {@linkcode Card._onCreateDescendantDocuments | Card#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Card.Database.Create> {}
 
     /**
-     * Options for {@link Card._preUpdateDescendantDocuments | `Card#_preUpdateDescendantDocuments`}
-     * and {@link Card._onUpdateDescendantDocuments | `Card#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Card._preUpdateDescendantDocuments | Card#_preUpdateDescendantDocuments}
+     * and {@linkcode Card._onUpdateDescendantDocuments | Card#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Card.Database.Update> {}
 
     /**
-     * Options for {@link Card._preDeleteDescendantDocuments | `Card#_preDeleteDescendantDocuments`}
-     * and {@link Card._onDeleteDescendantDocuments | `Card#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Card._preDeleteDescendantDocuments | Card#_preDeleteDescendantDocuments}
+     * and {@linkcode Card._onDeleteDescendantDocuments | Card#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Card.Database.Delete> {}
 
@@ -489,9 +511,10 @@ declare namespace Card {
   }
 
   /**
-   * If `Temporary` is true then `Card.Implementation`, otherwise `Card.Stored`.
+   * If `Temporary` is true then {@linkcode Card.Implementation}, otherwise {@linkcode Card.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary ? Card.Implementation : Card.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Card.Implementation : Card.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -515,6 +538,10 @@ declare namespace Card {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -523,8 +550,12 @@ declare namespace Card {
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
+  /* ***********************************************
+   *              CARD-SPECIFIC TYPES              *
+   *************************************************/
+
   /**
-   * @remarks {@link Card.pass | `Card#pass`} calls {@link Cards.pass | `this.parent.pass`} with `action: "pass"` provided by default.
+   * @remarks {@linkcode Card.pass | Card#pass} calls {@linkcode Cards.pass | this.parent.pass} with `action: "pass"` provided by default.
    */
   interface PassOptions extends Cards.PassOptions {
     /**
@@ -535,7 +566,7 @@ declare namespace Card {
   }
 
   /**
-   * @remarks {@link Card.play | `Card#play`} calls {@link Cards.pass | `this.parent.pass`} with `action: "play"` provided by default.
+   * @remarks {@linkcode Card.play | Card#play} calls {@linkcode Cards.pass | this.parent.pass} with `action: "play"` provided by default.
    */
   interface PlayOptions extends Cards.PassOptions {
     /**
@@ -546,7 +577,7 @@ declare namespace Card {
   }
 
   /**
-   * @remarks {@link Card.discard | `Card#discard`} calls {@link Cards.pass | `this.parent.pass`} with `action: "discard"` provided by default.
+   * @remarks {@linkcode Card.discard | Card#discard} calls {@linkcode Cards.pass | this.parent.pass} with `action: "discard"` provided by default.
    */
   interface DiscardOptions extends Cards.PassOptions {
     /**
@@ -560,7 +591,7 @@ declare namespace Card {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -642,15 +673,15 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
 
   /**
    * Play a specific card to some other Cards document.
-   * @see {@link Card.pass | `Card#pass`}
-   * @remarks This method is currently a more semantic alias for {@link Card.pass | `Card#pass`}.
+   * @see {@linkcode Card.pass | Card#pass}
+   * @remarks This method is currently a more semantic alias for {@linkcode Card.pass | Card#pass}.
    */
   play(to: Cards.Implementation, options?: Card.PlayOptions): Promise<Card.Implementation | undefined>;
 
   /**
    * Discard a specific card to some other Cards document.
-   * @see {@link Card.pass | `Card#pass`}
-   * @remarks This method is currently a more semantic alias for {@link Card.pass | `Card#pass`}.
+   * @see {@linkcode Card.pass | Card#pass}
+   * @remarks This method is currently a more semantic alias for {@linkcode Card.pass | Card#pass}.
    */
   discard(to: Cards.Implementation, options?: Card.DiscardOptions): Promise<Card.Implementation | undefined>;
 
@@ -698,7 +729,7 @@ declare class Card<out SubType extends Card.SubType = Card.SubType> extends Base
   ): Promise<Card.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Card">,
   ): Promise<this | false | null | undefined>;
 

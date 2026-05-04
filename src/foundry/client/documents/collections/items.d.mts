@@ -1,19 +1,36 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
+import type { Application } from "#client/appv1/api/_module.d.mts";
+import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
+import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 
 /**
  * The singleton collection of Item documents which exist within the active World.
  * This Collection is accessible within the Game object as {@linkcode foundry.Game.items | game.items}.
  *
- * @see {@linkcode Item} The Item document
- * @see {@linkcode ItemDirectory} The ItemDirectory sidebar directory
+ * @see {@linkcode foundry.documents.Item}: The Item document
+ * @see {@linkcode foundry.applications.sidebar.tabs.ItemDirectory}: The ItemDirectory sidebar directory
  */
 declare class Items extends WorldCollection<"Item"> {
   static override documentName: "Item";
 
   /** @privateRemarks Fake type override */
   static override get instance(): Items.Implementation;
+
+  // Fake override for the purpose of typing `options`.
+  static override registerSheet(
+    scope: string,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.RegisterSheetOptions<Item.ImplementationClass>,
+  ): void;
+
+  // Fake override for the purpose of typing `options`.
+  static override unregisterSheet(
+    scope: string,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.UnregisterSheetOptions<Item.ImplementationClass>,
+  ): void;
 }
 
 declare namespace Items {

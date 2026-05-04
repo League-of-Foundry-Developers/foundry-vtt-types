@@ -1,5 +1,7 @@
 import { describe, expectTypeOf, test } from "vitest";
-import { RenderFlags, RenderFlagsMixin } from "#client/canvas/interaction/_module.mjs";
+
+import RenderFlags = foundry.canvas.interaction.RenderFlags;
+import RenderFlagsMixin = foundry.canvas.interaction.RenderFlagsMixin;
 
 const validFlags = { someFlag: { propagate: ["otherFlag" as const] }, otherFlag: {} };
 

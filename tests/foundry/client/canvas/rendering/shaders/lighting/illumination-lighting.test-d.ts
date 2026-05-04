@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { AdaptiveIlluminationShader } from "#client/canvas/rendering/shaders/_module.mjs";
 
+import AdaptiveIlluminationShader = foundry.canvas.rendering.shaders.AdaptiveIlluminationShader;
 import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 
 expectTypeOf(AdaptiveIlluminationShader.SHADER_HEADER).toEqualTypeOf<string>();

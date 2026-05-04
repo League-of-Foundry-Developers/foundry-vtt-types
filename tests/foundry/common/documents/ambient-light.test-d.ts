@@ -3,7 +3,13 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseAmbientLight = foundry.documents.BaseAmbientLight;
 import Document = foundry.abstract.Document;
 
-class TestBaseAmbientLight extends BaseAmbientLight {}
+class TestBaseAmbientLight extends BaseAmbientLight {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"AmbientLight">)
+      : null;
+  }
+}
 
 // AmbientLight has no hard required fields for construction
 new TestBaseAmbientLight();
@@ -137,7 +143,7 @@ const myLight = new TestBaseAmbientLight({
   config: undefined,
 });
 
-expectTypeOf(myLight).toEqualTypeOf<BaseAmbientLight>();
+expectTypeOf(myLight).toEqualTypeOf<TestBaseAmbientLight>();
 
 expectTypeOf(myLight._id).toEqualTypeOf<string | null>();
 expectTypeOf(myLight.x).toBeNumber();

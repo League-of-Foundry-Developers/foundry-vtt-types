@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { VoidFilter } from "#client/canvas/rendering/filters/_module.mjs";
+
+import VoidFilter = foundry.canvas.rendering.filters.VoidFilter;
 
 const myVoidFilter = VoidFilter.create();
 expectTypeOf(myVoidFilter).toEqualTypeOf<VoidFilter>();

@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { PolygonMesher } from "#client/canvas/geometry/_module.mjs";
+
+import PolygonMesher = foundry.canvas.geometry.PolygonMesher;
 
 declare const somePoly: PIXI.Polygon;
 declare const someGeometry: PIXI.Geometry;

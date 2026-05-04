@@ -3,7 +3,7 @@ import { expectTypeOf } from "vitest";
 import Edge = foundry.canvas.geometry.edges.Edge;
 import PolygonVertex = foundry.canvas.geometry.edges.PolygonVertex;
 import Canvas = foundry.canvas.Canvas;
-import type { LineIntersection } from "#common/utils/geometry.mjs";
+import utils = foundry.utils;
 
 expectTypeOf(PolygonVertex.getKey(17, 245)).toBeNumber();
 declare const p: Canvas.Point;
@@ -32,7 +32,7 @@ expectTypeOf(vertex["_distance"]).toEqualTypeOf<number | undefined>();
 expectTypeOf(vertex["_d2"]).toEqualTypeOf<number | undefined>();
 expectTypeOf(vertex["_index"]).toEqualTypeOf<number | undefined>();
 expectTypeOf(vertex["_angle"]).toEqualTypeOf<number | undefined>();
-expectTypeOf(vertex["_intersectionCoordinates"]).toEqualTypeOf<LineIntersection | undefined>();
+expectTypeOf(vertex["_intersectionCoordinates"]).toEqualTypeOf<utils.LineIntersection | undefined>();
 expectTypeOf(vertex.isLimited).toEqualTypeOf<boolean>();
 
 declare const edge: Edge;

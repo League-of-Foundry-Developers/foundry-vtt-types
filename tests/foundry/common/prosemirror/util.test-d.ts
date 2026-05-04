@@ -1,6 +1,11 @@
 import { expectTypeOf } from "vitest";
-import { parseHTMLString, serializeHTMLString, transformSlice } from "#common/prosemirror/util.mjs";
 import type { Node, Slice } from "prosemirror-model";
+
+import {
+  parseHTMLString,
+  serializeHTMLString,
+  transformSlice,
+} from "../../../../src/foundry/common/prosemirror/util.mts";
 
 declare const node: Node;
 

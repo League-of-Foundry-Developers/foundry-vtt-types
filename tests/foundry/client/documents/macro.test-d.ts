@@ -45,7 +45,7 @@ expectTypeOf(chat.execute()).toEqualTypeOf<void | Promise<unknown>>();
 
 // properties and functions of `ClientDocumentMixin`
 expectTypeOf(script.apps).toEqualTypeOf<Record<string, Application.Any | foundry.applications.api.ApplicationV2.Any>>();
-expectTypeOf(script.collection).toEqualTypeOf<Collection<Macro.Stored> | null>();
+expectTypeOf(script.collection).toEqualTypeOf<foundry.documents.collections.Macros.Implementation | null>();
 expectTypeOf(script.folder).toEqualTypeOf<Folder.Stored | null>();
 expectTypeOf(script.isOwner).toEqualTypeOf<boolean>();
 
@@ -59,5 +59,5 @@ expectTypeOf(script.pack).toEqualTypeOf<string | null>();
 // static properties of `Document`
 expectTypeOf(Macro.create({ name: "Some Macro" })).toEqualTypeOf<Promise<Macro.Stored | undefined>>();
 expectTypeOf(Macro.createDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
-expectTypeOf(Macro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Implementation[]>>();
-expectTypeOf(Macro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Implementation[]>>();
+expectTypeOf(Macro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
+expectTypeOf(Macro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();

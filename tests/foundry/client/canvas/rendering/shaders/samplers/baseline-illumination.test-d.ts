@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { BaselineIlluminationSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
+
+import BaselineIlluminationSamplerShader = foundry.canvas.rendering.shaders.BaselineIlluminationSamplerShader;
 
 const myBISS = BaselineIlluminationSamplerShader.create();
 expectTypeOf(myBISS).toEqualTypeOf<BaselineIlluminationSamplerShader>();

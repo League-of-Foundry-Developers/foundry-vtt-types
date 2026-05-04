@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { VisibilityFilter } from "#client/canvas/rendering/filters/_module.mjs";
+
+import VisibilityFilter = foundry.canvas.rendering.filters.VisibilityFilter;
 
 const myVF = VisibilityFilter.create();
 expectTypeOf(myVF).toEqualTypeOf<VisibilityFilter>();

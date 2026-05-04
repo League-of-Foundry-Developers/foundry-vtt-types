@@ -11,7 +11,9 @@ if (hotbar.slots[0]) {
 }
 
 Hooks.on("getMacroContextOptions", (app, contextOptions) => {
-  expectTypeOf(app).toEqualTypeOf<foundry.applications.ui.Hotbar>();
+  expectTypeOf(app).toEqualTypeOf<
+    foundry.applications.ui.Hotbar.Any | foundry.applications.sidebar.tabs.MacroDirectory.Any
+  >();
   expectTypeOf(contextOptions).toEqualTypeOf<foundry.applications.ux.ContextMenu.Entry<HTMLElement>[]>();
 });
 

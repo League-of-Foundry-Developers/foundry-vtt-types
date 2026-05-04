@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import type { Note } from "#client/canvas/placeables/_module.d.mts";
+
+import Note = foundry.canvas.placeables.Note;
 
 // @ts-expect-error data is required
 new JournalEntryPage.implementation();

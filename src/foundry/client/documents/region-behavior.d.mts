@@ -1,10 +1,17 @@
 import type { ConfiguredRegionBehavior } from "#configuration";
-import type Document from "#common/abstract/document.d.mts";
-import type BaseRegionBehavior from "#common/documents/region-behavior.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { Identity, InexactPartial, Merge } from "#utils";
+import type { Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseRegionBehavior } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace RegionBehavior {
   /**
@@ -23,14 +30,15 @@ declare namespace RegionBehavior {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `RegionBehavior` document instance configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`} in fvtt-types.
+   * The implementation of the `RegionBehavior` document instance configured through
+   * {@linkcode CONFIG.RegionBehavior.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredRegionBehavior | fvtt-types/configuration/ConfiguredRegionBehavior} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `RegionBehavior` document configured through `CONFIG.RegionBehavior.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `RegionBehavior` document configured through
+   * {@linkcode CONFIG.RegionBehavior.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -43,8 +51,8 @@ declare namespace RegionBehavior {
     Readonly<{
       name: "RegionBehavior";
       collection: "behaviors";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.RegionBehavior";
+      labelPlural: "DOCUMENT.RegionBehaviors";
       coreTypes: [
         "adjustDarknessLevel",
         "displayScrollingText",
@@ -59,7 +67,7 @@ declare namespace RegionBehavior {
       hasTypeData: true;
       isEmbedded: true;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -104,7 +112,7 @@ declare namespace RegionBehavior {
   /**
    * `OfType` returns an instance of `RegionBehavior` with the corresponding type. This works with both the
    * builtin `RegionBehavior` class or a custom subclass if that is set up in
-   * {@link ConfiguredRegionBehavior | `fvtt-types/configuration/ConfiguredRegionBehavior`}.
+   * {@linkcode ConfiguredRegionBehavior | fvtt-types/configuration/ConfiguredRegionBehavior}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -152,15 +160,6 @@ declare namespace RegionBehavior {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Scene">;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -171,7 +170,8 @@ declare namespace RegionBehavior {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -199,19 +199,19 @@ declare namespace RegionBehavior {
   >;
 
   /**
-   * The data put in {@link RegionBehavior._source | `RegionBehavior#_source`}. This data is what was
+   * The data put in {@linkcode RegionBehavior._source | RegionBehavior#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode RegionBehavior.create}
-   * and {@link RegionBehavior | `new RegionBehavior(...)`}.
+   * and {@linkcode RegionBehavior | new RegionBehavior(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -221,33 +221,58 @@ declare namespace RegionBehavior {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link RegionBehavior.name | `RegionBehavior#name`}.
+   * Used in the {@linkcode RegionBehavior.create} and {@linkcode RegionBehavior.createDocuments} signatures, and
+   * {@linkcode RegionBehavior.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode RegionBehavior.create}, returning (a single | an array of) (temporary | stored)
+   * `RegionBehavior`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<RegionBehavior.TemporaryIf<Temporary>>
+      : RegionBehavior.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode RegionBehavior.name | RegionBehavior#name}.
    *
    * This is data transformed from {@linkcode RegionBehavior.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link RegionBehavior.update | `RegionBehavior#update`}.
-   * It is a distinct type from {@link RegionBehavior.CreateData | `DeepPartial<RegionBehavior.CreateData>`} because
+   * The data used to update a document, for example {@linkcode RegionBehavior.update | RegionBehavior#update}.
+   * It is a distinct type from {@linkcode RegionBehavior.CreateData | DeepPartial<RegionBehavior.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode RegionBehavior.update | RegionBehavior#update} and
+   * {@linkcode RegionBehavior.updateDocuments} signatures, and {@linkcode RegionBehavior.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode RegionBehavior}. This is the source of truth for how an RegionBehavior document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode RegionBehavior}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this RegionBehavior document
      * @defaultValue `null`
@@ -263,8 +288,7 @@ declare namespace RegionBehavior {
     /**
      * An RegionBehavior subtype which configures the system data model applied
      */
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof BaseRegionBehavior, {}>;
+    type: fields.DocumentTypeField<typeof BaseRegionBehavior>;
 
     /**
      * Data for a RegionBehavior subtype, defined by a System or Module
@@ -324,7 +348,7 @@ declare namespace RegionBehavior {
       RegionBehavior.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link RegionBehavior.update | `RegionBehavior#update`} */
+    /** Operation for {@linkcode RegionBehavior.update | RegionBehavior#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -332,40 +356,40 @@ declare namespace RegionBehavior {
     /** Options for {@linkcode RegionBehavior.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link RegionBehavior._preCreate | `RegionBehavior#_preCreate`} */
+    /** Options for {@linkcode RegionBehavior._preCreate | RegionBehavior#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link RegionBehavior._onCreate | `RegionBehavior#_onCreate`} */
+    /** Options for {@linkcode RegionBehavior._onCreate | RegionBehavior#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode RegionBehavior._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RegionBehavior.Database.Create> {}
 
-    /** Operation for {@link RegionBehavior._onCreateOperation | `RegionBehavior#_onCreateOperation`} */
+    /** Operation for {@linkcode RegionBehavior._onCreateOperation | RegionBehavior#_onCreateOperation} */
     interface OnCreateOperation extends RegionBehavior.Database.Create {}
 
-    /** Options for {@link RegionBehavior._preUpdate | `RegionBehavior#_preUpdate`} */
+    /** Options for {@linkcode RegionBehavior._preUpdate | RegionBehavior#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link RegionBehavior._onUpdate | `RegionBehavior#_onUpdate`} */
+    /** Options for {@linkcode RegionBehavior._onUpdate | RegionBehavior#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode RegionBehavior._preUpdateOperation} */
     interface PreUpdateOperation extends RegionBehavior.Database.Update {}
 
-    /** Operation for {@link RegionBehavior._onUpdateOperation | `RegionBehavior._preUpdateOperation`} */
+    /** Operation for {@linkcode RegionBehavior._onUpdateOperation | RegionBehavior._preUpdateOperation} */
     interface OnUpdateOperation extends RegionBehavior.Database.Update {}
 
-    /** Options for {@link RegionBehavior._preDelete | `RegionBehavior#_preDelete`} */
+    /** Options for {@linkcode RegionBehavior._preDelete | RegionBehavior#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link RegionBehavior._onDelete | `RegionBehavior#_onDelete`} */
+    /** Options for {@linkcode RegionBehavior._onDelete | RegionBehavior#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link RegionBehavior._preDeleteOperation | `RegionBehavior#_preDeleteOperation`} */
+    /** Options for {@linkcode RegionBehavior._preDeleteOperation | RegionBehavior#_preDeleteOperation} */
     interface PreDeleteOperation extends RegionBehavior.Database.Delete {}
 
-    /** Options for {@link RegionBehavior._onDeleteOperation | `RegionBehavior#_onDeleteOperation`} */
+    /** Options for {@linkcode RegionBehavior._onDeleteOperation | RegionBehavior#_onDeleteOperation} */
     interface OnDeleteOperation extends RegionBehavior.Database.Delete {}
 
     /** Context for {@linkcode RegionBehavior._onDeleteOperation} */
@@ -378,20 +402,20 @@ declare namespace RegionBehavior {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<RegionBehavior.Parent> {}
 
     /**
-     * Options for {@link RegionBehavior._preCreateDescendantDocuments | `RegionBehavior#_preCreateDescendantDocuments`}
-     * and {@link RegionBehavior._onCreateDescendantDocuments | `RegionBehavior#_onCreateDescendantDocuments`}
+     * Options for {@linkcode RegionBehavior._preCreateDescendantDocuments | RegionBehavior#_preCreateDescendantDocuments}
+     * and {@linkcode RegionBehavior._onCreateDescendantDocuments | RegionBehavior#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<RegionBehavior.Database.Create> {}
 
     /**
-     * Options for {@link RegionBehavior._preUpdateDescendantDocuments | `RegionBehavior#_preUpdateDescendantDocuments`}
-     * and {@link RegionBehavior._onUpdateDescendantDocuments | `RegionBehavior#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode RegionBehavior._preUpdateDescendantDocuments | RegionBehavior#_preUpdateDescendantDocuments}
+     * and {@linkcode RegionBehavior._onUpdateDescendantDocuments | RegionBehavior#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<RegionBehavior.Database.Update> {}
 
     /**
-     * Options for {@link RegionBehavior._preDeleteDescendantDocuments | `RegionBehavior#_preDeleteDescendantDocuments`}
-     * and {@link RegionBehavior._onDeleteDescendantDocuments | `RegionBehavior#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode RegionBehavior._preDeleteDescendantDocuments | RegionBehavior#_preDeleteDescendantDocuments}
+     * and {@linkcode RegionBehavior._onDeleteDescendantDocuments | RegionBehavior#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<RegionBehavior.Database.Delete> {}
 
@@ -402,11 +426,10 @@ declare namespace RegionBehavior {
   }
 
   /**
-   * If `Temporary` is true then `RegionBehavior.Implementation`, otherwise `RegionBehavior.Stored`.
+   * If `Temporary` is true then {@linkcode RegionBehavior.Implementation}, otherwise {@linkcode RegionBehavior.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? RegionBehavior.Implementation
-    : RegionBehavior.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? RegionBehavior.Implementation : RegionBehavior.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -430,6 +453,10 @@ declare namespace RegionBehavior {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -442,7 +469,7 @@ declare namespace RegionBehavior {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -521,7 +548,7 @@ declare class RegionBehavior<
   static override defaultName(context: RegionBehavior.DefaultNameContext): string;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"RegionBehavior">,
   ): Promise<this | false | null | undefined>;
 

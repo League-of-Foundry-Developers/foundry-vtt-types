@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 
-import FormApplication = foundry.appv1.api.FormApplication;
+import Application = foundry.appv1.api.Application;
+import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 
 // @ts-expect-error Adventure requires name.
 new Adventure.implementation();
@@ -17,6 +18,6 @@ expectTypeOf(adventure.importContent({ toCreate: {}, toUpdate: {}, documentCount
   Promise<Adventure.ImportResult>
 >();
 
-expectTypeOf(adventure.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
+expectTypeOf(adventure.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();
 
 expectTypeOf(Adventure.fromSource({ name: "My adventure" })).toEqualTypeOf<Adventure.Implementation>();

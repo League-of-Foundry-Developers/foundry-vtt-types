@@ -4,7 +4,6 @@ import type { DeepPartial, EmptyObject } from "fvtt-types/utils";
 import TypeDataModel = foundry.abstract.TypeDataModel;
 
 // Import necessary as this is otherwise inaccessible.
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type {
   DatabaseCreateOperation,
   DatabaseUpdateOperation,

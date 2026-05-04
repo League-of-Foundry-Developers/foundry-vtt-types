@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { PrimaryCanvasGroupAmbienceFilter } from "#client/canvas/rendering/filters/_module.mjs";
+
+import PrimaryCanvasGroupAmbienceFilter = foundry.canvas.rendering.filters.PrimaryCanvasGroupAmbienceFilter;
 
 expectTypeOf(PrimaryCanvasGroupAmbienceFilter.fragmentShader).toEqualTypeOf<string>();
 

@@ -1,6 +1,6 @@
 import type { DOMOutputSpec, MarkSpec, NodeSpec } from "prosemirror-model";
 import { expectTypeOf } from "vitest";
-import AttributeCapture from "#common/prosemirror/schema/attribute-capture.mjs";
+import AttributeCapture from "../../../../../src/foundry/common/prosemirror/schema/attribute-capture.mts";
 
 const attributeCapture = new AttributeCapture();
 declare const nodeSpec: NodeSpec;

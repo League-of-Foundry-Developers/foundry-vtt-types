@@ -4,7 +4,7 @@ import WorldCollection = foundry.documents.abstract.WorldCollection;
 // Collection is a blessed global so doesn't need to be imported
 import CompendiumCollection = foundry.documents.collections.CompendiumCollection;
 import Application = foundry.appv1.api.Application;
-import ApplicationV2 = foundry.applications.api.ApplicationV2;
+import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 import sidebar = foundry.applications.sidebar;
 
 describe("WorldCollection Tests", async () => {
@@ -38,7 +38,7 @@ describe("WorldCollection Tests", async () => {
   }).toObject();
 
   const anyV1Sheet: Application.AnyConstructor = foundry.appv1.api.Application;
-  const anyV2Sheet: ApplicationV2.AnyConstructor = foundry.applications.api.ApplicationV2;
+  const anyV2Sheet: DocumentSheetV2.AnyConstructor = foundry.applications.api.DocumentSheetV2;
 
   test("Construction", () => {
     // no data need be passed

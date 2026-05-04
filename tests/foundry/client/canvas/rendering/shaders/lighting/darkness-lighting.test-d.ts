@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { AdaptiveDarknessShader } from "#client/canvas/rendering/shaders/_module.mjs";
+
+import AdaptiveDarknessShader = foundry.canvas.rendering.shaders.AdaptiveDarknessShader;
 
 let myADS;
 

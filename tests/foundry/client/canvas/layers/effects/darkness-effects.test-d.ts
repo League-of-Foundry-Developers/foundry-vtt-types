@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { CanvasDarknessEffects, CanvasLayer } from "#client/canvas/layers/_module.mjs";
+
+import CanvasDarknessEffects = foundry.canvas.layers.CanvasDarknessEffects;
+import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 
 const layer = new CanvasDarknessEffects();
 

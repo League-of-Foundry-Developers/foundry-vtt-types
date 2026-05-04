@@ -1,4 +1,4 @@
-import type { EmptyObject } from "#utils";
+import type { EmptyObject } from "fvtt-types/utils";
 import { expectTypeOf } from "vitest";
 
 import Canvas = foundry.canvas.Canvas;

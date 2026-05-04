@@ -1,6 +1,8 @@
 import { expectTypeOf } from "vitest";
-import { SoundsLayer } from "#client/canvas/layers/_module.mjs";
-import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
+
+import SoundsLayer = foundry.canvas.layers.SoundsLayer;
+import AmbientSound = foundry.canvas.placeables.AmbientSound;
+import Canvas = foundry.canvas.Canvas;
 
 expectTypeOf(SoundsLayer.documentName).toEqualTypeOf<"AmbientSound">();
 expectTypeOf(SoundsLayer.instance).toEqualTypeOf<SoundsLayer | undefined>();
@@ -25,23 +27,41 @@ expectTypeOf(layer["_activate"]()).toBeVoid();
 expectTypeOf(layer.initializeSources()).toBeVoid();
 
 expectTypeOf(layer.refresh()).toEqualTypeOf<number | void>();
-expectTypeOf(layer.refresh({ fade: null })).toEqualTypeOf<number | void>();
+expectTypeOf(layer.refresh({ fade: undefined })).toEqualTypeOf<number | void>();
 expectTypeOf(layer.refresh({ fade: 500 })).toEqualTypeOf<number | void>();
 
 expectTypeOf(layer.previewSound({ x: 500, y: 500 })).toBeVoid();
 expectTypeOf(layer.stopAll()).toBeVoid();
-expectTypeOf(layer.getListenerPositions()).toEqualTypeOf<PIXI.Point[]>();
-declare const somePoint: PIXI.Point;
-expectTypeOf(layer["_syncPositions"]([somePoint])).toBeVoid();
-expectTypeOf(layer["_syncPositions"]([somePoint], {})).toBeVoid();
-expectTypeOf(layer["_syncPositions"]([somePoint], { fade: 100 })).toBeVoid();
+expectTypeOf(layer.getListenerPositions()).toEqualTypeOf<Canvas.ElevatedPoint[]>();
+
+declare const point: Canvas.Point;
+declare const elevatedPoint: Canvas.ElevatedPoint;
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- actually deprecated
+expectTypeOf(layer["_syncPositions"]([point])).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- actually deprecated
+expectTypeOf(layer["_syncPositions"]([point], {})).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- actually deprecated
+expectTypeOf(layer["_syncPositions"]([point], { fade: 100 })).toBeVoid();
+
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- not actually deprecated, eslint bug
+expectTypeOf(layer["_syncPositions"]([elevatedPoint])).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- not actually deprecated, eslint bug
+expectTypeOf(layer["_syncPositions"]([elevatedPoint], {})).toBeVoid();
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- not actually deprecated, eslint bug
+expectTypeOf(layer["_syncPositions"]([elevatedPoint], { fade: 100 })).toBeVoid();
+
 declare const somePSS: foundry.canvas.sources.PointSoundSource;
+declare const sound: foundry.audio.Sound;
+declare const ambientSound: AmbientSound.Implementation;
 expectTypeOf(
   layer["_configurePlayback"]({
     source: somePSS, // only actually required property
-    listener: somePoint, // not technically required but will cause 0 volume/playback failure if omitted
+    listener: elevatedPoint, // not technically required but will cause 0 volume/playback failure if omitted
     walls: false,
-    // all other parts of the AmbientSoundPlaybackConfig are unused in this, the one place its used as a parameter
+    sound,
+    volume: 0.99,
+    object: ambientSound,
   }),
 ).toBeVoid();
 
@@ -95,8 +115,9 @@ expectTypeOf(
 declare const darknessEvent: foundry.canvas.Canvas.Event.DarknessChange;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someDragEvent: DragEvent;
+declare const pixiPoint: PIXI.Point;
 expectTypeOf(layer["_onDarknessChange"](darknessEvent)).toBeVoid();
-expectTypeOf(layer["_onMouseMove"]()).toBeVoid();
+expectTypeOf(layer["_onMouseMove"](pixiPoint)).toBeVoid();
 expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftDrop"](pointerEvent)).toBeVoid();

@@ -1,5 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { AbstractBaseShader, SnowShader } from "#client/canvas/rendering/shaders/_module.mjs";
+
+import SnowShader = foundry.canvas.rendering.shaders.SnowShader;
+import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 
 const SS = SnowShader;
 let mySS;

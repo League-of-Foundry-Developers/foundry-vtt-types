@@ -3,7 +3,7 @@ import { describe, expectTypeOf, test } from "vitest";
 import Ruler = foundry.canvas.interaction.Ruler;
 import Canvas = foundry.canvas.Canvas;
 
-declare const user: User.Implementation;
+declare const user: User.Stored;
 declare const event: PIXI.FederatedEvent;
 declare const wheelEvent: WheelEvent;
 declare const waypoint: Ruler.Waypoint;
@@ -27,7 +27,7 @@ describe("BaseRuler tests", () => {
     >();
     expectTypeOf(Ruler.canMeasure).toBeBoolean();
 
-    expectTypeOf(ruler.user).toEqualTypeOf<User.Implementation>();
+    expectTypeOf(ruler.user).toEqualTypeOf<User.Stored>();
     expectTypeOf(ruler.active).toBeBoolean();
     expectTypeOf(ruler.visible).toBeBoolean();
 

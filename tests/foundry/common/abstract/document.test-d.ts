@@ -1,12 +1,5 @@
 import { expectTypeOf } from "vitest";
-import Document = foundry.abstract.Document;
 import BaseActiveEffect = foundry.documents.BaseActiveEffect;
-
-declare const configuredActiveEffect: Document.ToConfiguredInstance<typeof foundry.documents.BaseActiveEffect>;
-expectTypeOf(configuredActiveEffect).toEqualTypeOf<ActiveEffect.Implementation>();
-
-declare const helperConfigAE: Document.ToConfiguredInstance<typeof foundry.documents.BaseActiveEffect>;
-expectTypeOf(helperConfigAE).toEqualTypeOf<ActiveEffect.Implementation>();
 
 declare const baseActiveEffect: foundry.documents.BaseActiveEffect;
 
@@ -45,8 +38,8 @@ expectTypeOf(foundry.documents.BaseMacro.createDocuments([], { temporary: false 
   Promise<Macro.Stored<Macro.SubType>[]>
 >();
 
-expectTypeOf(foundry.documents.BaseMacro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Implementation[]>>();
-expectTypeOf(foundry.documents.BaseMacro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Implementation[]>>();
+expectTypeOf(foundry.documents.BaseMacro.updateDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
+expectTypeOf(foundry.documents.BaseMacro.deleteDocuments([])).toEqualTypeOf<Promise<Macro.Stored[]>>();
 const user = await User.implementation.create({ name: "Some User" });
 if (user) {
   expectTypeOf(user.testUserPermission(user, "NONE")).toEqualTypeOf<boolean>();
@@ -70,7 +63,7 @@ expectTypeOf(scene.createEmbeddedDocuments("Note", [])).toEqualTypeOf<Promise<No
 if (item) {
   expectTypeOf(Item.createDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Stored[]>>();
   expectTypeOf(Item.create(item.toObject())).toEqualTypeOf<Promise<Item.Stored | undefined>>();
-  expectTypeOf(Item.updateDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Implementation[]>>();
+  expectTypeOf(Item.updateDocuments([item.toObject()])).toEqualTypeOf<Promise<Item.Stored[]>>();
 
   // `item.update` is effectively distributive because `item` itself is currently a union.
   // This will change when `type` inference occurs.

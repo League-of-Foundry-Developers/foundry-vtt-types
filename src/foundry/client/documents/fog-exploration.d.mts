@@ -1,11 +1,17 @@
-import type { Identity, InexactPartial, IntentionalPartial, Merge, NullishProps } from "#utils";
-import type { documents } from "#client/client.d.mts";
+import type { Identity, InexactPartial, IntentionalPartial, MaybeArray, Merge, NullishProps } from "#utils";
 import type { DatabaseGetOperation } from "#common/abstract/_types.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseFogExploration from "#common/documents/fog-exploration.mjs";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseFogExploration, BaseScene, BaseUser } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace FogExploration {
   /**
@@ -24,14 +30,14 @@ declare namespace FogExploration {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `FogExploration` document instance configured through `CONFIG.FogExploration.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredFogExploration | `fvtt-types/configuration/ConfiguredFogExploration`} in fvtt-types.
+   * The implementation of the `FogExploration` document instance configured through
+   * {@linkcode CONFIG.FogExploration.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `FogExploration` document configured through `CONFIG.FogExploration.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `FogExploration` document configured through
+   * {@linkcode CONFIG.FogExploration.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -44,11 +50,11 @@ declare namespace FogExploration {
     Readonly<{
       name: "FogExploration";
       collection: "fog";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.FogExploration";
+      labelPlural: "DOCUMENT.FogExplorations";
       isPrimary: true;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -82,15 +88,6 @@ declare namespace FogExploration {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = never;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -101,7 +98,8 @@ declare namespace FogExploration {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -127,52 +125,77 @@ declare namespace FogExploration {
   type Stored = Document.Internal.Stored<FogExploration.Implementation>;
 
   /**
-   * The data put in {@link FogExploration._source | `FogExploration#_source`}. This data is what was
+   * The data put in {@linkcode FogExploration._source | FogExploration#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode FogExploration.create}
-   * and {@link FogExploration | `new FogExploration(...)`}.
+   * and {@linkcode FogExploration | new FogExploration(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link FogExploration.name | `FogExploration#name`}.
+   * Used in the {@linkcode FogExploration.create} and {@linkcode FogExploration.createDocuments} signatures, and
+   * {@linkcode FogExploration.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode FogExploration.create}, returning (a single | an array of) (temporary | stored)
+   * `FogExploration`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<FogExploration.TemporaryIf<Temporary>>
+      : FogExploration.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode FogExploration.name | FogExploration#name}.
    *
    * This is data transformed from {@linkcode FogExploration.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link FogExploration.update | `FogExploration#update`}.
-   * It is a distinct type from {@link FogExploration.CreateData | `DeepPartial<FogExploration.CreateData>`} because
+   * The data used to update a document, for example {@linkcode FogExploration.update | FogExploration#update}.
+   * It is a distinct type from {@linkcode FogExploration.CreateData | DeepPartial<FogExploration.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode FogExploration.update | FogExploration#update} and
+   * {@linkcode FogExploration.updateDocuments} signatures, and {@linkcode FogExploration.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode FogExploration}. This is the source of truth for how an FogExploration document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode FogExploration}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this FogExploration document
      * @defaultValue `null`
@@ -183,13 +206,13 @@ declare namespace FogExploration {
      * The _id of the Scene document to which this fog applies
      * @defaultValue `canvas?.scene?.id`
      */
-    scene: fields.ForeignDocumentField<typeof documents.BaseScene, { initial: () => string | undefined }>;
+    scene: fields.ForeignDocumentField<typeof BaseScene, { initial: () => string | undefined }>;
 
     /**
      * The _id of the User document to which this fog applies
      * @defaultValue `null`
      */
-    user: fields.ForeignDocumentField<typeof documents.BaseUser, { initial: () => string }>;
+    user: fields.ForeignDocumentField<typeof BaseUser, { initial: () => string }>;
 
     /**
      * The base64 image/jpeg of the explored fog polygon
@@ -259,7 +282,7 @@ declare namespace FogExploration {
       FogExploration.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link FogExploration.update | `FogExploration#update`} */
+    /** Operation for {@linkcode FogExploration.update | FogExploration#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -267,40 +290,40 @@ declare namespace FogExploration {
     /** Options for {@linkcode FogExploration.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link FogExploration._preCreate | `FogExploration#_preCreate`} */
+    /** Options for {@linkcode FogExploration._preCreate | FogExploration#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link FogExploration._onCreate | `FogExploration#_onCreate`} */
+    /** Options for {@linkcode FogExploration._onCreate | FogExploration#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode FogExploration._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<FogExploration.Database.Create> {}
 
-    /** Operation for {@link FogExploration._onCreateOperation | `FogExploration#_onCreateOperation`} */
+    /** Operation for {@linkcode FogExploration._onCreateOperation | FogExploration#_onCreateOperation} */
     interface OnCreateOperation extends FogExploration.Database.Create {}
 
-    /** Options for {@link FogExploration._preUpdate | `FogExploration#_preUpdate`} */
+    /** Options for {@linkcode FogExploration._preUpdate | FogExploration#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link FogExploration._onUpdate | `FogExploration#_onUpdate`} */
+    /** Options for {@linkcode FogExploration._onUpdate | FogExploration#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode FogExploration._preUpdateOperation} */
     interface PreUpdateOperation extends FogExploration.Database.Update {}
 
-    /** Operation for {@link FogExploration._onUpdateOperation | `FogExploration._preUpdateOperation`} */
+    /** Operation for {@linkcode FogExploration._onUpdateOperation | FogExploration._preUpdateOperation} */
     interface OnUpdateOperation extends FogExploration.Database.Update {}
 
-    /** Options for {@link FogExploration._preDelete | `FogExploration#_preDelete`} */
+    /** Options for {@linkcode FogExploration._preDelete | FogExploration#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link FogExploration._onDelete | `FogExploration#_onDelete`} */
+    /** Options for {@linkcode FogExploration._onDelete | FogExploration#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link FogExploration._preDeleteOperation | `FogExploration#_preDeleteOperation`} */
+    /** Options for {@linkcode FogExploration._preDeleteOperation | FogExploration#_preDeleteOperation} */
     interface PreDeleteOperation extends FogExploration.Database.Delete {}
 
-    /** Options for {@link FogExploration._onDeleteOperation | `FogExploration#_onDeleteOperation`} */
+    /** Options for {@linkcode FogExploration._onDeleteOperation | FogExploration#_onDeleteOperation} */
     interface OnDeleteOperation extends FogExploration.Database.Delete {}
 
     /** Context for {@linkcode FogExploration._onDeleteOperation} */
@@ -313,20 +336,20 @@ declare namespace FogExploration {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<FogExploration.Parent> {}
 
     /**
-     * Options for {@link FogExploration._preCreateDescendantDocuments | `FogExploration#_preCreateDescendantDocuments`}
-     * and {@link FogExploration._onCreateDescendantDocuments | `FogExploration#_onCreateDescendantDocuments`}
+     * Options for {@linkcode FogExploration._preCreateDescendantDocuments | FogExploration#_preCreateDescendantDocuments}
+     * and {@linkcode FogExploration._onCreateDescendantDocuments | FogExploration#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<FogExploration.Database.Create> {}
 
     /**
-     * Options for {@link FogExploration._preUpdateDescendantDocuments | `FogExploration#_preUpdateDescendantDocuments`}
-     * and {@link FogExploration._onUpdateDescendantDocuments | `FogExploration#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode FogExploration._preUpdateDescendantDocuments | FogExploration#_preUpdateDescendantDocuments}
+     * and {@linkcode FogExploration._onUpdateDescendantDocuments | FogExploration#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<FogExploration.Database.Update> {}
 
     /**
-     * Options for {@link FogExploration._preDeleteDescendantDocuments | `FogExploration#_preDeleteDescendantDocuments`}
-     * and {@link FogExploration._onDeleteDescendantDocuments | `FogExploration#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode FogExploration._preDeleteDescendantDocuments | FogExploration#_preDeleteDescendantDocuments}
+     * and {@linkcode FogExploration._onDeleteDescendantDocuments | FogExploration#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<FogExploration.Database.Delete> {}
 
@@ -337,11 +360,10 @@ declare namespace FogExploration {
   }
 
   /**
-   * If `Temporary` is true then `FogExploration.Implementation`, otherwise `FogExploration.Stored`.
+   * If `Temporary` is true then {@linkcode FogExploration.Implementation}, otherwise {@linkcode FogExploration.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? FogExploration.Implementation
-    : FogExploration.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? FogExploration.Implementation : FogExploration.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -365,6 +387,10 @@ declare namespace FogExploration {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -372,6 +398,10 @@ declare namespace FogExploration {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *       FOG-EXPLORATION-SPECIFIC TYPES          *
+   *************************************************/
 
   /** @internal */
   type _LoadQuery = NullishProps<{
@@ -390,8 +420,8 @@ declare namespace FogExploration {
   interface LoadQuery extends _LoadQuery {}
 
   /**
-   * @remarks {@link FogExploration.load | `FogExploration#load`} takes the `query` property separately as its first argument, then merges that
-   * with this interface via `{query, ...options}` before passing to {@link ClientDatabaseBackend.get | `this.database.get`}
+   * @remarks {@linkcode FogExploration.load | FogExploration#load} takes the `query` property separately as its first argument, then merges that
+   * with this interface via `{query, ...options}` before passing to {@linkcode ClientDatabaseBackend.get | this.database.get}
    */
   interface LoadOptions extends Omit<IntentionalPartial<DatabaseGetOperation>, "query"> {}
 
@@ -399,7 +429,7 @@ declare namespace FogExploration {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -435,12 +465,12 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
 
   static override get(
     documentId: string,
-    options?: FogExploration.Database.GetOptions,
-  ): FogExploration.Implementation | null;
+    operation?: FogExploration.Database.GetOptions,
+  ): Promise<FogExploration.Stored | null> | FogExploration.Stored | null;
 
   /**
    * @deprecated since v12, will be removed in v14
-   * @remarks "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War exploration data, an operation which has been renamed to {@link FogExploration.load | `FogExploration.load`}"
+   * @remarks "You are calling `FogExploration.get` by passing an object. This means you are probably trying to load Fog of War exploration data, an operation which has been renamed to {@linkcode FogExploration.load | FogExploration.load}"
    */
   static override get(
     query: FogExploration.LoadQuery,
@@ -472,7 +502,7 @@ declare class FogExploration extends BaseFogExploration.Internal.ClientDocument 
   ): Promise<FogExploration.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"FogExploration">,
   ): Promise<this | false | null | undefined>;
 

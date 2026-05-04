@@ -113,14 +113,19 @@ const complexObject = {
   ],
 };
 
-expectTypeOf(utils.deepClone("abc" as string)).toEqualTypeOf<string>();
+const str = "abc";
+const num = 1;
+const bigint = 1n;
+const bool = true;
+
+expectTypeOf(utils.deepClone(str)).toEqualTypeOf<string>();
 expectTypeOf(utils.deepClone("abc" as const)).toEqualTypeOf<"abc">();
-expectTypeOf(utils.deepClone(1 as number)).toEqualTypeOf<number>();
+expectTypeOf(utils.deepClone(num)).toEqualTypeOf<number>();
 expectTypeOf(utils.deepClone(1 as const)).toEqualTypeOf<1>();
-expectTypeOf(utils.deepClone(1n as bigint)).toEqualTypeOf<bigint>();
+expectTypeOf(utils.deepClone(bigint)).toEqualTypeOf<bigint>();
 expectTypeOf(utils.deepClone(1n as const)).toEqualTypeOf<1n>();
 expectTypeOf(utils.deepClone(true as const)).toEqualTypeOf<true>();
-expectTypeOf(utils.deepClone(true as boolean)).toEqualTypeOf<boolean>();
+expectTypeOf(utils.deepClone(bool)).toEqualTypeOf<boolean>();
 expectTypeOf(utils.deepClone(Symbol("customSymbol"))).toEqualTypeOf<symbol>();
 expectTypeOf(utils.deepClone(undefined)).toEqualTypeOf<undefined>();
 expectTypeOf(utils.deepClone(null)).toEqualTypeOf<null>();
@@ -130,9 +135,9 @@ expectTypeOf(utils.deepClone({ a: "foo", b: 42 })).toEqualTypeOf<{ a: string; b:
 expectTypeOf(utils.deepClone(new Date())).toEqualTypeOf<Date>();
 expectTypeOf(utils.deepClone(complexObject)).toEqualTypeOf<typeof complexObject>();
 
-expectTypeOf(utils.deepClone("abc" as string, { strict: false })).toEqualTypeOf<string>();
-expectTypeOf(utils.deepClone("abc" as string, { strict: true })).toEqualTypeOf<string>();
-expectTypeOf(utils.deepClone("abc" as string, { strict: undefined })).toEqualTypeOf<string>();
+expectTypeOf(utils.deepClone(str, { strict: false })).toEqualTypeOf<string>();
+expectTypeOf(utils.deepClone(str, { strict: true })).toEqualTypeOf<string>();
+expectTypeOf(utils.deepClone(str, { strict: undefined })).toEqualTypeOf<string>();
 
 // diffObject
 

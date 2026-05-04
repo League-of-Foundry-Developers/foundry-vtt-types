@@ -1,11 +1,17 @@
-import type { InexactPartial, Merge, NullishProps } from "#utils";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { BaseShapeData } from "#common/data/data.mjs";
-import type BaseRegion from "#common/documents/region.mjs";
+import type { InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { fields, BaseShapeData } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseRegion } from "#common/documents/_module.d.mts";
 import type { Region } from "#client/canvas/placeables/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 /**
  * The client-side Region document which extends the common BaseRegion model.
@@ -139,58 +145,10 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
    */
   protected _handleEvent(event: RegionDocument.RegionEvent): Promise<void>;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class GurpsRegionDocument extends RegionDocument {
-   *   protected override _onCreateDescendantDocuments(...args: RegionDocument.OnCreateDescendantDocumentsArgs) {
-   *     super._onCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, data, options, userId] = args;
-   *     if (collection === "behaviors") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onCreateDescendantDocuments(...args: RegionDocument.OnCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class Ptr2eRegionDocument extends RegionDocument {
-   *   protected override _onUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocumentsArgs) {
-   *     super._onUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, changes, options, userId] = args;
-   *     if (collection === "behaviors") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class BladesRegionDocument extends RegionDocument {
-   *   protected override _onDeleteDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocuments) {
-   *     super._onDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, ids, options, userId] = args;
-   *     if (collection === "behaviors") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onDeleteDescendantDocuments(...args: RegionDocument.OnDeleteDescendantDocumentsArgs): void;
 
   /*
@@ -205,58 +163,12 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
 
   // ClientDocument overrides
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class SwadeRegionDocument extends RegionDocument {
-   *   protected override _preCreateDescendantDocuments(...args: RegionDocument.PreCreateDescendantDocumentsArgs) {
-   *     super._preCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, data, options, userId] = args;
-   *     if (collection === "behaviors") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
+  // Other Descendant Document operations are actually overridden above
+
   protected override _preCreateDescendantDocuments(...args: RegionDocument.PreCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class LancerRegionDocument extends RegionDocument {
-   *   protected override _preUpdateDescendantDocuments(...args: RegionDocument.OnUpdateDescendantDocuments) {
-   *     super._preUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, changes, options, userId] = args;
-   *     if (collection === "behaviors") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preUpdateDescendantDocuments(...args: RegionDocument.PreUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class KultRegionDocument extends RegionDocument {
-   *   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs) {
-   *     super._preDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, ids, options, userId] = args;
-   *     if (collection === "behaviors") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preDeleteDescendantDocuments(...args: RegionDocument.PreDeleteDescendantDocumentsArgs): void;
 
   /** @remarks `context` must contain a `pack` or `parent`. */
@@ -270,7 +182,7 @@ declare class RegionDocument extends BaseRegion.Internal.CanvasDocument {
   ): Promise<RegionDocument.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Region">,
   ): Promise<this | false | null | undefined>;
 
@@ -296,7 +208,7 @@ declare namespace RegionDocument {
   type Name = "Region";
 
   /**
-   * The context used to create a `Region`.
+   * The context used to create a `RegionDocument`.
    */
   interface ConstructionContext extends Document.ConstructionContext<Parent> {}
 
@@ -306,14 +218,14 @@ declare namespace RegionDocument {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `RegionDocument` document instance configured through `CONFIG.Region.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredRegion | `fvtt-types/configuration/ConfiguredRegion`} in fvtt-types.
+   * The implementation of the `RegionDocument` document instance configured through
+   * {@linkcode CONFIG.Region.documentClass} in Foundry and {@linkcode DocumentClassConfig}  in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `RegionDocument` document configured through `CONFIG.Region.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `RegionDocument` document configured through
+   * {@linkcode CONFIG.Region.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -326,11 +238,11 @@ declare namespace RegionDocument {
     Readonly<{
       name: "Region";
       collection: "regions";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Region";
+      labelPlural: "DOCUMENT.Regions";
       isEmbedded: true;
       embedded: Metadata.Embedded;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -379,14 +291,6 @@ declare namespace RegionDocument {
    * This is a union of all classes, or never if the document doesn't have any descendants.
    */
   type DescendantClass = DirectDescendantClass;
-
-  /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  type Pack = never;
 
   /**
    * An embedded document is a document contained in another.
@@ -441,7 +345,8 @@ declare namespace RegionDocument {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -467,52 +372,77 @@ declare namespace RegionDocument {
   type Stored = Document.Internal.Stored<RegionDocument.Implementation>;
 
   /**
-   * The data put in {@link RegionDocument._source | `RegionDocument#_source`}. This data is what was
+   * The data put in {@linkcode RegionDocument._source | RegionDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode RegionDocument.create}
-   * and {@link RegionDocument | `new RegionDocument(...)`}.
+   * and {@linkcode RegionDocument | new RegionDocument(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link RegionDocument.name | `RegionDocument#name`}.
+   * Used in the {@linkcode RegionDocument.create} and {@linkcode RegionDocument.createDocuments} signatures, and
+   * {@linkcode RegionDocument.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode RegionDocument.create}, returning (a single | an array of) (temporary | stored)
+   * `RegionDocument`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<RegionDocument.TemporaryIf<Temporary>>
+      : RegionDocument.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode RegionDocument.name | RegionDocument#name}.
    *
    * This is data transformed from {@linkcode RegionDocument.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link RegionDocument.update | `RegionDocument#update`}.
-   * It is a distinct type from {@link RegionDocument.CreateData | `DeepPartial<RegionDocument.CreateData>`} because
+   * The data used to update a document, for example {@linkcode RegionDocument.update | RegionDocument#update}.
+   * It is a distinct type from {@linkcode RegionDocument.CreateData | DeepPartial<RegionDocument.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode RegionDocument.update | RegionDocument#update} and
+   * {@linkcode RegionDocument.updateDocuments} signatures, and {@linkcode RegionDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode RegionDocument}. This is the source of truth for how an Region document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode RegionDocument}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The Region _id which uniquely identifies it within its parent Scene
      * @defaultValue `null`
@@ -633,7 +563,7 @@ declare namespace RegionDocument {
       RegionDocument.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link RegionDocument.update | `RegionDocument#update`} */
+    /** Operation for {@linkcode RegionDocument.update | RegionDocument#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -641,40 +571,40 @@ declare namespace RegionDocument {
     /** Options for {@linkcode RegionDocument.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link RegionDocument._preCreate | `RegionDocument#_preCreate`} */
+    /** Options for {@linkcode RegionDocument._preCreate | RegionDocument#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link RegionDocument._onCreate | `RegionDocument#_onCreate`} */
+    /** Options for {@linkcode RegionDocument._onCreate | RegionDocument#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode RegionDocument._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<RegionDocument.Database.Create> {}
 
-    /** Operation for {@link RegionDocument._onCreateOperation | `RegionDocument#_onCreateOperation`} */
+    /** Operation for {@linkcode RegionDocument._onCreateOperation | RegionDocument#_onCreateOperation} */
     interface OnCreateOperation extends RegionDocument.Database.Create {}
 
-    /** Options for {@link RegionDocument._preUpdate | `RegionDocument#_preUpdate`} */
+    /** Options for {@linkcode RegionDocument._preUpdate | RegionDocument#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link RegionDocument._onUpdate | `RegionDocument#_onUpdate`} */
+    /** Options for {@linkcode RegionDocument._onUpdate | RegionDocument#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode RegionDocument._preUpdateOperation} */
     interface PreUpdateOperation extends RegionDocument.Database.Update {}
 
-    /** Operation for {@link RegionDocument._onUpdateOperation | `RegionDocument._preUpdateOperation`} */
+    /** Operation for {@linkcode RegionDocument._onUpdateOperation | RegionDocument._preUpdateOperation} */
     interface OnUpdateOperation extends RegionDocument.Database.Update {}
 
-    /** Options for {@link RegionDocument._preDelete | `RegionDocument#_preDelete`} */
+    /** Options for {@linkcode RegionDocument._preDelete | RegionDocument#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link RegionDocument._onDelete | `RegionDocument#_onDelete`} */
+    /** Options for {@linkcode RegionDocument._onDelete | RegionDocument#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link RegionDocument._preDeleteOperation | `RegionDocument#_preDeleteOperation`} */
+    /** Options for {@linkcode RegionDocument._preDeleteOperation | RegionDocument#_preDeleteOperation} */
     interface PreDeleteOperation extends RegionDocument.Database.Delete {}
 
-    /** Options for {@link RegionDocument._onDeleteOperation | `RegionDocument#_onDeleteOperation`} */
+    /** Options for {@linkcode RegionDocument._onDeleteOperation | RegionDocument#_onDeleteOperation} */
     interface OnDeleteOperation extends RegionDocument.Database.Delete {}
 
     /** Context for {@linkcode RegionDocument._onDeleteOperation} */
@@ -687,20 +617,20 @@ declare namespace RegionDocument {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<RegionDocument.Parent> {}
 
     /**
-     * Options for {@link RegionDocument._preCreateDescendantDocuments | `RegionDocument#_preCreateDescendantDocuments`}
-     * and {@link RegionDocument._onCreateDescendantDocuments | `RegionDocument#_onCreateDescendantDocuments`}
+     * Options for {@linkcode RegionDocument._preCreateDescendantDocuments | RegionDocument#_preCreateDescendantDocuments}
+     * and {@linkcode RegionDocument._onCreateDescendantDocuments | RegionDocument#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<RegionDocument.Database.Create> {}
 
     /**
-     * Options for {@link RegionDocument._preUpdateDescendantDocuments | `RegionDocument#_preUpdateDescendantDocuments`}
-     * and {@link RegionDocument._onUpdateDescendantDocuments | `RegionDocument#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode RegionDocument._preUpdateDescendantDocuments | RegionDocument#_preUpdateDescendantDocuments}
+     * and {@linkcode RegionDocument._onUpdateDescendantDocuments | RegionDocument#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<RegionDocument.Database.Update> {}
 
     /**
-     * Options for {@link RegionDocument._preDeleteDescendantDocuments | `RegionDocument#_preDeleteDescendantDocuments`}
-     * and {@link RegionDocument._onDeleteDescendantDocuments | `RegionDocument#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode RegionDocument._preDeleteDescendantDocuments | RegionDocument#_preDeleteDescendantDocuments}
+     * and {@linkcode RegionDocument._onDeleteDescendantDocuments | RegionDocument#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<RegionDocument.Database.Delete> {}
 
@@ -711,11 +641,10 @@ declare namespace RegionDocument {
   }
 
   /**
-   * If `Temporary` is true then `RegionDocument.Implementation`, otherwise `RegionDocument.Stored`.
+   * If `Temporary` is true then {@linkcode RegionDocument.Implementation}, otherwise {@linkcode RegionDocument.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? RegionDocument.Implementation
-    : RegionDocument.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? RegionDocument.Implementation : RegionDocument.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -738,6 +667,10 @@ declare namespace RegionDocument {
      */
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
+
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
@@ -782,6 +715,10 @@ declare namespace RegionDocument {
     RegionDocument.DirectDescendantName,
     RegionDocument.Metadata.Embedded
   >;
+
+  /* ***********************************************
+   *            REGION-SPECIFIC TYPES              *
+   *************************************************/
 
   // TODO: <Data extends object>
   interface RegionEvent {
@@ -857,7 +794,7 @@ declare namespace RegionDocument {
 
   /** @internal */
   interface _EventData {
-    readonly [K: string]: Document.Any | _EventData | _EventData[];
+    readonly [K: string]: Document.Any | MaybeArray<_EventData>;
   }
 
   interface SegmentizeMovementPathWaypoint {
@@ -895,7 +832,7 @@ declare namespace RegionDocument {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;

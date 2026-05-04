@@ -13,7 +13,7 @@ export interface DeprecatedHookConfig {
    * @remarks This is called when creating a {@linkcode ChatBubble}, but before displaying it.
    * @remarks This is called by {@linkcode Hooks.call}.
    * @remarks An explicit return value of `false` prevents the chat bubble being shown.
-   * @see {@link ChatBubbles.say | `ChatBubbles#say`}
+   * @see {@linkcode ChatBubbles.say | ChatBubbles#say}
    * @deprecated "The `chatBubble` hook is deprecated. Please use `chatBubbleHTML` instead, which now passes
    * an HTMLElement argument instead of jQuery." (since v13, until v15)
    */
@@ -32,7 +32,7 @@ export interface DeprecatedHookConfig {
    * @param messageData    - The input data provided for template rendering
    * @remarks This is called by {@linkcode Hooks.call}, but its return is not checked;
    * returning `false` only prevents later hooks running
-   * @see {@link ChatMessage.render | `ChatMessage#render`}
+   * @see {@linkcode ChatMessage.render | ChatMessage#render}
    */
   renderChatMessage: (
     message: ChatMessage.Implementation,

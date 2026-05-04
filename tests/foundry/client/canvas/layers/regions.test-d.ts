@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { RegionLayer } from "#client/canvas/layers/_module.mjs";
 
+import RegionLayer = foundry.canvas.layers.RegionLayer;
 import Canvas = foundry.canvas.Canvas;
 import Region = foundry.canvas.placeables.Region;
 
@@ -18,7 +18,6 @@ expectTypeOf(layer.options.name).toEqualTypeOf<"regions">();
 
 expectTypeOf(layer.hookName).toEqualTypeOf<"RegionLayer">();
 expectTypeOf(layer.legend).toEqualTypeOf<foundry.applications.ui.RegionLegend>();
-expectTypeOf(layer._holeMode).toBeBoolean();
 
 expectTypeOf(layer["_activate"]()).toBeVoid();
 expectTypeOf(layer["_deactivate"]()).toBeVoid();

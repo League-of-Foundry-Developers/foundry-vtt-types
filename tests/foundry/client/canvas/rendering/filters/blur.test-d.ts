@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
-// eslint-disable-next-line import-x/no-named-default
-import { default as AlphaBlurFilter, AlphaBlurFilterPass } from "#client/canvas/rendering/filters/blur.mjs";
+
+import AlphaBlurFilter = foundry.canvas.rendering.filters.AlphaBlurFilter;
+import AlphaBlurFilterPass = foundry.canvas.rendering.filters.AlphaBlurFilterPass;
 
 // AlphaBlurFilterPass tests
 expectTypeOf(AlphaBlurFilterPass.vertTemplate(2, false)).toEqualTypeOf<string>();

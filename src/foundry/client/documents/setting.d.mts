@@ -1,9 +1,16 @@
-import type { InexactPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
+import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseSetting, BaseUser } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace Setting {
   /**
@@ -22,14 +29,14 @@ declare namespace Setting {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Setting` document instance configured through `CONFIG.Setting.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredSetting | `fvtt-types/configuration/ConfiguredSetting`} in fvtt-types.
+   * The implementation of the `Setting` document instance configured through
+   * {@linkcode CONFIG.Setting.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Setting` document configured through `CONFIG.Setting.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Setting` document configured through
+   * {@linkcode CONFIG.Setting.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -42,10 +49,10 @@ declare namespace Setting {
     Readonly<{
       name: "Setting";
       collection: "settings";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Setting";
+      labelPlural: "DOCUMENT.Settings";
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -79,15 +86,6 @@ declare namespace Setting {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = never;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -98,7 +96,8 @@ declare namespace Setting {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -124,52 +123,77 @@ declare namespace Setting {
   type Stored = Document.Internal.Stored<Setting.Implementation>;
 
   /**
-   * The data put in {@link Setting._source | `Setting#_source`}. This data is what was
+   * The data put in {@linkcode Setting._source | Setting#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Setting.create}
-   * and {@link Setting | `new Setting(...)`}.
+   * and {@linkcode Setting | new Setting(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Setting.name | `Setting#name`}.
+   * Used in the {@linkcode Setting.create} and {@linkcode Setting.createDocuments} signatures, and
+   * {@linkcode Setting.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Setting.create}, returning (a single | an array of) (temporary | stored)
+   * `Setting`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<Setting.TemporaryIf<Temporary>>
+      : Setting.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode Setting.name | Setting#name}.
    *
    * This is data transformed from {@linkcode Setting.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Setting.update | `Setting#update`}.
-   * It is a distinct type from {@link Setting.CreateData | `DeepPartial<Setting.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Setting.update | Setting#update}.
+   * It is a distinct type from {@linkcode Setting.CreateData | DeepPartial<Setting.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode Setting.update | Setting#update} and
+   * {@linkcode Setting.updateDocuments} signatures, and {@linkcode Setting.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode Setting}. This is the source of truth for how an Setting document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Setting}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Setting document
      * @defaultValue `null`
@@ -209,7 +233,7 @@ declare namespace Setting {
      * The ID of the user this Setting belongs to, if user-scoped.
      * @defaultValue `null`
      */
-    user: fields.ForeignDocumentField<typeof documents.BaseUser, { idOnly: true }>;
+    user: fields.ForeignDocumentField<typeof BaseUser, { idOnly: true }>;
 
     /**
      * An object of creation and access information
@@ -248,7 +272,7 @@ declare namespace Setting {
       Setting.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Setting.update | `Setting#update`} */
+    /** Operation for {@linkcode Setting.update | Setting#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -256,40 +280,40 @@ declare namespace Setting {
     /** Options for {@linkcode Setting.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Setting._preCreate | `Setting#_preCreate`} */
+    /** Options for {@linkcode Setting._preCreate | Setting#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Setting._onCreate | `Setting#_onCreate`} */
+    /** Options for {@linkcode Setting._onCreate | Setting#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Setting._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Setting.Database.Create> {}
 
-    /** Operation for {@link Setting._onCreateOperation | `Setting#_onCreateOperation`} */
+    /** Operation for {@linkcode Setting._onCreateOperation | Setting#_onCreateOperation} */
     interface OnCreateOperation extends Setting.Database.Create {}
 
-    /** Options for {@link Setting._preUpdate | `Setting#_preUpdate`} */
+    /** Options for {@linkcode Setting._preUpdate | Setting#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Setting._onUpdate | `Setting#_onUpdate`} */
+    /** Options for {@linkcode Setting._onUpdate | Setting#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Setting._preUpdateOperation} */
     interface PreUpdateOperation extends Setting.Database.Update {}
 
-    /** Operation for {@link Setting._onUpdateOperation | `Setting._preUpdateOperation`} */
+    /** Operation for {@linkcode Setting._onUpdateOperation | Setting._preUpdateOperation} */
     interface OnUpdateOperation extends Setting.Database.Update {}
 
-    /** Options for {@link Setting._preDelete | `Setting#_preDelete`} */
+    /** Options for {@linkcode Setting._preDelete | Setting#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Setting._onDelete | `Setting#_onDelete`} */
+    /** Options for {@linkcode Setting._onDelete | Setting#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Setting._preDeleteOperation | `Setting#_preDeleteOperation`} */
+    /** Options for {@linkcode Setting._preDeleteOperation | Setting#_preDeleteOperation} */
     interface PreDeleteOperation extends Setting.Database.Delete {}
 
-    /** Options for {@link Setting._onDeleteOperation | `Setting#_onDeleteOperation`} */
+    /** Options for {@linkcode Setting._onDeleteOperation | Setting#_onDeleteOperation} */
     interface OnDeleteOperation extends Setting.Database.Delete {}
 
     /** Context for {@linkcode Setting._onDeleteOperation} */
@@ -302,20 +326,20 @@ declare namespace Setting {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Setting.Parent> {}
 
     /**
-     * Options for {@link Setting._preCreateDescendantDocuments | `Setting#_preCreateDescendantDocuments`}
-     * and {@link Setting._onCreateDescendantDocuments | `Setting#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Setting._preCreateDescendantDocuments | Setting#_preCreateDescendantDocuments}
+     * and {@linkcode Setting._onCreateDescendantDocuments | Setting#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Setting.Database.Create> {}
 
     /**
-     * Options for {@link Setting._preUpdateDescendantDocuments | `Setting#_preUpdateDescendantDocuments`}
-     * and {@link Setting._onUpdateDescendantDocuments | `Setting#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Setting._preUpdateDescendantDocuments | Setting#_preUpdateDescendantDocuments}
+     * and {@linkcode Setting._onUpdateDescendantDocuments | Setting#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Setting.Database.Update> {}
 
     /**
-     * Options for {@link Setting._preDeleteDescendantDocuments | `Setting#_preDeleteDescendantDocuments`}
-     * and {@link Setting._onDeleteDescendantDocuments | `Setting#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Setting._preDeleteDescendantDocuments | Setting#_preDeleteDescendantDocuments}
+     * and {@linkcode Setting._onDeleteDescendantDocuments | Setting#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Setting.Database.Delete> {}
 
@@ -326,11 +350,10 @@ declare namespace Setting {
   }
 
   /**
-   * If `Temporary` is true then `Setting.Implementation`, otherwise `Setting.Stored`.
+   * If `Temporary` is true then {@linkcode Setting.Implementation}, otherwise {@linkcode Setting.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Setting.Implementation
-    : Setting.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Setting.Implementation : Setting.Stored;
 
   /**
    * @deprecated `Settings` does not have any flags.
@@ -362,6 +385,10 @@ declare namespace Setting {
     type Get<_Scope, _Key> = never;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -374,7 +401,7 @@ declare namespace Setting {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -385,7 +412,7 @@ declare namespace Setting {
  *
  * @see {@linkcode WorldSettings}       The world-level collection of Setting documents
  */
-declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocument {
+declare class Setting extends BaseSetting.Internal.ClientDocument {
   /**
    * @param data    - Initial data from which to construct the `Setting`
    * @param context - Construction context options
@@ -435,7 +462,7 @@ declare class Setting extends foundry.documents.BaseSetting.Internal.ClientDocum
   ): never;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Setting">,
   ): Promise<this | false | null | undefined>;
 

@@ -1,11 +1,16 @@
-import type { InexactPartial, IntentionalPartial, Merge } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { ShapeData } from "#common/data/data.mjs";
-import type BaseDrawing from "#common/documents/drawing.mjs";
+import type { InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
+import type { fields, ShapeData } from "#common/data/_module.mjs";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseDrawing, BaseUser } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace DrawingDocument {
   /**
@@ -24,16 +29,16 @@ declare namespace DrawingDocument {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `DrawingDocument` document instance configured through `CONFIG.Drawing.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredDrawingDocument | `fvtt-types/configuration/ConfiguredDrawingDocument`} in fvtt-types.
+   * The implementation of the `DrawingDocument` document instance configured through
+   * {@linkcode CONFIG.Drawing.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
-  type Implementation = Document.ImplementationFor<"Drawing">;
+  type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `DrawingDocument` document configured through `CONFIG.DrawingDocument.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `DrawingDocument` document configured through
+   * {@linkcode CONFIG.Drawing.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
-  type ImplementationClass = Document.ImplementationClassFor<"Drawing">;
+  type ImplementationClass = Document.ImplementationClassFor<Name>;
 
   /**
    * A document's metadata is special information about the document ranging anywhere from its name,
@@ -44,11 +49,11 @@ declare namespace DrawingDocument {
     Readonly<{
       name: "Drawing";
       collection: "drawings";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Drawing";
+      labelPlural: "DOCUMENT.Drawings";
       isEmbedded: true;
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -81,15 +86,6 @@ declare namespace DrawingDocument {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Scene">;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -100,7 +96,8 @@ declare namespace DrawingDocument {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -126,52 +123,77 @@ declare namespace DrawingDocument {
   type Stored = Document.Internal.Stored<DrawingDocument.Implementation>;
 
   /**
-   * The data put in {@link DrawingDocument._source | `DrawingDocument#_source`}. This data is what was
+   * The data put in {@linkcode DrawingDocument._source | DrawingDocument#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode DrawingDocument.create}
-   * and {@link DrawingDocument | `new DrawingDocument(...)`}.
+   * and {@linkcode DrawingDocument | new DrawingDocument(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link DrawingDocument.name | `DrawingDocument#name`}.
+   * Used in the {@linkcode DrawingDocument.create} and {@linkcode DrawingDocument.createDocuments} signatures, and
+   * {@linkcode DrawingDocument.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode DrawingDocument.create}, returning (a single | an array of) (temporary | stored)
+   * `DrawingDocument`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<DrawingDocument.TemporaryIf<Temporary>>
+      : DrawingDocument.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode DrawingDocument.name | DrawingDocument#name}.
    *
    * This is data transformed from {@linkcode DrawingDocument.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link DrawingDocument.update | `DrawingDocument#update`}.
-   * It is a distinct type from {@link DrawingDocument.CreateData | `DeepPartial<DrawingDocument.CreateData>`} because
+   * The data used to update a document, for example {@linkcode DrawingDocument.update | DrawingDocument#update}.
+   * It is a distinct type from {@linkcode DrawingDocument.CreateData | DeepPartial<DrawingDocument.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode DrawingDocument.update | DrawingDocument#update} and
+   * {@linkcode DrawingDocument.updateDocuments} signatures, and {@linkcode DrawingDocument.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode DrawingDocument}. This is the source of truth for how an DrawingDocument document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode DrawingDocument}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this BaseDrawing embedded document
      * @defaultValue `null`
@@ -182,7 +204,7 @@ declare namespace DrawingDocument {
      * The _id of the user who created the drawing
      * @defaultValue `game.user?.id`
      */
-    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
+    author: fields.DocumentAuthorField<typeof BaseUser>;
 
     /**
      * The geometric shape of the drawing
@@ -384,7 +406,7 @@ declare namespace DrawingDocument {
       DrawingDocument.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link DrawingDocument.update | `DrawingDocument#update`} */
+    /** Operation for {@linkcode DrawingDocument.update | DrawingDocument#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -392,40 +414,40 @@ declare namespace DrawingDocument {
     /** Options for {@linkcode DrawingDocument.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link DrawingDocument._preCreate | `DrawingDocument#_preCreate`} */
+    /** Options for {@linkcode DrawingDocument._preCreate | DrawingDocument#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link DrawingDocument._onCreate | `DrawingDocument#_onCreate`} */
+    /** Options for {@linkcode DrawingDocument._onCreate | DrawingDocument#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode DrawingDocument._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<DrawingDocument.Database.Create> {}
 
-    /** Operation for {@link DrawingDocument._onCreateOperation | `DrawingDocument#_onCreateOperation`} */
+    /** Operation for {@linkcode DrawingDocument._onCreateOperation | DrawingDocument#_onCreateOperation} */
     interface OnCreateOperation extends DrawingDocument.Database.Create {}
 
-    /** Options for {@link DrawingDocument._preUpdate | `DrawingDocument#_preUpdate`} */
+    /** Options for {@linkcode DrawingDocument._preUpdate | DrawingDocument#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link DrawingDocument._onUpdate | `DrawingDocument#_onUpdate`} */
+    /** Options for {@linkcode DrawingDocument._onUpdate | DrawingDocument#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode DrawingDocument._preUpdateOperation} */
     interface PreUpdateOperation extends DrawingDocument.Database.Update {}
 
-    /** Operation for {@link DrawingDocument._onUpdateOperation | `DrawingDocument._preUpdateOperation`} */
+    /** Operation for {@linkcode DrawingDocument._onUpdateOperation | DrawingDocument._preUpdateOperation} */
     interface OnUpdateOperation extends DrawingDocument.Database.Update {}
 
-    /** Options for {@link DrawingDocument._preDelete | `DrawingDocument#_preDelete`} */
+    /** Options for {@linkcode DrawingDocument._preDelete | DrawingDocument#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link DrawingDocument._onDelete | `DrawingDocument#_onDelete`} */
+    /** Options for {@linkcode DrawingDocument._onDelete | DrawingDocument#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link DrawingDocument._preDeleteOperation | `DrawingDocument#_preDeleteOperation`} */
+    /** Options for {@linkcode DrawingDocument._preDeleteOperation | DrawingDocument#_preDeleteOperation} */
     interface PreDeleteOperation extends DrawingDocument.Database.Delete {}
 
-    /** Options for {@link DrawingDocument._onDeleteOperation | `DrawingDocument#_onDeleteOperation`} */
+    /** Options for {@linkcode DrawingDocument._onDeleteOperation | DrawingDocument#_onDeleteOperation} */
     interface OnDeleteOperation extends DrawingDocument.Database.Delete {}
 
     /** Context for {@linkcode DrawingDocument._onDeleteOperation} */
@@ -438,20 +460,20 @@ declare namespace DrawingDocument {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
 
     /**
-     * Options for {@link DrawingDocument._preCreateDescendantDocuments | `DrawingDocument#_preCreateDescendantDocuments`}
-     * and {@link DrawingDocument._onCreateDescendantDocuments | `DrawingDocument#_onCreateDescendantDocuments`}
+     * Options for {@linkcode DrawingDocument._preCreateDescendantDocuments | DrawingDocument#_preCreateDescendantDocuments}
+     * and {@linkcode DrawingDocument._onCreateDescendantDocuments | DrawingDocument#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<DrawingDocument.Database.Create> {}
 
     /**
-     * Options for {@link DrawingDocument._preUpdateDescendantDocuments | `DrawingDocument#_preUpdateDescendantDocuments`}
-     * and {@link DrawingDocument._onUpdateDescendantDocuments | `DrawingDocument#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode DrawingDocument._preUpdateDescendantDocuments | DrawingDocument#_preUpdateDescendantDocuments}
+     * and {@linkcode DrawingDocument._onUpdateDescendantDocuments | DrawingDocument#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<DrawingDocument.Database.Update> {}
 
     /**
-     * Options for {@link DrawingDocument._preDeleteDescendantDocuments | `DrawingDocument#_preDeleteDescendantDocuments`}
-     * and {@link DrawingDocument._onDeleteDescendantDocuments | `DrawingDocument#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode DrawingDocument._preDeleteDescendantDocuments | DrawingDocument#_preDeleteDescendantDocuments}
+     * and {@linkcode DrawingDocument._onDeleteDescendantDocuments | DrawingDocument#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<DrawingDocument.Database.Delete> {}
 
@@ -462,11 +484,10 @@ declare namespace DrawingDocument {
   }
 
   /**
-   * If `Temporary` is true then `DrawingDocument.Implementation`, otherwise `DrawingDocument.Stored`.
+   * If `Temporary` is true then {@linkcode DrawingDocument.Implementation}, otherwise {@linkcode DrawingDocument.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? DrawingDocument.Implementation
-    : DrawingDocument.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? DrawingDocument.Implementation : DrawingDocument.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -490,6 +511,10 @@ declare namespace DrawingDocument {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -497,6 +522,10 @@ declare namespace DrawingDocument {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *            DRAWING-SPECIFIC TYPES             *
+   *************************************************/
 
   interface ValidateVisibleContentData
     extends
@@ -510,7 +539,7 @@ declare namespace DrawingDocument {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -567,7 +596,7 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
   ): Promise<DrawingDocument.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Drawing">,
   ): Promise<this | false | null | undefined>;
 

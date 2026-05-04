@@ -6,7 +6,7 @@ import SpriteMesh = foundry.canvas.containers.SpriteMesh;
 import TextureExtractor = foundry.canvas.TextureExtractor;
 
 declare const texture: PIXI.Texture;
-declare const user: User.Implementation;
+declare const user: User.Stored;
 
 describe("FogManager tests", () => {
   test("Construction", () => {

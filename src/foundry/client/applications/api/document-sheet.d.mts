@@ -101,7 +101,7 @@ declare class DocumentSheetV2<
   Configuration extends DocumentSheetV2.Configuration<Document> = DocumentSheetV2.Configuration<Document>,
   RenderOptions extends DocumentSheetV2.RenderOptions = DocumentSheetV2.RenderOptions,
 > extends ApplicationV2<RenderContext, Configuration, RenderOptions> {
-  constructor(options?: DocumentSheetV2.InputOptions<Configuration>);
+  constructor(options: DocumentSheetV2.InputOptions<Configuration>);
 
   static DEFAULT_OPTIONS: DocumentSheetV2.DefaultOptions;
 

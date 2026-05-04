@@ -1,9 +1,16 @@
-import type { InexactPartial, Merge } from "#utils";
-import type Document from "#common/abstract/document.mjs";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseJournalEntryCategory from "#common/documents/journal-entry-category.d.mts";
+import type { InexactPartial, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseJournalEntryCategory } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace JournalEntryCategory {
   /**
@@ -22,14 +29,14 @@ declare namespace JournalEntryCategory {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `JournalEntryCategory` document instance configured through `CONFIG.JournalEntryCategory.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredJournalEntryCategory | `fvtt-types/configuration/ConfiguredJournalEntryCategory`} in fvtt-types.
+   * The implementation of the `JournalEntryCategory` document instance configured through
+   * {@linkcode CONFIG.JournalEntryCategory.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `JournalEntryCategory` document configured through `CONFIG.Combat.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `JournalEntryCategory` document configured through
+   * {@linkcode CONFIG.JournalEntryCategory.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -38,10 +45,10 @@ declare namespace JournalEntryCategory {
     Readonly<{
       name: "JournalEntryCategory";
       collection: "categories";
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.JournalEntryCategory";
+      labelPlural: "DOCUMENT.JournalEntryCategories";
       isEmbedded: true;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -64,15 +71,6 @@ declare namespace JournalEntryCategory {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = never;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -83,7 +81,8 @@ declare namespace JournalEntryCategory {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -109,52 +108,77 @@ declare namespace JournalEntryCategory {
   type Stored = Document.Internal.Stored<JournalEntryCategory.Implementation>;
 
   /**
-   * The data put in {@link JournalEntryCategory._source | `JournalEntryCategory#_source`}. This data is what was
+   * The data put in {@linkcode JournalEntryCategory._source | JournalEntryCategory#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode JournalEntryCategory.create}
-   * and {@link JournalEntryCategory | `new JournalEntryCategory(...)`}.
+   * and {@linkcode JournalEntryCategory | new JournalEntryCategory(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link JournalEntryCategory.name | `JournalEntryCategory#name`}.
+   * Used in the {@linkcode JournalEntryCategory.create} and {@linkcode JournalEntryCategory.createDocuments} signatures, and
+   * {@linkcode JournalEntryCategory.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode JournalEntryCategory.create}, returning (a single | an array of) (temporary | stored)
+   * `JournalEntryCategory`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<JournalEntryCategory.TemporaryIf<Temporary>>
+      : JournalEntryCategory.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode JournalEntryCategory.name | JournalEntryCategory#name}.
    *
    * This is data transformed from {@linkcode JournalEntryCategory.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link JournalEntryCategory.update | `JournalEntryCategory#update`}.
-   * It is a distinct type from {@link JournalEntryCategory.CreateData | `DeepPartial<JournalEntryCategory.CreateData>`} because
+   * The data used to update a document, for example {@linkcode JournalEntryCategory.update | JournalEntryCategory#update}.
+   * It is a distinct type from {@linkcode JournalEntryCategory.CreateData | DeepPartial<JournalEntryCategory.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode JournalEntryCategory.update | JournalEntryCategory#update} and
+   * {@linkcode JournalEntryCategory.updateDocuments} signatures, and {@linkcode JournalEntryCategory.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode JournalEntryCategory}. This is the source of truth for how an JournalEntryCategory document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode JournalEntryCategory}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this JournalEntryCategory embedded document.
      * @defaultValue `null`
@@ -217,7 +241,7 @@ declare namespace JournalEntryCategory {
       JournalEntryCategory.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link JournalEntryCategory.update | `JournalEntryCategory#update`} */
+    /** Operation for {@linkcode JournalEntryCategory.update | JournalEntryCategory#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -225,41 +249,41 @@ declare namespace JournalEntryCategory {
     /** Options for {@linkcode JournalEntryCategory.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link JournalEntryCategory._preCreate | `JournalEntryCategory#_preCreate`} */
+    /** Options for {@linkcode JournalEntryCategory._preCreate | JournalEntryCategory#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link JournalEntryCategory._onCreate | `JournalEntryCategory#_onCreate`} */
+    /** Options for {@linkcode JournalEntryCategory._onCreate | JournalEntryCategory#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode JournalEntryCategory._preCreateOperation} */
     interface PreCreateOperation extends Document.Database
       .PreCreateOperationStatic<JournalEntryCategory.Database.Create> {}
 
-    /** Operation for {@link JournalEntryCategory._onCreateOperation | `JournalEntryCategory#_onCreateOperation`} */
+    /** Operation for {@linkcode JournalEntryCategory._onCreateOperation | JournalEntryCategory#_onCreateOperation} */
     interface OnCreateOperation extends JournalEntryCategory.Database.Create {}
 
-    /** Options for {@link JournalEntryCategory._preUpdate | `JournalEntryCategory#_preUpdate`} */
+    /** Options for {@linkcode JournalEntryCategory._preUpdate | JournalEntryCategory#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link JournalEntryCategory._onUpdate | `JournalEntryCategory#_onUpdate`} */
+    /** Options for {@linkcode JournalEntryCategory._onUpdate | JournalEntryCategory#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode JournalEntryCategory._preUpdateOperation} */
     interface PreUpdateOperation extends JournalEntryCategory.Database.Update {}
 
-    /** Operation for {@link JournalEntryCategory._onUpdateOperation | `JournalEntryCategory._preUpdateOperation`} */
+    /** Operation for {@linkcode JournalEntryCategory._onUpdateOperation | JournalEntryCategory._preUpdateOperation} */
     interface OnUpdateOperation extends JournalEntryCategory.Database.Update {}
 
-    /** Options for {@link JournalEntryCategory._preDelete | `JournalEntryCategory#_preDelete`} */
+    /** Options for {@linkcode JournalEntryCategory._preDelete | JournalEntryCategory#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link JournalEntryCategory._onDelete | `JournalEntryCategory#_onDelete`} */
+    /** Options for {@linkcode JournalEntryCategory._onDelete | JournalEntryCategory#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link JournalEntryCategory._preDeleteOperation | `JournalEntryCategory#_preDeleteOperation`} */
+    /** Options for {@linkcode JournalEntryCategory._preDeleteOperation | JournalEntryCategory#_preDeleteOperation} */
     interface PreDeleteOperation extends JournalEntryCategory.Database.Delete {}
 
-    /** Options for {@link JournalEntryCategory._onDeleteOperation | `JournalEntryCategory#_onDeleteOperation`} */
+    /** Options for {@linkcode JournalEntryCategory._onDeleteOperation | JournalEntryCategory#_onDeleteOperation} */
     interface OnDeleteOperation extends JournalEntryCategory.Database.Delete {}
 
     /** Context for {@linkcode JournalEntryCategory._onDeleteOperation} */
@@ -272,20 +296,20 @@ declare namespace JournalEntryCategory {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<JournalEntryCategory.Parent> {}
 
     /**
-     * Options for {@link JournalEntryCategory._preCreateDescendantDocuments | `JournalEntryCategory#_preCreateDescendantDocuments`}
-     * and {@link JournalEntryCategory._onCreateDescendantDocuments | `JournalEntryCategory#_onCreateDescendantDocuments`}
+     * Options for {@linkcode JournalEntryCategory._preCreateDescendantDocuments | JournalEntryCategory#_preCreateDescendantDocuments}
+     * and {@linkcode JournalEntryCategory._onCreateDescendantDocuments | JournalEntryCategory#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<JournalEntryCategory.Database.Create> {}
 
     /**
-     * Options for {@link JournalEntryCategory._preUpdateDescendantDocuments | `JournalEntryCategory#_preUpdateDescendantDocuments`}
-     * and {@link JournalEntryCategory._onUpdateDescendantDocuments | `JournalEntryCategory#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode JournalEntryCategory._preUpdateDescendantDocuments | JournalEntryCategory#_preUpdateDescendantDocuments}
+     * and {@linkcode JournalEntryCategory._onUpdateDescendantDocuments | JournalEntryCategory#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<JournalEntryCategory.Database.Update> {}
 
     /**
-     * Options for {@link JournalEntryCategory._preDeleteDescendantDocuments | `JournalEntryCategory#_preDeleteDescendantDocuments`}
-     * and {@link JournalEntryCategory._onDeleteDescendantDocuments | `JournalEntryCategory#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode JournalEntryCategory._preDeleteDescendantDocuments | JournalEntryCategory#_preDeleteDescendantDocuments}
+     * and {@linkcode JournalEntryCategory._onDeleteDescendantDocuments | JournalEntryCategory#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<JournalEntryCategory.Database.Delete> {}
 
@@ -296,11 +320,10 @@ declare namespace JournalEntryCategory {
   }
 
   /**
-   * If `Temporary` is true then `JournalEntryCategory.Implementation`, otherwise `JournalEntryCategory.Stored`.
+   * If `Temporary` is true then {@linkcode JournalEntryCategory.Implementation}, otherwise {@linkcode JournalEntryCategory.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? JournalEntryCategory.Implementation
-    : JournalEntryCategory.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? JournalEntryCategory.Implementation : JournalEntryCategory.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -324,6 +347,10 @@ declare namespace JournalEntryCategory {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -333,27 +360,10 @@ declare namespace JournalEntryCategory {
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
 
   /**
-   * @remarks
-   * This is typed based on what is reasonable to expect, rather than accurately, as accurately would mean `unknown` (Foundry's type is `object|null`).
-   *
-   * Technically this is the value of an arbitrary property path in the Combatant's Actor's `system` (using `getProperty`), and while that path can usually be
-   * assumed to have been set to something in the return of {@linkcode TokenDocument.getTrackedAttributes}, since that's what the {@linkcode CombatTrackerConfig}
-   * provides as options, the path is stored in the {@linkcode Combat.CONFIG_SETTING} which could be updated to be anything. Also, `TokenDocument.getTrackedAttributes`
-   * doesn't actually check what the type of `value` and `max` are for bar type attributes, so even sticking to those choices isn't guaranteed safe.
-   *
-   * There's clear intent that the value *should* be numeric or null, but nothing seems to do math on it in core, and it's simply output in the {@linkcode CombatEncounters}
-   * template as `{{resource}}`, so `string` has been allowed.
-   *
-   * @privateRemarks Adding `boolean` is something that was discussed and decided against for now, but its plausible a system may request such in the future, and wouldn't
-   * make us any more wrong than currently.
-   */
-  type Resource = string | number | null;
-
-  /**
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -396,7 +406,7 @@ declare class JournalEntryCategory extends BaseJournalEntryCategory.Internal.Cli
   ): Promise<JournalEntryCategory.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"JournalEntryCategory">,
   ): Promise<this | false | null | undefined>;
 

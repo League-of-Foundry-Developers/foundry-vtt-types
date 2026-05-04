@@ -6,7 +6,7 @@ const players = new foundry.applications.ui.Players({});
 expectTypeOf(players.expanded).toEqualTypeOf<boolean>();
 
 Hooks.on("getUserContextOptions", (app, contextOptions) => {
-  expectTypeOf(app).toEqualTypeOf<foundry.applications.ui.Players>();
+  expectTypeOf(app).toEqualTypeOf<foundry.applications.ui.Players.Any>();
   expectTypeOf(contextOptions).toEqualTypeOf<foundry.applications.ux.ContextMenu.Entry<HTMLElement>[]>();
 });
 

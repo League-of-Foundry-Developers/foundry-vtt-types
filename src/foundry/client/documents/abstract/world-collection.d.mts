@@ -1,14 +1,18 @@
 import type { DeepPartial, GetKey, Identity, InexactPartial, InitializedOn } from "#utils";
 import type { Collection } from "#common/utils/_module.d.mts";
 import type { Document } from "#common/abstract/_module.d.mts";
-import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
 import type { DocumentDirectory } from "#client/applications/sidebar/_module.mjs";
 import type { Application } from "#client/appv1/api/_module.d.mts";
-import type { ApplicationV2 } from "#client/applications/api/_module.d.mts";
+import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
 import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
-import type { DirectoryCollectionMixin, DocumentCollection } from "#client/documents/abstract/_module.d.mts";
+import type {
+  ClientDocumentMixin,
+  DirectoryCollectionMixin,
+  DocumentCollection,
+} from "#client/documents/abstract/_module.d.mts";
 import type { collections } from "#client/documents/_module.d.mts";
+import type { DatabaseCreateOperation } from "#common/abstract/_types.d.mts";
 
 /**
  * A collection of world-level Document objects with a singleton instance per primary Document type.
@@ -95,8 +99,8 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
    */
   static registerSheet(
     scope: string,
-    sheetClass: Application.AnyConstructor | ApplicationV2.AnyConstructor,
-    options?: DocumentSheetConfig.SheetRegistrationOptions,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.RegisterSheetOptions<ClientDocumentMixin.AnyMixedConstructor>,
   ): void;
 
   /**
@@ -111,14 +115,14 @@ declare abstract class WorldCollection<DocumentName extends Document.WorldType> 
    */
   static unregisterSheet(
     scope: string,
-    sheetClass: Application.AnyConstructor | ApplicationV2.AnyConstructor,
-    options?: DocumentSheetConfig.UnregisterSheetOptions,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.UnregisterSheetOptions<ClientDocumentMixin.AnyMixedConstructor>,
   ): void;
 
   /**
    * Return an array of currently registered sheet classes for this Document type.
    */
-  static get registeredSheets(): (Application.AnyConstructor | ApplicationV2.AnyConstructor)[];
+  static get registeredSheets(): (Application.AnyConstructor | DocumentSheetV2.AnyConstructor)[];
 }
 
 declare namespace WorldCollection {

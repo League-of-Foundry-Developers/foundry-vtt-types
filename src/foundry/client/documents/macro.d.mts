@@ -1,12 +1,22 @@
 import type { ConfiguredMacro } from "#configuration";
-import type { Identity, InexactPartial, Merge, NullishProps } from "#utils";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseMacro from "#common/documents/macro.d.mts";
+import type { Identity, InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseFolder, BaseMacro, BaseUser } from "#client/documents/_module.d.mts";
 import type { Token } from "#client/canvas/placeables/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+
+/** @privateRemarks `ExecuteMacroRegionBehaviourType` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ExecuteMacroRegionBehaviorType } from "#client/data/region-behaviors/_module.d.mts";
 
 declare namespace Macro {
   /**
@@ -25,14 +35,15 @@ declare namespace Macro {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Macro` document instance configured through `CONFIG.Macro.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`} in fvtt-types.
+   * The implementation of the `Macro` document instance configured through
+   * {@linkcode CONFIG.Macro.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredMacro | fvtt-types/configuration/ConfiguredMacro} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Macro` document configured through `CONFIG.Macro.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Macro` document configured through
+   * {@linkcode CONFIG.Macro.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -47,11 +58,11 @@ declare namespace Macro {
       collection: "macros";
       indexed: true;
       compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Macro";
+      labelPlural: "DOCUMENT.Macros";
       coreTypes: ["script", "chat"]; // This isn't `CONST.MACRO_TYPES[]` due to the semantics of `Merge`.
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -95,7 +106,7 @@ declare namespace Macro {
   /**
    * `OfType` returns an instance of `Macro` with the corresponding type. This works with both the
    * builtin `Macro` class or a custom subclass if that is set up in
-   * {@link ConfiguredMacro | `fvtt-types/configuration/ConfiguredMacro`}.
+   * {@linkcode ConfiguredMacro | fvtt-types/configuration/ConfiguredMacro}.
    *
    * Note that `Macro` does not have a `system` property and therefore there is no way for a user
    * to configure custom subtypes. See {@linkcode Macro.SubType} for more information.
@@ -132,15 +143,6 @@ declare namespace Macro {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Scene">;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -151,7 +153,8 @@ declare namespace Macro {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -177,19 +180,19 @@ declare namespace Macro {
   type Stored<SubType extends Macro.SubType = Macro.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link Macro._source | `Macro#_source`}. This data is what was
+   * The data put in {@linkcode Macro._source | Macro#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Macro.create}
-   * and {@link Macro | `new Macro(...)`}.
+   * and {@linkcode Macro | new Macro(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -198,33 +201,56 @@ declare namespace Macro {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Macro.name | `Macro#name`}.
+   * Used in the {@linkcode Macro.create} and {@linkcode Macro.createDocuments} signatures, and
+   * {@linkcode Macro.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Macro.create}, returning (a single | an array of) (temporary | stored)
+   * `Macro`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput> ? Array<Macro.TemporaryIf<Temporary>> : Macro.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode Macro.name | Macro#name}.
    *
    * This is data transformed from {@linkcode Macro.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Macro.update | `Macro#update`}.
-   * It is a distinct type from {@link Macro.CreateData | `DeepPartial<Macro.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Macro.update | Macro#update}.
+   * It is a distinct type from {@linkcode Macro.CreateData | DeepPartial<Macro.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode Macro.update | Macro#update} and
+   * {@linkcode Macro.updateDocuments} signatures, and {@linkcode Macro.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode Macro}. This is the source of truth for how an Macro document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Macro}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Macro document
      * @defaultValue `null`
@@ -247,7 +273,7 @@ declare namespace Macro {
      * The _id of a User document which created this Macro *
      * @defaultValue `game.user?.id`
      */
-    author: fields.DocumentAuthorField<typeof documents.BaseUser>;
+    author: fields.DocumentAuthorField<typeof BaseUser>;
 
     /**
      * An image file path which provides the thumbnail artwork for this Macro
@@ -284,7 +310,7 @@ declare namespace Macro {
      * The _id of a Folder which contains this Macro
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The numeric sort value which orders this Macro relative to its siblings
@@ -341,7 +367,7 @@ declare namespace Macro {
       Macro.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Macro.update | `Macro#update`} */
+    /** Operation for {@linkcode Macro.update | Macro#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -349,40 +375,40 @@ declare namespace Macro {
     /** Options for {@linkcode Macro.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Macro._preCreate | `Macro#_preCreate`} */
+    /** Options for {@linkcode Macro._preCreate | Macro#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Macro._onCreate | `Macro#_onCreate`} */
+    /** Options for {@linkcode Macro._onCreate | Macro#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Macro._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Macro.Database.Create> {}
 
-    /** Operation for {@link Macro._onCreateOperation | `Macro#_onCreateOperation`} */
+    /** Operation for {@linkcode Macro._onCreateOperation | Macro#_onCreateOperation} */
     interface OnCreateOperation extends Macro.Database.Create {}
 
-    /** Options for {@link Macro._preUpdate | `Macro#_preUpdate`} */
+    /** Options for {@linkcode Macro._preUpdate | Macro#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Macro._onUpdate | `Macro#_onUpdate`} */
+    /** Options for {@linkcode Macro._onUpdate | Macro#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Macro._preUpdateOperation} */
     interface PreUpdateOperation extends Macro.Database.Update {}
 
-    /** Operation for {@link Macro._onUpdateOperation | `Macro._preUpdateOperation`} */
+    /** Operation for {@linkcode Macro._onUpdateOperation | Macro._preUpdateOperation} */
     interface OnUpdateOperation extends Macro.Database.Update {}
 
-    /** Options for {@link Macro._preDelete | `Macro#_preDelete`} */
+    /** Options for {@linkcode Macro._preDelete | Macro#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Macro._onDelete | `Macro#_onDelete`} */
+    /** Options for {@linkcode Macro._onDelete | Macro#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Macro._preDeleteOperation | `Macro#_preDeleteOperation`} */
+    /** Options for {@linkcode Macro._preDeleteOperation | Macro#_preDeleteOperation} */
     interface PreDeleteOperation extends Macro.Database.Delete {}
 
-    /** Options for {@link Macro._onDeleteOperation | `Macro#_onDeleteOperation`} */
+    /** Options for {@linkcode Macro._onDeleteOperation | Macro#_onDeleteOperation} */
     interface OnDeleteOperation extends Macro.Database.Delete {}
 
     /** Context for {@linkcode Macro._onDeleteOperation} */
@@ -395,20 +421,20 @@ declare namespace Macro {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Macro.Parent> {}
 
     /**
-     * Options for {@link Macro._preCreateDescendantDocuments | `Macro#_preCreateDescendantDocuments`}
-     * and {@link Macro._onCreateDescendantDocuments | `Macro#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Macro._preCreateDescendantDocuments | Macro#_preCreateDescendantDocuments}
+     * and {@linkcode Macro._onCreateDescendantDocuments | Macro#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Macro.Database.Create> {}
 
     /**
-     * Options for {@link Macro._preUpdateDescendantDocuments | `Macro#_preUpdateDescendantDocuments`}
-     * and {@link Macro._onUpdateDescendantDocuments | `Macro#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Macro._preUpdateDescendantDocuments | Macro#_preUpdateDescendantDocuments}
+     * and {@linkcode Macro._onUpdateDescendantDocuments | Macro#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Macro.Database.Update> {}
 
     /**
-     * Options for {@link Macro._preDeleteDescendantDocuments | `Macro#_preDeleteDescendantDocuments`}
-     * and {@link Macro._onDeleteDescendantDocuments | `Macro#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Macro._preDeleteDescendantDocuments | Macro#_preDeleteDescendantDocuments}
+     * and {@linkcode Macro._onDeleteDescendantDocuments | Macro#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Macro.Database.Delete> {}
 
@@ -419,11 +445,10 @@ declare namespace Macro {
   }
 
   /**
-   * If `Temporary` is true then `Macro.Implementation`, otherwise `Macro.Stored`.
+   * If `Temporary` is true then {@linkcode Macro.Implementation}, otherwise {@linkcode Macro.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Macro.Implementation
-    : Macro.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Macro.Implementation : Macro.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -447,6 +472,10 @@ declare namespace Macro {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -454,6 +483,10 @@ declare namespace Macro {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *              MACRO-SPECIFIC TYPES             *
+   *************************************************/
 
   /** @internal */
   type _ScriptScope = NullishProps<{
@@ -468,30 +501,30 @@ declare namespace Macro {
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@link foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | `ExecuteMacroRegionBehaviorType#_handleRegionEvent`},
+     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
      * will be a {@linkcode Scene.Implementation} (possibly `null` if somehow called on a `RegionBehavior` whose `RegionDocument` doesn't have a parent `Scene`)
      */
     scene?: unknown;
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@link foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | `ExecuteMacroRegionBehaviorType#_handleRegionEvent`},
+     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
      * will be a {@linkcode RegionDocument.Implementation} (possibly `null` if somehow called on a `RegionBehavior` without a parent `RegionDocument`)
      */
     region?: unknown;
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@link foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | `ExecuteMacroRegionBehaviorType#_handleRegionEvent`},
+     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
      * will be a {@linkcode RegionBehavior.Implementation} (possibly `null` if somehow called on a `RegionBehaviorType` without a parent `RegionBehavior`)
      */
     behavior?: unknown;
 
     /**
      * @remarks Sometimes provided by core:
-     * - When called in {@link Macro._onClickDocumentLink | `Macro#_onClickDocumentLink`},
+     * - When called in {@linkcode Macro._onClickDocumentLink | Macro#_onClickDocumentLink},
      * will be a {@linkcode MouseEvent}
-     * - When called in {@link foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | `ExecuteMacroRegionBehaviorType#_handleRegionEvent`},
+     * - When called in {@linkcode foundry.data.regionBehaviors.ExecuteMacroRegionBehaviorType._handleRegionEvent | ExecuteMacroRegionBehaviorType#_handleRegionEvent},
      * will be a {@linkcode RegionDocument.RegionEvent}
      */
     event?: unknown;
@@ -523,7 +556,7 @@ declare namespace Macro {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -611,7 +644,7 @@ declare class Macro<out SubType extends Macro.SubType = Macro.SubType> extends B
   ): Promise<Macro.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Macro">,
   ): Promise<this | false | null | undefined>;
 

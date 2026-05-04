@@ -1,6 +1,9 @@
 import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
+import type { Application } from "#client/appv1/api/_module.d.mts";
+import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
+import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 /** @privateRemarks `AllHooks` only used for links */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { AllHooks } from "#client/hooks.d.mts";
@@ -62,6 +65,20 @@ declare class Users extends WorldCollection<"User"> {
 
   /** @deprecated Foundry made this method truly private in v13. This warning will be removed in v14. */
   static _handleUserActivity(userId: never, activityData?: never): never;
+
+  // Fake override for the purpose of typing `options`.
+  static override registerSheet(
+    scope: string,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.RegisterSheetOptions<User.ImplementationClass>,
+  ): void;
+
+  // Fake override for the purpose of typing `options`.
+  static override unregisterSheet(
+    scope: string,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.UnregisterSheetOptions<User.ImplementationClass>,
+  ): void;
 
   static #Users: true;
 }

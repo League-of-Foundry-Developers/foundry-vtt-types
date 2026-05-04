@@ -1,4 +1,4 @@
-import type { AnyMutableObject } from "#utils";
+import type { AnyMutableObject } from "fvtt-types/utils";
 import { expectTypeOf } from "vitest";
 
 import FormDataExtended = foundry.applications.ux.FormDataExtended;

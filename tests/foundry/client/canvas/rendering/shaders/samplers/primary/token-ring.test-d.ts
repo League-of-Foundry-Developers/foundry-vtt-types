@@ -1,7 +1,8 @@
 import { expectTypeOf } from "vitest";
-import { TokenRing } from "#client/canvas/placeables/tokens/_module.mjs";
-import { TokenRingSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
-import { BatchRenderer } from "#client/canvas/rendering/batching/_module.mjs";
+
+import TokenRingSamplerShader = foundry.canvas.rendering.shaders.TokenRingSamplerShader;
+import TokenRing = foundry.canvas.placeables.tokens.TokenRing;
+import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
 
 const myTRSS = TokenRingSamplerShader.create();
 expectTypeOf(myTRSS).toEqualTypeOf<TokenRingSamplerShader>();

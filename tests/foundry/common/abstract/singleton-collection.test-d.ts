@@ -1,6 +1,6 @@
 import { afterAll, describe, expectTypeOf, test } from "vitest";
 
-import SingletonEmbeddedCollection from "#common/abstract/singleton-collection.mjs";
+import SingletonEmbeddedCollection = foundry.abstract.SingletonEmbeddedCollection;
 
 describe("SingletonEmbeddedCollection Tests", async () => {
   const docsToCleanUp = new Set<foundry.abstract.Document.AnyStored>();
@@ -17,7 +17,6 @@ describe("SingletonEmbeddedCollection Tests", async () => {
   docsToCleanUp.add(actor);
 
   const tokenDoc = await TokenDocument.implementation.create(
-    // @ts-expect-error `TokenDocument.create` will take a `TokenDocument` on the db-ops branch
     await actor.getTokenDocument({ x: 200, y: 200, actorLink: false }),
     {
       parent: scene,

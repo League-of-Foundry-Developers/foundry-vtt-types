@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { AdaptiveLightingShader } from "#client/canvas/rendering/shaders/_module.mjs";
+
+import AdaptiveLightingShader = foundry.canvas.rendering.shaders.AdaptiveLightingShader;
 
 let myALS;
 

@@ -32,7 +32,7 @@ declare namespace CameraPopout {
 
   interface Configuration<CameraPopout extends CameraPopout.Any = CameraPopout.Any>
     extends HandlebarsApplicationMixin.Configuration, ApplicationV2.Configuration<CameraPopout> {
-    user: User.Implementation;
+    user: User.Stored;
   }
 
   // Note(LukeAbby): This `& object` is so that the `DEFAULT_OPTIONS` can be overridden more easily

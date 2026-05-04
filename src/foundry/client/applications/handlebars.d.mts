@@ -3,7 +3,7 @@ import type {
   FormInputConfig,
   FormSelectOption,
   NumberInputConfig,
-  SelectInputConfig,
+  _SelectInputConfig,
 } from "#client/applications/forms/fields.d.mts";
 
 /**
@@ -495,11 +495,11 @@ export interface SelectOptions extends InexactPartial<Handlebars.HelperOptions> 
 /**
  * @remarks Despite extending {@linkcode Handlebars.HelperOptions}, the function does not use the non-hash options
  *
- * {@linkcode SelectInputConfig} has to be partialed or `options` would be required, and that data is passed as the
+ * {@linkcode _SelectInputConfig} has to be partialed or `options` would be required, and that data is passed as the
  * first parameter of {@linkcode selectOptions} instead.
  */
 export interface SelectOptionsOptions extends InexactPartial<Handlebars.HelperOptions> {
-  hash: InexactPartial<SelectInputConfig> & {
+  hash: InexactPartial<_SelectInputConfig> & {
     /**
      * The currently selected value or values
      * @privateRemarks Foundry explicitly checks for both `=== undefined` and `=== null`, so `null` is allowed when

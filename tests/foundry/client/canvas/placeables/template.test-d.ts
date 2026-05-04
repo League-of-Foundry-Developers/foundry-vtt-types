@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { MeasuredTemplate, PlaceableObject } from "#client/canvas/placeables/_module.mjs";
 
+import MeasuredTemplate = foundry.canvas.placeables.MeasuredTemplate;
+import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import Canvas = foundry.canvas.Canvas;
 import ControlIcon = foundry.canvas.containers.ControlIcon;
 import PreciseText = foundry.canvas.containers.PreciseText;

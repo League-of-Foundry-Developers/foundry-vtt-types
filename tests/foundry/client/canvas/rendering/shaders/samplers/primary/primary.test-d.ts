@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { PrimaryBaseSamplerShader } from "#client/canvas/rendering/shaders/_module.mjs";
-import { BatchRenderer } from "#client/canvas/rendering/batching/_module.mjs";
+
+import PrimaryBaseSamplerShader = foundry.canvas.rendering.shaders.PrimaryBaseSamplerShader;
+import BatchRenderer = foundry.canvas.rendering.batching.BatchRenderer;
 
 const myPBSS = PrimaryBaseSamplerShader.create();
 expectTypeOf(myPBSS).toEqualTypeOf<PrimaryBaseSamplerShader>();

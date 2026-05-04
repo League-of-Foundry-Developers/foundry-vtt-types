@@ -1,11 +1,17 @@
 import type { ConfiguredItem } from "#configuration";
-import type { documents } from "#client/client.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type { AnyObject, Identity, InexactPartial, Merge } from "#utils";
-import type BaseItem from "#common/documents/item.mjs";
+import type { AnyObject, Identity, InexactPartial, MaybeArray, Merge } from "#utils";
+import type { fields } from "#common/data/_module.d.mts";
+import type { Document } from "#common/abstract/_module.d.mts";
+import type { BaseActiveEffect, BaseFolder, BaseItem } from "#client/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-import fields = foundry.data.fields;
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace Item {
   /**
@@ -24,14 +30,15 @@ declare namespace Item {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Item` document instance configured through `CONFIG.Item.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`} in fvtt-types.
+   * The implementation of the `Item` document instance configured through
+   * {@linkcode CONFIG.Item.documentClass} in Foundry and {@linkcode DocumentClassConfig} or
+   * {@linkcode ConfiguredItem | fvtt-types/configuration/ConfiguredItem} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Item` document configured through `CONFIG.Item.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Item` document configured through
+   * {@linkcode CONFIG.Item.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -48,10 +55,10 @@ declare namespace Item {
       indexed: true;
       compendiumIndexFields: ["_id", "name", "img", "type", "sort", "folder"];
       embedded: Metadata.Embedded;
-      label: string;
-      labelPlural: string;
+      label: "DOCUMENT.Item";
+      labelPlural: "DOCUMENT.Items";
       permissions: Metadata.Permissions;
-      schemaVersion: string;
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -103,7 +110,7 @@ declare namespace Item {
   /**
    * `OfType` returns an instance of `Item` with the corresponding type. This works with both the
    * builtin `Item` class or a custom subclass if that is set up in
-   * {@link ConfiguredItem | `fvtt-types/configuration/ConfiguredItem`}.
+   * {@linkcode ConfiguredItem | fvtt-types/configuration/ConfiguredItem}.
    */
   type OfType<Type extends SubType> = Document.Internal.DiscriminateSystem<Name, _OfType, Type, ConfiguredSubType>;
 
@@ -170,15 +177,6 @@ declare namespace Item {
   type DescendantClass = DirectDescendantClass;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Actor" | "Item">;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -231,7 +229,8 @@ declare namespace Item {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -257,19 +256,19 @@ declare namespace Item {
   type Stored<SubType extends Item.SubType = Item.SubType> = Document.Internal.Stored<OfType<SubType>>;
 
   /**
-   * The data put in {@link Item._source | `Item#_source`}. This data is what was
+   * The data put in {@linkcode Item._source | Item#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Item.create}
-   * and {@link Item | `new Item(...)`}.
+   * and {@linkcode Item | new Item(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
@@ -278,33 +277,56 @@ declare namespace Item {
   }
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Item.name | `Item#name`}.
+   * Used in the {@linkcode Item.create} and {@linkcode Item.createDocuments} signatures, and
+   * {@linkcode Item.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Item.create}, returning (a single | an array of) (temporary | stored)
+   * `Item`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput> ? Array<Item.TemporaryIf<Temporary>> : Item.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode Item.name | Item#name}.
    *
    * This is data transformed from {@linkcode Item.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Item.update | `Item#update`}.
-   * It is a distinct type from {@link Item.CreateData | `DeepPartial<Item.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Item.update | Item#update}.
+   * It is a distinct type from {@linkcode Item.CreateData | DeepPartial<Item.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode Item.update | Item#update} and
+   * {@linkcode Item.updateDocuments} signatures, and {@linkcode Item.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode Item}. This is the source of truth for how an Item document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Item}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Item document
      * @defaultValue `null`
@@ -315,8 +337,7 @@ declare namespace Item {
     name: fields.StringField<{ required: true; blank: false; textSearch: true }>;
 
     /** An Item subtype which configures the system data model applied */
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    type: fields.DocumentTypeField<typeof documents.BaseItem, {}>;
+    type: fields.DocumentTypeField<typeof BaseItem>;
 
     /**
      * An image file path which provides the artwork for this Item
@@ -331,19 +352,19 @@ declare namespace Item {
      * Data for an Item subtype, defined by a System or Module
      * @defaultValue `{}`
      */
-    system: fields.TypeDataField<typeof documents.BaseItem>;
+    system: fields.TypeDataField<typeof BaseItem>;
 
     /**
      * A collection of ActiveEffect embedded Documents
      * @defaultValue `[]`
      */
-    effects: fields.EmbeddedCollectionField<typeof documents.BaseActiveEffect, Item.Implementation>;
+    effects: fields.EmbeddedCollectionField<typeof BaseActiveEffect, Item.Implementation>;
 
     /**
      * The _id of a Folder which contains this Item
      * @defaultValue `null`
      */
-    folder: fields.ForeignDocumentField<typeof documents.BaseFolder>;
+    folder: fields.ForeignDocumentField<typeof BaseFolder>;
 
     /**
      * The numeric sort value which orders this Item relative to its siblings
@@ -400,7 +421,7 @@ declare namespace Item {
       Item.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Item.update | `Item#update`} */
+    /** Operation for {@linkcode Item.update | Item#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -408,40 +429,40 @@ declare namespace Item {
     /** Options for {@linkcode Item.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Item._preCreate | `Item#_preCreate`} */
+    /** Options for {@linkcode Item._preCreate | Item#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Item._onCreate | `Item#_onCreate`} */
+    /** Options for {@linkcode Item._onCreate | Item#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Item._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Item.Database.Create> {}
 
-    /** Operation for {@link Item._onCreateOperation | `Item#_onCreateOperation`} */
+    /** Operation for {@linkcode Item._onCreateOperation | Item#_onCreateOperation} */
     interface OnCreateOperation extends Item.Database.Create {}
 
-    /** Options for {@link Item._preUpdate | `Item#_preUpdate`} */
+    /** Options for {@linkcode Item._preUpdate | Item#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Item._onUpdate | `Item#_onUpdate`} */
+    /** Options for {@linkcode Item._onUpdate | Item#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Item._preUpdateOperation} */
     interface PreUpdateOperation extends Item.Database.Update {}
 
-    /** Operation for {@link Item._onUpdateOperation | `Item._preUpdateOperation`} */
+    /** Operation for {@linkcode Item._onUpdateOperation | Item._preUpdateOperation} */
     interface OnUpdateOperation extends Item.Database.Update {}
 
-    /** Options for {@link Item._preDelete | `Item#_preDelete`} */
+    /** Options for {@linkcode Item._preDelete | Item#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Item._onDelete | `Item#_onDelete`} */
+    /** Options for {@linkcode Item._onDelete | Item#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Item._preDeleteOperation | `Item#_preDeleteOperation`} */
+    /** Options for {@linkcode Item._preDeleteOperation | Item#_preDeleteOperation} */
     interface PreDeleteOperation extends Item.Database.Delete {}
 
-    /** Options for {@link Item._onDeleteOperation | `Item#_onDeleteOperation`} */
+    /** Options for {@linkcode Item._onDeleteOperation | Item#_onDeleteOperation} */
     interface OnDeleteOperation extends Item.Database.Delete {}
 
     /** Context for {@linkcode Item._onDeleteOperation} */
@@ -454,20 +475,20 @@ declare namespace Item {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Item.Parent> {}
 
     /**
-     * Options for {@link Item._preCreateDescendantDocuments | `Item#_preCreateDescendantDocuments`}
-     * and {@link Item._onCreateDescendantDocuments | `Item#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Item._preCreateDescendantDocuments | Item#_preCreateDescendantDocuments}
+     * and {@linkcode Item._onCreateDescendantDocuments | Item#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Item.Database.Create> {}
 
     /**
-     * Options for {@link Item._preUpdateDescendantDocuments | `Item#_preUpdateDescendantDocuments`}
-     * and {@link Item._onUpdateDescendantDocuments | `Item#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Item._preUpdateDescendantDocuments | Item#_preUpdateDescendantDocuments}
+     * and {@linkcode Item._onUpdateDescendantDocuments | Item#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Item.Database.Update> {}
 
     /**
-     * Options for {@link Item._preDeleteDescendantDocuments | `Item#_preDeleteDescendantDocuments`}
-     * and {@link Item._onDeleteDescendantDocuments | `Item#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Item._preDeleteDescendantDocuments | Item#_preDeleteDescendantDocuments}
+     * and {@linkcode Item._onDeleteDescendantDocuments | Item#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Item.Database.Delete> {}
 
@@ -478,9 +499,10 @@ declare namespace Item {
   }
 
   /**
-   * If `Temporary` is true then `Item.Implementation`, otherwise `Item.Stored`.
+   * If `Temporary` is true then {@linkcode Item.Implementation}, otherwise {@linkcode Item.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary ? Item.Implementation : Item.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Item.Implementation : Item.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -503,6 +525,10 @@ declare namespace Item {
      */
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
+
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
 
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
@@ -548,6 +574,10 @@ declare namespace Item {
     Item.Metadata.Embedded
   >;
 
+  /* ***********************************************
+   *              ITEM-SPECIFIC TYPES              *
+   *************************************************/
+
   interface GetDefaultArtworkReturn {
     /** @defaultValue `Item.DEFAULT_ICON` */
     img: string;
@@ -557,7 +587,7 @@ declare namespace Item {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -626,112 +656,16 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
 
   // ClientDocument overrides
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class SwadeItem extends Item {
-   *   protected override _preCreateDescendantDocuments(...args: Item.PreCreateDescendantDocumentsArgs) {
-   *     super._preCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, data, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preCreateDescendantDocuments(...args: Item.PreCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class GurpsItem extends Item {
-   *   protected override _onCreateDescendantDocuments(...args: Item.OnCreateDescendantDocumentsArgs) {
-   *     super._onCreateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, data, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onCreateDescendantDocuments(...args: Item.OnCreateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class LancerItem extends Item {
-   *   protected override _preUpdateDescendantDocuments(...args: Item.OnUpdateDescendantDocuments) {
-   *     super._preUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, changes, options, userId] = args;
-   *     if (collection === "tokens") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preUpdateDescendantDocuments(...args: Item.PreUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class Ptr2eItem extends Item {
-   *   protected override _onUpdateDescendantDocuments(...args: Item.OnUpdateDescendantDocumentsArgs) {
-   *     super._onUpdateDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, changes, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onUpdateDescendantDocuments(...args: Item.OnUpdateDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class KultItem extends Item {
-   *   protected override _preDeleteDescendantDocuments(...args: Item.PreDeleteDescendantDocumentsArgs) {
-   *     super._preDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, ids, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _preDeleteDescendantDocuments(...args: Item.PreDeleteDescendantDocumentsArgs): void;
 
-  /**
-   * @remarks To make it possible for narrowing one parameter to jointly narrow other parameters
-   * this method must be overridden like so:
-   * ```typescript
-   * class BladesItem extends Item {
-   *   protected override _onDeleteDescendantDocuments(...args: Item.OnUpdateDescendantDocuments) {
-   *     super._onDeleteDescendantDocuments(...args);
-   *
-   *     const [parent, collection, documents, ids, options, userId] = args;
-   *     if (collection === "effects") {
-   *         options; // Will be narrowed.
-   *     }
-   *   }
-   * }
-   * ```
-   */
   protected override _onDeleteDescendantDocuments(...args: Item.OnDeleteDescendantDocumentsArgs): void;
 
   static override defaultName(context?: Item.DefaultNameContext): string;
@@ -743,7 +677,7 @@ declare class Item<out SubType extends Item.SubType = Item.SubType> extends Base
   ): Promise<Item.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Item">,
   ): Promise<this | false | null | undefined>;
 

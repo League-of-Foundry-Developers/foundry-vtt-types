@@ -3,7 +3,15 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseMeasuredTemplate = foundry.documents.BaseMeasuredTemplate;
 import Document = foundry.abstract.Document;
 
-class TestBaseMeasuredTemplate extends BaseMeasuredTemplate {}
+class TestBaseMeasuredTemplate extends BaseMeasuredTemplate {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(
+          this.pack!,
+        ) as foundry.documents.collections.CompendiumCollection.ForDocument<"MeasuredTemplate">)
+      : null;
+  }
+}
 
 // MeasuredTemplate has no hard required fields for construction
 new TestBaseMeasuredTemplate();

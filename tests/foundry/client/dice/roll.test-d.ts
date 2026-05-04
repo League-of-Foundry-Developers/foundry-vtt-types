@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { Roll } from "#client/dice/_module.mjs";
 import type { AnyObject, EmptyObject } from "fvtt-types/utils";
+
+import Roll = foundry.dice.Roll;
 
 class CustomRoll<D extends Record<string, unknown> = EmptyObject> extends Roll<D> {}
 

@@ -1,4 +1,4 @@
 // import { expectTypeOf } from "vitest";
-// import { BaseTokenRuler } from "#client/canvas/placeables/tokens/_module.mjs";
+// import BaseTokenRuler = foundry.canvas.placeables.tokens.BaseTokenRuler
 
 // TODO: new in v13

@@ -1,8 +1,7 @@
-import type { AnyMutableObject } from "#utils";
-import type DataModel from "../abstract/data.d.mts";
-import type Document from "../abstract/document.d.mts";
+import type { AnyMutableObject, MaybeArray } from "#utils";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "../data/fields.d.mts";
-import type { LogCompatibilityWarningOptions } from "../utils/logging.d.mts";
+import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
 
 /**
  * The Macro Document.
@@ -24,10 +23,10 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
    * order to use documents on both the client (i.e. where all your code runs) and behind the scenes
    * on the server to manage document validation and storage.
    *
-   * You should use {@link Macro.implementation | `new Macro.implementation(...)`} instead which will give you
+   * You should use {@linkcode Macro.implementation | new Macro.implementation(...)} instead which will give you
    * a system specific implementation of `Macro`.
    */
-  constructor(data: Macro.CreateData, context?: Macro.ConstructionContext);
+  constructor(data: BaseMacro.CreateData, context?: BaseMacro.ConstructionContext);
 
   /**
    * @defaultValue
@@ -76,19 +75,18 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   /**
    * @remarks
-   * @throws If `data.command` doesn't pass {@link foundry.data.fields.JavaScriptField | `JavaScriptField`} validation
+   * @throws If `data.command` doesn't pass {@linkcode foundry.data.fields.JavaScriptField | JavaScriptField} validation
    */
-  static override validateJoint(data: Macro.Source): void;
+  static override validateJoint(data: BaseMacro.Source): void;
 
-  /** @remarks Returns `user.hasRole("PLAYER")` */
   static override canUserCreate(user: User.Implementation): boolean;
 
-  override getUserLevel(user?: User.Internal.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
+  override getUserLevel(user?: User.Implementation): CONST.DOCUMENT_OWNERSHIP_LEVELS;
 
   protected override _preCreate(
-    data: Macro.CreateData,
-    options: Macro.Database.PreCreateOptions,
-    user: User.Implementation,
+    data: BaseMacro.CreateData,
+    options: BaseMacro.Database.PreCreateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   /*
@@ -105,210 +103,201 @@ declare abstract class BaseMacro<out SubType extends BaseMacro.SubType = BaseMac
 
   /* Document overrides */
 
-  override readonly parentCollection: Macro.ParentCollectionName | null;
-
-  override readonly pack: string | null;
+  override readonly parentCollection: BaseMacro.ParentCollectionName | null;
 
   static override get implementation(): Macro.ImplementationClass;
 
   static override get baseDocument(): typeof BaseMacro;
 
-  static override get collectionName(): Macro.ParentCollectionName;
+  static override get collectionName(): BaseMacro.ParentCollectionName;
 
-  static override get documentName(): Macro.Name;
+  static override get documentName(): BaseMacro.Name;
 
   static override get TYPES(): BaseMacro.SubType[];
 
-  static override get hasTypeData(): true;
+  static override get hasTypeData(): false;
 
-  static override get hierarchy(): Macro.Hierarchy;
+  static override readonly hierarchy: BaseMacro.Hierarchy;
 
   override parent: BaseMacro.Parent;
 
+  override " fvtt_types_internal_document_parent": BaseMacro.Parent;
+
+  // `canUserCreate` omitted from template due to actual override above.
+
+  // `getUserLevel` omitted from template due to actual override above.
+
+  override testUserPermission(
+    user: User.Implementation,
+    permission: Document.ActionPermission,
+    options?: Document.TestUserPermissionOptions,
+  ): boolean;
+
+  override canUserModify<Action extends Document.Database.OperationAction>(
+    user: User.Implementation,
+    action: Action,
+    data?: Document.CanUserModifyData<"Macro", Action>,
+  ): boolean;
+
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
-    data: Array<Macro.Implementation | Macro.CreateData> | undefined,
-    operation?: Document.Database.CreateOperation<Macro.Database.Create<Temporary>>,
-  ): Promise<Array<Macro.TemporaryIf<Temporary>>>;
+    data: BaseMacro.CreateInput[],
+    operation?: Document.Database.CreateOperation<BaseMacro.Database.Create<Temporary>>,
+  ): Promise<Array<BaseMacro.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
-    updates: Macro.UpdateData[] | undefined,
-    operation?: Document.Database.UpdateDocumentsOperation<Macro.Database.Update>,
-  ): Promise<Macro.Implementation[]>;
+    updates: BaseMacro.UpdateInput[],
+    operation?: Document.Database.UpdateDocumentsOperation<BaseMacro.Database.Update>,
+  ): Promise<Array<Macro.Stored>>;
 
   static override deleteDocuments(
-    ids: readonly string[] | undefined,
-    operation?: Document.Database.DeleteDocumentsOperation<Macro.Database.Delete>,
-  ): Promise<Macro.Implementation[]>;
+    ids: readonly string[],
+    operation?: Document.Database.DeleteDocumentsOperation<BaseMacro.Database.Delete>,
+  ): Promise<Array<Macro.Stored>>;
 
-  static override create<Temporary extends boolean | undefined = undefined>(
-    data: Macro.CreateData | Macro.CreateData[],
-    operation?: Macro.Database.CreateOperation<Temporary>,
-  ): Promise<Macro.TemporaryIf<Temporary> | undefined>;
+  static override create<
+    Data extends MaybeArray<BaseMacro.CreateInput>,
+    Temporary extends boolean | undefined = undefined,
+  >(
+    data: Data,
+    operation?: BaseMacro.Database.CreateOperation<Temporary>,
+  ): Promise<BaseMacro.CreateReturn<Data, Temporary>>;
 
   override update(
-    data: Macro.UpdateData | undefined,
-    operation?: Macro.Database.UpdateOperation,
+    data: BaseMacro.UpdateInput,
+    operation?: BaseMacro.Database.UpdateOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: Macro.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseMacro.Database.DeleteOperation): Promise<this | undefined>;
 
-  static override get(documentId: string, options?: Macro.Database.GetOptions): Macro.Implementation | null;
+  static override get(
+    documentId: string,
+    operation?: BaseMacro.Database.GetOptions,
+  ): Macro.Stored | CompendiumCollection.IndexEntry<"Macro"> | null;
 
+  // `Macro`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
 
-  // Same as Document for now
-  override traverseEmbeddedDocuments(
-    _parentPath?: string,
-  ): Generator<[string, Document.AnyChild<this>], void, undefined>;
-
-  override getFlag<Scope extends Macro.Flags.Scope, Key extends Macro.Flags.Key<Scope>>(
+  override getFlag<Scope extends BaseMacro.Flags.Scope, Key extends BaseMacro.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Macro.Flags.Get<Scope, Key>;
+  ): BaseMacro.Flags.Get<Scope, Key>;
 
   override setFlag<
-    Scope extends Macro.Flags.Scope,
-    Key extends Macro.Flags.Key<Scope>,
-    Value extends Macro.Flags.Get<Scope, Key>,
-  >(scope: Scope, key: Key, value: Value): Promise<this>;
+    Scope extends BaseMacro.Flags.Scope,
+    Key extends BaseMacro.Flags.Key<Scope>,
+    Value extends BaseMacro.Flags.Get<Scope, Key>,
+  >(scope: Scope, key: Key, value: Value): Promise<this | undefined>;
 
-  override unsetFlag<Scope extends Macro.Flags.Scope, Key extends Macro.Flags.Key<Scope>>(
+  override unsetFlag<Scope extends BaseMacro.Flags.Scope, Key extends BaseMacro.Flags.Key<Scope>>(
     scope: Scope,
     key: Key,
-  ): Promise<this>;
+  ): Promise<this | undefined>;
 
-  protected override _onCreate(data: Macro.CreateData, options: Macro.Database.OnCreateOperation, userId: string): void;
+  protected override _onCreate(
+    data: BaseMacro.CreateData,
+    options: BaseMacro.Database.OnCreateOperation,
+    userId: string,
+  ): void;
 
   protected static override _preCreateOperation(
     documents: Macro.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<Macro.Database.Create>,
-    user: User.Implementation,
+    operation: Document.Database.PreCreateOperationStatic<BaseMacro.Database.Create>,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
-    documents: Macro.Implementation[],
-    operation: Macro.Database.Create,
-    user: User.Implementation,
+    documents: Macro.Stored[],
+    operation: BaseMacro.Database.Create,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preUpdate(
-    changed: Macro.UpdateData,
-    options: Macro.Database.PreUpdateOptions,
-    user: User.Implementation,
+    changed: BaseMacro.UpdateData,
+    options: BaseMacro.Database.PreUpdateOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected override _onUpdate(
-    changed: Macro.UpdateData,
-    options: Macro.Database.OnUpdateOperation,
+    changed: BaseMacro.UpdateData,
+    options: BaseMacro.Database.OnUpdateOperation,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
-    documents: Macro.Implementation[],
-    operation: Macro.Database.Update,
-    user: User.Implementation,
+    documents: Macro.Stored[],
+    operation: BaseMacro.Database.Update,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
-    documents: Macro.Implementation[],
-    operation: Macro.Database.Update,
-    user: User.Implementation,
+    documents: Macro.Stored[],
+    operation: BaseMacro.Database.Update,
+    user: User.Stored,
   ): Promise<void>;
 
   protected override _preDelete(
-    options: Macro.Database.PreDeleteOptions,
-    user: User.Implementation,
+    options: BaseMacro.Database.PreDeleteOptions,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: Macro.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseMacro.Database.OnDeleteOperation, userId: string): void;
 
   protected static override _preDeleteOperation(
-    documents: Macro.Implementation[],
-    operation: Macro.Database.Delete,
-    user: User.Implementation,
+    documents: Macro.Stored[],
+    operation: BaseMacro.Database.Delete,
+    user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
-    documents: Macro.Implementation[],
-    operation: Macro.Database.Delete,
-    user: User.Implementation,
+    documents: Macro.Stored[],
+    operation: BaseMacro.Database.Delete,
+    user: User.Stored,
   ): Promise<void>;
 
-  // These data field things have been ticketed but will probably go into backlog hell for a while.
-  // We'll end up copy and pasting without modification for now I think. It makes it a tiny bit easier to update though.
-
-  // options: not null (parameter default only in _addDataFieldShim)
-  protected static override _addDataFieldShims(
-    data: AnyMutableObject,
-    shims: Record<string, string>,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  // options: not null (parameter default only)
-  protected static override _addDataFieldShim(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    options?: Document.DataFieldShimOptions,
-  ): void;
-
-  protected static override _addDataFieldMigration(
-    data: AnyMutableObject,
-    oldKey: string,
-    newKey: string,
-    apply?: ((data: AnyMutableObject) => unknown) | null,
-  ): boolean;
-
-  // options: not null (destructured where forwarded)
-  protected static override _logDataFieldMigration(
-    oldKey: string,
-    newKey: string,
-    options?: LogCompatibilityWarningOptions,
-  ): void;
-
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onCreateDocuments` static method is deprecated in favor of {@link Document._onCreateOperation | `Document._onCreateOperation`}"
+   * @deprecated "The `Macro._onCreateDocuments` static method is deprecated in favor of
+   * {@linkcode Macro._onCreateOperation}" (since v12, until v14)
    */
   protected static override _onCreateDocuments(
     documents: Macro.Implementation[],
-    context: Document.ModificationContext<Macro.Parent>,
+    context: BaseMacro.Database.OnCreateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onUpdateDocuments` static method is deprecated in favor of {@link Document._onUpdateOperation | `Document._onUpdateOperation`}"
+   * @deprecated "The `Macro._onUpdateDocuments` static method is deprecated in favor of
+   * {@linkcode Macro._onUpdateOperation}" (since v12, until v14)
    */
   protected static override _onUpdateDocuments(
-    documents: Macro.Implementation[],
-    context: Document.ModificationContext<Macro.Parent>,
+    documents: Macro.Stored[],
+    context: BaseMacro.Database.OnUpdateDocumentsContext,
   ): Promise<void>;
 
   /**
-   * @deprecated since v12, will be removed in v14
-   * @remarks "The `Document._onDeleteDocuments` static method is deprecated in favor of {@link Document._onDeleteOperation | `Document._onDeleteOperation`}"
+   * @deprecated "The `Macro._onDeleteDocuments` static method is deprecated in favor of
+   * {@linkcode Macro._onDeleteOperation}" (since v12, until v14)
    */
   protected static override _onDeleteDocuments(
-    documents: Macro.Implementation[],
-    context: Document.ModificationContext<Macro.Parent>,
+    documents: Macro.Stored[],
+    context: BaseMacro.Database.OnDeleteDocumentsContext,
   ): Promise<void>;
 
   /* DataModel overrides */
 
-  protected static override _schema: SchemaField<Macro.Schema>;
+  protected static override _schema: SchemaField<BaseMacro.Schema>;
 
-  static override get schema(): SchemaField<Macro.Schema>;
+  static override get schema(): SchemaField<BaseMacro.Schema>;
 
-  // options: not null (parameter default only, destructured in super)
-  static override fromSource(source: Macro.CreateData, context?: DataModel.FromSourceOptions): Macro.Implementation;
+  static override fromSource(source: BaseMacro.CreateData, context?: DataModel.FromSourceOptions): Macro.Implementation;
 
   static override fromJSON(json: string): Macro.Implementation;
 
   static #BaseMacro: true;
 }
+
 export default BaseMacro;
 
 declare namespace BaseMacro {
+  // All types really live in the full document and are mirrored here for convenience
   export import Name = Macro.Name;
   export import ConstructionContext = Macro.ConstructionContext;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
@@ -317,24 +306,25 @@ declare namespace BaseMacro {
   export import Metadata = Macro.Metadata;
   export import SubType = Macro.SubType;
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  export import ConfiguredSubType = Macro.ConfiguredSubType;
+  export import ConfiguredSubType = Macro.ConfiguredSubType; // not globally deprecated, Macro has no types
   // eslint-disable-next-line @typescript-eslint/no-deprecated
-  export import Known = Macro.Known;
+  export import Known = Macro.Known; // not globally deprecated, Macro has no types
   export import OfType = Macro.OfType;
   export import Parent = Macro.Parent;
   export import Descendant = Macro.Descendant;
   export import DescendantClass = Macro.DescendantClass;
-  export import Pack = Macro.Pack;
   export import Embedded = Macro.Embedded;
   export import ParentCollectionName = Macro.ParentCollectionName;
   export import CollectionClass = Macro.CollectionClass;
   export import Collection = Macro.Collection;
   export import Invalid = Macro.Invalid;
-  export import Stored = Macro.Stored;
   export import Source = Macro.Source;
   export import CreateData = Macro.CreateData;
+  export import CreateInput = Macro.CreateInput;
+  export import CreateReturn = Macro.CreateReturn;
   export import InitializedData = Macro.InitializedData;
   export import UpdateData = Macro.UpdateData;
+  export import UpdateInput = Macro.UpdateInput;
   export import Schema = Macro.Schema;
   export import Database = Macro.Database;
   export import TemporaryIf = Macro.TemporaryIf;

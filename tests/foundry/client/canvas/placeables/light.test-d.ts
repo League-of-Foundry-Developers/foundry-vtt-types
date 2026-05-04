@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
-import { AmbientLight, PlaceableObject } from "#client/canvas/placeables/_module.mjs";
 
+import AmbientLight = foundry.canvas.placeables.AmbientLight;
+import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
 import PointDarknessSource = foundry.canvas.sources.PointDarknessSource;
 import PointLightSource = foundry.canvas.sources.PointLightSource;
 

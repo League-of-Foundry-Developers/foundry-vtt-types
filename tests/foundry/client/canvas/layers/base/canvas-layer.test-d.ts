@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject } from "#utils";
-import { CanvasLayer } from "#client/canvas/layers/_module.mjs";
+import type { AnyObject } from "fvtt-types/utils";
+
+import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
 
 declare global {

@@ -1,9 +1,16 @@
-import type { InexactPartial, Merge, NullishProps } from "#utils";
+import type { InexactPartial, MaybeArray, Merge, NullishProps } from "#utils";
 import type { fields } from "#common/data/_module.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type { DataSchema } from "#common/data/fields.d.mts";
-import type BaseAdventure from "#common/documents/adventure.mjs";
-import type DataModel from "#common/abstract/data.mjs";
+import type { DataModel, Document } from "#common/abstract/_module.d.mts";
+import type { BaseAdventure } from "#common/documents/_module.d.mts";
+import type { DialogV2 } from "#client/applications/api/_module.d.mts";
+
+/** @privateRemarks `ClientDatabaseBackend` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+
+/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
 
 declare namespace Adventure {
   /**
@@ -22,14 +29,14 @@ declare namespace Adventure {
   type Hierarchy = Readonly<Document.HierarchyOf<Schema>>;
 
   /**
-   * The implementation of the `Adventure` document instance configured through `CONFIG.Adventure.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} or {@link ConfiguredAdventure | `fvtt-types/configuration/ConfiguredAdventure`} in fvtt-types.
+   * The implementation of the `Adventure` document instance configured through
+   * {@linkcode CONFIG.Adventure.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type Implementation = Document.ImplementationFor<Name>;
 
   /**
-   * The implementation of the `Adventure` document configured through `CONFIG.Adventure.documentClass` in Foundry and
-   * {@linkcode DocumentClassConfig} in fvtt-types.
+   * The implementation of the `Adventure` document configured through
+   * {@linkcode CONFIG.Adventure.documentClass} in Foundry and {@linkcode DocumentClassConfig} in fvtt-types.
    */
   type ImplementationClass = Document.ImplementationClassFor<Name>;
 
@@ -43,9 +50,9 @@ declare namespace Adventure {
       name: "Adventure";
       collection: "adventures";
       compendiumIndexFields: ["_id", "name", "img", "sort", "folder"];
-      label: string;
-      labelPlural: string;
-      schemaVersion: string;
+      label: "DOCUMENT.Adventure";
+      labelPlural: "DOCUMENT.Adventures";
+      schemaVersion: "13.341";
     }>
   > {}
 
@@ -70,15 +77,6 @@ declare namespace Adventure {
   type DescendantClass = never;
 
   /**
-   * Types of `CompendiumCollection` this document might be contained in.
-   * Note that `this.pack` will always return a string; this is the type for `game.packs.get(this.pack)`
-   *
-   * Will be `never` if cannot be contained in a `CompendiumCollection`.
-   */
-  // Note: Takes any document in the heritage chain (i.e. itself or any parent, transitive or not) that can be contained in a compendium.
-  type Pack = foundry.documents.collections.CompendiumCollection.ForDocument<"Adventure">;
-
-  /**
    * An embedded document is a document contained in another.
    * For example an `Item` can be contained by an `Actor` which means `Item` can be embedded in `Actor`.
    *
@@ -89,7 +87,8 @@ declare namespace Adventure {
   /**
    * The name of the world or embedded collection this document can find itself in.
    * For example an `Item` is always going to be inside a collection with a key of `items`.
-   * This is a fixed string per document type and is primarily useful for {@link ClientDocumentMixin | `Descendant Document Events`}.
+   * This is a fixed string per document type and is primarily useful for the descendant Document operation methods, e.g
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}.
    */
   type ParentCollectionName = Metadata["collection"];
 
@@ -115,52 +114,77 @@ declare namespace Adventure {
   type Stored = Document.Internal.Stored<Adventure.Implementation>;
 
   /**
-   * The data put in {@link Adventure._source | `Adventure#_source`}. This data is what was
+   * The data put in {@linkcode Adventure._source | Adventure#_source}. This data is what was
    * persisted to the database and therefore it must be valid JSON.
    *
-   * For example a {@link fields.SetField | `SetField`} is persisted to the database as an array
+   * For example a {@linkcode fields.SetField | SetField} is persisted to the database as an array
    * but initialized as a {@linkcode Set}.
    */
   interface Source extends fields.SchemaField.SourceData<Schema> {}
 
   /**
    * The data necessary to create a document. Used in places like {@linkcode Adventure.create}
-   * and {@link Adventure | `new Adventure(...)`}.
+   * and {@linkcode Adventure | new Adventure(...)}.
    *
-   * For example a {@link fields.SetField | `SetField`} can accept any {@linkcode Iterable}
+   * For example a {@linkcode fields.SetField | SetField} can accept any {@linkcode Iterable}
    * with the right values. This means you can pass a `Set` instance, an array of values,
    * a generator, or any other iterable.
    */
   interface CreateData extends fields.SchemaField.CreateData<Schema> {}
 
   /**
-   * The data after a {@link foundry.abstract.Document | `Document`} has been initialized, for example
-   * {@link Adventure.name | `Adventure#name`}.
+   * Used in the {@linkcode Adventure.create} and {@linkcode Adventure.createDocuments} signatures, and
+   * {@linkcode Adventure.Database.CreateOperation} and its derivative interfaces.
+   */
+  type CreateInput = CreateData | Implementation;
+
+  /**
+   * The helper type for the return of {@linkcode Adventure.create}, returning (a single | an array of) (temporary | stored)
+   * `Adventure`s.
+   *
+   * `| undefined` is included in the non-array branch because if a `.create` call with non-array data is cancelled by the `preCreate`
+   * method or hook, `shift`ing the return of `.createDocuments` produces `undefined`
+   */
+  type CreateReturn<Data extends MaybeArray<CreateInput>, Temporary extends boolean | undefined> =
+    Data extends Array<CreateInput>
+      ? Array<Adventure.TemporaryIf<Temporary>>
+      : Adventure.TemporaryIf<Temporary> | undefined;
+
+  /**
+   * The data after a {@linkcode Document} has been initialized, for example
+   * {@linkcode Adventure.name | Adventure#name}.
    *
    * This is data transformed from {@linkcode Adventure.Source} and turned into more
-   * convenient runtime data structures. For example a {@link fields.SetField | `SetField`} is
+   * convenient runtime data structures. For example a {@linkcode fields.SetField | SetField} is
    * persisted to the database as an array of values but at runtime it is a `Set` instance.
    */
   interface InitializedData extends fields.SchemaField.InitializedData<Schema> {}
 
   /**
-   * The data used to update a document, for example {@link Adventure.update | `Adventure#update`}.
-   * It is a distinct type from {@link Adventure.CreateData | `DeepPartial<Adventure.CreateData>`} because
+   * The data used to update a document, for example {@linkcode Adventure.update | Adventure#update}.
+   * It is a distinct type from {@linkcode Adventure.CreateData | DeepPartial<Adventure.CreateData>} because
    * it has different rules for `null` and `undefined`.
    */
   interface UpdateData extends fields.SchemaField.UpdateData<Schema> {}
+
+  /**
+   * Used in the {@linkcode Adventure.update | Adventure#update} and
+   * {@linkcode Adventure.updateDocuments} signatures, and {@linkcode Adventure.Database.UpdateOperation}
+   * and its derivative interfaces.
+   */
+  type UpdateInput = UpdateData | Implementation;
 
   /**
    * The schema for {@linkcode Adventure}. This is the source of truth for how an Adventure document
    * must be structured.
    *
    * Foundry uses this schema to validate the structure of the {@linkcode Adventure}. For example
-   * a {@link fields.StringField | `StringField`} will enforce that the value is a string. More
-   * complex fields like {@link fields.SetField | `SetField`} goes through various conversions
+   * a {@linkcode fields.StringField | StringField} will enforce that the value is a string. More
+   * complex fields like {@linkcode fields.SetField | SetField} goes through various conversions
    * starting as an array in the database, initialized as a set, and allows updates with any
    * iterable.
    */
-  interface Schema extends DataSchema {
+  interface Schema extends fields.DataSchema {
     /**
      * The _id which uniquely identifies this Adventure document
      * @defaultValue `null`
@@ -307,7 +331,7 @@ declare namespace Adventure {
       Adventure.Database.Create<Temporary>
     > {}
 
-    /** Operation for {@link Adventure.update | `Adventure#update`} */
+    /** Operation for {@linkcode Adventure.update | Adventure#update} */
     interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
 
     interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
@@ -315,40 +339,40 @@ declare namespace Adventure {
     /** Options for {@linkcode Adventure.get} */
     interface GetOptions extends Document.Database.GetOptions {}
 
-    /** Options for {@link Adventure._preCreate | `Adventure#_preCreate`} */
+    /** Options for {@linkcode Adventure._preCreate | Adventure#_preCreate} */
     interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
 
-    /** Options for {@link Adventure._onCreate | `Adventure#_onCreate`} */
+    /** Options for {@linkcode Adventure._onCreate | Adventure#_onCreate} */
     interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
 
     /** Operation for {@linkcode Adventure._preCreateOperation} */
     interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<Adventure.Database.Create> {}
 
-    /** Operation for {@link Adventure._onCreateOperation | `Adventure#_onCreateOperation`} */
+    /** Operation for {@linkcode Adventure._onCreateOperation | Adventure#_onCreateOperation} */
     interface OnCreateOperation extends Adventure.Database.Create {}
 
-    /** Options for {@link Adventure._preUpdate | `Adventure#_preUpdate`} */
+    /** Options for {@linkcode Adventure._preUpdate | Adventure#_preUpdate} */
     interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
 
-    /** Options for {@link Adventure._onUpdate | `Adventure#_onUpdate`} */
+    /** Options for {@linkcode Adventure._onUpdate | Adventure#_onUpdate} */
     interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
 
     /** Operation for {@linkcode Adventure._preUpdateOperation} */
     interface PreUpdateOperation extends Adventure.Database.Update {}
 
-    /** Operation for {@link Adventure._onUpdateOperation | `Adventure._preUpdateOperation`} */
+    /** Operation for {@linkcode Adventure._onUpdateOperation | Adventure._preUpdateOperation} */
     interface OnUpdateOperation extends Adventure.Database.Update {}
 
-    /** Options for {@link Adventure._preDelete | `Adventure#_preDelete`} */
+    /** Options for {@linkcode Adventure._preDelete | Adventure#_preDelete} */
     interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
 
-    /** Options for {@link Adventure._onDelete | `Adventure#_onDelete`} */
+    /** Options for {@linkcode Adventure._onDelete | Adventure#_onDelete} */
     interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
 
-    /** Options for {@link Adventure._preDeleteOperation | `Adventure#_preDeleteOperation`} */
+    /** Options for {@linkcode Adventure._preDeleteOperation | Adventure#_preDeleteOperation} */
     interface PreDeleteOperation extends Adventure.Database.Delete {}
 
-    /** Options for {@link Adventure._onDeleteOperation | `Adventure#_onDeleteOperation`} */
+    /** Options for {@linkcode Adventure._onDeleteOperation | Adventure#_onDeleteOperation} */
     interface OnDeleteOperation extends Adventure.Database.Delete {}
 
     /** Context for {@linkcode Adventure._onDeleteOperation} */
@@ -361,20 +385,20 @@ declare namespace Adventure {
     interface OnUpdateDocumentsContext extends Document.ModificationContext<Adventure.Parent> {}
 
     /**
-     * Options for {@link Adventure._preCreateDescendantDocuments | `Adventure#_preCreateDescendantDocuments`}
-     * and {@link Adventure._onCreateDescendantDocuments | `Adventure#_onCreateDescendantDocuments`}
+     * Options for {@linkcode Adventure._preCreateDescendantDocuments | Adventure#_preCreateDescendantDocuments}
+     * and {@linkcode Adventure._onCreateDescendantDocuments | Adventure#_onCreateDescendantDocuments}
      */
     interface CreateOptions extends Document.Database.CreateOptions<Adventure.Database.Create> {}
 
     /**
-     * Options for {@link Adventure._preUpdateDescendantDocuments | `Adventure#_preUpdateDescendantDocuments`}
-     * and {@link Adventure._onUpdateDescendantDocuments | `Adventure#_onUpdateDescendantDocuments`}
+     * Options for {@linkcode Adventure._preUpdateDescendantDocuments | Adventure#_preUpdateDescendantDocuments}
+     * and {@linkcode Adventure._onUpdateDescendantDocuments | Adventure#_onUpdateDescendantDocuments}
      */
     interface UpdateOptions extends Document.Database.UpdateOptions<Adventure.Database.Update> {}
 
     /**
-     * Options for {@link Adventure._preDeleteDescendantDocuments | `Adventure#_preDeleteDescendantDocuments`}
-     * and {@link Adventure._onDeleteDescendantDocuments | `Adventure#_onDeleteDescendantDocuments`}
+     * Options for {@linkcode Adventure._preDeleteDescendantDocuments | Adventure#_preDeleteDescendantDocuments}
+     * and {@linkcode Adventure._onDeleteDescendantDocuments | Adventure#_onDeleteDescendantDocuments}
      */
     interface DeleteOptions extends Document.Database.DeleteOptions<Adventure.Database.Delete> {}
 
@@ -385,11 +409,10 @@ declare namespace Adventure {
   }
 
   /**
-   * If `Temporary` is true then `Adventure.Implementation`, otherwise `Adventure.Stored`.
+   * If `Temporary` is true then {@linkcode Adventure.Implementation}, otherwise {@linkcode Adventure.Stored}.
    */
-  type TemporaryIf<Temporary extends boolean | undefined> = true extends Temporary
-    ? Adventure.Implementation
-    : Adventure.Stored;
+  type TemporaryIf<Temporary extends boolean | undefined> =
+    true extends Extract<Temporary, true> ? Adventure.Implementation : Adventure.Stored;
 
   /**
    * The flags that are available for this document in the form `{ [scope: string]: { [key: string]: unknown } }`.
@@ -413,6 +436,10 @@ declare namespace Adventure {
     type Get<Scope extends Flags.Scope, Key extends Flags.Key<Scope>> = Document.Internal.GetFlag<Flags, Scope, Key>;
   }
 
+  /* ***********************************************
+   *       CLIENT DOCUMENT TEMPLATE TYPES          *
+   *************************************************/
+
   interface DropData extends Document.Internal.DropData<Name> {}
   interface DropDataOptions extends Document.DropDataOptions {}
 
@@ -420,6 +447,10 @@ declare namespace Adventure {
 
   interface CreateDialogData extends Document.CreateDialogData<CreateData> {}
   interface CreateDialogOptions extends Document.CreateDialogOptions<Name> {}
+
+  /* ***********************************************
+   *           ADVENTURE-SPECIFIC TYPES            *
+   *************************************************/
 
   type DocumentDataRecord = {
     [K in ContainedDocumentType]?: Document.CreateDataForName<K>[];
@@ -479,7 +510,7 @@ declare namespace Adventure {
    * The arguments to construct the document.
    *
    * @deprecated Writing the signature directly has helped reduce circularities and therefore is
-   * now recommended.
+   * now recommended. This type will be removed in v14.
    */
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   type ConstructorArgs = Document.ConstructorParameters<CreateData, Parent>;
@@ -551,7 +582,7 @@ declare class Adventure extends BaseAdventure.Internal.ClientDocument {
   ): Promise<Adventure.Stored | null | undefined>;
 
   override deleteDialog(
-    options?: InexactPartial<foundry.applications.api.DialogV2.ConfirmConfig>,
+    options?: InexactPartial<DialogV2.ConfirmConfig>,
     operation?: Document.Database.DeleteOperationForName<"Adventure">,
   ): Promise<this | false | null | undefined>;
 

@@ -345,6 +345,7 @@ declare namespace ApplicationV2 {
     ) => MaybePromise<void>
   >;
 
+  // TODO: These functions will be passed an options object by ApplicationV2#submit that isn't modelled here
   /** A form submission handler method. Run in the context of a HandlebarsApplication */
   type FormSubmission = (
     /** The originating form submission or input change event */

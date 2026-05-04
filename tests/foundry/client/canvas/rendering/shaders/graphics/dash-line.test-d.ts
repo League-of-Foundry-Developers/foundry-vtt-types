@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { DashLineShader } from "#client/canvas/rendering/shaders/_module.mjs";
+
+import DashLineShader = foundry.canvas.rendering.shaders.DashLineShader;
 
 new DashLineShader();
 new DashLineShader({});

@@ -6,7 +6,13 @@ import fields = foundry.data.fields;
 
 class TestActiveEffect<
   out SubType extends BaseActiveEffect.SubType = BaseActiveEffect.SubType,
-> extends BaseActiveEffect<SubType> {}
+> extends BaseActiveEffect<SubType> {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"ActiveEffect">)
+      : null;
+  }
+}
 
 // @ts-expect-error Active effects require a `name` in construction data
 new TestActiveEffect();
@@ -195,6 +201,7 @@ expectTypeOf(fullTestAE.tint).toEqualTypeOf<Color>();
 
 // non-schema:
 declare const someUser: User.Implementation;
+declare const storedUser: User.Stored;
 expectTypeOf(fullTestAE.canUserModify(someUser, "create")).toBeBoolean();
 expectTypeOf(fullTestAE.canUserModify(someUser, "delete")).toBeBoolean();
 expectTypeOf(fullTestAE.canUserModify(someUser, "update")).toBeBoolean();
@@ -205,7 +212,7 @@ expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER")).toBeBoolean();
 expectTypeOf(fullTestAE.testUserPermission(someUser, CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED)).toBeBoolean();
 expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", {})).toBeBoolean();
 expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: true })).toBeBoolean();
-expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: null })).toBeBoolean();
+expectTypeOf(fullTestAE.testUserPermission(someUser, "OBSERVER", { exact: undefined })).toBeBoolean();
 
 // migrateData and shimData overridden with no signature changes
 
@@ -229,30 +236,23 @@ expectTypeOf(TestActiveEffect.hasTypeData).toEqualTypeOf<true>();
 expectTypeOf(TestActiveEffect.hierarchy).toExtend<EmptyObject>();
 
 expectTypeOf(TestActiveEffect.createDocuments([])).branded.toEqualTypeOf<Promise<ActiveEffect.Stored[]>>();
-expectTypeOf(TestActiveEffect.updateDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Implementation[]>>();
-expectTypeOf(TestActiveEffect.deleteDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Implementation[]>>();
+expectTypeOf(TestActiveEffect.updateDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Stored[]>>();
+expectTypeOf(TestActiveEffect.deleteDocuments([])).toEqualTypeOf<Promise<ActiveEffect.Stored[]>>();
 
 // TODO: should error, AE creation requires a parent
 expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
 expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
 expectTypeOf(TestActiveEffect.create(fullSource)).branded.toEqualTypeOf<Promise<ActiveEffect.Stored | undefined>>();
 
-expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX")).toEqualTypeOf<ActiveEffect.Implementation | null>();
-expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", {})).toEqualTypeOf<ActiveEffect.Implementation | null>();
-expectTypeOf(
-  TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: "some.pack" }),
-).toEqualTypeOf<ActiveEffect.Implementation | null>();
-expectTypeOf(
-  TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: null }),
-).toEqualTypeOf<ActiveEffect.Implementation | null>();
-expectTypeOf(
-  TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: undefined }),
-).toEqualTypeOf<ActiveEffect.Implementation | null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX")).toEqualTypeOf<null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", {})).toEqualTypeOf<null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: "some.pack" })).toEqualTypeOf<null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: null })).toEqualTypeOf<null>();
+expectTypeOf(TestActiveEffect.get("XXXXXSomeIDXXXXX", { pack: undefined })).toEqualTypeOf<null>();
 
 // no hierarchy, no collections
 expectTypeOf(TestActiveEffect.getCollectionName("literally anything")).toBeNull();
 
-declare const user: User.Implementation;
 declare const nonBaseAE: ActiveEffect.Implementation;
 declare const createDataArray: ActiveEffect.CreateData[];
 declare const someItem: Item.Implementation;
@@ -264,48 +264,48 @@ expectTypeOf(
   TestActiveEffect["_preCreateOperation"](
     [effect, nonBaseAE],
     { data: createDataArray, modifiedTime: 0, render: false, renderSheet: false },
-    user,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
 
 expectTypeOf(
   TestActiveEffect["_onCreateOperation"](
-    [effect, nonBaseAE],
+    [effect],
     { data: createDataArray, modifiedTime: 0, render: false, renderSheet: false },
-    user,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<void>>();
 
 declare const updateDataArray: ActiveEffect.UpdateData[];
 expectTypeOf(
   TestActiveEffect["_preUpdateOperation"](
-    [effect, nonBaseAE],
+    [effect],
     { modifiedTime: 0, render: false, diff: true, recursive: true, pack: null, updates: updateDataArray },
-    user,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
 
 expectTypeOf(
   TestActiveEffect["_onUpdateOperation"](
-    [effect, nonBaseAE],
+    [effect],
     { modifiedTime: 0, render: false, diff: true, recursive: true, pack: null, updates: updateDataArray },
-    user,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<void>>();
 
 expectTypeOf(
   TestActiveEffect["_preDeleteOperation"](
-    [effect, nonBaseAE],
+    [effect],
     { modifiedTime: 0, render: false, deleteAll: false, ids: ["YYYYYSomeIDYYYYY"] },
-    user,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
 
 expectTypeOf(
   TestActiveEffect["_onDeleteOperation"](
-    [effect, nonBaseAE],
+    [effect],
     { modifiedTime: 0, render: false, deleteAll: false, ids: ["YYYYYSomeIDYYYYY"] },
-    user,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<void>>();
 
@@ -316,9 +316,9 @@ expectTypeOf(TestActiveEffect.hasTypeData).toEqualTypeOf<true>();
 // eslint-disable-next-line @typescript-eslint/no-deprecated
 expectTypeOf(TestActiveEffect["_onCreateDocuments"]([effect, nonBaseAE], {}));
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(TestActiveEffect["_onUpdateDocuments"]([effect, nonBaseAE], {}));
+expectTypeOf(TestActiveEffect["_onUpdateDocuments"]([effect], {}));
 // eslint-disable-next-line @typescript-eslint/no-deprecated
-expectTypeOf(TestActiveEffect["_onDeleteDocuments"]([effect, nonBaseAE], {}));
+expectTypeOf(TestActiveEffect["_onDeleteDocuments"]([effect], {}));
 
 expectTypeOf(TestActiveEffect["_schema"]).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
 expectTypeOf(TestActiveEffect.schema).toEqualTypeOf<fields.SchemaField<ActiveEffect.Schema>>();
@@ -637,8 +637,10 @@ expectTypeOf(
 // TODO: wire up core flags to get/set/unsetFlag types
 // TODO: mock up configured flags to test
 expectTypeOf(fullTestAE.getFlag("core", "overlay")).toEqualTypeOf<boolean | undefined>();
-expectTypeOf(fullTestAE.setFlag("core", "overlay", true)).toEqualTypeOf<Promise<TestActiveEffect<"base">>>();
-expectTypeOf(fullTestAE.unsetFlag("core", "overlay")).toEqualTypeOf<Promise<TestActiveEffect<"base">>>();
+expectTypeOf(fullTestAE.setFlag("core", "overlay", true)).toEqualTypeOf<
+  Promise<TestActiveEffect<"base"> | undefined>
+>();
+expectTypeOf(fullTestAE.unsetFlag("core", "overlay")).toEqualTypeOf<Promise<TestActiveEffect<"base"> | undefined>>();
 
 expectTypeOf(
   fullTestAE["_preCreate"](
@@ -657,7 +659,7 @@ expectTypeOf(
       keepId: false,
       parentUuid: "someParent",
     },
-    someUser,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
 expectTypeOf(
@@ -677,7 +679,7 @@ expectTypeOf(
       keepId: undefined,
       parentUuid: undefined,
     },
-    someUser,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
 expectTypeOf(
@@ -697,7 +699,7 @@ expectTypeOf(
       // keepId not allowed to be null
       // parentUuid not allowed to be null,
     },
-    someUser,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
 
@@ -793,7 +795,7 @@ expectTypeOf(
       broadcast: true,
       parentUuid: "someUUID",
     },
-    someUser,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
 expectTypeOf(
@@ -808,7 +810,7 @@ expectTypeOf(
       broadcast: undefined,
       parentUuid: undefined,
     },
-    someUser,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
 expectTypeOf(
@@ -823,7 +825,7 @@ expectTypeOf(
       broadcast: null,
       parentUuid: null,
     },
-    someUser,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
 
@@ -894,7 +896,7 @@ expectTypeOf(
       broadcast: true,
       parentUuid: "SomeUUID",
     },
-    someUser,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
 expectTypeOf(
@@ -906,7 +908,7 @@ expectTypeOf(
       broadcast: undefined,
       parentUuid: undefined,
     },
-    someUser,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
 expectTypeOf(
@@ -918,7 +920,7 @@ expectTypeOf(
       // broadcast will never be null
       parentUuid: null,
     },
-    someUser,
+    storedUser,
   ),
 ).toEqualTypeOf<Promise<boolean | void>>();
 

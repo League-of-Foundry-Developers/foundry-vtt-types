@@ -276,12 +276,12 @@ declare class DialogV2<
    * @see {@link DialogV2.wait}
    *
    * @remarks The callbacks within `config.buttons` are called with an instance of the current class.
-   * While many users likely will not notice, if this ends up effecting you then you will need to
+   * While many users likely will not notice, if this ends up affecting you then you will need to
    * make an override to provide the current class. For example:
    * ```typescript
    * class YourDialog extends DialogV2 {
    *   static query<T extends DialogV2.Type, const Options extends DialogV2.QueryConfig<T>>(
-   *     user: User.Implementation | string,
+   *     user: User.Stored | string,
    *     type: T,
    *     config: Options,
    *   ): Promise<DialogV2.QueryReturn<T, Options>> {
@@ -291,7 +291,7 @@ declare class DialogV2<
    * ```
    */
   static query<T extends DialogV2.Type, const Options extends DialogV2.QueryConfig<T>>(
-    user: User.Implementation | string,
+    user: User.Stored | string,
     type: T,
     config: Options,
   ): Promise<DialogV2.QueryReturn<T, Options>>;

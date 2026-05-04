@@ -1,11 +1,17 @@
 import { expectTypeOf } from "vitest";
 import type { InterfaceToObject } from "fvtt-types/utils";
-import { TokenRing } from "#client/canvas/placeables/tokens/_module.mjs";
 
+import TokenRing = foundry.canvas.placeables.tokens.TokenRing;
 import BaseToken = foundry.documents.BaseToken;
 import Document = foundry.abstract.Document;
 
-class TestBaseToken extends foundry.documents.BaseToken {}
+class TestBaseToken extends BaseToken {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Token">)
+      : null;
+  }
+}
 
 // Token has no hard required fields for construction
 new TestBaseToken();
@@ -117,7 +123,7 @@ const myToken = new TestBaseToken({
 
 // omitting the null and undefined construction cases due to size and coverage on other documents
 
-expectTypeOf(myToken).toEqualTypeOf<BaseToken>();
+expectTypeOf(myToken).toEqualTypeOf<TestBaseToken>();
 
 expectTypeOf(myToken._id).toEqualTypeOf<string | null>();
 expectTypeOf(myToken.name).toBeString();

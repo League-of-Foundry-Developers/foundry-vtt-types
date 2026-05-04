@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { RegionGeometry } from "#client/canvas/placeables/regions/_module.mjs";
 
+import RegionGeometry = foundry.canvas.placeables.regions.RegionGeometry;
 import Region = foundry.canvas.placeables.Region;
 
 declare const someRegion: Region.Implementation;

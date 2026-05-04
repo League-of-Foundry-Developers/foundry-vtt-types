@@ -9,7 +9,7 @@ import {
   subscript,
   span,
   font,
-} from "#common/prosemirror/schema/marks.mjs";
+} from "../../../../../src/foundry/common/prosemirror/schema/marks.mts";
 import type { MarkSpec } from "prosemirror-model";
 
 expectTypeOf(em).toEqualTypeOf<MarkSpec>();

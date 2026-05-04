@@ -1,7 +1,8 @@
 import { expectTypeOf, test } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
-import type { Token } from "#client/canvas/placeables/_module.d.mts";
 import type { ArmorData, WeaponData } from "./item.test-d";
+
+import Token = foundry.canvas.placeables.Token;
 
 // @ts-expect-error Actor requires name.
 new Actor.implementation();

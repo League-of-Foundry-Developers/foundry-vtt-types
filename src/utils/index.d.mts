@@ -981,7 +981,7 @@ export type EmptyObject = Record<string, never>;
  * type NaiveType = { foo: number; [K: string]: boolean };
  * //                 ^ Property 'foo' of type 'number' is not assignable to 'string' index type 'boolean'.
  *
- * type NaiveIntersection = { foo: number } & { [K: string]: string };
+ * type NaiveIntersection = { foo: number } & { [K: string]: boolean };
  *
  * function usesIntersection(intersection: NaiveIntersection) { ... }
  *
@@ -1262,7 +1262,7 @@ export type DiscriminatedUnion<U extends object> = _DiscriminatedUnion<U, AllKey
 // Note(LukeAbby): The `extends object` is effectively the same as `extends unknown` but used here
 // to keep `Document.SystemOfType<Document.ModuleSubType>` from being `unknown` in dependencies.
 // Inlining `Extract<..., object>` by comparison causes issues, specifically in not counting as
-// covaraint. This isn't an ideal change to make but it works.
+// covariant. This isn't an ideal change to make but it works.
 type _DiscriminatedUnion<U extends object, AllKeys extends AllKeysOf<U>> = U extends object
   ? [Exclude<AllKeys, keyof U>] extends [never]
     ? U
@@ -1389,15 +1389,6 @@ type _GetProperty<T, K, Depth extends number[] = []> = K extends keyof T
       ? _GetProperty<T[First], Rest, [1, ...Depth]>
       : never
     : never;
-
-/**
- * @deprecated Replaced by {@linkcode Document.SheetClassFor}
- */
-export type ConfiguredSheetClass<T extends Document.AnyConstructor> = GetKey<
-  GetKey<CONFIG, T["metadata"]["name"]>,
-  "sheetClass",
-  T
->;
 
 /**
  * @deprecated Replaced by {@linkcode Document.ObjectClassFor}

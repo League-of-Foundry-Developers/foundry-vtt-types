@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 
-import FormApplication = foundry.appv1.api.FormApplication;
+import Application = foundry.appv1.api.Application;
+import DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
 
 // @ts-expect-error Cards requires name.
 new Cards.implementation();
@@ -136,4 +137,4 @@ expectTypeOf(cards.playDialog(new Card.implementation({ name: "Some Card" }))).t
 expectTypeOf(cards.resetDialog()).toEqualTypeOf<Promise<Cards.OfType<"deck"> | false | null>>();
 
 // TODO: Modify to Playlist | null once data can be grabbed from CONFIG
-expectTypeOf(cards.sheet).toEqualTypeOf<FormApplication.Any | foundry.applications.api.ApplicationV2.Any | null>();
+expectTypeOf(cards.sheet).toEqualTypeOf<Application.Any | DocumentSheetV2.Any | null>();

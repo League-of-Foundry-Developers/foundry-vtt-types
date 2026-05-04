@@ -119,7 +119,7 @@ declare class FogManager extends EventEmitterMixin() {
    * @param to   - A list of users that should have their Fog of War synced. If none are specified then all users will be synced.
    * @returns A promise that resolves when synchronization has been completed.
    */
-  sync(from: User.Implementation, to?: User.Implementation[]): Promise<void>;
+  sync(from: User.Stored, to?: User.Stored[]): Promise<void>;
 
   /**
    * Extract fog data as a base64 string

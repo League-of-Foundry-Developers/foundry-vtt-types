@@ -4,6 +4,9 @@ import WallsLayer = foundry.canvas.layers.WallsLayer;
 import PlaceablesLayer = foundry.canvas.layers.PlaceablesLayer;
 import Wall = foundry.canvas.placeables.Wall;
 import Canvas = foundry.canvas.Canvas;
+// import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;
+// import Ray = foundry.canvas.geometry.Ray;
+// import Document = foundry.abstract.Document;
 
 declare const pixiPoint: PIXI.Point;
 declare const wall: Wall.Implementation;

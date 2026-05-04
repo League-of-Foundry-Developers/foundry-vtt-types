@@ -165,7 +165,7 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
     src: string,
     origin: Canvas.PossiblyElevatedPoint,
     radius: number,
-    options?: Sound.PlayAtPositionOptions,
+    options?: SoundsLayer.PlayAtPositionOptions,
   ): Promise<Sound | null>;
 
   /**

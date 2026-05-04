@@ -1,7 +1,10 @@
 import { expectTypeOf } from "vitest";
-import { Region, PlaceableObject } from "#client/canvas/placeables/_module.mjs";
-import type { RegionGeometry } from "#client/canvas/placeables/regions/_module.d.mts";
-import type { RegionShape, RegionPolygonTree } from "#client/data/region-shapes/_module.d.mts";
+
+import Region = foundry.canvas.placeables.Region;
+import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
+import RegionGeometry = foundry.canvas.placeables.regions.RegionGeometry;
+import RegionShape = foundry.data.regionShapes.RegionShape;
+import RegionPolygonTree = foundry.data.regionShapes.RegionPolygonTree;
 
 expectTypeOf(Region.embeddedName).toEqualTypeOf<"Region">();
 expectTypeOf(Region.RENDER_FLAGS.redraw.propagate).toEqualTypeOf<

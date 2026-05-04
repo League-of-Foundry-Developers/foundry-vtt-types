@@ -175,7 +175,7 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
 
   protected override _getCopyableObjects(options: PlaceablesLayer.GetCopyableObjectsOptions): Token.Implementation[];
 
-  override storeHistory<Operation extends Document.Database.Operation>(
+  override storeHistory<Operation extends Document.Database.OperationAction>(
     type: Operation,
     data: PlaceablesLayer.HistoryDataFor<Operation, "Token">[],
     options?: PlaceablesLayer.HistoryEntry<"Token">["options"],

@@ -3,13 +3,18 @@ import type { InterfaceToObject } from "fvtt-types/utils";
 import BaseNote = foundry.documents.BaseNote;
 import Document = foundry.abstract.Document;
 
-class TestBaseNote extends BaseNote {}
+class TestBaseNote extends BaseNote {
+  get compendium() {
+    return this.inCompendium
+      ? (game.packs!.get(this.pack!) as foundry.documents.collections.CompendiumCollection.ForDocument<"Note">)
+      : null;
+  }
+}
 
-let myNote;
 // Note has no hard required fields for creation
-myNote = new TestBaseNote();
-myNote = new TestBaseNote({});
-myNote = new TestBaseNote({
+const myNote = new TestBaseNote();
+new TestBaseNote({});
+new TestBaseNote({
   _id: "XXXXXSomeIDXXXXX",
   entryId: "YYYYYSomeIDYYYYY",
   pageId: "ZZZZZSomeIDZZZZZ",
@@ -43,7 +48,7 @@ myNote = new TestBaseNote({
     },
   },
 });
-myNote = new TestBaseNote({
+new TestBaseNote({
   _id: null,
   entryId: null,
   pageId: null,
@@ -73,9 +78,9 @@ myNote = new TestBaseNote({
   global: null,
   flags: null,
 });
-myNote = new TestBaseNote({ texture: null });
+new TestBaseNote({ texture: null });
 
-myNote = new TestBaseNote({
+new TestBaseNote({
   _id: undefined,
   entryId: undefined,
   pageId: undefined,
@@ -105,9 +110,9 @@ myNote = new TestBaseNote({
   global: undefined,
   flags: undefined,
 });
-myNote = new TestBaseNote({ texture: undefined });
+new TestBaseNote({ texture: undefined });
 
-expectTypeOf(myNote).toEqualTypeOf<BaseNote>();
+expectTypeOf(myNote).toEqualTypeOf<TestBaseNote>();
 
 expectTypeOf(myNote._id).toEqualTypeOf<string | null>();
 expectTypeOf(myNote.entryId).toEqualTypeOf<string | null>();

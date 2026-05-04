@@ -1,5 +1,5 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject, InexactPartial, IntentionalPartial } from "#utils";
+import type { AnyObject, InexactPartial, IntentionalPartial } from "fvtt-types/utils";
 
 import BaseEffectSource = foundry.canvas.sources.BaseEffectSource;
 import PlaceableObject = foundry.canvas.placeables.PlaceableObject;

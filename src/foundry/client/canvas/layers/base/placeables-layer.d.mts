@@ -349,21 +349,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * @param options - The create/update/delete options
    * @remarks See {@linkcode PlaceablesLayer.HistoryEntry} remarks.
    */
-  storeHistory<Operation extends Document.Database.Operation>(
-    type: Operation,
-    data: PlaceablesLayer.HistoryDataFor<Operation, DocumentName>[],
-    options?: PlaceablesLayer.HistoryEntry<DocumentName>["options"],
-  ): void;
-
-  /**
-   * Record a new CRUD event in the history log so that it can be undone later.
-   * Updates without changes are filtered out unless the `diff` option is set to false.
-   * This function may not be overridden.
-   * @param type    - The event type
-   * @param data    - The create/update/delete data
-   * @param options - The options of the undo operation
-   */
-  protected _storeHistory<Operation extends Document.Database.Operation>(
+  storeHistory<Operation extends Document.Database.OperationAction>(
     type: Operation,
     data: PlaceablesLayer.HistoryDataFor<Operation, DocumentName>[],
     options?: PlaceablesLayer.HistoryEntry<DocumentName>["options"],
@@ -693,10 +679,10 @@ declare namespace PlaceablesLayer {
   }
 
   /** @privateRemarks Handled like this rather than an interface mapping to avoid extraneous type calculation */
-  type HistoryDataFor<Operation extends Document.Database.Operation, DocumentName extends Document.PlaceableType> =
-    | (Operation extends "create" ? { _id: string } : never)
-    | (Operation extends "update" ? Document.UpdateDataForName<DocumentName> & { _id: string } : never)
-    | (Operation extends "delete" ? Document.CreateDataForName<DocumentName> & { _id: string } : never);
+  type HistoryDataFor<Action extends Document.Database.OperationAction, DocumentName extends Document.PlaceableType> =
+    | (Action extends "create" ? { _id: string } : never)
+    | (Action extends "update" ? Document.UpdateDataForName<DocumentName> & { _id: string } : never)
+    | (Action extends "delete" ? Document.CreateDataForName<DocumentName> & { _id: string } : never);
 
   /**
    * @remarks Because {@linkcode PlaceablesLayer.storeHistory | PlaceablesLayer#storeHistory} does *not* pass `options` along to

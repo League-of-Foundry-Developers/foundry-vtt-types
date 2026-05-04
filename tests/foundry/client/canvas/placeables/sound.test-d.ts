@@ -1,7 +1,8 @@
 import { expectTypeOf } from "vitest";
-import { AmbientSound, PlaceableObject } from "#client/canvas/placeables/_module.mjs";
-import type { Sound } from "#client/audio/_module.d.mts";
 
+import AmbientSound = foundry.canvas.placeables.AmbientSound;
+import PlaceableObject = foundry.canvas.placeables.PlaceableObject;
+import Sound = foundry.audio.Sound;
 import ControlIcon = foundry.canvas.containers.ControlIcon;
 
 expectTypeOf(AmbientSound.embeddedName).toEqualTypeOf<"AmbientSound">();

@@ -21,7 +21,7 @@ import {
   rp,
   rt,
   iframe,
-} from "#common/prosemirror/schema/other.mjs";
+} from "../../../../../src/foundry/common/prosemirror/schema/other.mts";
 import type { NodeSpec } from "prosemirror-model";
 
 expectTypeOf(details).toEqualTypeOf<NodeSpec>();

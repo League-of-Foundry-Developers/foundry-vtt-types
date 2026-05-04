@@ -7,6 +7,7 @@ import type {
   InexactPartial,
   FixedInstanceType,
   Identity,
+  IntentionalPartial,
   PrettifyType,
   InterfaceToObject,
   AnyArray,
@@ -28,7 +29,7 @@ import type {
   FormGroupConfig,
   FormInputConfig,
   MultiSelectInputConfig,
-  SelectInputConfig,
+  _SelectInputConfig,
   TextAreaInputConfig,
 } from "#client/applications/forms/fields.d.mts";
 
@@ -125,7 +126,7 @@ declare abstract class DataField<
    * The initial value of a field, or a function which assigns that initial value.
    * @defaultValue `undefined`
    */
-  initial: DataField.Options.InitialType<InitializedType>;
+  initial: DataField.Options.InitialType<PersistedType>;
 
   /**
    * Should the prepared value of the field be read-only, preventing it from being
@@ -848,9 +849,27 @@ declare namespace DataField {
    */
   interface InitializeOptions extends Document.InitializeOptions {}
 
-  interface ToInputConfig<InitializedType> extends FormInputConfig<InitializedType> {}
+  /**
+   * @remarks A callback to be used in place of a field's {@linkcode DataField#_toInput | #_toInput}
+   * @see {@linkcode DataField.toInput | DataField#toInput}
+   */
+  type CustomFormInput = (field: DataField.Any, config: FormInputConfig) => HTMLElement | HTMLCollection;
 
-  interface ToInputConfigWithOptions<InitializedType> extends FormInputConfig<InitializedType>, SelectInputConfig {}
+  /**
+   * {@linkcode DataField.toInput | DataField#toInput} provides a default for {@linkcode FormInputConfig.name | name} (the only required
+   * property of `FormInputConfig`) via spread operator, we `IntentionalPartial` the config .
+   *
+   * Foundry includes `input` in `FormInputConfig`, but it is only used by `DataField#_toInput`, so we move it here instead.
+   */
+  interface ToInputConfig<InitializedType> extends IntentionalPartial<FormInputConfig<InitializedType>> {
+    /**
+     * @remarks Used with {@linkcode DataField.toFormGroup | DataField#toFormGroup}/{@linkcode DataField.toInput | #toInput}: if provided,
+     * this function will be used instead of the field's {@linkcode DataField._toInput | #_toInput}.
+     */
+    input?: CustomFormInput | undefined;
+  }
+
+  interface ToInputConfigWithOptions<InitializedType> extends ToInputConfig<InitializedType>, _SelectInputConfig {}
 
   type AnyChoices = StringField.Choices | NumberField.Choices;
 
@@ -863,17 +882,47 @@ declare namespace DataField {
         }
   >;
 
-  type SelectableToInputConfig<InitializedType, Choices extends StringField.Choices | undefined> =
-    | ToInputConfig<InitializedType>
-    | ToInputConfigWithOptions<InitializedType>
-    | ToInputConfigWithChoices<InitializedType, Choices>;
+  /**
+   * @remarks A callback for {@linkcode DataField.toFormGroup | DataField#toFormGroup} to use in place of
+   * {@linkcode foundry.applications.fields.createFormGroup}. Note that it will be called before `#toFormGroup`
+   * applies its defaults for `label`, `hint`, and `input`.
+   */
+  type CustomFormGroup = (
+    field: DataField.Any,
+    groupConfig: FormGroupConfig,
+    inputConfig: FormInputConfig,
+  ) => HTMLDivElement;
+
+  /** @internal */
+  interface _GroupConfig {
+    /**
+     * A custom form group widget function which replaces the default group HTML generation
+     * @remarks See {@linkcode CustomFormGroup}
+     */
+    widget: CustomFormGroup;
+  }
 
   /**
-   * `label`, `hint`, and `input` are all provided defaults.
+   * @remarks `label`, `hint`, and `input` are all provided defaults by {@linkcode DataField.toFormGroup | DataField#toFormGroup}
+   * @privateRemarks This could have been `InexactPartial<Pick<>>`, but this lets us provide relevant info on defaults.
    */
-  interface GroupConfig extends Omit<FormGroupConfig, "label" | "hint" | "input"> {
+  interface GroupConfig extends InexactPartial<_GroupConfig>, Omit<FormGroupConfig, "label" | "hint" | "input"> {
+    /**
+     * A text label to apply to the form group
+     * @defaultValue {@linkcode DataField.label | this.label}` ?? `{@linkcode DataField.fieldPath | this.fieldPath}
+     */
     label?: FormGroupConfig["label"] | undefined;
+
+    /**
+     * Hint text displayed as part of the form group
+     * @defaultValue {@linkcode DataField.hint | this.hint}
+     */
     hint?: FormGroupConfig["hint"] | undefined;
+
+    /**
+     * An HTML element or collection of elements which provide the inputs for the group
+     * @defaultValue {@linkcode DataField.toInput | this.toInput(inputConfig)}
+     */
     input?: FormGroupConfig["input"] | undefined;
   }
 }
@@ -1348,7 +1397,7 @@ declare class BooleanField<
   override nullable: boolean;
 
   /** @defaultValue `false` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   protected static override get _defaults(): BooleanField.Options;
 
@@ -1460,7 +1509,7 @@ declare class NumberField<
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `undefined` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /**
    * @defaultValue `true`
@@ -1729,7 +1778,7 @@ declare class StringField<
   constructor(options?: Options, context?: DataField.ConstructionContext);
 
   /** @defaultValue `undefined` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /**
    * Is the string allowed to be blank (empty)?
@@ -1905,6 +1954,7 @@ declare namespace StringField {
   /** @internal */
   type _ValidChoice<Choices> = Choices extends (...args: infer _1) => infer C ? FixedChoice<C> : FixedChoice<Choices>;
 
+  /** @internal */
   type _ApplyBlank<Choices, Result> = Choices extends { readonly blank: true } ? Result | "" : Result;
 
   type FixedChoice<Choices> =
@@ -1948,16 +1998,28 @@ declare namespace StringField {
 
   type Choices = BaseChoices | (() => BaseChoices);
 
+  /** @remarks The possible element types returned by {@linkcode StringField._toInput | StringField#_toInput} */
+  type InputType = "input" | "textarea" | "prose-mirror" | "code-mirror";
+
+  interface _StringFieldInputConfig {
+    /**
+     * The element to create for this form field
+     * @defaultValue `"input"`
+     */
+    elementType: InputType;
+  }
+
   /** @internal */
   type _PrepareChoiceConfig = InexactPartial<
-    Pick<_FormInputConfig, "localize"> & Pick<SelectInputConfig, "labelAttr" | "valueAttr">
+    Pick<_FormInputConfig, "localize"> & Pick<_SelectInputConfig, "labelAttr" | "valueAttr">
   >;
 
+  /** Foundry's type `ChoiceInputConfig` includes both `choices` and `options` */
   interface PrepareChoiceConfig extends _PrepareChoiceConfig {
     choices: DataField.AnyChoices;
   }
 
-  /** @deprecated Replaced with {@linkcode PrepareChoiceConfig} in v13 */
+  /** @deprecated Replaced with {@linkcode PrepareChoiceConfig} in v13. */
   interface GetChoicesOptions extends PrepareChoiceConfig {}
 }
 
@@ -3032,8 +3094,10 @@ declare namespace EmbeddedCollectionField {
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
    * @template ElementFieldType - the DataField type of the elements in the EmbeddedCollectionField
    */
-  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> =
-    Document.ToConfiguredInstance<ElementFieldType>;
+  // TODO: Investigate if this should be StoredForName
+  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> = Document.ImplementationFor<
+    ElementFieldType["documentName"]
+  >;
 
   /**
    * A type to infer the initialized element type of an EmbeddedCollectionField from its ElementFieldType.
@@ -3199,8 +3263,10 @@ declare namespace EmbeddedCollectionDeltaField {
    * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
    * @template ElementFieldType - the DataField type of the elements in the EmbeddedCollectionDeltaField
    */
-  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> =
-    Document.ToConfiguredInstance<ElementFieldType>;
+  // TODO: Investigate if this should be StoredForName
+  type InitializedElementType<ElementFieldType extends Document.AnyConstructor> = Document.ImplementationFor<
+    ElementFieldType["documentName"]
+  >;
 
   /**
    * A type to infer the initialized element type of an EmbeddedCollectionDeltaField from its ElementFieldType.
@@ -3365,10 +3431,14 @@ declare namespace EmbeddedDocumentField {
    * @template DocumentType - the type of the embedded Document
    * @template Opts         - the options that override the default options
    */
+  // TODO: Investigate if this should return StoredForName
   type InitializedType<
     DocumentType extends Document.AnyConstructor,
     Opts extends Options<DocumentType>,
-  > = DataField.DerivedInitializedType<Document.ToConfiguredInstance<DocumentType>, MergedOptions<DocumentType, Opts>>;
+  > = DataField.DerivedInitializedType<
+    Document.ImplementationFor<DocumentType["documentName"]>,
+    MergedOptions<DocumentType, Opts>
+  >;
 
   /**
    * A shorthand for the persisted type of an EmbeddedDocumentField class.
@@ -3563,9 +3633,9 @@ declare namespace DocumentUUIDField {
   > {}
 
   /** @internal */
-  type _Choices = Omit<SelectInputConfig, "options"> & StringField.PrepareChoiceConfig;
+  type _Choices = Omit<_SelectInputConfig, "options"> & StringField.PrepareChoiceConfig;
 
-  interface ToInputConfigWithOptions<InitializedType> extends RootToInputConfig<InitializedType>, SelectInputConfig {}
+  interface ToInputConfigWithOptions<InitializedType> extends RootToInputConfig<InitializedType>, _SelectInputConfig {}
   interface ToInputConfigWithChoices<InitializedType> extends SimpleMerge<
     RootToInputConfig<InitializedType>,
     _Choices
@@ -3725,7 +3795,7 @@ declare class ColorField<
   override nullable: boolean;
 
   /** @defaultValue `null` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /** @defaultValue `false` */
   override blank: boolean;
@@ -3865,7 +3935,7 @@ declare class FilePathField<
   override blank: boolean;
 
   /** @defaultValue `null` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   protected static override get _defaults(): FilePathField.Options;
 
@@ -3982,7 +4052,7 @@ declare class AngleField<
   override nullable: boolean;
 
   /** @defaultValue `0` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /**
    * Whether the angle should be normalized to [0,360) before being clamped to [0,360]. The default is true.
@@ -4089,7 +4159,7 @@ declare class AlphaField<
   override nullable: boolean;
 
   /** @defaultValue `1` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /** @defaultValue `0` */
   override min: number | undefined;
@@ -4240,7 +4310,7 @@ declare class DocumentOwnershipField<
     DocumentOwnershipField.InitializedType<Options>,
 > extends ObjectField<Options, AssignmentType, InitializedType, PersistedType> {
   /** @defaultValue `{default: DOCUMENT_OWNERSHIP_LEVELS.NONE}` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /** @defaultValue `"is not a mapping of user IDs and document permission levels"` */
   override validationError: string;
@@ -4333,7 +4403,7 @@ declare class JSONField<
   override choices: undefined;
 
   /** @defaultValue `undefined` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   /** @defaultValue `"is not a valid JSON string"` */
   override validationError: string;
@@ -4553,9 +4623,12 @@ declare namespace HTMLField {
    */
   type InitializedType<Options extends StringField.Options> = StringField.InitializedType<MergedOptions<Options>>;
 
-  // `HTMLField#toFormGroup` provides a default by way of `groupConfig.stacked ??= true`.
   interface GroupConfig extends Omit<DataField.GroupConfig, "stacked"> {
-    stacked?: DataField.GroupConfig["stacked"] | null | undefined;
+    /**
+     * Is the "stacked" class applied to the form group
+     * @defaultValue `true`
+     */
+    stacked?: DataField.GroupConfig["stacked"] | undefined;
   }
 }
 
@@ -4589,7 +4662,7 @@ declare class IntegerSortField<
   override integer: boolean;
 
   /** @defaultValue `0` */
-  override initial: DataField.Options.InitialType<InitializedType>;
+  override initial: DataField.Options.InitialType<PersistedType>;
 
   static override get _defaults(): NumberField.Options;
 }
@@ -4934,23 +5007,23 @@ declare namespace DocumentStatsField {
   }
 
   interface Data extends SchemaField.InitializedData<Schema> {}
-}
 
-interface ExportSourceSchema extends DataSchema {
-  /** @defaultValue `game.world.id` */
-  worldId: StringField<{ required: true; blank: false; nullable: true }>;
+  interface ExportSourceSchema extends DataSchema {
+    /** @defaultValue `game.world.id` */
+    worldId: StringField<{ required: true; blank: false; nullable: true }>;
 
-  /** @defaultValue `this.uuid` (`this` being a `ClientDocument`) */
-  uuid: DocumentUUIDField<{ initial: undefined }>;
+    /** @defaultValue `this.uuid` (`this` being a `ClientDocument`) */
+    uuid: DocumentUUIDField<{ initial: undefined }>;
 
-  /** @defaultValue `game.version` */
-  coreVersion: StringField<{ required: true; blank: false; nullable: true }>;
+    /** @defaultValue `game.version` */
+    coreVersion: StringField<{ required: true; blank: false; nullable: true }>;
 
-  /** @defaultValue `game.system.id` */
-  systemId: StringField<{ required: true; blank: false; nullable: true }>;
+    /** @defaultValue `game.system.id` */
+    systemId: StringField<{ required: true; blank: false; nullable: true }>;
 
-  /** @defaultValue `game.system.version` */
-  systemVersion: StringField<{ required: true; blank: false; nullable: true }>;
+    /** @defaultValue `game.system.version` */
+    systemVersion: StringField<{ required: true; blank: false; nullable: true }>;
+  }
 }
 
 /**
@@ -5519,9 +5592,12 @@ declare namespace JavaScriptField {
     }
   >;
 
-  // `JavaScriptField#toFormGroup` provides a default by way of `groupConfig.stacked ??= true`.
   interface GroupConfig extends Omit<DataField.GroupConfig, "stacked"> {
-    stacked?: DataField.GroupConfig["stacked"] | null | undefined;
+    /**
+     * Is the "stacked" class applied to the form group
+     * @defaultValue `true`
+     */
+    stacked?: DataField.GroupConfig["stacked"] | undefined;
   }
 
   interface ToInputConfig<InitializedType> extends SimpleMerge<

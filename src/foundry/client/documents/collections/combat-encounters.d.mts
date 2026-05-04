@@ -2,6 +2,9 @@ import type { Identity } from "#utils";
 import type Document from "#common/abstract/document.d.mts";
 import type { WorldCollection } from "#client/documents/abstract/_module.d.mts";
 import type { ClientSettings } from "#client/helpers/_module.d.mts";
+import type { Application } from "#client/appv1/api/_module.d.mts";
+import type { DocumentSheetV2 } from "#client/applications/api/_module.d.mts";
+import type { DocumentSheetConfig } from "#client/applications/apps/_module.d.mts";
 
 /**
  * The singleton collection of Combat documents which exist within the active World.
@@ -38,6 +41,20 @@ declare class CombatEncounters extends WorldCollection<"Combat"> {
 
   /** @deprecated Removed without replacement in v13. This warning will be removed in v14. */
   protected _onDeleteToken(...args: never): never;
+
+  // Fake override for the purpose of typing `options`.
+  static override registerSheet(
+    scope: string,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.RegisterSheetOptions<Combat.ImplementationClass>,
+  ): void;
+
+  // Fake override for the purpose of typing `options`.
+  static override unregisterSheet(
+    scope: string,
+    sheetClass: Application.AnyConstructor | DocumentSheetV2.AnyConstructor,
+    options?: DocumentSheetConfig.UnregisterSheetOptions<Combat.ImplementationClass>,
+  ): void;
 }
 
 declare namespace CombatEncounters {

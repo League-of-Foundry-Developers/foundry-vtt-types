@@ -1,5 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { WeatherOcclusionMaskFilter } from "#client/canvas/rendering/filters/_module.mjs";
+
+import WeatherOcclusionMaskFilter = foundry.canvas.rendering.filters.WeatherOcclusionMaskFilter;
 
 const myWOMF = WeatherOcclusionMaskFilter.create();
 expectTypeOf(myWOMF).toEqualTypeOf<WeatherOcclusionMaskFilter>();

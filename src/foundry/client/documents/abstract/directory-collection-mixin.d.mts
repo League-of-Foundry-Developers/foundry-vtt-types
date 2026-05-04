@@ -141,7 +141,7 @@ declare class DirectoryCollection {
  * @param BaseCollection - The base collection class to extend
  * @returns A Collection mixed with DirectoryCollection functionality
  */
-declare function DirectoryCollectionMixin<BaseCollection extends Collection.AnyConstructor>(
+declare function DirectoryCollectionMixin<BaseCollection extends DirectoryCollectionMixin.BaseClass>(
   BaseCollection: BaseCollection,
 ): Mixin<typeof DirectoryCollection, BaseCollection>;
 

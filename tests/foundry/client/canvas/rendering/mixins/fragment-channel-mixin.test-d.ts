@@ -1,6 +1,6 @@
 import { expectTypeOf } from "vitest";
-import { AdaptiveFragmentChannelMixin } from "#client/canvas/rendering/mixins/_module.mjs";
 
+import AdaptiveFragmentChannelMixin = foundry.canvas.rendering.mixins.AdaptiveFragmentChannelMixin;
 import AbstractBaseShader = foundry.canvas.rendering.shaders.AbstractBaseShader;
 import BaseSamplerShader = foundry.canvas.rendering.shaders.BaseSamplerShader;
 

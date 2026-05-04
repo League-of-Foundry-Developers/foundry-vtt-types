@@ -1,6 +1,7 @@
 import { expectTypeOf } from "vitest";
 import type { AnyObject } from "fvtt-types/utils";
-import { InteractionLayer } from "#client/canvas/layers/_module.mjs";
+
+import InteractionLayer = foundry.canvas.layers.InteractionLayer;
 
 declare global {
   namespace CONFIG.Canvas {

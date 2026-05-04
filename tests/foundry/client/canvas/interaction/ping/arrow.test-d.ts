@@ -1,5 +1,6 @@
 import { describe, expectTypeOf, test } from "vitest";
-import { ArrowPing } from "#client/canvas/interaction/_module.mjs";
+
+import ArrowPing = foundry.canvas.interaction.ArrowPing;
 
 declare const someGraphics: PIXI.Graphics;
 describe("ArrowPing tests", () => {

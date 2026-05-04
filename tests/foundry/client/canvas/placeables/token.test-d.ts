@@ -1,7 +1,8 @@
 import { test, expectTypeOf } from "vitest";
-import { Token, Region } from "#client/canvas/placeables/_module.mjs";
-import type { TokenRing } from "#client/canvas/placeables/tokens/_module.d.mts";
 
+import Token = foundry.canvas.placeables.Token;
+import Region = foundry.canvas.placeables.Region;
+import TokenRing = foundry.canvas.placeables.tokens.TokenRing;
 import Canvas = foundry.canvas.Canvas;
 import CanvasAnimation = foundry.canvas.animation.CanvasAnimation;
 import PointSourcePolygon = foundry.canvas.geometry.PointSourcePolygon;

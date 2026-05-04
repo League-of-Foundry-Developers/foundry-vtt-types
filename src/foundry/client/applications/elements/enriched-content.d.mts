@@ -4,15 +4,15 @@
 export default class HTMLEnrichedContentElement extends HTMLElement {
   /**
    * The HTML tag named used by this element.
+   * @defaultValue `"enriched-content"`
    */
-  static tagName: "enriched-content";
+  static tagName: string;
 
   /**
    * Attributes requiring change notifications
+   * @defaultValue `["enricher"]`
    */
   static observedAttributes: string[];
-
-  #private: true;
 
   /**
    * Invoke the enricher onRender callback when it is added to the DOM.
@@ -26,4 +26,6 @@ export default class HTMLEnrichedContentElement extends HTMLElement {
    * @param newValue - The new value: null indicates the attribute is removed.
    */
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void;
+
+  #HTMLEnrichedContentElement: true;
 }
