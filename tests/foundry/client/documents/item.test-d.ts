@@ -81,13 +81,13 @@ test("update regression test", () => {
 declare global {
   namespace Item {
     namespace Database {
-      interface Create {
+      interface CreateOperation {
         foo?: string;
       }
-      interface Update {
+      interface UpdateOperation {
         bar?: number;
       }
-      interface Delete {
+      interface DeleteOperation {
         foobar?: boolean;
       }
     }
@@ -100,9 +100,9 @@ Item.deleteDocuments([foundry.utils.randomID()], { foobar: false });
 
 class BoilerplateItem extends Item {
   protected static override async _onUpdateOperation(
-    documents: Item.Implementation[],
-    operation: Item.Database.Update,
-    user: User.Implementation,
+    documents: Item.Stored[],
+    operation: Item.Database.OnUpdateOperation,
+    user: User.Stored,
   ): Promise<void> {
     if (operation.bar) {
       console.log(documents[0]!.id, operation.diff, user.id);

@@ -1,4 +1,4 @@
-import type { AnyMutableObject, MaybeArray } from "#utils";
+import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
@@ -112,17 +112,17 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BasePlaylist.CreateInput[],
-    operation?: Document.Database.CreateOperation<BasePlaylist.Database.Create<Temporary>>,
+    operation?: BasePlaylist.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BasePlaylist.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BasePlaylist.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BasePlaylist.Database.Update>,
+    operation?: BasePlaylist.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<Playlist.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BasePlaylist.Database.Delete>,
+    operation?: BasePlaylist.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<Playlist.Stored>>;
 
   static override create<
@@ -130,51 +130,50 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BasePlaylist.Database.CreateOperation<Temporary>,
+    operation?: BasePlaylist.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BasePlaylist.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BasePlaylist.UpdateInput,
-    operation?: BasePlaylist.Database.UpdateOperation,
+    operation?: BasePlaylist.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BasePlaylist.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BasePlaylist.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    operation?: BasePlaylist.Database.GetOptions,
+    operation?: BasePlaylist.Database.GetDocumentsOperation,
   ): Playlist.Stored | CompendiumCollection.IndexEntry<"Playlist"> | null;
 
-  static override getCollectionName<CollectionName extends BasePlaylist.Embedded.Name>(
-    name: CollectionName,
-  ): BasePlaylist.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BasePlaylist.Embedded.CollectionName>,
+  ): BasePlaylist.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends BasePlaylist.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
   ): BasePlaylist.Embedded.CollectionFor<EmbeddedName>;
 
-  override getEmbeddedDocument<EmbeddedName extends BasePlaylist.Embedded.CollectionName>(
-    embeddedName: EmbeddedName,
-    id: string,
-    options: Document.GetEmbeddedDocumentOptions,
-  ): BasePlaylist.Embedded.DocumentFor<EmbeddedName> | undefined;
+  override getEmbeddedDocument<
+    EmbeddedName extends BasePlaylist.Embedded.CollectionName,
+    Options extends Document.GetEmbeddedDocumentOptions | undefined = undefined,
+  >(embeddedName: EmbeddedName, id: string, options?: Options): BasePlaylist.Embedded.GetReturn<EmbeddedName, Options>;
 
   override createEmbeddedDocuments<EmbeddedName extends BasePlaylist.Embedded.Name>(
     embeddedName: EmbeddedName,
-    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+    data: Document.CreateDataForName<EmbeddedName>[],
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BasePlaylist.Embedded.Name>(
     embeddedName: EmbeddedName,
-    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+    updates: Document.UpdateDataForName<EmbeddedName>[],
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BasePlaylist.Embedded.Name>(
     embeddedName: EmbeddedName,
-    ids: Array<string>,
-    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+    ids: string[],
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BasePlaylist.Flags.Scope, Key extends BasePlaylist.Flags.Key<Scope>>(
@@ -201,19 +200,19 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   protected override _onCreate(
     data: BasePlaylist.CreateData,
-    options: BasePlaylist.Database.OnCreateOperation,
+    options: BasePlaylist.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Playlist.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BasePlaylist.Database.Create>,
+    operation: BasePlaylist.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Playlist.Stored[],
-    operation: BasePlaylist.Database.Create,
+    operation: BasePlaylist.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -225,19 +224,19 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
 
   protected override _onUpdate(
     changed: BasePlaylist.UpdateData,
-    options: BasePlaylist.Database.OnUpdateOperation,
+    options: BasePlaylist.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Playlist.Stored[],
-    operation: BasePlaylist.Database.Update,
+    operation: BasePlaylist.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Playlist.Stored[],
-    operation: BasePlaylist.Database.Update,
+    operation: BasePlaylist.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -246,17 +245,17 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BasePlaylist.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BasePlaylist.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Playlist.Stored[],
-    operation: BasePlaylist.Database.Delete,
+    operation: BasePlaylist.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Playlist.Stored[],
-    operation: BasePlaylist.Database.Delete,
+    operation: BasePlaylist.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -266,7 +265,8 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
    */
   protected static override _onCreateDocuments(
     documents: Playlist.Implementation[],
-    context: BasePlaylist.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BasePlaylist.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -275,7 +275,8 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
    */
   protected static override _onUpdateDocuments(
     documents: Playlist.Stored[],
-    context: BasePlaylist.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BasePlaylist.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -284,7 +285,8 @@ declare abstract class BasePlaylist extends Document<"Playlist", BasePlaylist.Sc
    */
   protected static override _onDeleteDocuments(
     documents: Playlist.Stored[],
-    context: BasePlaylist.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BasePlaylist.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

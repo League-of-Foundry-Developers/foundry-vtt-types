@@ -1,12 +1,20 @@
-import type { InexactPartial, FixedInstanceType, LoggingLevels } from "#utils";
-import type Document from "./document.d.mts";
-import type {
-  DatabaseCreateOperation,
-  DatabaseDeleteOperation,
-  DatabaseGetOperation,
-  DatabaseOperation,
-  DatabaseUpdateOperation,
-} from "./_types.d.mts";
+import type { AnyObject, FixedInstanceType, Identity, InexactPartial, IntentionalPartial, LoggingLevels } from "#utils";
+import type { Document } from "#common/abstract/_module.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type CompendiumCollection from "#client/documents/collections/compendium-collection.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type DocumentCollection from "#client/documents/abstract/document-collection.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
 
 /**
  * An abstract base class extended on both the client and server which defines how Documents are retrieved, created,
@@ -19,12 +27,15 @@ declare abstract class DatabaseBackend {
    * @param operation     - Parameters of the get operation
    * @param user          - The requesting User
    * @returns An array of retrieved Document instances or index objects
+   *
+   * @remarks `user` has no default provided by this method, and unlike the other operations, core's implementation in
+   * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments} doesn't make use of it at all.
    */
-  get<T extends Document.AnyConstructor>(
-    documentClass: T,
-    operation: DatabaseGetOperation,
-    user?: User.Implementation,
-  ): Promise<FixedInstanceType<T>>[];
+  get<DocClass extends Document.AnyConstructor>(
+    documentClass: DocClass,
+    operation: Document.Database.BackendGetOperationForName<DocClass["documentName"]>,
+    user?: User.Stored,
+  ): Promise<FixedInstanceType<DocClass>>[];
 
   /**
    * Retrieve Document instances using the specified operation parameters.
@@ -32,27 +43,35 @@ declare abstract class DatabaseBackend {
    * @param operation      - Parameters of the get operation
    * @param user           - The requesting User
    * @returns An array of retrieved Document instances or index objects
+   *
+   * @remarks Abstract; See {@linkcode DatabaseBackend.get | DatabaseBackend#get} remarks.
    */
-  protected abstract _getDocuments<T extends Document.AnyConstructor>(
-    documentClass: T,
-    operation: DatabaseGetOperation,
-    user?: User.Implementation,
-  ): Promise<FixedInstanceType<T>[]>;
+  protected abstract _getDocuments<DocClass extends Document.AnyConstructor>(
+    documentClass: DocClass,
+    operation: Document.Database.GetOperationForName<DocClass["documentName"]>,
+    user?: User.Stored,
+  ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
    * Create new Documents using provided data and context.
-   * It is recommended to use {@linkcode Document.createDocuments} or {@linkcode Document.create} rather than calling this
-   * method directly.
+   * It is recommended to use {@linkcode Document.createDocuments} or {@linkcode Document.create}
+   * rather than calling this method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the create operation
    * @param user          - The requesting User
    * @returns An array of created Document instances
+   *
+   * @remarks `user` has no default provided in this method; if it isn't passed, core's provided implementation in
+   * {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments} defaults to `game.user`.
+   * Core *does not* pass `user` when calling this method in {@linkcode Document.createDocuments}, relying on the handling in
+   * `CDB#_createDocuments`, so user-provided subclasses must account for this.
    */
-  create<T extends Document.AnyConstructor>(
-    documentClass: T,
-    operation: DatabaseBackend.CreateOperation<T>,
-    user?: User.Implementation,
-  ): Promise<FixedInstanceType<T>[]>;
+  // TODO: possible improvements around Stored types and inferring type data
+  create<DocClass extends Document.AnyConstructor>(
+    documentClass: DocClass,
+    operation: Document.Database.BackendCreateOperationForName<DocClass["documentName"]>,
+    user?: User.Stored,
+  ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
    * Create Document instances using provided data and operation parameters.
@@ -60,27 +79,35 @@ declare abstract class DatabaseBackend {
    * @param operation     - Parameters of the create operation
    * @param user          - The requesting User
    * @returns An array of created Document instances
+   *
+   * @remarks Abstract; See {@linkcode DatabaseBackend.create | DatabaseBackend#create} remarks.
    */
-  protected abstract _createDocuments<T extends Document.AnyConstructor>(
-    documentClass: T,
-    operation: Document.Database.CreateOperationForName<T["documentName"], boolean | undefined>,
-    user?: User.Implementation,
-  ): Promise<FixedInstanceType<T>[]>;
+  // TODO: possible improvements around Stored types and inferring type data
+  protected abstract _createDocuments<DocClass extends Document.AnyConstructor>(
+    documentClass: DocClass,
+    operation: Document.Database.CreateOperationForName<DocClass["documentName"]>,
+    user: User.Stored,
+  ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
    * Update Documents using provided data and context.
-   * It is recommended to use {@linkcode Document.updateDocuments} or {@link Document.update | `Document#update`} rather than calling this
-   * method directly.
+   * It is recommended to use {@linkcode Document.updateDocuments} or {@linkcode Document.update | Document#update}
+   * rather than calling this method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the update operation
    * @param user          - The requesting User
    * @returns  An array of updated Document instances
+   *
+   * @remarks `user` has no default provided in this method; if it isn't passed, core's provided implementation in
+   * {@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments} defaults to `game.user`.
+   * Core *does not* pass `user` when calling this method in {@linkcode Document.updateDocuments}, relying on the handling in
+   * `CDB#_updateDocuments`, so user-provided subclasses must account for this.
    */
-  update<T extends Document.AnyConstructor>(
-    documentClass: T,
-    operation: DatabaseBackend.UpdateOperation<T>,
-    user?: User.Implementation,
-  ): Promise<FixedInstanceType<T>[]>;
+  update<DocClass extends Document.AnyConstructor>(
+    documentClass: DocClass,
+    operation: Document.Database.BackendUpdateOperationForName<DocClass["documentName"]>,
+    user?: User.Stored,
+  ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
    * Update Document instances using provided data and operation parameters.
@@ -88,115 +115,582 @@ declare abstract class DatabaseBackend {
    * @param operation     - Parameters of the update operation
    * @param user          - The requesting User
    * @returns  An array of updated Document instances
+   *
+   * @remarks Abstract; See {@linkcode DatabaseBackend.update | DatabaseBackend#update} remarks.
    */
-  protected abstract _updateDocuments<T extends Document.AnyConstructor>(
-    documentClass: T,
-    operation: DatabaseUpdateOperation<FixedInstanceType<T>>,
-    user: User.Implementation,
-  ): Promise<FixedInstanceType<T>[]>;
+  protected abstract _updateDocuments<DocClass extends Document.AnyConstructor>(
+    documentClass: DocClass,
+    operation: Document.Database.UpdateOperationForName<DocClass["documentName"]>,
+    user: User.Stored,
+  ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
    * Delete Documents using provided ids and context.
-   * It is recommended to use {@linkcode foundry.abstract.Document.deleteDocuments} or
-   * {@link foundry.abstract.Document.delete | `foundry.abstract.Document#delete`} rather than calling this method directly.
+   * It is recommended to use {@linkcode Document.deleteDocuments} or {@link Document.delete | `Document#delete`}
+   * rather than calling this method directly.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the delete operation
    * @param user          - The requesting User
    * @returns The deleted Document instances
+   *
+   * @remarks `user` has no default provided in this method; if it isn't passed, core's provided implementation in
+   * {@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments} defaults to `game.user`.
+   * Core *does not* pass `user` when calling this method in {@linkcode Document.deleteDocuments}, relying on the handling in
+   * `CDB#_deleteDocuments`, so user-provided subclasses must account for this.
    */
-  delete<T extends Document.AnyConstructor>(
-    documentClass: T,
-    operation: DatabaseBackend.DeleteOperation,
-    user?: User.Implementation,
-  ): Promise<FixedInstanceType<T>[]>;
+  delete<DocClass extends Document.AnyConstructor>(
+    documentClass: DocClass,
+    operation: Document.Database.BackendDeleteOperationForName<DocClass["documentName"]>,
+    user?: User.Stored,
+  ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
    * Delete Document instances using provided ids and operation parameters.
    * @param documentClass - The Document class definition
    * @param operation     - Parameters of the delete operation
    * @param user          - The requesting User
+   *
+   * @remarks Abstract; See {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} remarks.
    */
-  protected abstract _deleteDocuments<T extends Document.AnyConstructor>(
-    documentClass: T,
-    operation: DatabaseDeleteOperation,
-    user: User.Implementation,
-  ): Promise<FixedInstanceType<T>[]>;
+  protected abstract _deleteDocuments<DocClass extends Document.AnyConstructor>(
+    documentClass: DocClass,
+    operation: Document.Database.DeleteOperationForName<DocClass["documentName"]>,
+    user: User.Stored,
+  ): Promise<FixedInstanceType<DocClass>[]>;
 
   /**
    * Get the parent Document (if any) associated with a request context.
    * @param operation - The requested database operation
-   * @returns The parent Document, or null
+   * @returns The parent Document, or `null`
    */
-  _getParent(operation: DatabaseOperation): Promise<Document.Any | null>;
+  _getParent(operation: DatabaseBackend.DatabaseOperation): Promise<Document.Any | null>;
 
   /**
    * Describe the scopes which are suitable as the namespace for a flag key
+   * @remarks Not marked abstract on Foundry's end, but is a no-op in this class
    */
-  getFlagScopes(): string[];
+  abstract getFlagScopes(): string[];
 
   /**
    * Describe the scopes which are suitable as the namespace for a flag key
+   * @remarks Not marked abstract on Foundry's end, but is a no-op in this class
    */
-  getCompendiumScopes(): string[];
+  abstract getCompendiumScopes(): string[];
 
   /**
    * Log a database operations message.
    * @param level   - The logging level
    * @param message - The message
    */
-  protected _log(level: LoggingLevels, message: string): void;
+  protected abstract _log(level: LoggingLevels, message: string): void;
 
   /**
    * Log a database operation for an embedded document, capturing the action taken and relevant IDs
    * @param action    - The action performed
    * @param type      - The document type
    * @param documents - The documents modified
+   * @param context   - The context of the log request
    */
   protected _logOperation(
     action: string,
     type: string,
     documents: Document.Any[],
-    {
-      parent,
-      pack,
-      level,
-    }?: InexactPartial<{
-      /** A parent document */
-      parent: Document.Any;
-
-      /** A compendium pack within which the operation occurred */
-      pack: string;
-
-      /**
-       * The logging level
-       * @defaultValue `"info"`
-       */
-      level: LoggingLevels;
-    }>,
+    context?: DatabaseBackend.LogOperationContext,
   ): void;
 
   /**
    * Construct a standardized error message given the context of an attempted operation
+   * @remarks This method is only called in server-side code
    */
-  protected _logError(
-    user: User.Implementation,
-    action: string,
-    { parent, pack }?: { parent?: Document.Any; pack?: string },
-  ): string;
+  protected _logError(user: User.Stored, action: string, context?: DatabaseBackend.LogErrorContext): string;
+
+  #DatabaseBackend: true;
 }
 
 declare namespace DatabaseBackend {
-  type CreateOperation<T extends Document.AnyConstructor> =
-    Document.Database.CreateOperation<DatabaseCreateOperation> & {
-      data: Document.CreateDataForName<T["documentName"]>[];
-    };
+  interface Any extends AnyDatabaseBackend {}
+  interface AnyConstructor extends Identity<typeof AnyDatabaseBackend> {}
 
-  type UpdateOperation<T extends Document.AnyConstructor> =
-    Document.Database.UpdateDocumentsOperation<DatabaseUpdateOperation> & {
-      updates: Document.UpdateDataForName<T["documentName"]>[];
-    };
+  type _LogOperationContext = InexactPartial<{
+    /** A parent document */
+    parent: Document.Any;
 
-  type DeleteOperation = Document.Database.DeleteDocumentsOperation<DatabaseDeleteOperation> & { ids: string[] };
+    /** A compendium pack within which the operation occurred */
+    pack: string;
+
+    /**
+     * The logging level
+     * @defaultValue `"info"`
+     */
+    level: LoggingLevels;
+  }>;
+
+  interface LogOperationContext extends _LogOperationContext {}
+
+  interface LogErrorContext extends Omit<_LogOperationContext, "level"> {}
+
+  interface DatabaseOperationMap {
+    get: GetOperation;
+    create: CreateOperation;
+    update: UpdateOperation;
+    delete: DeleteOperation;
+  }
+
+  type DatabaseAction = keyof DatabaseOperationMap;
+  type DatabaseOperation = DatabaseOperationMap[keyof DatabaseOperationMap];
+
+  /**
+   * The optional portion of this type is `IntentionalPartial` instead of `InexactPartial` because keys with `undefined` values do not
+   * survive passage over the socket. The interfaces users will most commonly be passing are `InexactPartial`ed in their entirety to allow
+   * passing `undefined` regardless for DX reasons, and because some keys are only set via `??=`
+   * @internal
+   */
+  type _CommonOperationKeys<Parent extends Document.Any | null = Document.Any | null> = {
+    /**
+     * A parent Document within which Documents are embedded
+     *
+     * @remarks Either this property or {@linkcode _CommonOperationKeys.parentUuid | parentUuid} is required for obligately embedded
+     * documents (i.e, any *not* found in {@linkcode CONST.PRIMARY_DOCUMENT_TYPES}).
+     *
+     * This property takes precedence, although it will be dropped and replaced with `parentUuid` before being sent over the socket; this is
+     * transparent to users as it is reconstituted in the `ClientDatabaseBackend##handle[Operation]Documents` methods.
+     *
+     * This property is guaranteed present by `DatabaseBackend##configureOperation` calling
+     * {@linkcode ClientDatabaseBackend._getParent | ClientDatabaseBackend#_getParent}, and so is typed as required in this root interface.
+     */
+    parent: Parent;
+
+    /**
+     * The timestamp when the operation was performed
+     *
+     * @remarks This property is set in `DatabaseBackend##configureOperation`; since passed values are never respected, it is omitted from
+     * interfaces for prior to that call ({@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation},
+     * {@linkcode Document.Database.BackendCreateOperation | BackendCreateOperation})
+     */
+    modifiedTime: number;
+  } & IntentionalPartial<{
+    /**
+     * Whether the database operation is broadcast to other connected clients
+     *
+     * @remarks Behaves as if the default is `true`
+     * @privateRemarks Despite this being marked required in core's typedef, it is only ever set (to `false`) in the server-side
+     * `FogExploration._onXOperation` methods. It sees no other use in core.
+     */
+    broadcast: boolean;
+
+    /**
+     * Block the dispatch of hooks related to this operation
+     *
+     * @remarks Behaves as if the default is `false`.
+     *
+     * Despite the description, only prevents `pre[Operation][Document]` hooks from being called. Post-operation hooks (`createItem` etc)
+     * still fire.
+     */
+    noHook: boolean;
+
+    /**
+     * Re-render Applications whose display depends on the created Documents
+     * @defaultValue `true`
+     *
+     * @remarks This property is guaranteed to exist by the `DatabaseBackend##configure[Operation]` methods. It is not omitted from passable
+     * types as it's set via `??=`, so passed values are respected.
+     */
+    render: boolean;
+
+    /**
+     * A compendium collection ID which contains the Documents
+     *
+     * @remarks Will be added to the operation automatically if:
+     * - A `parent` is passed in the operation and *it* is in a pack (for any operation, via the Document static methods
+     * ({@linkcode Document.createDocuments} etc))
+     * - The operation is started via a call to {@linkcode Document.update | Document#update} or {@linkcode Document.delete | #delete}
+     * - The operation is started via a call to an `[operation]EmbeddedDocuments` method
+     */
+    pack: string | null;
+
+    /**
+     * A parent Document UUID provided when the parent instance is unavailable
+     */
+    parentUuid: string | null;
+  }>;
+
+  /**
+   * The root, abstract `GetOperation` interface.
+   *
+   * @remarks This interface is typed such that it's accurate for the point where the most properties are guaranteed by core to exist (after
+   * `DatabaseBackend##configureGet` and `##configureOperation`, before (and thus valid to pass to)
+   * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}).
+   *
+   * @privateRemarks Optional parameters are not `| undefined` because keys with `undefined` values do not survive passage over the socket.
+   * The interfaces users will most commonly be passing ({@linkcode Document.Database.GetDocumentsOperation | GetDocumentsOperation},
+   * {@linkcode Document.Database.BackendGetOperation | BackendGetOperation}) are `InexactPartial`ed in their entirety to allow passing
+   * `undefined` regardless for DX reasons, and because some keys are only set via `??=`.
+   */
+  interface GetOperation<Parent extends Document.Any | null = Document.Any | null> extends Pick<
+    _CommonOperationKeys<Parent>,
+    "pack" | "parent" | "parentUuid"
+  > {
+    /**
+     * The action of this database operation
+     * @remarks Added to the operation object in `DatabaseBackend##configureGet`
+     */
+    action: "get";
+
+    /**
+     * Get requests are never broadcast.
+     *
+     * @remarks This is set `false` in `DatabaseBackend##configureGet`. This *could* be overwritten by a
+     * {@linkcode ClientDatabaseBackend._getDocuments} override, but that would be nonsensical.
+     *
+     * @privateRemarks Not `Pick`ed from {@linkcode _CommonOperationKeys} to allow this alternate definition
+     */
+    broadcast: false;
+
+    /**
+     * A query object which identifies the set of documents retrieved
+     * @remarks See {@linkcode CompendiumCollection.getDocuments | CompendiumCollection#getDocuments} for examples
+     * of query syntax.
+     *
+     * Most operations will go out via the aforementioned method, and will thus have at least an empty object for this key,
+     * but completely omitting it produces the same behaviour from the server (return all documents specified by `pack` and
+     * `parent`).
+     */
+    query?: AnyObject;
+
+    /**
+     * Return indices only instead of full Document records
+     * @remarks Behaves as if the default is `false`
+     */
+    index?: boolean;
+
+    /**
+     * An array of field identifiers which should be indexed
+     *
+     * @remarks This has no effect if {@linkcode index} isn't `true`.
+     *
+     * Only fields that haven't been previously indexed this page load need be passed. Any given compendium will have the fields
+     * in its Document class's metadata (e.g {@linkcode Actor.metadata.compendiumIndexFields}), and any pushed into the relevant array in
+     * `CONFIG` (e.g {@linkcode CONFIG.Actor.compendiumIndexFields}) before the initial index is requested, in its index already.
+     */
+    indexFields?: string[];
+  }
+
+  /**
+   * The root, abstract `CreateOperation` interface.
+   *
+   * @remarks This interface is typed such that it's accurate for the point where the most properties are guaranteed by core to exist (after
+   * `DatabaseBackend##configureCreate` and `##configureOperation`, before (and thus valid to pass to)
+   * {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments}).
+   *
+   * ---
+   * ### **On Declaration Merging**
+   *
+   * Despite there being an abundance of interfaces descended from this one, if one wants to add a property to any of them, while you might
+   * at first try only merging into the one specific interface in question, given the way the operation object is passed around, and how
+   * keys added by hooks or document lifecycle methods propagate (see below), it only ever makes sense to merge into either this interface
+   * (affecting **all** Documents), or into the base `CreateOperation` type for a specific document (e.g
+   * {@linkcode Actor.Database.CreateOperation}).
+   *
+   * The stages of life of the operation object:
+   * 1. A {@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation} is passed to {@linkcode Document.create} or
+   * {@linkcode Document.createDocuments} (this is the usual entry point).
+   * 2. It then becomes a {@linkcode Document.Database.BackendCreateOperation | BackendCreateOperation} and is passed to
+   * {@linkcode DatabaseBackend.create | DatabaseBackend#create}.
+   * 3. It's sent through `DatabaseBackend##configureCreate` and `##configureOperation` to become this interface, and then is passed to
+   * {@linkcode ClientDatabaseBackend._createDocuments | ClientDatabaseBackend#_createDocuments}.
+   * 4. `ClientDatabaseBackend##preCreateDocumentArray` pulls out some keys to create a
+   * {@linkcode Document.Database.PreCreateOptions | PreCreateOptions} that gets passed to
+   * {@linkcode Document._preCreate | Document#_preCreate} and {@link Hooks.PreCreateDocument | the `preCreate[Document]` hook} for each
+   * element of `data`, possibly acquiring new keys from either. It's also sent to
+   * {@linkcode ClientDocumentMixin.AnyMixed._preCreateDescendantDocuments | ClientDocument._preCreateDescendantDocuments}, if applicable.
+   * 5. `##preCreateDocumentArray` then merges the previous step's `options` back into the `operation`, including any new keys, to produce
+   * a {@linkcode Document.Database.PreCreateOperation | PreCreateOperation}, which is passed to {@linkcode Document._preCreateOperation}.
+   * 6. The operation gets sent to the server, at which point any keys with the value `undefined` are lost. The response from the server is
+   * then fed into `ClientDatabaseBackend##handleCreateDocuments`, which, like `##pCDA` before, pulls out some keys to create an
+   * {@linkcode Document.Database.OnCreateOptions | OnCreateOptions} which is passed to {@linkcode Document._onCreate | Document#_onCreate}
+   * and {@link Hooks.CreateDocument | the `create[Document]` hook}, as well as
+   * {@linkcode ClientDocumentMixin.AnyMixed._onCreateDescendantDocuments | ClientDocument._onCreateDescendantDocuments}, if applicable.
+   * 7. Also as before, `##handleCreateDocuments` then merges any altered/added keys back into the operation, producing a
+   * {@linkcode Document.Database.OnCreateOperation} which is passed to {@linkcode Document._onCreateOperation}, and the relevant
+   * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents} or
+   * {@linkcode EmbeddedCollection._onModifyContents | EmbeddedCollection#_onModifyContents} method.
+   * ---
+   *
+   * @privateRemarks Optional parameters are not `| undefined` because keys with `undefined` values do not survive passage over the socket.
+   * The interfaces users will most commonly be passing ({@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation},
+   * {@linkcode Document.Database.BackendCreateOperation | BackendCreateOperation}) are `InexactPartial`ed in their entirety to allow
+   * passing `undefined` regardless for DX reasons, and because some keys are only set via `??=`.
+   *
+   * Any properties that are included in the Foundry typedef, but which can never be seen by client code (e.g `_result`, `_createData`) are
+   * not included in this interface.
+   */
+  interface CreateOperation<
+    CreateData extends object = object,
+    Parent extends Document.Any | null = Document.Any | null,
+    Temporary extends boolean | undefined = boolean | undefined,
+  > extends _CommonOperationKeys<Parent> {
+    /**
+     * The action of this database operation
+     * @remarks Added to the operation object in `DatabaseBackend##configureCreate`
+     */
+    action: "create";
+
+    /**
+     * An array of data objects from which to create Documents
+     *
+     * @remarks For the passable interfaces ({@linkcode Document.Database.CreateDocumentsOperation | CreateDocumentsOperation},
+     * {@linkcode Document.Database.BackendCreateOperation | BackendCreateOperation}), and this base type, this can be a mixed array of
+     * either `CreateData` objects or Document instances. It's restricted to only the `CreateData` in all interfaces downstream of this one,
+     * except {@linkcode Document.Database.OnCreateDocumentsOperation | OnCreateDocumentsOperation}
+     */
+    // TODO: remove the except clause above in v14
+    data: CreateData[];
+
+    /**
+     * Render the sheet Application for any created Documents
+     * @defaultValue `false`
+     * @remarks This is guaranteed to exist by `DatabaseBackend##configureCreate`. It is not omitted from passable types as it's set via
+     * `??=`, so passed values are respected.
+     *
+     * Creation calls made via {@linkcode ClientDocumentMixin.AnyMixed.createDialog | ClientDocument.createDialog} will have this default to
+     * `true`
+     */
+    renderSheet: boolean;
+
+    /**
+     * Retain the `_id` values of provided data instead of generating new ids
+     * @remarks Behaves like the default is `false`
+     */
+    keepId?: boolean;
+
+    /**
+     * Retain the `_id` values of embedded document data instead of generating new ids for each embedded document
+     * @remarks Behaves like the default is `false`
+     */
+    keepEmbeddedIds?: boolean;
+
+    /**
+     * @deprecated "It is no longer supported to create temporary documents using the {@linkcode Document.createDocuments}
+     * API. Use the `new Document()` constructor instead." (since v12, until v14)
+     * @remarks Behaves like the default is `false`
+     */
+    temporary?: Temporary;
+  }
+
+  /**
+   * The root, abstract `UpdateOperation` interface.
+   *
+   * @remarks This interface is typed such that it's accurate for the point where the most properties are guaranteed by core to exist
+   * (after `DatabaseBackend##configureUpdate` and `##configureOperation`, before (and thus valid to pass to)
+   * {@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments})
+   *
+   * ---
+   * ### **On Declaration Merging**
+   *
+   * Despite there being an abundance of interfaces descended from this one, if one wants to add a property to any of them, while you might
+   * at first try only merging into the one specific interface in question, given the way the operation object is passed around, and how
+   * keys added by hooks or document lifecycle methods propagate (see below), it only ever makes sense to merge into either this interface
+   * (affecting **all** Documents), or into the base `UpdateOperation` type for a specific document (e.g
+   * {@linkcode Actor.Database.UpdateOperation}).
+   *
+   * The stages of life of the operation object:
+   * 1. An {@linkcode Document.Database.UpdateOneDocumentOperation | UpdateOneDocumentOperation} is passed to
+   * {@linkcode Document.update | Document#update}, or an
+   * {@linkcode Document.Database.UpdateManyDocumentsOperation | UpdateManyDocumentsOperation} is passed to
+   * {@linkcode Document.updateDocuments} (this is the usual entry point).
+   * 2. It then becomes a {@linkcode Document.Database.BackendUpdateOperation | BackendUpdateOperation} and is passed to
+   * {@linkcode DatabaseBackend.update | DatabaseBackend#update}.
+   * 3. It's sent through `DatabaseBackend##configureUpdate` and `##configureOperation` to become this interface, and then is passed to
+   * {@linkcode ClientDatabaseBackend._updateDocuments | ClientDatabaseBackend#_updateDocuments}.
+   * 4. `ClientDatabaseBackend##preUpdateDocumentArray` pulls out some keys to update a
+   * {@linkcode Document.Database.PreUpdateOptions | PreUpdateOptions} that gets passed to
+   * {@linkcode Document._preUpdate | Document#_preUpdate} and {@link Hooks.PreUpdateDocument | the `preUpdate[Document]` hook} for each
+   * element of `data`, possibly acquiring new keys from either. It's also sent to
+   * {@linkcode ClientDocumentMixin.AnyMixed._preUpdateDescendantDocuments | ClientDocument._preUpdateDescendantDocuments}, if applicable.
+   * 5. `##preUpdateDocumentArray` then merges the previous step's `options` back into the `operation`, including any new keys, to produce
+   * a {@linkcode Document.Database.PreUpdateOperation | PreUpdateOperation}, which is passed to {@linkcode Document._preUpdateOperation}.
+   * 6. The operation gets sent to the server, at which point any keys with the value `undefined` are lost. The response from the server is
+   * then fed into `ClientDatabaseBackend##handleUpdateDocuments`, which, like `##pCDA` before, pulls out some keys to create an
+   * {@linkcode Document.Database.OnUpdateOptions | OnUpdateOptions} which is passed to {@linkcode Document._onUpdate | Document#_onUpdate}
+   * and {@link Hooks.UpdateDocument | the `update[Document]` hook}, as well as
+   * {@linkcode ClientDocumentMixin.AnyMixed._onUpdateDescendantDocuments | ClientDocument._onUpdateDescendantDocuments}, if applicable.
+   * 7. Also as before, `##handleUpdateDocuments` then merges any altered/added keys back into the operation, producing a
+   * {@linkcode Document.Database.OnUpdateOperation} which is passed to {@linkcode Document._onUpdateOperation}, and the relevant
+   * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents} or
+   * {@linkcode EmbeddedCollection._onModifyContents | EmbeddedCollection#_onModifyContents} method.
+   *
+   * ---
+   *
+   * @privateRemarks Optional parameters are not `| undefined` because keys with `undefined` values do not survive passage over the socket.
+   * The interfaces users will most commonly be passing
+   * ({@linkcode Document.Database.UpdateManyDocumentsOperation | UpdateDocumentsOperation},
+   * {@linkcode Document.Database.BackendUpdateOperation | BackendUpdateOperation}) are `InexactPartial`ed in their entirety to allow
+   * passing `undefined` regardless for DX reasons, and because some keys are only set via `??=`.
+   *
+   * Any properties that are included in the Foundry typedef, but which can never be seen by client code (e.g `_result`, `_updateData`)
+   * are not included in this interface.
+   */
+  interface UpdateOperation<
+    UpdateData extends object = object,
+    Parent extends Document.Any | null = Document.Any | null,
+  > extends _CommonOperationKeys<Parent> {
+    /**
+     * The action of this database operation
+     * @remarks Added to the operation object in `DatabaseBackend##configureUpdate`
+     */
+    action: "update";
+
+    /**
+     * An array of data objects used to update existing Documents.
+     * Each update object must contain the _id of the target Document
+     *
+     * @remarks For the passable interfaces ({@linkcode Document.Database.UpdateManyDocumentsOperation | UpdateDocumentsOperation},
+     * {@linkcode Document.Database.BackendUpdateOperation | BackendUpdateOperation}), and this base type, this can be a mixed array of
+     * either `UpdateData` objects or Document instances. It's restricted to only the `UpdateData` in all interfaces downstream of this one.
+     */
+    updates: UpdateData[];
+
+    /**
+     * Difference each update object against current Document data and only use differential data for the update operation
+     * @defaultValue `true`
+     * @remarks This property is guaranteed present by `DatabaseBackend##configureUpdate`. It is not omitted from passable types as it's
+     * set via `??=`, so passed values are respected.
+     */
+    diff: boolean;
+
+    /**
+     * Merge objects recursively. If false, inner objects will be replaced explicitly. Use with caution!
+     * @defaultValue `true`
+     * @remarks This property is guaranteed present by `DatabaseBackend##configureUpdate`. It is not omitted from passable types as it's
+     * set via `??=`, so passed values are respected.
+     */
+    recursive: boolean;
+
+    /**
+     * @remarks {@linkcode ClientDocumentMixin.AnyMixed._onUpdate | ClientDocument#_onUpdate} checks for this being truthy, and if so skips
+     * calling {@linkcode ClientDocumentMixing.AnyMixed._onSheetChange | ClientDocument#_onSheetChange}. No core code passes this property
+     * as of 13.351.
+     */
+    preview?: boolean;
+  }
+
+  /**
+   * The root, abstract `DeleteOperation` interface.
+   *
+   * @remarks This interface is typed such that it's accurate for the point where the most properties are guaranteed by core to exist
+   * (after `DatabaseBackend##configureDelete` and `##configureOperation`, before (and thus valid to pass to)
+   * {@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments})
+   *
+   * ---
+   * ### **On Declaration Merging**
+   *
+   * Despite there being an abundance of interfaces descended from this one, if one wants to add a property to any of them, while you might
+   * at first try only merging into the one specific interface in question, given the way the operation object is passed around, and how
+   * keys added by hooks or document lifecycle methods propagate (see below), it only ever makes sense to merge into either this interface
+   * (affecting **all** Documents), or into the base `DeleteOperation` type for a specific document (e.g
+   * {@linkcode Actor.Database.DeleteOperation}).
+   *
+   * The stages of life of the operation object:
+   * 1. An {@linkcode Document.Database.DeleteOneDocumentOperation | DeleteOneDocumentOperation} is passed to
+   * {@linkcode Document.delete | Document#delete}, or an
+   * {@linkcode Document.Database.DeleteManyDocumentsOperation | DeleteManyDocumentsOperation} is passed to
+   * {@linkcode Document.deleteDocuments} (this is the usual entry point).
+   * 2. It then becomes a {@linkcode Document.Database.BackendDeleteOperation | BackendDeleteOperation} and is passed to
+   * {@linkcode DatabaseBackend.delete | DatabaseBackend#delete}.
+   * 3. It's sent through `DatabaseBackend##configureDelete` and `##configureOperation` to become this interface, and then is passed to
+   * {@linkcode ClientDatabaseBackend._deleteDocuments | ClientDatabaseBackend#_deleteDocuments}.
+   * 4. `ClientDatabaseBackend##preDeleteDocumentArray` pulls out some keys to delete a
+   * {@linkcode Document.Database.PreDeleteOptions | PreDeleteOptions} that gets passed to
+   * {@linkcode Document._preDelete | Document#_preDelete} and {@link Hooks.PreDeleteDocument | the `preDelete[Document]` hook} for each
+   * element of `data`, possibly acquiring new keys from either. It's also sent to
+   * {@linkcode ClientDocumentMixin.AnyMixed._preDeleteDescendantDocuments | ClientDocument._preDeleteDescendantDocuments}, if applicable.
+   * 5. `##preDeleteDocumentArray` then merges the previous step's `options` back into the `operation`, including any new keys, to produce
+   * a {@linkcode Document.Database.PreDeleteOperation | PreDeleteOperation}, which is passed to {@linkcode Document._preDeleteOperation}.
+   * 6. The operation gets sent to the server, at which point any keys with the value `undefined` are lost. The response from the server is
+   * then fed into `ClientDatabaseBackend##handleDeleteDocuments`, which, like `##pCDA` before, pulls out some keys to create an
+   * {@linkcode Document.Database.OnDeleteOptions | OnDeleteOptions} which is passed to {@linkcode Document._onDelete | Document#_onDelete}
+   * and {@link Hooks.DeleteDocument | the `delete[Document]` hook}, as well as
+   * {@linkcode ClientDocumentMixin.AnyMixed._onDeleteDescendantDocuments | ClientDocument._onDeleteDescendantDocuments}, if applicable.
+   * 7. Also as before, `##handleDeleteDocuments` then merges any altered/added keys back into the operation, producing a
+   * {@linkcode Document.Database.OnDeleteOperation} which is passed to {@linkcode Document._onDeleteOperation}, and the relevant
+   * {@linkcode DocumentCollection._onModifyContents | DocumentCollection#_onModifyContents} or
+   * {@linkcode EmbeddedCollection._onModifyContents | EmbeddedCollection#_onModifyContents} method.
+   *
+   * ---
+   *
+   * @privateRemarks Optional parameters are not `| undefined` because keys with `undefined` values do not survive passage over the socket.
+   * The interfaces users will most commonly be passing
+   * ({@linkcode Document.Database.DeleteManyDocumentsOperation | DeleteDocumentsOperation},
+   * {@linkcode Document.Database.BackendDeleteOperation | BackendDeleteOperation}) are `InexactPartial`ed in their entirety to allow
+   * passing `undefined` regardless for DX reasons, and because some keys are only set via `??=`.
+   *
+   * Any properties that are included in Foundry's typedef, but which can never be seen by client code (e.g `_result`) are not included in
+   * this interface.
+   */
+  interface DeleteOperation<
+    Parent extends Document.Any | null = Document.Any | null,
+  > extends _CommonOperationKeys<Parent> {
+    /**
+     * The action of this database operation
+     * @remarks Added to the operation object in `DatabaseBackend##configureDelete`
+     */
+    action: "delete";
+
+    /**
+     * An array of Document ids which should be deleted.
+     */
+    ids: string[];
+
+    /**
+     * Delete all documents in the Collection, regardless of `_id`
+     * @defaultValue `false`
+     * @remarks This property is guaranteed to exist by `DatabaseBackend##configureDelete`. It is not omitted from passable types as it's
+     * set via `??=`
+     */
+    deleteAll: boolean;
+
+    /**
+     * The mapping of IDs of deleted Documents to the UUIDs of the Documents that replace the deleted Documents
+     *
+     * @remarks This is only set by calls in {@linkcode foundry.canvas.layers.PlaceablesLayer.pasteObjects | PlaceablesLayer#pasteObjects}
+     * and {@linkcode RegionDocument.teleportToken | RegionDocument#teleportToken}, and only consumed by {@linkcode Combat._onDeleteTokens}
+     * as of 13.350.
+     */
+    replacements?: Record<string, string>;
+  }
+
+  /** @internal */
+  interface _IsUndo {
+    /**
+     * @remarks Designates this operation as reversing a previous one. Only relevant for Canvas Documents.
+     *
+     * Passed `true` by core in {@linkcode PlaceablesLayer._onUndoCreate | PlaceablesLayer#_onUndoCreate}, `#_onUndoUpdate`, and
+     * `#_onUndoDelete`, and {@linkcode TokenDocument.revertRecordedMovement | TokenDocument#revertRecordedMovement}; Checked in
+     * {@linkcode Scene._preCreateDescendantDocuments | Scene#_preCreateDescendantDocuments}, `#_preUpdateDescendantDocuments`, and
+     * `#_preDeleteDescendantDocuments`, and `TokenDocument##preUpdateMovement`.
+     */
+    isUndo?: boolean;
+  }
+
+  /** @internal */
+  interface _IsPaste {
+    /**
+     * @remarks Designates this operation as the result of a paste action. Only relevant for Canvas Documents.
+     *
+     * Passed `true` by core in {@linkcode PlaceablesLayer.pasteObjects | PlaceablesLayer#placeObjects}, but
+     * `TokenDocument##preUpdateMovement` is the only meaningful consumer as of 13.351.
+     */
+    isPaste?: boolean;
+  }
+
+  /** @internal */
+  interface _CommonCanvasDocumentCreateProperties extends _IsUndo {}
+
+  interface _CommonCanvasDocumentUpdateProperties extends _IsUndo, _IsPaste {}
 }
 
 export default DatabaseBackend;
+
+declare abstract class AnyDatabaseBackend extends DatabaseBackend {
+  constructor(...args: never);
+}

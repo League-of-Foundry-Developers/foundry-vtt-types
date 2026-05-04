@@ -1,7 +1,6 @@
-import type { AnyMutableObject, Identity, MaybeArray } from "#utils";
+import type { AnyMutableObject, Identity, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
-import type EmbeddedCollection from "../abstract/embedded-collection.d.mts";
 
 /**
  * The ActorDelta Document.
@@ -60,9 +59,9 @@ declare abstract class BaseActorDelta<
    * @param collectionName - The collection name.
    * @remarks Passes `collectionName` to the token's `baseActor`'s {@linkcode Actor.getEmbeddedCollection | #getEmbeddedCollection}
    */
-  getBaseCollection<DocType extends Actor.Embedded.Name>(
-    collectionName: DocType,
-  ): EmbeddedCollection<Document.ImplementationFor<DocType>, Actor.Implementation> | undefined;
+  getBaseCollection<CollectionName extends Actor.Embedded.CollectionName>(
+    collectionName: CollectionName,
+  ): Actor.Embedded.CollectionFor<CollectionName> | undefined;
 
   /**
    * Apply an ActorDelta to an Actor and return the resultant synthetic Actor.
@@ -162,17 +161,17 @@ declare abstract class BaseActorDelta<
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActorDelta.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseActorDelta.Database.Create<Temporary>>,
+    operation?: BaseActorDelta.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseActorDelta.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseActorDelta.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseActorDelta.Database.Update>,
+    operation?: BaseActorDelta.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<ActorDelta.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseActorDelta.Database.Delete>,
+    operation?: BaseActorDelta.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<ActorDelta.Stored>>;
 
   static override create<
@@ -180,51 +179,52 @@ declare abstract class BaseActorDelta<
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseActorDelta.Database.CreateOperation<Temporary>,
+    operation?: BaseActorDelta.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseActorDelta.CreateReturn<Data, Temporary>>;
+
   override update(
     data: BaseActorDelta.UpdateInput,
-    operation?: BaseActorDelta.Database.UpdateOperation,
+    operation?: BaseActorDelta.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseActorDelta.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseActorDelta.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   // `ActorDelta`s are neither world documents nor compendium documents, so this always returns `null`.
-  static override get(
-    documentId: string,
-    options?: BaseActorDelta.Database.GetOptions,
-  ): ActorDelta.Implementation | null;
+  static override get(documentId: string, operation?: BaseActorDelta.Database.GetDocumentsOperation): null;
 
-  static override getCollectionName<CollectionName extends BaseActorDelta.Embedded.Name>(
-    name: CollectionName,
-  ): BaseActorDelta.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseActorDelta.Embedded.CollectionName>,
+  ): BaseActorDelta.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends BaseActorDelta.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
   ): BaseActorDelta.Embedded.CollectionFor<EmbeddedName>;
 
-  override getEmbeddedDocument<EmbeddedName extends BaseActorDelta.Embedded.CollectionName>(
+  override getEmbeddedDocument<
+    EmbeddedName extends BaseActorDelta.Embedded.CollectionName,
+    Options extends Document.GetEmbeddedDocumentOptions | undefined = undefined,
+  >(
     embeddedName: EmbeddedName,
     id: string,
-    options: Document.GetEmbeddedDocumentOptions,
-  ): BaseActorDelta.Embedded.DocumentFor<EmbeddedName> | undefined;
+    options?: Options,
+  ): BaseActorDelta.Embedded.GetReturn<EmbeddedName, Options>;
 
   override createEmbeddedDocuments<EmbeddedName extends BaseActorDelta.Embedded.Name>(
     embeddedName: EmbeddedName,
-    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+    data: Document.CreateDataForName<EmbeddedName>[],
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseActorDelta.Embedded.Name>(
     embeddedName: EmbeddedName,
-    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+    updates: Document.UpdateDataForName<EmbeddedName>[],
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseActorDelta.Embedded.Name>(
     embeddedName: EmbeddedName,
-    ids: Array<string>,
-    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+    ids: string[],
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseActorDelta.Flags.Scope, Key extends BaseActorDelta.Flags.Key<Scope>>(
@@ -251,19 +251,19 @@ declare abstract class BaseActorDelta<
 
   protected override _onCreate(
     data: BaseActorDelta.CreateData,
-    options: BaseActorDelta.Database.OnCreateOperation,
+    options: BaseActorDelta.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: ActorDelta.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseActorDelta.Database.Create>,
+    operation: BaseActorDelta.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: ActorDelta.Stored[],
-    operation: BaseActorDelta.Database.Create,
+    operation: BaseActorDelta.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -275,19 +275,19 @@ declare abstract class BaseActorDelta<
 
   protected override _onUpdate(
     changed: BaseActorDelta.UpdateData,
-    options: BaseActorDelta.Database.OnUpdateOperation,
+    options: BaseActorDelta.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: ActorDelta.Stored[],
-    operation: BaseActorDelta.Database.Update,
+    operation: BaseActorDelta.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: ActorDelta.Stored[],
-    operation: BaseActorDelta.Database.Update,
+    operation: BaseActorDelta.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -296,17 +296,17 @@ declare abstract class BaseActorDelta<
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseActorDelta.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseActorDelta.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: ActorDelta.Stored[],
-    operation: BaseActorDelta.Database.Delete,
+    operation: BaseActorDelta.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: ActorDelta.Stored[],
-    operation: BaseActorDelta.Database.Delete,
+    operation: BaseActorDelta.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -316,7 +316,8 @@ declare abstract class BaseActorDelta<
    */
   protected static override _onCreateDocuments(
     documents: ActorDelta.Implementation[],
-    context: BaseActorDelta.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseActorDelta.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -325,7 +326,8 @@ declare abstract class BaseActorDelta<
    */
   protected static override _onUpdateDocuments(
     documents: ActorDelta.Stored[],
-    context: BaseActorDelta.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseActorDelta.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -334,7 +336,8 @@ declare abstract class BaseActorDelta<
    */
   protected static override _onDeleteDocuments(
     documents: ActorDelta.Stored[],
-    context: BaseActorDelta.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseActorDelta.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

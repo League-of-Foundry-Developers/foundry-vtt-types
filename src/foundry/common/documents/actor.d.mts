@@ -1,4 +1,4 @@
-import type { AnyMutableObject, MaybeArray } from "#utils";
+import type { AnyMutableObject, MaybeArray, OverlapsWith } from "#utils";
 import type { DataModel, Document } from "#common/abstract/_module.d.mts";
 import type { SchemaField } from "#common/data/fields.d.mts";
 import type { CompendiumCollection } from "#client/documents/collections/_module.d.mts";
@@ -150,17 +150,17 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseActor.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseActor.Database.Create<Temporary>>,
+    operation?: BaseActor.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseActor.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseActor.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseActor.Database.Update>,
+    operation?: BaseActor.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<Actor.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseActor.Database.Delete>,
+    operation?: BaseActor.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<Actor.Stored>>;
 
   static override create<
@@ -168,51 +168,50 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseActor.Database.CreateOperation<Temporary>,
+    operation?: BaseActor.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseActor.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseActor.UpdateInput,
-    operation?: BaseActor.Database.UpdateOperation,
+    operation?: BaseActor.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseActor.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseActor.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
   static override get(
     documentId: string,
-    operation?: BaseActor.Database.GetOptions,
+    operation?: BaseActor.Database.GetDocumentsOperation,
   ): Actor.Stored | CompendiumCollection.IndexEntry<"Actor"> | null;
 
-  static override getCollectionName<CollectionName extends BaseActor.Embedded.Name>(
-    name: CollectionName,
-  ): BaseActor.Embedded.CollectionNameOf<CollectionName> | null;
+  static override getCollectionName<Name extends string>(
+    name: OverlapsWith<Name, BaseActor.Embedded.CollectionName>,
+  ): BaseActor.Embedded.GetCollectionNameReturn<Name>;
 
   override getEmbeddedCollection<EmbeddedName extends BaseActor.Embedded.CollectionName>(
     embeddedName: EmbeddedName,
   ): BaseActor.Embedded.CollectionFor<EmbeddedName>;
 
-  override getEmbeddedDocument<EmbeddedName extends BaseActor.Embedded.CollectionName>(
-    embeddedName: EmbeddedName,
-    id: string,
-    options: Document.GetEmbeddedDocumentOptions,
-  ): BaseActor.Embedded.DocumentFor<EmbeddedName> | undefined;
+  override getEmbeddedDocument<
+    EmbeddedName extends BaseActor.Embedded.CollectionName,
+    Options extends Document.GetEmbeddedDocumentOptions | undefined = undefined,
+  >(embeddedName: EmbeddedName, id: string, options?: Options): BaseActor.Embedded.GetReturn<EmbeddedName, Options>;
 
   override createEmbeddedDocuments<EmbeddedName extends BaseActor.Embedded.Name>(
     embeddedName: EmbeddedName,
-    data: Document.CreateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.CreateOperationForName<EmbeddedName>,
+    data: Document.CreateDataForName<EmbeddedName>[],
+    operation?: Document.Database.CreateDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override updateEmbeddedDocuments<EmbeddedName extends BaseActor.Embedded.Name>(
     embeddedName: EmbeddedName,
-    updates: Document.UpdateDataForName<EmbeddedName>[] | undefined,
-    operation?: Document.Database.UpdateOperationForName<EmbeddedName>,
+    updates: Document.UpdateDataForName<EmbeddedName>[],
+    operation?: Document.Database.UpdateManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override deleteEmbeddedDocuments<EmbeddedName extends BaseActor.Embedded.Name>(
     embeddedName: EmbeddedName,
-    ids: Array<string>,
-    operation?: Document.Database.DeleteOperationForName<EmbeddedName>,
+    ids: string[],
+    operation?: Document.Database.DeleteManyDocumentsOperationForName<EmbeddedName>,
   ): Promise<Array<Document.StoredForName<EmbeddedName>>>;
 
   override getFlag<Scope extends BaseActor.Flags.Scope, Key extends BaseActor.Flags.Key<Scope>>(
@@ -233,37 +232,37 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
 
   protected override _onCreate(
     data: BaseActor.CreateData,
-    options: BaseActor.Database.OnCreateOperation,
+    options: BaseActor.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: Actor.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseActor.Database.Create>,
+    operation: BaseActor.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: Actor.Stored[],
-    operation: BaseActor.Database.Create,
+    operation: BaseActor.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
   protected override _onUpdate(
     changed: BaseActor.UpdateData,
-    options: BaseActor.Database.OnUpdateOperation,
+    options: BaseActor.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: Actor.Stored[],
-    operation: BaseActor.Database.Update,
+    operation: BaseActor.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: Actor.Stored[],
-    operation: BaseActor.Database.Update,
+    operation: BaseActor.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -272,17 +271,17 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseActor.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseActor.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: Actor.Stored[],
-    operation: BaseActor.Database.Delete,
+    operation: BaseActor.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: Actor.Stored[],
-    operation: BaseActor.Database.Delete,
+    operation: BaseActor.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -292,7 +291,8 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
    */
   protected static override _onCreateDocuments(
     documents: Actor.Implementation[],
-    context: BaseActor.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseActor.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -301,7 +301,8 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
    */
   protected static override _onUpdateDocuments(
     documents: Actor.Stored[],
-    context: BaseActor.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseActor.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -310,7 +311,8 @@ declare abstract class BaseActor<out SubType extends BaseActor.SubType = BaseAct
    */
   protected static override _onDeleteDocuments(
     documents: Actor.Stored[],
-    context: BaseActor.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseActor.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

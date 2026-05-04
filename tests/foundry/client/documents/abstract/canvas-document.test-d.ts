@@ -17,9 +17,9 @@ expectTypeOf(doc.compendium).toEqualTypeOf<foundry.documents.collections.Compend
 
 // Test the inheritance of static members
 expectTypeOf(AmbientLightDocument.documentName).toEqualTypeOf<"AmbientLight">(); // Document
-expectTypeOf(
-  AmbientLightDocument.createDialog({}, { parent: new Scene.implementation({ name: "Scene" }) }),
-).toEqualTypeOf<Promise<AmbientLightDocument.Stored | null | undefined>>(); // ClientDocumentMixin
+expectTypeOf(AmbientLightDocument.createDialog({}, { parent: null })).toEqualTypeOf<
+  Promise<AmbientLightDocument.Stored | null | undefined>
+>(); // ClientDocumentMixin
 
 // Test the props
 expectTypeOf(doc.object).toEqualTypeOf<AmbientLight.Implementation | null>();

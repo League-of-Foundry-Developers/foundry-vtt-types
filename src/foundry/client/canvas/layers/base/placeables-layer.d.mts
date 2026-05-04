@@ -1,13 +1,4 @@
-import type {
-  AnyObject,
-  Brand,
-  FixedInstanceType,
-  Identity,
-  InexactPartial,
-  IntentionalPartial,
-  MaybePromise,
-  ToMethod,
-} from "#utils";
+import type { AnyObject, Brand, FixedInstanceType, Identity, InexactPartial, MaybePromise, ToMethod } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
@@ -399,7 +390,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
   updateAll(
     transformation: PlaceablesLayer.UpdateAllTransformation<DocumentName>,
     condition?: PlaceablesLayer.UpdateAllCondition<DocumentName> | null,
-    options?: PlaceablesLayer.UpdateAllOptions<DocumentName>,
+    options?: Document.Database.UpdateManyDocumentsOperationForName<DocumentName>,
   ): Promise<Array<Document.ImplementationFor<DocumentName>>>;
 
   /**
@@ -663,10 +654,11 @@ declare namespace PlaceablesLayer {
     updates: Document.UpdateDataForName<DocumentName>[],
 
     /**
-     * @remarks Update operation options for the given placeable. As of 13.346, core only provides this in
-     * {@linkcode foundry.canvas.placeables.Token._prepareKeyboardMovementUpdates | Token#_prepareKeyboardMovementUpdates}
+     * @remarks Update operation options for the given placeable. As of 13.351, core only provides this in
+     * {@linkcode foundry.canvas.layers.TokenLayer._prepareKeyboardMovementUpdates | Tokens#_prepareKeyboardMovementUpdates},
+     * and only provides the {@linkcode TokenDocument.Database.UpdateEmbeddedOperation.movement | movement} property
      */
-    options?: InexactPartial<Document.Database.UpdateOptionsFor<DocumentName>>,
+    options?: Document.Database.UpdateEmbeddedOperationForName<DocumentName>,
   ];
 
   interface GetCopyableObjectsOptions {
@@ -711,7 +703,7 @@ declare namespace PlaceablesLayer {
      * @remarks As of 13.1347 this will always be an empty object, except in the case of a token update involving movement.
      *
      */
-    options: IntentionalPartial<Document.Database.UpdateOptionsFor<DocumentName>>;
+    options: Document.Database.UpdateEmbeddedOperationForName<DocumentName>;
   }
 
   interface DeletionHistoryEntry<DocumentName extends Document.PlaceableType> {
@@ -818,8 +810,9 @@ declare namespace PlaceablesLayer {
     placeable: Document.ObjectFor<DocumentName>,
   ) => boolean;
 
+  /** @deprecated Use {@linkcode Document.Database.UpdateManyDocumentsOperationForName} directly. This type will be removed in v14. */
   type UpdateAllOptions<DocumentName extends Document.PlaceableType> =
-    Document.Database.UpdateOperationForName<DocumentName>;
+    Document.Database.UpdateManyDocumentsOperationForName<DocumentName>;
 
   /** @internal */
   type _CanvasCoordinatesFromDropOptions = InexactPartial<{

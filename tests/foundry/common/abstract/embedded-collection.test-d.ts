@@ -23,6 +23,45 @@ describe("EmbeddedCollection Tests", async () => {
   const itemSource = itemStored.toObject();
   const sceneSource = new Scene.implementation({ name: "EmbeddedCollection Test Scene" }).toObject();
 
+  const user = game.users!.contents[0]!;
+
+  const itemCreateData = { name: "Test Item", type: "base" } satisfies Item.CreateData;
+  const itemUpdateData = { folder: null, name: "Test Item 2" } satisfies Item.UpdateData;
+
+  const onItemCreateOperation = {
+    action: "create",
+    data: [itemCreateData],
+    modifiedTime: 7,
+    parent: null,
+    renderSheet: true,
+  } satisfies Item.Database.OnCreateOperation;
+
+  const onItemUpdateOperation = {
+    action: "update",
+    diff: true,
+    modifiedTime: 7,
+    parent: null,
+    recursive: true,
+    updates: [itemUpdateData],
+  } satisfies Item.Database.OnUpdateOperation;
+
+  const onItemDeleteOperation = {
+    action: "delete",
+    deleteAll: false,
+    ids: ["XXXXXITEMIDXXXXX"],
+    modifiedTime: 7,
+    parent: null,
+  } satisfies Item.Database.OnDeleteOperation;
+
+  const onSceneUpdateOperation = {
+    action: "update",
+    diff: true,
+    modifiedTime: 7,
+    parent: null,
+    recursive: true,
+    updates: [{ folder: null }],
+  } satisfies Scene.Database.OnUpdateOperation;
+
   const falseOrUndefined: false | undefined = Math.random() > 0.5 ? false : undefined;
   const trueOrUndefined: true | undefined = Math.random() > 0.5 ? true : undefined;
   const boolOrUndefined: boolean | undefined = Math.random() > 0.66 ? true : Math.random() > 0.5 ? false : undefined;
@@ -172,6 +211,19 @@ describe("EmbeddedCollection Tests", async () => {
 
     // same options interface as `#delete` above
     expectTypeOf(ec["_delete"]("ID")).toBeVoid();
+  });
+
+  test("_onModifyContents", () => {
+    // @ts-expect-error wrong document's operation type
+    ec._onModifyContents("update", [itemStored], [itemUpdateData], onSceneUpdateOperation);
+
+    expectTypeOf(
+      ec._onModifyContents("create", [itemStored], [itemCreateData], onItemCreateOperation, user),
+    ).toBeVoid();
+    expectTypeOf(
+      ec._onModifyContents("update", [itemStored], [itemUpdateData], onItemUpdateOperation, user),
+    ).toBeVoid();
+    expectTypeOf(ec._onModifyContents("delete", [itemStored], ["ID"], onItemDeleteOperation, user)).toBeVoid();
   });
 
   afterAll(async () => {

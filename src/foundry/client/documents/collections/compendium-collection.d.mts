@@ -8,7 +8,6 @@ import type {
   IntentionalPartial,
   PrettifyType,
   SimpleMerge,
-  UnionToIntersection,
 } from "#utils";
 import type { fields } from "#client/data/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
@@ -17,7 +16,11 @@ import type { Application } from "#client/appv1/api/_module.d.mts";
 import type { Game } from "#client/_module.d.mts";
 import type { SocketInterface } from "#client/helpers/_module.d.mts";
 import type { BasePackage } from "#common/packages/_module.d.mts";
-import type { DocumentCollection, DirectoryCollectionMixin } from "#client/documents/abstract/_module.d.mts";
+import type {
+  DocumentCollection,
+  DirectoryCollectionMixin,
+  WorldCollection,
+} from "#client/documents/abstract/_module.d.mts";
 import type { CompendiumFolderCollection } from "#client/documents/collections/_module.d.mts";
 
 /** @privateRemarks `AllHooks` only used for links */
@@ -328,20 +331,28 @@ declare class CompendiumCollection<
    */
   migrate(options?: CompendiumCollection.MigrateOptions): Promise<this>;
 
-  // TODO: `updateAll` and `_onModifyContents` are working on the db-ops branch
+  override updateAll(
+    transformation: DocumentCollection.Transformation<DocumentName>,
+    condition?: ((doc: Document.StoredForName<DocumentName>) => boolean) | null,
+    options?: DocumentCollection.UpdateAllOperation<DocumentName>,
+  ): Promise<Document.StoredForName<DocumentName>[]>;
 
   /** @privateRemarks Fake type override, see {@linkcode DocumentCollection.search | DocumentCollection#search} */
   override search(search: DocumentCollection.SearchOptions): CompendiumCollection.IndexEntry<DocumentName>[];
 
-  /**
-   * @remarks Calls {@linkcode DocumentCollection.render | super}, and, if the right `renderContext` is passed in `options`, calls
-   * {@linkcode ClientDocumentMixin.AnyMixed.render | ClientDocument#render} for all contained Documents.
-   */
   override render(force?: boolean, options?: DocumentCollection.RenderOptions): void;
+
+  override _onModifyContents<Action extends Document.Database.OperationAction>(
+    action: Action,
+    documents: Document.StoredForName<DocumentName>[],
+    result: Collection.OnModifyContentsResult<DocumentName, Action>,
+    operation: Collection.OnModifyContentsOperation<DocumentName, Action>,
+    user: User.Stored,
+  ): void;
 
   /**
    * Handle changes to the world compendium configuration setting.
-   * @remarks As the setting's {@linkcode foundry.helpers.ClientSettings.SettingConfig.onChange | onChange} function,
+   * @remarks As the setting's {@linkcode f oundry.helpers.ClientSettings.SettingConfig.onChange | onChange} function,
    * this gets passed the new value after it's been cleaned and validated by the field in `ClientSettings##cleanJSON`
    */
   protected static _onConfigure(config: CompendiumCollection.SettingData): void;
@@ -600,23 +611,33 @@ declare namespace CompendiumCollection {
 
   interface ImportFoldersOptions extends _ImportParents {}
 
-  // TODO: this is updated on the db-ops branch
-  type ImportAllOptions<Type extends CompendiumCollection.DocumentName> = SimpleMerge<
-    UnionToIntersection<Document.Database.CreateOperationForName<Type>>,
-    foundry.documents.abstract.WorldCollection.FromCompendiumOptions
-  > & {
+  /** @internal */
+  interface _ImportAllOptions {
     /**
      * An existing Folder _id to use.
      * @defaultValue `null`
      */
-    folderId?: string | null | undefined;
+    folderId: string | null;
 
     /**
      * A new Folder name to create.
      * @defaultValue `""`
      */
-    folderName?: string | undefined;
-  };
+    folderName: string;
+  }
+
+  /**
+   * The interface for passing to {@linkcode CompendiumCollection.importAll | CompendiumCollection#importAll}.
+   *
+   * @remarks The same options object is passed to {@linkcode WorldCollection.fromCompendium | WorldCompendium#fromCompendium} and
+   * {@linkcode Document.createDocuments | documentClass.createDocuments}, after having `folderId` and `folderName` pulled out.
+   *
+   * @privateRemarks Needs to be a type here, rather than interface, because `CreateDocumentsOperationForName`
+   * doesn't have statically known keys.
+   */
+  type ImportAllOptions<Type extends CompendiumCollection.DocumentName> = WorldCollection.FromCompendiumOptions &
+    Document.Database.CreateDocumentsOperationForName<Type> &
+    InexactPartial<_ImportAllOptions>;
 
   /** @internal */
   type _ImportDialogOptions = InexactPartial<{

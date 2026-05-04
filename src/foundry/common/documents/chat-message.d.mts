@@ -125,17 +125,17 @@ declare abstract class BaseChatMessage<
 
   static override createDocuments<Temporary extends boolean | undefined = undefined>(
     data: BaseChatMessage.CreateInput[],
-    operation?: Document.Database.CreateOperation<BaseChatMessage.Database.Create<Temporary>>,
+    operation?: BaseChatMessage.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<Array<BaseChatMessage.TemporaryIf<Temporary>>>;
 
   static override updateDocuments(
     updates: BaseChatMessage.UpdateInput[],
-    operation?: Document.Database.UpdateDocumentsOperation<BaseChatMessage.Database.Update>,
+    operation?: BaseChatMessage.Database.UpdateManyDocumentsOperation,
   ): Promise<Array<ChatMessage.Stored>>;
 
   static override deleteDocuments(
     ids: readonly string[],
-    operation?: Document.Database.DeleteDocumentsOperation<BaseChatMessage.Database.Delete>,
+    operation?: BaseChatMessage.Database.DeleteManyDocumentsOperation,
   ): Promise<Array<ChatMessage.Stored>>;
 
   static override create<
@@ -143,18 +143,21 @@ declare abstract class BaseChatMessage<
     Temporary extends boolean | undefined = undefined,
   >(
     data: Data,
-    operation?: BaseChatMessage.Database.CreateOperation<Temporary>,
+    operation?: BaseChatMessage.Database.CreateDocumentsOperation<Temporary>,
   ): Promise<BaseChatMessage.CreateReturn<Data, Temporary>>;
 
   override update(
     data: BaseChatMessage.UpdateInput,
-    operation?: BaseChatMessage.Database.UpdateOperation,
+    operation?: BaseChatMessage.Database.UpdateOneDocumentOperation,
   ): Promise<this | undefined>;
 
-  override delete(operation?: BaseChatMessage.Database.DeleteOperation): Promise<this | undefined>;
+  override delete(operation?: BaseChatMessage.Database.DeleteOneDocumentOperation): Promise<this | undefined>;
 
-  // `ChatMessage`s cannot exist in compendia, so this never returns an index entry.
-  static override get(documentId: string, operation?: BaseChatMessage.Database.GetOptions): ChatMessage.Stored | null;
+  // `ChatMessage`s cannot exist in packs, so this never returns an index entry
+  static override get(
+    documentId: string,
+    operation?: BaseChatMessage.Database.GetDocumentsOperation,
+  ): ChatMessage.Stored | null;
 
   // `ChatMessage`s have no embedded collections, so this always returns `null`.
   static override getCollectionName(name: string): null;
@@ -183,19 +186,19 @@ declare abstract class BaseChatMessage<
 
   protected override _onCreate(
     data: BaseChatMessage.CreateData,
-    options: BaseChatMessage.Database.OnCreateOperation,
+    options: BaseChatMessage.Database.OnCreateOptions,
     userId: string,
   ): void;
 
   protected static override _preCreateOperation(
     documents: ChatMessage.Implementation[],
-    operation: Document.Database.PreCreateOperationStatic<BaseChatMessage.Database.Create>,
+    operation: BaseChatMessage.Database.PreCreateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onCreateOperation(
     documents: ChatMessage.Stored[],
-    operation: BaseChatMessage.Database.Create,
+    operation: BaseChatMessage.Database.OnCreateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -207,19 +210,19 @@ declare abstract class BaseChatMessage<
 
   protected override _onUpdate(
     changed: BaseChatMessage.UpdateData,
-    options: BaseChatMessage.Database.OnUpdateOperation,
+    options: BaseChatMessage.Database.OnUpdateOptions,
     userId: string,
   ): void;
 
   protected static override _preUpdateOperation(
     documents: ChatMessage.Stored[],
-    operation: BaseChatMessage.Database.Update,
+    operation: BaseChatMessage.Database.PreUpdateOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onUpdateOperation(
     documents: ChatMessage.Stored[],
-    operation: BaseChatMessage.Database.Update,
+    operation: BaseChatMessage.Database.OnUpdateOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -228,17 +231,17 @@ declare abstract class BaseChatMessage<
     user: User.Stored,
   ): Promise<boolean | void>;
 
-  protected override _onDelete(options: BaseChatMessage.Database.OnDeleteOperation, userId: string): void;
+  protected override _onDelete(options: BaseChatMessage.Database.OnDeleteOptions, userId: string): void;
 
   protected static override _preDeleteOperation(
     documents: ChatMessage.Stored[],
-    operation: BaseChatMessage.Database.Delete,
+    operation: BaseChatMessage.Database.PreDeleteOperation,
     user: User.Stored,
   ): Promise<boolean | void>;
 
   protected static override _onDeleteOperation(
     documents: ChatMessage.Stored[],
-    operation: BaseChatMessage.Database.Delete,
+    operation: BaseChatMessage.Database.OnDeleteOperation,
     user: User.Stored,
   ): Promise<void>;
 
@@ -248,7 +251,8 @@ declare abstract class BaseChatMessage<
    */
   protected static override _onCreateDocuments(
     documents: ChatMessage.Implementation[],
-    context: BaseChatMessage.Database.OnCreateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseChatMessage.Database.OnCreateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -257,7 +261,8 @@ declare abstract class BaseChatMessage<
    */
   protected static override _onUpdateDocuments(
     documents: ChatMessage.Stored[],
-    context: BaseChatMessage.Database.OnUpdateDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseChatMessage.Database.OnUpdateDocumentsOperation,
   ): Promise<void>;
 
   /**
@@ -266,7 +271,8 @@ declare abstract class BaseChatMessage<
    */
   protected static override _onDeleteDocuments(
     documents: ChatMessage.Stored[],
-    context: BaseChatMessage.Database.OnDeleteDocumentsContext,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    context: BaseChatMessage.Database.OnDeleteDocumentsOperation,
   ): Promise<void>;
 
   /* DataModel overrides */

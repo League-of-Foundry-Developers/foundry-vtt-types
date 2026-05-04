@@ -1,16 +1,14 @@
 import type { InexactPartial, IntentionalPartial, MaybeArray, Merge } from "#utils";
 import type { fields, ShapeData } from "#common/data/_module.mjs";
-import type { Document } from "#common/abstract/_module.d.mts";
+import type { DatabaseBackend, Document } from "#common/abstract/_module.d.mts";
 import type { BaseDrawing, BaseUser } from "#client/documents/_module.d.mts";
 import type { DialogV2 } from "#client/applications/api/_module.d.mts";
 
-/** @privateRemarks `ClientDatabaseBackend` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDatabaseBackend } from "#client/data/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDatabaseBackend from "#client/data/client-backend.d.mts";
 
-/** @privateRemarks `ClientDocumentMixin` and `DocumentCollection` only used for links */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { ClientDocumentMixin } from "#client/documents/abstract/_module.d.mts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Only used for links.
+import type ClientDocumentMixin from "#client/documents/abstract/client-document.d.mts";
 
 declare namespace DrawingDocument {
   /**
@@ -372,115 +370,587 @@ declare namespace DrawingDocument {
   }
 
   namespace Database {
-    /** Options passed along in Get operations for DrawingDocuments */
-    interface Get extends foundry.abstract.types.DatabaseGetOperation<DrawingDocument.Parent> {}
-
-    /** Options passed along in Create operations for DrawingDocuments */
-    interface Create<Temporary extends boolean | undefined = boolean | undefined> extends foundry.abstract.types
-      .DatabaseCreateOperation<DrawingDocument.CreateData, DrawingDocument.Parent, Temporary> {}
-
-    /** Options passed along in Delete operations for DrawingDocuments */
-    interface Delete extends foundry.abstract.types.DatabaseDeleteOperation<DrawingDocument.Parent> {}
-
-    /** Options passed along in Update operations for DrawingDocuments */
-    interface Update extends foundry.abstract.types.DatabaseUpdateOperation<
-      DrawingDocument.UpdateData,
-      DrawingDocument.Parent
-    > {}
-
-    /** Operation for {@linkcode DrawingDocument.createDocuments} */
-    interface CreateDocumentsOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      DrawingDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode DrawingDocument.updateDocuments} */
-    interface UpdateDocumentsOperation extends Document.Database
-      .UpdateDocumentsOperation<DrawingDocument.Database.Update> {}
-
-    /** Operation for {@linkcode DrawingDocument.deleteDocuments} */
-    interface DeleteDocumentsOperation extends Document.Database
-      .DeleteDocumentsOperation<DrawingDocument.Database.Delete> {}
-
-    /** Operation for {@linkcode DrawingDocument.create} */
-    interface CreateOperation<Temporary extends boolean | undefined> extends Document.Database.CreateOperation<
-      DrawingDocument.Database.Create<Temporary>
-    > {}
-
-    /** Operation for {@linkcode DrawingDocument.update | DrawingDocument#update} */
-    interface UpdateOperation extends Document.Database.UpdateOperation<Update> {}
-
-    interface DeleteOperation extends Document.Database.DeleteOperation<Delete> {}
-
-    /** Options for {@linkcode DrawingDocument.get} */
-    interface GetOptions extends Document.Database.GetOptions {}
-
-    /** Options for {@linkcode DrawingDocument._preCreate | DrawingDocument#_preCreate} */
-    interface PreCreateOptions extends Document.Database.PreCreateOptions<Create> {}
-
-    /** Options for {@linkcode DrawingDocument._onCreate | DrawingDocument#_onCreate} */
-    interface OnCreateOptions extends Document.Database.CreateOptions<Create> {}
-
-    /** Operation for {@linkcode DrawingDocument._preCreateOperation} */
-    interface PreCreateOperation extends Document.Database.PreCreateOperationStatic<DrawingDocument.Database.Create> {}
-
-    /** Operation for {@linkcode DrawingDocument._onCreateOperation | DrawingDocument#_onCreateOperation} */
-    interface OnCreateOperation extends DrawingDocument.Database.Create {}
-
-    /** Options for {@linkcode DrawingDocument._preUpdate | DrawingDocument#_preUpdate} */
-    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<Update> {}
-
-    /** Options for {@linkcode DrawingDocument._onUpdate | DrawingDocument#_onUpdate} */
-    interface OnUpdateOptions extends Document.Database.UpdateOptions<Update> {}
-
-    /** Operation for {@linkcode DrawingDocument._preUpdateOperation} */
-    interface PreUpdateOperation extends DrawingDocument.Database.Update {}
-
-    /** Operation for {@linkcode DrawingDocument._onUpdateOperation | DrawingDocument._preUpdateOperation} */
-    interface OnUpdateOperation extends DrawingDocument.Database.Update {}
-
-    /** Options for {@linkcode DrawingDocument._preDelete | DrawingDocument#_preDelete} */
-    interface PreDeleteOptions extends Document.Database.PreDeleteOperationInstance<Delete> {}
-
-    /** Options for {@linkcode DrawingDocument._onDelete | DrawingDocument#_onDelete} */
-    interface OnDeleteOptions extends Document.Database.DeleteOptions<Delete> {}
-
-    /** Options for {@linkcode DrawingDocument._preDeleteOperation | DrawingDocument#_preDeleteOperation} */
-    interface PreDeleteOperation extends DrawingDocument.Database.Delete {}
-
-    /** Options for {@linkcode DrawingDocument._onDeleteOperation | DrawingDocument#_onDeleteOperation} */
-    interface OnDeleteOperation extends DrawingDocument.Database.Delete {}
-
-    /** Context for {@linkcode DrawingDocument._onDeleteOperation} */
-    interface OnDeleteDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
-
-    /** Context for {@linkcode DrawingDocument._onCreateDocuments} */
-    interface OnCreateDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
-
-    /** Context for {@linkcode DrawingDocument._onUpdateDocuments} */
-    interface OnUpdateDocumentsContext extends Document.ModificationContext<DrawingDocument.Parent> {}
+    /* ***********************************************
+     *                GET OPERATIONS                 *
+     *************************************************/
 
     /**
-     * Options for {@linkcode DrawingDocument._preCreateDescendantDocuments | DrawingDocument#_preCreateDescendantDocuments}
-     * and {@linkcode DrawingDocument._onCreateDescendantDocuments | DrawingDocument#_onCreateDescendantDocuments}
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.GetOperation | GetOperation} interface for
+     * `DrawingDocument` documents. Valid for passing to
+     * {@linkcode ClientDatabaseBackend._getDocuments | ClientDatabaseBackend#_getDocuments}.
+     *
+     * The {@linkcode GetDocumentsOperation} and {@linkcode BackendGetOperation} interfaces derive from this one.
      */
-    interface CreateOptions extends Document.Database.CreateOptions<DrawingDocument.Database.Create> {}
+    interface GetOperation extends DatabaseBackend.GetOperation<DrawingDocument.Parent> {}
 
     /**
-     * Options for {@linkcode DrawingDocument._preUpdateDescendantDocuments | DrawingDocument#_preUpdateDescendantDocuments}
-     * and {@linkcode DrawingDocument._onUpdateDescendantDocuments | DrawingDocument#_onUpdateDescendantDocuments}
+     * The interface for passing to {@linkcode DrawingDocument.get}.
+     * @see {@linkcode Document.Database.GetDocumentsOperation}
      */
-    interface UpdateOptions extends Document.Database.UpdateOptions<DrawingDocument.Database.Update> {}
+    interface GetDocumentsOperation extends Document.Database.GetDocumentsOperation<GetOperation> {}
 
     /**
-     * Options for {@linkcode DrawingDocument._preDeleteDescendantDocuments | DrawingDocument#_preDeleteDescendantDocuments}
-     * and {@linkcode DrawingDocument._onDeleteDescendantDocuments | DrawingDocument#_onDeleteDescendantDocuments}
+     * The interface for passing to {@linkcode DatabaseBackend.get | DatabaseBackend#get} for `DrawingDocument` documents.
+     * @see {@linkcode Document.Database.BackendGetOperation}
      */
-    interface DeleteOptions extends Document.Database.DeleteOptions<DrawingDocument.Database.Delete> {}
+    interface BackendGetOperation extends Document.Database.BackendGetOperation<GetOperation> {}
+
+    /* ***********************************************
+     *              CREATE OPERATIONS                *
+     *************************************************/
 
     /**
-     * Create options for {@linkcode DrawingDocument.createDialog}.
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.CreateOperation | DatabaseCreateOperation}
+     * interface for `DrawingDocument` documents.
+     *
+     * See {@linkcode DatabaseBackend.CreateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode DrawingDocument.create}. The new name for that
+     * interface is {@linkcode CreateDocumentsOperation}.
      */
-    interface DialogCreateOptions extends InexactPartial<Create> {}
+    interface CreateOperation<Temporary extends boolean | undefined = boolean | undefined>
+      extends
+        DatabaseBackend.CreateOperation<DrawingDocument.CreateInput, DrawingDocument.Parent, Temporary>,
+        DatabaseBackend._CommonCanvasDocumentCreateProperties {}
+
+    /**
+     * The interface for passing to {@linkcode DrawingDocument.create} or {@linkcode DrawingDocument.createDocuments}.
+     * @see {@linkcode Document.Database.CreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.CreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.createEmbeddedDocuments | #createEmbeddedDocuments} method of any Documents that
+     * can contain `DrawingDocument` documents. (see {@linkcode DrawingDocument.Parent})
+     * @see {@linkcode Document.Database.CreateEmbeddedOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface CreateEmbeddedOperation extends Document.Database.CreateEmbeddedOperation<CreateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.create | DatabaseBackend#create} for `DrawingDocument` documents.
+     * @see {@linkcode Document.Database.BackendCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.BackendCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode DrawingDocument._preCreate | DrawingDocument#_preCreate} and
+     * {@link Hooks.PreCreateDocument | the `preCreateDrawingDocument` hook}.
+     * @see {@linkcode Document.Database.PreCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOptions<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOptions<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode DrawingDocument._preCreateOperation}.
+     * @see {@linkcode Document.Database.PreCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreCreateOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document.Database
+      .PreCreateOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode DrawingDocument._onCreateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnCreateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateDocumentsOperation<Temporary extends boolean | undefined = boolean | undefined> extends Document
+      .Database.OnCreateDocumentsOperation<CreateOperation<Temporary>> {}
+
+    /**
+     * The interface passed to {@linkcode DrawingDocument._onCreate | DrawingDocument#_onCreate} and
+     * {@link Hooks.CreateDocument | the `createDrawingDocument` hook}.
+     * @see {@linkcode Document.Database.OnCreateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOptions extends Document.Database.OnCreateOptions<CreateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode DrawingDocument._onCreateOperation} and `DrawingDocument`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnCreateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode CreateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.CreateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnCreateOperation extends Document.Database.OnCreateOperation<CreateOperation> {}
+
+    /* ***********************************************
+     *              UPDATE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.UpdateOperation | DatabaseUpdateOperation}
+     * interface for `DrawingDocument` documents.
+     *
+     * See {@linkcode DatabaseBackend.UpdateOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode DrawingDocument.update | DrawingDocument#update}.
+     * The new name for that interface is {@linkcode UpdateOneDocumentOperation}.
+     */
+    interface UpdateOperation
+      extends
+        DatabaseBackend.UpdateOperation<DrawingDocument.UpdateInput, DrawingDocument.Parent>,
+        DatabaseBackend._CommonCanvasDocumentUpdateProperties {}
+
+    /**
+     * The interface for passing to {@linkcode DrawingDocument.update | DrawingDocument#update}.
+     * @see {@linkcode Document.Database.UpdateOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateOneDocumentOperation extends Document.Database.UpdateOneDocumentOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.updateEmbeddedDocuments | #updateEmbeddedDocuments} method of any Documents that
+     * can contain `DrawingDocument` documents (see {@linkcode DrawingDocument.Parent}). This interface is just an alias
+     * for {@linkcode UpdateOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateEmbeddedOperation extends UpdateOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode DrawingDocument.updateDocuments}.
+     * @see {@linkcode Document.Database.UpdateManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface UpdateManyDocumentsOperation extends Document.Database.UpdateManyDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.update | DatabaseBackend#update} for `DrawingDocument` documents.
+     * @see {@linkcode Document.Database.BackendUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendUpdateOperation extends Document.Database.BackendUpdateOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode DrawingDocument._preUpdate | DrawingDocument#_preUpdate} and
+     * {@link Hooks.PreUpdateDocument | the `preUpdateDrawingDocument` hook}.
+     * @see {@linkcode Document.Database.PreUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOptions extends Document.Database.PreUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode DrawingDocument._preUpdateOperation}.
+     * @see {@linkcode Document.Database.PreUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreUpdateOperation extends Document.Database.PreUpdateOperation<UpdateOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode DrawingDocument._onUpdateDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnUpdateDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateDocumentsOperation extends Document.Database.OnUpdateDocumentsOperation<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode DrawingDocument._onUpdate | DrawingDocument#_onUpdate} and
+     * {@link Hooks.UpdateDocument | the `updateDrawingDocument` hook}.
+     * @see {@linkcode Document.Database.OnUpdateOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOptions extends Document.Database.OnUpdateOptions<UpdateOperation> {}
+
+    /**
+     * The interface passed to {@linkcode DrawingDocument._onUpdateOperation} and `DrawingDocument`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnUpdateOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode UpdateOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.UpdateOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnUpdateOperation extends Document.Database.OnUpdateOperation<UpdateOperation> {}
+
+    /* ***********************************************
+     *              DELETE OPERATIONS                *
+     *************************************************/
+
+    /**
+     * A base (no property omission or optionality changes) {@linkcode DatabaseBackend.DeleteOperation | DatabaseDeleteOperation}
+     * interface for `DrawingDocument` documents.
+     *
+     * See {@linkcode DatabaseBackend.DeleteOperation} for more information on this family of interfaces.
+     *
+     * @remarks This interface was previously typed for passing to {@linkcode DrawingDocument.delete | DrawingDocument#delete}.
+     * The new name for that interface is {@linkcode DeleteOneDocumentOperation}.
+     */
+    interface DeleteOperation extends DatabaseBackend.DeleteOperation<DrawingDocument.Parent> {}
+
+    /**
+     * The interface for passing to {@linkcode DrawingDocument.delete | DrawingDocument#delete}.
+     * @see {@linkcode Document.Database.DeleteOneDocumentOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteOneDocumentOperation extends Document.Database.DeleteOneDocumentOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to the {@linkcode Document.deleteEmbeddedDocuments | #deleteEmbeddedDocuments} method of any Documents that
+     * can contain `DrawingDocument` documents (see {@linkcode DrawingDocument.Parent}). This interface is just an alias
+     * for {@linkcode DeleteOneDocumentOperation}, as the same keys are provided by the method in both cases.
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteEmbeddedOperation extends DeleteOneDocumentOperation {}
+
+    /**
+     * The interface for passing to {@linkcode DrawingDocument.deleteDocuments}.
+     * @see {@linkcode Document.Database.DeleteManyDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface DeleteManyDocumentsOperation extends Document.Database.DeleteManyDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface for passing to {@linkcode DatabaseBackend.delete | DatabaseBackend#delete} for `DrawingDocument` documents.
+     * @see {@linkcode Document.Database.BackendDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface BackendDeleteOperation extends Document.Database.BackendDeleteOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode DrawingDocument._preDelete | DrawingDocument#_preDelete} and
+     * {@link Hooks.PreDeleteDocument | the `preDeleteDrawingDocument` hook}.
+     * @see {@linkcode Document.Database.PreDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOptions extends Document.Database.PreDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode DrawingDocument._preDeleteOperation}.
+     * @see {@linkcode Document.Database.PreDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface PreDeleteOperation extends Document.Database.PreDeleteOperation<DeleteOperation> {}
+
+    /**
+     * @deprecated The interface passed to {@linkcode DrawingDocument._onDeleteDocuments}. It will be removed in v14 along with the
+     * method it is for.
+     * @see {@linkcode Document.Database.OnDeleteDocumentsOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteDocumentsOperation extends Document.Database.OnDeleteDocumentsOperation<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode DrawingDocument._onDelete | DrawingDocument#_onDelete} and
+     * {@link Hooks.DeleteDocument | the `deleteDrawingDocument` hook}.
+     * @see {@linkcode Document.Database.OnDeleteOptions}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOptions extends Document.Database.OnDeleteOptions<DeleteOperation> {}
+
+    /**
+     * The interface passed to {@linkcode DrawingDocument._onDeleteOperation} and `DrawingDocument`-related collections'
+     * `#_onModifyContents` methods.
+     * @see {@linkcode Document.Database.OnDeleteOperation}
+     *
+     * ---
+     *
+     * **Declaration Merging Warning**
+     *
+     * It is very likely incorrect to merge into this interface instead of the base {@linkcode DeleteOperation} for this Document or the
+     * root {@linkcode DatabaseBackend.DeleteOperation} for all documents, for reasons outlined in the latter's remarks. If you have a valid
+     * use case for doing so, please let us know.
+     */
+    interface OnDeleteOperation extends Document.Database.OnDeleteOperation<DeleteOperation> {}
+
+    namespace Internal {
+      interface OperationNameMap<Temporary extends boolean | undefined = boolean | undefined> {
+        GetDocumentsOperation: DrawingDocument.Database.GetDocumentsOperation;
+        BackendGetOperation: DrawingDocument.Database.BackendGetOperation;
+        GetOperation: DrawingDocument.Database.GetOperation;
+
+        CreateDocumentsOperation: DrawingDocument.Database.CreateDocumentsOperation<Temporary>;
+        CreateEmbeddedOperation: DrawingDocument.Database.CreateEmbeddedOperation;
+        BackendCreateOperation: DrawingDocument.Database.BackendCreateOperation<Temporary>;
+        CreateOperation: DrawingDocument.Database.CreateOperation<Temporary>;
+        PreCreateOptions: DrawingDocument.Database.PreCreateOptions<Temporary>;
+        PreCreateOperation: DrawingDocument.Database.PreCreateOperation<Temporary>;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnCreateDocumentsOperation: DrawingDocument.Database.OnCreateDocumentsOperation<Temporary>;
+        OnCreateOptions: DrawingDocument.Database.OnCreateOptions;
+        OnCreateOperation: DrawingDocument.Database.OnCreateOperation;
+
+        UpdateOneDocumentOperation: DrawingDocument.Database.UpdateOneDocumentOperation;
+        UpdateEmbeddedOperation: DrawingDocument.Database.UpdateEmbeddedOperation;
+        UpdateManyDocumentsOperation: DrawingDocument.Database.UpdateManyDocumentsOperation;
+        BackendUpdateOperation: DrawingDocument.Database.BackendUpdateOperation;
+        UpdateOperation: DrawingDocument.Database.UpdateOperation;
+        PreUpdateOptions: DrawingDocument.Database.PreUpdateOptions;
+        PreUpdateOperation: DrawingDocument.Database.PreUpdateOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnUpdateDocumentsOperation: DrawingDocument.Database.OnUpdateDocumentsOperation;
+        OnUpdateOptions: DrawingDocument.Database.OnUpdateOptions;
+        OnUpdateOperation: DrawingDocument.Database.OnUpdateOperation;
+
+        DeleteOneDocumentOperation: DrawingDocument.Database.DeleteOneDocumentOperation;
+        DeleteEmbeddedOperation: DrawingDocument.Database.DeleteEmbeddedOperation;
+        DeleteManyDocumentsOperation: DrawingDocument.Database.DeleteManyDocumentsOperation;
+        BackendDeleteOperation: DrawingDocument.Database.BackendDeleteOperation;
+        DeleteOperation: DrawingDocument.Database.DeleteOperation;
+        PreDeleteOptions: DrawingDocument.Database.PreDeleteOptions;
+        PreDeleteOperation: DrawingDocument.Database.PreDeleteOperation;
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        OnDeleteDocumentsOperation: DrawingDocument.Database.OnDeleteDocumentsOperation;
+        OnDeleteOptions: DrawingDocument.Database.OnDeleteOptions;
+        OnDeleteOperation: DrawingDocument.Database.OnDeleteOperation;
+      }
+    }
+
+    /* ***********************************************
+     *             DocsV2 DEPRECATIONS               *
+     *************************************************/
+
+    /** @deprecated Use {@linkcode GetOperation} instead. This type will be removed in v14.  */
+    type Get = GetOperation;
+
+    /** @deprecated Use {@linkcode GetDocumentsOperation} instead. This type will be removed in v14.  */
+    type GetOptions = GetDocumentsOperation;
+
+    /** @deprecated Use {@linkcode CreateOperation} instead. This type will be removed in v14.  */
+    type Create<Temporary extends boolean | undefined> = CreateOperation<Temporary>;
+
+    /** @deprecated Use {@linkcode UpdateOperation} instead. This type will be removed in v14.  */
+    type Update = UpdateOperation;
+
+    /** @deprecated Use {@linkcode DeleteOperation} instead. This type will be removed in v14.  */
+    type Delete = DeleteOperation;
+
+    // CreateDocumentsOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode UpdateManyDocumentsOperation} instead. This type will be removed in v14 */
+    type UpdateDocumentsOperation = UpdateManyDocumentsOperation;
+
+    /** @deprecated Use {@linkcode DeleteManyDocumentsOperation} instead. This type will be removed in v14 */
+    type DeleteDocumentsOperation = DeleteManyDocumentsOperation;
+
+    // PreCreateOptions didn't change purpose or name
+
+    // OnCreateOptions didn't change purpose or name
+
+    // PreCreateOperation didn't change purpose or name
+
+    // OnCreateOperation didn't change purpose or name
+
+    // PreUpdateOptions didn't change purpose or name
+
+    // OnUpdateOptions didn't change purpose or name
+
+    // PreUpdateOperation didn't change purpose or name
+
+    // OnUpdateOperation didn't change purpose or name
+
+    // PreDeleteOptions didn't change purpose or name
+
+    // OnDeleteOptions didn't change purpose or name
+
+    // PreDeleteOperation didn't change purpose or name
+
+    // OnDeleteOperation didn't change purpose or name
+
+    /** @deprecated Use {@linkcode OnCreateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnCreateDocumentsContext = OnCreateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnUpdateDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnUpdateDocumentsContext = OnUpdateDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type OnDeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated Use {@linkcode OnDeleteOptions} instead. This type will be removed in v14 */
+    type DeleteOptions = OnDeleteOptions;
+
+    /** @deprecated Use {@linkcode OnCreateOptions} instead. This type will be removed in v14 */
+    type CreateOptions = OnCreateOptions;
+
+    /** @deprecated Use {@linkcode OnUpdateOptions} instead. This type will be removed in v14 */
+    type UpdateOptions = OnUpdateOptions;
+
+    /** @deprecated Use {@linkcode OnDeleteDocumentsOperation} instead. This type will be removed in v14 */
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
+    type DeleteDocumentsContext = OnDeleteDocumentsOperation;
+
+    /** @deprecated use {@linkcode CreateDocumentsOperation} instead. This type will be removed in v14. */
+    type DialogCreateOptions = CreateDocumentsOperation;
   }
 
   /**
@@ -591,6 +1061,7 @@ declare class DrawingDocument extends BaseDrawing.Internal.CanvasDocument {
   /** @remarks `createOptions` must contain a `pack` or `parent`. */
   static override createDialog(
     data: DrawingDocument.CreateDialogData | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     createOptions: DrawingDocument.Database.DialogCreateOptions,
     options?: DrawingDocument.CreateDialogOptions,
   ): Promise<DrawingDocument.Stored | null | undefined>;

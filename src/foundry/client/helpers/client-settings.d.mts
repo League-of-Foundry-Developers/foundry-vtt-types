@@ -263,8 +263,17 @@ declare namespace ClientSettings {
   type Scope = "world" | "client" | "user";
 
   /**
-   * @internal
+   * A function that gets called when a setting is changed, either by `ClientSettings##setClient`
+   * or {@linkcode Setting._onUpdate | Setting#_onUpdate}.
+   * @remarks Only world settings get passed `userId`.
    */
+  type OnChangeFunction<InitializedData = unknown> = (
+    value: InitializedData,
+    options: OnChangeOptions,
+    userId?: string,
+  ) => void;
+
+  /** @internal */
   interface _SettingConfig<RuntimeType extends ClientSettings.RuntimeType, CreateData, InitializedData> {
     /** A unique machine-readable id for the setting */
     key: string;
@@ -313,7 +322,7 @@ declare namespace ClientSettings {
     requiresReload?: boolean;
 
     /** Executes when the value of this Setting changes */
-    onChange?: (value: InitializedData, options?: Omit<SetOptions, "document">) => void;
+    onChange?: OnChangeFunction<InitializedData>;
 
     /**
      * A custom form field input used in conjunction with a DataField type
@@ -409,13 +418,20 @@ declare namespace ClientSettings {
 
   /** @internal */
   interface _SetOptionsCreate<Doc extends boolean | undefined>
-    extends _SetOptions<Doc>, Setting.Database.CreateOperation<undefined | false> {}
+    extends _SetOptions<Doc>, Setting.Database.CreateDocumentsOperation {}
 
   /** @internal */
   interface _SetOptionsUpdate<Doc extends boolean | undefined>
-    extends _SetOptions<Doc>, Setting.Database.UpdateOperation {}
+    extends _SetOptions<Doc>, Setting.Database.UpdateOneDocumentOperation {}
 
   type SetOptions<Doc extends boolean | undefined = undefined> = _SetOptionsCreate<Doc> | _SetOptionsUpdate<Doc>;
+
+  /**
+   * @remarks The object that gets passed to `ClientSettings##setWorld`, and via that {@linkcode Setting._onUpdate | Setting#_onUpdate};
+   * or `##setClient`, and via that, the {@linkcode AllHooks.clientSettingChanged | clientSettingChanged} hook. Both paths also send this
+   * to the Setting's registered {@linkcode ClientSettings.SettingConfig.onChange | onChange} function, so that's the name that was chosen.
+   */
+  type OnChangeOptions = Setting.Database.CreateDocumentsOperation | Setting.Database.UpdateOneDocumentOperation;
 
   /**
    * @deprecated Replaced with {@linkcode ClientSettings.SettingInitializedType}.
