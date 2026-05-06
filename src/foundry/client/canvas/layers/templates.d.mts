@@ -1,4 +1,4 @@
-import type { AnyObject, FixedInstanceType, Identity } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { MeasuredTemplate } from "#client/canvas/placeables/_module.d.mts";
@@ -49,7 +49,10 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
 
   protected override _deactivate(): void;
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<TemplateLayer.DrawOptions>): Promise<this>;
+
+  protected override _draw(options: HandleEmptyObject<TemplateLayer.DrawOptions>): Promise<void>;
 
   /**
    * Register game settings used by the TemplatesLayer
@@ -66,10 +69,16 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
 }
 
 declare namespace TemplateLayer {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -85,6 +94,11 @@ declare namespace TemplateLayer {
     rotatableObjects: true;
     zIndex: 400;
   }
+
+  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
+  // `TemplateLayer` has no `_tearDown` override, this exists for consistency.
+  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 }
 
 export default TemplateLayer;

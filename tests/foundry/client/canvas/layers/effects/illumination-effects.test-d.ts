@@ -9,7 +9,7 @@ import VisualEffectsMaskingFilter = foundry.canvas.rendering.filters.VisualEffec
 
 const layer = new CanvasIlluminationEffects();
 
-expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof CanvasLayer>();
+expectTypeOf(layer.options.baseClass).toEqualTypeOf<CanvasLayer.AnyConstructor>();
 
 expectTypeOf(layer.filter).toEqualTypeOf<VisualEffectsMaskingFilter.Implementation | undefined>();
 expectTypeOf(layer.lights).toEqualTypeOf<PIXI.Container>();

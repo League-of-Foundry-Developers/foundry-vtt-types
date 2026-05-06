@@ -1,4 +1,4 @@
-import type { AnyObject, FixedInstanceType, Identity } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { AmbientLight } from "#client/canvas/placeables/_module.d.mts";
@@ -42,9 +42,15 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
 
   override get hookName(): "LightingLayer";
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<LightingLayer.DrawOptions>): Promise<this>;
 
-  protected override _tearDown(options: AnyObject): Promise<void>;
+  protected override _draw(options: HandleEmptyObject<LightingLayer.DrawOptions>): Promise<void>;
+
+  // fake type override
+  override tearDown(options?: LightingLayer.TearDownOptions): Promise<this>;
+
+  protected override _tearDown(options: LightingLayer.TearDownOptions): Promise<void>;
 
   /**
    * Refresh the fields of all the ambient lights on this scene.
@@ -75,10 +81,16 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
 }
 
 declare namespace LightingLayer {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -94,6 +106,10 @@ declare namespace LightingLayer {
     rotatableObjects: true;
     zIndex: 900;
   }
+
+  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
+  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 }
 
 export default LightingLayer;

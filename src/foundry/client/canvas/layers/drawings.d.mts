@@ -1,4 +1,4 @@
-import type { AnyObject, FixedInstanceType, Identity } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { Drawing } from "#client/canvas/placeables/_module.d.mts";
@@ -66,7 +66,10 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
 
   protected override _deactivate(): void;
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<DrawingsLayer.DrawOptions>): Promise<this>;
+
+  protected override _draw(options: HandleEmptyObject<DrawingsLayer.DrawOptions>): Promise<void>;
 
   /**
    * Get initial data for a new drawing.
@@ -103,10 +106,16 @@ declare class DrawingsLayer extends PlaceablesLayer<"Drawing"> {
 }
 
 declare namespace DrawingsLayer {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -123,6 +132,11 @@ declare namespace DrawingsLayer {
     rotatableObjects: true;
     zIndex: 500;
   }
+
+  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
+  // `DrawingsLayer` has no `_tearDown` override, this exists for consistency.
+  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 }
 
 export default DrawingsLayer;

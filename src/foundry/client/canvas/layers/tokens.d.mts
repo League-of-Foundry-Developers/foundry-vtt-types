@@ -1,4 +1,4 @@
-import type { AnyObject, FixedInstanceType, Identity, InexactPartial } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity, InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type Document from "#common/abstract/document.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
@@ -106,9 +106,15 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
     dz: -1 | 0 | 1,
   ): PlaceablesLayer.PreparedUpdates<"Token">;
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<TokenLayer.DrawOptions>): Promise<this>;
 
-  protected override _tearDown(options: AnyObject): Promise<void>;
+  protected override _draw(options: HandleEmptyObject<TokenLayer.DrawOptions>): Promise<void>;
+
+  // fake type override
+  override tearDown(options?: TokenLayer.TearDownOptions): Promise<this>;
+
+  protected override _tearDown(options: TokenLayer.TearDownOptions): Promise<void>;
 
   protected override _activate(): void;
 
@@ -255,6 +261,10 @@ declare namespace TokenLayer {
     confirmDeleteKey: true;
     zIndex: 200;
   }
+
+  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
+  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
   /** @remarks The waypoint data {@linkcode TokenLayer.storeHistory | TokenLayer#storeHistory} includes in movement-including update `undoOptions` */
   interface MovementUpdateHistoryWaypoint extends Pick<

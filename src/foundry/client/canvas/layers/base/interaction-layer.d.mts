@@ -1,4 +1,4 @@
-import type { AnyObject, Identity, InexactPartial, MaybePromise } from "#utils";
+import type { HandleEmptyObject, Identity, InexactPartial, MaybePromise } from "#utils";
 import type { CanvasLayer } from "../_module.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { SceneControls } from "#client/applications/ui/_module.d.mts";
@@ -12,12 +12,13 @@ declare abstract class InteractionLayer extends CanvasLayer {
    */
   get active(): boolean;
 
-  /** @privateRemarks Fake override to sync with {@linkcode InteractionLayer.layerOptions} */
+  // Fake type override
   override options: InteractionLayer.LayerOptions;
 
   /**
    * @defaultValue `"passive"`
-   * @remarks Set to `"static"` when this layer is {@linkcode activate | activated}, returned to `"passive"` when {@linkcode deactivate | deactivated}
+   * @remarks Set to `"static"` when this layer is {@linkcode activate | activated},
+   * returned to `"passive"` when {@linkcode deactivate | deactivated}
    */
   override eventMode: PIXI.EventMode;
 
@@ -56,7 +57,10 @@ declare abstract class InteractionLayer extends CanvasLayer {
    */
   protected _deactivate(): void;
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<InteractionLayer.DrawOptions>): Promise<this>;
+
+  protected override _draw(options: HandleEmptyObject<InteractionLayer.DrawOptions>): Promise<void>;
 
   /**
    * Get the zIndex that should be used for ordering this layer vertically relative to others in the same Container.
@@ -233,6 +237,11 @@ declare namespace InteractionLayer {
   }>;
 
   interface ActivateOptions extends _ActivateOptions {}
+
+  interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+  // `InteractionLayer` has no `_tearDown` override, this exists for consistency
+  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 }
 
 export default InteractionLayer;

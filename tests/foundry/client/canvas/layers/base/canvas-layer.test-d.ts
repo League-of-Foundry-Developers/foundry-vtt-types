@@ -1,5 +1,4 @@
 import { expectTypeOf } from "vitest";
-import type { AnyObject } from "fvtt-types/utils";
 
 import CanvasLayer = foundry.canvas.layers.CanvasLayer;
 import EffectsCanvasGroup = foundry.canvas.groups.EffectsCanvasGroup;
@@ -11,9 +10,14 @@ declare global {
     }
   }
 }
+
 interface MyLayerOptions extends CanvasLayer.LayerOptions {
   name: "testCanvasLayer";
   baseClass: typeof MyCanvasLayer;
+}
+
+interface MyDrawOptions extends CanvasLayer.DrawOptions {
+  foo?: boolean;
 }
 
 declare class MyCanvasLayer extends CanvasLayer {
@@ -21,7 +25,7 @@ declare class MyCanvasLayer extends CanvasLayer {
 
   static override get layerOptions(): MyLayerOptions;
 
-  protected override _draw(_options: AnyObject): Promise<void>;
+  protected override _draw(_options: MyDrawOptions): Promise<void>;
 }
 
 expectTypeOf(MyCanvasLayer.instance).toEqualTypeOf<CanvasLayer.Any | EffectsCanvasGroup.Implementation | undefined>;

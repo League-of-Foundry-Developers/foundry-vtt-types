@@ -1,4 +1,11 @@
-import type { IntentionalPartial, InexactPartial, NullishProps, AnyObject, Identity, FixedInstanceType } from "#utils";
+import type {
+  IntentionalPartial,
+  InexactPartial,
+  NullishProps,
+  Identity,
+  FixedInstanceType,
+  HandleEmptyObject,
+} from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
@@ -59,9 +66,15 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
 
   override get hookName(): "SoundsLayer";
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<SoundsLayer.DrawOptions>): Promise<this>;
 
-  protected override _tearDown(options: AnyObject): Promise<void>;
+  protected override _draw(options: HandleEmptyObject<SoundsLayer.DrawOptions>): Promise<void>;
+
+  // fake type override
+  override tearDown(options?: SoundsLayer.TearDownOptions): Promise<this>;
+
+  protected override _tearDown(options: SoundsLayer.TearDownOptions): Promise<void>;
 
   protected override _activate(): void;
 
@@ -202,10 +215,16 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
 }
 
 declare namespace SoundsLayer {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -220,6 +239,10 @@ declare namespace SoundsLayer {
     name: "sounds";
     zIndex: 900;
   }
+
+  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
+  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
   interface DropData extends Canvas.DropPosition {
     type: "PlaylistSound";

@@ -6,6 +6,7 @@ import type {
   RemoveIndexSignatures,
   FixedInstanceType,
   InexactPartial,
+  HandleEmptyObject,
 } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { GridShader } from "#client/canvas/rendering/shaders/_module.d.mts";
@@ -61,7 +62,10 @@ declare class GridLayer extends CanvasLayer {
   /** @privateRemarks Fake type override */
   override options: GridLayer.LayerOptions;
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<GridLayer.DrawOptions>): Promise<this>;
+
+  protected override _draw(options: HandleEmptyObject<GridLayer.DrawOptions>): Promise<void>;
 
   /**
    * Creates the grid mesh.
@@ -184,10 +188,16 @@ declare class GridLayer extends CanvasLayer {
 }
 
 declare namespace GridLayer {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -201,6 +211,11 @@ declare namespace GridLayer {
   interface LayerOptions extends CanvasLayer.LayerOptions {
     name: "grid";
   }
+
+  interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+  // `GridLayer` has no `_tearDown` override, this exists for consistency
+  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 
   /** @internal */
   type _InitializeMeshOptions = InexactPartial<{

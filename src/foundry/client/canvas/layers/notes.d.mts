@@ -1,4 +1,4 @@
-import type { AnyObject, FixedInstanceType, Identity, InexactPartial, NullishProps } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity, InexactPartial, NullishProps } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { Note } from "#client/canvas/placeables/_module.d.mts";
@@ -53,7 +53,10 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
 
   protected override _deactivate(): void;
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<NotesLayer.DrawOptions>): Promise<this>;
+
+  protected override _draw(options: HandleEmptyObject<NotesLayer.DrawOptions>): Promise<void>;
 
   /**
    * Register game settings used by the NotesLayer
@@ -84,10 +87,16 @@ declare class NotesLayer extends PlaceablesLayer<"Note"> {
 }
 
 declare namespace NotesLayer {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -102,6 +111,11 @@ declare namespace NotesLayer {
     name: "notes";
     zIndex: 800;
   }
+
+  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
+  // `NotesLayer` has no `_tearDown` override, this exists for consistency
+  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
   /** @internal */
   interface _DropDataCommon {

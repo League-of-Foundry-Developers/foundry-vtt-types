@@ -1,4 +1,4 @@
-import type { AnyObject, Identity } from "#utils";
+import type { HandleEmptyObject, Identity } from "#utils";
 import type { VisualEffectsMaskingFilter } from "#client/canvas/rendering/filters/_module.mjs";
 import type { CachedContainer, SpriteMesh } from "#client/canvas/containers/_module.d.mts";
 import type { CanvasLayer } from "../_module.d.mts";
@@ -71,9 +71,15 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
   /** @deprecated Removed without replacement in v13. This warning will be removed in v14 */
   override render(renderer: never): never;
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<CanvasIlluminationEffects.DrawOptions>): Promise<this>;
 
-  protected override _tearDown(options: AnyObject): Promise<void>;
+  protected override _draw(options: HandleEmptyObject<CanvasIlluminationEffects.DrawOptions>): Promise<void>;
+
+  // fake type override
+  override tearDown(options?: CanvasIlluminationEffects.TearDownOptions): Promise<this>;
+
+  protected override _tearDown(options: CanvasIlluminationEffects.TearDownOptions): Promise<void>;
 
   /**
    * @deprecated "`CanvasIlluminationEffects#background` is now obsolete." (since v12, until v14)
@@ -91,6 +97,10 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
 declare namespace CanvasIlluminationEffects {
   interface Any extends AnyCanvasIlluminationEffects {}
   interface AnyConstructor extends Identity<typeof AnyCanvasIlluminationEffects> {}
+
+  interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 }
 
 /**

@@ -1,4 +1,4 @@
-import type { FixedInstanceType, AnyObject, Identity, InexactPartial } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity, InexactPartial } from "#utils";
 import type { LineIntersection } from "#common/utils/geometry.d.mts";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { Cursor, UnboundContainer } from "#client/canvas/containers/_module.mjs";
@@ -115,9 +115,15 @@ declare class ControlsLayer extends InteractionLayer {
    */
   getCursorForUser(userId: string): Cursor | null;
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<ControlsLayer.DrawOptions>): Promise<this>;
 
-  protected override _tearDown(options: AnyObject): Promise<void>;
+  protected override _draw(options: HandleEmptyObject<ControlsLayer.DrawOptions>): Promise<void>;
+
+  // fake type override
+  override tearDown(options?: ControlsLayer.TearDownOptions): Promise<this>;
+
+  protected override _tearDown(options: ControlsLayer.TearDownOptions): Promise<void>;
 
   /**
    * Draw the cursors container
@@ -241,10 +247,16 @@ declare class ControlsLayer extends InteractionLayer {
 }
 
 declare namespace ControlsLayer {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -259,6 +271,10 @@ declare namespace ControlsLayer {
     name: "controls";
     zIndex: number;
   }
+
+  interface DrawOptions extends InteractionLayer.DrawOptions {}
+
+  interface TearDownOptions extends InteractionLayer.TearDownOptions {}
 
   interface HandlePingOptions extends User.PingData, Ping.ConstructorOptions {}
 

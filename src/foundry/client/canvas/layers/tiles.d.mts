@@ -1,4 +1,4 @@
-import type { AnyObject, FixedInstanceType, Identity } from "#utils";
+import type { FixedInstanceType, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { CanvasDepthMask, PlaceablesLayer } from "./_module.d.mts";
 import type { Tile } from "#client/canvas/placeables/_module.d.mts";
@@ -55,7 +55,10 @@ declare class TilesLayer extends PlaceablesLayer<"Tile"> {
 
   override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-  protected override _tearDown(options: AnyObject): Promise<void>;
+  // fake type override
+  override tearDown(options?: TilesLayer.TearDownOptions): Promise<this>;
+
+  protected override _tearDown(options: TilesLayer.TearDownOptions): Promise<void>;
 
   static override prepareSceneControls(): SceneControls.Control;
 
@@ -99,10 +102,16 @@ declare class TilesLayer extends PlaceablesLayer<"Tile"> {
 }
 
 declare namespace TilesLayer {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -119,6 +128,11 @@ declare namespace TilesLayer {
     controllableObjects: true;
     rotatableObjects: true;
   }
+
+  // `TilesLayer` has no `_draw` override, this exists for consistency.
+  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
+  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
   /** @internal  */
   type _DropData = Required<Pick<TileDocument.CreateData, "elevation" | "height" | "width" | "sort">>;

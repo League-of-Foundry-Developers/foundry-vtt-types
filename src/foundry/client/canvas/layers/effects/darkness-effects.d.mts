@@ -1,4 +1,4 @@
-import type { AnyObject, Identity } from "#utils";
+import type { HandleEmptyObject, Identity } from "#utils";
 import type { CanvasLayer } from "../_module.d.mts";
 
 declare module "#configuration" {
@@ -24,12 +24,20 @@ declare class CanvasDarknessEffects extends CanvasLayer {
    */
   clear(): void;
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<CanvasDarknessEffects.DrawOptions>): Promise<this>;
+
+  protected override _draw(options: HandleEmptyObject<CanvasDarknessEffects.DrawOptions>): Promise<void>;
 }
 
 declare namespace CanvasDarknessEffects {
   interface Any extends AnyCanvasDarknessEffects {}
   interface AnyConstructor extends Identity<typeof AnyCanvasDarknessEffects> {}
+
+  interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+  // `CanvasDarknessEffects` has no `_tearDown` override, this exists for consistency
+  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 }
 
 export default CanvasDarknessEffects;

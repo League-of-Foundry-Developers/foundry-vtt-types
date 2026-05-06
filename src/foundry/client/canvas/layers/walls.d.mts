@@ -1,4 +1,4 @@
-import type { AnyObject, Identity, FixedInstanceType, InexactPartial } from "#utils";
+import type { Identity, FixedInstanceType, InexactPartial, HandleEmptyObject } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { PlaceableObject, Wall } from "#client/canvas/placeables/_module.d.mts";
@@ -78,7 +78,10 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
 
   override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<WallsLayer.DrawOptions>): Promise<this>;
+
+  protected override _draw(options: HandleEmptyObject<WallsLayer.DrawOptions>): Promise<void>;
 
   protected override _deactivate(): void;
 
@@ -161,10 +164,16 @@ declare class WallsLayer extends PlaceablesLayer<"Wall"> {
 }
 
 declare namespace WallsLayer {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -183,6 +192,11 @@ declare namespace WallsLayer {
     /** @defaultValue `700` */
     zIndex: number;
   }
+
+  interface DrawOptions extends PlaceablesLayer.DrawOptions {}
+
+  // `WallsLayer` has no `_tearDown` override, this exists for consistency
+  interface TearDownOptions extends PlaceablesLayer.TearDownOptions {}
 
   interface LastPoint {
     point: Canvas.PointTuple | null;

@@ -1,8 +1,16 @@
-import type { AnyObject, Brand, FixedInstanceType, Identity, InexactPartial, MaybePromise, ToMethod } from "#utils";
+import type {
+  AnyObject,
+  Brand,
+  FixedInstanceType,
+  HandleEmptyObject,
+  Identity,
+  InexactPartial,
+  MaybePromise,
+  ToMethod,
+} from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
-import type Document from "#common/abstract/document.d.mts";
-import type EmbeddedCollection from "#common/abstract/embedded-collection.d.mts";
-import type { InteractionLayer } from "../_module.d.mts";
+import type { Document, EmbeddedCollection } from "#common/abstract/_module.d.mts";
+import type { InteractionLayer } from "#client/canvas/layers/_module.d.mts";
 import type { CanvasQuadtree } from "#client/canvas/geometry/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
 
@@ -179,7 +187,10 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    */
   getDocuments(): NonNullable<this["documentCollection"]> | [];
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<PlaceablesLayer.DrawOptions>): Promise<this>;
+
+  protected override _draw(options: HandleEmptyObject<PlaceablesLayer.DrawOptions>): Promise<void>;
 
   /**
    * Draw a single placeable object
@@ -187,7 +198,10 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    */
   createObject(document: Document.ImplementationFor<DocumentName>): Document.ObjectFor<DocumentName>;
 
-  protected override _tearDown(options: AnyObject): Promise<void>;
+  // fake type override
+  override tearDown(options?: PlaceablesLayer.TearDownOptions): Promise<this>;
+
+  protected override _tearDown(options: PlaceablesLayer.TearDownOptions): Promise<void>;
 
   protected override _activate(): void;
 
@@ -560,6 +574,10 @@ declare namespace PlaceablesLayer {
   namespace LayerOptions {
     interface Any extends LayerOptions<any> {}
   }
+
+  interface DrawOptions extends InteractionLayer.DrawOptions {}
+
+  interface TearDownOptions extends InteractionLayer.TearDownOptions {}
 
   /** @internal */
   type _RotateManyOptions = InexactPartial<{

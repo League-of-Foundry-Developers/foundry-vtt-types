@@ -1,4 +1,4 @@
-import type { AnyObject, FixedInstanceType, Identity, InexactPartial } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity, InexactPartial } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { AbstractWeatherShader, WeatherShaderEffect } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { WeatherOcclusionMaskFilter } from "#client/canvas/rendering/filters/_module.d.mts";
@@ -121,9 +121,15 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
 
   set zIndex(value);
 
-  protected override _draw(options: AnyObject): Promise<void>;
+  // fake type override
+  override draw(options?: HandleEmptyObject<WeatherEffects.DrawOptions>): Promise<this>;
 
-  protected override _tearDown(options: AnyObject): Promise<void>;
+  protected override _draw(options: HandleEmptyObject<WeatherEffects.DrawOptions>): Promise<void>;
+
+  // fake type override
+  override tearDown(options?: WeatherEffects.TearDownOptions): Promise<this>;
+
+  protected override _tearDown(options: WeatherEffects.TearDownOptions): Promise<void>;
 
   /**
    * Initialize the weather container from a weather config object.
@@ -155,10 +161,16 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
 }
 
 declare namespace WeatherEffects {
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode Implementation} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode Implementation} instead. This type will be removed in v15.
+   */
   type Any = Internal.Any;
 
-  /** @deprecated There should only be a single implementation of this class in use at one time, use {@linkcode ImplementationClass} instead */
+  /**
+   * @deprecated There should only be a single implementation of this class in use at one time,
+   * use {@linkcode ImplementationClass} instead. This type will be removed in v15.
+   */
   type AnyConstructor = Internal.AnyConstructor;
 
   namespace Internal {
@@ -173,6 +185,10 @@ declare namespace WeatherEffects {
     /** @remarks This causes {@linkcode WeatherEffect.instance} to be the {@linkcode foundry.canvas.groups.EffectsCanvasGroup.Implementation} */
     name: "effects";
   }
+
+  interface DrawOptions extends CanvasLayer.DrawOptions {}
+
+  interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 
   /**
    * @internal
