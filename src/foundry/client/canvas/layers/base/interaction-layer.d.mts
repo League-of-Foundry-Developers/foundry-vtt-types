@@ -43,6 +43,7 @@ declare abstract class InteractionLayer extends CanvasLayer {
 
   /**
    * The inner `_activate` method which may be defined by each `InteractionLayer` subclass.
+   * @remarks The implementation in `InteractionLayer` is a no-op.
    */
   protected _activate(): void;
 
@@ -54,6 +55,7 @@ declare abstract class InteractionLayer extends CanvasLayer {
 
   /**
    * The inner `_deactivate` method which may be defined by each `InteractionLayer` subclass.
+   * @remarks The implementation in `InteractionLayer` is a no-op.
    */
   protected _deactivate(): void;
 
@@ -69,7 +71,7 @@ declare abstract class InteractionLayer extends CanvasLayer {
 
   /**
    * Prepare data used by SceneControls to register tools used by this layer.
-   * @remarks Always returns `null` in {@linkcode InteractionLayer}
+   * @remarks Unconditionally `null` in {@linkcode InteractionLayer}
    */
   static prepareSceneControls(): SceneControls.Control | null;
 
@@ -218,6 +220,8 @@ declare abstract class InteractionLayer extends CanvasLayer {
    * @remarks Always returns `false` in {@linkcode InteractionLayer}
    */
   protected _onPasteKey(event: KeyboardEvent): boolean;
+
+  #InteractionLayer: true;
 }
 
 declare namespace InteractionLayer {
@@ -227,7 +231,7 @@ declare namespace InteractionLayer {
   interface LayerOptions extends CanvasLayer.LayerOptions {
     zIndex: number;
 
-    baseClass: typeof InteractionLayer;
+    baseClass: InteractionLayer.AnyConstructor;
   }
 
   /** @internal */

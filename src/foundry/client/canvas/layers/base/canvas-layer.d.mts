@@ -78,6 +78,8 @@ declare abstract class CanvasLayer extends PIXI.Container {
    * @param options - Options which configure how the layer is deconstructed
    */
   protected _tearDown(options: HandleEmptyObject<CanvasLayer.TearDownOptions>): Promise<void>;
+
+  #CanvasLayer: true;
 }
 
 declare namespace CanvasLayer {

@@ -14,7 +14,7 @@ expectTypeOf(ControlsLayer.layerOptions).toEqualTypeOf<ControlsLayer.LayerOption
 
 const layer = new ControlsLayer();
 
-expectTypeOf(layer.options.baseClass).toEqualTypeOf<typeof InteractionLayer>();
+expectTypeOf(layer.options.baseClass).toEqualTypeOf<InteractionLayer.AnyConstructor>();
 expectTypeOf(layer.options).toEqualTypeOf<ControlsLayer.LayerOptions>();
 
 expectTypeOf(layer.doors).toEqualTypeOf<PIXI.Container>();
