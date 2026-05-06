@@ -48,9 +48,9 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
   protected override _draw(options: HandleEmptyObject<LightingLayer.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: LightingLayer.TearDownOptions): Promise<this>;
+  override tearDown(options?: HandleEmptyObject<LightingLayer.TearDownOptions>): Promise<this>;
 
-  protected override _tearDown(options: LightingLayer.TearDownOptions): Promise<void>;
+  protected override _tearDown(options: HandleEmptyObject<LightingLayer.TearDownOptions>): Promise<void>;
 
   /**
    * Refresh the fields of all the ambient lights on this scene.

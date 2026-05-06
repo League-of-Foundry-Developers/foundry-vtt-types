@@ -199,9 +199,9 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
   createObject(document: Document.ImplementationFor<DocumentName>): Document.ObjectFor<DocumentName>;
 
   // fake type override
-  override tearDown(options?: PlaceablesLayer.TearDownOptions): Promise<this>;
+  override tearDown(options?: HandleEmptyObject<PlaceablesLayer.TearDownOptions>): Promise<this>;
 
-  protected override _tearDown(options: PlaceablesLayer.TearDownOptions): Promise<void>;
+  protected override _tearDown(options: HandleEmptyObject<PlaceablesLayer.TearDownOptions>): Promise<void>;
 
   protected override _activate(): void;
 

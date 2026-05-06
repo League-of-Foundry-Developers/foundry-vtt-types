@@ -72,9 +72,9 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
   protected override _draw(options: HandleEmptyObject<SoundsLayer.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: SoundsLayer.TearDownOptions): Promise<this>;
+  override tearDown(options?: HandleEmptyObject<SoundsLayer.TearDownOptions>): Promise<this>;
 
-  protected override _tearDown(options: SoundsLayer.TearDownOptions): Promise<void>;
+  protected override _tearDown(options: HandleEmptyObject<SoundsLayer.TearDownOptions>): Promise<void>;
 
   protected override _activate(): void;
 

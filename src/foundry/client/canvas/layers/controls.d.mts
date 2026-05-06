@@ -121,9 +121,9 @@ declare class ControlsLayer extends InteractionLayer {
   protected override _draw(options: HandleEmptyObject<ControlsLayer.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: ControlsLayer.TearDownOptions): Promise<this>;
+  override tearDown(options?: HandleEmptyObject<ControlsLayer.TearDownOptions>): Promise<this>;
 
-  protected override _tearDown(options: ControlsLayer.TearDownOptions): Promise<void>;
+  protected override _tearDown(options: HandleEmptyObject<ControlsLayer.TearDownOptions>): Promise<void>;
 
   /**
    * Draw the cursors container

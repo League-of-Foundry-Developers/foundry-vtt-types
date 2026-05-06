@@ -35,9 +35,11 @@ declare class CanvasBackgroundAlterationEffects extends CanvasLayer {
   protected override _draw(options: HandleEmptyObject<CanvasBackgroundAlterationEffects.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: CanvasBackgroundAlterationEffects.TearDownOptions): Promise<this>;
+  override tearDown(options?: HandleEmptyObject<CanvasBackgroundAlterationEffects.TearDownOptions>): Promise<this>;
 
-  protected override _tearDown(options: CanvasBackgroundAlterationEffects.TearDownOptions): Promise<void>;
+  protected override _tearDown(
+    options: HandleEmptyObject<CanvasBackgroundAlterationEffects.TearDownOptions>,
+  ): Promise<void>;
 
   /**
    * Clear background alteration effects vision and lighting containers

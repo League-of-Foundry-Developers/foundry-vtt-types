@@ -1,4 +1,4 @@
-import type { FixedInstanceType, Identity } from "#utils";
+import type { FixedInstanceType, HandleEmptyObject, Identity } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { CanvasDepthMask, PlaceablesLayer } from "./_module.d.mts";
 import type { Tile } from "#client/canvas/placeables/_module.d.mts";
@@ -56,9 +56,9 @@ declare class TilesLayer extends PlaceablesLayer<"Tile"> {
   override getSnappedPoint(point: Canvas.Point): Canvas.Point;
 
   // fake type override
-  override tearDown(options?: TilesLayer.TearDownOptions): Promise<this>;
+  override tearDown(options?: HandleEmptyObject<TilesLayer.TearDownOptions>): Promise<this>;
 
-  protected override _tearDown(options: TilesLayer.TearDownOptions): Promise<void>;
+  protected override _tearDown(options: HandleEmptyObject<TilesLayer.TearDownOptions>): Promise<void>;
 
   static override prepareSceneControls(): SceneControls.Control;
 

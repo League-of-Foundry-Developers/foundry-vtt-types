@@ -127,9 +127,9 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
   protected override _draw(options: HandleEmptyObject<WeatherEffects.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: WeatherEffects.TearDownOptions): Promise<this>;
+  override tearDown(options?: HandleEmptyObject<WeatherEffects.TearDownOptions>): Promise<this>;
 
-  protected override _tearDown(options: WeatherEffects.TearDownOptions): Promise<void>;
+  protected override _tearDown(options: HandleEmptyObject<WeatherEffects.TearDownOptions>): Promise<void>;
 
   /**
    * Initialize the weather container from a weather config object.

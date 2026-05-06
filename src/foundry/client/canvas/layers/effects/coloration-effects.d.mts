@@ -37,9 +37,9 @@ declare class CanvasColorationEffects extends CanvasLayer {
   protected override _draw(options: HandleEmptyObject<CanvasColorationEffects.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: CanvasColorationEffects.TearDownOptions): Promise<this>;
+  override tearDown(options?: HandleEmptyObject<CanvasColorationEffects.TearDownOptions>): Promise<this>;
 
-  protected override _tearDown(options: CanvasColorationEffects.TearDownOptions): Promise<void>;
+  protected override _tearDown(options: HandleEmptyObject<CanvasColorationEffects.TearDownOptions>): Promise<void>;
 
   #ColorationEffects: true;
 }

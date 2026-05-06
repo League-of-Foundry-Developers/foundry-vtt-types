@@ -77,9 +77,9 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
   protected override _draw(options: HandleEmptyObject<CanvasIlluminationEffects.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: CanvasIlluminationEffects.TearDownOptions): Promise<this>;
+  override tearDown(options?: HandleEmptyObject<CanvasIlluminationEffects.TearDownOptions>): Promise<this>;
 
-  protected override _tearDown(options: CanvasIlluminationEffects.TearDownOptions): Promise<void>;
+  protected override _tearDown(options: HandleEmptyObject<CanvasIlluminationEffects.TearDownOptions>): Promise<void>;
 
   /**
    * @deprecated "`CanvasIlluminationEffects#background` is now obsolete." (since v12, until v14)

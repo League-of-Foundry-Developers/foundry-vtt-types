@@ -70,15 +70,14 @@ declare abstract class CanvasLayer extends PIXI.Container {
   /**
    * Deconstruct data used in the current layer in preparation to re-draw the canvas
    * @param options - Options which configure how the layer is deconstructed
-   * @remarks ControlsLayer returns void. See https://gitlab.com/foundrynet/foundryvtt/-/issues/6939
    */
-  tearDown(options?: CanvasLayer.TearDownOptions): Promise<this>;
+  tearDown(options?: HandleEmptyObject<CanvasLayer.TearDownOptions>): Promise<this>;
 
   /**
    * The inner _tearDown method which may be customized by each CanvasLayer subclass.
    * @param options - Options which configure how the layer is deconstructed
    */
-  protected _tearDown(options: CanvasLayer.TearDownOptions): Promise<void>;
+  protected _tearDown(options: HandleEmptyObject<CanvasLayer.TearDownOptions>): Promise<void>;
 }
 
 declare namespace CanvasLayer {

@@ -112,9 +112,9 @@ declare class TokenLayer extends PlaceablesLayer<"Token"> {
   protected override _draw(options: HandleEmptyObject<TokenLayer.DrawOptions>): Promise<void>;
 
   // fake type override
-  override tearDown(options?: TokenLayer.TearDownOptions): Promise<this>;
+  override tearDown(options?: HandleEmptyObject<TokenLayer.TearDownOptions>): Promise<this>;
 
-  protected override _tearDown(options: TokenLayer.TearDownOptions): Promise<void>;
+  protected override _tearDown(options: HandleEmptyObject<TokenLayer.TearDownOptions>): Promise<void>;
 
   protected override _activate(): void;
 
