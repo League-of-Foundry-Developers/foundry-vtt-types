@@ -13,6 +13,10 @@ import type { Document, EmbeddedCollection } from "#common/abstract/_module.d.mt
 import type { InteractionLayer } from "#client/canvas/layers/_module.d.mts";
 import type { CanvasQuadtree } from "#client/canvas/geometry/_module.d.mts";
 import type { PlaceableObject } from "#client/canvas/placeables/_module.d.mts";
+import type { BasePlaceableHUD } from "#client/applications/hud/_module.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type TokenLayer from "#client/canvas/layers/tokens.d.mts";
 
 /**
  * A subclass of Canvas Layer which is specifically designed to contain multiple PlaceableObject instances,
@@ -24,7 +28,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
   /**
    * Sort order for placeables belonging to this layer
    * @defaultValue `0`
-   * @remarks Unused in v12.331
+   * @remarks ~~Unused in v12.331~~ Still unused as of 14.361.
    */
   static SORT_ORDER: number;
 
@@ -56,12 +60,6 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
   history: PlaceablesLayer.HistoryEntry<DocumentName>[];
 
   /**
-   * Keep track of an object copied with CTRL+C which can be pasted later
-   * @deprecated Replaced with {@linkcode PlaceablesLayer.clipboard}
-   */
-  protected _copy: never;
-
-  /**
    * Keep track of objects copied with CTRL+C/X which can be pasted later.
    */
   clipboard: PlaceablesLayer.ClipboardData<DocumentName>;
@@ -72,7 +70,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    */
   quadtree: CanvasQuadtree<Document.ObjectFor<DocumentName>> | null;
 
-  /** @privateRemarks Fake type override */
+  // Fake type override
   override options: PlaceablesLayer.LayerOptions<Document.ObjectClassFor<DocumentName>>;
 
   /**
@@ -98,6 +96,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
 
   /**
    * Creation states affected to placeables during their construction.
+   * @remarks Completely unused in v13, deprecation period starts in v14.
    */
   static CREATION_STATES: PlaceablesLayer.CreationStates;
 
@@ -105,7 +104,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * Obtain a reference to the Collection of embedded Document instances within the currently viewed Scene
    * @remarks Returns `null` if `canvas.scene` does not have an EmbeddedCollection for the layer's `static documentName`
    */
-  get documentCollection(): EmbeddedCollection<Document.ImplementationFor<DocumentName>, Scene.Implementation> | null;
+  get documentCollection(): EmbeddedCollection<Document.StoredForName<DocumentName>, Scene.Implementation> | null;
 
   /**
    * Define a Container implementation used to render placeable objects contained in this layer
@@ -114,10 +113,15 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
   static get placeableClass(): PlaceableObject.AnyConstructor;
 
   /**
+   * To know whether this layer has a preview object or not.
+   */
+  get hasPreview(): boolean;
+
+  /**
    * If objects on this PlaceablesLayer have a HUD UI, provide a reference to its instance
    * @remarks Returns `null` unless overridden by subclass
    */
-  get hud(): foundry.applications.hud.BasePlaceableHUD<Document.ObjectFor<DocumentName>> | null;
+  get hud(): BasePlaceableHUD<Document.ObjectFor<DocumentName>> | null;
 
   /**
    * A convenience method for accessing the placeable object instances contained in this layer
@@ -169,8 +173,9 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * @param front - Bring to front instead of send to back?
    * @returns Returns true if the layer has sortable object, and false otherwise
    * @remarks Also returns `false` with no action taken if the layer's document lacks a `sort` field in its schema
+   * @internal
    */
-  protected _sendToBackOrBringToFront(front?: boolean): boolean;
+  _sendToBackOrBringToFront(front?: boolean): boolean;
 
   /**
    * Snaps the given point to grid. The layer defines the snapping behavior.
@@ -183,7 +188,6 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
 
   /**
    * Obtain an iterable of objects which should be added to this PlaceableLayer
-   * @remarks Returns the EmbeddedCollection for this layer's associated Document on the currently viewed scene, or an empty array if not found
    */
   getDocuments(): NonNullable<this["documentCollection"]> | [];
 
@@ -234,7 +238,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * @param options - Options passed to the release method of each object (default: `{}`)
    * @returns The number of PlaceableObject instances which were released
    */
-  releaseAll(options?: PlaceableObject.ReleaseOptions): number;
+  releaseAll(options?: HandleEmptyObject<PlaceableObject.ReleaseOptions>): number;
 
   /**
    * Simultaneously rotate multiple PlaceableObjects using a provided angle or incremental.
@@ -243,7 +247,8 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    *
    * @param options - Options which configure how multiple objects are rotated (default: `{}`)
    * @returns An array of objects which were rotated
-   * @remarks Also throws if both `options.angle` and `options.delta` are nullish; the overload is necessary to ensure that one of them is numeric, as neither has a parameter default
+   * @remarks Also throws if both `options.angle` and `options.delta` are nullish; the overload is necessary to ensure that
+   * one of them is numeric, as neither has a parameter default.
    */
   rotateMany(options: PlaceablesLayer.RotateManyOptionsWithAngle): Promise<Document.ObjectFor<DocumentName>[]>;
   rotateMany(options: PlaceablesLayer.RotateManyOptionsWithDelta): Promise<Document.ObjectFor<DocumentName>[]>;
@@ -254,7 +259,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    *
    * @param options - Options which configure how multiple objects are moved (default: `{}`)
    * @returns An array of objects which were moved during the operation
-   * @throws An error if an explicitly provided id is not valid
+   * @throws An error if an explicitly provided ID is not valid.
    */
   moveMany(options?: PlaceablesLayer.MoveManyOptions): Promise<Document.ObjectFor<DocumentName>[]> | undefined;
 
@@ -263,7 +268,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * @see {@linkcode moveMany | PlaceablesLayer#moveMany}
    * @internal
    */
-  protected _prepareKeyboardMovementUpdates(
+  _prepareKeyboardMovementUpdates(
     objects: Document.ObjectFor<DocumentName>[],
     dx: -1 | 0 | 1,
     dy: -1 | 0 | 1,
@@ -275,7 +280,7 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
    * @see {@linkcode moveMany | PlaceablesLayer#moveMany}
    * @internal
    */
-  protected _prepareKeyboardRotationUpdates(
+  _prepareKeyboardRotationUpdates(
     objects: Document.ObjectFor<DocumentName>[],
     dx: -1 | 0 | 1,
     dy: -1 | 0 | 1,
@@ -473,6 +478,9 @@ declare abstract class PlaceablesLayer<out DocumentName extends Document.Placeab
 
   protected override _onPasteKey(event: KeyboardEvent): boolean;
 
+  /** @deprecated Removed in v13. Use {@linkcode PlaceablesLayer.clipboard} instead. This warning will be removed in v14. */
+  protected _copy: never;
+
   /**
    * @deprecated "`PlaceablesLayer#gridPrecision` is deprecated. Use {@linkcode PlaceablesLayer.getSnappedPoint | PlaceablesLayer#getSnappedPoint} instead of
    * {@linkcode foundry.canvas.layers.GridLayer.getSnappedPosition | GridLayer#getSnappedPosition} and `PlaceablesLayer#gridPrecision`." (since v12, until v14)
@@ -536,9 +544,14 @@ declare namespace PlaceablesLayer {
     COMPLETED: 3 & CREATION_STATES;
   }
 
+  /**
+   * @privateRemarks This constraint should really be `typeof PlaceableObject` since the class being passed needs to take
+   * a `document` param in its constructor, but this causes issues with {@linkcode Document.ObjectClassFor}, and realistically
+   * this is unlikely to come up.
+   */
   interface LayerOptions<ConcretePlaceableClass extends PlaceableObject.AnyConstructor>
     extends InteractionLayer.LayerOptions {
-    baseClass: typeof PlaceablesLayer;
+    baseClass: PlaceablesLayer.AnyConstructor;
 
     /**
      * Can placeable objects in this layer be controlled?
@@ -580,7 +593,7 @@ declare namespace PlaceablesLayer {
   interface TearDownOptions extends InteractionLayer.TearDownOptions {}
 
   /** @internal */
-  type _RotateManyOptions = InexactPartial<{
+  interface _RotateManyOptions {
     /**
      * Snap the resulting angle to a multiple of some increment (in degrees)
      * @remarks Passed to {@link PlaceableObject._updateRotation | `PlaceableObject#_updateRotation`} where it is checked for `> 0` before being passed to the non-null-safe `Number#toNearest`
@@ -598,7 +611,7 @@ declare namespace PlaceablesLayer {
      * @defaultValue `false`
      */
     includeLocked: boolean;
-  }>;
+  }
 
   /** @internal */
   interface _RotateManyOptionsAngle {
@@ -616,14 +629,15 @@ declare namespace PlaceablesLayer {
     delta: number;
   }
 
+  /** If this interface is used (`angle` is provided), `delta` will be ignored, but causes no harm to supply. */
   interface RotateManyOptionsWithAngle
-    extends _RotateManyOptions, InexactPartial<_RotateManyOptionsDelta>, _RotateManyOptionsAngle {}
+    extends InexactPartial<_RotateManyOptions>, InexactPartial<_RotateManyOptionsDelta>, _RotateManyOptionsAngle {}
 
   interface RotateManyOptionsWithDelta
-    extends _RotateManyOptions, InexactPartial<_RotateManyOptionsAngle>, _RotateManyOptionsDelta {}
+    extends InexactPartial<_RotateManyOptions>, InexactPartial<_RotateManyOptionsAngle>, _RotateManyOptionsDelta {}
 
   /** @internal */
-  type _MoveManyOptions = InexactPartial<{
+  interface _MoveManyOptions {
     /**
      * Horizontal movement direction
      * @defaultValue `0`
@@ -659,9 +673,9 @@ declare namespace PlaceablesLayer {
      * @defaultValue `false`
      */
     includeLocked: boolean;
-  }>;
+  }
 
-  interface MoveManyOptions extends _MoveManyOptions {}
+  interface MoveManyOptions extends InexactPartial<_MoveManyOptions> {}
 
   type PreparedUpdates<DocumentName extends Document.PlaceableType> = [
     /**
@@ -673,7 +687,7 @@ declare namespace PlaceablesLayer {
 
     /**
      * @remarks Update operation options for the given placeable. As of 13.351, core only provides this in
-     * {@linkcode foundry.canvas.layers.TokenLayer._prepareKeyboardMovementUpdates | Tokens#_prepareKeyboardMovementUpdates},
+     * {@linkcode TokenLayer._prepareKeyboardMovementUpdates | TokenLayer#_prepareKeyboardMovementUpdates},
      * and only provides the {@linkcode TokenDocument.Database.UpdateEmbeddedOperation.movement | movement} property
      */
     options?: Document.Database.UpdateEmbeddedOperationForName<DocumentName>,
@@ -696,9 +710,9 @@ declare namespace PlaceablesLayer {
 
   /**
    * @remarks Because {@linkcode PlaceablesLayer.storeHistory | PlaceablesLayer#storeHistory} does *not* pass `options` along to
-   * {@linkcode PlaceablesLayer._storeHistory | #_storeHistory}, but {@linkcode foundry.canvas.placeables.Token.storeHistory | Token#storeHistory}
-   * does, the `options` of any given entry will be `{}` (the `#_storeHistory` parameter default) unless it is a Token update involving movement,
-   * specifically.
+   * {@linkcode PlaceablesLayer._storeHistory | #_storeHistory}, but {@linkcode TokenLayer.storeHistory | TokenLayer#storeHistory}
+   * does, the `options` of any given entry will be `{}` (the `#_storeHistory` parameter default) unless it is a `TokenDocument` update
+   * involving movement, specifically.
    */
   type HistoryEntry<DocumentName extends Document.PlaceableType> =
     | CreationHistoryEntry<DocumentName>
@@ -709,7 +723,7 @@ declare namespace PlaceablesLayer {
     type: "create";
     data: HistoryDataFor<"create", DocumentName>[];
 
-    /** @remarks As of 13.1347 this will always be an empty object, see {@linkcode UpdateHistoryEntry.options} remarks */
+    /** @remarks As of 13.347 this will always be an empty object, see {@linkcode UpdateHistoryEntry.options} remarks */
     options: AnyObject;
   }
 
@@ -718,8 +732,7 @@ declare namespace PlaceablesLayer {
     data: HistoryDataFor<"update", DocumentName>[];
 
     /**
-     * @remarks As of 13.1347 this will always be an empty object, except in the case of a token update involving movement.
-     *
+     * @remarks As of 13.351 this will always be an empty object, except in the case of a token update involving movement.
      */
     options: Document.Database.UpdateEmbeddedOperationForName<DocumentName>;
   }
