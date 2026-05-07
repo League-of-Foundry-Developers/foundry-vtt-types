@@ -17,9 +17,7 @@ declare module "#configuration" {
  * The Region Container.
  */
 declare class RegionLayer extends PlaceablesLayer<"Region"> {
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   static get instance(): Canvas["regions"];
 
   /**
@@ -37,9 +35,7 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
    */
   static override get layerOptions(): RegionLayer.LayerOptions;
 
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   override options: RegionLayer.LayerOptions;
 
   static override documentName: "Region";
@@ -50,7 +46,8 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
   get legend(): foundry.applications.ui.RegionLegend;
 
   /**
-   * @deprecated Removed in v13, the source of truth for this is now `ui.controls.controls.regions.tools.hole.active`. This warning will be removed in v14.
+   * @deprecated Removed in v13, the source of truth for this is now `ui.controls.controls.regions.tools.hole.active`.
+   * This warning will be removed in v14.
    */
   _holeMode: never;
 
@@ -82,7 +79,7 @@ declare class RegionLayer extends PlaceablesLayer<"Region"> {
    * @internal
    * @remarks If `data` is falsey, clears the current highlight and returns early
    */
-  protected _highlightShape(data?: foundry.data.BaseShapeData.CreateData | null): void;
+  _highlightShape(data?: foundry.data.BaseShapeData.CreateData | null): void;
 
   static override prepareSceneControls(): SceneControls.Control;
 
@@ -131,8 +128,12 @@ declare namespace RegionLayer {
     controllableObjects: true;
     confirmDeleteKey: true;
     quadtree: false;
-    zIndex: 100;
-    zIndexActive: 600;
+
+    /** @defaultValue `100` */
+    zIndex: number;
+
+    /** @defaultValue `600` */
+    zIndexActive: number;
   }
 
   interface DrawOptions extends PlaceablesLayer.DrawOptions {}
