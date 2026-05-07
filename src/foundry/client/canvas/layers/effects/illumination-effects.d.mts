@@ -87,7 +87,9 @@ declare class CanvasIlluminationEffects extends CanvasLayer {
   background(): null;
 
   /**
-   * @deprecated "`CanvasIlluminationEffects#globalLight` has been deprecated without replacement. Check the {@linkcode foundry.canvas.sources.GlobalLightSource.active | canvas.environment.globalLightSource.active} instead." (since v12, until v14)
+   * @deprecated "`CanvasIlluminationEffects#globalLight` has been deprecated without replacement.
+   * Check the {@linkcode foundry.canvas.sources.GlobalLightSource.active | canvas.environment.globalLightSource.active} instead."
+   * (since v12, until v14)
    */
   get globalLight(): boolean;
 

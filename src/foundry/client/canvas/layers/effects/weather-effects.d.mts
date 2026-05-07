@@ -9,6 +9,9 @@ import type {
 } from "#client/canvas/containers/_module.d.mts";
 import type { CanvasLayer } from "../_module.d.mts";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type PrimaryCanvasGroup from "#client/canvas/groups/primary.d.mts";
+
 declare module "#configuration" {
   namespace Hooks {
     interface CanvasLayerConfig {
@@ -48,7 +51,7 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
   override get hookName(): string;
 
   /**
-   * @defaultValue `foundry.utils.mergeObject(super.layerOptions, { name: "effects" })`
+   * @defaultValue `foundry.utils.mergeObject(supder.layerOptions, { name: "effects" })`
    */
   static override get layerOptions(): WeatherEffects.LayerOptions;
 
@@ -64,7 +67,7 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
    * A default configuration of the terrain mask that is automatically applied to any shader-based weather effects.
    * This configuration is automatically passed to WeatherShaderEffect#configureTerrainMask upon construction.
    *
-   * @privateRemarks In practice this is always `undefined`, as it is not initialized to a value and never gets set anywhere in core in v12.331
+   * @privateRemarks In practice this is always `undefined`, as it is not initialized and never gets set anywhere in core as of v13.351.
    */
   terrainMaskConfig: WeatherEffects.MaskConfiguration | undefined;
 
@@ -72,7 +75,7 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
    * A default configuration of the terrain mask that is automatically applied to any shader-based weather effects.
    * This configuration is automatically passed to WeatherShaderEffect#configureTerrainMask upon construction.
    *
-   * @privateRemarks In practice this is always `undefined`, as it is not initialized to a value and never gets set anywhere in core in v12.331.
+   * @privateRemarks In practice this is always `undefined`, as it is not initialized and never gets set anywhere in core as of v13.351.
    * Passed as `this.occlusionMaskConfig || { enabled: true }` where it is used.
    */
   occlusionMaskConfig: WeatherEffects.MaskConfiguration | undefined;
@@ -94,7 +97,7 @@ declare class WeatherEffects extends FullCanvasObjectMixin(CanvasLayer) {
 
   /**
    * A key which resolves ties amongst objects at the same elevation of different layers.
-   * @defaultValue {@linkcode foundry.canvas.groups.PrimaryCanvasGroup.SORT_LAYERS.WEATHER | PrimaryCanvasGroup.SORT_LAYERS.WEATHER}
+   * @defaultValue {@linkcode PrimaryCanvasGroup.SORT_LAYERS.WEATHER}
    * @remarks
    * @throws If `NaN` is passed to the setter
    */
@@ -196,7 +199,7 @@ declare namespace WeatherEffects {
    * {@linkcode WeatherEFfects.terrainMaskConfig | #terrainMaskConfig} were *ever* set, i.e, if this interface
    * was ever used for a 'stored' type, it would have a base interface with no optionality/nullishness applied.
    */
-  type _MaskConfiguration = InexactPartial<{
+  interface _MaskConfiguration {
     /**
      * Enable or disable this mask.
      * @defaultValue `false`
@@ -220,20 +223,27 @@ declare namespace WeatherEffects {
      * @remarks If not provided, the shader being modified will have its `uniforms.useTerrain` or `.useOcclusion` set `false`
      */
     texture: PIXI.Texture | PIXI.RenderTexture;
-  }>;
+  }
 
-  interface MaskConfiguration extends _MaskConfiguration {}
+  interface MaskConfiguration extends InexactPartial<_MaskConfiguration> {}
 
   /** @internal */
-  type _BlendMode = InexactPartial<{
-    /**
-     * @defaultValue {@linkcode PIXI.BLEND_MODES.NORMAL}
-     * @remarks The blend mode applied to the `WeatherEffects#occlusionFilter`
-     */
-    blendMode: PIXI.BLEND_MODES;
-  }>;
+  interface _AmbienceConfiguration {
+    filter: AmbienceFilterConfiguration;
+  }
 
-  interface AmbienceFilterConfiguration extends _AmbienceConfiguration {
+  interface AmbienceConfiguration extends InexactPartial<_AmbienceConfiguration> {
+    /** @remarks Should match the key for this ambience in the parent object {@linkcode CONFIG.weatherEffects} */
+    id: string;
+
+    /** @remarks A localization key to display in the Configure Scene sheet */
+    label: string;
+
+    /** @remarks One or more effect definitions */
+    effects: EffectConfiguration[];
+  }
+
+  interface AmbienceFilterConfiguration extends InexactPartial<_AmbienceConfiguration> {
     /**
      * Enable a layer-wide occlusion filter unless it is explicitly disabled by the effect configuration
      * @remarks The above should for clarity say `ambience configuration` instead of `effect configuration`;
@@ -246,7 +256,7 @@ declare namespace WeatherEffects {
   }
 
   /** @internal */
-  type _CommonEffectConfiguration = InexactPartial<{
+  interface _CommonEffectConfiguration {
     /**
      * @defaultValue {@linkcode CONST.CANVAS_PERFORMANCE_MODES.LOW}
      * @remarks The minimum required performance level to render this effect
@@ -264,9 +274,9 @@ declare namespace WeatherEffects {
      * @remarks Applied to the constructed `effectClass`
      */
     blendMode: PIXI.BLEND_MODES;
-  }>;
+  }
 
-  interface ParticleEffectConfiguration extends _CommonEffectConfiguration {
+  interface ParticleEffectConfiguration extends InexactPartial<_CommonEffectConfiguration> {
     id: string;
 
     /** @remarks `typeof` because it's instantiated via `new` in `WeatherEffects##constructEffects` */
@@ -287,13 +297,14 @@ declare namespace WeatherEffects {
 
     /**
      * @remarks {@linkcode AutumnLeavesWeatherEffect} overrides {@linkcode ParticleEffect.getParticleEmitters | ParticleEffect#getParticleEmitters}
-     * -- the method that would throw when passed an empty config -- to not take any parameters and always use {@linkcode AutumnLeavesWeatherEffect.LEAF_CONFIG}
-     * instead, making it the exception to {@linkcode ParticleEffect} configs to provide a valid {@linkcode PIXI.particles.EmitterConfigV3}
+     * -- the method that would throw when passed an empty config -- to not take any parameters and always use
+     * {@linkcode AutumnLeavesWeatherEffect.LEAF_CONFIG} instead, making it the exception to {@linkcode ParticleEffect} configs needing to
+     * be a valid {@linkcode PIXI.particles.EmitterConfigV3}
      */
     config?: never;
   }
 
-  interface WeatherShaderEffectConfiguration extends _CommonEffectConfiguration {
+  interface WeatherShaderEffectConfiguration extends InexactPartial<_CommonEffectConfiguration> {
     id: string;
 
     /** @remarks `typeof` because it's instantiated via `new` in `WeatherEffects##constructEffects` */
@@ -308,22 +319,6 @@ declare namespace WeatherEffects {
     | SpecificallyAutumnLeavesConfiguration
     | ParticleEffectConfiguration
     | WeatherShaderEffectConfiguration;
-
-  /** @internal */
-  type _AmbienceConfiguration = InexactPartial<{
-    filter: AmbienceFilterConfiguration;
-  }>;
-
-  interface AmbienceConfiguration extends _AmbienceConfiguration {
-    /** @remarks Should match the key for this ambience in the parent object {@linkcode CONFIG.weatherEffects} */
-    id: string;
-
-    /** @remarks A localization key to display in the Configure Scene sheet */
-    label: string;
-
-    /** @remarks One or more effect definitions */
-    effects: EffectConfiguration[];
-  }
 }
 
 export default WeatherEffects;
