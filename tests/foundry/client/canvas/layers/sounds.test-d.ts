@@ -3,6 +3,7 @@ import { expectTypeOf } from "vitest";
 import SoundsLayer = foundry.canvas.layers.SoundsLayer;
 import AmbientSound = foundry.canvas.placeables.AmbientSound;
 import Canvas = foundry.canvas.Canvas;
+import Sound = foundry.audio.Sound;
 
 expectTypeOf(SoundsLayer.documentName).toEqualTypeOf<"AmbientSound">();
 expectTypeOf(SoundsLayer.instance).toEqualTypeOf<SoundsLayer | undefined>();
@@ -52,10 +53,10 @@ expectTypeOf(layer["_syncPositions"]([elevatedPoint], {})).toBeVoid();
 expectTypeOf(layer["_syncPositions"]([elevatedPoint], { fade: 100 })).toBeVoid();
 
 declare const somePSS: foundry.canvas.sources.PointSoundSource;
-declare const sound: foundry.audio.Sound;
+declare const sound: Sound;
 declare const ambientSound: AmbientSound.Implementation;
 expectTypeOf(
-  layer["_configurePlayback"]({
+  layer._configurePlayback({
     source: somePSS, // only actually required property
     listener: elevatedPoint, // not technically required but will cause 0 volume/playback failure if omitted
     walls: false,
@@ -74,49 +75,46 @@ const filledInPlayAtPositionOptions = {
   sourceData: { elevation: 20, radius: 500 },
   walls: true,
   volume: 2.3,
-} satisfies SoundsLayer.PlayAtPositionOptions;
+} satisfies Sound.PlayAtPositionOptions;
 const mostNullishPlayAtPositionOptions = {
-  baseEffect: null,
-  easing: null,
-  gmAlways: null,
-  muffledEffect: null,
-  playbackOptions: null,
-  sourceData: null,
+  baseEffect: undefined,
+  easing: undefined,
+  gmAlways: undefined,
+  muffledEffect: undefined,
+  playbackOptions: undefined,
+  sourceData: undefined,
   walls: undefined,
   volume: undefined,
-} satisfies SoundsLayer.PlayAtPositionOptions;
+} satisfies Sound.PlayAtPositionOptions;
 
-expectTypeOf(layer.playAtPosition("path/to/file.ogg", { x: 50, y: 50 }, 200)).toEqualTypeOf<
-  Promise<foundry.audio.Sound | null>
->();
+expectTypeOf(layer.playAtPosition("path/to/file.ogg", { x: 50, y: 50 }, 200)).toEqualTypeOf<Promise<Sound | null>>();
 expectTypeOf(layer.playAtPosition("path/to/file.ogg", { x: 50, y: 50 }, 200, {})).toEqualTypeOf<
-  Promise<foundry.audio.Sound | null>
+  Promise<Sound | null>
 >();
 expectTypeOf(
   layer.playAtPosition("path/to/file.ogg", { x: 50, y: 50 }, 200, filledInPlayAtPositionOptions),
-).toEqualTypeOf<Promise<foundry.audio.Sound | null>>();
+).toEqualTypeOf<Promise<Sound | null>>();
 expectTypeOf(
   layer.playAtPosition("path/to/file.ogg", { x: 50, y: 50 }, 200, mostNullishPlayAtPositionOptions),
-).toEqualTypeOf<Promise<foundry.audio.Sound | null>>();
+).toEqualTypeOf<Promise<Sound | null>>();
 
-expectTypeOf(layer.emitAtPosition("path/to/file.ogg", { x: 50, y: 50 }, 200)).toEqualTypeOf<
-  Promise<foundry.audio.Sound | null>
->();
+expectTypeOf(layer.emitAtPosition("path/to/file.ogg", { x: 50, y: 50 }, 200)).toEqualTypeOf<Promise<Sound | null>>();
 expectTypeOf(layer.emitAtPosition("path/to/file.ogg", { x: 50, y: 50 }, 200, {})).toEqualTypeOf<
-  Promise<foundry.audio.Sound | null>
+  Promise<Sound | null>
 >();
 expectTypeOf(
   layer.emitAtPosition("path/to/file.ogg", { x: 50, y: 50 }, 200, filledInPlayAtPositionOptions),
-).toEqualTypeOf<Promise<foundry.audio.Sound | null>>();
+).toEqualTypeOf<Promise<Sound | null>>();
 expectTypeOf(
   layer.emitAtPosition("path/to/file.ogg", { x: 50, y: 50 }, 200, mostNullishPlayAtPositionOptions),
-).toEqualTypeOf<Promise<foundry.audio.Sound | null>>();
+).toEqualTypeOf<Promise<Sound | null>>();
+
+expectTypeOf(layer._onDarknessChange(darknessEvent)).toBeVoid();
 
 declare const darknessEvent: foundry.canvas.Canvas.Event.DarknessChange;
 declare const pointerEvent: foundry.canvas.Canvas.Event.Pointer;
 declare const someDragEvent: DragEvent;
 declare const pixiPoint: PIXI.Point;
-expectTypeOf(layer["_onDarknessChange"](darknessEvent)).toBeVoid();
 expectTypeOf(layer["_onMouseMove"](pixiPoint)).toBeVoid();
 expectTypeOf(layer["_onDragLeftStart"](pointerEvent)).toBeVoid();
 expectTypeOf(layer["_onDragLeftMove"](pointerEvent)).toBeVoid();

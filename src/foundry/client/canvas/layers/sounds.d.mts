@@ -1,16 +1,10 @@
-import type {
-  IntentionalPartial,
-  InexactPartial,
-  NullishProps,
-  Identity,
-  FixedInstanceType,
-  HandleEmptyObject,
-} from "#utils";
+import type { InexactPartial, Identity, FixedInstanceType, HandleEmptyObject } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { PlaceablesLayer } from "./_module.d.mts";
 import type { AmbientSound } from "#client/canvas/placeables/_module.d.mts";
 import type { SceneControls } from "#client/applications/ui/_module.d.mts";
 import type { Sound } from "#client/audio/_module.mjs";
+import type { PointSoundSource } from "#client/canvas/sources/_module.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -27,9 +21,7 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
   /** @remarks There are no args to pass along, but Foundry does just in case. Only exists to register a mousemove handler  */
   constructor(...args: ConstructorParameters<typeof PlaceablesLayer<"AmbientSound">>);
 
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   static get instance(): Canvas["sounds"];
 
   /**
@@ -45,9 +37,7 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
   // TODO: Make `.InitializedImplementation` once that type exists, or at least `.Implementation` once https://github.com/League-of-Foundry-Developers/foundry-vtt-types/issues/3455 is solved
   sources: Collection<foundry.canvas.sources.PointSoundSource.Internal.Any>;
 
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   override options: SoundsLayer.LayerOptions;
 
   /**
@@ -126,13 +116,14 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
    * @param config - A playback configuration object
    * @internal
    */
-  protected _configurePlayback(config: SoundsLayer.PlaybackConfig): void;
+  _configurePlayback(config: SoundsLayer.PlaybackConfig): void;
 
   /**
    * Actions to take when the darkness level of the Scene is changed
    * @param  event - The darkness-changing event
+   * @internal
    */
-  protected _onDarknessChange(event: Canvas.Event.DarknessChange): void;
+  _onDarknessChange(event: Canvas.Event.DarknessChange): void;
 
   /**
    * Play a one-shot Sound originating from a predefined point on the canvas.
@@ -144,7 +135,8 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
    * @param options - Additional options which configure playback
    * @returns  A Promise which resolves to the played Sound, or null
    *
-   * @example Play the sound of a trap springing
+   * @example
+   * Play the sound of a trap springing
    * ```js
    * const src = "modules/my-module/sounds/spring-trap.ogg";
    * const origin = {x: 5200, y: 3700};  // The origin point for the sound
@@ -152,22 +144,23 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
    * await canvas.sounds.playAtPosition(src, origin, radius);
    * ```
    *
-   * @example A Token casts a spell
+   * @example
+   * A Token casts a spell
    * ```js
    * const src = "modules/my-module/sounds/spells-sprite.ogg";
-   * const origin = token.center;         // The origin point for the sound
-   * const radius = 60;                   // Audible in a 60-foot radius
+   * const origin = token.center; // The origin point for the sound
+   * const radius = 60;           // Audible in a 60-foot radius
    * await canvas.sounds.playAtPosition(src, origin, radius, {
-   *   walls: false,                      // Not constrained by walls with a lowpass muffled effect
+   *   walls: false,              // Not constrained by walls with a lowpass muffled effect
    *   muffledEffect: {type: "lowpass", intensity: 6},
    *   sourceData: {
-   *     angle: 120,                      // Sound emitted at a limited angle
-   *     rotation: 270                    // Configure the direction of sound emission
+   *     angle: 120,              // Sound emitted at a limited angle
+   *     rotation: 270            // Configure the direction of sound emission
    *   }
    *   playbackOptions: {
-   *     loopStart: 12,                   // Audio sprite timing
+   *     loopStart: 12,           // Audio sprite timing
    *     loopEnd: 16,
-   *     fade: 300,                      // Fade-in 300ms
+   *     fade: 300,               // Fade-in 300ms
    *     onended: () => console.log("Do something after the spell sound has played")
    *   }
    * });
@@ -178,7 +171,7 @@ declare class SoundsLayer extends PlaceablesLayer<"AmbientSound"> {
     src: string,
     origin: Canvas.PossiblyElevatedPoint,
     radius: number,
-    options?: SoundsLayer.PlayAtPositionOptions,
+    options?: Sound.PlayAtPositionOptions,
   ): Promise<Sound | null>;
 
   /**
@@ -237,7 +230,9 @@ declare namespace SoundsLayer {
 
   interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientSound.ImplementationClass> {
     name: "sounds";
-    zIndex: 900;
+
+    /** @defaultValue `900` */
+    zIndex: number;
   }
 
   interface DrawOptions extends PlaceablesLayer.DrawOptions {}
@@ -250,67 +245,22 @@ declare namespace SoundsLayer {
   }
 
   /** @internal */
-  type _Fade = InexactPartial<{
+  interface _Fade {
     /**
      * A duration in milliseconds to fade volume transition
      * @defaultValue `250`
      */
     fade: number;
-  }>;
+  }
 
-  interface RefreshOptions extends _Fade {}
+  interface RefreshOptions extends InexactPartial<_Fade> {}
 
-  interface SyncPositionsOptions extends _Fade {}
+  interface SyncPositionsOptions extends InexactPartial<_Fade> {}
 
-  /** @internal */
-  type _PlayAtPositionOptions = NullishProps<{
-    /**
-     * Should volume be attenuated by distance?
-     * @defaultValue `true`
-     */
-    easing: boolean;
+  /** @deprecated This interface is redundant. Use {@linkcode Sound.PlayAtPositionOptions} instead. This type will be removed in v14. */
+  type PlayAtPositionOptions = Sound.PlayAtPositionOptions;
 
-    /**
-     * Should the sound always be played for GM users regardless of actively controlled tokens?
-     * @defaultValue `true`
-     */
-    gmAlways: boolean;
-
-    /** A base sound effect to apply to playback */
-    baseEffect: AmbientSoundDocument.Effect;
-
-    /** A muffled sound effect to apply to playback, a sound may only be muffled if it is not constrained by walls */
-    muffledEffect: AmbientSoundDocument.Effect;
-
-    /**
-     * Additional data passed to the SoundSource constructor
-     * @remarks `IntentionalPartial` because this is spread into an object with existing `x`, `y`, `radius`, and `walls` keys
-     */
-    sourceData: IntentionalPartial<PointSourceData>;
-
-    /**
-     * Additional options passed to Sound#play
-     * @remarks The `loop` and `volume` keys will be overwritten
-     */
-    playbackOptions: foundry.audio.Sound.PlaybackOptions;
-  }> &
-    InexactPartial<{
-      /**
-       * The maximum volume at which the effect should be played
-       * @defaultValue `1`
-       */
-      volume: number;
-
-      /**
-       * Should the sound be constrained by walls?
-       * @defaultValue `true`
-       */
-      walls: boolean;
-    }>;
-
-  interface PlayAtPositionOptions extends _PlayAtPositionOptions {}
-
-  /** @deprecated Use {@linkcode SoundsLayer.PlaybackConfig} instead */
+  /** @deprecated Use {@linkcode SoundsLayer.PlaybackConfig} instead. This type will be removed in v14. */
   type AmbientSoundPlaybackConfig = PlaybackConfig;
 
   /**
@@ -322,14 +272,14 @@ declare namespace SoundsLayer {
      * The Sound node which should be controlled for playback
      * @remarks the {@linkcode AmbientSound.sound | #sound} of this config's `object`
      */
-    sound: foundry.audio.Sound;
+    sound: Sound;
 
     /**
      * The SoundSource which defines the area of effect for the sound
      * @remarks the {@linkcode AmbientSound.source | #source} of this config's `object`
      */
     // TODO: InitializedImplementation
-    source: foundry.canvas.sources.PointSoundSource.Implementation;
+    source: PointSoundSource.Implementation;
 
     /**
      * An AmbientSound object responsible for the sound, or undefined
@@ -377,22 +327,6 @@ declare namespace SoundsLayer {
 }
 
 export default SoundsLayer;
-
-/**
- * @privateRemarks This is the only place in v12 (and v13 as of 332) where this v11 type is still used
- */
-interface PointSourceData {
-  x: number;
-  y: number;
-  elevation: number;
-  z: number | null;
-  radius: number;
-  externalRadius: number;
-  rotation: number;
-  angle: number;
-  walls: boolean;
-  disabled: boolean;
-}
 
 declare abstract class AnySoundsLayer extends SoundsLayer {
   constructor(...args: never);
