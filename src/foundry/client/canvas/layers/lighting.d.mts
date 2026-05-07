@@ -74,8 +74,9 @@ declare class LightingLayer extends PlaceablesLayer<"AmbientLight"> {
   /**
    * Actions to take when the darkness level of the Scene is changed
    * @param event - An event
+   * @internal
    */
-  protected _onDarknessChange(event: Canvas.Event.DarknessChange): void;
+  _onDarknessChange(event: Canvas.Event.DarknessChange): void;
 
   #LightingLayer: true;
 }
@@ -104,7 +105,9 @@ declare namespace LightingLayer {
   interface LayerOptions extends PlaceablesLayer.LayerOptions<AmbientLight.ImplementationClass> {
     name: "lighting";
     rotatableObjects: true;
-    zIndex: 900;
+
+    /** @defaultValue `900` */
+    zIndex: number;
   }
 
   interface DrawOptions extends PlaceablesLayer.DrawOptions {}
