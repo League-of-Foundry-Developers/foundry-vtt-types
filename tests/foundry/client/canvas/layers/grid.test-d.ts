@@ -26,7 +26,7 @@ expectTypeOf(layer.draw()).toEqualTypeOf<Promise<GridLayer>>();
 expectTypeOf(layer.draw({})).toEqualTypeOf<Promise<GridLayer>>();
 expectTypeOf(layer["_draw"]({})).toEqualTypeOf<Promise<void>>();
 
-expectTypeOf(layer["_drawMesh"]()).toEqualTypeOf<GridMesh>();
+expectTypeOf(layer["_drawMesh"]()).toEqualTypeOf<Promise<GridMesh>>();
 expectTypeOf(layer.initializeMesh({})).toBeVoid();
 expectTypeOf(
   layer.initializeMesh({

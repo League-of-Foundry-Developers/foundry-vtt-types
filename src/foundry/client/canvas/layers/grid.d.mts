@@ -1,17 +1,19 @@
 import type {
-  EmptyObject,
   AnyObject,
-  Identity,
-  NullishProps,
-  RemoveIndexSignatures,
+  EmptyObject,
   FixedInstanceType,
-  InexactPartial,
   HandleEmptyObject,
+  Identity,
+  InexactPartial,
+  RemoveIndexSignatures,
 } from "#utils";
 import type { Canvas } from "#client/canvas/_module.d.mts";
 import type { GridShader } from "#client/canvas/rendering/shaders/_module.d.mts";
 import type { GridMesh, GridHighlight } from "#client/canvas/containers/_module.d.mts";
 import type { CanvasLayer } from "#client/canvas/layers/_module.d.mts";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- only used for links
+import type BaseGrid from "#common/grid/base.d.mts";
 
 declare module "#configuration" {
   namespace Hooks {
@@ -53,14 +55,14 @@ declare class GridLayer extends CanvasLayer {
    */
   static override get layerOptions(): GridLayer.LayerOptions;
 
-  /**
-   * @remarks This override returns `canvas.interface.grid`, working around the fact that {@linkcode Canvas.grid | canvas.grid}
-   * is a {@linkcode foundry.grid.BaseGrid} subclass
-   */
-  static get instance(): GridLayer.Implementation;
-
   /** @privateRemarks Fake type override */
   override options: GridLayer.LayerOptions;
+
+  /**
+   * @remarks This override returns `canvas.interface.grid`, working around the fact that {@linkcode Canvas.grid | canvas.grid}
+   * is a {@linkcode BaseGrid} subclass
+   */
+  static get instance(): GridLayer.Implementation;
 
   // fake type override
   override draw(options?: HandleEmptyObject<GridLayer.DrawOptions>): Promise<this>;
@@ -70,7 +72,7 @@ declare class GridLayer extends CanvasLayer {
   /**
    * Creates the grid mesh.
    */
-  protected _drawMesh(): GridMesh;
+  protected _drawMesh(): Promise<GridMesh>;
 
   /**
    * Initialize the grid mesh appearance and configure the grid shader.
@@ -116,52 +118,56 @@ declare class GridLayer extends CanvasLayer {
   highlightPosition(name: string, options: GridLayer.HighlightPositionOptionsGridless): void;
 
   /**
-   * @deprecated "`GridLayer#type` is deprecated. Use {@linkcode foundry.grid.BaseGrid.type | canvas.grid.type} instead." (since v12, until v14)
+   * @deprecated "`GridLayer#type` is deprecated. Use {@linkcode BaseGrid.type | canvas.grid.type} instead." (since v12, until v14)
    */
   get type(): CONST.GRID_TYPES;
 
   /**
-   * @deprecated "`GridLayer#size` is deprecated. Use {@linkcode foundry.grid.BaseGrid.size | canvas.grid.type} instead." (since v12, until v14)
+   * @deprecated "`GridLayer#size` is deprecated. Use {@linkcode BaseGrid.size | canvas.grid.type} instead." (since v12, until v14)
    */
   get size(): number;
 
   /**
-   * @deprecated "`GridLayer#grid` is deprecated. Use {@linkcode foundry.canvas.Canvas.grid | canvas.grid} instead." (since v12, until v14)
+   * @deprecated "`GridLayer#grid` is deprecated. Use {@linkcode Canvas.grid | canvas.grid} instead." (since v12, until v14)
    */
   get grid(): Canvas["grid"];
 
   /**
-   * @deprecated "`GridLayer#isNeighbor` is deprecated. Use {@linkcode foundry.grid.BaseGrid.testAdjacency | canvas.grid.testAdjacency} instead." (since v12, until v14)
+   * @deprecated "`GridLayer#isNeighbor` is deprecated. Use {@linkcode BaseGrid.testAdjacency | canvas.grid.testAdjacency} instead." (since v12, until v14)
    */
   isNeighbor(r0: number, c0: number, r1: number, c1: number): boolean;
 
   /**
-   * @deprecated "`GridLayer#w` is deprecated. Use {@linkcode foundry.grid.BaseGrid.sizeX | canvas.grid.sizeX} instead." (since v12, until v14)
+   * @deprecated "`GridLayer#w` is deprecated. Use {@linkcode BaseGrid.sizeX | canvas.grid.sizeX} instead." (since v12, until v14)
    */
   get w(): number;
 
   /**
-   * @deprecated "`GridLayer#h` is deprecated. Use {@linkcode foundry.grid.BaseGrid.sizeY | canvas.grid.sizeY} instead." (since v12, until v14)
+   * @deprecated "`GridLayer#h` is deprecated. Use {@linkcode BaseGrid.sizeY | canvas.grid.sizeY} instead." (since v12, until v14)
    */
   get h(): number;
 
   /**
-   * @deprecated "`GridLayer#isHex` is deprecated. Use {@linkcode foundry.grid.BaseGrid.isHexagonal | canvas.grid.isHexagonal} instead." (since v12, until v14)
+   * @deprecated "`GridLayer#isHex` is deprecated. Use {@linkcode BaseGrid.isHexagonal | canvas.grid.isHexagonal} instead."
+   * (since v12, until v14)
    */
   get isHex(): boolean;
 
   /**
-   * @deprecated "`GridLayer#getTopLeft` is deprecated. Use {@linkcode foundry.grid.BaseGrid.getTopLeft | canvas.grid.getTopLeft} instead." (since v12, until v14)
+   * @deprecated "`GridLayer#getTopLeft` is deprecated. Use {@linkcode BaseGrid.getTopLeft | canvas.grid.getTopLeft} instead."
+   * (since v12, until v14)
    */
   getTopLeft(x: number, y: number): Canvas.PointTuple;
 
   /**
-   * @deprecated "`GridLayer#getCenter` is deprecated. Use {@linkcode foundry.grid.BaseGrid.getCenterPoint | canvas.grid.getCenterPoint} instead." (since v12, until v14)
+   * @deprecated "`GridLayer#getCenter` is deprecated. Use {@linkcode BaseGrid.getCenterPoint | canvas.grid.getCenterPoint} instead."
+   * (since v12, until v14)
    */
   getCenter(x: number, y: number): Canvas.PointTuple;
 
   /**
-   * @deprecated "`GridLayer#getSnappedPosition` is deprecated. Use {@linkcode foundry.grid.BaseGrid.getSnappedPoint | canvas.grid.getSnappedPoint} instead." (since v12, until v14)
+   * @deprecated "`GridLayer#getSnappedPosition` is deprecated. Use {@linkcode BaseGrid.getSnappedPoint | canvas.grid.getSnappedPoint}
+   * instead." (since v12, until v14)
    */
   getSnappedPosition(
     x: number,
@@ -175,8 +181,8 @@ declare class GridLayer extends CanvasLayer {
   ): PIXI.IPointData;
 
   /**
-   * @deprecated (since v12, until v14)
-   * @remarks "`GridLayer#measureDistance` is deprecated. Use {@linkcode foundry.grid.BaseGrid.measurePath | canvas.grid.measurePath} instead, which returns grid distance (gridSpaces: true) and Euclidean distance (gridSpaces: false)."
+   * @deprecated "`GridLayer#measureDistance` is deprecated. Use {@linkcode BaseGrid.measurePath | canvas.grid.measurePath} instead,
+   * which returns grid distance (`gridSpaces: true`) and Euclidean distance (`gridSpaces: false`)." (since v12, until v14)
    */
   measureDistance(
     origin: Canvas.Point,
@@ -218,16 +224,18 @@ declare namespace GridLayer {
   interface TearDownOptions extends CanvasLayer.TearDownOptions {}
 
   /** @internal */
-  type _InitializeMeshOptions = InexactPartial<{
+  interface _InitializeMeshOptions {
     /** The grid style */
     style: ConfiguredGridStyles;
-  }>;
+  }
 
   interface InitializeMeshOptions
-    extends _InitializeMeshOptions, Pick<GridMesh.InitializationMeshData, "thickness" | "color" | "alpha"> {}
+    extends
+      InexactPartial<_InitializeMeshOptions>,
+      Pick<GridMesh.InitializationMeshData, "thickness" | "color" | "alpha"> {}
 
   /** @internal */
-  type _HighlightPositionOptions = InexactPartial<{
+  interface _HighlightPositionOptions {
     /**
      * @defaultValue `0x33BBFF`
      */
@@ -245,12 +253,10 @@ declare namespace GridLayer {
      * @defaultValue `0.25`
      */
     alpha: number;
-  }>;
+  }
 
-  /**
-   * @remarks Options for highlighting a grid cell on a grided Scene: `x` and `y` required, `shape` always overridden so not included here.
-   */
-  interface HighlightPositionOptionsGrided extends _HighlightPositionOptions {
+  /** @internal */
+  interface _HighlightPositionCoordinates {
     /**
      * The x-coordinate of the highlighted position
      * @remarks Required on gridless scenes; `undefined` will produce `NaN`s and insert garbage data into the associated `GridHighlightLayer`
@@ -264,8 +270,8 @@ declare namespace GridLayer {
     y: number;
   }
 
-  /** @remarks Options for highlighting an area on a gridless Scene: `shape` required, `x` and `y` unused so not included here  */
-  interface HighlightPositionOptionsGridless extends _HighlightPositionOptions {
+  /** @internal */
+  interface _HighlightPositionShape {
     /**
      * A predefined shape to highlight
      * @remarks Must be provided on gridless scenes or highlighting will fail quietly
@@ -273,24 +279,39 @@ declare namespace GridLayer {
     shape: PIXI.IShape;
   }
 
-  /** @internal */
-  type _GridStyle = NullishProps<{
-    /** @defaultValue `GridShader` */
+  /**
+   * @remarks Options for highlighting a grid cell on a grided Scene: `x` and `y` required, `shape` always overridden so not included here.
+   */
+  interface HighlightPositionOptionsGrided
+    extends
+      _HighlightPositionCoordinates,
+      InexactPartial<_HighlightPositionShape>,
+      InexactPartial<_HighlightPositionOptions> {}
+
+  /** @remarks Options for highlighting an area on a gridless Scene: `shape` required, `x` and `y` unused so not included here  */
+  interface HighlightPositionOptionsGridless
+    extends
+      _HighlightPositionShape,
+      InexactPartial<_HighlightPositionCoordinates>,
+      InexactPartial<_HighlightPositionOptions> {}
+
+  /**
+   * These properties both technically have defaults, but there wouldn't be much point to defining a grid style without
+   * setting at least one of them.
+   * @internal
+   */
+  interface _GridStyle {
+    /**
+     * @defaultValue {@linkcode GridShader}
+     * @privateRemarks Constructed via `.create()`, so doesn't need to be `typeof`
+     */
     shaderClass: GridShader.AnyConstructor;
 
     /** @defaultValue `{}` */
-    shaderOptions: NullishProps<{
-      /**
-       * @defaultValue `0`
-       * @remarks Gets applied to the constructed shaderClass instance's `uniforms`.
-       *
-       * @privateRemarks It's unclear if this is actually representing an enum value or not, so it's been left as `number`.
-       */
-      style: number;
-    }>;
-  }>;
+    shaderOptions: GridShader.ConfigureOptions;
+  }
 
-  interface GridStyle extends _GridStyle {
+  interface GridStyle extends InexactPartial<_GridStyle> {
     /** @remarks A localization key to display in the Configure Scene sheet */
     label: string;
   }
