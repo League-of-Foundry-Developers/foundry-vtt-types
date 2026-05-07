@@ -2267,8 +2267,6 @@ declare namespace TokenDocument {
 
   interface ActualMovementOperation extends Pick<MovementOperation, "autoRotate" | "showRuler" | "constrainOptions"> {}
 
-  interface ActualMovementOperation extends Pick<MovementOperation, "autoRotate" | "showRuler" | "constrainOptions"> {}
-
   type PauseMovementReturn<Key extends string | undefined> =
     | (Key extends string ? Promise<boolean> : () => Promise<boolean>)
     | null;

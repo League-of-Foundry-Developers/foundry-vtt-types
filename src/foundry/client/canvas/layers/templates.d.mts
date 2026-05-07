@@ -17,15 +17,8 @@ declare module "#configuration" {
  * @see {@linkcode MeasuredTemplate}
  */
 declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
+  // Fake type override
   static get instance(): Canvas["templates"];
-
-  /**
-   * @privateRemarks This is not overridden in foundry but reflects the real behavior.
-   */
-  override options: TemplateLayer.LayerOptions;
 
   /**
    * @defaultValue
@@ -38,6 +31,9 @@ declare class TemplateLayer extends PlaceablesLayer<"MeasuredTemplate"> {
    * ```
    */
   static override get layerOptions(): TemplateLayer.LayerOptions;
+
+  // Fake type override
+  override options: TemplateLayer.LayerOptions;
 
   static override documentName: "MeasuredTemplate";
 
@@ -90,7 +86,9 @@ declare namespace TemplateLayer {
   interface LayerOptions extends PlaceablesLayer.LayerOptions<MeasuredTemplate.ImplementationClass> {
     name: "templates";
     rotatableObjects: true;
-    zIndex: 400;
+
+    /** @defaultValue `400` */
+    zIndex: number;
   }
 
   interface DrawOptions extends PlaceablesLayer.DrawOptions {}
